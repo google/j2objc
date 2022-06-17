@@ -60,6 +60,8 @@ public final class TypeUtil {
   public static final TypeMirror ID_PTR_TYPE = new PointerType(ID_TYPE);
   public static final TypeElement NS_OBJECT =
       GeneratedTypeElement.newIosClass("NSObject", null, "");
+  public static final TypeElement NS_DICTIONARY =
+      GeneratedTypeElement.newIosClass("NSDictionary", NS_OBJECT, "");
   public static final TypeElement NS_STRING =
       GeneratedTypeElement.newIosClass("NSString", NS_OBJECT, "");
   public static final TypeElement NS_EXCEPTION =

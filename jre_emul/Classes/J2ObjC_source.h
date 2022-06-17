@@ -115,7 +115,7 @@ typedef struct J2ObjcResourceDefinition {
   static J2ObjcResourceDefinition BUF##_resource __attribute__((used, no_sanitize("address"), \
   section("__DATA,__j2objcresource"))) = { QUOTE(BUF), BUF, LEN, HASH };
 
-FOUNDATION_EXPORT jint JreIndexOfStr(NSString *str, NSString **values, jint size);
+FOUNDATION_EXPORT jint JreIndexOfStr(NSString *str, const NSDictionary<NSString *,NSNumber *> *values);
 FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordinal);
 
 /*!

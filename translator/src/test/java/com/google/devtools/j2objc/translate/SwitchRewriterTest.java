@@ -121,7 +121,7 @@ public class SwitchRewriterTest extends GenerationTest {
     addSourcesToSourcepaths();
     String translation = translateSourceFile(
         "public class Test { "
-        + "static final String constant = \"mumble\";"
+        + "private static final String constant = \"mumble\";"
         + "int test(String s) { "
         + "  switch(s) {"
         + "    case \"foo\": return 42;"
@@ -132,9 +132,9 @@ public class SwitchRewriterTest extends GenerationTest {
         + "    default: return -1;"
         + "  }}}",
         "Test", "Test.m");
+
     assertTranslatedLines(translation,
-        "switch (JreIndexOfStr(s, (id[]){ @\"foo\", "
-            + "@\"bar\", Test_constant, Foo_TEST, Bar_TEST }, 5)) {",
+        "switch (JreIndexOfStr(s, __switchMap0)) {",
         "  case 0:",
         "  return 42;",
         "  case 1:",
@@ -148,6 +148,15 @@ public class SwitchRewriterTest extends GenerationTest {
         "  default:",
         "  return -1;",
         "}");
+
+    assertTranslatedLines(translation,
+        "static const NSDictionary<NSString *, NSNumber *> *__switchMap0 = @{",
+        "  @\"foo\" : @0,",
+        "  @\"bar\" : @1,",
+        "  @\"mumble\" : @2,",
+        "  @\"test1\" : @3,",
+        "  @\"test2\" : @4",
+        "};");
   }
 
   /**

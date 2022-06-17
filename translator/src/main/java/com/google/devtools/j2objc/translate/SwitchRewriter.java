@@ -14,7 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.devtools.j2objc.ast.ArrayInitializer;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.SimpleName;
@@ -33,6 +34,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.gen.LiteralGenerator;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.util.NameTable;
@@ -40,7 +42,6 @@ import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.List;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
@@ -50,6 +51,7 @@ import javax.lang.model.type.TypeMirror;
  * @author Keith Stanger
  */
 public class SwitchRewriter extends UnitTreeVisitor {
+  private int count = 0;
 
   public SwitchRewriter(CompilationUnit unit) {
     super(unit);
@@ -84,8 +86,9 @@ public class SwitchRewriter extends UnitTreeVisitor {
     TypeMirror type = var.asType();
     if (TypeUtil.isEnum(type)) {
       String enumValue =
-          NameTable.getNativeEnumName(nameTable.getFullName(TypeUtil.asTypeElement(type))) + "_"
-          + nameTable.getVariableBaseName(var);
+          NameTable.getNativeEnumName(nameTable.getFullName(TypeUtil.asTypeElement(type)))
+              + "_"
+              + nameTable.getVariableBaseName(var);
       node.setExpression(new NativeExpression(enumValue, typeUtil.getInt()));
     } else if (type.getKind().isPrimitive() && var.getKind() == ElementKind.LOCAL_VARIABLE) {
       Object value = var.getConstantValue();
@@ -133,26 +136,60 @@ public class SwitchRewriter extends UnitTreeVisitor {
     if (!typeUtil.isString(type)) {
       return;
     }
-    ArrayType arrayType = typeUtil.getArrayType(type);
-    ArrayInitializer arrayInit = new ArrayInitializer(arrayType);
-    int idx = 0;
+
+    String name = "__switchMap" + count++;
+    AbstractTypeDeclaration enclosingType = TreeUtil.getEnclosingType(node);
+
+    StringBuilder stringBuilder =
+        new StringBuilder()
+            .append("static const NSDictionary<NSString *, NSNumber *> *")
+            .append(name)
+            .append(" = @{");
+    int index = 0;
     for (Statement stmt : node.getStatements()) {
       if (stmt instanceof SwitchCase) {
         SwitchCase caseStmt = (SwitchCase) stmt;
         if (!caseStmt.isDefault()) {
-          arrayInit.addExpression(TreeUtil.remove(caseStmt.getExpression()));
-          caseStmt.setExpression(NumberLiteral.newIntLiteral(idx++, typeUtil));
+          if (index != 0) {
+            stringBuilder.append(",");
+          }
+          stringBuilder
+              .append("\n  ")
+              .append(getConstantValueString(caseStmt.getExpression()))
+              .append(" : @")
+              .append(index);
+          caseStmt.setExpression(NumberLiteral.newIntLiteral(index++, typeUtil));
         }
       }
     }
+    stringBuilder.append("\n};");
+    NativeDeclaration outerDecl =
+        NativeDeclaration.newInnerDeclaration("", stringBuilder.toString());
+    AbstractTypeDeclaration unused = enclosingType.addBodyDeclaration(0, outerDecl);
+
     TypeMirror intType = typeUtil.getInt();
-    FunctionElement indexOfFunc = new FunctionElement("JreIndexOfStr", intType, null)
-        .addParameters(type, arrayType, intType);
+    FunctionElement indexOfFunc =
+        new FunctionElement("JreIndexOfStr", intType, null)
+            .addParameters(type, TypeUtil.NS_DICTIONARY.asType());
     FunctionInvocation invocation = new FunctionInvocation(indexOfFunc, intType);
-    invocation.addArgument(TreeUtil.remove(expr))
-        .addArgument(arrayInit)
-        .addArgument(NumberLiteral.newIntLiteral(idx, typeUtil));
+    invocation
+        .addArgument(TreeUtil.remove(expr))
+        .addArgument(new NativeExpression(name, TypeUtil.NS_DICTIONARY.asType()));
     node.setExpression(invocation);
+  }
+
+  private String getConstantValueString(Expression expression) {
+    Object value = expression.getConstantValue();
+    if (value == null) {
+      VariableElement varElement = TreeUtil.getVariableElement(expression);
+      if (varElement != null) {
+        value = varElement.getConstantValue();
+      }
+    }
+    if (value == null) {
+      throw new IllegalStateException("failed" + expression.getClass().getName());
+    }
+    return LiteralGenerator.generateStringLiteral(value.toString());
   }
 
   private void fixEnumValue(SwitchStatement node) {

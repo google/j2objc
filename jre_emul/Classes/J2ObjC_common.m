@@ -213,13 +213,9 @@ void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar) {
   [*(id *)pVar release];
 }
 
-jint JreIndexOfStr(NSString *str, NSString **values, jint size) {
-  for (int i = 0; i < size; i++) {
-    if ([str isEqualToString:values[i]]) {
-      return i;
-    }
-  }
-  return -1;
+jint JreIndexOfStr(NSString *str, NSDictionary<NSString *,NSNumber *> *values) {
+  NSNumber * result = values[str];
+  return result ? [result intValue] : -1;
 }
 
 // Counts the number of object types in a string concatenation.
