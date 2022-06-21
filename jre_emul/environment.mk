@@ -158,9 +158,6 @@ OBJCFLAGS += $(WARNINGS) -fno-strict-overflow \
   -I/System/Library/Frameworks/Security.framework/Headers \
   -I$(ANDROID_INCLUDE) $(NATIVE_SOURCE_DIRS:%=-I%)
 
-# Always embed bitcode (since Xcode 7)
-OBJCFLAGS += -fembed-bitcode
-
 # Only use the icu headers when building for OSX. For IOS these headers should
 # be available in the SDK.
 FAT_LIB_OSX_FLAGS = -I$(ICU4C_I18N_ROOT) -I$(ICU4C_COMMON_ROOT)

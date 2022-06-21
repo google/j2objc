@@ -70,14 +70,6 @@ FAT_LIB_MAC_CATALYST64_FLAGS = $(FAT_LIB_OSX_FLAGS) -arch arm64 -DJ2OBJC_BUILD_A
   -isystem $(FAT_LIB_MACOSX_SDK_DIR)/System/iOSSupport/usr/include \
   -iframework $(FAT_LIB_MACOSX_SDK_DIR)/System/iOSSupport/System/Library/Frameworks
 
-# Only iPhone armv7 and arm64 builds need a bitcode marker.
-FAT_LIB_IPHONE_FLAGS += -fembed-bitcode
-FAT_LIB_IPHONE64_FLAGS += -fembed-bitcode
-FAT_LIB_IPHONE64E_FLAGS += -fembed-bitcode
-FAT_LIB_WATCHV7K_FLAGS += -fembed-bitcode
-FAT_LIB_WATCH64_FLAGS += -fembed-bitcode
-FAT_LIB_TV_FLAGS += -fembed-bitcode
-
 # Command-line pattern for calling libtool and filtering the "same member name"
 # errors from having object files of the same name. (but in different directory)
 fat_lib_filtered_libtool = set -o pipefail \
