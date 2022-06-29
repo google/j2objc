@@ -29,7 +29,7 @@
  * An abstract class that represents a Java array.  Like a Java array,
  * an IOSArray is fixed-size but its elements are mutable.
  */
-@interface IOSArray<__covariant ObjectType> : NSArray<ObjectType> {
+@interface IOSArray<__covariant ObjectType> : NSMutableArray<ObjectType> {
  @public
   /**
    * Size of the array. This field is read-only, visible only for

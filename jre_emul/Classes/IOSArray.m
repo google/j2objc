@@ -26,6 +26,7 @@
 #import "IOSObjectArray.h"
 #import "IOSPrimitiveArray.h"
 #import "java/lang/ArrayIndexOutOfBoundsException.h"
+#import "java/lang/ArrayStoreException.h"
 #import "java/lang/AssertionError.h"
 
 static id NewArrayWithDimensionsAndComponentTypes(
@@ -180,6 +181,24 @@ void IOSArray_throwRangeOutOfBounds(jint size, jint offset, jint length) {
 
 - (void *)buffer {
   return nil;
+}
+
+// NSMutableArray override methods that are not supported by Java array design.
+- (void)addObject:(id)anObject {
+  @throw create_JavaLangArrayStoreException_initWithNSString_(@"IOSArray size is immutable");
+}
+
+- (void)insertObject:(id)anObject 
+             atIndex:(NSUInteger)index {
+  @throw create_JavaLangArrayStoreException_initWithNSString_(@"IOSArray size is immutable");
+}
+
+- (void)removeObjectAtIndex:(NSUInteger)index {
+  @throw create_JavaLangArrayStoreException_initWithNSString_(@"IOSArray size is immutable");
+}
+
+- (void)removeLastObject {
+  @throw create_JavaLangArrayStoreException_initWithNSString_(@"IOSArray size is immutable");
 }
 
 @end
