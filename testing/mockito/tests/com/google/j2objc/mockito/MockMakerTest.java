@@ -14,12 +14,14 @@ package com.google.j2objc.mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
+import org.mockito.exceptions.base.MockitoException;
 
 /** Unit tests for the iOS Mockito MockMaker plugin. */
 @RunWith(JUnit4.class)
@@ -52,9 +54,22 @@ public class MockMakerTest {
     assertTrue(mockInterfaceA instanceof InterfaceA);
   }
 
+  @Test
+  public void mockingEnumNotAllowed() {
+    try {
+      Object mockEnum = Mockito.mock(EnumA.class);
+      fail();
+    } catch (MockitoException expected) {
+    }
+  }
+
   static class ClassA {}
 
   static interface InterfaceA {
     ClassA getClassA();
+  }
+
+  enum EnumA {
+    FOO {} // {} declares a subclass, forcing EnumA to be non-`final`
   }
 }

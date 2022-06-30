@@ -229,7 +229,7 @@ public final class IosMockMaker implements MockMaker {
     return new TypeMockability() {
       @Override
       public boolean mockable() {
-        return !type.isPrimitive() && !Modifier.isFinal(type.getModifiers());
+        return !type.isPrimitive() && !type.isEnum() && !Modifier.isFinal(type.getModifiers());
       }
 
       @Override
@@ -239,6 +239,9 @@ public final class IosMockMaker implements MockMaker {
         }
         if (type.isPrimitive()) {
           return "primitive type";
+        }
+        if (type.isEnum()) {
+            return "enum class";
         }
         if (Modifier.isFinal(type.getModifiers())) {
           return "final class";
