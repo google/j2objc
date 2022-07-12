@@ -245,7 +245,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         VariableElement var = fragment.getVariableElement();
         TypeMirror type = var.asType();
         String accessorName = nameTable.getStaticAccessorName(var);
-        String objcType = nameTable.getObjCType(type);
+        String objcType =
+            options.asObjCGenericDecl()
+                ? nameTable.getObjCGenericType(type)
+                : nameTable.getObjCType(type);
         TypeElement declaringClass = ElementUtil.getDeclaringClass(var);
         String baseName = nameTable.getVariableBaseName(var);
         ExecutableElement getter =
@@ -408,7 +411,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     newline();
     for (VariableDeclarationFragment fragment : fields) {
       VariableElement var = fragment.getVariableElement();
-      String typeStr = nameTable.getObjCType(var.asType());
+      String typeStr =
+          options.asObjCGenericDecl()
+              ? nameTable.getObjCGenericType(var.asType())
+              : nameTable.getObjCType(var.asType());
       if (typeStr.contains(",")) {
         typeStr = "J2OBJC_ARG(" + typeStr + ')';
       }
@@ -439,7 +445,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   private void printStaticFieldFullDeclaration(VariableDeclarationFragment fragment) {
     VariableElement var = fragment.getVariableElement();
     boolean isVolatile = ElementUtil.isVolatile(var);
-    String objcType = nameTable.getObjCType(var.asType());
+    String objcType =
+        options.asObjCGenericDecl()
+            ? nameTable.getObjCGenericType(var.asType())
+            : nameTable.getObjCType(var.asType());
     String objcTypePadded = objcType + (objcType.endsWith("*") ? "" : " ");
     String declType = getDeclarationType(var);
     declType += (declType.endsWith("*") ? "" : " ");
@@ -575,7 +584,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     newline();
     JavadocGenerator.printDocComment(getBuilder(), m.getJavadoc());
 
-    String methodSignature = getMethodSignature(m);
+    String methodSignature = getMethodSignature(m, options.asObjCGenericDecl());
 
     // In order to properly map the method name from the entire signature, we must isolate it from
     // associated type and parameter declarations.  The method name is guaranteed to be between the

@@ -114,7 +114,7 @@ public class Import implements Comparable<Import> {
     if (type instanceof PointerType) {
       addImports(((PointerType) type).getPointeeType(), imports, env);
     }
-    for (TypeElement objcClass : env.typeUtil().getObjcUpperBounds(type)) {
+    for (TypeElement objcClass : env.typeUtil().getObjcUpperBounds(type, false)) {
       Import newImport = new Import(objcClass, env.nameTable(), env.options());
       // An empty header indicates a Foundation type that doesn't require an import or forward
       // declaration.

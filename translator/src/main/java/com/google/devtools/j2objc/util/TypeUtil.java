@@ -76,6 +76,7 @@ public final class TypeUtil {
       GeneratedTypeElement.newIosClass("IOSObjectArray", NS_OBJECT, "IOSObjectArray.h");
   public static final TypeMirror NATIVE_CHAR_PTR = new NativeType("char *");
   private static final Map<TypeKind, TypeElement> PRIMITIVE_IOS_ARRAYS;
+  private static final Map<TypeKind, TypeElement> PRIMITIVE_IOS_ARRAYS_GENERICS;
 
   static {
     Map<TypeKind, TypeElement> map = new EnumMap<>(TypeKind.class);
@@ -88,6 +89,19 @@ public final class TypeUtil {
     map.put(TypeKind.LONG, newPrimitiveIosArray("IOSLongArray"));
     map.put(TypeKind.SHORT, newPrimitiveIosArray("IOSShortArray"));
     PRIMITIVE_IOS_ARRAYS = map;
+  }
+
+  static {
+    Map<TypeKind, TypeElement> map = new EnumMap<>(TypeKind.class);
+    map.put(TypeKind.BOOLEAN, newPrimitiveIosArray("IOSArray<JavaLangBoolean *>"));
+    map.put(TypeKind.BYTE, newPrimitiveIosArray("IOSArray<JavaLangByte *>"));
+    map.put(TypeKind.CHAR, newPrimitiveIosArray("IOSArray<JavaLangCharacter *>"));
+    map.put(TypeKind.DOUBLE, newPrimitiveIosArray("IOSArray<JavaLangDouble *>"));
+    map.put(TypeKind.FLOAT, newPrimitiveIosArray("IOSArray<JavaLangFloat *>"));
+    map.put(TypeKind.INT, newPrimitiveIosArray("IOSArray<JavaLangInteger *>"));
+    map.put(TypeKind.LONG, newPrimitiveIosArray("IOSArray<JavaLangLong *>"));
+    map.put(TypeKind.SHORT, newPrimitiveIosArray("IOSArray<JavaLangShort *>"));
+    PRIMITIVE_IOS_ARRAYS_GENERICS = map;
   }
 
   private final Elements javacElements;
@@ -394,9 +408,16 @@ public final class TypeUtil {
     return type instanceof AbstractTypeMirror;
   }
 
-  public TypeElement getIosArray(TypeMirror componentType) {
+  public TypeElement getIosArray(TypeMirror componentType, boolean asObjCGenericDecl) {
+    if (asObjCGenericDecl) {
+      // TODO(minsheng): get specific TypeElement for IOS_OBJECT_ARRAY.
+      return componentType.getKind().isPrimitive()
+          ? PRIMITIVE_IOS_ARRAYS_GENERICS.get(componentType.getKind())
+          : IOS_OBJECT_ARRAY;
+    } else {
     return componentType.getKind().isPrimitive()
         ? PRIMITIVE_IOS_ARRAYS.get(componentType.getKind()) : IOS_OBJECT_ARRAY;
+    }
   }
 
   public TypeElement getJavaObject() {
@@ -440,9 +461,9 @@ public final class TypeUtil {
    * IOSArray type and common Java classes like String and Object are mapped to NSString and
    * NSObject.
    */
-  public TypeElement getObjcClass(TypeMirror t) {
+  public TypeElement getObjcClass(TypeMirror t, boolean asObjCGenericDecl) {
     if (isArray(t)) {
-      return getIosArray(((ArrayType) t).getComponentType());
+      return getIosArray(((ArrayType) t).getComponentType(), asObjCGenericDecl);
     } else if (isDeclaredType(t)) {
       return getObjcClass((TypeElement) ((DeclaredType) t).asElement());
     } else if (t.getKind() == TypeKind.UNION) {
@@ -673,7 +694,7 @@ public final class TypeUtil {
   }
 
   public boolean isDeclaredAsId(TypeMirror t) {
-    return isReferenceType(t) && getObjcUpperBounds(t).isEmpty();
+    return isReferenceType(t) && getObjcUpperBounds(t, false).isEmpty();
   }
 
   @SuppressWarnings("TypeEquals")
@@ -685,8 +706,9 @@ public final class TypeUtil {
       }
       return t1.equals(t2);
     }
-    outer: for (TypeElement t2Class : getObjcUpperBounds(t2)) {
-      for (TypeElement t1Class : getObjcUpperBounds(t1)) {
+    outer:
+    for (TypeElement t2Class : getObjcUpperBounds(t2, false)) {
+      for (TypeElement t1Class : getObjcUpperBounds(t1, false)) {
         if (isObjcSubtype(t1Class, t2Class)) {
           continue outer;
         }
@@ -704,21 +726,21 @@ public final class TypeUtil {
       return true;
     }
     TypeMirror superclass = type.getSuperclass();
-    if (superclass != null && isObjcSubtype(getObjcClass(superclass), targetSupertype)) {
+    if (superclass != null && isObjcSubtype(getObjcClass(superclass, false), targetSupertype)) {
       return true;
     }
     for (TypeMirror intrface : type.getInterfaces()) {
-      if (isObjcSubtype(getObjcClass(intrface), targetSupertype)) {
+      if (isObjcSubtype(getObjcClass(intrface, false), targetSupertype)) {
         return true;
       }
     }
     return false;
   }
 
-  public List<TypeElement> getObjcUpperBounds(TypeMirror t) {
+  public List<TypeElement> getObjcUpperBounds(TypeMirror t, boolean asObjCGenericDecl) {
     List<TypeElement> result = new ArrayList<>();
     for (TypeMirror bound : getUpperBounds(t)) {
-      TypeElement elem = getObjcClass(bound);
+      TypeElement elem = getObjcClass(bound, asObjCGenericDecl);
       // NSObject is emmitted as "id".
       if (elem != null && !elem.equals(NS_OBJECT)) {
         result.add(elem);

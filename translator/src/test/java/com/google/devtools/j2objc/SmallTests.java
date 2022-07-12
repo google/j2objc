@@ -42,6 +42,7 @@ import com.google.devtools.j2objc.pipeline.TranslationProcessorTest;
 import com.google.devtools.j2objc.translate.AbstractMethodRewriterTest;
 import com.google.devtools.j2objc.translate.AnnotationRewriterTest;
 import com.google.devtools.j2objc.translate.AnonymousClassConverterTest;
+import com.google.devtools.j2objc.translate.ArrayGenericsTest;
 import com.google.devtools.j2objc.translate.ArrayRewriterTest;
 import com.google.devtools.j2objc.translate.AutoboxerTest;
 import com.google.devtools.j2objc.translate.CastResolverTest;
@@ -95,9 +96,7 @@ import com.google.devtools.j2objc.util.UnicodeUtilsTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/**
- * Returns a suite of all small tests in this package.
- */
+/** Returns a suite of all small tests in this package. */
 public class SmallTests {
 
   private static final Class<?>[] smallTestClasses =
@@ -108,6 +107,7 @@ public class SmallTests {
         AnonymousClassConverterTest.class,
         ArrayAccessTest.class,
         ArrayCreationTest.class,
+        ArrayGenericsTest.class,
         ArrayRewriterTest.class,
         AutoboxerTest.class,
         CastResolverTest.class,

@@ -189,7 +189,7 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(ArrayType node) {
-    TypeElement iosArray = typeUtil.getIosArray(node.getTypeMirror().getComponentType());
+    TypeElement iosArray = typeUtil.getIosArray(node.getTypeMirror().getComponentType(), false);
     buffer.append(ElementUtil.getName(iosArray));
     return false;
   }

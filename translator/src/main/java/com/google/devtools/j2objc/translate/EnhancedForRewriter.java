@@ -87,7 +87,7 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
     ArrayType expressionType = (ArrayType) expression.getTypeMirror();
     VariableElement loopVariable = node.getParameter().getVariableElement();
     TypeMirror componentType = expressionType.getComponentType();
-    TypeElement iosArrayType = typeUtil.getIosArray(componentType);
+    TypeElement iosArrayType = typeUtil.getIosArray(componentType, false);
     TypeMirror bufferType = new PointerType(componentType);
     VariableElement arrayVariable = GeneratedVariableElement.newLocalVar(
         "a__", expressionType, null);

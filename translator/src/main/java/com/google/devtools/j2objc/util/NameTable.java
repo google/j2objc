@@ -315,8 +315,8 @@ public class NameTable {
     } else {
       // For type variables, use the first bound for the parameter keyword.
       List<? extends TypeMirror> bounds = typeUtil.getUpperBounds(type);
-      TypeElement elem = bounds.isEmpty()
-          ? TypeUtil.NS_OBJECT : typeUtil.getObjcClass(bounds.get(0));
+      TypeElement elem =
+          bounds.isEmpty() ? TypeUtil.NS_OBJECT : typeUtil.getObjcClass(bounds.get(0), false);
       assert elem != null;
       if (arrayDimensions == 0 && elem.equals(TypeUtil.NS_OBJECT)) {
         // Special case: Non-array object types become "id".
@@ -501,11 +501,15 @@ public class NameTable {
    * resolved to their bounds.
    */
   public String getObjCType(TypeMirror type) {
-    return getObjcTypeInner(type, null);
+    return getObjcTypeInner(type, null, false);
+  }
+
+  public String getObjCGenericType(TypeMirror type) {
+    return getObjcTypeInner(type, null, true);
   }
 
   public String getObjCType(VariableElement var) {
-    return getObjcTypeInner(var.asType(), ElementUtil.getTypeQualifiers(var));
+    return getObjcTypeInner(var.asType(), ElementUtil.getTypeQualifiers(var), false);
   }
 
   /**
@@ -524,7 +528,7 @@ public class NameTable {
     return "jobject";
   }
 
-  private String getObjcTypeInner(TypeMirror type, String qualifiers) {
+  private String getObjcTypeInner(TypeMirror type, String qualifiers, boolean asObjCGenericDecl) {
     String objcType;
     if (type instanceof NativeType) {
       objcType = ((NativeType) type).getName();
@@ -537,12 +541,12 @@ public class NameTable {
           qualifiers = qualifiers.substring(idx + 1);
         }
       }
-      objcType = getObjcTypeInner(((PointerType) type).getPointeeType(), pointeeQualifiers);
+      objcType = getObjcTypeInner(((PointerType) type).getPointeeType(), pointeeQualifiers, false);
       objcType = objcType.endsWith("*") ? objcType + "*" : objcType + " *";
     } else if (TypeUtil.isPrimitiveOrVoid(type)) {
       objcType = getPrimitiveObjCType(type);
     } else {
-      objcType = constructObjcTypeFromBounds(type);
+      objcType = constructObjcTypeFromBounds(type, asObjCGenericDecl, true);
     }
     if (qualifiers != null) {
       qualifiers = qualifiers.trim();
@@ -553,10 +557,25 @@ public class NameTable {
     return objcType;
   }
 
-  private String constructObjcTypeFromBounds(TypeMirror type) {
+  private String constructGenericsArrayObjcType(
+      ArrayType type, String classType, boolean outterComponent) {
+    String componentObjcType;
+    if (TypeUtil.isArray(type.getComponentType())) {
+      componentObjcType = constructObjcTypeFromBounds(type.getComponentType(), true, false);
+    } else {
+      TypeElement elem = typeUtil.getObjcClass(type.getComponentType(), false);
+      assert elem != null;
+      componentObjcType = getFullName(elem);
+    }
+
+    return classType + "<" + componentObjcType + " *>";
+  }
+
+  private String constructObjcTypeFromBounds(
+      TypeMirror type, boolean asObjCGenericDecl, boolean outterComponent) {
     String classType = null;
     List<String> interfaces = new ArrayList<>();
-    for (TypeElement bound : typeUtil.getObjcUpperBounds(type)) {
+    for (TypeElement bound : typeUtil.getObjcUpperBounds(type, asObjCGenericDecl)) {
       if (bound.getKind().isInterface()) {
         interfaces.add(getFullName(bound));
       } else {
@@ -564,8 +583,17 @@ public class NameTable {
         classType = getFullName(bound);
       }
     }
+
+    if (asObjCGenericDecl
+        && TypeUtil.isArray(type)
+        && classType.equals(TypeUtil.IOS_OBJECT_ARRAY.toString())) {
+      classType = constructGenericsArrayObjcType((ArrayType) type, classType, outterComponent);
+    }
+
     String protocols = interfaces.isEmpty() ? "" : "<" + Joiner.on(", ").join(interfaces) + ">";
-    return classType == null ? ID_TYPE + protocols : classType + protocols + " *";
+    return classType == null
+        ? ID_TYPE + protocols
+        : classType + protocols + (outterComponent ? " *" : "");
   }
 
   public static String getNativeEnumName(String typeName) {

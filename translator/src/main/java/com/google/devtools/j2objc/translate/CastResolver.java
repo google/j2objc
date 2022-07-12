@@ -143,7 +143,7 @@ public class CastResolver extends UnitTreeVisitor {
         || (TypeUtil.isDeclaredType(type) && needsCastChk(expr, type))) {
       // Primitive array and non-interface type casts are checked using Objective-C's
       // isKindOfClass:.
-      TypeElement objcClass = typeUtil.getObjcClass(type);
+      TypeElement objcClass = typeUtil.getObjcClass(type, false);
       FunctionElement checkFunction = new FunctionElement("cast_chk", idType, null)
           .addParameters(idType, idType);
       FunctionInvocation invocation = new FunctionInvocation(checkFunction, idType);

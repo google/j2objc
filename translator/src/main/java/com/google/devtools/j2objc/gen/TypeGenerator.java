@@ -279,11 +279,14 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   /** Create an Objective-C method signature string. */
-  protected String getMethodSignature(MethodDeclaration m) {
+  protected String getMethodSignature(MethodDeclaration m, boolean asObjCGenericDecl) {
     StringBuilder sb = new StringBuilder();
     ExecutableElement element = m.getExecutableElement();
     char prefix = Modifier.isStatic(m.getModifiers()) ? '+' : '-';
-    String returnType = nameTable.getObjCType(element.getReturnType());
+    String returnType =
+        asObjCGenericDecl
+            ? nameTable.getObjCGenericType(element.getReturnType())
+            : nameTable.getObjCType(element.getReturnType());
     String selector = nameTable.getMethodSelector(element);
 
     // Verify the same number of parameters are defined by the method and the annotation.
@@ -324,7 +327,10 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
           sb.append(pad(baseLength - selParts[i].length()));
         }
         VariableElement var = params.get(i).getVariableElement();
-        String typeName = nameTable.getObjCType(var.asType());
+        String typeName =
+            asObjCGenericDecl
+                ? nameTable.getObjCGenericType(var.asType())
+                : nameTable.getObjCType(var.asType());
         sb.append(
             UnicodeUtils.format(
                 "%s:(%s%s)%s",
