@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2017, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -41,7 +41,7 @@ import java.util.Spliterator;
  * contexts:
  *
  * <div>
- * <table>
+ * <table class="borderless">
  *   <caption>Type Characteristics</caption>
  *   <thead class="tableSubHeadingColor">
  *     <tr>
@@ -115,7 +115,7 @@ import java.util.Spliterator;
  * characteristics that stream has; when describing a stream operation, one need
  * describe whether the operation preserves, injects, or clears that
  * characteristic.  Accordingly, two bits are used for each flag, so as to allow
- * representing not only the presence of of a characteristic, but how an
+ * representing not only the presence of a characteristic, but how an
  * operation modifies that characteristic.  There are two common forms in which
  * flag bits are combined into an {@code int} bit set.  <em>Stream flags</em>
  * are a unioned bit set constructed by ORing the enum characteristic values of
@@ -202,6 +202,7 @@ import java.util.Spliterator;
  * @since 1.8
  * @hide Visible for CTS testing only (OpenJDK8 tests).
  */
+// Android-changed: Made public for CTS tests only.
 public enum StreamOpFlag {
 
     /*
@@ -458,6 +459,7 @@ public enum StreamOpFlag {
      *
      * @return the bitmap for setting this characteristic
      */
+    // Android-changed: Made public for CTS tests only.
     public int set() {
         return set;
     }
@@ -467,6 +469,7 @@ public enum StreamOpFlag {
      *
      * @return the bitmap for clearing this characteristic
      */
+    // Android-changed: Made public for CTS tests only.
     public int clear() {
         return clear;
     }
@@ -476,6 +479,7 @@ public enum StreamOpFlag {
      *
      * @return true if a stream-based flag, otherwise false.
      */
+    // Android-changed: Made public for CTS tests only.
     public boolean isStreamFlag() {
         return maskTable.get(Type.STREAM) > 0;
     }
@@ -488,6 +492,7 @@ public enum StreamOpFlag {
      *        operation flags
      * @return true if this flag is known, otherwise false.
      */
+    // Android-changed: Made public for CTS tests only.
     public boolean isKnown(int flags) {
         return (flags & preserve) == set;
     }
@@ -499,6 +504,7 @@ public enum StreamOpFlag {
      * @param flags the operation flags or combined stream and operations flags.
      * @return true if this flag is preserved, otherwise false.
      */
+    // Android-changed: Made public for CTS tests only.
     public boolean isCleared(int flags) {
         return (flags & preserve) == clear;
     }
@@ -509,6 +515,7 @@ public enum StreamOpFlag {
      * @param flags the combined stream and operations flags.
      * @return true if this flag is preserved, otherwise false.
      */
+    // Android-changed: Made public for CTS tests only.
     public boolean isPreserved(int flags) {
         return (flags & preserve) == preserve;
     }
@@ -519,6 +526,7 @@ public enum StreamOpFlag {
      * @param t the flag type.
      * @return true if this flag can be set for the flag type, otherwise false.
      */
+    // Android-changed: Made public for CTS tests only.
     public boolean canSet(Type t) {
         return (maskTable.get(t) & SET_BITS) > 0;
     }
@@ -526,26 +534,31 @@ public enum StreamOpFlag {
     /**
      * The bit mask for spliterator characteristics
      */
+    // Android-changed: Made public for CTS tests only.
     public static final int SPLITERATOR_CHARACTERISTICS_MASK = createMask(Type.SPLITERATOR);
 
     /**
      * The bit mask for source stream flags.
      */
+    // Android-changed: Made public for CTS tests only.
     public static final int STREAM_MASK = createMask(Type.STREAM);
 
     /**
      * The bit mask for intermediate operation flags.
      */
+    // Android-changed: Made public for CTS tests only.
     public static final int OP_MASK = createMask(Type.OP);
 
     /**
      * The bit mask for terminal operation flags.
      */
+    // Android-changed: Made public for CTS tests only.
     public static final int TERMINAL_OP_MASK = createMask(Type.TERMINAL_OP);
 
     /**
      * The bit mask for upstream terminal operation flags.
      */
+    // Android-changed: Made public for CTS tests only.
     public static final int UPSTREAM_TERMINAL_OP_MASK = createMask(Type.UPSTREAM_TERMINAL_OP);
 
     private static int createMask(Type t) {
@@ -583,51 +596,61 @@ public enum StreamOpFlag {
      * The initial value to be combined with the stream flags of the first
      * stream in the pipeline.
      */
+    // Android-changed: Made public for CTS tests only.
     public static final int INITIAL_OPS_VALUE = FLAG_MASK_IS | FLAG_MASK_NOT;
 
     /**
      * The bit value to set or inject {@link #DISTINCT}.
      */
+    // Android-changed: Made public for CTS tests only.
     public static final int IS_DISTINCT = DISTINCT.set;
 
     /**
      * The bit value to clear {@link #DISTINCT}.
      */
+    // Android-changed: Made public for CTS tests only.
     public static final int NOT_DISTINCT = DISTINCT.clear;
 
     /**
      * The bit value to set or inject {@link #SORTED}.
      */
+    // Android-changed: Made public for CTS tests only.
     public static final int IS_SORTED = SORTED.set;
 
     /**
      * The bit value to clear {@link #SORTED}.
      */
+    // Android-changed: Made public for CTS tests only.
     public static final int NOT_SORTED = SORTED.clear;
 
     /**
      * The bit value to set or inject {@link #ORDERED}.
      */
+    // Android-changed: Made public for CTS tests only.
     public static final int IS_ORDERED = ORDERED.set;
 
     /**
      * The bit value to clear {@link #ORDERED}.
      */
+    // Android-changed: Made public for CTS tests only.
     public static final int NOT_ORDERED = ORDERED.clear;
 
     /**
      * The bit value to set {@link #SIZED}.
      */
+    // Android-changed: Made public for CTS tests only.
     public static final int IS_SIZED = SIZED.set;
 
     /**
      * The bit value to clear {@link #SIZED}.
      */
+    // Android-changed: Made public for CTS tests only.
     public static final int NOT_SIZED = SIZED.clear;
 
     /**
      * The bit value to inject {@link #SHORT_CIRCUIT}.
      */
+    // Android-changed: Made public for CTS tests only.
     public static final int IS_SHORT_CIRCUIT = SHORT_CIRCUIT.set;
 
     private static int getMask(int flags) {
@@ -684,6 +707,7 @@ public enum StreamOpFlag {
      *        The value {#link INITIAL_OPS_VALUE} must be used as the seed value.
      * @return the updated combined stream and operation flags.
      */
+    // Android-changed: Made public for CTS tests only.
     public static int combineOpFlags(int newStreamOrOpFlags, int prevCombOpFlags) {
         // 0x01 or 0x10 nibbles are transformed to 0x11
         // 0x00 nibbles remain unchanged
@@ -701,6 +725,7 @@ public enum StreamOpFlag {
      * @param combOpFlags the combined stream and operation flags.
      * @return the stream flags.
      */
+    // Android-changed: Made public for CTS tests only.
     public static int toStreamFlags(int combOpFlags) {
         // By flipping the nibbles 0x11 become 0x00 and 0x01 become 0x10
         // Shift left 1 to restore set flags and mask off anything other than the set flags
@@ -713,6 +738,7 @@ public enum StreamOpFlag {
      * @param streamFlags the stream flags.
      * @return the spliterator characteristic bit set.
      */
+    // Android-changed: Made public for CTS tests only.
     public static int toCharacteristics(int streamFlags) {
         return streamFlags & SPLITERATOR_CHARACTERISTICS_MASK;
     }
@@ -730,6 +756,7 @@ public enum StreamOpFlag {
      *        bit set.
      * @return the stream flags.
      */
+    // Android-changed: Made public for CTS tests only.
     public static int fromCharacteristics(Spliterator<?> spliterator) {
         int characteristics = spliterator.characteristics();
         if ((characteristics & Spliterator.SORTED) != 0 && spliterator.getComparator() != null) {
@@ -748,6 +775,7 @@ public enum StreamOpFlag {
      * @param characteristics the spliterator characteristic bit set.
      * @return the stream flags.
      */
+    // Android-changed: Made public for CTS tests only.
     public static int fromCharacteristics(int characteristics) {
         return characteristics & SPLITERATOR_CHARACTERISTICS_MASK;
     }

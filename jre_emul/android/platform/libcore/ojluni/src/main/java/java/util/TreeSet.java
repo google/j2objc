@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1998, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -74,7 +74,7 @@ package java.util;
  * should be used only to detect bugs.</i>
  *
  * <p>This class is a member of the
- * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+ * <a href="{@docRoot}/java.base/java/util/package-summary.html#CollectionsFramework">
  * Java Collections Framework</a>.
  *
  * @param <E> the type of elements maintained by this set
@@ -121,7 +121,7 @@ public class TreeSet<E> extends AbstractSet<E>
      * {@code ClassCastException}.
      */
     public TreeSet() {
-        this(new TreeMap<E,Object>());
+        this(new TreeMap<>());
     }
 
     /**
@@ -220,7 +220,7 @@ public class TreeSet<E> extends AbstractSet<E>
      * Returns {@code true} if this set contains the specified element.
      * More formally, returns {@code true} if and only if this set
      * contains an element {@code e} such that
-     * <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.
+     * {@code Objects.equals(o, e)}.
      *
      * @param o object to be checked for containment in this set
      * @return {@code true} if this set contains the specified element
@@ -238,7 +238,7 @@ public class TreeSet<E> extends AbstractSet<E>
      * Adds the specified element to this set if it is not already present.
      * More formally, adds the specified element {@code e} to this set if
      * the set contains no element {@code e2} such that
-     * <tt>(e==null&nbsp;?&nbsp;e2==null&nbsp;:&nbsp;e.equals(e2))</tt>.
+     * {@code Objects.equals(e, e2)}.
      * If this set already contains the element, the call leaves the set
      * unchanged and returns {@code false}.
      *
@@ -258,7 +258,7 @@ public class TreeSet<E> extends AbstractSet<E>
     /**
      * Removes the specified element from this set if it is present.
      * More formally, removes an element {@code e} such that
-     * <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>,
+     * {@code Objects.equals(o, e)},
      * if this set contains such an element.  Returns {@code true} if
      * this set contained the element (or equivalently, if this set
      * changed as a result of the call).  (This set will not contain the

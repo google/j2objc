@@ -47,6 +47,7 @@ package java.util.stream;
  * @since 1.8
  * @hide Visible for CTS testing only (OpenJDK8 tests).
  */
+// Android-changed: Made public for CTS tests only.
 public enum StreamShape {
     /**
      * The shape specialization corresponding to {@code Stream} and elements

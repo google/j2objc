@@ -69,8 +69,9 @@ import java.util.function.Supplier;
  * @param <E_OUT> type of output elements
  * @param <S> type of the subclass implementing {@code BaseStream}
  * @since 1.8
- * @hide Visibility for CTS only (OpenJDK 8 streams tests).
+ * @hide Made public for CTS tests only (OpenJDK 8 streams tests).
  */
+// Android-changed: Made public for CTS tests only.
 public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
         extends PipelineHelper<E_OUT> implements BaseStream<E_OUT, S> {
     private static final String MSG_STREAM_LINKED = "stream has already been operated upon or closed";
@@ -245,6 +246,7 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
      * @return a flat array-backed Node that holds the collected output elements
      */
     @SuppressWarnings("unchecked")
+    // Android-changed: Made public for CTS tests only.
     public final Node<E_OUT> evaluateToArrayNode(IntFunction<E_OUT[]> generator) {
         if (linkedOrConsumed)
             throw new IllegalStateException(MSG_STREAM_LINKED);
@@ -383,6 +385,7 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
      *         intermediate operations
      * @see StreamOpFlag
      */
+    // Android-changed: Made public for CTS tests only.
     public final int getStreamFlags() {
         return StreamOpFlag.toStreamFlags(combinedFlags);
     }
@@ -504,6 +507,7 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
     }
 
     @Override
+    // Android-changed: Made public for CTS tests only.
     public final int getStreamAndOpFlags() {
         return combinedFlags;
     }
@@ -514,6 +518,7 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
 
     @Override
     @SuppressWarnings("unchecked")
+    // Android-changed: Made public for CTS tests only.
     public final <P_IN> Sink<P_IN> wrapSink(Sink<E_OUT> sink) {
         Objects.requireNonNull(sink);
 
@@ -536,6 +541,7 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
 
     @Override
     @SuppressWarnings("unchecked")
+    // Android-changed: Made public for CTS tests only.
     public final <P_IN> Node<E_OUT> evaluate(Spliterator<P_IN> spliterator,
                                       boolean flatten,
                                       IntFunction<E_OUT[]> generator) {
@@ -561,6 +567,7 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
      *
      * @return the output shape
      */
+    // Android-changed: Made public for CTS tests only.
     public abstract StreamShape getOutputShape();
 
     /**
@@ -573,6 +580,7 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
      * @param generator the array generator
      * @return a Node holding the output of the pipeline
      */
+    // Android-changed: Made public for CTS tests only.
     public abstract <P_IN> Node<E_OUT> evaluateToNode(PipelineHelper<E_OUT> helper,
                                                       Spliterator<P_IN> spliterator,
                                                       boolean flattenTree,
@@ -587,6 +595,7 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
      * @param supplier the supplier of a spliterator
      * @return a wrapping spliterator compatible with this shape
      */
+    // Android-changed: Made public for CTS tests only.
     public abstract <P_IN> Spliterator<E_OUT> wrap(PipelineHelper<E_OUT> ph,
                                                    Supplier<Spliterator<P_IN>> supplier,
                                                    boolean isParallel);
@@ -596,6 +605,7 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
      * spliterator when a method is invoked on the lazy spliterator.
      * @param supplier the supplier of a spliterator
      */
+    // Android-changed: Made public for CTS tests only.
     public abstract Spliterator<E_OUT> lazySpliterator(Supplier<? extends Spliterator<E_OUT>> supplier);
 
     /**
@@ -606,6 +616,7 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
      * @param spliterator the spliterator to pull elements from
      * @param sink the sink to push elements to
      */
+    // Android-changed: Made public for CTS tests only.
     public abstract void forEachWithCancel(Spliterator<E_OUT> spliterator, Sink<E_OUT> sink);
 
     /**
@@ -624,6 +635,7 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
      * @return a node builder
      */
     @Override
+    // Android-changed: Made public for CTS tests only.
     public abstract Node.Builder<E_OUT> makeNodeBuilder(long exactSizeIfKnown,
                                                         IntFunction<E_OUT[]> generator);
 
@@ -638,6 +650,7 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
      *
      * @return {@code true} if this operation is stateful
      */
+    // Android-changed: Made public for CTS tests only.
     public abstract boolean opIsStateful();
 
     /**
@@ -659,6 +672,7 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
      *         each element, and passes the results (if any) to the provided
      *         {@code Sink}.
      */
+    // Android-changed: Made public for CTS tests only.
     public abstract Sink<E_IN> opWrapSink(int flags, Sink<E_OUT> sink);
 
     /**
@@ -676,6 +690,7 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
      * @param generator the array generator
      * @return a {@code Node} describing the result of the evaluation
      */
+    // Android-changed: Made public for CTS tests only.
     public <P_IN> Node<E_OUT> opEvaluateParallel(PipelineHelper<E_OUT> helper,
                                           Spliterator<P_IN> spliterator,
                                           IntFunction<E_OUT[]> generator) {
@@ -703,6 +718,7 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
      * @return a {@code Spliterator} describing the result of the evaluation
      */
     @SuppressWarnings("unchecked")
+    // Android-changed: Made public for CTS tests only.
     public <P_IN> Spliterator<E_OUT> opEvaluateParallelLazy(PipelineHelper<E_OUT> helper,
                                                      Spliterator<P_IN> spliterator) {
         return opEvaluateParallel(helper, spliterator, i -> (E_OUT[]) new Object[i]).spliterator();

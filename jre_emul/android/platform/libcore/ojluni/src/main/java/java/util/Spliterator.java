@@ -62,7 +62,7 @@ import java.util.function.LongConsumer;
  * New characteristics may be defined in the future, so implementors should not
  * assign meanings to unlisted values.
  *
- * <p><a name="binding">A Spliterator that does not report {@code IMMUTABLE} or
+ * <p><a id="binding">A Spliterator that does not report {@code IMMUTABLE} or
  * {@code CONCURRENT} is expected to have a documented policy concerning:
  * when the spliterator <em>binds</em> to the element source; and detection of
  * structural interference of the element source detected after binding.</a>  A
@@ -84,7 +84,7 @@ import java.util.function.LongConsumer;
  * via the {@link #estimateSize} method.  Ideally, as reflected in characteristic
  * {@link #SIZED}, this value corresponds exactly to the number of elements
  * that would be encountered in a successful traversal.  However, even when not
- * exactly known, an estimated value value may still be useful to operations
+ * exactly known, an estimated value may still be useful to operations
  * being performed on the source, such as helping to determine whether it is
  * preferable to split further or traverse the remaining elements sequentially.
  *
@@ -552,6 +552,12 @@ public interface Spliterator<T> {
      * that Spliterator. Sub-spliterators may report {@code SIZED} if the
      * sub-split size is known and additions or removals to the source are not
      * reflected when traversing.
+     *
+     * <p>A top-level Spliterator should not report both {@code CONCURRENT} and
+     * {@code IMMUTABLE}, since they are mutually exclusive. Such a Spliterator
+     * is inconsistent and no guarantees can be made about any computation using
+     * that Spliterator. Sub-spliterators may report {@code IMMUTABLE} if
+     * additions or removals to the source are not reflected when traversing.
      *
      * @apiNote Most concurrent collections maintain a consistency policy
      * guaranteeing accuracy with respect to elements present at the point of

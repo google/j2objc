@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1999, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1999, 2017, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * background thread.  Tasks may be scheduled for one-time execution, or for
  * repeated execution at regular intervals.
  *
- * <p>Corresponding to each <tt>Timer</tt> object is a single background
+ * <p>Corresponding to each {@code Timer} object is a single background
  * thread that is used to execute all of the timer's tasks, sequentially.
  * Timer tasks should complete quickly.  If a timer task takes excessive time
  * to complete, it "hogs" the timer's task execution thread.  This can, in
@@ -42,26 +42,26 @@ import java.util.concurrent.atomic.AtomicInteger;
  * execute in rapid succession when (and if) the offending task finally
  * completes.
  *
- * <p>After the last live reference to a <tt>Timer</tt> object goes away
+ * <p>After the last live reference to a {@code Timer} object goes away
  * <i>and</i> all outstanding tasks have completed execution, the timer's task
  * execution thread terminates gracefully (and becomes subject to garbage
  * collection).  However, this can take arbitrarily long to occur.  By
  * default, the task execution thread does not run as a <i>daemon thread</i>,
  * so it is capable of keeping an application from terminating.  If a caller
  * wants to terminate a timer's task execution thread rapidly, the caller
- * should invoke the timer's <tt>cancel</tt> method.
+ * should invoke the timer's {@code cancel} method.
  *
  * <p>If the timer's task execution thread terminates unexpectedly, for
- * example, because its <tt>stop</tt> method is invoked, any further
+ * example, because its {@code stop} method is invoked, any further
  * attempt to schedule a task on the timer will result in an
- * <tt>IllegalStateException</tt>, as if the timer's <tt>cancel</tt>
+ * {@code IllegalStateException}, as if the timer's {@code cancel}
  * method had been invoked.
  *
  * <p>This class is thread-safe: multiple threads can share a single
- * <tt>Timer</tt> object without the need for external synchronization.
+ * {@code Timer} object without the need for external synchronization.
  *
  * <p>This class does <i>not</i> offer real-time guarantees: it schedules
- * tasks using the <tt>Object.wait(long)</tt> method.
+ * tasks using the {@code Object.wait(long)} method.
  *
  * <p>Java 5.0 introduced the {@code java.util.concurrent} package and
  * one of the concurrency utilities therein is the {@link
@@ -95,11 +95,21 @@ public class Timer {
      * and the timer thread consumes, executing timer tasks as appropriate,
      * and removing them from the queue when they're obsolete.
      */
+    // Android-added: @ReachabilitySensitive
+    // Otherwise the finalizer may cancel the Timer in the middle of a
+    // sched() call.
+    /* J2ObjC removed
+    @ReachabilitySensitive
+    */
     private final TaskQueue queue = new TaskQueue();
 
     /**
      * The timer thread.
      */
+    // Android-added: @ReachabilitySensitive
+    /* J2ObjC removed
+    @ReachabilitySensitive
+    */
     private final TimerThread thread = new TimerThread(queue);
 
     /**
@@ -110,6 +120,7 @@ public class Timer {
      * finalizer forgetting to call it.
      */
     private final Object threadReaper = new Object() {
+        @SuppressWarnings("deprecation")
         protected void finalize() throws Throwable {
             synchronized(queue) {
                 thread.newTasksMayBeScheduled = false;
@@ -121,7 +132,7 @@ public class Timer {
     /**
      * This ID is used to generate thread names.
      */
-    private final static AtomicInteger nextSerialNumber = new AtomicInteger(0);
+    private static final AtomicInteger nextSerialNumber = new AtomicInteger(0);
     private static int serialNumber() {
         return nextSerialNumber.getAndIncrement();
     }
@@ -183,8 +194,8 @@ public class Timer {
      *
      * @param task  task to be scheduled.
      * @param delay delay in milliseconds before task is to be executed.
-     * @throws IllegalArgumentException if <tt>delay</tt> is negative, or
-     *         <tt>delay + System.currentTimeMillis()</tt> is negative.
+     * @throws IllegalArgumentException if {@code delay} is negative, or
+     *         {@code delay + System.currentTimeMillis()} is negative.
      * @throws IllegalStateException if task was already scheduled or
      *         cancelled, timer was cancelled, or timer thread terminated.
      * @throws NullPointerException if {@code task} is null
@@ -201,7 +212,7 @@ public class Timer {
      *
      * @param task task to be scheduled.
      * @param time time at which task is to be executed.
-     * @throws IllegalArgumentException if <tt>time.getTime()</tt> is negative.
+     * @throws IllegalArgumentException if {@code time.getTime()} is negative.
      * @throws IllegalStateException if task was already scheduled or
      *         cancelled, timer was cancelled, or timer thread terminated.
      * @throws NullPointerException if {@code task} or {@code time} is null
@@ -221,7 +232,7 @@ public class Timer {
      * background activity), subsequent executions will be delayed as well.
      * In the long run, the frequency of execution will generally be slightly
      * lower than the reciprocal of the specified period (assuming the system
-     * clock underlying <tt>Object.wait(long)</tt> is accurate).
+     * clock underlying {@code Object.wait(long)} is accurate).
      *
      * <p>Fixed-delay execution is appropriate for recurring activities
      * that require "smoothness."  In other words, it is appropriate for
@@ -261,7 +272,7 @@ public class Timer {
      * background activity), subsequent executions will be delayed as well.
      * In the long run, the frequency of execution will generally be slightly
      * lower than the reciprocal of the specified period (assuming the system
-     * clock underlying <tt>Object.wait(long)</tt> is accurate).  As a
+     * clock underlying {@code Object.wait(long)} is accurate).  As a
      * consequence of the above, if the scheduled first time is in the past,
      * it is scheduled for immediate execution.
      *
@@ -300,7 +311,7 @@ public class Timer {
      * activity), two or more executions will occur in rapid succession to
      * "catch up."  In the long run, the frequency of execution will be
      * exactly the reciprocal of the specified period (assuming the system
-     * clock underlying <tt>Object.wait(long)</tt> is accurate).
+     * clock underlying {@code Object.wait(long)} is accurate).
      *
      * <p>Fixed-rate execution is appropriate for recurring activities that
      * are sensitive to <i>absolute</i> time, such as ringing a chime every
@@ -341,7 +352,7 @@ public class Timer {
      * activity), two or more executions will occur in rapid succession to
      * "catch up."  In the long run, the frequency of execution will be
      * exactly the reciprocal of the specified period (assuming the system
-     * clock underlying <tt>Object.wait(long)</tt> is accurate).  As a
+     * clock underlying {@code Object.wait(long)} is accurate).  As a
      * consequence of the above, if the scheduled first time is in the past,
      * then any "missed" executions will be scheduled for immediate "catch up"
      * execution.
@@ -380,7 +391,7 @@ public class Timer {
      * in Date.getTime() format.  This method checks timer state, task state,
      * and initial execution time, but not period.
      *
-     * @throws IllegalArgumentException if <tt>time</tt> is negative.
+     * @throws IllegalArgumentException if {@code time} is negative.
      * @throws IllegalStateException if task was already scheduled or
      *         cancelled, timer was cancelled, or timer thread terminated.
      * @throws NullPointerException if {@code task} is null
@@ -449,7 +460,7 @@ public class Timer {
      * is the number of tasks in the queue and c is the number of cancelled
      * tasks.
      *
-     * <p>Note that it is permissible to call this method from within a
+     * <p>Note that it is permissible to call this method from within
      * a task scheduled on this timer.
      *
      * @return the number of tasks removed from the queue.
