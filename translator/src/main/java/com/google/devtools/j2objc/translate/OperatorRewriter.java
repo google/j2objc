@@ -308,7 +308,9 @@ public class OperatorRewriter extends UnitTreeVisitor {
     VariableElement var = TreeUtil.getVariableElement(node);
     if (var != null && ElementUtil.isVolatile(var) && !TranslationUtil.isAssigned(node)) {
       TypeMirror type = node.getTypeMirror();
-      TypeMirror declaredType = type.getKind().isPrimitive() ? type : TypeUtil.ID_TYPE;
+      TypeMirror declaredType = type.getKind().isPrimitive()
+          ? typeUtil.getPrimitiveType(type.getKind())
+          : TypeUtil.ID_TYPE;
       String funcName = "JreLoadVolatile" + NameTable.capitalize(declaredType.toString());
       FunctionElement element = new FunctionElement(funcName, declaredType, null)
           .addParameters(TypeUtil.ID_PTR_TYPE);

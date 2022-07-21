@@ -409,4 +409,33 @@ public class OperatorRewriterTest extends GenerationTest {
         "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2) !="
             + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
   }
+
+  /**
+   * Regression test for b/239746548. Issue was that an annotation with a TYPE_USE target
+   * caused javac to change the annotation type's toString() method.
+   */
+  public void testAnnotatedTypeUseVolatileLoad() throws IOException {
+    addSourceFile(
+        "import java.lang.annotation.Target; "
+            + "import static java.lang.annotation.ElementType.*; "
+            + "@Target({FIELD, TYPE_USE})"
+            + "public @interface Simple {}",
+        "Simple.java");
+    String translation =
+        translateSourceFile(
+            "class Test { "
+                + "@Simple private volatile boolean isClosed; "
+                + "  public void close() {"
+                + "    if (!isClosed) {"
+                + "      isClosed = true;"
+                + "    }"
+                + "  }}",
+            "Test",
+            "Test.m");
+    assertNotInTranslation(translation, "JreLoadVolatile(@Simple :: boolean)(&isClosed_)");
+    assertTranslatedLines(translation,
+        "if (!JreLoadVolatileBoolean(&isClosed_)) {",
+        "JreAssignVolatileBoolean(&isClosed_, true);",
+        "}");
+  }
 }
