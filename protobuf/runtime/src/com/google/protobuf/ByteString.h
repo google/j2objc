@@ -68,6 +68,8 @@
 - (NSString *)toStringWithNSString:(NSString *)charsetName;
 - (NSString *)toStringUtf8;
 
++ (ComGoogleProtobufByteString *)empty;
++ (ComGoogleProtobufByteString *)fromHexWithNSString:(NSString *)hexString;
 + (ComGoogleProtobufByteString *)readFromWithJavaIoInputStream:(JavaIoInputStream *)streamToDrain;
 + (ComGoogleProtobufByteString *)readFromWithJavaIoInputStream:(JavaIoInputStream *)streamToDrain
                                                        withInt:(jint)chunkSize;
@@ -88,6 +90,10 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromWithByteArray_(
     IOSByteArray *bytes);
 
 ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSString_(NSString *text);
+
+ComGoogleProtobufByteString *ComGoogleProtobufByteString_empty();
+
+ComGoogleProtobufByteString *ComGoogleProtobufByteString_fromHexWithNSString_(NSString *hexString);
 
 ComGoogleProtobufByteString *ComGoogleProtobufByteString_readFromWithJavaIoInputStream_(
     JavaIoInputStream *streamToDrain);

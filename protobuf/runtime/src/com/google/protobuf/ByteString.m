@@ -41,6 +41,8 @@
 #import "java/lang/ArrayIndexOutOfBoundsException.h"
 #import "java/lang/Byte.h"
 #import "java/lang/IndexOutOfBoundsException.h"
+#import "java/lang/NumberFormatException.h"
+#import "java/lang/RuntimeException.h"
 #import "java/lang/UnsupportedOperationException.h"
 #import "java/util/NoSuchElementException.h"
 
@@ -108,6 +110,14 @@ static ByteStringIterator *create_ByteStringIterator_initWithComGoogleProtobufBy
     copyFromWithByteArray:(IOSByteArray *)bytes
     OBJC_METHOD_FAMILY_NONE {
   return ComGoogleProtobufByteString_copyFromWithByteArray_(bytes);
+}
+
++ (ComGoogleProtobufByteString *)empty {
+  return ComGoogleProtobufByteString_empty();
+}
+
++ (ComGoogleProtobufByteString *)fromHexWithNSString:(NSString *)hexString {
+  return ComGoogleProtobufByteString_fromHexWithNSString_(hexString);
 }
 
 - (jbyte)byteAtWithInt:(jint)index {
@@ -333,6 +343,54 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_readFromWithJavaIoInput
     JavaIoInputStream *streamToDrain, jint chunkSize) {
   return ComGoogleProtobufByteString_readFromWithJavaIoInputStream_withInt_withInt_(
       streamToDrain, chunkSize, chunkSize);
+}
+
+jint ComGoogleProtobufByteString_hexDigitWithChar_(jchar c) {
+  if (c >= '0' && c <= '9') {
+    return c - '0';
+  } else if (c >= 'A' && c <= 'F') {
+    return c - 'A' + 10;
+  } else if (c >= 'a' && c <= 'f') {
+    return c - 'a' + 10;
+  }
+  return -1;
+}
+
+jint ComGoogleProtobufByteString_extractHexDigitWithNSString_withInt_(
+    NSString *hexString, jint index) {
+  jint digit = ComGoogleProtobufByteString_hexDigitWithChar_(
+      [hexString charAtWithInt:index]);
+  if (digit == -1) {
+    @throw create_JavaLangNumberFormatException_initWithNSString_(
+        JreStrcat("$$$C$I", @"Invalid hexString ", hexString,
+                  @" must only contain [0-9a-fA-F] but contained ", [hexString charAtWithInt:index],
+                  @" at index ", index));
+  }
+  return digit;
+}
+
+ComGoogleProtobufByteString *ComGoogleProtobufByteString_fromHexWithNSString_(NSString *hexString) {
+  ComGoogleProtobufByteString_initialize();
+  (void)nil_chk(hexString);
+  if (JreIntMod([hexString java_length], 2) != 0) {
+    @throw create_JavaLangNumberFormatException_initWithNSString_(
+        JreStrcat("$$$I$", @"Invalid hexString ", hexString, @" of length ",
+                  [hexString java_length], @" must be even."));
+  }
+  IOSByteArray *bytes = [IOSByteArray newArrayWithLength:JreIntDiv([hexString java_length], 2)];
+  for (jint i = 0; i < bytes->size_; i++) {
+    jint d1 = ComGoogleProtobufByteString_extractHexDigitWithNSString_withInt_(hexString, 2 * i);
+    jint d2 =
+        ComGoogleProtobufByteString_extractHexDigitWithNSString_withInt_(hexString, 2 * i + 1);
+    *IOSByteArray_GetRef(bytes, i) = (jbyte)((JreLShift32(d1, 4)) | d2);
+  }
+  ComGoogleProtobufByteString *result = ComGoogleProtobufByteString_copyFromWithByteArray_(bytes);
+  RELEASE_(bytes);
+  return result;
+}
+
+ComGoogleProtobufByteString *ComGoogleProtobufByteString_empty() {
+  return ComGoogleProtobufByteString_get_EMPTY();
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufByteString)
