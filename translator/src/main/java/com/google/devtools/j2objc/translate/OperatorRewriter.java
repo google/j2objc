@@ -156,8 +156,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     return true;
   }
 
-  // Returns true if the method is part of a lambda or anonymous class, isn't a constructor
-  // or destructor, and returns a retainable type.
+  // Returns true if the method isn't a constructor or destructor, and returns a retainable type.
   private boolean maybeRetainLambdaOrAnonymousClassMethod(ExecutableElement method) {
     TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
     if (!ElementUtil.isAnonymous(declaringClass) && !ElementUtil.isLambda(declaringClass)) {
@@ -287,7 +286,8 @@ public class OperatorRewriter extends UnitTreeVisitor {
   }
 
   private void rewriteRetainedLocal(Expression expr) {
-    if (expr.getKind() == TreeNode.Kind.STRING_LITERAL
+    if (options.useARC()  // ARC generates an equivalent function call.
+        || expr.getKind() == TreeNode.Kind.STRING_LITERAL
         || expr.getKind() == TreeNode.Kind.FUNCTION_INVOCATION) {
       return;
     }

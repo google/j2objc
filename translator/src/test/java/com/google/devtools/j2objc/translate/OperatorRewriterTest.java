@@ -218,32 +218,39 @@ public class OperatorRewriterTest extends GenerationTest {
           + "compareWithId:s1 withId:s2] == 0;");
   }
 
+  // From jre_emul/misc_tests/RetentionTest.java.
+  private static final String RETENTION_TEST_SOURCE =
+      "class RetentionTest {"
+          + "  static class Ref {"
+          + "    Object object;"
+          + "    Object get() {"
+          + "      return object;"
+          + "    }"
+          + "  }"
+          + "  public void testFieldGetter() {"
+          + "    Ref ref = new Ref();"
+          + "    com.google.j2objc.util.AutoreleasePool.run(() -> {"
+          + "      ref.object = new Object();"
+          + "    });"
+          + "    Object object = ref.get();"
+          + "    com.google.j2objc.util.AutoreleasePool.run(() -> {"
+          + "      ref.object = null;"
+          + "    });"
+          + "    object.hashCode();"
+          + "  }"
+          + "}";
+
   public void testRetainedLocalRefFieldGetter() throws IOException {
     String translation =
-        translateSourceFile(
-            // From jre_emul/misc_tests/RetentionTest.java.
-            "class Test {"
-                + "  static class Ref {"
-                + "    Object object;"
-                + "    Object get() {"
-                + "      return object;"
-                + "    }"
-                + "  }"
-                + "  public void testFieldGetter() {"
-                + "    Ref ref = new Ref();"
-                + "    com.google.j2objc.util.AutoreleasePool.run(() -> {"
-                + "      ref.object = new Object();"
-                + "    });"
-                + "    Object object = ref.get();"
-                + "    com.google.j2objc.util.AutoreleasePool.run(() -> {"
-                + "      ref.object = null;"
-                + "    });"
-                + "    object.hashCode();"
-                + "  }"
-                + "}",
-            "Test",
-            "Test.m");
+        translateSourceFile(RETENTION_TEST_SOURCE, "RetentionTest", "RetentionTest.m");
     assertTranslation(translation, "id object = JreRetainedLocalValue([ref get]);");
+  }
+
+  public void testNoRetainedLocalRefWithARC() throws IOException {
+    options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    String translation =
+        translateSourceFile(RETENTION_TEST_SOURCE, "RetentionTest", "RetentionTest.m");
+    assertNotInTranslation(translation, "JreRetainedLocalValue");
   }
 
   public void testLazyInitFields() throws IOException {
