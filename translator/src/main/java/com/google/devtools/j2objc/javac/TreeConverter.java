@@ -580,7 +580,7 @@ public class TreeConverter {
     // code traverses the subtree non-recursively and merges all children
     // that have the same operator into this node.
     //
-    // Note: we will not flatten the tree if the same opeartors are EQUAL_TO or NOT_EQUAL_TO.
+    // Note: we will not flatten the tree if the same operators are EQUAL_TO or NOT_EQUAL_TO.
     List<StackState> stack = Lists.newArrayList();
     stack.add(new StackState(node));
     while (!stack.isEmpty()) {

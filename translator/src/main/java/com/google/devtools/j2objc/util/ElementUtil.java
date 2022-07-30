@@ -316,7 +316,7 @@ public final class ElementUtil {
   }
 
   /**
-   * Tests if this type element is private to it's source file. A public type declared
+   * Tests if this type element is private to its source file. A public type declared
    * within a private type is considered private.
    */
   public static boolean isPrivateInnerType(TypeElement type) {

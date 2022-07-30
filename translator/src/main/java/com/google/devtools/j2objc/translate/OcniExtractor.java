@@ -47,7 +47,7 @@ import javax.lang.model.element.TypeElement;
  * Extracts OCNI code blocks into NativeDeclaration and NativeStatement nodes.
  * Adds native fast enumeration support for Iterable types, when not already
  * defined.
- * Adds synchronized blocks to methods with with the synchonized modifier.
+ * Adds synchronized blocks to methods with the synchronized modifier.
  *
  * @author Keith Stanger
  */

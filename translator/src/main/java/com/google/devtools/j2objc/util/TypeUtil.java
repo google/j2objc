@@ -719,7 +719,7 @@ public final class TypeUtil {
     List<TypeElement> result = new ArrayList<>();
     for (TypeMirror bound : getUpperBounds(t)) {
       TypeElement elem = getObjcClass(bound);
-      // NSObject is emmitted as "id".
+      // NSObject is emitted as "id".
       if (elem != null && !elem.equals(NS_OBJECT)) {
         result.add(elem);
       }

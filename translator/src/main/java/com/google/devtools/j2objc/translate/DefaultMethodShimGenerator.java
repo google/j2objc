@@ -216,7 +216,7 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
     }
 
     private void addDefaultMethodShim(String selector, ExecutablePair method) {
-      // The shim's only purpose is to call the default method implementation and returns it value
+      // The shim's only purpose is to call the default method implementation and return its value
       // if required.
       TypeElement declaringClass = ElementUtil.getDeclaringClass(method.element());
       String name = nameTable.getFullFunctionName(method.element());

@@ -32,7 +32,7 @@ import javax.lang.model.type.TypeMirror;
 /**
  * Adds hash and isEqual: methods to java.lang.Number subclasses that
  * do not define them. This is necessary because classes that do not
- * define these method expect Object.equals() and Object.hashCode()
+ * define these methods expect Object.equals() and Object.hashCode()
  * behavior; since Number is mapped to NSNumber, though, by default
  * they inherit NSNumber behavior.
  *
