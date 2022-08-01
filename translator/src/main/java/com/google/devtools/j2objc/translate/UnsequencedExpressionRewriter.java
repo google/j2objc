@@ -173,7 +173,7 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
       if (topConditional != null) {
         // Conditional expressions require special handling when extracting the
         // access because execution of the access may not be guaranteed.
-        // Here we collect all accesses that are decendant of the conditional
+        // Here we collect all accesses that are descendant of the conditional
         // expression and pass them to an appropriate extraction method.
         int j = i + 1;
         for (; j < toExtract.size(); j++) {

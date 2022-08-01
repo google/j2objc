@@ -309,7 +309,7 @@ public class TreeUtil {
 
   /**
    * Returns the given statement as a list of statements that can be added to.
-   * If node is a Block, then returns it's statement list. If node is the direct
+   * If node is a Block, then returns its statement list. If node is the direct
    * child of a Block, returns the sublist containing node as the only element.
    * Otherwise, creates a new Block node in the place of node and returns its
    * list of statements.

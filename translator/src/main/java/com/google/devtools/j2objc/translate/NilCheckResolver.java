@@ -132,7 +132,7 @@ public class NilCheckResolver extends UnitTreeVisitor {
       this.kind = kind;
       this.label = label;
       // When the stack grows, the existing scope is assumed to be terminating
-      // until a decendent branch merges back into it.
+      // until a descendant branch merges back into it.
       if (next != null) {
         next.terminates = true;
       }
@@ -197,7 +197,7 @@ public class NilCheckResolver extends UnitTreeVisitor {
       vars.clear();
     }
 
-    // This scope is re-entered from it's parent scope.
+    // This scope is re-entered from its parent scope.
     private void backwardMerge() {
       if (terminates) {
         vars.clear();

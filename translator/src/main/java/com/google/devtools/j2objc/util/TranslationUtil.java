@@ -249,7 +249,7 @@ public final class TranslationUtil {
   }
 
   /**
-   * Reterns whether the expression might have any side effects. If true, it
+   * Returns whether the expression might have any side effects. If true, it
    * would be unsafe to prune the given node from the tree.
    */
   public static boolean hasSideEffect(Expression expr) {

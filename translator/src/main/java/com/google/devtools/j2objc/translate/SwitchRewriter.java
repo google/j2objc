@@ -45,7 +45,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 /**
- * Rewrites switch statemennts to be more compatible with Objective-C code.
+ * Rewrites switch statements to be more compatible with Objective-C code.
  *
  * @author Keith Stanger
  */
