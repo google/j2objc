@@ -24,6 +24,9 @@
 #include <execinfo.h>
 #include <objc/runtime.h>
 
+// Suppress a false-positive ARC-specific warning.
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+
 static void signalHandler(int sig) {
   // Get void*'s for all entries on the stack.
   void *array[64];
