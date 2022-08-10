@@ -233,6 +233,34 @@ public class TreeShakerTest extends TestCase {
     assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("p.A", "A", "()V"));
   }
 
+  public void testStaticReferenceInSwitchCase() throws IOException {
+    addTreeShakerRootsFile("p.A:\n    main()");
+    addSourceFile("A.java", "package p; class A { static void main() { D.d(B.X); }}");
+    addSourceFile("B.java", "package p; enum B { X, Y; }");
+    addSourceFile("C.java", "package p; class C { public static final String S = \"d\"; }");
+    addSourceFile("D.java",
+          "package p;",
+          "import static p.C.S;",
+          "class D { ",
+          "  static String d(B b) {",
+          "    switch(b) {",
+          "      case X: return S;",
+          "      case Y: return null;",
+          "    }",
+          "    return null;",
+          "  }}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedMethods(unused)).containsExactly(
+      getMethodName("p.A", "A", "()V"),
+      getMethodName("p.B", "values", "()[Lp/B;"),
+      getMethodName("p.B", "valueOf", "(Ljava/lang/String;)Lp/B;"),
+      getMethodName("p.C", "C", "()V"),
+      getMethodName("p.D", "D", "()V")
+      );
+  }
+
   public void testVariableInitializers() throws IOException {
     addTreeShakerRootsFile("p.A:\n    main()");
     addSourceFile("A.java", "package p; class A { static void main() { new B(); }}");

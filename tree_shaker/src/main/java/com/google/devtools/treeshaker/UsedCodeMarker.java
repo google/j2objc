@@ -42,10 +42,12 @@ import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SimpleType;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -323,6 +325,16 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     addMethodInvocation(node.getExecutableElement());
     // A method expression implicitly constructs an instance of the interface that it implements.
     addPseudoConstructorInvocation(node.getTypeMirror());
+  }
+
+  @Override
+  public boolean visit(SimpleName node) {
+    VariableElement var = TreeUtil.getVariableElement(node);
+    if (var != null) {
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(var);
+      addReferencedType(declaringClass.asType());
+    }
+    return true;
   }
 
   @Override
