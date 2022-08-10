@@ -42,6 +42,7 @@ import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.SimpleType;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
@@ -322,6 +323,12 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     addMethodInvocation(node.getExecutableElement());
     // A method expression implicitly constructs an instance of the interface that it implements.
     addPseudoConstructorInvocation(node.getTypeMirror());
+  }
+
+  @Override
+  public boolean visit(SimpleType node) {
+    addReferencedType(node.getTypeMirror());
+    return true;
   }
 
   @Override

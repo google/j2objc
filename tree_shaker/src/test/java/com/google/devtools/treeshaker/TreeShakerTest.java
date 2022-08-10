@@ -972,6 +972,19 @@ public class TreeShakerTest extends TestCase {
         getMethodName("p.B", "valueOf", "(Ljava/lang/String;)Lp/B;"));
   }
 
+  public void testAnnotationsWithClassValues() throws IOException {
+    addTreeShakerRootsFile("p.A:\n    main()");
+    addSourceFile("A.java", "package p; class A { static void main() { new D(); }}");
+    addSourceFile("B.java", "package p; class B {}");
+    addSourceFile("C.java", "package p; @interface C { Class<?>[] value(); }");
+    addSourceFile("D.java", "package p; @C({B.class}) class D {}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedMethods(unused))
+        .containsExactly(getMethodName("p.A", "A", "()V"), getMethodName("p.B", "B", "()V"));
+  }
+
   public void testAnnotationsWithInnerClasses() throws IOException {
     addTreeShakerRootsFile("p.A:\n    main()");
     addSourceFile("A.java", "package p; class A { static void main() { }}");
