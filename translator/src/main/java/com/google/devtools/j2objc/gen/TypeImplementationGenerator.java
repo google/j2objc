@@ -292,7 +292,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       println("J2OBJC_IGNORE_DESIGNATED_BEGIN");
     }
     syncLineNumbers(m);  // avoid doc-comment
-    print(getMethodSignature(m) + " ");
+    print(getMethodSignature(m, false) + " ");
     print(reindent(generateStatement(m.getBody())) + "\n");
     if (isDesignatedInitializer) {
       println("J2OBJC_IGNORE_DESIGNATED_END");

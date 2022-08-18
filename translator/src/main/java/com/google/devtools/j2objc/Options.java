@@ -98,6 +98,7 @@ public class Options {
   private boolean emitSourceHeaders = true;
   private boolean injectLogSites = false;
   private boolean allVersions = false;
+  private boolean asObjCGenericDecl = false;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -533,6 +534,8 @@ public class Options {
         addExternalAnnotationFile(getArgValue(args, arg));
       } else if (arg.equals("--reserved-names")) {
         NameTable.addReservedNames(getArgValue(args, arg));
+      } else if (arg.equals("--objc-generics")) {
+        asObjCGenericDecl = true;
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
@@ -1123,5 +1126,14 @@ public class Options {
   @VisibleForTesting
   public void setInjectLogSites(boolean b) {
     injectLogSites = b;
+  }
+
+  public boolean asObjCGenericDecl() {
+    return asObjCGenericDecl;
+  }
+
+  @VisibleForTesting
+  public void setAsObjCGenericDecl(boolean b) {
+    asObjCGenericDecl = b;
   }
 }

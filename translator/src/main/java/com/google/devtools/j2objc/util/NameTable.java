@@ -162,6 +162,7 @@ public class NameTable {
 
   private final ImmutableMap<String, String> classMappings;
   private final ImmutableMap<String, String> methodMappings;
+  private final boolean generifyTypeDecls;
 
   public NameTable(TypeUtil typeUtil, CaptureInfo captureInfo, Options options) {
     this.typeUtil = typeUtil;
@@ -170,6 +171,7 @@ public class NameTable {
     prefixMap = options.getPackagePrefixes();
     classMappings = options.getMappings().getClassMappings();
     methodMappings = options.getMappings().getMethodMappings();
+    generifyTypeDecls = options.asObjCGenericDecl();
   }
 
   public void setVariableName(VariableElement var, String name) {
@@ -497,15 +499,66 @@ public class NameTable {
   }
 
   /**
-   * Convert a Java type to an equivalent Objective-C type with type variables
-   * resolved to their bounds.
+   * Converts a primitive Java type to an equivalent Objective-C type as the most inner component in
+   * an array.
+   */
+  public static String getPrimitiveObjCTypeArrayComponent(TypeMirror type) {
+    String typeString = "JavaLang";
+    switch (type.getKind()) {
+      case BOOLEAN:
+        typeString += "Boolean";
+        break;
+      case BYTE:
+        typeString += "Byte";
+        break;
+      case SHORT:
+        typeString += "Short";
+        break;
+      case INT:
+        typeString += "Integer";
+        break;
+      case LONG:
+        typeString += "Long";
+        break;
+      case CHAR:
+        typeString += "Character";
+        break;
+      case FLOAT:
+        typeString += "Float";
+        break;
+      case DOUBLE:
+        typeString += "Double";
+        break;
+      default:
+        return getPrimitiveObjCType(type);
+    }
+
+    typeString += " *";
+    return typeString;
+  }
+
+  /**
+   * Convert a Java type to an equivalent Objective-C type with type variables resolved to their
+   * bounds.
    */
   public String getObjCType(TypeMirror type) {
-    return getObjcTypeInner(type, null);
+    return getObjcTypeInner(type, null, false, false);
   }
 
   public String getObjCType(VariableElement var) {
-    return getObjcTypeInner(var.asType(), ElementUtil.getTypeQualifiers(var));
+    return getObjcTypeInner(var.asType(), ElementUtil.getTypeQualifiers(var), false, false);
+  }
+
+  public String getObjCGenericType(TypeMirror type) {
+    return getObjcTypeInner(type, null, true, false);
+  }
+
+  public String getObjCTypeDeclaration(TypeMirror type) {
+    return getObjCTypeDeclaration(type, generifyTypeDecls);
+  }
+
+  public String getObjCTypeDeclaration(TypeMirror type, boolean generify) {
+    return generify ? getObjCGenericType(type) : getObjCType(type);
   }
 
   /**
@@ -524,7 +577,10 @@ public class NameTable {
     return "jobject";
   }
 
-  private String getObjcTypeInner(TypeMirror type, String qualifiers) {
+  // isArrayComponent: this flag is used to generate the primitive types if they are the most inner
+  /// component in arrays.
+  private String getObjcTypeInner(
+      TypeMirror type, String qualifiers, boolean asObjCGenericDecl, boolean isArrayComponent) {
     String objcType;
     if (type instanceof NativeType) {
       objcType = ((NativeType) type).getName();
@@ -537,10 +593,23 @@ public class NameTable {
           qualifiers = qualifiers.substring(idx + 1);
         }
       }
-      objcType = getObjcTypeInner(((PointerType) type).getPointeeType(), pointeeQualifiers);
+      objcType =
+          getObjcTypeInner(
+              ((PointerType) type).getPointeeType(), pointeeQualifiers, asObjCGenericDecl, false);
       objcType = objcType.endsWith("*") ? objcType + "*" : objcType + " *";
     } else if (TypeUtil.isPrimitiveOrVoid(type)) {
-      objcType = getPrimitiveObjCType(type);
+      objcType =
+          isArrayComponent ? getPrimitiveObjCTypeArrayComponent(type) : getPrimitiveObjCType(type);
+    } else if (type instanceof ArrayType && asObjCGenericDecl) {
+      TypeMirror componentType = ((ArrayType) type).getComponentType();
+      String arrayClass =
+          TypeUtil.isPrimitiveOrVoid(componentType) ? "IOSArray<" : "IOSObjectArray<";
+      String innerType =
+          getObjcTypeInner(
+              ((ArrayType) type).getComponentType(), qualifiers, asObjCGenericDecl, true);
+      objcType = arrayClass + innerType;
+      objcType += objcType.endsWith("*") ? ">" : " *>";
+      objcType += isArrayComponent ? "" : " *";
     } else {
       objcType = constructObjcTypeFromBounds(type);
     }

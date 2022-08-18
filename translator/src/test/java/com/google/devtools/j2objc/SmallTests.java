@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.ast.LambdaExpressionTest;
 import com.google.devtools.j2objc.ast.MethodReferenceTest;
 import com.google.devtools.j2objc.gen.ArrayAccessTest;
 import com.google.devtools.j2objc.gen.ArrayCreationTest;
+import com.google.devtools.j2objc.gen.ArrayGenericsTest;
 import com.google.devtools.j2objc.gen.JavadocGeneratorTest;
 import com.google.devtools.j2objc.gen.LineDirectivesTest;
 import com.google.devtools.j2objc.gen.LiteralGeneratorTest;
@@ -95,9 +96,7 @@ import com.google.devtools.j2objc.util.UnicodeUtilsTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/**
- * Returns a suite of all small tests in this package.
- */
+/** Returns a suite of all small tests in this package. */
 public class SmallTests {
 
   private static final Class<?>[] smallTestClasses =
@@ -108,6 +107,7 @@ public class SmallTests {
         AnonymousClassConverterTest.class,
         ArrayAccessTest.class,
         ArrayCreationTest.class,
+        ArrayGenericsTest.class,
         ArrayRewriterTest.class,
         AutoboxerTest.class,
         CastResolverTest.class,
