@@ -28,6 +28,8 @@ import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.util.SourcePositions;
 import com.sun.source.util.TreeScanner;
+import com.sun.tools.javac.code.Flags;
+import com.sun.tools.javac.tree.JCTree;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -155,6 +157,24 @@ class JavacJ2ObjCIncompatibleStripper extends TreeScanner<Void, Void> {
         continue;
       }
       int endPos = endPosition(node);
+      // If node is an enum constant, check for trailing comma and remove that, too.
+      if (node.getKind() == Tree.Kind.VARIABLE) {
+        JCTree.JCVariableDecl varNode = (JCTree.JCVariableDecl) node;
+        long flags = varNode.getModifiers().flags;
+        if ((flags & Flags.ENUM) > 0) {
+          for (int i = endPos; i < source.length(); i++) {
+            char curChar = source.charAt(i);
+            if (curChar == ',' && (i + 1) < source.length()) {
+              endPos = i + 1;
+              break;
+            } else if (curChar == ';' // If end of enum constant declarations ...
+                || curChar == '}') {  // or end of enum declaration ...
+              break;                  // stop searching.
+            }
+            // If comma wasn't found before EOF, then endPos is unchanged.
+          }
+        }
+      }
       sb.append(source.substring(currentIdx, startPos));
       // Preserve newlines from the stripped node so that we can add line
       // directives consistent with the original source file.

@@ -77,4 +77,23 @@ public class J2ObjCIncompatibleStripperTest extends GenerationTest {
     // Mainly testing that the source compiles after stripping.
     assertTranslation(translation, "@protocol Test");
   }
+
+  // b/243018798: verify that enum constant is stripped when marked as incompatible.
+  public void testEnumConstantStripped() throws Exception {
+    addSourceFile(
+        "enum Test { "
+            + "  @com.google.j2objc.annotations.J2ObjCIncompatible"
+            + "  A,"
+            + "  B;"
+            + "}",
+        "Test.java");
+    runPipeline("Test.java");
+    String translation = getTranslatedFile("Test.h");
+
+    // Verify A was stripped out ...
+    assertNotInTranslation(translation, "Test_Enum_A");
+
+    // ... but B wasn't.
+    assertTranslation(translation, "Test_Enum_B");
+  }
 }
