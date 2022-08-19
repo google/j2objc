@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.types.GeneratedArrayType;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -937,5 +938,29 @@ public final class TypeUtil {
   public static boolean isStubType(String typeName) {
     // Currently only NSException and NSFastEnumeration have com.google.j2objc stubs.
     return typeName.startsWith("com.google.j2objc.NS");
+  }
+
+  // Remove javac 1.8 AnnotatedType wrapper, if present.
+  public static TypeMirror unannotatedType(TypeMirror type) {
+    if (annotatedTypeClass != null) {
+      try {
+        if (annotatedTypeClass.isInstance(type)) {
+          Method m = annotatedTypeClass.getDeclaredMethod("unannotatedType");
+          return (TypeMirror) m.invoke(type);
+        }
+      } catch (Exception e) {
+        // Fall-through, as any error shows no unannotated type is available.
+      }
+    }
+    return type;
+  }
+
+  private static Class<?> annotatedTypeClass;
+  static {
+    try {
+      annotatedTypeClass = Class.forName("com.sun.tools.javac.code.Type$AnnotatedType");
+    } catch (ClassNotFoundException e) {
+      annotatedTypeClass = null;
+    }
   }
 }

@@ -582,6 +582,7 @@ public class NameTable {
   private String getObjcTypeInner(
       TypeMirror type, String qualifiers, boolean asObjCGenericDecl, boolean isArrayComponent) {
     String objcType;
+    type = TypeUtil.unannotatedType(type);
     if (type instanceof NativeType) {
       objcType = ((NativeType) type).getName();
     } else if (type instanceof PointerType) {
