@@ -151,4 +151,30 @@ public class ArrayGenericsTest extends GenerationTest {
     // Static variables will be declared in the .m file.
     assertTranslation(translation, "IOSObjectArray *Test_array");
   }
+
+  public void testAnnotatedArrayParameter() throws IOException {
+    String translation =
+        translateSourceFile(
+            "import javax.annotation.Nonnull;"
+                + "public class Test {"
+                + "  public Test(Test copyFrom, @Nonnull String[] names) {}"
+                + "}",
+            "Test",
+            "Test.h");
+    assertTranslation(translation, "(IOSObjectArray<NSString *> *)names");
+  }
+
+  // Verify that there's a forward declaration for an array component type.
+  public void testGenericArrayComponentForwardDecl() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class Test {"
+                + "  public StackTraceElement[] stackTrace() {"
+                + "    return Thread.currentThread().getStackTrace();"
+                + "  }"
+                + "}",
+            "Test",
+            "Test.h");
+    assertTranslation(translation, "@class JavaLangStackTraceElement;");
+  }
 }

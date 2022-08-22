@@ -21,9 +21,11 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.Collection;
 import java.util.Set;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -121,6 +123,10 @@ public class Import implements Comparable<Import> {
       if (!newImport.getImportFileName().isEmpty()) {
         imports.add(newImport);
       }
+    }
+    if (TypeUtil.isArray(type) && env.options().asObjCGenericDecl()) {
+      // Recursion provides support for multi-dimensional arrays.
+      addImports(((ArrayType) type).getComponentType(), imports, env);
     }
   }
 }
