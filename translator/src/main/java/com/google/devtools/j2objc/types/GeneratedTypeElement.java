@@ -198,10 +198,7 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
     return v.visitType(this, p);
   }
 
-  /**
-   * The associated TypeMirror.
-   * TODO(kstanger): Make private when javac conversion is complete.
-   */
+  /** The associated TypeMirror. */
   public class Mirror extends AbstractTypeMirror implements DeclaredType {
 
     @Override

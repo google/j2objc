@@ -208,18 +208,12 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
     throw new AssertionError("not implemented");
   }
 
-  /**
-   * The associated ExecutableType.
-   * TODO(kstanger): Make private when javac conversion is complete.
-   */
-  public class Mirror extends AbstractTypeMirror implements ExecutableType {
+  /** The associated ExecutableType. */
+  private class Mirror extends AbstractTypeMirror implements ExecutableType {
 
     private final List<? extends TypeMirror> parameterTypes =
         Lists.transform(parameters, param -> param.asType());
 
-    public GeneratedExecutableElement asExecutableElement() {
-      return GeneratedExecutableElement.this;
-    }
 
     @Override
     public TypeKind getKind() {
