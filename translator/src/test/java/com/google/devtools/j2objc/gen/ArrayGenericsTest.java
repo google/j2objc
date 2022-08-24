@@ -82,9 +82,9 @@ public class ArrayGenericsTest extends GenerationTest {
 
     assertTranslation(
         testHeader,
-        "(IOSObjectArray<id<Test_Interface> *>"
-            + " *)testInterfaceArrayGenericsWithTest_InterfaceArray:(IOSObjectArray<id<Test_Interface>"
-            + " *> *)faces");
+        "(IOSObjectArray<id<Test_Interface>>"
+            + " *)testInterfaceArrayGenericsWithTest_InterfaceArray:(IOSObjectArray<id<Test_Interface>>"
+            + " *)faces");
     assertTranslation(
         testSource,
         "(IOSObjectArray *)testInterfaceArrayGenericsWithTest_InterfaceArray:(IOSObjectArray"
@@ -176,5 +176,18 @@ public class ArrayGenericsTest extends GenerationTest {
             "Test",
             "Test.h");
     assertTranslation(translation, "@class JavaLangStackTraceElement;");
+  }
+
+  public void testGenericArrayInterfaceOrObjectComponent() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class Test {"
+                + "  public void test(java.util.List[] listArgs) {}"
+                + "  public void test2(Object[] objectArgs) {}"
+                + "}",
+            "Test",
+            "Test.h");
+    assertTranslation(translation, "(IOSObjectArray<id<JavaUtilList>> *)listArgs");
+    assertTranslation(translation, "(IOSObjectArray<id> *)objectArgs");
   }
 }

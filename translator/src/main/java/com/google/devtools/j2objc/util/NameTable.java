@@ -609,7 +609,7 @@ public class NameTable {
           getObjcTypeInner(
               ((ArrayType) type).getComponentType(), qualifiers, asObjCGenericDecl, true);
       objcType = arrayClass + innerType;
-      objcType += objcType.endsWith("*") ? ">" : " *>";
+      objcType += ((ArrayType) type).getComponentType() instanceof ArrayType ? " *>" : ">";
       objcType += isArrayComponent ? "" : " *";
     } else {
       objcType = constructObjcTypeFromBounds(type);
