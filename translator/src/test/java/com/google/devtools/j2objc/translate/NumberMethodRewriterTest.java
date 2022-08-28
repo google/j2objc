@@ -71,25 +71,4 @@ public class NumberMethodRewriterTest extends GenerationTest {
     assertNotInTranslation(subClassGen, "- (jboolean)isEqual:(id)obj");
     assertNotInTranslation(subClassGen, "- (NSUInteger)hash");
   }
-
-  public void testLongConstructor() throws IOException {
-    String translation = translateSourceFile(
-        "class A extends Number { "
-            + "  private final long value;"
-            + "  public A(long value) { this.value = value; }"
-            + "  A valueOf(long value) { return new A(value); }"
-            + "  public double doubleValue() { return 0.0; }"
-            + "  public float floatValue() { return 0.0f; }"
-            + "  public int intValue() { return 0; }"
-            + "  public long longValue() { return 0L; }}", "A", "A.m");
-
-    assertTranslation(translation, "- (instancetype)initWithLongLong:(jlong)value {");
-    assertTranslation(translation, "void A_initWithLongLong_(A *self, jlong value) {");
-    assertTranslation(translation, "A *new_A_initWithLongLong_(jlong value) {");
-    assertTranslation(translation, "A *create_A_initWithLongLong_(jlong value) {");
-    assertTranslatedLines(translation,
-        "- (A *)valueOfWithLong:(jlong)value {",
-        "return create_A_initWithLongLong_(value);",
-        "}");
-  }
 }

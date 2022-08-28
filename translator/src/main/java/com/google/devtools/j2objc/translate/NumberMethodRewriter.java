@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.Block;
-import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeStatement;
@@ -25,13 +24,9 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
-import com.google.devtools.j2objc.util.ElementUtil;
 import java.lang.reflect.Modifier;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -61,29 +56,6 @@ public class NumberMethodRewriter extends UnitTreeVisitor {
       if (hashCodeMethod == null) {
         addHashCodeMethod(node);
       }
-    }
-  }
-
-  /**
-   * Convert override of NSNumber.initWithLong() to initWithLongLong(), to match Java type.
-   * b/243948394.
-   */
-  @Override
-  public void endVisit(MethodDeclaration method) {
-    if (isNumberLongConstructor(method.getExecutableElement())) {
-      ExecutableElement newMethodElement =
-          updateNumberLongConstructor(method.getExecutableElement());
-      MethodDeclaration unused = method.setExecutableElement(newMethodElement);
-    }
-  }
-
-  @Override
-  public void endVisit(ClassInstanceCreation invocation) {
-    if (isNumberLongConstructor(invocation.getExecutableElement())) {
-      ExecutableElement newMethodElement =
-          updateNumberLongConstructor(invocation.getExecutableElement());
-      ClassInstanceCreation unused = invocation.setExecutablePair(
-          new ExecutablePair(newMethodElement, invocation.getExecutableType()));
     }
   }
 
@@ -119,22 +91,5 @@ public class NumberMethodRewriter extends UnitTreeVisitor {
     node.addBodyDeclaration(new MethodDeclaration(element)
         .setBody(new Block().addStatement(new NativeStatement("return (NSUInteger)self;")))
         .setModifiers(Modifier.PUBLIC));
-  }
-
-  private boolean isNumberLongConstructor(ExecutableElement method) {
-    TypeMirror owningClassType = method.getEnclosingElement().asType();
-    if (typeUtil.isSubtype(owningClassType, typeUtil.getJavaNumber().asType())) {
-      if (ElementUtil.isConstructor(method)
-          && method.getParameters().size() == 1) {
-        VariableElement var = method.getParameters().get(0);
-        return var.asType().getKind() == TypeKind.LONG;
-      }
-    }
-    return false;
-  }
-
-  // Fix selector so constructor overrides NSNumber.initWithLongLong(), to match jlong type.
-  private ExecutableElement updateNumberLongConstructor(ExecutableElement constructor) {
-    return GeneratedExecutableElement.mutableCopy("initWithLongLong:", constructor);
   }
 }
