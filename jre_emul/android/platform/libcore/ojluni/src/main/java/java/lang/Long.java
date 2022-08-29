@@ -29,7 +29,6 @@ package java.lang;
 import java.lang.annotation.Native;
 import java.math.*;
 
-
 /**
  * The {@code Long} class wraps a value of the primitive type {@code
  * long} in an object. An object of type {@code Long} contains a
@@ -724,7 +723,7 @@ public final class Long extends Number implements Comparable<Long> {
           id *buf = values->buffer_;
           for (jint i = -128; i < 128; i++) {
             id obj = objc_constructInstance(self, (void *)ptr);
-            JavaLangLong_initWithLong_(obj, i);
+            JavaLangLong_initWithLongLong_(obj, i);
             *(buf++) = obj;
             ptr += objSize;
           }
@@ -1550,3 +1549,28 @@ public final class Long extends Number implements Comparable<Long> {
     }
     ]-*/
 }
+
+/*-HEADER[
+// Current API, redeclared since this block goes before the transpiled API in the header.
+@class JavaLangLong;
+FOUNDATION_EXPORT void JavaLangLong_initWithLongLong_(JavaLangLong *self, jlong value);
+FOUNDATION_EXPORT JavaLangLong *new_JavaLangLong_initWithLongLong_(jlong value) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT JavaLangLong *create_JavaLangLong_initWithLongLong_(jlong value);
+
+// Backward compatibility API (b/243948394).
+__attribute__((always_inline)) inline
+void JavaLangLong_initWithLong_(JavaLangLong *self, jlong value) {
+  JavaLangLong_initWithLongLong_(self, value);
+}
+
+__attribute__((always_inline)) inline
+JavaLangLong *new_JavaLangLong_initWithLong_(jlong value) NS_RETURNS_RETAINED {
+  return new_JavaLangLong_initWithLongLong_(value);
+}
+
+__attribute__((always_inline)) inline
+JavaLangLong *create_JavaLangLong_initWithLong_(jlong value) {
+  return create_JavaLangLong_initWithLongLong_(value);
+}
+
+]-*/
