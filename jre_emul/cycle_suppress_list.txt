@@ -100,3 +100,6 @@ TYPE android.icu.impl.UCharacterProperty.$
 
 # False positives in java.time.
 FIELD java.time.zone.IcuZoneRulesProvider.cache
+
+# False positive, described in b/241576735.
+NAMESPACE com.google.protobuf
