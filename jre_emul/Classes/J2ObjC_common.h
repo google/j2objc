@@ -164,12 +164,12 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @define J2OBJC_STATIC_INIT
  * @param CLASS The class to declare the init function for.
  */
-#define J2OBJC_STATIC_INIT(CLASS) \
-  FOUNDATION_EXPORT _Atomic(jboolean) CLASS##__initialized; \
-  __attribute__((always_inline)) inline void CLASS##_initialize() { \
+#define J2OBJC_STATIC_INIT(CLASS)                                                           \
+  FOUNDATION_EXPORT _Atomic(jboolean) CLASS##__initialized;                                 \
+  __attribute__((always_inline)) inline void CLASS##_initialize(void) {                     \
     if (__builtin_expect(!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE), 0)) { \
-      [CLASS class]; \
-    } \
+      [CLASS class];                                                                        \
+    }                                                                                       \
   }
 
 /*!
@@ -179,7 +179,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param CLASS The class to declare the init function for.
  */
 #define J2OBJC_EMPTY_STATIC_INIT(CLASS) \
-  __attribute__((always_inline)) inline void CLASS##_initialize() {}
+  __attribute__((always_inline)) inline void CLASS##_initialize(void) {}
 
 /*!
  * Declares the type literal accessor for a type. This macro should be added to

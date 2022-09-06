@@ -43,23 +43,23 @@ CF_EXTERN_C_END
  * @param FIELD The name of the static variable prefixed with an underscore.
  * @param TYPE The type of the static variable.
  */
-#define J2OBJC_STATIC_FIELD_BASIC_GETTER(CLASS, FIELD, TYPE) \
-  __attribute__((always_inline)) inline TYPE CLASS##_get##FIELD() { \
-    CLASS##_initialize(); \
-    return CLASS##FIELD; \
+#define J2OBJC_STATIC_FIELD_BASIC_GETTER(CLASS, FIELD, TYPE)            \
+  __attribute__((always_inline)) inline TYPE CLASS##_get##FIELD(void) { \
+    CLASS##_initialize();                                               \
+    return CLASS##FIELD;                                                \
   }
 #define J2OBJC_STATIC_FIELD_PRIMITIVE_REF_GETTER(CLASS, FIELD, TYPE) \
-  __attribute__((always_inline)) inline TYPE *CLASS##_getRef##FIELD() { \
+  __attribute__((always_inline)) inline TYPE *CLASS##_getRef##FIELD(void) { \
     CLASS##_initialize(); \
     return &CLASS##FIELD; \
   }
 #define J2OBJC_STATIC_FIELD_PRIMITIVE_VOLATILE_GETTER(CLASS, FIELD, TYPE) \
-  __attribute__((always_inline)) inline TYPE CLASS##_get##FIELD() { \
+  __attribute__((always_inline)) inline TYPE CLASS##_get##FIELD(void) { \
     CLASS##_initialize(); \
     return __c11_atomic_load(&CLASS##FIELD, __ATOMIC_SEQ_CST); \
   }
 #define J2OBJC_STATIC_FIELD_OBJ_VOLATILE_GETTER(CLASS, FIELD, TYPE) \
-  __attribute__((always_inline)) inline TYPE CLASS##_get##FIELD() { \
+  __attribute__((always_inline)) inline TYPE CLASS##_get##FIELD(void) { \
     CLASS##_initialize(); \
     return JreLoadVolatileId(&CLASS##FIELD); \
   }
@@ -131,9 +131,7 @@ CF_EXTERN_C_END
  */
 // Java constants do not cause static initialization.
 #define J2OBJC_STATIC_FIELD_CONSTANT(CLASS, FIELD, TYPE) \
-  __attribute__((always_inline)) inline TYPE CLASS##_get_##FIELD() { \
-    return CLASS##_##FIELD; \
-  }
+  __attribute__((always_inline)) inline TYPE CLASS##_get_##FIELD(void) { return CLASS##_##FIELD; }
 #define J2OBJC_STATIC_FIELD_PRIMITIVE(CLASS, FIELD, TYPE) \
   J2OBJC_STATIC_FIELD_BASIC_GETTER(CLASS, _##FIELD, TYPE) \
   J2OBJC_STATIC_FIELD_PRIMITIVE_SETTER(CLASS, _##FIELD, TYPE) \
@@ -161,10 +159,10 @@ CF_EXTERN_C_END
  * @param CLASS The enum class.
  * @param CONSTANT The name of the enum constant.
  */
-#define J2OBJC_ENUM_CONSTANT(CLASS, CONSTANT) \
-  __attribute__((always_inline)) inline CLASS *CLASS##_get_##CONSTANT() { \
-    CLASS##_initialize(); \
-    return CLASS##_values_[CLASS##_Enum_##CONSTANT]; \
+#define J2OBJC_ENUM_CONSTANT(CLASS, CONSTANT)                                 \
+  __attribute__((always_inline)) inline CLASS *CLASS##_get_##CONSTANT(void) { \
+    CLASS##_initialize();                                                     \
+    return CLASS##_values_[CLASS##_Enum_##CONSTANT];                          \
   }
 
 #define BOXED_INC_AND_DEC_INNER(CNAME, VALUE_METHOD, TYPE, OPNAME, OP) \
