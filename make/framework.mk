@@ -90,6 +90,13 @@ DISALLOWED_WARNINGS = \
 VERIFY_FLAGS := -I$(FRAMEWORK_DIR)/Headers -I$(DIST_INCLUDE_DIR) \
 	-Werror -Weverything $(DISALLOWED_WARNINGS)
 
+# As of Xcode 12, xcframeworks need a fat libraries for most platforms
+FAT_PLATFORMS = iphone simulator macosx maccatalyst watchos watchsimulator
+SINGLE_PLATFORMS = appletvos appletvsimulator
+framework_libraries = \
+  $(foreach platform,$(FAT_PLATFORMS),$(wildcard $(BUILD_DIR)/$(platform)/lib$(1).a)) \
+  $(foreach platform,$(SINGLE_PLATFORMS),$(wildcard $(BUILD_DIR)/objs-$(platform)/lib$(1).a)) \
+
 framework: lib $(FRAMEWORK_DIR) resources
 	@:
 
@@ -98,12 +105,12 @@ $(FRAMEWORK_DIR): lib $(FRAMEWORK_HEADER) $(MODULE_MAP) | $(DIST_FRAMEWORK_DIR)
 	@echo building $(FRAMEWORK_NAME) framework
 	@mkdir -p $(FRAMEWORK_DIR)
 	@$(J2OBJC_ROOT)/scripts/gen_xcframework.sh $(FRAMEWORK_DIR) \
-			$(BUILD_DIR)/objs-*/lib$(STATIC_LIBRARY_NAME).a
+		$(call framework_libraries,$(STATIC_LIBRARY_NAME))
 	@mkdir -p $(FRAMEWORK_DIR)/Versions/A/Headers
 	@/bin/ln -sfh A $(FRAMEWORK_DIR)/Versions/Current
 	@/bin/ln -sfh Versions/Current/Headers $(FRAMEWORK_DIR)/Headers
 	@tar cf - -C $(STATIC_HEADERS_DIR) $(FRAMEWORK_HEADERS:$(STATIC_HEADERS_DIR)/%=%) \
-			| tar xfp - -C $(FRAMEWORK_DIR)/Versions/A/Headers
+		| tar xfp - -C $(FRAMEWORK_DIR)/Versions/A/Headers
 	@install -m 0644 $(FRAMEWORK_HEADER) $(FRAMEWORK_DIR)/Versions/A/Headers
 	@install -m 0644 $(MODULE_MAP) $(FRAMEWORK_DIR)/Versions/A/Headers/
 	@touch $@
@@ -119,13 +126,13 @@ $(FRAMEWORK_HEADER):
 test_warnings: $(FRAMEWORK_HEADER)
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c $@
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c \
-			-fobjc-arc -fobjc-arc-exceptions $@
+		-fobjc-arc -fobjc-arc-exceptions $@
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c -fno-objc-arc $@
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c++ $@
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c++ \
-			-fobjc-arc -fobjc-arc-exceptions $@
+		-fobjc-arc -fobjc-arc-exceptions $@
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c++ \
-			-fno-objc-arc $@
+		-fno-objc-arc $@
 	@rm $(FRAMEWORK_HEADER:%.h=%.o)
 
 $(MODULE_MAP):

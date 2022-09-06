@@ -60,12 +60,12 @@ FAT_LIB_XCODE_FLAGS = -arch $(1) -DJ2OBJC_BUILD_ARCH=$(1) -miphoneos-version-min
   -isysroot $(SDKROOT)
 
 FAT_LIB_MAC_CATALYST_FLAGS = $(FAT_LIB_OSX_FLAGS) -arch x86_64 -DJ2OBJC_BUILD_ARCH=x86_64 \
-  --target=x86_64-apple-ios13-macabi \
+  --target=x86_64-apple-ios14-macabi \
   -isysroot $(FAT_LIB_MACOSX_SDK_DIR) \
   -isystem $(FAT_LIB_MACOSX_SDK_DIR)/System/iOSSupport/usr/include \
   -iframework $(FAT_LIB_MACOSX_SDK_DIR)/System/iOSSupport/System/Library/Frameworks
 FAT_LIB_MAC_CATALYST64_FLAGS = $(FAT_LIB_OSX_FLAGS) -arch arm64 -DJ2OBJC_BUILD_ARCH=arm64 \
-  --target=arm64-apple-ios13-macabi \
+  --target=arm64-apple-ios14-macabi \
   -isysroot $(FAT_LIB_MACOSX_SDK_DIR) \
   -isystem $(FAT_LIB_MACOSX_SDK_DIR)/System/iOSSupport/usr/include \
   -iframework $(FAT_LIB_MACOSX_SDK_DIR)/System/iOSSupport/System/Library/Frameworks
