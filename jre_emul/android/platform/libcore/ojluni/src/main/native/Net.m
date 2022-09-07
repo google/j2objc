@@ -730,6 +730,8 @@ Java_sun_nio_ch_Net_pollconnValue(JNIEnv *env, jclass this)
 
 /* Declared in nio_util.h */
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-but-set-variable"
 jint
 handleSocketErrorWithDefault(JNIEnv *env, jint errorValue, const char *defaultException)
 {
@@ -772,6 +774,7 @@ handleSocketErrorWithDefault(JNIEnv *env, jint errorValue, const char *defaultEx
     J2ObjCThrowByName(JavaNetSocketException, msg);
     return IOS_THROWN;
 }
+#pragma clang diagnostic pop
 
 /* Declared in nio_util.h */
 
