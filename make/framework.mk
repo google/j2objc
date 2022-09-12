@@ -90,13 +90,6 @@ DISALLOWED_WARNINGS = \
 VERIFY_FLAGS := -I$(FRAMEWORK_DIR)/Headers -I$(DIST_INCLUDE_DIR) \
 	-Werror -Weverything $(DISALLOWED_WARNINGS)
 
-# As of Xcode 12, xcframeworks need a fat libraries for most platforms
-FAT_PLATFORMS = iphone simulator macosx maccatalyst watchos watchsimulator
-SINGLE_PLATFORMS = appletvos appletvsimulator
-framework_libraries = \
-  $(foreach platform,$(FAT_PLATFORMS),$(wildcard $(BUILD_DIR)/$(platform)/lib$(1).a)) \
-  $(foreach platform,$(SINGLE_PLATFORMS),$(wildcard $(BUILD_DIR)/objs-$(platform)/lib$(1).a)) \
-
 framework: lib $(FRAMEWORK_DIR) resources
 	@:
 
@@ -105,7 +98,7 @@ $(FRAMEWORK_DIR): lib $(FRAMEWORK_HEADER) $(MODULE_MAP) | $(DIST_FRAMEWORK_DIR)
 	@echo building $(FRAMEWORK_NAME) framework
 	@mkdir -p $(FRAMEWORK_DIR)
 	@$(J2OBJC_ROOT)/scripts/gen_xcframework.sh $(FRAMEWORK_DIR) \
-		$(call framework_libraries,$(STATIC_LIBRARY_NAME))
+		$(shell $(J2OBJC_ROOT)/scripts/list_framework_libraries.sh $(STATIC_LIBRARY_NAME))
 	@mkdir -p $(FRAMEWORK_DIR)/Versions/A/Headers
 	@/bin/ln -sfh A $(FRAMEWORK_DIR)/Versions/Current
 	@/bin/ln -sfh Versions/Current/Headers $(FRAMEWORK_DIR)/Headers
