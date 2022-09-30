@@ -31,6 +31,7 @@
 #import "java/util/logging/Level.h"
 #import "java/util/logging/Logger.h"
 #import "objc/runtime.h"
+#import "os/lock.h"
 
 id JreThrowNullPointerException() {
   @throw create_JavaLangNullPointerException_init(); // NOLINT
@@ -75,25 +76,32 @@ id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value) 
   return JreAutoreleasedAssign(pIvar, value);
 }
 
-// Declare a pool of spin locks for volatile variable access. The use of spin
-// locks for atomic access is consistent with how Apple implements atomic
-// property accessors, and the hashing used here is inspired by Apple's
-// implementation:
+// Declare a pool of os_unfair_lock for volatile variable access. The use
+// of os_unfair_lock is consistent with Apple's implementation of atomic
+// properties in current runtimes, but since updated runtime source is not
+// available this can only be verified by binary inspection (verified iOS
+// 15.4 runtime).
+//
+// Unfair locks are preferred because while they do not enforce lock ordering
+// or fairness they do provide ownership information to resolve priority
+// inversions:
+// NOLINTNEXTLINE
+// https://developer.apple.com/documentation/os/1646466-os_unfair_lock_lock?language=objc
+//
+// The hashing used here is inspired by Apple's older implementation:
 // NOLINTNEXTLINE
 // http://www.opensource.apple.com/source/objc4/objc4-532.2/runtime/Accessors.subproj/objc-accessors.mm
-// Spin locks are unsafe to use on iOS because of the potential for priority
-// inversion so we use pthread_mutex.
+//
 #define VOLATILE_POWER 7
 #define VOLATILE_NLOCKS (1 << VOLATILE_POWER)
 #define VOLATILE_MASK (VOLATILE_NLOCKS - 1)
 #define VOLATILE_HASH(x) (((long)x >> 5) & VOLATILE_MASK)
 #define VOLATILE_GETLOCK(ptr) &volatile_locks[VOLATILE_HASH(ptr)]
-#define VOLATILE_LOCK(l) pthread_mutex_lock(l)
-#define VOLATILE_UNLOCK(l) pthread_mutex_unlock(l)
-
-typedef pthread_mutex_t *volatile_lock_t;
-static pthread_mutex_t volatile_locks[VOLATILE_NLOCKS] =
-  { [0 ... VOLATILE_MASK] = PTHREAD_MUTEX_INITIALIZER };
+#define VOLATILE_LOCK(l) os_unfair_lock_lock(l)
+#define VOLATILE_UNLOCK(l) os_unfair_lock_unlock(l)
+typedef os_unfair_lock_t volatile_lock_t;
+// Zero filled is sufficient initialization.
+static os_unfair_lock volatile_locks[VOLATILE_NLOCKS];
 
 id JreLoadVolatileId(volatile_id *pVar) {
   volatile_lock_t lock = VOLATILE_GETLOCK(pVar);
