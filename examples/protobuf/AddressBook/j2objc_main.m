@@ -73,7 +73,6 @@ int j2objc_main(const char* className, int argc, const char *argv[]) {
   installSignalHandler();
 
   @autoreleasepool {
-    IOSClass *clazz = nil;
     @try {
       IOSClass *clazz = [IOSClass forName:[NSString stringWithUTF8String:className]];
       IOSObjectArray *mainArgs = JreEmulationMainArguments(argc, argv);

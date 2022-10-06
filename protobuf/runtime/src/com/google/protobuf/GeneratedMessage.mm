@@ -3920,7 +3920,6 @@ static int GetExtensionCount(ComGoogleProtobufExtensionLite *extension, CGPExten
 static void SetRepeatedExtension(CGPExtensionMap *extensionMap,
                                  ComGoogleProtobufExtensionLite *extension, int index, id value) {
   CGPFieldDescriptor *field = extension->fieldDescriptor_;
-  CGPFieldJavaType type = CGPFieldGetJavaType(field);
   CGPExtensionMap::iterator it = extensionMap->find(field);
   if (it != extensionMap->end()) {
     [((id<JavaUtilList>)it->second.get()) setWithInt:(index) withId:value];
