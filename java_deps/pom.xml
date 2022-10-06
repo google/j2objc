@@ -233,7 +233,7 @@
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
-      <version>3.21.3</version>
+      <version>3.21.7</version>
     </dependency>
     <dependency>
       <groupId>org.bitbucket.mstrobel</groupId>
