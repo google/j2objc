@@ -89,7 +89,7 @@ public class TreeShakerTest extends TestCase {
     args.add("--tree-shaker-roots");
     args.add(treeShakerRoots.getPath());
     args.addAll(inputFiles);
-    Options.parse(args.toArray(String[]::new));
+    Options.parse(args.toArray(new String[0]));
     assertEquals(0, ErrorUtil.errorCount());
   }
 
@@ -951,9 +951,21 @@ public class TreeShakerTest extends TestCase {
         "import java.lang.annotation.RetentionPolicy;",
         "@Retention(RetentionPolicy.SOURCE)",
         "@interface E { }");
+    addSourceFile("F.java",
+        "package p;",
+        "import java.lang.annotation.Retention;",
+        "import java.lang.annotation.RetentionPolicy;",
+        "@Retention(RetentionPolicy.CLASS)",
+        "@interface F { }");
+    addSourceFile("G.java",
+        "package p;",
+        "import java.lang.annotation.Retention;",
+        "import java.lang.annotation.RetentionPolicy;",
+        "@Retention(RetentionPolicy.RUNTIME)",
+        "@interface G { }");
     CodeReferenceMap unused = findUnusedCode();
 
-    assertThat(getUnusedClasses(unused)).containsExactly("p.E");
+    assertThat(getUnusedClasses(unused)).containsExactly("p.D", "p.E", "p.F");
     assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("p.A", "A", "()V"));
   }
 
@@ -1016,7 +1028,12 @@ public class TreeShakerTest extends TestCase {
   public void testAnnotationsWithInnerClasses() throws IOException {
     addTreeShakerRootsFile("p.A:\n    main()");
     addSourceFile("A.java", "package p; class A { static void main() { }}");
-    addSourceFile("B.java", "package p; @interface B { enum D { E; } D b() default D.E; }");
+    addSourceFile("B.java",
+        "package p;",
+        "import java.lang.annotation.Retention;",
+        "import java.lang.annotation.RetentionPolicy;",
+        "@Retention(RetentionPolicy.RUNTIME)",
+        "@interface B { enum D { E; } D b() default D.E; }");
     CodeReferenceMap unused = findUnusedCode();
 
     assertThat(getUnusedClasses(unused)).isEmpty();
@@ -1026,7 +1043,12 @@ public class TreeShakerTest extends TestCase {
   public void testAnnotationsWithEnums() throws IOException {
     addTreeShakerRootsFile("p.A:\n    main()");
     addSourceFile("A.java", "package p; class A { static void main() { }}");
-    addSourceFile("B.java", "package p; @interface B { D b() default D.E; }");
+    addSourceFile("B.java",
+        "package p;",
+        "import java.lang.annotation.Retention;",
+        "import java.lang.annotation.RetentionPolicy;",
+        "@Retention(RetentionPolicy.RUNTIME)",
+        "@interface B { D b() default D.E; }");
     addSourceFile("D.java", "package p; enum D { E; }");
     CodeReferenceMap unused = findUnusedCode();
 
