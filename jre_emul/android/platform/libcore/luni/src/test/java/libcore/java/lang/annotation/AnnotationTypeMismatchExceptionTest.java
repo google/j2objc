@@ -16,9 +16,6 @@
 
 package libcore.java.lang.annotation;
 
-import java.io.ByteArrayOutputStream;
-import java.io.NotSerializableException;
-import java.io.ObjectOutputStream;
 import java.lang.annotation.AnnotationTypeMismatchException;
 import java.lang.reflect.Method;
 
@@ -28,19 +25,5 @@ public class AnnotationTypeMismatchExceptionTest extends junit.framework.TestCas
         AnnotationTypeMismatchException ex = new AnnotationTypeMismatchException(m, "poop");
         assertSame(m, ex.element());
         assertEquals("poop", ex.foundType());
-    }
-
-    public void testSerialization() throws Exception {
-        Method m = String.class.getMethod("length");
-        AnnotationTypeMismatchException original = new AnnotationTypeMismatchException(m, "poop");
-
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try {
-            // AnnotationTypeMismatchException is broken: it's Serializable but has a non-transient
-            // non-serializable field of type Method.
-            new ObjectOutputStream(out).writeObject(original);
-            fail();
-        } catch (NotSerializableException expected) {
-        }
     }
 }

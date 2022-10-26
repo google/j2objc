@@ -20,30 +20,28 @@ package org.apache.harmony.annotation.tests.java.lang.annotation;
 import com.google.j2objc.util.ReflectionUtil;
 import java.lang.annotation.AnnotationTypeMismatchException;
 import java.lang.reflect.Method;
-
 import junit.framework.TestCase;
 
-/**
- * Test case of java.lang.annotation.AnnotationTypeMismatchException
- */
+/** Test case of java.lang.annotation.AnnotationTypeMismatchException */
 public class AnnotationTypeMismatchExceptionTest extends TestCase {
 
-    /**
-     * @throws ClassNotFoundException 
-     * @throws SecurityException 
-     * @tests java.lang.annotation.AnnotationTypeMismatchException#AnnotationTypeMismatchException(Method,
-     *        String)
-     */
-    @SuppressWarnings("nls")
-    public void test_constructorLjava_lang_reflect_MethodLjava_lang_String() throws SecurityException, ClassNotFoundException {
-      if (!ReflectionUtil.isJreReflectionStripped()) {
-        Method[] methods = Class.forName("java.lang.String").getMethods();
-        Method m = methods[0];
-        AnnotationTypeMismatchException e = new AnnotationTypeMismatchException(
-                m, "some type");
-        assertNotNull("can not instantiate AnnotationTypeMismatchException", e);
-        assertSame("wrong method name", m, e.element());
-        assertEquals("wrong found type", "some type", e.foundType());
-      }
+  /**
+   * @throws ClassNotFoundException
+   * @throws SecurityException
+   * @tests
+   *     java.lang.annotation.AnnotationTypeMismatchException#AnnotationTypeMismatchException(Method,
+   *     String)
+   */
+  @SuppressWarnings("nls")
+  public void test_constructorLjava_lang_reflect_methodLjava_lang_string()
+      throws SecurityException, ClassNotFoundException {
+    if (!ReflectionUtil.isJreReflectionStripped()) {
+      Method[] methods = Class.forName("java.lang.String").getMethods();
+      Method m = methods[0];
+      AnnotationTypeMismatchException e = new AnnotationTypeMismatchException(m, "some type");
+      assertNotNull("can not instantiate AnnotationTypeMismatchException", e);
+      assertSame("wrong method name", m, e.element());
+      assertEquals("wrong found type", "some type", e.foundType());
     }
+  }
 }
