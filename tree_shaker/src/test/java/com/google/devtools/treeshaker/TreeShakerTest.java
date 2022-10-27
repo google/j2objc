@@ -1649,6 +1649,62 @@ public class TreeShakerTest extends TestCase {
     assertThat(output).isEmpty();
   }
 
+  public void testUsedByNativeAnnotation_class() throws IOException {
+    addTreeShakerRootsFile("CoffeeMaker:\n    start()");
+    addSourceFile(
+        "CoffeeMaker.java",
+        "import java.lang.annotation.ElementType;\n"
+            + "import java.lang.annotation.Target;\n"
+            + "class CoffeeMaker {\n"
+            + "  public static native void start() /*-[\n"
+            + "    NSLog(CoffeeMaker_Constants_get_NAME());\n"
+            + "  ]-*/;\n"
+            + "  @UsedByNative\n"
+            + "  private static final class Constants {\n"
+            + "    private static final String NAME = \"CoffeeMaker\";\n"
+            + "  }\n"
+            + "  @Target({ElementType.METHOD, ElementType.TYPE, ElementType.CONSTRUCTOR})\n"
+            + "  @interface UsedByNative {}\n"
+            + "}\n");
+    assertThat(getUnusedClasses(findUnusedCode())).doesNotContain("CoffeeMaker$Constants");
+  }
+
+  public void testUsedByNativeAnnotation_method() throws IOException {
+    addTreeShakerRootsFile("A:\n    start()");
+    addSourceFile(
+        "A.java",
+        "import java.lang.annotation.ElementType;\n"
+            + "import java.lang.annotation.Target;\n"
+            + "class A {\n"
+            + "  private ReferencedByField referencedByClass = new ReferencedByField();\n"
+            + "  public static native void start() /*-[\n"
+            + "    NSLog(A_WithAnnotation_getName());\n"
+            + "  ]-*/;\n"
+            + "  @UsedByNative\n"
+            + "  private static final class WithAnnotation {\n"
+            + "    private static String getName() {return \"A\";}\n"
+            + "    private static void unused() {}\n"
+            + "  }\n"
+            + "  private static final class WithoutAnnotation {\n"
+            + "    @UsedByNative\n"
+            + "    private static String getName() {return \"A\";}\n"
+            + "    private static void unused() {}\n"
+            + "  }\n"
+            + "  private static final class ReferencedByField {\n"
+            + "    @UsedByNative\n"
+            + "    private static String getName() {return \"A\";}\n"
+            + "    private static void unused() {}\n"
+            + "  }\n"
+            + "  @Target({ElementType.METHOD, ElementType.TYPE, ElementType.CONSTRUCTOR})\n"
+            + "  @interface UsedByNative {}\n"
+            + "}\n");
+    assertThat(getUnusedClasses(findUnusedCode())).containsExactly("A$WithoutAnnotation");
+    assertThat(getUnusedMethods(findUnusedCode()))
+        .containsExactly(
+            getMethodName("A$ReferencedByField", "unused", "()V"),
+            getMethodName("A", "A", "()V"));
+  }
+
   private static String writeUnused(CodeReferenceMap unused) {
     StringBuilder result = new StringBuilder();
     TreeShaker.writeUnused(unused, result::append);

@@ -23,7 +23,8 @@ final class Member {
         declaringType,
         memberInfo.getStatic(),
         memberInfo.getConstructor(),
-        memberInfo.getExported());
+        memberInfo.getExported(),
+        memberInfo.getAnnotations());
   }
 
   private final String name;
@@ -38,15 +39,17 @@ final class Member {
   private final List<Type> referencedTypes = new ArrayList<>();
   private final List<Member> referencedMembers = new ArrayList<>();
   private Member originalMember;
+  private final Annotations annotations;
 
   private Member(String name, Type declaringType, boolean isStatic, boolean isConstructor,
-      boolean isExported) {
+      boolean isExported, Annotations annotations) {
     this.name = name;
     this.declaringType = declaringType;
     this.isStatic = isStatic;
     this.isConstructor = isConstructor;
     this.isExported = isExported;
     this.signature = name.substring(0, name.lastIndexOf(')') + 1);
+    this.annotations = annotations;
   }
 
   Type getDeclaringType() {
@@ -111,5 +114,9 @@ final class Member {
 
   void setOriginalMember(Member originalMember) {
     this.originalMember = originalMember;
+  }
+
+  boolean hasUsedByNativeAnnotation() {
+    return annotations.getUsedByNative();
   }
 }

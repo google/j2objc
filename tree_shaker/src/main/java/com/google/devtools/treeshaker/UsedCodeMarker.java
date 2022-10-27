@@ -68,6 +68,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -82,6 +83,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   static final String INTERFACE_SUPERTYPE = "none";
   static final String PSEUDO_CONSTRUCTOR_PREFIX = "%%";
   static final String SIGNATURE_PREFIX = "##";
+  private static final String USED_BY_NATIVE = "UsedByNative";
 
   private final Context context;
 
@@ -227,7 +229,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
         getMethodName(originalMethod),
         getDeclaringClassName(originalMethod),
         node.isConstructor(),
-        Modifier.isStatic(node.getModifiers()));
+        Modifier.isStatic(node.getModifiers()),
+        node.getExecutableElement());
     addReferencedType(node.getReturnTypeMirror());
     node.getParameters().forEach(svd -> addReferencedType(svd.getType().getTypeMirror()));
     return true;
@@ -415,9 +418,9 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     // For enums, add implict static methods.
     String typeName = elementUtil.getBinaryName(type);
     String sigName = typeUtil.getSignatureName(type.asType());
-    startMethodDeclaration(getImplicitValuesName(sigName), typeName, false, true);
+    startMethodDeclaration(getImplicitValuesName(sigName), typeName, false, true, type);
     endMethodDeclaration();
-    startMethodDeclaration(getImplicitValueOfName(sigName), typeName, false, true);
+    startMethodDeclaration(getImplicitValueOfName(sigName), typeName, false, true, type);
     endMethodDeclaration();
   }
 
@@ -425,7 +428,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     startType(type);
     // For interfaces, add a pseudo-constructor for use with lambdas.
     String typeName = elementUtil.getBinaryName(type);
-    startMethodDeclaration(getPseudoConstructorName(typeName), typeName, true, false);
+    startMethodDeclaration(getPseudoConstructorName(typeName), typeName, true, false, type);
     endMethodDeclaration();
   }
 
@@ -445,6 +448,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     boolean isExported =
         context.exportedClasses.contains(typeName)
             || ElementUtil.isRuntimeAnnotation(type)
+            || ElementUtil.hasNamedAnnotation(type, USED_BY_NATIVE)
             || exportedClassInnerType;
 
     startTypeScope(typeName, superName, interfaces, isExported);
@@ -452,6 +456,11 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   private void endType() {
     endTypeScope();
+  }
+
+  private static Annotations getAnnotations(AnnotatedConstruct annotatedConstruct) {
+    boolean usedByNative = ElementUtil.hasNamedAnnotation(annotatedConstruct, USED_BY_NATIVE);
+    return Annotations.newBuilder().setUsedByNative(usedByNative).build();
   }
 
   private void startTypeScope(String typeName, String superName,
@@ -492,9 +501,19 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   private void startMethodDeclaration(
-      String methodName, String declTypeName, boolean isConstructor, boolean isStatic) {
+      String methodName,
+      String declTypeName,
+      boolean isConstructor,
+      boolean isStatic,
+      AnnotatedConstruct annotatedConstruct) {
     startMethodDeclaration(
-        methodName, declTypeName, methodName, declTypeName, isConstructor, isStatic);
+        methodName,
+        declTypeName,
+        methodName,
+        declTypeName,
+        isConstructor,
+        isStatic,
+        annotatedConstruct);
   }
 
   private void startMethodDeclaration(
@@ -503,7 +522,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
       String originalMethodName,
       String originalClassName,
       boolean isConstructor,
-      boolean isStatic) {
+      boolean isStatic,
+      AnnotatedConstruct annotatedConstruct) {
     boolean isExported =
         context.exportedMethods.contains(getQualifiedMethodName(declTypeName, methodName))
         || context.currentTypeInfoScope.peek().getExported();
@@ -515,7 +535,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
             .setOriginalType(originalTypeId)
             .setOriginalMethodName(originalMethodName)
             .setConstructor(isConstructor)
-            .setExported(isExported));
+            .setExported(isExported)
+            .setAnnotations(getAnnotations(annotatedConstruct)));
   }
 
   private void addPseudoConstructorInvocation(TypeMirror type) {

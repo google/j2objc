@@ -27,9 +27,14 @@ message MemberInfo {
   repeated int32 referenced_types = 6;
   int32 original_type = 7;
   string original_method_name = 8;
+  Annotations annotations = 9;
 }
 
 message MethodInvocation {
   string method = 1;
   int32 enclosing_type = 2;
+}
+
+message Annotations {
+  bool used_by_native = 1;
 }
