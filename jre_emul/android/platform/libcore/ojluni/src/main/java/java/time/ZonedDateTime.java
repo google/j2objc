@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -67,8 +67,8 @@ import static java.time.temporal.ChronoField.OFFSET_SECONDS;
 
 import java.io.DataOutput;
 import java.io.IOException;
-import java.io.ObjectInput;
 import java.io.InvalidObjectException;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.time.chrono.ChronoZonedDateTime;
@@ -376,7 +376,8 @@ public final class ZonedDateTime
             if (preferredOffset != null && validOffsets.contains(preferredOffset)) {
                 offset = preferredOffset;
             } else {
-                offset = Objects.requireNonNull(validOffsets.get(0), "offset");  // protect against bad ZoneRules
+        offset =
+            Objects.requireNonNull(validOffsets.get(0), "offset"); // protect against bad ZoneRules
             }
         }
         return new ZonedDateTime(localDateTime, offset, zone);
@@ -451,21 +452,22 @@ public final class ZonedDateTime
         return new ZonedDateTime(ldt, offset, zone);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code ZonedDateTime} strictly validating the
-     * combination of local date-time, offset and zone ID.
-     * <p>
-     * This creates a zoned date-time ensuring that the offset is valid for the
-     * local date-time according to the rules of the specified zone.
-     * If the offset is invalid, an exception is thrown.
-     *
-     * @param localDateTime  the local date-time, not null
-     * @param offset  the zone offset, not null
-     * @param zone  the time-zone, not null
-     * @return the zoned date-time, not null
-     */
-    public static ZonedDateTime ofStrict(LocalDateTime localDateTime, ZoneOffset offset, ZoneId zone) {
+  // -----------------------------------------------------------------------
+  /**
+   * Obtains an instance of {@code ZonedDateTime} strictly validating the combination of local
+   * date-time, offset and zone ID.
+   *
+   * <p>This creates a zoned date-time ensuring that the offset is valid for the local date-time
+   * according to the rules of the specified zone. If the offset is invalid, an exception is thrown.
+   *
+   * @param localDateTime the local date-time, not null
+   * @param offset the zone offset, not null
+   * @param zone the time-zone, not null
+   * @return the zoned date-time, not null
+   * @throws DateTimeException if the combination of arguments is invalid
+   */
+  public static ZonedDateTime ofStrict(
+      LocalDateTime localDateTime, ZoneOffset offset, ZoneId zone) {
         Objects.requireNonNull(localDateTime, "localDateTime");
         Objects.requireNonNull(offset, "offset");
         Objects.requireNonNull(zone, "zone");
@@ -473,14 +475,23 @@ public final class ZonedDateTime
         if (rules.isValidOffset(localDateTime, offset) == false) {
             ZoneOffsetTransition trans = rules.getTransition(localDateTime);
             if (trans != null && trans.isGap()) {
-                // error message says daylight savings for simplicity
-                // even though there are other kinds of gaps
-                throw new DateTimeException("LocalDateTime '" + localDateTime +
-                        "' does not exist in zone '" + zone +
-                        "' due to a gap in the local time-line, typically caused by daylight savings");
-            }
-            throw new DateTimeException("ZoneOffset '" + offset + "' is not valid for LocalDateTime '" +
-                    localDateTime + "' in zone '" + zone + "'");
+        // error message says daylight savings for simplicity
+        // even though there are other kinds of gaps
+        throw new DateTimeException(
+            "LocalDateTime '"
+                + localDateTime
+                + "' does not exist in zone '"
+                + zone
+                + "' due to a gap in the local time-line, typically caused by daylight savings");
+      }
+      throw new DateTimeException(
+          "ZoneOffset '"
+              + offset
+              + "' is not valid for LocalDateTime '"
+              + localDateTime
+              + "' in zone '"
+              + zone
+              + "'");
         }
         return new ZonedDateTime(localDateTime, offset, zone);
     }
@@ -774,40 +785,39 @@ public final class ZonedDateTime
         return field.rangeRefinedBy(this);
     }
 
-    /**
-     * Gets the value of the specified field from this date-time as an {@code int}.
-     * <p>
-     * This queries this date-time for the value of the specified field.
-     * The returned value will always be within the valid range of values for the field.
-     * If it is not possible to return the value, because the field is not supported
-     * or for some other reason, an exception is thrown.
-     * <p>
-     * If the field is a {@link ChronoField} then the query is implemented here.
-     * The {@link #isSupported(TemporalField) supported fields} will return valid
-     * values based on this date-time, except {@code NANO_OF_DAY}, {@code MICRO_OF_DAY},
-     * {@code EPOCH_DAY}, {@code PROLEPTIC_MONTH} and {@code INSTANT_SECONDS} which are too
-     * large to fit in an {@code int} and throw a {@code DateTimeException}.
-     * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
-     * <p>
-     * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
-     * passing {@code this} as the argument. Whether the value can be obtained,
-     * and what the value represents, is determined by the field.
-     *
-     * @param field  the field to get, not null
-     * @return the value for the field
-     * @throws DateTimeException if a value for the field cannot be obtained or
-     *         the value is outside the range of valid values for the field
-     * @throws UnsupportedTemporalTypeException if the field is not supported or
-     *         the range of values exceeds an {@code int}
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    @Override  // override for Javadoc and performance
-    public int get(TemporalField field) {
+  /**
+   * Gets the value of the specified field from this date-time as an {@code int}.
+   *
+   * <p>This queries this date-time for the value of the specified field. The returned value will
+   * always be within the valid range of values for the field. If it is not possible to return the
+   * value, because the field is not supported or for some other reason, an exception is thrown.
+   *
+   * <p>If the field is a {@link ChronoField} then the query is implemented here. The {@link
+   * #isSupported(TemporalField) supported fields} will return valid values based on this date-time,
+   * except {@code NANO_OF_DAY}, {@code MICRO_OF_DAY}, {@code EPOCH_DAY}, {@code PROLEPTIC_MONTH}
+   * and {@code INSTANT_SECONDS} which are too large to fit in an {@code int} and throw an {@code
+   * UnsupportedTemporalTypeException}. All other {@code ChronoField} instances will throw an {@code
+   * UnsupportedTemporalTypeException}.
+   *
+   * <p>If the field is not a {@code ChronoField}, then the result of this method is obtained by
+   * invoking {@code TemporalField.getFrom(TemporalAccessor)} passing {@code this} as the argument.
+   * Whether the value can be obtained, and what the value represents, is determined by the field.
+   *
+   * @param field the field to get, not null
+   * @return the value for the field
+   * @throws DateTimeException if a value for the field cannot be obtained or the value is outside
+   *     the range of valid values for the field
+   * @throws UnsupportedTemporalTypeException if the field is not supported or the range of values
+   *     exceeds an {@code int}
+   * @throws ArithmeticException if numeric overflow occurs
+   */
+  @Override // override for Javadoc and performance
+  public int get(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case INSTANT_SECONDS:
-                    throw new UnsupportedTemporalTypeException("Invalid field 'InstantSeconds' for get() method, use getLong() instead");
+          throw new UnsupportedTemporalTypeException(
+              "Invalid field 'InstantSeconds' for get() method, use getLong() instead");
                 case OFFSET_SECONDS:
                     return getOffset().getTotalSeconds();
             }
@@ -1690,32 +1700,35 @@ public final class ZonedDateTime
         return resolveLocal(dateTime.plusDays(days));
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified number of hours added.
-     * <p>
-     * This operates on the instant time-line, such that adding one hour will
-     * always be a duration of one hour later.
-     * This may cause the local date-time to change by an amount other than one hour.
-     * Note that this is a different approach to that used by days, months and years,
-     * thus adding one day is not the same as adding 24 hours.
-     * <p>
-     * For example, consider a time-zone where the spring DST cutover means that the
-     * local times 01:00 to 01:59 occur twice changing from offset +02:00 to +01:00.
-     * <ul>
-     * <li>Adding one hour to 00:30+02:00 will result in 01:30+02:00
-     * <li>Adding one hour to 01:30+02:00 will result in 01:30+01:00
-     * <li>Adding one hour to 01:30+01:00 will result in 02:30+01:00
-     * <li>Adding three hours to 00:30+02:00 will result in 02:30+01:00
-     * </ul>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to add, may be negative
-     * @return a {@code ZonedDateTime} based on this date-time with the hours added, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public ZonedDateTime plusHours(long hours) {
+  // -----------------------------------------------------------------------
+  /**
+   * Returns a copy of this {@code ZonedDateTime} with the specified number of hours added.
+   *
+   * <p>This operates on the instant time-line, such that adding one hour will always be a duration
+   * of one hour later. This may cause the local date-time to change by an amount other than one
+   * hour. Note that this is a different approach to that used by days, months and years, thus
+   * adding one day is not the same as adding 24 hours.
+   *
+   * <p>For example, consider a time-zone, such as 'Europe/Paris', where the Autumn DST cutover
+   * means that the local times 02:00 to 02:59 occur twice changing from offset +02:00 in summer to
+   * +01:00 in winter.
+   *
+   * <ul>
+   *   <li>Adding one hour to 01:30+02:00 will result in 02:30+02:00 (both in summer time)
+   *   <li>Adding one hour to 02:30+02:00 will result in 02:30+01:00 (moving from summer to winter
+   *       time)
+   *   <li>Adding one hour to 02:30+01:00 will result in 03:30+01:00 (both in winter time)
+   *   <li>Adding three hours to 01:30+02:00 will result in 03:30+01:00 (moving from summer to
+   *       winter time)
+   * </ul>
+   *
+   * <p>This instance is immutable and unaffected by this method call.
+   *
+   * @param hours the hours to add, may be negative
+   * @return a {@code ZonedDateTime} based on this date-time with the hours added, not null
+   * @throws DateTimeException if the result exceeds the supported date range
+   */
+  public ZonedDateTime plusHours(long hours) {
         return resolveInstant(dateTime.plusHours(hours));
     }
 
@@ -1931,32 +1944,35 @@ public final class ZonedDateTime
         return (days == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-days));
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code ZonedDateTime} with the specified number of hours subtracted.
-     * <p>
-     * This operates on the instant time-line, such that subtracting one hour will
-     * always be a duration of one hour earlier.
-     * This may cause the local date-time to change by an amount other than one hour.
-     * Note that this is a different approach to that used by days, months and years,
-     * thus subtracting one day is not the same as adding 24 hours.
-     * <p>
-     * For example, consider a time-zone where the spring DST cutover means that the
-     * local times 01:00 to 01:59 occur twice changing from offset +02:00 to +01:00.
-     * <ul>
-     * <li>Subtracting one hour from 02:30+01:00 will result in 01:30+02:00
-     * <li>Subtracting one hour from 01:30+01:00 will result in 01:30+02:00
-     * <li>Subtracting one hour from 01:30+02:00 will result in 00:30+01:00
-     * <li>Subtracting three hours from 02:30+01:00 will result in 00:30+02:00
-     * </ul>
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param hours  the hours to subtract, may be negative
-     * @return a {@code ZonedDateTime} based on this date-time with the hours subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public ZonedDateTime minusHours(long hours) {
+  // -----------------------------------------------------------------------
+  /**
+   * Returns a copy of this {@code ZonedDateTime} with the specified number of hours subtracted.
+   *
+   * <p>This operates on the instant time-line, such that subtracting one hour will always be a
+   * duration of one hour earlier. This may cause the local date-time to change by an amount other
+   * than one hour. Note that this is a different approach to that used by days, months and years,
+   * thus subtracting one day is not the same as adding 24 hours.
+   *
+   * <p>For example, consider a time-zone, such as 'Europe/Paris', where the Autumn DST cutover
+   * means that the local times 02:00 to 02:59 occur twice changing from offset +02:00 in summer to
+   * +01:00 in winter.
+   *
+   * <ul>
+   *   <li>Subtracting one hour from 03:30+01:00 will result in 02:30+01:00 (both in winter time)
+   *   <li>Subtracting one hour from 02:30+01:00 will result in 02:30+02:00 (moving from winter to
+   *       summer time)
+   *   <li>Subtracting one hour from 02:30+02:00 will result in 01:30+02:00 (both in summer time)
+   *   <li>Subtracting three hours from 03:30+01:00 will result in 01:30+02:00 (moving from winter
+   *       to summer time)
+   * </ul>
+   *
+   * <p>This instance is immutable and unaffected by this method call.
+   *
+   * @param hours the hours to subtract, may be negative
+   * @return a {@code ZonedDateTime} based on this date-time with the hours subtracted, not null
+   * @throws DateTimeException if the result exceeds the supported date range
+   */
+  public ZonedDateTime minusHours(long hours) {
         return (hours == Long.MIN_VALUE ? plusHours(Long.MAX_VALUE).plusHours(1) : plusHours(-hours));
     }
 

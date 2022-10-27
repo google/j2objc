@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -143,10 +143,8 @@ public final class ZoneOffset
      * The time-zone offset for UTC, with an ID of 'Z'.
      */
     public static final ZoneOffset UTC = ZoneOffset.ofTotalSeconds(0);
-    /**
-     * Constant for the maximum supported offset.
-     */
-    public static final ZoneOffset MIN = ZoneOffset.ofTotalSeconds(-MAX_SECONDS);
+  /** Constant for the minimum supported offset. */
+  public static final ZoneOffset MIN = ZoneOffset.ofTotalSeconds(-MAX_SECONDS);
     /**
      * Constant for the maximum supported offset.
      */
@@ -232,11 +230,12 @@ public final class ZoneOffset
                 seconds = parseNumber(offsetId, 7, true);
                 break;
             default:
-                throw new DateTimeException("Invalid ID for ZoneOffset, invalid format: " + offsetId);
-        }
+        throw new DateTimeException("Invalid ID for ZoneOffset, invalid format: " + offsetId);
+    }
         char first = offsetId.charAt(0);
         if (first != '+' && first != '-') {
-            throw new DateTimeException("Invalid ID for ZoneOffset, plus/minus not found when expected: " + offsetId);
+      throw new DateTimeException(
+          "Invalid ID for ZoneOffset, plus/minus not found when expected: " + offsetId);
         }
         if (first == '-') {
             return ofHoursMinutesSeconds(-hours, -minutes, -seconds);
@@ -255,12 +254,14 @@ public final class ZoneOffset
      */
     private static int parseNumber(CharSequence offsetId, int pos, boolean precededByColon) {
         if (precededByColon && offsetId.charAt(pos - 1) != ':') {
-            throw new DateTimeException("Invalid ID for ZoneOffset, colon not found when expected: " + offsetId);
+      throw new DateTimeException(
+          "Invalid ID for ZoneOffset, colon not found when expected: " + offsetId);
         }
         char ch1 = offsetId.charAt(pos);
         char ch2 = offsetId.charAt(pos + 1);
         if (ch1 < '0' || ch1 > '9' || ch2 < '0' || ch2 > '9') {
-            throw new DateTimeException("Invalid ID for ZoneOffset, non numeric characters found: " + offsetId);
+      throw new DateTimeException(
+          "Invalid ID for ZoneOffset, non numeric characters found: " + offsetId);
         }
         return (ch1 - 48) * 10 + (ch2 - 48);
     }
@@ -360,24 +361,30 @@ public final class ZoneOffset
         }
         if (hours > 0) {
             if (minutes < 0 || seconds < 0) {
-                throw new DateTimeException("Zone offset minutes and seconds must be positive because hours is positive");
+        throw new DateTimeException(
+            "Zone offset minutes and seconds must be positive because hours is positive");
             }
         } else if (hours < 0) {
             if (minutes > 0 || seconds > 0) {
-                throw new DateTimeException("Zone offset minutes and seconds must be negative because hours is negative");
+        throw new DateTimeException(
+            "Zone offset minutes and seconds must be negative because hours is negative");
             }
         } else if ((minutes > 0 && seconds < 0) || (minutes < 0 && seconds > 0)) {
             throw new DateTimeException("Zone offset minutes and seconds must have the same sign");
         }
-        if (Math.abs(minutes) > 59) {
-            throw new DateTimeException("Zone offset minutes not in valid range: abs(value) " +
-                    Math.abs(minutes) + " is not in the range 0 to 59");
-        }
-        if (Math.abs(seconds) > 59) {
-            throw new DateTimeException("Zone offset seconds not in valid range: abs(value) " +
-                    Math.abs(seconds) + " is not in the range 0 to 59");
-        }
-        if (Math.abs(hours) == 18 && (Math.abs(minutes) > 0 || Math.abs(seconds) > 0)) {
+    if (minutes < -59 || minutes > 59) {
+      throw new DateTimeException(
+          "Zone offset minutes not in valid range: value "
+              + minutes
+              + " is not in the range -59 to 59");
+    }
+    if (seconds < -59 || seconds > 59) {
+      throw new DateTimeException(
+          "Zone offset seconds not in valid range: value "
+              + seconds
+              + " is not in the range -59 to 59");
+    }
+    if (Math.abs(hours) == 18 && (minutes | seconds) != 0) {
             throw new DateTimeException("Zone offset not in valid range: -18:00 to +18:00");
         }
     }
@@ -405,7 +412,7 @@ public final class ZoneOffset
      * @throws DateTimeException if the offset is not in the required range
      */
     public static ZoneOffset ofTotalSeconds(int totalSeconds) {
-        if (Math.abs(totalSeconds) > MAX_SECONDS) {
+    if (totalSeconds < -MAX_SECONDS || totalSeconds > MAX_SECONDS) {
             throw new DateTimeException("Zone offset not in valid range: -18:00 to +18:00");
         }
         if (totalSeconds % (15 * SECONDS_PER_MINUTE) == 0) {
@@ -679,23 +686,24 @@ public final class ZoneOffset
         return temporal.with(OFFSET_SECONDS, totalSeconds);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Compares this offset to another offset in descending order.
-     * <p>
-     * The offsets are compared in the order that they occur for the same time
-     * of day around the world. Thus, an offset of {@code +10:00} comes before an
-     * offset of {@code +09:00} and so on down to {@code -18:00}.
-     * <p>
-     * The comparison is "consistent with equals", as defined by {@link Comparable}.
-     *
-     * @param other  the other date to compare to, not null
-     * @return the comparator value, negative if less, postive if greater
-     * @throws NullPointerException if {@code other} is null
-     */
-    @Override
-    public int compareTo(ZoneOffset other) {
-        return other.totalSeconds - totalSeconds;
+  // -----------------------------------------------------------------------
+  /**
+   * Compares this offset to another offset in descending order.
+   *
+   * <p>The offsets are compared in the order that they occur for the same time of day around the
+   * world. Thus, an offset of {@code +10:00} comes before an offset of {@code +09:00} and so on
+   * down to {@code -18:00}.
+   *
+   * <p>The comparison is "consistent with equals", as defined by {@link Comparable}.
+   *
+   * @param other the other date to compare to, not null
+   * @return the comparator value, negative if less, positive if greater
+   * @throws NullPointerException if {@code other} is null
+   */
+  @Override
+  public int compareTo(ZoneOffset other) {
+    // abs(totalSeconds) <= MAX_SECONDS, so no overflow can happen here
+    return other.totalSeconds - totalSeconds;
     }
 
     //-----------------------------------------------------------------------

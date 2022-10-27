@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -61,6 +61,8 @@
  */
 package java.time;
 
+import static java.util.Map.entry;
+
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.InvalidObjectException;
@@ -76,8 +78,7 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.zone.ZoneRules;
 import java.time.zone.ZoneRulesException;
 import java.time.zone.ZoneRulesProvider;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -171,83 +172,80 @@ import java.util.TimeZone;
  */
 public abstract class ZoneId implements Serializable {
 
-    /**
-     * A map of zone overrides to enable the short time-zone names to be used.
-     * <p>
-     * Use of short zone IDs has been deprecated in {@code java.util.TimeZone}.
-     * This map allows the IDs to continue to be used via the
-     * {@link #of(String, Map)} factory method.
-     * <p>
-     * This map contains a mapping of the IDs that is in line with TZDB 2005r and
-     * later, where 'EST', 'MST' and 'HST' map to IDs which do not include daylight
-     * savings.
-     * <p>
-     * This maps as follows:
-     * <ul>
-     * <li>EST - -05:00</li>
-     * <li>HST - -10:00</li>
-     * <li>MST - -07:00</li>
-     * <li>ACT - Australia/Darwin</li>
-     * <li>AET - Australia/Sydney</li>
-     * <li>AGT - America/Argentina/Buenos_Aires</li>
-     * <li>ART - Africa/Cairo</li>
-     * <li>AST - America/Anchorage</li>
-     * <li>BET - America/Sao_Paulo</li>
-     * <li>BST - Asia/Dhaka</li>
-     * <li>CAT - Africa/Harare</li>
-     * <li>CNT - America/St_Johns</li>
-     * <li>CST - America/Chicago</li>
-     * <li>CTT - Asia/Shanghai</li>
-     * <li>EAT - Africa/Addis_Ababa</li>
-     * <li>ECT - Europe/Paris</li>
-     * <li>IET - America/Indiana/Indianapolis</li>
-     * <li>IST - Asia/Kolkata</li>
-     * <li>JST - Asia/Tokyo</li>
-     * <li>MIT - Pacific/Apia</li>
-     * <li>NET - Asia/Yerevan</li>
-     * <li>NST - Pacific/Auckland</li>
-     * <li>PLT - Asia/Karachi</li>
-     * <li>PNT - America/Phoenix</li>
-     * <li>PRT - America/Puerto_Rico</li>
-     * <li>PST - America/Los_Angeles</li>
-     * <li>SST - Pacific/Guadalcanal</li>
-     * <li>VST - Asia/Ho_Chi_Minh</li>
-     * </ul>
-     * The map is unmodifiable.
-     */
-    public static final Map<String, String> SHORT_IDS;
-    static {
-        Map<String, String> map = new HashMap<>(64);
-        map.put("ACT", "Australia/Darwin");
-        map.put("AET", "Australia/Sydney");
-        map.put("AGT", "America/Argentina/Buenos_Aires");
-        map.put("ART", "Africa/Cairo");
-        map.put("AST", "America/Anchorage");
-        map.put("BET", "America/Sao_Paulo");
-        map.put("BST", "Asia/Dhaka");
-        map.put("CAT", "Africa/Harare");
-        map.put("CNT", "America/St_Johns");
-        map.put("CST", "America/Chicago");
-        map.put("CTT", "Asia/Shanghai");
-        map.put("EAT", "Africa/Addis_Ababa");
-        map.put("ECT", "Europe/Paris");
-        map.put("IET", "America/Indiana/Indianapolis");
-        map.put("IST", "Asia/Kolkata");
-        map.put("JST", "Asia/Tokyo");
-        map.put("MIT", "Pacific/Apia");
-        map.put("NET", "Asia/Yerevan");
-        map.put("NST", "Pacific/Auckland");
-        map.put("PLT", "Asia/Karachi");
-        map.put("PNT", "America/Phoenix");
-        map.put("PRT", "America/Puerto_Rico");
-        map.put("PST", "America/Los_Angeles");
-        map.put("SST", "Pacific/Guadalcanal");
-        map.put("VST", "Asia/Ho_Chi_Minh");
-        map.put("EST", "-05:00");
-        map.put("MST", "-07:00");
-        map.put("HST", "-10:00");
-        SHORT_IDS = Collections.unmodifiableMap(map);
-    }
+  /**
+   * A map of zone overrides to enable the short time-zone names to be used.
+   *
+   * <p>Use of short zone IDs has been deprecated in {@code java.util.TimeZone}. This map allows the
+   * IDs to continue to be used via the {@link #of(String, Map)} factory method.
+   *
+   * <p>This map contains a mapping of the IDs that is in line with TZDB 2005r and later, where
+   * 'EST', 'MST' and 'HST' map to IDs which do not include daylight savings.
+   *
+   * <p>This maps as follows:
+   *
+   * <ul>
+   *   <li>EST - -05:00
+   *   <li>HST - -10:00
+   *   <li>MST - -07:00
+   *   <li>ACT - Australia/Darwin
+   *   <li>AET - Australia/Sydney
+   *   <li>AGT - America/Argentina/Buenos_Aires
+   *   <li>ART - Africa/Cairo
+   *   <li>AST - America/Anchorage
+   *   <li>BET - America/Sao_Paulo
+   *   <li>BST - Asia/Dhaka
+   *   <li>CAT - Africa/Harare
+   *   <li>CNT - America/St_Johns
+   *   <li>CST - America/Chicago
+   *   <li>CTT - Asia/Shanghai
+   *   <li>EAT - Africa/Addis_Ababa
+   *   <li>ECT - Europe/Paris
+   *   <li>IET - America/Indiana/Indianapolis
+   *   <li>IST - Asia/Kolkata
+   *   <li>JST - Asia/Tokyo
+   *   <li>MIT - Pacific/Apia
+   *   <li>NET - Asia/Yerevan
+   *   <li>NST - Pacific/Auckland
+   *   <li>PLT - Asia/Karachi
+   *   <li>PNT - America/Phoenix
+   *   <li>PRT - America/Puerto_Rico
+   *   <li>PST - America/Los_Angeles
+   *   <li>SST - Pacific/Guadalcanal
+   *   <li>VST - Asia/Ho_Chi_Minh
+   * </ul>
+   *
+   * The map is unmodifiable.
+   */
+  public static final Map<String, String> SHORT_IDS =
+      Map.ofEntries(
+          entry("ACT", "Australia/Darwin"),
+          entry("AET", "Australia/Sydney"),
+          entry("AGT", "America/Argentina/Buenos_Aires"),
+          entry("ART", "Africa/Cairo"),
+          entry("AST", "America/Anchorage"),
+          entry("BET", "America/Sao_Paulo"),
+          entry("BST", "Asia/Dhaka"),
+          entry("CAT", "Africa/Harare"),
+          entry("CNT", "America/St_Johns"),
+          entry("CST", "America/Chicago"),
+          entry("CTT", "Asia/Shanghai"),
+          entry("EAT", "Africa/Addis_Ababa"),
+          entry("ECT", "Europe/Paris"),
+          entry("IET", "America/Indiana/Indianapolis"),
+          entry("IST", "Asia/Kolkata"),
+          entry("JST", "Asia/Tokyo"),
+          entry("MIT", "Pacific/Apia"),
+          entry("NET", "Asia/Yerevan"),
+          entry("NST", "Pacific/Auckland"),
+          entry("PLT", "Asia/Karachi"),
+          entry("PNT", "America/Phoenix"),
+          entry("PRT", "America/Puerto_Rico"),
+          entry("PST", "America/Los_Angeles"),
+          entry("SST", "Pacific/Guadalcanal"),
+          entry("VST", "Asia/Ho_Chi_Minh"),
+          entry("EST", "-05:00"),
+          entry("MST", "-07:00"),
+          entry("HST", "-10:00"));
     /**
      * Serialization version.
      */
@@ -295,7 +293,7 @@ public abstract class ZoneId implements Serializable {
      * @return a modifiable copy of the set of zone IDs, not null
      */
     public static Set<String> getAvailableZoneIds() {
-        return ZoneRulesProvider.getAvailableZoneIds();
+    return new HashSet<String>(ZoneRulesProvider.getAvailableZoneIds());
     }
 
     //-----------------------------------------------------------------------
@@ -318,8 +316,7 @@ public abstract class ZoneId implements Serializable {
     public static ZoneId of(String zoneId, Map<String, String> aliasMap) {
         Objects.requireNonNull(zoneId, "zoneId");
         Objects.requireNonNull(aliasMap, "aliasMap");
-        String id = aliasMap.get(zoneId);
-        id = (id != null ? id : zoneId);
+    String id = Objects.requireNonNullElse(aliasMap.get(zoneId), zoneId);
         return of(id);
     }
 
@@ -383,7 +380,7 @@ public abstract class ZoneId implements Serializable {
     public static ZoneId ofOffset(String prefix, ZoneOffset offset) {
         Objects.requireNonNull(prefix, "prefix");
         Objects.requireNonNull(offset, "offset");
-        if (prefix.length() == 0) {
+    if (prefix.isEmpty()) {
             return offset;
         }
 

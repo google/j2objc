@@ -656,6 +656,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/util/stream/StreamSpliterators.java \
   java/util/stream/TerminalOp.java \
   jdk/internal/module/SystemModulesMap.java \
+  jdk/internal/misc/VM.java \
   libcore/api/CorePlatformApi.java \
   libcore/api/Hide.java \
   libcore/api/IntraCoreApi.java \

@@ -183,10 +183,10 @@ public final class LocalTime
      * Microseconds per day.
      */
     static final long MICROS_PER_DAY = SECONDS_PER_DAY * 1000_000L;
-    /**
-     * Nanos per second.
-     */
-    static final long NANOS_PER_SECOND = 1000_000_000L;
+  /** Nanos per millisecond. */
+  static final long NANOS_PER_MILLI = 1000_000L;
+  /** Nanos per second. */
+  static final long NANOS_PER_SECOND = 1000_000_000L;
     /**
      * Nanos per minute.
      */
@@ -268,10 +268,7 @@ public final class LocalTime
         Objects.requireNonNull(clock, "clock");
         // inline OffsetTime factory to avoid creating object and InstantProvider checks
         final Instant now = clock.instant();  // called once
-        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-        long localSecond = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        int secsOfDay = (int) Math.floorMod(localSecond, SECONDS_PER_DAY);
-        return ofNanoOfDay(secsOfDay * NANOS_PER_SECOND + now.getNano());
+    return ofInstant(now, clock.getZone());
     }
 
     //-----------------------------------------------------------------------
@@ -336,6 +333,28 @@ public final class LocalTime
         NANO_OF_SECOND.checkValidValue(nanoOfSecond);
         return create(hour, minute, second, nanoOfSecond);
     }
+
+  /**
+   * Obtains an instance of {@code LocalTime} from an {@code Instant} and zone ID.
+   *
+   * <p>This creates a local time based on the specified instant. First, the offset from
+   * UTC/Greenwich is obtained using the zone ID and instant, which is simple as there is only one
+   * valid offset for each instant. Then, the instant and offset are used to calculate the local
+   * time.
+   *
+   * @param instant the instant to create the time from, not null
+   * @param zone the time-zone, which may be an offset, not null
+   * @return the local time, not null
+   * @since 9
+   */
+  public static LocalTime ofInstant(Instant instant, ZoneId zone) {
+    Objects.requireNonNull(instant, "instant");
+    Objects.requireNonNull(zone, "zone");
+    ZoneOffset offset = zone.getRules().getOffset(instant);
+    long localSecond = instant.getEpochSecond() + offset.getTotalSeconds();
+    int secsOfDay = Math.floorMod(localSecond, SECONDS_PER_DAY);
+    return ofNanoOfDay(secsOfDay * NANOS_PER_SECOND + instant.getNano());
+  }
 
     //-----------------------------------------------------------------------
     /**
@@ -580,35 +599,33 @@ public final class LocalTime
         return Temporal.super.range(field);
     }
 
-    /**
-     * Gets the value of the specified field from this time as an {@code int}.
-     * <p>
-     * This queries this time for the value of the specified field.
-     * The returned value will always be within the valid range of values for the field.
-     * If it is not possible to return the value, because the field is not supported
-     * or for some other reason, an exception is thrown.
-     * <p>
-     * If the field is a {@link ChronoField} then the query is implemented here.
-     * The {@link #isSupported(TemporalField) supported fields} will return valid
-     * values based on this time, except {@code NANO_OF_DAY} and {@code MICRO_OF_DAY}
-     * which are too large to fit in an {@code int} and throw a {@code DateTimeException}.
-     * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
-     * <p>
-     * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
-     * passing {@code this} as the argument. Whether the value can be obtained,
-     * and what the value represents, is determined by the field.
-     *
-     * @param field  the field to get, not null
-     * @return the value for the field
-     * @throws DateTimeException if a value for the field cannot be obtained or
-     *         the value is outside the range of valid values for the field
-     * @throws UnsupportedTemporalTypeException if the field is not supported or
-     *         the range of values exceeds an {@code int}
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    @Override  // override for Javadoc and performance
-    public int get(TemporalField field) {
+  /**
+   * Gets the value of the specified field from this time as an {@code int}.
+   *
+   * <p>This queries this time for the value of the specified field. The returned value will always
+   * be within the valid range of values for the field. If it is not possible to return the value,
+   * because the field is not supported or for some other reason, an exception is thrown.
+   *
+   * <p>If the field is a {@link ChronoField} then the query is implemented here. The {@link
+   * #isSupported(TemporalField) supported fields} will return valid values based on this time,
+   * except {@code NANO_OF_DAY} and {@code MICRO_OF_DAY} which are too large to fit in an {@code
+   * int} and throw an {@code UnsupportedTemporalTypeException}. All other {@code ChronoField}
+   * instances will throw an {@code UnsupportedTemporalTypeException}.
+   *
+   * <p>If the field is not a {@code ChronoField}, then the result of this method is obtained by
+   * invoking {@code TemporalField.getFrom(TemporalAccessor)} passing {@code this} as the argument.
+   * Whether the value can be obtained, and what the value represents, is determined by the field.
+   *
+   * @param field the field to get, not null
+   * @return the value for the field
+   * @throws DateTimeException if a value for the field cannot be obtained or the value is outside
+   *     the range of valid values for the field
+   * @throws UnsupportedTemporalTypeException if the field is not supported or the range of values
+   *     exceeds an {@code int}
+   * @throws ArithmeticException if numeric overflow occurs
+   */
+  @Override // override for Javadoc and performance
+  public int get(TemporalField field) {
         if (field instanceof ChronoField) {
             return get0(field);
         }
@@ -655,9 +672,13 @@ public final class LocalTime
     private int get0(TemporalField field) {
         switch ((ChronoField) field) {
             case NANO_OF_SECOND: return nano;
-            case NANO_OF_DAY: throw new UnsupportedTemporalTypeException("Invalid field 'NanoOfDay' for get() method, use getLong() instead");
+      case NANO_OF_DAY:
+        throw new UnsupportedTemporalTypeException(
+            "Invalid field 'NanoOfDay' for get() method, use getLong() instead");
             case MICRO_OF_SECOND: return nano / 1000;
-            case MICRO_OF_DAY: throw new UnsupportedTemporalTypeException("Invalid field 'MicroOfDay' for get() method, use getLong() instead");
+      case MICRO_OF_DAY:
+        throw new UnsupportedTemporalTypeException(
+            "Invalid field 'MicroOfDay' for get() method, use getLong() instead");
             case MILLI_OF_SECOND: return nano / 1000_000;
             case MILLI_OF_DAY: return (int) (toNanoOfDay() / 1000_000);
             case SECOND_OF_MINUTE: return second;
@@ -946,11 +967,12 @@ public final class LocalTime
         }
         Duration unitDur = unit.getDuration();
         if (unitDur.getSeconds() > SECONDS_PER_DAY) {
-            throw new UnsupportedTemporalTypeException("Unit is too large to be used for truncation");
+      throw new UnsupportedTemporalTypeException("Unit is too large to be used for truncation");
         }
         long dur = unitDur.toNanos();
         if ((NANOS_PER_DAY % dur) != 0) {
-            throw new UnsupportedTemporalTypeException("Unit must divide into a standard day without remainder");
+      throw new UnsupportedTemporalTypeException(
+          "Unit must divide into a standard day without remainder");
         }
         long nod = toNanoOfDay();
         return ofNanoOfDay((nod / dur) * dur);
@@ -1461,6 +1483,28 @@ public final class LocalTime
         total += nano;
         return total;
     }
+
+  /**
+   * Converts this {@code LocalTime} to the number of seconds since the epoch of
+   * 1970-01-01T00:00:00Z.
+   *
+   * <p>This combines this local time with the specified date and offset to calculate the
+   * epoch-second value, which is the number of elapsed seconds from 1970-01-01T00:00:00Z. Instants
+   * on the time-line after the epoch are positive, earlier are negative.
+   *
+   * @param date the local date, not null
+   * @param offset the zone offset, not null
+   * @return the number of seconds since the epoch of 1970-01-01T00:00:00Z, may be negative
+   * @since 9
+   */
+  public long toEpochSecond(LocalDate date, ZoneOffset offset) {
+    Objects.requireNonNull(date, "date");
+    Objects.requireNonNull(offset, "offset");
+    long epochDay = date.toEpochDay();
+    long secs = epochDay * 86400 + toSecondOfDay();
+    secs -= offset.getTotalSeconds();
+    return secs;
+  }
 
     //-----------------------------------------------------------------------
     /**

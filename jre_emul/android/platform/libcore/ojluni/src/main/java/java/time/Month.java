@@ -377,19 +377,19 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
         return field.getFrom(this);
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Returns the month-of-year that is the specified number of quarters after this one.
-     * <p>
-     * The calculation rolls around the end of the year from December to January.
-     * The specified period may be negative.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to add, positive or negative
-     * @return the resulting month, not null
-     */
-    public Month plus(long months) {
+  // -----------------------------------------------------------------------
+  /**
+   * Returns the month-of-year that is the specified number of months after this one.
+   *
+   * <p>The calculation rolls around the end of the year from December to January. The specified
+   * period may be negative.
+   *
+   * <p>This instance is immutable and unaffected by this method call.
+   *
+   * @param months the months to add, positive or negative
+   * @return the resulting month, not null
+   */
+  public Month plus(long months) {
         int amount = (int) (months % 12);
         return ENUMS[(ordinal() + (amount + 12)) % 12];
     }

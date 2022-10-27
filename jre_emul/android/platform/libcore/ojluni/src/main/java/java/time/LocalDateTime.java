@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -412,7 +412,7 @@ public final class LocalDateTime
         NANO_OF_SECOND.checkValidValue(nanoOfSecond);
         long localSecond = epochSecond + offset.getTotalSeconds();  // overflow caught later
         long localEpochDay = Math.floorDiv(localSecond, SECONDS_PER_DAY);
-        int secsOfDay = (int)Math.floorMod(localSecond, SECONDS_PER_DAY);
+    int secsOfDay = Math.floorMod(localSecond, SECONDS_PER_DAY);
         LocalDate date = LocalDate.ofEpochDay(localEpochDay);
         LocalTime time = LocalTime.ofNanoOfDay(secsOfDay * NANOS_PER_SECOND + nanoOfSecond);
         return new LocalDateTime(date, time);
@@ -647,36 +647,34 @@ public final class LocalDateTime
         return field.rangeRefinedBy(this);
     }
 
-    /**
-     * Gets the value of the specified field from this date-time as an {@code int}.
-     * <p>
-     * This queries this date-time for the value of the specified field.
-     * The returned value will always be within the valid range of values for the field.
-     * If it is not possible to return the value, because the field is not supported
-     * or for some other reason, an exception is thrown.
-     * <p>
-     * If the field is a {@link ChronoField} then the query is implemented here.
-     * The {@link #isSupported(TemporalField) supported fields} will return valid
-     * values based on this date-time, except {@code NANO_OF_DAY}, {@code MICRO_OF_DAY},
-     * {@code EPOCH_DAY} and {@code PROLEPTIC_MONTH} which are too large to fit in
-     * an {@code int} and throw a {@code DateTimeException}.
-     * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
-     * <p>
-     * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
-     * passing {@code this} as the argument. Whether the value can be obtained,
-     * and what the value represents, is determined by the field.
-     *
-     * @param field  the field to get, not null
-     * @return the value for the field
-     * @throws DateTimeException if a value for the field cannot be obtained or
-     *         the value is outside the range of valid values for the field
-     * @throws UnsupportedTemporalTypeException if the field is not supported or
-     *         the range of values exceeds an {@code int}
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    @Override
-    public int get(TemporalField field) {
+  /**
+   * Gets the value of the specified field from this date-time as an {@code int}.
+   *
+   * <p>This queries this date-time for the value of the specified field. The returned value will
+   * always be within the valid range of values for the field. If it is not possible to return the
+   * value, because the field is not supported or for some other reason, an exception is thrown.
+   *
+   * <p>If the field is a {@link ChronoField} then the query is implemented here. The {@link
+   * #isSupported(TemporalField) supported fields} will return valid values based on this date-time,
+   * except {@code NANO_OF_DAY}, {@code MICRO_OF_DAY}, {@code EPOCH_DAY} and {@code PROLEPTIC_MONTH}
+   * which are too large to fit in an {@code int} and throw an {@code
+   * UnsupportedTemporalTypeException}. All other {@code ChronoField} instances will throw an {@code
+   * UnsupportedTemporalTypeException}.
+   *
+   * <p>If the field is not a {@code ChronoField}, then the result of this method is obtained by
+   * invoking {@code TemporalField.getFrom(TemporalAccessor)} passing {@code this} as the argument.
+   * Whether the value can be obtained, and what the value represents, is determined by the field.
+   *
+   * @param field the field to get, not null
+   * @return the value for the field
+   * @throws DateTimeException if a value for the field cannot be obtained or the value is outside
+   *     the range of valid values for the field
+   * @throws UnsupportedTemporalTypeException if the field is not supported or the range of values
+   *     exceeds an {@code int}
+   * @throws ArithmeticException if numeric overflow occurs
+   */
+  @Override
+  public int get(TemporalField field) {
         if (field instanceof ChronoField) {
             ChronoField f = (ChronoField) field;
             return (f.isTimeBased() ? time.get(field) : date.get(field));
@@ -1389,52 +1387,54 @@ public final class LocalDateTime
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code LocalDateTime} with the specified number of years subtracted.
-     * <p>
-     * This method subtracts the specified amount from the years field in three steps:
-     * <ol>
-     * <li>Subtract the input years from the year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2008-02-29 (leap year) minus one year would result in the
-     * invalid date 2009-02-29 (standard year). Instead of returning an invalid
-     * result, the last valid day of the month, 2009-02-28, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param years  the years to subtract, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the years subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public LocalDateTime minusYears(long years) {
+  // -----------------------------------------------------------------------
+  /**
+   * Returns a copy of this {@code LocalDateTime} with the specified number of years subtracted.
+   *
+   * <p>This method subtracts the specified amount from the years field in three steps:
+   *
+   * <ol>
+   *   <li>Subtract the input years from the year field
+   *   <li>Check if the resulting date would be invalid
+   *   <li>Adjust the day-of-month to the last valid day if necessary
+   * </ol>
+   *
+   * <p>For example, 2008-02-29 (leap year) minus one year would result in the invalid date
+   * 2007-02-29 (standard year). Instead of returning an invalid result, the last valid day of the
+   * month, 2007-02-28, is selected instead.
+   *
+   * <p>This instance is immutable and unaffected by this method call.
+   *
+   * @param years the years to subtract, may be negative
+   * @return a {@code LocalDateTime} based on this date-time with the years subtracted, not null
+   * @throws DateTimeException if the result exceeds the supported date range
+   */
+  public LocalDateTime minusYears(long years) {
         return (years == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-years));
     }
 
-    /**
-     * Returns a copy of this {@code LocalDateTime} with the specified number of months subtracted.
-     * <p>
-     * This method subtracts the specified amount from the months field in three steps:
-     * <ol>
-     * <li>Subtract the input months from the month-of-year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2007-03-31 minus one month would result in the invalid date
-     * 2007-04-31. Instead of returning an invalid result, the last valid day
-     * of the month, 2007-04-30, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to subtract, may be negative
-     * @return a {@code LocalDateTime} based on this date-time with the months subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public LocalDateTime minusMonths(long months) {
+  /**
+   * Returns a copy of this {@code LocalDateTime} with the specified number of months subtracted.
+   *
+   * <p>This method subtracts the specified amount from the months field in three steps:
+   *
+   * <ol>
+   *   <li>Subtract the input months from the month-of-year field
+   *   <li>Check if the resulting date would be invalid
+   *   <li>Adjust the day-of-month to the last valid day if necessary
+   * </ol>
+   *
+   * <p>For example, 2007-03-31 minus one month would result in the invalid date 2007-02-31. Instead
+   * of returning an invalid result, the last valid day of the month, 2007-02-28, is selected
+   * instead.
+   *
+   * <p>This instance is immutable and unaffected by this method call.
+   *
+   * @param months the months to subtract, may be negative
+   * @return a {@code LocalDateTime} based on this date-time with the months subtracted, not null
+   * @throws DateTimeException if the result exceeds the supported date range
+   */
+  public LocalDateTime minusMonths(long months) {
         return (months == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-months));
     }
 

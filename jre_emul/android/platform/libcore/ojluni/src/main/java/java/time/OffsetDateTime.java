@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -69,10 +69,10 @@ import static java.time.temporal.ChronoUnit.FOREVER;
 import static java.time.temporal.ChronoUnit.NANOS;
 
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.io.InvalidObjectException;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
@@ -95,32 +95,29 @@ import java.util.Objects;
 
 // Android-changed: removed ValueBased paragraph.
 /**
- * A date-time with an offset from UTC/Greenwich in the ISO-8601 calendar system,
- * such as {@code 2007-12-03T10:15:30+01:00}.
- * <p>
- * {@code OffsetDateTime} is an immutable representation of a date-time with an offset.
- * This class stores all date and time fields, to a precision of nanoseconds,
- * as well as the offset from UTC/Greenwich. For example, the value
- * "2nd October 2007 at 13:45.30.123456789 +02:00" can be stored in an {@code OffsetDateTime}.
- * <p>
- * {@code OffsetDateTime}, {@link java.time.ZonedDateTime} and {@link java.time.Instant} all store an instant
- * on the time-line to nanosecond precision.
- * {@code Instant} is the simplest, simply representing the instant.
- * {@code OffsetDateTime} adds to the instant the offset from UTC/Greenwich, which allows
- * the local date-time to be obtained.
- * {@code ZonedDateTime} adds full time-zone rules.
- * <p>
- * It is intended that {@code ZonedDateTime} or {@code Instant} is used to model data
- * in simpler applications. This class may be used when modeling date-time concepts in
- * more detail, or when communicating to a database or in a network protocol.
+ * A date-time with an offset from UTC/Greenwich in the ISO-8601 calendar system, such as {@code
+ * 2007-12-03T10:15:30+01:00}.
  *
- * @implSpec
- * This class is immutable and thread-safe.
+ * <p>{@code OffsetDateTime} is an immutable representation of a date-time with an offset. This
+ * class stores all date and time fields, to a precision of nanoseconds, as well as the offset from
+ * UTC/Greenwich. For example, the value "2nd October 2007 at 13:45:30.123456789 +02:00" can be
+ * stored in an {@code OffsetDateTime}.
  *
+ * <p>{@code OffsetDateTime}, {@link java.time.ZonedDateTime} and {@link java.time.Instant} all
+ * store an instant on the time-line to nanosecond precision. {@code Instant} is the simplest,
+ * simply representing the instant. {@code OffsetDateTime} adds to the instant the offset from
+ * UTC/Greenwich, which allows the local date-time to be obtained. {@code ZonedDateTime} adds full
+ * time-zone rules.
+ *
+ * <p>It is intended that {@code ZonedDateTime} or {@code Instant} is used to model data in simpler
+ * applications. This class may be used when modeling date-time concepts in more detail, or when
+ * communicating to a database or in a network protocol.
+ *
+ * @implSpec This class is immutable and thread-safe.
  * @since 1.8
  */
 public final class OffsetDateTime
-        implements Temporal, TemporalAdjuster, Comparable<OffsetDateTime>, Serializable {
+    implements Temporal, TemporalAdjuster, Comparable<OffsetDateTime>, Serializable {
 
     /**
      * The minimum supported {@code OffsetDateTime}, '-999999999-01-01T00:00:00+18:00'.
@@ -558,40 +555,39 @@ public final class OffsetDateTime
         return field.rangeRefinedBy(this);
     }
 
-    /**
-     * Gets the value of the specified field from this date-time as an {@code int}.
-     * <p>
-     * This queries this date-time for the value of the specified field.
-     * The returned value will always be within the valid range of values for the field.
-     * If it is not possible to return the value, because the field is not supported
-     * or for some other reason, an exception is thrown.
-     * <p>
-     * If the field is a {@link ChronoField} then the query is implemented here.
-     * The {@link #isSupported(TemporalField) supported fields} will return valid
-     * values based on this date-time, except {@code NANO_OF_DAY}, {@code MICRO_OF_DAY},
-     * {@code EPOCH_DAY}, {@code PROLEPTIC_MONTH} and {@code INSTANT_SECONDS} which are too
-     * large to fit in an {@code int} and throw a {@code DateTimeException}.
-     * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
-     * <p>
-     * If the field is not a {@code ChronoField}, then the result of this method
-     * is obtained by invoking {@code TemporalField.getFrom(TemporalAccessor)}
-     * passing {@code this} as the argument. Whether the value can be obtained,
-     * and what the value represents, is determined by the field.
-     *
-     * @param field  the field to get, not null
-     * @return the value for the field
-     * @throws DateTimeException if a value for the field cannot be obtained or
-     *         the value is outside the range of valid values for the field
-     * @throws UnsupportedTemporalTypeException if the field is not supported or
-     *         the range of values exceeds an {@code int}
-     * @throws ArithmeticException if numeric overflow occurs
-     */
-    @Override
-    public int get(TemporalField field) {
+  /**
+   * Gets the value of the specified field from this date-time as an {@code int}.
+   *
+   * <p>This queries this date-time for the value of the specified field. The returned value will
+   * always be within the valid range of values for the field. If it is not possible to return the
+   * value, because the field is not supported or for some other reason, an exception is thrown.
+   *
+   * <p>If the field is a {@link ChronoField} then the query is implemented here. The {@link
+   * #isSupported(TemporalField) supported fields} will return valid values based on this date-time,
+   * except {@code NANO_OF_DAY}, {@code MICRO_OF_DAY}, {@code EPOCH_DAY}, {@code PROLEPTIC_MONTH}
+   * and {@code INSTANT_SECONDS} which are too large to fit in an {@code int} and throw an {@code
+   * UnsupportedTemporalTypeException}. All other {@code ChronoField} instances will throw an {@code
+   * UnsupportedTemporalTypeException}.
+   *
+   * <p>If the field is not a {@code ChronoField}, then the result of this method is obtained by
+   * invoking {@code TemporalField.getFrom(TemporalAccessor)} passing {@code this} as the argument.
+   * Whether the value can be obtained, and what the value represents, is determined by the field.
+   *
+   * @param field the field to get, not null
+   * @return the value for the field
+   * @throws DateTimeException if a value for the field cannot be obtained or the value is outside
+   *     the range of valid values for the field
+   * @throws UnsupportedTemporalTypeException if the field is not supported or the range of values
+   *     exceeds an {@code int}
+   * @throws ArithmeticException if numeric overflow occurs
+   */
+  @Override
+  public int get(TemporalField field) {
         if (field instanceof ChronoField) {
             switch ((ChronoField) field) {
                 case INSTANT_SECONDS:
-                    throw new UnsupportedTemporalTypeException("Invalid field 'InstantSeconds' for get() method, use getLong() instead");
+          throw new UnsupportedTemporalTypeException(
+              "Invalid field 'InstantSeconds' for get() method, use getLong() instead");
                 case OFFSET_SECONDS:
                     return getOffset().getTotalSeconds();
             }
@@ -1375,90 +1371,92 @@ public final class OffsetDateTime
         return (amountToSubtract == Long.MIN_VALUE ? plus(Long.MAX_VALUE, unit).plus(1, unit) : plus(-amountToSubtract, unit));
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified number of years subtracted.
-     * <p>
-     * This method subtracts the specified amount from the years field in three steps:
-     * <ol>
-     * <li>Subtract the input years from the year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2008-02-29 (leap year) minus one year would result in the
-     * invalid date 2009-02-29 (standard year). Instead of returning an invalid
-     * result, the last valid day of the month, 2009-02-28, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param years  the years to subtract, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the years subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public OffsetDateTime minusYears(long years) {
+  // -----------------------------------------------------------------------
+  /**
+   * Returns a copy of this {@code OffsetDateTime} with the specified number of years subtracted.
+   *
+   * <p>This method subtracts the specified amount from the years field in three steps:
+   *
+   * <ol>
+   *   <li>Subtract the input years from the year field
+   *   <li>Check if the resulting date would be invalid
+   *   <li>Adjust the day-of-month to the last valid day if necessary
+   * </ol>
+   *
+   * <p>For example, 2008-02-29 (leap year) minus one year would result in the invalid date
+   * 2007-02-29 (standard year). Instead of returning an invalid result, the last valid day of the
+   * month, 2007-02-28, is selected instead.
+   *
+   * <p>This instance is immutable and unaffected by this method call.
+   *
+   * @param years the years to subtract, may be negative
+   * @return an {@code OffsetDateTime} based on this date-time with the years subtracted, not null
+   * @throws DateTimeException if the result exceeds the supported date range
+   */
+  public OffsetDateTime minusYears(long years) {
         return (years == Long.MIN_VALUE ? plusYears(Long.MAX_VALUE).plusYears(1) : plusYears(-years));
     }
 
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified number of months subtracted.
-     * <p>
-     * This method subtracts the specified amount from the months field in three steps:
-     * <ol>
-     * <li>Subtract the input months from the month-of-year field</li>
-     * <li>Check if the resulting date would be invalid</li>
-     * <li>Adjust the day-of-month to the last valid day if necessary</li>
-     * </ol>
-     * <p>
-     * For example, 2007-03-31 minus one month would result in the invalid date
-     * 2007-04-31. Instead of returning an invalid result, the last valid day
-     * of the month, 2007-04-30, is selected instead.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param months  the months to subtract, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the months subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public OffsetDateTime minusMonths(long months) {
+  /**
+   * Returns a copy of this {@code OffsetDateTime} with the specified number of months subtracted.
+   *
+   * <p>This method subtracts the specified amount from the months field in three steps:
+   *
+   * <ol>
+   *   <li>Subtract the input months from the month-of-year field
+   *   <li>Check if the resulting date would be invalid
+   *   <li>Adjust the day-of-month to the last valid day if necessary
+   * </ol>
+   *
+   * <p>For example, 2007-03-31 minus one month would result in the invalid date 2007-02-31. Instead
+   * of returning an invalid result, the last valid day of the month, 2007-02-28, is selected
+   * instead.
+   *
+   * <p>This instance is immutable and unaffected by this method call.
+   *
+   * @param months the months to subtract, may be negative
+   * @return an {@code OffsetDateTime} based on this date-time with the months subtracted, not null
+   * @throws DateTimeException if the result exceeds the supported date range
+   */
+  public OffsetDateTime minusMonths(long months) {
         return (months == Long.MIN_VALUE ? plusMonths(Long.MAX_VALUE).plusMonths(1) : plusMonths(-months));
     }
 
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified number of weeks subtracted.
-     * <p>
-     * This method subtracts the specified amount in weeks from the days field decrementing
-     * the month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-31 minus one week would result in 2009-01-07.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param weeks  the weeks to subtract, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the weeks subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public OffsetDateTime minusWeeks(long weeks) {
+  /**
+   * Returns a copy of this {@code OffsetDateTime} with the specified number of weeks subtracted.
+   *
+   * <p>This method subtracts the specified amount in weeks from the days field decrementing the
+   * month and year fields as necessary to ensure the result remains valid. The result is only
+   * invalid if the maximum/minimum year is exceeded.
+   *
+   * <p>For example, 2009-01-07 minus one week would result in 2008-12-31.
+   *
+   * <p>This instance is immutable and unaffected by this method call.
+   *
+   * @param weeks the weeks to subtract, may be negative
+   * @return an {@code OffsetDateTime} based on this date-time with the weeks subtracted, not null
+   * @throws DateTimeException if the result exceeds the supported date range
+   */
+  public OffsetDateTime minusWeeks(long weeks) {
         return (weeks == Long.MIN_VALUE ? plusWeeks(Long.MAX_VALUE).plusWeeks(1) : plusWeeks(-weeks));
     }
 
-    /**
-     * Returns a copy of this {@code OffsetDateTime} with the specified number of days subtracted.
-     * <p>
-     * This method subtracts the specified amount from the days field decrementing the
-     * month and year fields as necessary to ensure the result remains valid.
-     * The result is only invalid if the maximum/minimum year is exceeded.
-     * <p>
-     * For example, 2008-12-31 minus one day would result in 2009-01-01.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
-     *
-     * @param days  the days to subtract, may be negative
-     * @return an {@code OffsetDateTime} based on this date-time with the days subtracted, not null
-     * @throws DateTimeException if the result exceeds the supported date range
-     */
-    public OffsetDateTime minusDays(long days) {
+  /**
+   * Returns a copy of this {@code OffsetDateTime} with the specified number of days subtracted.
+   *
+   * <p>This method subtracts the specified amount from the days field decrementing the month and
+   * year fields as necessary to ensure the result remains valid. The result is only invalid if the
+   * maximum/minimum year is exceeded.
+   *
+   * <p>For example, 2009-01-01 minus one day would result in 2008-12-31.
+   *
+   * <p>This instance is immutable and unaffected by this method call.
+   *
+   * @param days the days to subtract, may be negative
+   * @return an {@code OffsetDateTime} based on this date-time with the days subtracted, not null
+   * @throws DateTimeException if the result exceeds the supported date range
+   */
+  public OffsetDateTime minusDays(long days) {
         return (days == Long.MIN_VALUE ? plusDays(Long.MAX_VALUE).plusDays(1) : plusDays(-days));
     }
 

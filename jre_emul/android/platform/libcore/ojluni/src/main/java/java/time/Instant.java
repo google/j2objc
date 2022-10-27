@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -299,21 +299,22 @@ public final class Instant
     }
 
     /**
-     * Obtains an instance of {@code Instant} using seconds from the
-     * epoch of 1970-01-01T00:00:00Z and nanosecond fraction of second.
-     * <p>
-     * This method allows an arbitrary number of nanoseconds to be passed in.
-     * The factory will alter the values of the second and nanosecond in order
-     * to ensure that the stored nanosecond is in the range 0 to 999,999,999.
-     * For example, the following will result in the exactly the same instant:
+     * Obtains an instance of {@code Instant} using seconds from the epoch of 1970-01-01T00:00:00Z and
+     * nanosecond fraction of second.
+     *
+     * <p>This method allows an arbitrary number of nanoseconds to be passed in. The factory will
+     * alter the values of the second and nanosecond in order to ensure that the stored nanosecond is
+     * in the range 0 to 999,999,999. For example, the following will result in exactly the same
+     * instant:
+     *
      * <pre>
      *  Instant.ofEpochSecond(3, 1);
      *  Instant.ofEpochSecond(4, -999_999_999);
      *  Instant.ofEpochSecond(2, 1000_000_001);
      * </pre>
      *
-     * @param epochSecond  the number of seconds from 1970-01-01T00:00:00Z
-     * @param nanoAdjustment  the nanosecond adjustment to the number of seconds, positive or negative
+     * @param epochSecond the number of seconds from 1970-01-01T00:00:00Z
+     * @param nanoAdjustment the nanosecond adjustment to the number of seconds, positive or negative
      * @return an instant, not null
      * @throws DateTimeException if the instant exceeds the maximum or minimum instant
      * @throws ArithmeticException if numeric overflow occurs
@@ -336,7 +337,7 @@ public final class Instant
      */
     public static Instant ofEpochMilli(long epochMilli) {
         long secs = Math.floorDiv(epochMilli, 1000);
-        int mos = (int)Math.floorMod(epochMilli, 1000);
+    int mos = Math.floorMod(epochMilli, 1000);
         return create(secs, mos * 1000_000);
     }
 
@@ -555,7 +556,6 @@ public final class Instant
                 case NANO_OF_SECOND: return nanos;
                 case MICRO_OF_SECOND: return nanos / 1000;
                 case MILLI_OF_SECOND: return nanos / 1000_000;
-                case INSTANT_SECONDS: INSTANT_SECONDS.checkValidIntValue(seconds);
             }
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
@@ -599,13 +599,12 @@ public final class Instant
         return field.getFrom(this);
     }
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     /**
      * Gets the number of seconds from the Java epoch of 1970-01-01T00:00:00Z.
-     * <p>
-     * The epoch second count is a simple incrementing count of seconds where
-     * second 0 is 1970-01-01T00:00:00Z.
-     * The nanosecond part of the day is returned by {@code getNanosOfSecond}.
+     *
+     * <p>The epoch second count is a simple incrementing count of seconds where second 0 is
+     * 1970-01-01T00:00:00Z. The nanosecond part is returned by {@link #getNano}.
      *
      * @return the seconds from the epoch of 1970-01-01T00:00:00Z
      */
@@ -614,11 +613,10 @@ public final class Instant
     }
 
     /**
-     * Gets the number of nanoseconds, later along the time-line, from the start
-     * of the second.
-     * <p>
-     * The nanosecond-of-second value measures the total number of nanoseconds from
-     * the second returned by {@code getEpochSecond}.
+     * Gets the number of nanoseconds, later along the time-line, from the start of the second.
+     *
+     * <p>The nanosecond-of-second value measures the total number of nanoseconds from the second
+     * returned by {@link #getEpochSecond}.
      *
      * @return the nanoseconds within the second, always positive, never exceeds 999,999,999
      */
@@ -745,14 +743,15 @@ public final class Instant
         }
         Duration unitDur = unit.getDuration();
         if (unitDur.getSeconds() > LocalTime.SECONDS_PER_DAY) {
-            throw new UnsupportedTemporalTypeException("Unit is too large to be used for truncation");
+      throw new UnsupportedTemporalTypeException("Unit is too large to be used for truncation");
         }
         long dur = unitDur.toNanos();
         if ((LocalTime.NANOS_PER_DAY % dur) != 0) {
-            throw new UnsupportedTemporalTypeException("Unit must divide into a standard day without remainder");
+      throw new UnsupportedTemporalTypeException(
+          "Unit must divide into a standard day without remainder");
         }
         long nod = (seconds % LocalTime.SECONDS_PER_DAY) * LocalTime.NANOS_PER_SECOND + nanos;
-        long result = (nod / dur) * dur;
+    long result = Math.floorDiv(nod, dur) * dur;
         return plusNanos(result - nod);
     }
 
@@ -784,57 +783,48 @@ public final class Instant
 
     /**
      * Returns a copy of this instant with the specified amount added.
-     * <p>
-     * This returns an {@code Instant}, based on this one, with the amount
-     * in terms of the unit added. If it is not possible to add the amount, because the
-     * unit is not supported or for some other reason, an exception is thrown.
-     * <p>
-     * If the field is a {@link ChronoUnit} then the addition is implemented here.
-     * The supported fields behave as follows:
-     * <ul>
-     * <li>{@code NANOS} -
-     *  Returns a {@code Instant} with the specified number of nanoseconds added.
-     *  This is equivalent to {@link #plusNanos(long)}.
-     * <li>{@code MICROS} -
-     *  Returns a {@code Instant} with the specified number of microseconds added.
-     *  This is equivalent to {@link #plusNanos(long)} with the amount
-     *  multiplied by 1,000.
-     * <li>{@code MILLIS} -
-     *  Returns a {@code Instant} with the specified number of milliseconds added.
-     *  This is equivalent to {@link #plusNanos(long)} with the amount
-     *  multiplied by 1,000,000.
-     * <li>{@code SECONDS} -
-     *  Returns a {@code Instant} with the specified number of seconds added.
-     *  This is equivalent to {@link #plusSeconds(long)}.
-     * <li>{@code MINUTES} -
-     *  Returns a {@code Instant} with the specified number of minutes added.
-     *  This is equivalent to {@link #plusSeconds(long)} with the amount
-     *  multiplied by 60.
-     * <li>{@code HOURS} -
-     *  Returns a {@code Instant} with the specified number of hours added.
-     *  This is equivalent to {@link #plusSeconds(long)} with the amount
-     *  multiplied by 3,600.
-     * <li>{@code HALF_DAYS} -
-     *  Returns a {@code Instant} with the specified number of half-days added.
-     *  This is equivalent to {@link #plusSeconds(long)} with the amount
-     *  multiplied by 43,200 (12 hours).
-     * <li>{@code DAYS} -
-     *  Returns a {@code Instant} with the specified number of days added.
-     *  This is equivalent to {@link #plusSeconds(long)} with the amount
-     *  multiplied by 86,400 (24 hours).
-     * </ul>
-     * <p>
-     * All other {@code ChronoUnit} instances will throw an {@code UnsupportedTemporalTypeException}.
-     * <p>
-     * If the field is not a {@code ChronoUnit}, then the result of this method
-     * is obtained by invoking {@code TemporalUnit.addTo(Temporal, long)}
-     * passing {@code this} as the argument. In this case, the unit determines
-     * whether and how to perform the addition.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToAdd  the amount of the unit to add to the result, may be negative
-     * @param unit  the unit of the amount to add, not null
+     * <p>This returns an {@code Instant}, based on this one, with the amount in terms of the unit
+     * added. If it is not possible to add the amount, because the unit is not supported or for some
+     * other reason, an exception is thrown.
+     *
+     * <p>If the field is a {@link ChronoUnit} then the addition is implemented here. The supported
+     * fields behave as follows:
+     *
+     * <ul>
+     *   <li>{@code NANOS} - Returns an {@code Instant} with the specified number of nanoseconds
+     *       added. This is equivalent to {@link #plusNanos(long)}.
+     *   <li>{@code MICROS} - Returns an {@code Instant} with the specified number of microseconds
+     *       added. This is equivalent to {@link #plusNanos(long)} with the amount multiplied by
+     *       1,000.
+     *   <li>{@code MILLIS} - Returns an {@code Instant} with the specified number of milliseconds
+     *       added. This is equivalent to {@link #plusNanos(long)} with the amount multiplied by
+     *       1,000,000.
+     *   <li>{@code SECONDS} - Returns an {@code Instant} with the specified number of seconds added.
+     *       This is equivalent to {@link #plusSeconds(long)}.
+     *   <li>{@code MINUTES} - Returns an {@code Instant} with the specified number of minutes added.
+     *       This is equivalent to {@link #plusSeconds(long)} with the amount multiplied by 60.
+     *   <li>{@code HOURS} - Returns an {@code Instant} with the specified number of hours added. This
+     *       is equivalent to {@link #plusSeconds(long)} with the amount multiplied by 3,600.
+     *   <li>{@code HALF_DAYS} - Returns an {@code Instant} with the specified number of half-days
+     *       added. This is equivalent to {@link #plusSeconds(long)} with the amount multiplied by
+     *       43,200 (12 hours).
+     *   <li>{@code DAYS} - Returns an {@code Instant} with the specified number of days added. This
+     *       is equivalent to {@link #plusSeconds(long)} with the amount multiplied by 86,400 (24
+     *       hours).
+     * </ul>
+     *
+     * <p>All other {@code ChronoUnit} instances will throw an {@code
+     * UnsupportedTemporalTypeException}.
+     *
+     * <p>If the field is not a {@code ChronoUnit}, then the result of this method is obtained by
+     * invoking {@code TemporalUnit.addTo(Temporal, long)} passing {@code this} as the argument. In
+     * this case, the unit determines whether and how to perform the addition.
+     *
+     * <p>This instance is immutable and unaffected by this method call.
+     *
+     * @param amountToAdd the amount of the unit to add to the result, may be negative
+     * @param unit the unit of the amount to add, not null
      * @return an {@code Instant} based on this instant with the specified amount added, not null
      * @throws DateTimeException if the addition cannot be made
      * @throws UnsupportedTemporalTypeException if the unit is not supported
@@ -951,18 +941,18 @@ public final class Instant
 
     /**
      * Returns a copy of this instant with the specified amount subtracted.
-     * <p>
-     * This returns a {@code Instant}, based on this one, with the amount
-     * in terms of the unit subtracted. If it is not possible to subtract the amount,
-     * because the unit is not supported or for some other reason, an exception is thrown.
-     * <p>
-     * This method is equivalent to {@link #plus(long, TemporalUnit)} with the amount negated.
-     * See that method for a full description of how addition, and thus subtraction, works.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
-     * @param amountToSubtract  the amount of the unit to subtract from the result, may be negative
-     * @param unit  the unit of the amount to subtract, not null
+     * <p>This returns an {@code Instant}, based on this one, with the amount in terms of the unit
+     * subtracted. If it is not possible to subtract the amount, because the unit is not supported or
+     * for some other reason, an exception is thrown.
+     *
+     * <p>This method is equivalent to {@link #plus(long, TemporalUnit)} with the amount negated. See
+     * that method for a full description of how addition, and thus subtraction, works.
+     *
+     * <p>This instance is immutable and unaffected by this method call.
+     *
+     * @param amountToSubtract the amount of the unit to subtract from the result, may be negative
+     * @param unit the unit of the amount to subtract, not null
      * @return an {@code Instant} based on this instant with the specified amount subtracted, not null
      * @throws DateTimeException if the subtraction cannot be made
      * @throws UnsupportedTemporalTypeException if the unit is not supported
@@ -1091,45 +1081,42 @@ public final class Instant
 
     /**
      * Calculates the amount of time until another instant in terms of the specified unit.
-     * <p>
-     * This calculates the amount of time between two {@code Instant}
-     * objects in terms of a single {@code TemporalUnit}.
-     * The start and end points are {@code this} and the specified instant.
-     * The result will be negative if the end is before the start.
-     * The calculation returns a whole number, representing the number of
-     * complete units between the two instants.
-     * The {@code Temporal} passed to this method is converted to a
-     * {@code Instant} using {@link #from(TemporalAccessor)}.
-     * For example, the amount in days between two dates can be calculated
-     * using {@code startInstant.until(endInstant, SECONDS)}.
-     * <p>
-     * There are two equivalent ways of using this method.
-     * The first is to invoke this method.
-     * The second is to use {@link TemporalUnit#between(Temporal, Temporal)}:
+     *
+     * <p>This calculates the amount of time between two {@code Instant} objects in terms of a single
+     * {@code TemporalUnit}. The start and end points are {@code this} and the specified instant. The
+     * result will be negative if the end is before the start. The calculation returns a whole number,
+     * representing the number of complete units between the two instants. The {@code Temporal} passed
+     * to this method is converted to a {@code Instant} using {@link #from(TemporalAccessor)}. For
+     * example, the amount in seconds between two dates can be calculated using {@code
+     * startInstant.until(endInstant, SECONDS)}.
+     *
+     * <p>There are two equivalent ways of using this method. The first is to invoke this method. The
+     * second is to use {@link TemporalUnit#between(Temporal, Temporal)}:
+     *
      * <pre>
      *   // these two lines are equivalent
      *   amount = start.until(end, SECONDS);
      *   amount = SECONDS.between(start, end);
      * </pre>
-     * The choice should be made based on which makes the code more readable.
-     * <p>
-     * The calculation is implemented in this method for {@link ChronoUnit}.
-     * The units {@code NANOS}, {@code MICROS}, {@code MILLIS}, {@code SECONDS},
-     * {@code MINUTES}, {@code HOURS}, {@code HALF_DAYS} and {@code DAYS}
-     * are supported. Other {@code ChronoUnit} values will throw an exception.
-     * <p>
-     * If the unit is not a {@code ChronoUnit}, then the result of this method
-     * is obtained by invoking {@code TemporalUnit.between(Temporal, Temporal)}
-     * passing {@code this} as the first argument and the converted input temporal
-     * as the second argument.
-     * <p>
-     * This instance is immutable and unaffected by this method call.
      *
-     * @param endExclusive  the end date, exclusive, which is converted to an {@code Instant}, not null
-     * @param unit  the unit to measure the amount in, not null
+     * The choice should be made based on which makes the code more readable.
+     *
+     * <p>The calculation is implemented in this method for {@link ChronoUnit}. The units {@code
+     * NANOS}, {@code MICROS}, {@code MILLIS}, {@code SECONDS}, {@code MINUTES}, {@code HOURS}, {@code
+     * HALF_DAYS} and {@code DAYS} are supported. Other {@code ChronoUnit} values will throw an
+     * exception.
+     *
+     * <p>If the unit is not a {@code ChronoUnit}, then the result of this method is obtained by
+     * invoking {@code TemporalUnit.between(Temporal, Temporal)} passing {@code this} as the first
+     * argument and the converted input temporal as the second argument.
+     *
+     * <p>This instance is immutable and unaffected by this method call.
+     *
+     * @param endExclusive the end date, exclusive, which is converted to an {@code Instant}, not null
+     * @param unit the unit to measure the amount in, not null
      * @return the amount of time between this instant and the end instant
-     * @throws DateTimeException if the amount cannot be calculated, or the end
-     *  temporal cannot be converted to an {@code Instant}
+     * @throws DateTimeException if the amount cannot be calculated, or the end temporal cannot be
+     *     converted to an {@code Instant}
      * @throws UnsupportedTemporalTypeException if the unit is not supported
      * @throws ArithmeticException if numeric overflow occurs
      */
