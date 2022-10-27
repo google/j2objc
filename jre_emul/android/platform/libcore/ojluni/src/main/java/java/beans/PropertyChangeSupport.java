@@ -24,24 +24,25 @@
  */
 package java.beans;
 
-import java.io.Serializable;
-import java.io.ObjectStreamField;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamField;
+import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
+// Android-changed: Removed @see tag (target does not exist on Android):
+// @see VetoableChangeSupport
 /**
- * This is a utility class that can be used by beans that support bound
- * properties.  It manages a list of listeners and dispatches
- * {@link PropertyChangeEvent}s to them.  You can use an instance of this class
- * as a member field of your bean and delegate these types of work to it.
- * The {@link PropertyChangeListener} can be registered for all properties
- * or for a property specified by name.
- * <p>
- * Here is an example of {@code PropertyChangeSupport} usage that follows
- * the rules and recommendations laid out in the JavaBeans&trade; specification:
+ * This is a utility class that can be used by beans that support bound properties. It manages a
+ * list of listeners and dispatches {@link PropertyChangeEvent}s to them. You can use an instance of
+ * this class as a member field of your bean and delegate these types of work to it. The {@link
+ * PropertyChangeListener} can be registered for all properties or for a property specified by name.
+ *
+ * <p>Here is an example of {@code PropertyChangeSupport} usage that follows the rules and
+ * recommendations laid out in the JavaBeans&trade; specification:
+ *
  * <pre>
  * public class MyBean {
  *     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -69,14 +70,12 @@ import java.util.Map.Entry;
  *     [...]
  * }
  * </pre>
- * <p>
- * A {@code PropertyChangeSupport} instance is thread-safe.
- * <p>
- * This class is serializable.  When it is serialized it will save
- * (and restore) any listeners that are themselves serializable.  Any
- * non-serializable listeners will be skipped during serialization.
  *
- * @see VetoableChangeSupport
+ * <p>A {@code PropertyChangeSupport} instance is thread-safe.
+ *
+ * <p>This class is serializable. When it is serialized it will save (and restore) any listeners
+ * that are themselves serializable. Any non-serializable listeners will be skipped during
+ * serialization.
  */
 public class PropertyChangeSupport implements Serializable {
     private PropertyChangeListenerMap map = new PropertyChangeListenerMap();
@@ -460,8 +459,9 @@ public class PropertyChangeSupport implements Serializable {
 
         ObjectInputStream.GetField fields = s.readFields();
 
-        @SuppressWarnings("unchecked")
-        Hashtable<String, PropertyChangeSupport> children = (Hashtable<String, PropertyChangeSupport>) fields.get("children", null);
+    @SuppressWarnings("unchecked")
+    Hashtable<String, PropertyChangeSupport> children =
+        (Hashtable<String, PropertyChangeSupport>) fields.get("children", null);
         this.source = fields.get("source", null);
         fields.get("propertyChangeSupportSerializedDataVersion", 2);
 
