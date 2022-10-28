@@ -19,6 +19,7 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnhancedForStatement;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.MethodInvocation;
@@ -32,6 +33,7 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.PointerType;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -118,10 +120,23 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
         new SimpleName(endVariable)));
     Block newLoopBody = makeBlock(TreeUtil.remove(node.getBody()));
     loop.setBody(newLoopBody);
-    newLoopBody.addStatement(0, new VariableDeclarationStatement(
-        loopVariable, new PrefixExpression(
-            componentType, PrefixExpression.Operator.DEREFERENCE,
-            new PostfixExpression(bufferVariable, PostfixExpression.Operator.INCREMENT))));
+
+    Expression loopVariableValue =
+        new PrefixExpression(
+            componentType,
+            PrefixExpression.Operator.DEREFERENCE,
+            new PostfixExpression(bufferVariable, PostfixExpression.Operator.INCREMENT));
+    if (TypeUtil.isReferenceType(componentType) && !typeUtil.isBoxedType(componentType)) {
+      // Using RETAIN_AND_AUTORELEASE macro instead of JreRetainedLocalValue() because ARC handles
+      // this automatically without the extra retain/autorelease.
+      FunctionElement autoReleaseloopVariableElement =
+          new FunctionElement("RETAIN_AND_AUTORELEASE", componentType, null);
+      FunctionInvocation autoReleaseloopVariableInvocation =
+          new FunctionInvocation(autoReleaseloopVariableElement, componentType);
+      autoReleaseloopVariableInvocation.addArgument(loopVariableValue);
+      loopVariableValue = autoReleaseloopVariableInvocation;
+    }
+    newLoopBody.addStatement(0, new VariableDeclarationStatement(loopVariable, loopVariableValue));
 
     Block block = new Block();
     List<Statement> stmts = block.getStatements();

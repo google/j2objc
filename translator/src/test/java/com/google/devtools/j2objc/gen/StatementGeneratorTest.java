@@ -557,14 +557,15 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertTranslatedLines(result,
+    assertTranslatedLines(
+        result,
         "{",
-          "IOSObjectArray *a__ = strings;",
-          "NSString * const *b__ = a__->buffer_;",
-          "NSString * const *e__ = b__ + a__->size_;",
-          "while (b__ < e__) {",
-            "NSString *string = *b__++;",
-          "}",
+        "IOSObjectArray *a__ = strings;",
+        "NSString * const *b__ = a__->buffer_;",
+        "NSString * const *e__ = b__ + a__->size_;",
+        "while (b__ < e__) {",
+        "NSString *string = RETAIN_AND_AUTORELEASE(*b__++);",
+        "}",
         "}");
   }
 
