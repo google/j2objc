@@ -18,6 +18,10 @@
 
 #import "J2ObjC_common.h"
 
+#if __has_feature(objc_arc)
+#error "J2ObjC_common cannot be built with ARC"
+#endif
+
 #import "FastPointerLookup.h"
 #import "IOSClass.h"
 #import "JreRetainedWith.h"
@@ -54,7 +58,7 @@ void JreThrowArithmeticExceptionWithNSString(NSString *msg) {
 }
 
 void JreThrowAssertionError(id __unsafe_unretained msg) {
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:[msg description]]);  // NOLINT
+  @throw [[[JavaLangAssertionError alloc] initWithId:[msg description]] autorelease];  // NOLINT
 }
 
 void JreFinalize(id self) {
@@ -108,7 +112,7 @@ id JreLoadVolatileId(volatile_id *pVar) {
   VOLATILE_LOCK(lock);
   id value = [*(id *)pVar retain];
   VOLATILE_UNLOCK(lock);
-  return AUTORELEASE(value);
+  return [value autorelease];
 }
 
 id JreAssignVolatileId(volatile_id *pVar, id value) {
@@ -126,7 +130,7 @@ id JreVolatileStrongAssign(volatile_id *pIvar, id value) {
   id oldValue = *(id *)pIvar;
   *(id *)pIvar = value;
   VOLATILE_UNLOCK(lock);
-  AUTORELEASE(oldValue);
+  [oldValue autorelease];
   return value;
 }
 
@@ -139,7 +143,7 @@ jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id ne
   }
   VOLATILE_UNLOCK(lock);
   if (result) {
-    AUTORELEASE(expected);
+    [expected autorelease];
   }
   return result;
 }
@@ -151,7 +155,7 @@ id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue) {
   id oldValue = *(id *)pVar;
   *(id *)pVar = newValue;
   VOLATILE_UNLOCK(lock);
-  return AUTORELEASE(oldValue);
+  return [oldValue autorelease];
 }
 
 void JreReleaseVolatile(volatile_id *pVar) {
@@ -182,7 +186,7 @@ void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther) {
 id JreRetainedWithAssign(id parent, __strong id *pIvar, id value) {
   if (*pIvar) {
     JreRetainedWithHandlePreviousValue(parent, *pIvar);
-    AUTORELEASE(*pIvar);
+    [*pIvar autorelease];
   }
   // This retain makes sure that the child object has a retain count of at
   // least 2 which is required by JreRetainedWithInitialize.
