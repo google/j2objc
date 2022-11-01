@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -216,7 +216,16 @@ final class Parsed implements TemporalAccessor {
             return (R) (date != null ? LocalDate.from(date) : null);
         } else if (query == TemporalQueries.localTime()) {
             return (R) time;
-        } else if (query == TemporalQueries.zone() || query == TemporalQueries.offset()) {
+    } else if (query == TemporalQueries.offset()) {
+      Long offsetSecs = fieldValues.get(OFFSET_SECONDS);
+      if (offsetSecs != null) {
+        return (R) ZoneOffset.ofTotalSeconds(offsetSecs.intValue());
+      }
+      if (zone instanceof ZoneOffset) {
+        return (R) zone;
+      }
+      return query.queryFrom(this);
+    } else if (query == TemporalQueries.zone()) {
             return query.queryFrom(this);
         } else if (query == TemporalQueries.precision()) {
             return null;  // not a complete date/time
@@ -272,7 +281,8 @@ final class Parsed implements TemporalAccessor {
                             if (zone == null) {
                                 zone = czdt.getZone();
                             } else if (zone.equals(czdt.getZone()) == false) {
-                                throw new DateTimeException("ChronoZonedDateTime must use the effective parsed zone: " + zone);
+                throw new DateTimeException(
+                    "ChronoZonedDateTime must use the effective parsed zone: " + zone);
                             }
                             resolvedObject = czdt.toLocalDateTime();
                         }
@@ -293,8 +303,9 @@ final class Parsed implements TemporalAccessor {
                             changedCount++;
                             continue outer;  // have to restart to avoid concurrent modification
                         }
-                        throw new DateTimeException("Method resolve() can only return ChronoZonedDateTime, " +
-                                "ChronoLocalDateTime, ChronoLocalDate or LocalTime");
+            throw new DateTimeException(
+                "Method resolve() can only return ChronoZonedDateTime, "
+                    + "ChronoLocalDateTime, ChronoLocalDate or LocalTime");
                     } else if (fieldValues.containsKey(targetField) == false) {
                         changedCount++;
                         continue outer;  // have to restart to avoid concurrent modification
@@ -303,7 +314,8 @@ final class Parsed implements TemporalAccessor {
                 break;
             }
             if (changedCount == 50) {  // catch infinite loops
-                throw new DateTimeException("One of the parsed fields has an incorrectly implemented resolve method");
+        throw new DateTimeException(
+            "One of the parsed fields has an incorrectly implemented resolve method");
             }
             // if something changed then have to redo ChronoField resolve
             if (changedCount > 0) {
@@ -354,11 +366,13 @@ final class Parsed implements TemporalAccessor {
     private void updateCheckConflict(ChronoLocalDate cld) {
         if (date != null) {
             if (cld != null && date.equals(cld) == false) {
-                throw new DateTimeException("Conflict found: Fields resolved to two different dates: " + date + " " + cld);
+        throw new DateTimeException(
+            "Conflict found: Fields resolved to two different dates: " + date + " " + cld);
             }
         } else if (cld != null) {
             if (chrono.equals(cld.getChronology()) == false) {
-                throw new DateTimeException("ChronoLocalDate must use the effective parsed chronology: " + chrono);
+        throw new DateTimeException(
+            "ChronoLocalDate must use the effective parsed chronology: " + chrono);
             }
             date = cld;
         }
@@ -584,16 +598,17 @@ final class Parsed implements TemporalAccessor {
     }
 
     private void resolveInstant() {
-        // add instant seconds if we have date, time and zone
-        if (date != null && time != null) {
-            if (zone != null) {
-                long instant = date.atTime(time).atZone(zone).getLong(ChronoField.INSTANT_SECONDS);
+    // add instant seconds if we have date, time and zone
+    // Offset (if present) will be given priority over the zone.
+    if (date != null && time != null) {
+      Long offsetSecs = fieldValues.get(OFFSET_SECONDS);
+      if (offsetSecs != null) {
+        ZoneOffset offset = ZoneOffset.ofTotalSeconds(offsetSecs.intValue());
+        long instant = date.atTime(time).atZone(offset).toEpochSecond();
                 fieldValues.put(INSTANT_SECONDS, instant);
             } else {
-                Long offsetSecs = fieldValues.get(OFFSET_SECONDS);
-                if (offsetSecs != null) {
-                    ZoneOffset offset = ZoneOffset.ofTotalSeconds(offsetSecs.intValue());
-                    long instant = date.atTime(time).atZone(offset).getLong(ChronoField.INSTANT_SECONDS);
+        if (zone != null) {
+          long instant = date.atTime(time).atZone(zone).toEpochSecond();
                     fieldValues.put(INSTANT_SECONDS, instant);
                 }
             }
@@ -603,10 +618,15 @@ final class Parsed implements TemporalAccessor {
     private void updateCheckConflict(LocalTime timeToSet, Period periodToSet) {
         if (time != null) {
             if (time.equals(timeToSet) == false) {
-                throw new DateTimeException("Conflict found: Fields resolved to different times: " + time + " " + timeToSet);
+        throw new DateTimeException(
+            "Conflict found: Fields resolved to different times: " + time + " " + timeToSet);
             }
             if (excessDays.isZero() == false && periodToSet.isZero() == false && excessDays.equals(periodToSet) == false) {
-                throw new DateTimeException("Conflict found: Fields resolved to different excess periods: " + excessDays + " " + periodToSet);
+        throw new DateTimeException(
+            "Conflict found: Fields resolved to different excess periods: "
+                + excessDays
+                + " "
+                + periodToSet);
             } else {
                 excessDays = periodToSet;
             }

@@ -2103,6 +2103,9 @@ JAVA_PUBLIC_SOURCES_ICU = \
   android/icu/util/ULocale.java \
   android/icu/util/ValueIterator.java \
   android/icu/util/VersionInfo.java \
+  android/icu/util/ExtendedCalendar.java \
+  android/icu/util/LocaleNative.java \
+  android/icu/text/ExtendedDateFormatSymbols.java \
   java/text/BreakIterator.java \
 
 JAVA_PRIVATE_SOURCES_ICU = \
