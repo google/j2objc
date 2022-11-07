@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2017, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -56,17 +56,6 @@
  */
 package java.time.temporal;
 
-import android.icu.text.DateTimePatternGenerator;
-import android.icu.util.ULocale;
-import java.time.DayOfWeek;
-import java.time.Instant;
-import java.time.Year;
-import java.time.ZoneOffset;
-import java.time.chrono.ChronoLocalDate;
-import java.time.chrono.Chronology;
-import java.util.Locale;
-import java.util.Objects;
-
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.ERAS;
 import static java.time.temporal.ChronoUnit.FOREVER;
@@ -80,6 +69,17 @@ import static java.time.temporal.ChronoUnit.NANOS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
+
+import android.icu.text.DateTimePatternGenerator;
+import android.icu.util.ULocale;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.Year;
+import java.time.ZoneOffset;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.Chronology;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * A standard set of fields.
@@ -257,63 +257,64 @@ public enum ChronoField implements TemporalField {
      * The value is split to form {@code MINUTE_OF_HOUR} and {@code HOUR_OF_DAY} fields.
      */
     MINUTE_OF_DAY("MinuteOfDay", MINUTES, DAYS, ValueRange.of(0, (24 * 60) - 1)),
-    /**
-     * The hour-of-am-pm.
-     * <p>
-     * This counts the hour within the AM/PM, from 0 to 11.
-     * This is the hour that would be observed on a standard 12-hour digital clock.
-     * This field has the same meaning for all calendar systems.
-     * <p>
-     * When parsing this field it behaves equivalent to the following:
-     * The value is validated from 0 to 11 in strict and smart mode.
-     * In lenient mode the value is not validated. It is combined with
-     * {@code AMPM_OF_DAY} to form {@code HOUR_OF_DAY} by multiplying
-     * the {AMPM_OF_DAY} value by 12.
-     */
-    HOUR_OF_AMPM("HourOfAmPm", HOURS, HALF_DAYS, ValueRange.of(0, 11)),
-    /**
-     * The clock-hour-of-am-pm.
-     * <p>
-     * This counts the hour within the AM/PM, from 1 to 12.
-     * This is the hour that would be observed on a standard 12-hour analog wall clock.
-     * This field has the same meaning for all calendar systems.
-     * <p>
-     * When parsing this field it behaves equivalent to the following:
-     * The value is validated from 1 to 12 in strict mode and from
-     * 0 to 12 in smart mode. In lenient mode the value is not validated.
-     * The field is converted to an {@code HOUR_OF_AMPM} with the same value,
-     * unless the value is 12, in which case it is converted to 0.
-     */
-    CLOCK_HOUR_OF_AMPM("ClockHourOfAmPm", HOURS, HALF_DAYS, ValueRange.of(1, 12)),
-    /**
-     * The hour-of-day.
-     * <p>
-     * This counts the hour within the day, from 0 to 23.
-     * This is the hour that would be observed on a standard 24-hour digital clock.
-     * This field has the same meaning for all calendar systems.
-     * <p>
-     * When parsing this field it behaves equivalent to the following:
-     * The value is validated in strict and smart mode but not in lenient mode.
-     * The field is combined with {@code MINUTE_OF_HOUR}, {@code SECOND_OF_MINUTE} and
-     * {@code NANO_OF_SECOND} to produce a {@code LocalTime}.
-     * In lenient mode, any excess days are added to the parsed date, or
-     * made available via {@link java.time.format.DateTimeFormatter#parsedExcessDays()}.
-     */
-    HOUR_OF_DAY("HourOfDay", HOURS, DAYS, ValueRange.of(0, 23), "hour"),
-    /**
-     * The clock-hour-of-day.
-     * <p>
-     * This counts the hour within the AM/PM, from 1 to 24.
-     * This is the hour that would be observed on a 24-hour analog wall clock.
-     * This field has the same meaning for all calendar systems.
-     * <p>
-     * When parsing this field it behaves equivalent to the following:
-     * The value is validated from 1 to 24 in strict mode and from
-     * 0 to 24 in smart mode. In lenient mode the value is not validated.
-     * The field is converted to an {@code HOUR_OF_DAY} with the same value,
-     * unless the value is 24, in which case it is converted to 0.
-     */
-    CLOCK_HOUR_OF_DAY("ClockHourOfDay", HOURS, DAYS, ValueRange.of(1, 24)),
+  /**
+   * The hour-of-am-pm.
+   *
+   * <p>This counts the hour within the AM/PM, from 0 to 11. This is the hour that would be observed
+   * on a standard 12-hour digital clock. This field has the same meaning for all calendar systems.
+   *
+   * <p>When parsing this field it behaves equivalent to the following: The value is validated from
+   * 0 to 11 in strict and smart mode. In lenient mode the value is not validated. It is combined
+   * with {@code AMPM_OF_DAY} to form {@code HOUR_OF_DAY} by multiplying the {AMPM_OF_DAY} value by
+   * 12.
+   *
+   * <p>See {@link #CLOCK_HOUR_OF_AMPM} for the related field that counts hours from 1 to 12.
+   */
+  HOUR_OF_AMPM("HourOfAmPm", HOURS, HALF_DAYS, ValueRange.of(0, 11)),
+  /**
+   * The clock-hour-of-am-pm.
+   *
+   * <p>This counts the hour within the AM/PM, from 1 to 12. This is the hour that would be observed
+   * on a standard 12-hour analog wall clock. This field has the same meaning for all calendar
+   * systems.
+   *
+   * <p>When parsing this field it behaves equivalent to the following: The value is validated from
+   * 1 to 12 in strict mode and from 0 to 12 in smart mode. In lenient mode the value is not
+   * validated. The field is converted to an {@code HOUR_OF_AMPM} with the same value, unless the
+   * value is 12, in which case it is converted to 0.
+   *
+   * <p>See {@link #HOUR_OF_AMPM} for the related field that counts hours from 0 to 11.
+   */
+  CLOCK_HOUR_OF_AMPM("ClockHourOfAmPm", HOURS, HALF_DAYS, ValueRange.of(1, 12)),
+  /**
+   * The hour-of-day.
+   *
+   * <p>This counts the hour within the day, from 0 to 23. This is the hour that would be observed
+   * on a standard 24-hour digital clock. This field has the same meaning for all calendar systems.
+   *
+   * <p>When parsing this field it behaves equivalent to the following: The value is validated in
+   * strict and smart mode but not in lenient mode. The field is combined with {@code
+   * MINUTE_OF_HOUR}, {@code SECOND_OF_MINUTE} and {@code NANO_OF_SECOND} to produce a {@code
+   * LocalTime}. In lenient mode, any excess days are added to the parsed date, or made available
+   * via {@link java.time.format.DateTimeFormatter#parsedExcessDays()}.
+   *
+   * <p>See {@link #CLOCK_HOUR_OF_DAY} for the related field that counts hours from 1 to 24.
+   */
+  HOUR_OF_DAY("HourOfDay", HOURS, DAYS, ValueRange.of(0, 23), "hour"),
+  /**
+   * The clock-hour-of-day.
+   *
+   * <p>This counts the hour within the day, from 1 to 24. This is the hour that would be observed
+   * on a 24-hour analog wall clock. This field has the same meaning for all calendar systems.
+   *
+   * <p>When parsing this field it behaves equivalent to the following: The value is validated from
+   * 1 to 24 in strict mode and from 0 to 24 in smart mode. In lenient mode the value is not
+   * validated. The field is converted to an {@code HOUR_OF_DAY} with the same value, unless the
+   * value is 24, in which case it is converted to 0.
+   *
+   * <p>See {@link #HOUR_OF_DAY} for the related field that counts hours from 0 to 23.
+   */
+  CLOCK_HOUR_OF_DAY("ClockHourOfDay", HOURS, DAYS, ValueRange.of(1, 24)),
     /**
      * The am-pm-of-day.
      * <p>
@@ -410,16 +411,19 @@ public enum ChronoField implements TemporalField {
      * the day-of-year to be reset to 1, but not the month-of-year or day-of-month.
      */
     DAY_OF_YEAR("DayOfYear", DAYS, YEARS, ValueRange.of(1, 365, 366)),
-    /**
-     * The epoch-day, based on the Java epoch of 1970-01-01 (ISO).
-     * <p>
-     * This field is the sequential count of days where 1970-01-01 (ISO) is zero.
-     * Note that this uses the <i>local</i> time-line, ignoring offset and time-zone.
-     * <p>
-     * This field is strictly defined to have the same meaning in all calendar systems.
-     * This is necessary to ensure interoperation between calendars.
-     */
-    EPOCH_DAY("EpochDay", DAYS, FOREVER, ValueRange.of((long) (Year.MIN_VALUE * 365.25), (long) (Year.MAX_VALUE * 365.25))),
+  /**
+   * The epoch-day, based on the Java epoch of 1970-01-01 (ISO).
+   *
+   * <p>This field is the sequential count of days where 1970-01-01 (ISO) is zero. Note that this
+   * uses the <i>local</i> time-line, ignoring offset and time-zone.
+   *
+   * <p>This field is strictly defined to have the same meaning in all calendar systems. This is
+   * necessary to ensure interoperation between calendars.
+   *
+   * <p>Range of EpochDay is between (LocalDate.MIN.toEpochDay(), LocalDate.MAX.toEpochDay()) both
+   * inclusive.
+   */
+  EPOCH_DAY("EpochDay", DAYS, FOREVER, ValueRange.of(-365243219162L, 365241780471L)),
     /**
      * The aligned week within a month.
      * <p>
@@ -463,26 +467,28 @@ public enum ChronoField implements TemporalField {
      * Normally, this is a count of months starting from 1.
      */
     MONTH_OF_YEAR("MonthOfYear", MONTHS, YEARS, ValueRange.of(1, 12), "month"),
-    /**
-     * The proleptic-month based, counting months sequentially from year 0.
-     * <p>
-     * This field is the sequential count of months where the first month
-     * in proleptic-year zero has the value zero.
-     * Later months have increasingly larger values.
-     * Earlier months have increasingly small values.
-     * There are no gaps or breaks in the sequence of months.
-     * Note that this uses the <i>local</i> time-line, ignoring offset and time-zone.
-     * <p>
-     * In the default ISO calendar system, June 2012 would have the value
-     * {@code (2012 * 12 + 6 - 1)}. This field is primarily for internal use.
-     * <p>
-     * Non-ISO calendar systems must implement this field as per the definition above.
-     * It is just a simple zero-based count of elapsed months from the start of proleptic-year 0.
-     * All calendar systems with a full proleptic-year definition will have a year zero.
-     * If the calendar system has a minimum year that excludes year zero, then one must
-     * be extrapolated in order for this method to be defined.
-     */
-    PROLEPTIC_MONTH("ProlepticMonth", MONTHS, FOREVER, ValueRange.of(Year.MIN_VALUE * 12L, Year.MAX_VALUE * 12L + 11)),
+  /**
+   * The proleptic-month based, counting months sequentially from year 0.
+   *
+   * <p>This field is the sequential count of months where the first month in proleptic-year zero
+   * has the value zero. Later months have increasingly larger values. Earlier months have
+   * increasingly small values. There are no gaps or breaks in the sequence of months. Note that
+   * this uses the <i>local</i> time-line, ignoring offset and time-zone.
+   *
+   * <p>In the default ISO calendar system, June 2012 would have the value {@code (2012 * 12 + 6 -
+   * 1)}. This field is primarily for internal use.
+   *
+   * <p>Non-ISO calendar systems must implement this field as per the definition above. It is just a
+   * simple zero-based count of elapsed months from the start of proleptic-year 0. All calendar
+   * systems with a full proleptic-year definition will have a year zero. If the calendar system has
+   * a minimum year that excludes year zero, then one must be extrapolated in order for this method
+   * to be defined.
+   */
+  PROLEPTIC_MONTH(
+      "ProlepticMonth",
+      MONTHS,
+      FOREVER,
+      ValueRange.of(Year.MIN_VALUE * 12L, Year.MAX_VALUE * 12L + 11)),
     /**
      * The year within the era.
      * <p>
@@ -559,21 +565,22 @@ public enum ChronoField implements TemporalField {
      * Later eras must have sequentially larger values,
      */
     ERA("Era", ERAS, FOREVER, ValueRange.of(0, 1), "era"),
-    /**
-     * The instant epoch-seconds.
-     * <p>
-     * This represents the concept of the sequential count of seconds where
-     * 1970-01-01T00:00Z (ISO) is zero.
-     * This field may be used with {@link #NANO_OF_SECOND} to represent the fraction of the second.
-     * <p>
-     * An {@link Instant} represents an instantaneous point on the time-line.
-     * On their own, an instant has insufficient information to allow a local date-time to be obtained.
-     * Only when paired with an offset or time-zone can the local date or time be calculated.
-     * <p>
-     * This field is strictly defined to have the same meaning in all calendar systems.
-     * This is necessary to ensure interoperation between calendars.
-     */
-    INSTANT_SECONDS("InstantSeconds", SECONDS, FOREVER, ValueRange.of(Long.MIN_VALUE, Long.MAX_VALUE)),
+  /**
+   * The instant epoch-seconds.
+   *
+   * <p>This represents the concept of the sequential count of seconds where 1970-01-01T00:00Z (ISO)
+   * is zero. This field may be used with {@link #NANO_OF_SECOND} to represent the fraction of the
+   * second.
+   *
+   * <p>An {@link Instant} represents an instantaneous point on the time-line. On their own, an
+   * instant has insufficient information to allow a local date-time to be obtained. Only when
+   * paired with an offset or time-zone can the local date or time be calculated.
+   *
+   * <p>This field is strictly defined to have the same meaning in all calendar systems. This is
+   * necessary to ensure interoperation between calendars.
+   */
+  INSTANT_SECONDS(
+      "InstantSeconds", SECONDS, FOREVER, ValueRange.of(Long.MIN_VALUE, Long.MAX_VALUE)),
     /**
      * The offset from UTC/Greenwich.
      * <p>
@@ -619,9 +626,18 @@ public enum ChronoField implements TemporalField {
             return name;
         }
 
-        // Android-changed: use ICU names.
-        DateTimePatternGenerator generator = DateTimePatternGenerator
-                .getFrozenInstance(ULocale.forLocale(locale));
+    // BEGIN Android-changed: use ICU names.
+    /*
+    LocaleResources lr = LocaleProviderAdapter.getResourceBundleBased()
+                                .getLocaleResources(
+                                    CalendarDataUtility
+                                        .findRegionOverride(locale));
+    ResourceBundle rb = lr.getJavaTimeFormatData();
+    String key = "field." + displayNameKey;
+    return rb.containsKey(key) ? rb.getString(key) : name;
+     */
+    DateTimePatternGenerator generator =
+        DateTimePatternGenerator.getInstance(ULocale.forLocale(locale));
         String icuName = generator.getAppendItemName(getIcuFieldNumber(this));
         return icuName != null && !icuName.isEmpty() ? icuName : name;
     }
@@ -652,7 +668,8 @@ public enum ChronoField implements TemporalField {
             default:
                 throw new IllegalArgumentException("Unexpected ChronoField " + field.name());
         }
-    }
+    // END Android-changed: use ICU names.
+  }
 
     @Override
     public TemporalUnit getBaseUnit() {
