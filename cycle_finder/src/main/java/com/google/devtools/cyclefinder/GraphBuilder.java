@@ -52,10 +52,10 @@ import javax.lang.model.type.TypeVariable;
 import javax.lang.model.type.TypeVisitor;
 import javax.lang.model.type.WildcardType;
 import javax.lang.model.util.SimpleTypeVisitor8;
-import scenelib.annotations.Annotation;
-import scenelib.annotations.el.AClass;
-import scenelib.annotations.el.AField;
-import scenelib.annotations.el.AScene;
+import org.checkerframework.afu.scenelib.Annotation;
+import org.checkerframework.afu.scenelib.el.AClass;
+import org.checkerframework.afu.scenelib.el.AField;
+import org.checkerframework.afu.scenelib.el.AScene;
 
 /**
  * Builds the graph of possible references between types.

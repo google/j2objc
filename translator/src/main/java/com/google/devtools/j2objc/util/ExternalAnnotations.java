@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.lang.model.AnnotatedConstruct;
-import scenelib.annotations.el.AScene;
-import scenelib.annotations.io.IndexFileParser;
+import org.checkerframework.afu.scenelib.el.AScene;
+import org.checkerframework.afu.scenelib.io.IndexFileParser;
 
 /**
  * Helps to forward external annotations from {@link com.google.devtools.j2objc.Options} to {@link
