@@ -31,7 +31,7 @@
  * An emulation class that represents a Java object array.  Like a Java array,
  * an IOSObjectArray is fixed-size but its elements are mutable.
  */
-@interface IOSObjectArray<ObjectType> : IOSArray<ObjectType> {
+@interface IOSObjectArray<__covariant ObjectType> : IOSArray<ObjectType> {
  @public
   /**
    * The type of elements in this array.

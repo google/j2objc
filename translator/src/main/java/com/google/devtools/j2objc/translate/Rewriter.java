@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CatchClause;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
@@ -40,6 +41,7 @@ import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.ThrowStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeNode.Kind;
@@ -76,6 +78,7 @@ import javax.lang.model.type.TypeMirror;
  *
  * @author Tom Ball
  */
+@SuppressWarnings("UngroupedOverloads")
 public class Rewriter extends UnitTreeVisitor {
 
   public Rewriter(CompilationUnit unit) {
@@ -388,5 +391,37 @@ public class Rewriter extends UnitTreeVisitor {
     // resource initializer) has been moved outside of the try node.
     block.accept(this);
     return false;
+  }
+
+  @Override
+  public void endVisit(MethodInvocation node) {
+    maybeAddGenericCastExpression(node, node.getExecutableElement());
+  }
+
+  @Override
+  public void endVisit(SuperMethodInvocation node) {
+    maybeAddGenericCastExpression(node, node.getExecutableElement());
+  }
+
+  private void maybeAddGenericCastExpression(Expression node, ExecutableElement method) {
+    TypeMirror returnType = method.getReturnType();
+    if (TypeUtil.isTypeVariable(returnType)) {
+      returnType = node.getTypeMirror();
+    }
+    if (options.asObjCGenericDecl()
+        && TypeUtil.isArray(returnType)
+        && !ElementUtil.isPrivate(method)) {
+
+      // Check for when the method return value should be ignored.
+      final Kind parentKind = node.getParent().getKind();
+      if (parentKind.equals(Kind.EXPRESSION_STATEMENT)
+          || parentKind.equals(Kind.LAMBDA_EXPRESSION)) {
+        return;
+      }
+
+      // Add a cast to the actual type, since the method is declared as a generic type.
+      CastExpression cast = new CastExpression(returnType, node.copy());
+      node.replaceWith(cast);
+    }
   }
 }

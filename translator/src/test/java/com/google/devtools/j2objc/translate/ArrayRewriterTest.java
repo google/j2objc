@@ -54,4 +54,70 @@ public class ArrayRewriterTest extends GenerationTest {
     assertEquals("++((*IOSIntArray_GetRef(x, 0)));", generateStatement(stmts.get(5)));
     assertEquals("((*IOSIntArray_GetRef(x, 0)))++;", generateStatement(stmts.get(6)));
   }
+
+  public void testArrayCastFromGenericMethodReturn() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    String translation = translateSourceFile(
+        "class Test { "
+            + "  public int[] newIntArray() { return new int[0]; } "
+            + "  public String[] newObjArray() { return new String[0]; }"
+            + "  public void test() { "
+            + "    int[] ints = newIntArray(); "
+            + "    String[] objs = newObjArray(); "
+            + "  }"
+            + "  public int[] test2() { "
+            + "    return newIntArray(); "
+            + "  }"
+            + "  public static class SubTest extends Test {"
+            + "    public String[] newObjArray() {"
+            + "      return super.newObjArray();"
+            + "    }"
+            + "  }"
+            + "}", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "IOSIntArray *ints = (IOSIntArray *) [self newIntArray];",
+        "IOSObjectArray *objs = (IOSObjectArray *) [self newObjArray];");
+    assertTranslation(translation, "return (IOSIntArray *) [self newIntArray];");
+    assertTranslation(translation, "return (IOSObjectArray *) Test_newObjArray(self);");
+  }
+
+  public void testArrayNotCastFromUnusedGenericMethodReturn() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    String translation = translateSourceFile(
+        "class Test { "
+            + "  public int[] newIntArray() { return new int[0]; } "
+            + "  public String[] newObjArray() { return new String[0]; }"
+            + "  public void test() { "
+            + "    newIntArray(); "
+            + "    newObjArray(); "
+            + "  }}", "Test", "Test.m");
+    assertTranslatedLines(translation, "[self newIntArray];", "[self newObjArray];");
+  }
+
+  public void testArrayCastInEnhancedForLoop() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    String translation = translateSourceFile(
+        "class Test { "
+            + "  public int[] newIntArray() { return new int[0]; } "
+            + "  public void test() { "
+            + "    for (int i : newIntArray()) {}"
+            + "  }}", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "IOSIntArray *a__ = (IOSIntArray *) [self newIntArray];");
+  }
+
+  public void testNoCastInLambda() throws IOException {
+    // Test from Base64Test.java
+    options.setAsObjCGenericDecl(true);
+    String translation = translateSourceFile(
+        "import java.util.Base64.Decoder; "
+            + "class Test { "
+            + "  public void test(Decoder decoder) { "
+            + "    Runnable r =  () -> decoder.decode((byte[]) null);"
+            + "  }}", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "- (void)run {",
+        "[((JavaUtilBase64_Decoder *) nil_chk(val$decoder_)) "
+            + "decodeWithByteArray:(IOSByteArray *) nil];");
+  }
 }

@@ -80,7 +80,8 @@ public class IconvCharsetEncoder extends CharsetEncoder {
     if (inBuf) {
       if ([inBuf hasArray]) {
         jint pos = [inBuf position];
-        inRaw = (char *)&[inBuf array]->buffer_[[inBuf arrayOffset] + pos];
+        IOSCharArray *array = (IOSCharArray *)[inBuf array];
+        inRaw = (char *)&array->buffer_[[inBuf arrayOffset] + pos];
         [inBuf positionWithInt:pos + inSize];
       } else {
         inArray = [IOSCharArray newArrayWithLength:inSize];
@@ -96,7 +97,8 @@ public class IconvCharsetEncoder extends CharsetEncoder {
     char *outRaw = NULL;
     size_t outRawBytes = outSize;
     if ([outBuf hasArray]) {
-      outRaw = (char *)&[outBuf array]->buffer_[[outBuf arrayOffset] + [outBuf position]];
+      IOSByteArray *array = (IOSByteArray *)[outBuf array];
+      outRaw = (char *)&array->buffer_[[outBuf arrayOffset] + [outBuf position]];
     } else if (outSize > 0) {
       outArray = [IOSByteArray newArrayWithLength:outSize];
       outRaw = (char *)outArray->buffer_;

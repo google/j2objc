@@ -99,15 +99,18 @@ public class CastResolver extends UnitTreeVisitor {
       }
     }
 
-    // Lean on Java's type-checking.
-    if (!type.getKind().isPrimitive() && typeUtil.isAssignable(exprType, typeUtil.erasure(type))) {
-      node.replaceWith(TreeUtil.remove(expr));
-      return;
-    }
+    if (!options.asObjCGenericDecl()) {  // Keep casts for generic array returns.
+      // Lean on Java's type-checking.
+      if (!type.getKind().isPrimitive()
+          && typeUtil.isAssignable(exprType, typeUtil.erasure(type))) {
+        node.replaceWith(TreeUtil.remove(expr));
+        return;
+      }
 
-    FunctionInvocation castCheck = createCastCheck(type, expr);
-    if (castCheck != null) {
-      node.setExpression(castCheck);
+      FunctionInvocation castCheck = createCastCheck(type, expr);
+      if (castCheck != null) {
+        node.setExpression(castCheck);
+      }
     }
   }
 

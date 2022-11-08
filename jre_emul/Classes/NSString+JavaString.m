@@ -484,7 +484,8 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
   }
   JavaNioCharBuffer *cb = [charset decodeWithJavaNioByteBuffer:
       JavaNioByteBuffer_wrapWithByteArray_withInt_withInt_(value, offset, count)];
-  return [NSString stringWithCharacters:[cb array]->buffer_ + [cb position] length:[cb remaining]];
+  const unichar *chars = ((IOSCharArray *)[cb array])->buffer_ + [cb position];
+  return [NSString stringWithCharacters:chars length:[cb remaining]];
 }
 
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value

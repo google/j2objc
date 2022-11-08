@@ -602,14 +602,12 @@ public class NameTable {
       objcType =
           isArrayComponent ? getPrimitiveObjCTypeArrayComponent(type) : getPrimitiveObjCType(type);
     } else if (type instanceof ArrayType && asObjCGenericDecl) {
-      TypeMirror componentType = ((ArrayType) type).getComponentType();
+      TypeMirror componentType = TypeUtil.unannotatedType(((ArrayType) type).getComponentType());
       String arrayClass =
           TypeUtil.isPrimitiveOrVoid(componentType) ? "IOSArray<" : "IOSObjectArray<";
-      String innerType =
-          getObjcTypeInner(
-              ((ArrayType) type).getComponentType(), qualifiers, asObjCGenericDecl, true);
+      String innerType = getObjcTypeInner(componentType, qualifiers, asObjCGenericDecl, true);
       objcType = arrayClass + innerType;
-      objcType += ((ArrayType) type).getComponentType() instanceof ArrayType ? " *>" : ">";
+      objcType += componentType instanceof ArrayType ? " *>" : ">";
       objcType += isArrayComponent ? "" : " *";
     } else {
       objcType = constructObjcTypeFromBounds(type);

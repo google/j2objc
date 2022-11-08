@@ -112,7 +112,8 @@ public class IconvCharsetDecoder extends CharsetDecoder {
     char *inRaw;
     if ([inBuf hasArray]) {
       jint pos = [inBuf position];
-      inRaw = (char *)&[inBuf array]->buffer_[[inBuf arrayOffset] + pos];
+      IOSByteArray *array = (IOSByteArray *)[inBuf array];
+      inRaw = (char *)&array->buffer_[[inBuf arrayOffset] + pos];
       [inBuf positionWithInt:pos + inSize];
     } else {
       inArray = [IOSByteArray newArrayWithLength:inSize];
@@ -126,7 +127,8 @@ public class IconvCharsetDecoder extends CharsetDecoder {
     char *outRaw = NULL;
     size_t outRawBytes = outSize * BYTES_PER_CHAR;
     if ([outBuf hasArray]) {
-      outRaw = (char *)&[outBuf array]->buffer_[[outBuf arrayOffset] + [outBuf position]];
+      IOSCharArray *array = (IOSCharArray *)([outBuf array]);
+      outRaw = (char *)&array->buffer_[[outBuf arrayOffset] + [outBuf position]];
     } else if (outSize > 0) {
       outArray = [IOSCharArray newArrayWithLength:outSize];
       outRaw = (char *)outArray->buffer_;
