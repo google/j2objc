@@ -393,6 +393,7 @@ GUAVA_SOURCES = \
     com/google/common/hash/Crc32cHashFunction.java \
     com/google/common/hash/ElementTypesAreNonnullByDefault.java \
     com/google/common/hash/FarmHashFingerprint64.java \
+    com/google/common/hash/Fingerprint2011.java \
     com/google/common/hash/Funnel.java \
     com/google/common/hash/Funnels.java \
     com/google/common/hash/HashCode.java \
@@ -614,43 +615,20 @@ GUAVA_SOURCES = \
     com/google/thirdparty/publicsuffix/TrieParser.java \
 
 CHECKER_QUAL_SOURCES = \
-    org/checkerframework/checker/nullness/compatqual/MonotonicNonNullDecl.java \
-    org/checkerframework/checker/nullness/compatqual/NonNullDecl.java \
-    org/checkerframework/checker/nullness/compatqual/NullableDecl.java \
     org/checkerframework/checker/nullness/qual/EnsuresNonNull.java \
     org/checkerframework/checker/nullness/qual/MonotonicNonNull.java \
     org/checkerframework/checker/nullness/qual/NonNull.java \
     org/checkerframework/checker/nullness/qual/Nullable.java \
     org/checkerframework/checker/nullness/qual/RequiresNonNull.java \
     org/checkerframework/framework/qual/DefaultFor.java \
-    org/checkerframework/framework/qual/DefaultInUncheckedCodeFor.java \
     org/checkerframework/framework/qual/DefaultQualifierInHierarchy.java \
-    org/checkerframework/framework/qual/ImplicitFor.java \
     org/checkerframework/framework/qual/InheritedAnnotation.java \
     org/checkerframework/framework/qual/LiteralKind.java \
     org/checkerframework/framework/qual/MonotonicQualifier.java \
     org/checkerframework/framework/qual/PostconditionAnnotation.java \
     org/checkerframework/framework/qual/PreconditionAnnotation.java \
+    org/checkerframework/framework/qual/QualifierForLiterals.java \
     org/checkerframework/framework/qual/SubtypeOf.java \
+    org/checkerframework/framework/qual/TypeKind.java \
     org/checkerframework/framework/qual/TypeUseLocation.java \
-
-CHECKER_QUAL_SOURCES_ORIGINAL_PATH = \
-    checker/src/org/checkerframework/checker/nullness/compatqual/MonotonicNonNullDecl.java \
-    checker/src/org/checkerframework/checker/nullness/compatqual/NonNullDecl.java \
-    checker/src/org/checkerframework/checker/nullness/compatqual/NullableDecl.java \
-    checker/src/org/checkerframework/checker/nullness/qual/EnsuresNonNull.java \
-    checker/src/org/checkerframework/checker/nullness/qual/MonotonicNonNull.java \
-    checker/src/org/checkerframework/checker/nullness/qual/NonNull.java \
-    checker/src/org/checkerframework/checker/nullness/qual/Nullable.java \
-    checker/src/org/checkerframework/checker/nullness/qual/RequiresNonNull.java \
-    framework/src/org/checkerframework/framework/qual/DefaultFor.java \
-    framework/src/org/checkerframework/framework/qual/DefaultInUncheckedCodeFor.java \
-    framework/src/org/checkerframework/framework/qual/DefaultQualifierInHierarchy.java \
-    framework/src/org/checkerframework/framework/qual/ImplicitFor.java \
-    framework/src/org/checkerframework/framework/qual/InheritedAnnotation.java \
-    framework/src/org/checkerframework/framework/qual/LiteralKind.java \
-    framework/src/org/checkerframework/framework/qual/MonotonicQualifier.java \
-    framework/src/org/checkerframework/framework/qual/PostconditionAnnotation.java \
-    framework/src/org/checkerframework/framework/qual/PreconditionAnnotation.java \
-    framework/src/org/checkerframework/framework/qual/SubtypeOf.java \
-    framework/src/org/checkerframework/framework/qual/TypeUseLocation.java \
+    org/checkerframework/framework/qual/UpperBoundFor.java

@@ -26,7 +26,7 @@ DISTRIBUTION_JARS = $(JSR305_JAR) $(JAVAX_INJECT_JAR) \
 INTERNAL_JARS = \
   $(ERROR_PRONE_ANNOTATIONS_JAR) $(ERROR_PRONE_ANNOTATIONS_SOURCE_JAR) \
   $(CHECKER_QUAL_JAR) $(CHECKER_QUAL_SOURCE_JAR) \
-  $(CHECKER_COMPAT_QUAL_JAR) $(CHECKER_COMPAT_QUAL_SOURCE_JAR) \
+  $(CHECKER_QUAL_ANDROID_JAR) $(CHECKER_QUAL_ANDROID_SOURCE_JAR) \
   $(ANIMAL_SNIFFER_ANNOTATIONS_JAR) $(ANIMAL_SNIFFER_ANNOTATIONS_SOURCE_JAR) \
   $(FAILUREACCESS_JAR) $(FAILUREACCESS_SOURCE_JAR) \
   $(GUAVA_JAR) $(GUAVA_SOURCE_JAR) \
@@ -67,11 +67,13 @@ $(BUILD_DIR)/$(JAVAC_JAR): | $(BUILD_DIR)
 	@cp -f $(JAVA_HOME)/lib/$(JAVAC_JAR) $@
 
 $(BUILD_DIR)/$(SCENELIB_JAR): | $(BUILD_DIR)
-	@curl -s -o $@.zip https://checkerframework.org/annotation-file-utilities/annotation-tools-3.9.1.zip
-	@unzip -qq -d $(BUILD_DIR) $@.zip annotation-file-utilities/annotation-file-utilities.jar
-	@unzip -qq -d $(BUILD_DIR) $(BUILD_DIR)/annotation-file-utilities/annotation-file-utilities.jar "scenelib/*"
-	@cd $(BUILD_DIR) && zip -q -r $(SCENELIB_JAR) scenelib/
-	@rm -rf $(BUILD_DIR)/annotation-file-utilities/ $(BUILD_DIR)/scenelib/
+	@curl -L -s -o $@.zip \
+    https://github.com/eisop/annotation-tools/releases/download/3.27.0-eisop1/annotation-tools-3.27.0-eisop1.zip
+	@unzip -qq -d $(BUILD_DIR) $@.zip annotation-file-utilities/annotation-file-utilities-all.jar
+	@unzip -qq -d $(BUILD_DIR) $(BUILD_DIR)/annotation-file-utilities/annotation-file-utilities-all.jar \
+    "org/checkerframework/afu/scenelib/*" "org/objectweb/asm/*"
+	@cd $(BUILD_DIR) && zip -q -r $(SCENELIB_JAR) org/checkerframework/afu/scenelib/ org/objectweb/asm/
+	@rm -rf $@.zip $(BUILD_DIR)/annotation-file-utilities/ $(BUILD_DIR)/org/
 
 $(BUILD_DIR) $(DIST_JAR_DIR):
 	@mkdir -p $@

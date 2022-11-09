@@ -121,15 +121,11 @@ $(BUILD_DIR)/.extracted: $(GUAVA_SRC_JAR) $(ERROR_PRONE_ANNOTATIONS_SRC_JAR) \
 	@unzip -o -q -d $(JAVA_SRC_DIR) $(GUAVA_SRC_JAR) $(GUAVA_SOURCES)
 	@unzip -o -q -d $(JAVA_SRC_DIR) $(ERROR_PRONE_ANNOTATIONS_SRC_JAR) \
 		$(ERROR_PRONE_ANNOTATIONS_SOURCES)
-	@unzip -o -q -d $(JAVA_SRC_DIR) $(CHECKER_QUAL_SRC_JAR) \
-		$(CHECKER_QUAL_SOURCES_ORIGINAL_PATH)
+	@unzip -o -q -d $(JAVA_SRC_DIR) $(CHECKER_QUAL_SRC_JAR) $(CHECKER_QUAL_SOURCES)
 	@unzip -o -q -d $(JAVA_SRC_DIR) $(ANIMAL_SNIFFER_ANNOTATIONS_SRC_JAR) \
 		$(ANIMAL_SNIFFER_ANNOTATIONS_SOURCES)
 	@unzip -o -q -d $(JAVA_SRC_DIR) $(FAILUREACCESS_SRC_JAR) \
 		$(FAILUREACCESS_SOURCES)
-	@echo "Moving checker sources to top level."
-	@rsync -a $(JAVA_SRC_DIR)/checker/src/org/ $(JAVA_SRC_DIR)/org/
-	@rsync -a $(JAVA_SRC_DIR)/framework/src/org/ $(JAVA_SRC_DIR)/org/
 	@echo "Removing problematic imports that are only used in javadoc comments."
 	@sed -i '' -e '/import org.checkerframework.checker.nullness.AbstractNullnessChecker;/d' \
 		$(JAVA_SRC_DIR)/org/checkerframework/checker/nullness/qual/Nullable.java
