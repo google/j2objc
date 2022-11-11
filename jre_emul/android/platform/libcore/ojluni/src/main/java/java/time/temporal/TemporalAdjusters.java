@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -311,39 +311,39 @@ public final class TemporalAdjusters {
         return TemporalAdjusters.dayOfWeekInMonth(-1, dayOfWeek);
     }
 
-    /**
-     * Returns the day-of-week in month adjuster, which returns a new date
-     * in the same month with the ordinal day-of-week.
-     * This is used for expressions like the 'second Tuesday in March'.
-     * <p>
-     * The ISO calendar system behaves as follows:<br>
-     * The input 2011-12-15 for (1,TUESDAY) will return 2011-12-06.<br>
-     * The input 2011-12-15 for (2,TUESDAY) will return 2011-12-13.<br>
-     * The input 2011-12-15 for (3,TUESDAY) will return 2011-12-20.<br>
-     * The input 2011-12-15 for (4,TUESDAY) will return 2011-12-27.<br>
-     * The input 2011-12-15 for (5,TUESDAY) will return 2012-01-03.<br>
-     * The input 2011-12-15 for (-1,TUESDAY) will return 2011-12-27 (last in month).<br>
-     * The input 2011-12-15 for (-4,TUESDAY) will return 2011-12-06 (3 weeks before last in month).<br>
-     * The input 2011-12-15 for (-5,TUESDAY) will return 2011-11-29 (4 weeks before last in month).<br>
-     * The input 2011-12-15 for (0,TUESDAY) will return 2011-11-29 (last in previous month).<br>
-     * <p>
-     * For a positive or zero ordinal, the algorithm is equivalent to finding the first
-     * day-of-week that matches within the month and then adding a number of weeks to it.
-     * For a negative ordinal, the algorithm is equivalent to finding the last
-     * day-of-week that matches within the month and then subtracting a number of weeks to it.
-     * The ordinal number of weeks is not validated and is interpreted leniently
-     * according to this algorithm. This definition means that an ordinal of zero finds
-     * the last matching day-of-week in the previous month.
-     * <p>
-     * The behavior is suitable for use with most calendar systems.
-     * It uses the {@code DAY_OF_WEEK} and {@code DAY_OF_MONTH} fields
-     * and the {@code DAYS} unit, and assumes a seven day week.
-     *
-     * @param ordinal  the week within the month, unbounded but typically from -5 to 5
-     * @param dayOfWeek  the day-of-week, not null
-     * @return the day-of-week in month adjuster, not null
-     */
-    public static TemporalAdjuster dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
+  /**
+   * Returns the day-of-week in month adjuster, which returns a new date with the ordinal
+   * day-of-week based on the month. This is used for expressions like the 'second Tuesday in
+   * March'.
+   *
+   * <p>The ISO calendar system behaves as follows:<br>
+   * The input 2011-12-15 for (1,TUESDAY) will return 2011-12-06.<br>
+   * The input 2011-12-15 for (2,TUESDAY) will return 2011-12-13.<br>
+   * The input 2011-12-15 for (3,TUESDAY) will return 2011-12-20.<br>
+   * The input 2011-12-15 for (4,TUESDAY) will return 2011-12-27.<br>
+   * The input 2011-12-15 for (5,TUESDAY) will return 2012-01-03.<br>
+   * The input 2011-12-15 for (-1,TUESDAY) will return 2011-12-27 (last in month).<br>
+   * The input 2011-12-15 for (-4,TUESDAY) will return 2011-12-06 (3 weeks before last in month).
+   * <br>
+   * The input 2011-12-15 for (-5,TUESDAY) will return 2011-11-29 (4 weeks before last in month).
+   * <br>
+   * The input 2011-12-15 for (0,TUESDAY) will return 2011-11-29 (last in previous month).<br>
+   *
+   * <p>For a positive or zero ordinal, the algorithm is equivalent to finding the first day-of-week
+   * that matches within the month and then adding a number of weeks to it. For a negative ordinal,
+   * the algorithm is equivalent to finding the last day-of-week that matches within the month and
+   * then subtracting a number of weeks to it. The ordinal number of weeks is not validated and is
+   * interpreted leniently according to this algorithm. This definition means that an ordinal of
+   * zero finds the last matching day-of-week in the previous month.
+   *
+   * <p>The behavior is suitable for use with most calendar systems. It uses the {@code DAY_OF_WEEK}
+   * and {@code DAY_OF_MONTH} fields and the {@code DAYS} unit, and assumes a seven day week.
+   *
+   * @param ordinal the week within the month, unbounded but typically from -5 to 5
+   * @param dayOfWeek the day-of-week, not null
+   * @return the day-of-week in month adjuster, not null
+   */
+  public static TemporalAdjuster dayOfWeekInMonth(int ordinal, DayOfWeek dayOfWeek) {
         Objects.requireNonNull(dayOfWeek, "dayOfWeek");
         int dowValue = dayOfWeek.getValue();
         if (ordinal >= 0) {

@@ -164,10 +164,12 @@ public final class ValueRange implements Serializable {
      */
     public static ValueRange of(long minSmallest, long minLargest, long maxSmallest, long maxLargest) {
         if (minSmallest > minLargest) {
-            throw new IllegalArgumentException("Smallest minimum value must be less than largest minimum value");
+      throw new IllegalArgumentException(
+          "Smallest minimum value must be less than largest minimum value");
         }
         if (maxSmallest > maxLargest) {
-            throw new IllegalArgumentException("Smallest maximum value must be less than largest maximum value");
+      throw new IllegalArgumentException(
+          "Smallest maximum value must be less than largest maximum value");
         }
         if (minLargest > maxLargest) {
             throw new IllegalArgumentException("Minimum value must be less than maximum value");
@@ -357,10 +359,12 @@ public final class ValueRange implements Serializable {
     {
         s.defaultReadObject();
         if (minSmallest > minLargest) {
-            throw new InvalidObjectException("Smallest minimum value must be less than largest minimum value");
+      throw new InvalidObjectException(
+          "Smallest minimum value must be less than largest minimum value");
         }
         if (maxSmallest > maxLargest) {
-            throw new InvalidObjectException("Smallest maximum value must be less than largest maximum value");
+      throw new InvalidObjectException(
+          "Smallest maximum value must be less than largest maximum value");
         }
         if (minLargest > maxLargest) {
             throw new InvalidObjectException("Minimum value must be less than maximum value");
@@ -385,8 +389,10 @@ public final class ValueRange implements Serializable {
         }
         if (obj instanceof ValueRange) {
             ValueRange other = (ValueRange) obj;
-           return minSmallest == other.minSmallest && minLargest == other.minLargest &&
-                   maxSmallest == other.maxSmallest && maxLargest == other.maxLargest;
+      return minSmallest == other.minSmallest
+          && minLargest == other.minLargest
+          && maxSmallest == other.maxSmallest
+          && maxLargest == other.maxLargest;
         }
         return false;
     }
@@ -398,8 +404,14 @@ public final class ValueRange implements Serializable {
      */
     @Override
     public int hashCode() {
-        long hash = minSmallest + minLargest << 16 + minLargest >> 48 + maxSmallest << 32 +
-            maxSmallest >> 32 + maxLargest << 48 + maxLargest >> 16;
+    long hash =
+        minSmallest
+            + (minLargest << 16)
+            + (minLargest >> 48)
+            + (maxSmallest << 32)
+            + (maxSmallest >> 32)
+            + (maxLargest << 48)
+            + (maxLargest >> 16);
         return (int) (hash ^ (hash >>> 32));
     }
 

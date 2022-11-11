@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2017, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -61,10 +61,6 @@
  */
 package java.time.temporal;
 
-import android.icu.text.DateTimePatternGenerator;
-import android.icu.util.Calendar;
-import android.icu.util.ULocale;
-
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.DAY_OF_YEAR;
@@ -76,6 +72,9 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 import static java.time.temporal.ChronoUnit.YEARS;
 
+import android.icu.text.DateTimePatternGenerator;
+import android.icu.util.Calendar;
+import android.icu.util.ULocale;
 import com.google.j2objc.annotations.Weak;
 import java.io.IOException;
 import java.io.InvalidObjectException;
@@ -94,87 +93,93 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * Localized definitions of the day-of-week, week-of-month and week-of-year fields.
- * <p>
- * A standard week is seven days long, but cultures have different definitions for some
- * other aspects of a week. This class represents the definition of the week, for the
- * purpose of providing {@link TemporalField} instances.
- * <p>
- * WeekFields provides five fields,
- * {@link #dayOfWeek()}, {@link #weekOfMonth()}, {@link #weekOfYear()},
- * {@link #weekOfWeekBasedYear()}, and {@link #weekBasedYear()}
- * that provide access to the values from any {@linkplain Temporal temporal object}.
- * <p>
- * The computations for day-of-week, week-of-month, and week-of-year are based
- * on the  {@linkplain ChronoField#YEAR proleptic-year},
- * {@linkplain ChronoField#MONTH_OF_YEAR month-of-year},
- * {@linkplain ChronoField#DAY_OF_MONTH day-of-month}, and
- * {@linkplain ChronoField#DAY_OF_WEEK ISO day-of-week} which are based on the
- * {@linkplain ChronoField#EPOCH_DAY epoch-day} and the chronology.
- * The values may not be aligned with the {@linkplain ChronoField#YEAR_OF_ERA year-of-Era}
- * depending on the Chronology.
+ *
+ * <p>A standard week is seven days long, but cultures have different definitions for some other
+ * aspects of a week. This class represents the definition of the week, for the purpose of providing
+ * {@link TemporalField} instances.
+ *
+ * <p>WeekFields provides five fields, {@link #dayOfWeek()}, {@link #weekOfMonth()}, {@link
+ * #weekOfYear()}, {@link #weekOfWeekBasedYear()}, and {@link #weekBasedYear()} that provide access
+ * to the values from any {@linkplain Temporal temporal object}.
+ *
+ * <p>The computations for day-of-week, week-of-month, and week-of-year are based on the {@linkplain
+ * ChronoField#YEAR proleptic-year}, {@linkplain ChronoField#MONTH_OF_YEAR month-of-year},
+ * {@linkplain ChronoField#DAY_OF_MONTH day-of-month}, and {@linkplain ChronoField#DAY_OF_WEEK ISO
+ * day-of-week} which are based on the {@linkplain ChronoField#EPOCH_DAY epoch-day} and the
+ * chronology. The values may not be aligned with the {@linkplain ChronoField#YEAR_OF_ERA
+ * year-of-Era} depending on the Chronology.
+ *
  * <p>A week is defined by:
+ *
  * <ul>
- * <li>The first day-of-week.
- * For example, the ISO-8601 standard considers Monday to be the first day-of-week.
- * <li>The minimal number of days in the first week.
- * For example, the ISO-8601 standard counts the first week as needing at least 4 days.
+ *   <li>The first day-of-week. For example, the ISO-8601 standard considers Monday to be the first
+ *       day-of-week.
+ *   <li>The minimal number of days in the first week. For example, the ISO-8601 standard counts the
+ *       first week as needing at least 4 days.
  * </ul>
+ *
  * Together these two values allow a year or month to be divided into weeks.
  *
  * <h3>Week of Month</h3>
- * One field is used: week-of-month.
- * The calculation ensures that weeks never overlap a month boundary.
- * The month is divided into periods where each period starts on the defined first day-of-week.
- * The earliest period is referred to as week 0 if it has less than the minimal number of days
- * and week 1 if it has at least the minimal number of days.
  *
- * <table cellpadding="0" cellspacing="3" border="0" style="text-align: left; width: 50%;">
+ * One field is used: week-of-month. The calculation ensures that weeks never overlap a month
+ * boundary. The month is divided into periods where each period starts on the defined first
+ * day-of-week. The earliest period is referred to as week 0 if it has less than the minimal number
+ * of days and week 1 if it has at least the minimal number of days.
+ *
+ * <table class=striped style="text-align: left">
  * <caption>Examples of WeekFields</caption>
- * <tr><th>Date</th><td>Day-of-week</td>
- *  <td>First day: Monday<br>Minimal days: 4</td><td>First day: Monday<br>Minimal days: 5</td></tr>
- * <tr><th>2008-12-31</th><td>Wednesday</td>
+ * <thead>
+ * <tr><th scope="col">Date</th><th scope="col">Day-of-week</th>
+ *  <th scope="col">First day: Monday<br>Minimal days: 4</th><th scope="col">First day: Monday<br>Minimal days: 5</th></tr>
+ * </thead>
+ * <tbody>
+ * <tr><th scope="row">2008-12-31</th><td>Wednesday</td>
  *  <td>Week 5 of December 2008</td><td>Week 5 of December 2008</td></tr>
- * <tr><th>2009-01-01</th><td>Thursday</td>
+ * <tr><th scope="row">2009-01-01</th><td>Thursday</td>
  *  <td>Week 1 of January 2009</td><td>Week 0 of January 2009</td></tr>
- * <tr><th>2009-01-04</th><td>Sunday</td>
+ * <tr><th scope="row">2009-01-04</th><td>Sunday</td>
  *  <td>Week 1 of January 2009</td><td>Week 0 of January 2009</td></tr>
- * <tr><th>2009-01-05</th><td>Monday</td>
+ * <tr><th scope="row">2009-01-05</th><td>Monday</td>
  *  <td>Week 2 of January 2009</td><td>Week 1 of January 2009</td></tr>
+ * </tbody>
  * </table>
  *
  * <h3>Week of Year</h3>
- * One field is used: week-of-year.
- * The calculation ensures that weeks never overlap a year boundary.
- * The year is divided into periods where each period starts on the defined first day-of-week.
- * The earliest period is referred to as week 0 if it has less than the minimal number of days
- * and week 1 if it has at least the minimal number of days.
+ *
+ * One field is used: week-of-year. The calculation ensures that weeks never overlap a year
+ * boundary. The year is divided into periods where each period starts on the defined first
+ * day-of-week. The earliest period is referred to as week 0 if it has less than the minimal number
+ * of days and week 1 if it has at least the minimal number of days.
  *
  * <h3>Week Based Year</h3>
- * Two fields are used for week-based-year, one for the
- * {@link #weekOfWeekBasedYear() week-of-week-based-year} and one for
- * {@link #weekBasedYear() week-based-year}.  In a week-based-year, each week
- * belongs to only a single year.  Week 1 of a year is the first week that
- * starts on the first day-of-week and has at least the minimum number of days.
- * The first and last weeks of a year may contain days from the
- * previous calendar year or next calendar year respectively.
  *
- * <table cellpadding="0" cellspacing="3" border="0" style="text-align: left; width: 50%;">
+ * Two fields are used for week-based-year, one for the {@link #weekOfWeekBasedYear()
+ * week-of-week-based-year} and one for {@link #weekBasedYear() week-based-year}. In a
+ * week-based-year, each week belongs to only a single year. Week 1 of a year is the first week that
+ * starts on the first day-of-week and has at least the minimum number of days. The first and last
+ * weeks of a year may contain days from the previous calendar year or next calendar year
+ * respectively.
+ *
+ * <table class=striped style="text-align: left;">
  * <caption>Examples of WeekFields for week-based-year</caption>
- * <tr><th>Date</th><td>Day-of-week</td>
- *  <td>First day: Monday<br>Minimal days: 4</td><td>First day: Monday<br>Minimal days: 5</td></tr>
- * <tr><th>2008-12-31</th><td>Wednesday</td>
+ * <thead>
+ * <tr><th scope="col">Date</th><th scope="col">Day-of-week</th>
+ *  <th scope="col">First day: Monday<br>Minimal days: 4</th><th scope="col">First day: Monday<br>Minimal days: 5</th></tr>
+ * </thead>
+ * <tbody>
+ * <tr><th scope="row">2008-12-31</th><td>Wednesday</td>
  *  <td>Week 1 of 2009</td><td>Week 53 of 2008</td></tr>
- * <tr><th>2009-01-01</th><td>Thursday</td>
+ * <tr><th scope="row">2009-01-01</th><td>Thursday</td>
  *  <td>Week 1 of 2009</td><td>Week 53 of 2008</td></tr>
- * <tr><th>2009-01-04</th><td>Sunday</td>
+ * <tr><th scope="row">2009-01-04</th><td>Sunday</td>
  *  <td>Week 1 of 2009</td><td>Week 53 of 2008</td></tr>
- * <tr><th>2009-01-05</th><td>Monday</td>
+ * <tr><th scope="row">2009-01-05</th><td>Monday</td>
  *  <td>Week 2 of 2009</td><td>Week 1 of 2009</td></tr>
+ * </tbody>
  * </table>
  *
- * @implSpec
- * This class is immutable and thread-safe.
- *
+ * @implSpec This class is immutable and thread-safe.
  * @since 1.8
  */
 public final class WeekFields implements Serializable {
@@ -274,46 +279,84 @@ public final class WeekFields implements Serializable {
      */
     private final transient TemporalField weekBasedYear = ComputedDayOfField.ofWeekBasedYearField(this);
 
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code WeekFields} appropriate for a locale.
-     * <p>
-     * This will look up appropriate values from the provider of localization data.
-     *
-     * @param locale  the locale to use, not null
-     * @return the week-definition, not null
-     */
-    public static WeekFields of(Locale locale) {
+  // -----------------------------------------------------------------------
+  // Android-changed: Remove "rg" support in the javadoc. See http://b/228322300.
+  // Android-changed: Support the "fw" extension since Android 13. See http://b/228322300.
+  /**
+   * Obtains an instance of {@code WeekFields} appropriate for a locale.
+   *
+   * <p>This will look up appropriate values from the provider of localization data. Since Android
+   * 13, if the locale contains "fw" (First day of week) <a
+   * href="../../util/Locale.html#def_locale_extension">Unicode extensions</a>, returned instance
+   * will reflect the values specified with those extensions.
+   *
+   * @param locale the locale to use, not null
+   * @return the week-definition, not null
+   */
+  public static WeekFields of(Locale locale) {
         Objects.requireNonNull(locale, "locale");
-        // Android-changed: get Week data from ICU4J
-        ULocale ulocale = ULocale.forLocale(locale);
-        String region = ULocale.getRegionForSupplementalData(ulocale, /* inferRegion */ true);
-        Calendar.WeekData weekData = Calendar.getWeekDataForRegion(region);
-        DayOfWeek dow = DayOfWeek.SUNDAY.plus(weekData.firstDayOfWeek - 1);
-        return WeekFields.of(dow, weekData.minimalDaysInFirstWeek);
+
+    // Android-changed: Obtain week data from ICU4J.
+    // int calDow = CalendarDataUtility.retrieveFirstDayOfWeek(locale);
+    Calendar calendar = Calendar.getInstance(locale);
+    Calendar.WeekData weekData = calendar.getWeekData();
+    int calDow = retrieveFirstDayOfWeek(locale, weekData);
+    DayOfWeek dow = DayOfWeek.SUNDAY.plus(calDow - 1);
+    // Android-changed: Obtain minimal days from ICU4J.
+    // int minDays = CalendarDataUtility.retrieveMinimalDaysInFirstWeek(locale);
+    int minDays = weekData.minimalDaysInFirstWeek;
+    return WeekFields.of(dow, minDays);
+  }
+
+  // BEGIN Android-added: Extra method needed to support "fw" the Unicode extension.
+  // A modified version of the upstream CalendarDataUtility.retrieveFirstDayOfWeek() but with
+  // ICU provider.
+  private static int retrieveFirstDayOfWeek(Locale locale, Calendar.WeekData icuWeekData) {
+    // Look for the Unicode Extension in the locale parameter
+    if (locale.hasExtensions()) {
+      String fw = locale.getUnicodeLocaleType("fw");
+      if (fw != null) {
+        switch (fw.toLowerCase(Locale.ROOT)) {
+          case "mon":
+            return Calendar.MONDAY;
+          case "tue":
+            return Calendar.TUESDAY;
+          case "wed":
+            return Calendar.WEDNESDAY;
+          case "thu":
+            return Calendar.THURSDAY;
+          case "fri":
+            return Calendar.FRIDAY;
+          case "sat":
+            return Calendar.SATURDAY;
+          case "sun":
+            return Calendar.SUNDAY;
+        }
+      }
     }
 
-    /**
-     * Obtains an instance of {@code WeekFields} from the first day-of-week and minimal days.
-     * <p>
-     * The first day-of-week defines the ISO {@code DayOfWeek} that is day 1 of the week.
-     * The minimal number of days in the first week defines how many days must be present
-     * in a month or year, starting from the first day-of-week, before the week is counted
-     * as the first week. A value of 1 will count the first day of the month or year as part
-     * of the first week, whereas a value of 7 will require the whole seven days to be in
-     * the new month or year.
-     * <p>
-     * WeekFields instances are singletons; for each unique combination
-     * of {@code firstDayOfWeek} and {@code minimalDaysInFirstWeek} the
-     * the same instance will be returned.
-     *
-     * @param firstDayOfWeek  the first day of the week, not null
-     * @param minimalDaysInFirstWeek  the minimal number of days in the first week, from 1 to 7
-     * @return the week-definition, not null
-     * @throws IllegalArgumentException if the minimal days value is less than one
-     *      or greater than 7
-     */
-    public static WeekFields of(DayOfWeek firstDayOfWeek, int minimalDaysInFirstWeek) {
+    return icuWeekData.firstDayOfWeek;
+  }
+  // END Android-added: Extra method needed to support "fw" the Unicode extension.
+
+  /**
+   * Obtains an instance of {@code WeekFields} from the first day-of-week and minimal days.
+   *
+   * <p>The first day-of-week defines the ISO {@code DayOfWeek} that is day 1 of the week. The
+   * minimal number of days in the first week defines how many days must be present in a month or
+   * year, starting from the first day-of-week, before the week is counted as the first week. A
+   * value of 1 will count the first day of the month or year as part of the first week, whereas a
+   * value of 7 will require the whole seven days to be in the new month or year.
+   *
+   * <p>WeekFields instances are singletons; for each unique combination of {@code firstDayOfWeek}
+   * and {@code minimalDaysInFirstWeek} the same instance will be returned.
+   *
+   * @param firstDayOfWeek the first day of the week, not null
+   * @param minimalDaysInFirstWeek the minimal number of days in the first week, from 1 to 7
+   * @return the week-definition, not null
+   * @throws IllegalArgumentException if the minimal days value is less than one or greater than 7
+   */
+  public static WeekFields of(DayOfWeek firstDayOfWeek, int minimalDaysInFirstWeek) {
         String key = firstDayOfWeek.toString() + minimalDaysInFirstWeek;
         WeekFields rules = CACHE.get(key);
         if (rules == null) {
@@ -683,7 +726,7 @@ public final class WeekFields implements Serializable {
          * @see WeekFields#weekOfMonth()
          */
         static ComputedDayOfField ofWeekOfMonthField(WeekFields weekDef) {
-            return new ComputedDayOfField("WeekOfMonth", weekDef, WEEKS, MONTHS, WEEK_OF_MONTH_RANGE);
+      return new ComputedDayOfField("WeekOfMonth", weekDef, WEEKS, MONTHS, WEEK_OF_MONTH_RANGE);
         }
 
         /**
@@ -701,7 +744,12 @@ public final class WeekFields implements Serializable {
          * @see WeekFields#weekOfWeekBasedYear()
          */
         static ComputedDayOfField ofWeekOfWeekBasedYearField(WeekFields weekDef) {
-            return new ComputedDayOfField("WeekOfWeekBasedYear", weekDef, WEEKS, IsoFields.WEEK_BASED_YEARS, WEEK_OF_WEEK_BASED_YEAR_RANGE);
+      return new ComputedDayOfField(
+          "WeekOfWeekBasedYear",
+          weekDef,
+          WEEKS,
+          IsoFields.WEEK_BASED_YEARS,
+          WEEK_OF_WEEK_BASED_YEAR_RANGE);
         }
 
         /**
@@ -710,7 +758,8 @@ public final class WeekFields implements Serializable {
          * @see WeekFields#weekBasedYear()
          */
         static ComputedDayOfField ofWeekBasedYearField(WeekFields weekDef) {
-            return new ComputedDayOfField("WeekBasedYear", weekDef, IsoFields.WEEK_BASED_YEARS, FOREVER, ChronoField.YEAR.range());
+      return new ComputedDayOfField(
+          "WeekBasedYear", weekDef, IsoFields.WEEK_BASED_YEARS, FOREVER, ChronoField.YEAR.range());
         }
 
         /**
@@ -769,7 +818,7 @@ public final class WeekFields implements Serializable {
             } else if (rangeUnit == FOREVER) {
                 return localizedWeekBasedYear(temporal);
             } else {
-                throw new IllegalStateException("unreachable, rangeUnit: " + rangeUnit + ", this: " + this);
+        throw new IllegalStateException("unreachable, rangeUnit: " + rangeUnit + ", this: " + this);
             }
         }
 
@@ -971,7 +1020,8 @@ public final class WeekFields implements Serializable {
                 int days = localDow - localizedDayOfWeek(date);  // safe from overflow
                 date = date.plus(weeks * 7 + days, DAYS);
                 if (resolverStyle == ResolverStyle.STRICT && date.getLong(MONTH_OF_YEAR) != month) {
-                    throw new DateTimeException("Strict mode rejected resolved date as it is in a different month");
+          throw new DateTimeException(
+              "Strict mode rejected resolved date as it is in a different month");
                 }
             }
             fieldValues.remove(this);
@@ -994,7 +1044,8 @@ public final class WeekFields implements Serializable {
                 int days = localDow - localizedDayOfWeek(date);  // safe from overflow
                 date = date.plus(weeks * 7 + days, DAYS);
                 if (resolverStyle == ResolverStyle.STRICT && date.getLong(YEAR) != year) {
-                    throw new DateTimeException("Strict mode rejected resolved date as it is in a different year");
+          throw new DateTimeException(
+              "Strict mode rejected resolved date as it is in a different year");
                 }
             }
             fieldValues.remove(this);
@@ -1018,7 +1069,8 @@ public final class WeekFields implements Serializable {
                         fieldValues.get(weekDef.weekOfWeekBasedYear), weekDef.weekOfWeekBasedYear);  // validate
                 date = ofWeekBasedYear(chrono, yowby, wowby, localDow);
                 if (resolverStyle == ResolverStyle.STRICT && localizedWeekBasedYear(date) != yowby) {
-                    throw new DateTimeException("Strict mode rejected resolved date as it is in a different week-based-year");
+          throw new DateTimeException(
+              "Strict mode rejected resolved date as it is in a different week-based-year");
                 }
             }
             fieldValues.remove(this);
@@ -1033,9 +1085,16 @@ public final class WeekFields implements Serializable {
         public String getDisplayName(Locale locale) {
             Objects.requireNonNull(locale, "locale");
             if (rangeUnit == YEARS) {  // only have values for week-of-year
-                // Android-changed: Use ICU name values.
-                DateTimePatternGenerator dateTimePatternGenerator = DateTimePatternGenerator
-                        .getFrozenInstance(ULocale.forLocale(locale));
+        // Android-changed: Use ICU name values.
+        /*
+        LocaleResources lr = LocaleProviderAdapter.getResourceBundleBased()
+                .getLocaleResources(
+                    CalendarDataUtility.findRegionOverride(locale));
+        ResourceBundle rb = lr.getJavaTimeFormatData();
+        return rb.containsKey("field.week") ? rb.getString("field.week") : name;
+         */
+        DateTimePatternGenerator dateTimePatternGenerator =
+            DateTimePatternGenerator.getInstance(ULocale.forLocale(locale));
                 String icuName = dateTimePatternGenerator
                         .getAppendItemName(DateTimePatternGenerator.WEEK_OF_YEAR);
                 return icuName != null && !icuName.isEmpty() ? icuName : name;
@@ -1100,7 +1159,7 @@ public final class WeekFields implements Serializable {
             } else if (rangeUnit == FOREVER) {
                 return YEAR.range();
             } else {
-                throw new IllegalStateException("unreachable, rangeUnit: " + rangeUnit + ", this: " + this);
+        throw new IllegalStateException("unreachable, rangeUnit: " + rangeUnit + ", this: " + this);
             }
         }
 

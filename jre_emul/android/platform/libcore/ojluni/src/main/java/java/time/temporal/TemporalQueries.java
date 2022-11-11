@@ -337,62 +337,113 @@ public final class TemporalQueries {
         return TemporalQueries.LOCAL_TIME;
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * A strict query for the {@code ZoneId}.
-     */
-    static final TemporalQuery<ZoneId> ZONE_ID = (temporal) ->
-        temporal.query(TemporalQueries.ZONE_ID);
+  // -----------------------------------------------------------------------
+  /** A strict query for the {@code ZoneId}. */
+  static final TemporalQuery<ZoneId> ZONE_ID =
+      new TemporalQuery<>() {
+        @Override
+        public ZoneId queryFrom(TemporalAccessor temporal) {
+          return temporal.query(TemporalQueries.ZONE_ID);
+        }
 
-    /**
-     * A query for the {@code Chronology}.
-     */
-    static final TemporalQuery<Chronology> CHRONO = (temporal) ->
-        temporal.query(TemporalQueries.CHRONO);
+        @Override
+        public String toString() {
+          return "ZoneId";
+        }
+      };
 
-    /**
-     * A query for the smallest supported unit.
-     */
-    static final TemporalQuery<TemporalUnit> PRECISION = (temporal) ->
-        temporal.query(TemporalQueries.PRECISION);
+  /** A query for the {@code Chronology}. */
+  static final TemporalQuery<Chronology> CHRONO =
+      new TemporalQuery<>() {
+        @Override
+        public Chronology queryFrom(TemporalAccessor temporal) {
+          return temporal.query(TemporalQueries.CHRONO);
+        }
 
-    //-----------------------------------------------------------------------
-    /**
-     * A query for {@code ZoneOffset} returning null if not found.
-     */
-    static final TemporalQuery<ZoneOffset> OFFSET = (temporal) -> {
-        if (temporal.isSupported(OFFSET_SECONDS)) {
+        @Override
+        public String toString() {
+          return "Chronology";
+        }
+      };
+
+  /** A query for the smallest supported unit. */
+  static final TemporalQuery<TemporalUnit> PRECISION =
+      new TemporalQuery<>() {
+        @Override
+        public TemporalUnit queryFrom(TemporalAccessor temporal) {
+          return temporal.query(TemporalQueries.PRECISION);
+        }
+
+        @Override
+        public String toString() {
+          return "Precision";
+        }
+      };
+
+  // -----------------------------------------------------------------------
+  /** A query for {@code ZoneOffset} returning null if not found. */
+  static final TemporalQuery<ZoneOffset> OFFSET =
+      new TemporalQuery<>() {
+        @Override
+        public ZoneOffset queryFrom(TemporalAccessor temporal) {
+          if (temporal.isSupported(OFFSET_SECONDS)) {
             return ZoneOffset.ofTotalSeconds(temporal.get(OFFSET_SECONDS));
+          }
+          return null;
         }
-        return null;
-    };
 
-    /**
-     * A lenient query for the {@code ZoneId}, falling back to the {@code ZoneOffset}.
-     */
-    static final TemporalQuery<ZoneId> ZONE = (temporal) -> {
-        ZoneId zone = temporal.query(ZONE_ID);
-        return (zone != null ? zone : temporal.query(OFFSET));
-    };
+        @Override
+        public String toString() {
+          return "ZoneOffset";
+        }
+      };
 
-    /**
-     * A query for {@code LocalDate} returning null if not found.
-     */
-    static final TemporalQuery<LocalDate> LOCAL_DATE = (temporal) -> {
-        if (temporal.isSupported(EPOCH_DAY)) {
+  /** A lenient query for the {@code ZoneId}, falling back to the {@code ZoneOffset}. */
+  static final TemporalQuery<ZoneId> ZONE =
+      new TemporalQuery<>() {
+        @Override
+        public ZoneId queryFrom(TemporalAccessor temporal) {
+          ZoneId zone = temporal.query(ZONE_ID);
+          return (zone != null ? zone : temporal.query(OFFSET));
+        }
+
+        @Override
+        public String toString() {
+          return "Zone";
+        }
+      };
+
+  /** A query for {@code LocalDate} returning null if not found. */
+  static final TemporalQuery<LocalDate> LOCAL_DATE =
+      new TemporalQuery<>() {
+        @Override
+        public LocalDate queryFrom(TemporalAccessor temporal) {
+          if (temporal.isSupported(EPOCH_DAY)) {
             return LocalDate.ofEpochDay(temporal.getLong(EPOCH_DAY));
+          }
+          return null;
         }
-        return null;
-    };
 
-    /**
-     * A query for {@code LocalTime} returning null if not found.
-     */
-    static final TemporalQuery<LocalTime> LOCAL_TIME = (temporal) -> {
-        if (temporal.isSupported(NANO_OF_DAY)) {
+        @Override
+        public String toString() {
+          return "LocalDate";
+        }
+      };
+
+  /** A query for {@code LocalTime} returning null if not found. */
+  static final TemporalQuery<LocalTime> LOCAL_TIME =
+      new TemporalQuery<>() {
+        @Override
+        public LocalTime queryFrom(TemporalAccessor temporal) {
+          if (temporal.isSupported(NANO_OF_DAY)) {
             return LocalTime.ofNanoOfDay(temporal.getLong(NANO_OF_DAY));
+          }
+          return null;
         }
-        return null;
-    };
 
+        @Override
+        public String toString() {
+          return "LocalTime";
+        }
+      };
 }

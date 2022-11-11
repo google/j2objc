@@ -180,14 +180,12 @@ public enum ChronoUnit implements TemporalUnit {
      * When used with other calendar systems there are no restrictions on the unit.
      */
     ERAS("Eras", Duration.ofSeconds(31556952L * 1000_000_000L)),
-    /**
-     * Artificial unit that represents the concept of forever.
-     * This is primarily used with {@link TemporalField} to represent unbounded fields
-     * such as the year or era.
-     * The estimated duration of the era is artificially defined as the largest duration
-     * supported by {@code Duration}.
-     */
-    FOREVER("Forever", Duration.ofSeconds(Long.MAX_VALUE, 999_999_999));
+  /**
+   * Artificial unit that represents the concept of forever. This is primarily used with {@link
+   * TemporalField} to represent unbounded fields such as the year or era. The estimated duration of
+   * this unit is artificially defined as the largest duration supported by {@link Duration}.
+   */
+  FOREVER("Forever", Duration.ofSeconds(Long.MAX_VALUE, 999_999_999));
 
     private final String name;
     private final Duration duration;
