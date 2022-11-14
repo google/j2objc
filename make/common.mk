@@ -178,7 +178,7 @@ endif
 TRANSLATOR_DEPS = $(DIST_DIR)/j2objc $(DIST_JAR_DIR)/j2objc.jar
 
 ifndef JAVA_HOME
-JAVA_HOME = $(shell /usr/libexec/java_home -v 1.8)
+JAVA_HOME = $(shell /usr/libexec/java_home -v 11)
 endif
 JAVA = $(JAVA_HOME)/bin/java
 JAVAC = $(JAVA_HOME)/bin/javac

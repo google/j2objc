@@ -84,12 +84,6 @@
 		0612B9501F4381AF0069EF58 /* MockAbstractSelector.m in Sources */ = {isa = PBXBuildFile; fileRef = 0612B94B1F4381AF0069EF58 /* MockAbstractSelector.m */; };
 		0612B9521F438ECB0069EF58 /* ObservableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0612B9511F438ECB0069EF58 /* ObservableTest.m */; };
 		062024F41D512AA2001EE455 /* AllJreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 062024EA1D512AA2001EE455 /* AllJreTests.m */; };
-		062024F51D512AA2001EE455 /* MoreAsserts.m in Sources */ = {isa = PBXBuildFile; fileRef = 062024EB1D512AA2001EE455 /* MoreAsserts.m */; };
-		062024F61D512AA2001EE455 /* SpannableStringBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062024EC1D512AA2001EE455 /* SpannableStringBuilderTest.m */; };
-		062024F71D512AA2001EE455 /* SpannableStringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062024ED1D512AA2001EE455 /* SpannableStringTest.m */; };
-		062024F81D512AA2001EE455 /* SpannableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062024EE1D512AA2001EE455 /* SpannableTest.m */; };
-		062024F91D512AA2001EE455 /* TextUtilsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062024EF1D512AA2001EE455 /* TextUtilsTest.m */; };
-		062024FA1D512AA2001EE455 /* Base64Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 062024F01D512AA2001EE455 /* Base64Test.m */; };
 		0620250A1D512ACA001EE455 /* EnumTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062024FB1D512ACA001EE455 /* EnumTest.m */; settings = {COMPILER_FLAGS = "-fobjc-arc -fobjc-arc-exceptions"; }; };
 		0620250B1D512ACA001EE455 /* MemoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 062024FC1D512ACA001EE455 /* MemoryTest.m */; settings = {COMPILER_FLAGS = "-fobjc-arc -fobjc-arc-exceptions"; }; };
 		062025451D512B37001EE455 /* Third.m in Sources */ = {isa = PBXBuildFile; fileRef = 062025191D512B37001EE455 /* Third.m */; };
@@ -690,14 +684,11 @@
 		063BD6AC250597BB000819BB /* ArrayDeque.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677CC166C342C005A5AD7 /* ArrayDeque.m */; };
 		063BD6AD250597BB000819BB /* ArrayIndexOutOfBoundsException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219CE1559C87100645E1B /* ArrayIndexOutOfBoundsException.m */; };
 		063BD6AE250597BB000819BB /* ArrayList.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A2F1559C91600645E1B /* ArrayList.m */; };
-		063BD6AF250597BB000819BB /* ArrayMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D7419180C0C001D3CC8 /* ArrayMap.m */; };
 		063BD6B0250597BB000819BB /* ArrayPrefixHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 0671E4D121BDCEF0002E0681 /* ArrayPrefixHelpers.m */; };
 		063BD6B1250597BB000819BB /* Arrays.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A301559C91600645E1B /* Arrays.m */; };
-		063BD6B2250597BB000819BB /* ArraySet.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D7619180C0C001D3CC8 /* ArraySet.m */; };
 		063BD6B3250597BB000819BB /* ArraysParallelSortHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 0671E4D021BDCEF0002E0681 /* ArraysParallelSortHelpers.m */; };
 		063BD6B4250597BB000819BB /* ArrayStoreException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219CF1559C87100645E1B /* ArrayStoreException.m */; };
 		063BD6B5250597BB000819BB /* ArrayUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 068BC1B3249D97C600C7C489 /* ArrayUtils.m */; };
-		063BD6B6250597BB000819BB /* ArrayUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D8C19180C0C001D3CC8 /* ArrayUtils.m */; };
 		063BD6B7250597BB000819BB /* AssertionError.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219D01559C87100645E1B /* AssertionError.m */; };
 		063BD6B8250597BB000819BB /* AsynchronousCloseException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73E5419180CC8001D3CC8 /* AsynchronousCloseException.m */; };
 		063BD6B9250597BB000819BB /* AsynchronousCloseMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73EDB19180D6D001D3CC8 /* AsynchronousCloseMonitor.m */; };
@@ -725,10 +716,6 @@
 		063BD6CF250597BB000819BB /* Authenticator.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73DA819180C6E001D3CC8 /* Authenticator.m */; };
 		063BD6D0250597BB000819BB /* AutoCloseable.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F2903318972CCF00676F1D /* AutoCloseable.m */; };
 		063BD6D1250597BB000819BB /* Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0671E4E021BDCEF3002E0681 /* Base64.m */; };
-		063BD6D2250597BB000819BB /* Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 069371F71A327DDB008ACC7F /* Base64.m */; };
-		063BD6D3250597BB000819BB /* Base64DataException.m in Sources */ = {isa = PBXBuildFile; fileRef = 069371F91A327DDB008ACC7F /* Base64DataException.m */; };
-		063BD6D4250597BB000819BB /* Base64InputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 069371FB1A327DDB008ACC7F /* Base64InputStream.m */; };
-		063BD6D5250597BB000819BB /* Base64OutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 069371FD1A327DDB008ACC7F /* Base64OutputStream.m */; };
 		063BD6D6250597BB000819BB /* BasicLruCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DDF48616E83FF800A08BE0 /* BasicLruCache.m */; };
 		063BD6D7250597BB000819BB /* BasicPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED3D9517D165510014750E /* BasicPermission.m */; };
 		063BD6D8250597BB000819BB /* BatchUpdateException.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A6871AE0780400DE2494 /* BatchUpdateException.m */; };
@@ -854,7 +841,6 @@
 		063BD750250597BC000819BB /* ConnectionPendingException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73E6219180CC8001D3CC8 /* ConnectionPendingException.m */; };
 		063BD751250597BC000819BB /* ConnectionResetException.m in Sources */ = {isa = PBXBuildFile; fileRef = 0671E4F621BDCF7D002E0681 /* ConnectionResetException.m */; };
 		063BD752250597BC000819BB /* ConsoleHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F2914A18972E5100676F1D /* ConsoleHandler.m */; };
-		063BD753250597BC000819BB /* ContainerHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D7819180C0C001D3CC8 /* ContainerHelpers.m */; };
 		063BD754250597BC000819BB /* ContentHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A7B21AE07A4400DE2494 /* ContentHandler.m */; };
 		063BD755250597BC000819BB /* ContentHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73DB219180C8A001D3CC8 /* ContentHandler.m */; };
 		063BD756250597BC000819BB /* ContentHandlerFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73DB419180C8A001D3CC8 /* ContentHandlerFactory.m */; };
@@ -951,7 +937,6 @@
 		063BD7B3250597BC000819BB /* ECPrivateKeySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A6631AE077E800DE2494 /* ECPrivateKeySpec.m */; };
 		063BD7B4250597BC000819BB /* ECPublicKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A62B1AE077D300DE2494 /* ECPublicKey.m */; };
 		063BD7B5250597BC000819BB /* ECPublicKeySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A6651AE077E800DE2494 /* ECPublicKeySpec.m */; };
-		063BD7B6250597BC000819BB /* Editable.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D5019180BD8001D3CC8 /* Editable.m */; };
 		063BD7B7250597BC000819BB /* Element.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A7861AE07A4300DE2494 /* Element.m */; };
 		063BD7B8250597BC000819BB /* ElementType.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F2905218972CE800676F1D /* ElementType.m */; };
 		063BD7B9250597BC000819BB /* EllipticCurve.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A6671AE077E800DE2494 /* EllipticCurve.m */; };
@@ -1032,7 +1017,6 @@
 		063BD807250597BD000819BB /* GenericSignatureFormatError.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED3D7717D164DC0014750E /* GenericSignatureFormatError.m */; };
 		063BD808250597BD000819BB /* GenericSignatureParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A7461AE0799100DE2494 /* GenericSignatureParser.m */; };
 		063BD809250597BD000819BB /* GetBooleanAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 06318C13243E6B3400BF119E /* GetBooleanAction.m */; };
-		063BD80A250597BD000819BB /* GetChars.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D5219180BD8001D3CC8 /* GetChars.m */; };
 		063BD80B250597BD000819BB /* GetIntegerAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 06318C14243E6B3500BF119E /* GetIntegerAction.m */; };
 		063BD80C250597BD000819BB /* GetPropertyAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 06318C15243E6B3500BF119E /* GetPropertyAction.m */; };
 		063BD80D250597BD000819BB /* Grego.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD333916A1406A00AD7ACE /* Grego.m */; };
@@ -1093,12 +1077,10 @@
 		063BD844250597BE000819BB /* InflaterOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F2916E18972E6800676F1D /* InflaterOutputStream.m */; };
 		063BD845250597BE000819BB /* Inherited.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F2905618972CE800676F1D /* Inherited.m */; };
 		063BD846250597BE000819BB /* InMemoryCookieStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 0671E51A21BDEE4C002E0681 /* InMemoryCookieStore.m */; };
-		063BD847250597BE000819BB /* InputFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D5419180BD9001D3CC8 /* InputFilter.m */; };
 		063BD848250597BE000819BB /* InputMismatchException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A501559C99E00645E1B /* InputMismatchException.m */; };
 		063BD849250597BE000819BB /* InputSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 064FB7911727079100DC0D51 /* InputSource.m */; };
 		063BD84A250597BE000819BB /* InputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 0672199E1559C7FC00645E1B /* InputStream.m */; };
 		063BD84B250597BE000819BB /* InputStreamReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 0672199F1559C7FC00645E1B /* InputStreamReader.m */; };
-		063BD84C250597BE000819BB /* InputType.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D5619180BD9001D3CC8 /* InputType.m */; };
 		063BD84D250597BE000819BB /* InstantiationException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219E21559C87100645E1B /* InstantiationException.m */; };
 		063BD84E250597BE000819BB /* IntBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32B616A13FA000AD7ACE /* IntBuffer.m */; };
 		063BD84F250597BE000819BB /* Integer.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219E31559C87100645E1B /* Integer.m */; };
@@ -1170,7 +1152,6 @@
 		063BD891250597BE000819BB /* KeyStoreSpi.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A6471AE077D400DE2494 /* KeyStoreSpi.m */; };
 		063BD892250597BE000819BB /* KXmlParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED3E0517D167000014750E /* KXmlParser.m */; };
 		063BD893250597BE000819BB /* KXmlSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED3E0717D167000014750E /* KXmlSerializer.m */; };
-		063BD894250597BE000819BB /* LargeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D4619180BBD001D3CC8 /* LargeTest.m */; };
 		063BD895250597BE000819BB /* Level.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A551559C99E00645E1B /* Level.m */; };
 		063BD896250597BE000819BB /* LexicalHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A7BA1AE07A4500DE2494 /* LexicalHandler.m */; };
 		063BD897250597BE000819BB /* Libcore.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED3DEF17D1669D0014750E /* Libcore.m */; };
@@ -1189,7 +1170,6 @@
 		063BD8A4250597BE000819BB /* ListOfTypes.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A7481AE0799100DE2494 /* ListOfTypes.m */; };
 		063BD8A5250597BE000819BB /* ListOfVariables.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A74A1AE0799100DE2494 /* ListOfVariables.m */; };
 		063BD8A6250597BE000819BB /* ListResourceBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 06AA056917E111190017C34A /* ListResourceBundle.m */; };
-		063BD8A7250597BE000819BB /* Lists.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D8E19180C0C001D3CC8 /* Lists.m */; };
 		063BD8A8250597BE000819BB /* Locale.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A521559C99E00645E1B /* Locale.m */; };
 		063BD8A9250597BE000819BB /* LocaleData.m in Sources */ = {isa = PBXBuildFile; fileRef = 06B6D20617C7D67400624B3C /* LocaleData.m */; };
 		063BD8AA250597BE000819BB /* Locator.m in Sources */ = {isa = PBXBuildFile; fileRef = 064FB7931727079100DC0D51 /* Locator.m */; };
@@ -1198,7 +1178,6 @@
 		063BD8AD250597BE000819BB /* LocatorImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 064FB7DB1727081D00DC0D51 /* LocatorImpl.m */; };
 		063BD8AE250597BE000819BB /* Lock.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F2913F18972E2E00676F1D /* Lock.m */; };
 		063BD8AF250597BE000819BB /* LockSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F2914118972E2E00676F1D /* LockSupport.m */; };
-		063BD8B0250597BE000819BB /* Log.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D7A19180C0C001D3CC8 /* Log.m */; };
 		063BD8B1250597BE000819BB /* Logger.m in Sources */ = {isa = PBXBuildFile; fileRef = 06721A561559C99E00645E1B /* Logger.m */; };
 		063BD8B2250597BE000819BB /* Logging.m in Sources */ = {isa = PBXBuildFile; fileRef = 0671E4E321BDCEF4002E0681 /* Logging.m */; };
 		063BD8B3250597BE000819BB /* LoggingMXBean.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F2915018972E5100676F1D /* LoggingMXBean.m */; };
@@ -1211,7 +1190,6 @@
 		063BD8BA250597BE000819BB /* LongAdder.m in Sources */ = {isa = PBXBuildFile; fileRef = FA24DEB822EA48A0000DEC19 /* LongAdder.m */; };
 		063BD8BB250597BE000819BB /* LongBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32BC16A13FA000AD7ACE /* LongBuffer.m */; };
 		063BD8BC250597BE000819BB /* LongSummaryStatistics.m in Sources */ = {isa = PBXBuildFile; fileRef = 0671E4C821BDCEEF002E0681 /* LongSummaryStatistics.m */; };
-		063BD8BD250597BE000819BB /* LruCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D7C19180C0C001D3CC8 /* LruCache.m */; };
 		063BD8BE250597BE000819BB /* LSException.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A78E1AE07A4300DE2494 /* LSException.m */; };
 		063BD8BF250597BE000819BB /* LSInput.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A78F1AE07A4300DE2494 /* LSInput.m */; };
 		063BD8C0250597BE000819BB /* LSOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A7911AE07A4300DE2494 /* LSOutput.m */; };
@@ -1227,14 +1205,11 @@
 		063BD8CA250597BE000819BB /* MalformedURLException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED3D8317D164FE0014750E /* MalformedURLException.m */; };
 		063BD8CB250597BE000819BB /* ManagerFactoryParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A70E1AE0796500DE2494 /* ManagerFactoryParameters.m */; };
 		063BD8CC250597BE000819BB /* Map.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F290A118972DA300676F1D /* Map.m */; };
-		063BD8CD250597BE000819BB /* MapCollections.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D7E19180C0C001D3CC8 /* MapCollections.m */; };
 		063BD8CE250597BF000819BB /* MappedByteBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A6091AE0778600DE2494 /* MappedByteBuffer.m */; };
-		063BD8CF250597BF000819BB /* Maps.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D9019180C0C001D3CC8 /* Maps.m */; };
 		063BD8D0250597BF000819BB /* Matcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677E3166C345F005A5AD7 /* Matcher.m */; };
 		063BD8D1250597BF000819BB /* MatchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 068677E5166C345F005A5AD7 /* MatchResult.m */; };
 		063BD8D2250597BF000819BB /* Math.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219E81559C87100645E1B /* Math.m */; };
 		063BD8D3250597BF000819BB /* MathContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855D2169F37710042431C /* MathContext.m */; };
-		063BD8D4250597BF000819BB /* MediumTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D4819180BBD001D3CC8 /* MediumTest.m */; };
 		063BD8D5250597BF000819BB /* Member.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED3D7B17D164DC0014750E /* Member.m */; };
 		063BD8D6250597BF000819BB /* Memory.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73EE719180D6D001D3CC8 /* Memory.m */; };
 		063BD8D7250597BF000819BB /* MemoryHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F2915418972E5100676F1D /* MemoryHandler.m */; };
@@ -1270,7 +1245,6 @@
 		063BD8F9250597BF000819BB /* NioUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A60F1AE0778700DE2494 /* NioUtils.m */; };
 		063BD8FA250597BF000819BB /* NoClassDefFoundError.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A5E71AE0773500DE2494 /* NoClassDefFoundError.m */; };
 		063BD8FB250597BF000819BB /* NoConnectionPendingException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73E7619180CC9001D3CC8 /* NoConnectionPendingException.m */; };
-		063BD8FC250597BF000819BB /* NoCopySpan.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D5819180BD9001D3CC8 /* NoCopySpan.m */; };
 		063BD8FD250597BF000819BB /* Node.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A7A01AE07A4400DE2494 /* Node.m */; };
 		063BD8FE250597BF000819BB /* NodeFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A7AA1AE07A4400DE2494 /* NodeFilter.m */; };
 		063BD8FF250597BF000819BB /* NodeIterator.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A7AC1AE07A4400DE2494 /* NodeIterator.m */; };
@@ -1320,7 +1294,6 @@
 		063BD92B250597BF000819BB /* OutputStreamWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219A51559C7FC00645E1B /* OutputStreamWriter.m */; };
 		063BD92C250597BF000819BB /* OverlappingFileLockException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73E8019180CC9001D3CC8 /* OverlappingFileLockException.m */; };
 		063BD92D250597BF000819BB /* Package.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED3D6B17D164AF0014750E /* Package.m */; };
-		063BD92E250597BF000819BB /* Pair.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D8019180C0C001D3CC8 /* Pair.m */; };
 		063BD92F250597BF000819BB /* ParameterizedType.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED3D7D17D164DC0014750E /* ParameterizedType.m */; };
 		063BD930250597BF000819BB /* ParameterizedTypeImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A74C1AE0799100DE2494 /* ParameterizedTypeImpl.m */; };
 		063BD931250597BF000819BB /* ParameterMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A69F1AE0780500DE2494 /* ParameterMetaData.m */; };
@@ -1355,7 +1328,6 @@
 		063BD94E250597C0000819BB /* PreparedStatement.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A6A11AE0780500DE2494 /* PreparedStatement.m */; };
 		063BD94F250597C0000819BB /* PrimitiveIterator.m in Sources */ = {isa = PBXBuildFile; fileRef = 0671E4D221BDCEF1002E0681 /* PrimitiveIterator.m */; };
 		063BD950250597C0000819BB /* Principal.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED3DAA17D165510014750E /* Principal.m */; };
-		063BD951250597C0000819BB /* Printer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D8219180C0C001D3CC8 /* Printer.m */; };
 		063BD952250597C0000819BB /* PrintStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219A61559C7FC00645E1B /* PrintStream.m */; };
 		063BD953250597C0000819BB /* PrintWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219A71559C7FC00645E1B /* PrintWriter.m */; };
 		063BD954250597C0000819BB /* PriorityBlockingQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F290FF18972DF900676F1D /* PriorityBlockingQueue.m */; };
@@ -1423,8 +1395,6 @@
 		063BD992250597C0000819BB /* ResultSetMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A6A71AE0780500DE2494 /* ResultSetMetaData.m */; };
 		063BD993250597C0000819BB /* Retention.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F2905818972CE800676F1D /* Retention.m */; };
 		063BD994250597C0000819BB /* RetentionPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F2905A18972CE800676F1D /* RetentionPolicy.m */; };
-		063BD995250597C0000819BB /* Rfc822Token.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D7019180BD9001D3CC8 /* Rfc822Token.m */; };
-		063BD996250597C0000819BB /* Rfc822Tokenizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D7219180BD9001D3CC8 /* Rfc822Tokenizer.m */; };
 		063BD997250597C0000819BB /* RoundingMode.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855D8169F37710042431C /* RoundingMode.m */; };
 		063BD998250597C0000819BB /* RowId.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A6A91AE0780500DE2494 /* RowId.m */; };
 		063BD999250597C0000819BB /* RowIdLifetime.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A6AB1AE0780500DE2494 /* RowIdLifetime.m */; };
@@ -1473,7 +1443,6 @@
 		063BD9C4250597C1000819BB /* SecurityPermission.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED3DB517D165510014750E /* SecurityPermission.m */; };
 		063BD9C5250597C1000819BB /* SeekableByteChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73E8819180CC9001D3CC8 /* SeekableByteChannel.m */; };
 		063BD9C6250597C1000819BB /* SelectableChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73E8A19180CC9001D3CC8 /* SelectableChannel.m */; };
-		063BD9C7250597C1000819BB /* Selection.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D5A19180BD9001D3CC8 /* Selection.m */; };
 		063BD9C8250597C1000819BB /* SelectionKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73E8C19180CC9001D3CC8 /* SelectionKey.m */; };
 		063BD9C9250597C1000819BB /* Selector.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73E8E19180CC9001D3CC8 /* Selector.m */; };
 		063BD9CA250597C1000819BB /* SelectorProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73EA319180CD8001D3CC8 /* SelectorProvider.m */; };
@@ -1487,7 +1456,6 @@
 		063BD9D2250597C1000819BB /* ServiceConfigurationError.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F290AF18972DA300676F1D /* ServiceConfigurationError.m */; };
 		063BD9D3250597C1000819BB /* ServiceLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F290B118972DA300676F1D /* ServiceLoader.m */; };
 		063BD9D4250597C1000819BB /* Set.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F290B218972DA300676F1D /* Set.m */; };
-		063BD9D5250597C1000819BB /* Sets.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D9219180C0C001D3CC8 /* Sets.m */; };
 		063BD9D6250597C1000819BB /* Short.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219EE1559C87100645E1B /* Short.m */; };
 		063BD9D7250597C1000819BB /* ShortBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD32DE16A13FA000AD7ACE /* ShortBuffer.m */; };
 		063BD9D8250597C1000819BB /* ShortBufferException.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DED8311D0B688E00870669 /* ShortBufferException.m */; };
@@ -1498,8 +1466,6 @@
 		063BD9DD250597C1000819BB /* SimpleFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F2915618972E5100676F1D /* SimpleFormatter.m */; };
 		063BD9DE250597C1000819BB /* SimpleTimeZone.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DD334316A1406A00AD7ACE /* SimpleTimeZone.m */; };
 		063BD9DF250597C1000819BB /* SizeOf.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73EE919180D6D001D3CC8 /* SizeOf.m */; };
-		063BD9E0250597C1000819BB /* SmallTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D4A19180BBD001D3CC8 /* SmallTest.m */; };
-		063BD9E1250597C1000819BB /* Smoke.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D4C19180BBD001D3CC8 /* Smoke.m */; };
 		063BD9E2250597C1000819BB /* SneakyThrow.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73F0F19180D90001D3CC8 /* SneakyThrow.m */; };
 		063BD9E3250597C1000819BB /* Socket.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73DF019180C99001D3CC8 /* Socket.m */; };
 		063BD9E4250597C1000819BB /* SocketAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73DF219180C99001D3CC8 /* SocketAddress.m */; };
@@ -1521,18 +1487,6 @@
 		063BD9F5250597C1000819BB /* SortedMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F290B318972DA300676F1D /* SortedMap.m */; };
 		063BD9F6250597C1000819BB /* SortedSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F290B418972DA300676F1D /* SortedSet.m */; };
 		063BD9F7250597C1000819BB /* Source.m in Sources */ = {isa = PBXBuildFile; fileRef = 064FB7791727072B00DC0D51 /* Source.m */; };
-		063BD9F8250597C1000819BB /* Spannable.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D5C19180BD9001D3CC8 /* Spannable.m */; };
-		063BD9F9250597C1000819BB /* SpannableString.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D5E19180BD9001D3CC8 /* SpannableString.m */; };
-		063BD9FA250597C1000819BB /* SpannableStringBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D6019180BD9001D3CC8 /* SpannableStringBuilder.m */; };
-		063BD9FB250597C1000819BB /* SpannableStringInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D6219180BD9001D3CC8 /* SpannableStringInternal.m */; };
-		063BD9FC250597C1000819BB /* Spanned.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D6419180BD9001D3CC8 /* Spanned.m */; };
-		063BD9FD250597C1000819BB /* SpannedString.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D6619180BD9001D3CC8 /* SpannedString.m */; };
-		063BD9FE250597C1000819BB /* SpanSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D6819180BD9001D3CC8 /* SpanSet.m */; };
-		063BD9FF250597C1000819BB /* SpanWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D6A19180BD9001D3CC8 /* SpanWatcher.m */; };
-		063BDA00250597C1000819BB /* SparseArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D8419180C0C001D3CC8 /* SparseArray.m */; };
-		063BDA01250597C1000819BB /* SparseBooleanArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D8619180C0C001D3CC8 /* SparseBooleanArray.m */; };
-		063BDA02250597C1000819BB /* SparseIntArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D8819180C0C001D3CC8 /* SparseIntArray.m */; };
-		063BDA03250597C1000819BB /* SparseLongArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D8A19180C0C001D3CC8 /* SparseLongArray.m */; };
 		063BDA04250597C1000819BB /* Spliterator.m in Sources */ = {isa = PBXBuildFile; fileRef = 0671E4D321BDCEF1002E0681 /* Spliterator.m */; };
 		063BDA05250597C1000819BB /* Spliterators.m in Sources */ = {isa = PBXBuildFile; fileRef = 0671E4CE21BDCEF0002E0681 /* Spliterators.m */; };
 		063BDA06250597C1000819BB /* SQLClientInfoException.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A6AF1AE0780600DE2494 /* SQLClientInfoException.m */; };
@@ -1605,15 +1559,11 @@
 		063BDA49250597C2000819BB /* StructStatVfs.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73EFB19180D6E001D3CC8 /* StructStatVfs.m */; };
 		063BDA4A250597C2000819BB /* StructTimeval.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73EFD19180D6E001D3CC8 /* StructTimeval.m */; };
 		063BDA4B250597C2000819BB /* StructUtsname.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73EFF19180D6E001D3CC8 /* StructUtsname.m */; };
-		063BDA4C250597C2000819BB /* Suppress.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D4E19180BBD001D3CC8 /* Suppress.m */; };
 		063BDA4D250597C2000819BB /* SyncFailedException.m in Sources */ = {isa = PBXBuildFile; fileRef = 067855BA169F367E0042431C /* SyncFailedException.m */; };
 		063BDA4E250597C2000819BB /* SynchronousQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F2911518972DFA00676F1D /* SynchronousQueue.m */; };
 		063BDA4F250597C2000819BB /* System.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219F41559C87100645E1B /* System.m */; };
-		063BDA50250597C2000819BB /* SystemClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D4419180BBD001D3CC8 /* SystemClock.m */; };
 		063BDA51250597C2000819BB /* Target.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F2905C18972CE800676F1D /* Target.m */; };
 		063BDA52250597C2000819BB /* Text.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649A7A81AE07A4400DE2494 /* Text.m */; };
-		063BDA53250597C2000819BB /* TextUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D6C19180BD9001D3CC8 /* TextUtils.m */; };
-		063BDA54250597C2000819BB /* TextWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C73D6E19180BD9001D3CC8 /* TextWatcher.m */; };
 		063BDA55250597C2000819BB /* Thread.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219F51559C87100645E1B /* Thread.m */; };
 		063BDA56250597C2000819BB /* ThreadDeath.m in Sources */ = {isa = PBXBuildFile; fileRef = 067219F61559C87100645E1B /* ThreadDeath.m */; };
 		063BDA57250597C2000819BB /* ThreadFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F2911718972DFA00676F1D /* ThreadFactory.m */; };
@@ -3825,12 +3775,6 @@
 		0612B94B1F4381AF0069EF58 /* MockAbstractSelector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockAbstractSelector.m; path = org/apache/harmony/tests/java/nio/channels/spi/MockAbstractSelector.m; sourceTree = "<group>"; };
 		0612B9511F438ECB0069EF58 /* ObservableTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ObservableTest.m; path = org/apache/harmony/tests/java/util/ObservableTest.m; sourceTree = "<group>"; };
 		062024EA1D512AA2001EE455 /* AllJreTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AllJreTests.m; sourceTree = "<group>"; };
-		062024EB1D512AA2001EE455 /* MoreAsserts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MoreAsserts.m; path = android/test/MoreAsserts.m; sourceTree = "<group>"; };
-		062024EC1D512AA2001EE455 /* SpannableStringBuilderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SpannableStringBuilderTest.m; path = android/text/SpannableStringBuilderTest.m; sourceTree = "<group>"; };
-		062024ED1D512AA2001EE455 /* SpannableStringTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SpannableStringTest.m; path = android/text/SpannableStringTest.m; sourceTree = "<group>"; };
-		062024EE1D512AA2001EE455 /* SpannableTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SpannableTest.m; path = android/text/SpannableTest.m; sourceTree = "<group>"; };
-		062024EF1D512AA2001EE455 /* TextUtilsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TextUtilsTest.m; path = android/text/TextUtilsTest.m; sourceTree = "<group>"; };
-		062024F01D512AA2001EE455 /* Base64Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Base64Test.m; path = android/util/Base64Test.m; sourceTree = "<group>"; };
 		062024FB1D512ACA001EE455 /* EnumTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnumTest.m; path = arc/com/google/j2objc/arc/EnumTest.m; sourceTree = "<group>"; };
 		062024FC1D512ACA001EE455 /* MemoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MemoryTest.m; path = arc/com/google/j2objc/arc/MemoryTest.m; sourceTree = "<group>"; };
 		062025191D512B37001EE455 /* Third.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Third.m; path = bar/Third.m; sourceTree = "<group>"; };
@@ -7589,14 +7533,6 @@
 		068BC1BE249D992800C7C489 /* AlgorithmParameterGeneratorSpiTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AlgorithmParameterGeneratorSpiTest.m; path = tests/java/security/AlgorithmParameterGeneratorSpiTest.m; sourceTree = "<group>"; };
 		068BC1BF249D992900C7C489 /* SecureClassLoaderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SecureClassLoaderTest.m; path = tests/java/security/SecureClassLoaderTest.m; sourceTree = "<group>"; };
 		0692DF5E1AE8560300C14F19 /* jni.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = jni.m; sourceTree = "<group>"; };
-		069371F61A327DDB008ACC7F /* Base64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Base64.h; path = build_result/Classes/android/util/Base64.h; sourceTree = "<group>"; };
-		069371F71A327DDB008ACC7F /* Base64.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Base64.m; path = build_result/Classes/android/util/Base64.m; sourceTree = "<group>"; };
-		069371F81A327DDB008ACC7F /* Base64DataException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Base64DataException.h; path = build_result/Classes/android/util/Base64DataException.h; sourceTree = "<group>"; };
-		069371F91A327DDB008ACC7F /* Base64DataException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Base64DataException.m; path = build_result/Classes/android/util/Base64DataException.m; sourceTree = "<group>"; };
-		069371FA1A327DDB008ACC7F /* Base64InputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Base64InputStream.h; path = build_result/Classes/android/util/Base64InputStream.h; sourceTree = "<group>"; };
-		069371FB1A327DDB008ACC7F /* Base64InputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Base64InputStream.m; path = build_result/Classes/android/util/Base64InputStream.m; sourceTree = "<group>"; };
-		069371FC1A327DDB008ACC7F /* Base64OutputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Base64OutputStream.h; path = build_result/Classes/android/util/Base64OutputStream.h; sourceTree = "<group>"; };
-		069371FD1A327DDB008ACC7F /* Base64OutputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Base64OutputStream.m; path = build_result/Classes/android/util/Base64OutputStream.m; sourceTree = "<group>"; };
 		0697F60315D190580027A7E4 /* Array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Array.h; path = build_result/Classes/java/lang/reflect/Array.h; sourceTree = "<group>"; };
 		0697F60415D190580027A7E4 /* Array.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Array.m; path = build_result/Classes/java/lang/reflect/Array.m; sourceTree = "<group>"; };
 		0697F60515D190580027A7E4 /* GenericDeclaration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GenericDeclaration.h; path = build_result/Classes/java/lang/reflect/GenericDeclaration.h; sourceTree = "<group>"; };
@@ -7976,86 +7912,6 @@
 		06C54AD31A40C7A4004B3ACD /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		06C6B7FB159BCBD1004B800C /* PatternSyntaxException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PatternSyntaxException.h; path = build_result/Classes/java/util/regex/PatternSyntaxException.h; sourceTree = "<group>"; };
 		06C6B7FC159BCBD1004B800C /* PatternSyntaxException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PatternSyntaxException.m; path = build_result/Classes/java/util/regex/PatternSyntaxException.m; sourceTree = "<group>"; };
-		06C73D4319180BBD001D3CC8 /* SystemClock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SystemClock.h; path = build_result/Classes/android/os/SystemClock.h; sourceTree = "<group>"; };
-		06C73D4419180BBD001D3CC8 /* SystemClock.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SystemClock.m; path = build_result/Classes/android/os/SystemClock.m; sourceTree = "<group>"; };
-		06C73D4519180BBD001D3CC8 /* LargeTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LargeTest.h; path = build_result/Classes/android/test/suitebuilder/annotation/LargeTest.h; sourceTree = "<group>"; };
-		06C73D4619180BBD001D3CC8 /* LargeTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LargeTest.m; path = build_result/Classes/android/test/suitebuilder/annotation/LargeTest.m; sourceTree = "<group>"; };
-		06C73D4719180BBD001D3CC8 /* MediumTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MediumTest.h; path = build_result/Classes/android/test/suitebuilder/annotation/MediumTest.h; sourceTree = "<group>"; };
-		06C73D4819180BBD001D3CC8 /* MediumTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MediumTest.m; path = build_result/Classes/android/test/suitebuilder/annotation/MediumTest.m; sourceTree = "<group>"; };
-		06C73D4919180BBD001D3CC8 /* SmallTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SmallTest.h; path = build_result/Classes/android/test/suitebuilder/annotation/SmallTest.h; sourceTree = "<group>"; };
-		06C73D4A19180BBD001D3CC8 /* SmallTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SmallTest.m; path = build_result/Classes/android/test/suitebuilder/annotation/SmallTest.m; sourceTree = "<group>"; };
-		06C73D4B19180BBD001D3CC8 /* Smoke.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Smoke.h; path = build_result/Classes/android/test/suitebuilder/annotation/Smoke.h; sourceTree = "<group>"; };
-		06C73D4C19180BBD001D3CC8 /* Smoke.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Smoke.m; path = build_result/Classes/android/test/suitebuilder/annotation/Smoke.m; sourceTree = "<group>"; };
-		06C73D4D19180BBD001D3CC8 /* Suppress.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Suppress.h; path = build_result/Classes/android/test/suitebuilder/annotation/Suppress.h; sourceTree = "<group>"; };
-		06C73D4E19180BBD001D3CC8 /* Suppress.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Suppress.m; path = build_result/Classes/android/test/suitebuilder/annotation/Suppress.m; sourceTree = "<group>"; };
-		06C73D4F19180BD8001D3CC8 /* Editable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Editable.h; path = build_result/Classes/android/text/Editable.h; sourceTree = "<group>"; };
-		06C73D5019180BD8001D3CC8 /* Editable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Editable.m; path = build_result/Classes/android/text/Editable.m; sourceTree = "<group>"; };
-		06C73D5119180BD8001D3CC8 /* GetChars.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GetChars.h; path = build_result/Classes/android/text/GetChars.h; sourceTree = "<group>"; };
-		06C73D5219180BD8001D3CC8 /* GetChars.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GetChars.m; path = build_result/Classes/android/text/GetChars.m; sourceTree = "<group>"; };
-		06C73D5319180BD8001D3CC8 /* InputFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InputFilter.h; path = build_result/Classes/android/text/InputFilter.h; sourceTree = "<group>"; };
-		06C73D5419180BD9001D3CC8 /* InputFilter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = InputFilter.m; path = build_result/Classes/android/text/InputFilter.m; sourceTree = "<group>"; };
-		06C73D5519180BD9001D3CC8 /* InputType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InputType.h; path = build_result/Classes/android/text/InputType.h; sourceTree = "<group>"; };
-		06C73D5619180BD9001D3CC8 /* InputType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = InputType.m; path = build_result/Classes/android/text/InputType.m; sourceTree = "<group>"; };
-		06C73D5719180BD9001D3CC8 /* NoCopySpan.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NoCopySpan.h; path = build_result/Classes/android/text/NoCopySpan.h; sourceTree = "<group>"; };
-		06C73D5819180BD9001D3CC8 /* NoCopySpan.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NoCopySpan.m; path = build_result/Classes/android/text/NoCopySpan.m; sourceTree = "<group>"; };
-		06C73D5919180BD9001D3CC8 /* Selection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Selection.h; path = build_result/Classes/android/text/Selection.h; sourceTree = "<group>"; };
-		06C73D5A19180BD9001D3CC8 /* Selection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Selection.m; path = build_result/Classes/android/text/Selection.m; sourceTree = "<group>"; };
-		06C73D5B19180BD9001D3CC8 /* Spannable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Spannable.h; path = build_result/Classes/android/text/Spannable.h; sourceTree = "<group>"; };
-		06C73D5C19180BD9001D3CC8 /* Spannable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Spannable.m; path = build_result/Classes/android/text/Spannable.m; sourceTree = "<group>"; };
-		06C73D5D19180BD9001D3CC8 /* SpannableString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SpannableString.h; path = build_result/Classes/android/text/SpannableString.h; sourceTree = "<group>"; };
-		06C73D5E19180BD9001D3CC8 /* SpannableString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SpannableString.m; path = build_result/Classes/android/text/SpannableString.m; sourceTree = "<group>"; };
-		06C73D5F19180BD9001D3CC8 /* SpannableStringBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SpannableStringBuilder.h; path = build_result/Classes/android/text/SpannableStringBuilder.h; sourceTree = "<group>"; };
-		06C73D6019180BD9001D3CC8 /* SpannableStringBuilder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SpannableStringBuilder.m; path = build_result/Classes/android/text/SpannableStringBuilder.m; sourceTree = "<group>"; };
-		06C73D6119180BD9001D3CC8 /* SpannableStringInternal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SpannableStringInternal.h; path = build_result/Classes/android/text/SpannableStringInternal.h; sourceTree = "<group>"; };
-		06C73D6219180BD9001D3CC8 /* SpannableStringInternal.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SpannableStringInternal.m; path = build_result/Classes/android/text/SpannableStringInternal.m; sourceTree = "<group>"; };
-		06C73D6319180BD9001D3CC8 /* Spanned.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Spanned.h; path = build_result/Classes/android/text/Spanned.h; sourceTree = "<group>"; };
-		06C73D6419180BD9001D3CC8 /* Spanned.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Spanned.m; path = build_result/Classes/android/text/Spanned.m; sourceTree = "<group>"; };
-		06C73D6519180BD9001D3CC8 /* SpannedString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SpannedString.h; path = build_result/Classes/android/text/SpannedString.h; sourceTree = "<group>"; };
-		06C73D6619180BD9001D3CC8 /* SpannedString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SpannedString.m; path = build_result/Classes/android/text/SpannedString.m; sourceTree = "<group>"; };
-		06C73D6719180BD9001D3CC8 /* SpanSet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SpanSet.h; path = build_result/Classes/android/text/SpanSet.h; sourceTree = "<group>"; };
-		06C73D6819180BD9001D3CC8 /* SpanSet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SpanSet.m; path = build_result/Classes/android/text/SpanSet.m; sourceTree = "<group>"; };
-		06C73D6919180BD9001D3CC8 /* SpanWatcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SpanWatcher.h; path = build_result/Classes/android/text/SpanWatcher.h; sourceTree = "<group>"; };
-		06C73D6A19180BD9001D3CC8 /* SpanWatcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SpanWatcher.m; path = build_result/Classes/android/text/SpanWatcher.m; sourceTree = "<group>"; };
-		06C73D6B19180BD9001D3CC8 /* TextUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TextUtils.h; path = build_result/Classes/android/text/TextUtils.h; sourceTree = "<group>"; };
-		06C73D6C19180BD9001D3CC8 /* TextUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TextUtils.m; path = build_result/Classes/android/text/TextUtils.m; sourceTree = "<group>"; };
-		06C73D6D19180BD9001D3CC8 /* TextWatcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TextWatcher.h; path = build_result/Classes/android/text/TextWatcher.h; sourceTree = "<group>"; };
-		06C73D6E19180BD9001D3CC8 /* TextWatcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TextWatcher.m; path = build_result/Classes/android/text/TextWatcher.m; sourceTree = "<group>"; };
-		06C73D6F19180BD9001D3CC8 /* Rfc822Token.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Rfc822Token.h; path = build_result/Classes/android/text/util/Rfc822Token.h; sourceTree = "<group>"; };
-		06C73D7019180BD9001D3CC8 /* Rfc822Token.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Rfc822Token.m; path = build_result/Classes/android/text/util/Rfc822Token.m; sourceTree = "<group>"; };
-		06C73D7119180BD9001D3CC8 /* Rfc822Tokenizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Rfc822Tokenizer.h; path = build_result/Classes/android/text/util/Rfc822Tokenizer.h; sourceTree = "<group>"; };
-		06C73D7219180BD9001D3CC8 /* Rfc822Tokenizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Rfc822Tokenizer.m; path = build_result/Classes/android/text/util/Rfc822Tokenizer.m; sourceTree = "<group>"; };
-		06C73D7319180C0C001D3CC8 /* ArrayMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ArrayMap.h; path = build_result/Classes/android/util/ArrayMap.h; sourceTree = "<group>"; };
-		06C73D7419180C0C001D3CC8 /* ArrayMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ArrayMap.m; path = build_result/Classes/android/util/ArrayMap.m; sourceTree = "<group>"; };
-		06C73D7519180C0C001D3CC8 /* ArraySet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ArraySet.h; path = build_result/Classes/android/util/ArraySet.h; sourceTree = "<group>"; };
-		06C73D7619180C0C001D3CC8 /* ArraySet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ArraySet.m; path = build_result/Classes/android/util/ArraySet.m; sourceTree = "<group>"; };
-		06C73D7719180C0C001D3CC8 /* ContainerHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ContainerHelpers.h; path = build_result/Classes/android/util/ContainerHelpers.h; sourceTree = "<group>"; };
-		06C73D7819180C0C001D3CC8 /* ContainerHelpers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ContainerHelpers.m; path = build_result/Classes/android/util/ContainerHelpers.m; sourceTree = "<group>"; };
-		06C73D7919180C0C001D3CC8 /* Log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Log.h; path = build_result/Classes/android/util/Log.h; sourceTree = "<group>"; };
-		06C73D7A19180C0C001D3CC8 /* Log.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Log.m; path = build_result/Classes/android/util/Log.m; sourceTree = "<group>"; };
-		06C73D7B19180C0C001D3CC8 /* LruCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LruCache.h; path = build_result/Classes/android/util/LruCache.h; sourceTree = "<group>"; };
-		06C73D7C19180C0C001D3CC8 /* LruCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LruCache.m; path = build_result/Classes/android/util/LruCache.m; sourceTree = "<group>"; };
-		06C73D7D19180C0C001D3CC8 /* MapCollections.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MapCollections.h; path = build_result/Classes/android/util/MapCollections.h; sourceTree = "<group>"; };
-		06C73D7E19180C0C001D3CC8 /* MapCollections.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MapCollections.m; path = build_result/Classes/android/util/MapCollections.m; sourceTree = "<group>"; };
-		06C73D7F19180C0C001D3CC8 /* Pair.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Pair.h; path = build_result/Classes/android/util/Pair.h; sourceTree = "<group>"; };
-		06C73D8019180C0C001D3CC8 /* Pair.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Pair.m; path = build_result/Classes/android/util/Pair.m; sourceTree = "<group>"; };
-		06C73D8119180C0C001D3CC8 /* Printer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Printer.h; path = build_result/Classes/android/util/Printer.h; sourceTree = "<group>"; };
-		06C73D8219180C0C001D3CC8 /* Printer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Printer.m; path = build_result/Classes/android/util/Printer.m; sourceTree = "<group>"; };
-		06C73D8319180C0C001D3CC8 /* SparseArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SparseArray.h; path = build_result/Classes/android/util/SparseArray.h; sourceTree = "<group>"; };
-		06C73D8419180C0C001D3CC8 /* SparseArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SparseArray.m; path = build_result/Classes/android/util/SparseArray.m; sourceTree = "<group>"; };
-		06C73D8519180C0C001D3CC8 /* SparseBooleanArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SparseBooleanArray.h; path = build_result/Classes/android/util/SparseBooleanArray.h; sourceTree = "<group>"; };
-		06C73D8619180C0C001D3CC8 /* SparseBooleanArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SparseBooleanArray.m; path = build_result/Classes/android/util/SparseBooleanArray.m; sourceTree = "<group>"; };
-		06C73D8719180C0C001D3CC8 /* SparseIntArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SparseIntArray.h; path = build_result/Classes/android/util/SparseIntArray.h; sourceTree = "<group>"; };
-		06C73D8819180C0C001D3CC8 /* SparseIntArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SparseIntArray.m; path = build_result/Classes/android/util/SparseIntArray.m; sourceTree = "<group>"; };
-		06C73D8919180C0C001D3CC8 /* SparseLongArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SparseLongArray.h; path = build_result/Classes/android/util/SparseLongArray.h; sourceTree = "<group>"; };
-		06C73D8A19180C0C001D3CC8 /* SparseLongArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SparseLongArray.m; path = build_result/Classes/android/util/SparseLongArray.m; sourceTree = "<group>"; };
-		06C73D8B19180C0C001D3CC8 /* ArrayUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ArrayUtils.h; path = build_result/Classes/com/android/internal/util/ArrayUtils.h; sourceTree = "<group>"; };
-		06C73D8C19180C0C001D3CC8 /* ArrayUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ArrayUtils.m; path = build_result/Classes/com/android/internal/util/ArrayUtils.m; sourceTree = "<group>"; };
-		06C73D8D19180C0C001D3CC8 /* Lists.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Lists.h; path = build_result/Classes/com/google/android/collect/Lists.h; sourceTree = "<group>"; };
-		06C73D8E19180C0C001D3CC8 /* Lists.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Lists.m; path = build_result/Classes/com/google/android/collect/Lists.m; sourceTree = "<group>"; };
-		06C73D8F19180C0C001D3CC8 /* Maps.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Maps.h; path = build_result/Classes/com/google/android/collect/Maps.h; sourceTree = "<group>"; };
-		06C73D9019180C0C001D3CC8 /* Maps.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Maps.m; path = build_result/Classes/com/google/android/collect/Maps.m; sourceTree = "<group>"; };
-		06C73D9119180C0C001D3CC8 /* Sets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Sets.h; path = build_result/Classes/com/google/android/collect/Sets.h; sourceTree = "<group>"; };
-		06C73D9219180C0C001D3CC8 /* Sets.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Sets.m; path = build_result/Classes/com/google/android/collect/Sets.m; sourceTree = "<group>"; };
 		06C73D9319180C0C001D3CC8 /* IosHttpHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosHttpHandler.h; path = build_result/Classes/com/google/j2objc/net/IosHttpHandler.h; sourceTree = "<group>"; };
 		06C73D9419180C0C001D3CC8 /* IosHttpHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosHttpHandler.m; path = build_result/Classes/com/google/j2objc/net/IosHttpHandler.m; sourceTree = "<group>"; };
 		06C73D9519180C0C001D3CC8 /* IosHttpsHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosHttpsHandler.h; path = build_result/Classes/com/google/j2objc/net/IosHttpsHandler.h; sourceTree = "<group>"; };
@@ -9693,13 +9549,6 @@
 			path = jre_emul_xctests;
 			sourceTree = "<group>";
 		};
-		063BD62A250594A9000819BB /* jre_emul */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = jre_emul;
-			sourceTree = "<group>";
-		};
 		066046DD251144090083DD00 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -9713,7 +9562,6 @@
 				0661938A155848D70004DAFE /* Classes */,
 				067219221559B9D200645E1B /* Transpiled Classes */,
 				0620F4E71BB60A6100626242 /* jre_emul_xctests */,
-				063BD62A250594A9000819BB /* jre_emul */,
 				06619387155848D70004DAFE /* Frameworks */,
 				06ED87BC19759EFF00633227 /* junit_tests */,
 				06619386155848D70004DAFE /* Products */,
@@ -10096,22 +9944,16 @@
 				067219CE1559C87100645E1B /* ArrayIndexOutOfBoundsException.m */,
 				06721ACB1559CB4200645E1B /* ArrayList.h */,
 				06721A2F1559C91600645E1B /* ArrayList.m */,
-				06C73D7319180C0C001D3CC8 /* ArrayMap.h */,
-				06C73D7419180C0C001D3CC8 /* ArrayMap.m */,
 				0671E4E221BDCEF4002E0681 /* ArrayPrefixHelpers.h */,
 				0671E4D121BDCEF0002E0681 /* ArrayPrefixHelpers.m */,
 				06721ACC1559CB4200645E1B /* Arrays.h */,
 				06721A301559C91600645E1B /* Arrays.m */,
-				06C73D7519180C0C001D3CC8 /* ArraySet.h */,
-				06C73D7619180C0C001D3CC8 /* ArraySet.m */,
 				0671E4E921BDCEF5002E0681 /* ArraysParallelSortHelpers.h */,
 				0671E4D021BDCEF0002E0681 /* ArraysParallelSortHelpers.m */,
 				06721B321559CC0300645E1B /* ArrayStoreException.h */,
 				067219CF1559C87100645E1B /* ArrayStoreException.m */,
 				068BC1B2249D97C600C7C489 /* ArrayUtils.h */,
-				06C73D8B19180C0C001D3CC8 /* ArrayUtils.h */,
 				068BC1B3249D97C600C7C489 /* ArrayUtils.m */,
-				06C73D8C19180C0C001D3CC8 /* ArrayUtils.m */,
 				063BE31F2505C132000819BB /* ASCIICaseInsensitiveComparator.h */,
 				063BE3082505C12C000819BB /* ASCIICaseInsensitiveComparator.m */,
 				063BE5A62505D705000819BB /* AsciiUtil.h */,
@@ -10216,18 +10058,10 @@
 				063BE17F2505BEE8000819BB /* BadPaddingException.m */,
 				063BE2992505C06E000819BB /* Base64.h */,
 				0671E4E821BDCEF5002E0681 /* Base64.h */,
-				069371F61A327DDB008ACC7F /* Base64.h */,
 				063BE2952505C06D000819BB /* Base64.m */,
 				0671E4E021BDCEF3002E0681 /* Base64.m */,
-				069371F71A327DDB008ACC7F /* Base64.m */,
-				069371F81A327DDB008ACC7F /* Base64DataException.h */,
-				069371F91A327DDB008ACC7F /* Base64DataException.m */,
 				063BE31A2505C131000819BB /* BASE64Decoder.h */,
 				063BE30A2505C12D000819BB /* BASE64Decoder.m */,
-				069371FA1A327DDB008ACC7F /* Base64InputStream.h */,
-				069371FB1A327DDB008ACC7F /* Base64InputStream.m */,
-				069371FC1A327DDB008ACC7F /* Base64OutputStream.h */,
-				069371FD1A327DDB008ACC7F /* Base64OutputStream.m */,
 				063BE4A82505C238000819BB /* BaseCalendar.h */,
 				063BE4EB2505C242000819BB /* BaseCalendar.m */,
 				063BE5C62505D70D000819BB /* BaseLocale.h */,
@@ -10752,8 +10586,6 @@
 				063BDC932505BADE000819BB /* ConstraintsChecker.m */,
 				063BE0BF2505BE93000819BB /* Consumer.h */,
 				063BE0D42505BE97000819BB /* Consumer.m */,
-				06C73D7719180C0C001D3CC8 /* ContainerHelpers.h */,
-				06C73D7819180C0C001D3CC8 /* ContainerHelpers.m */,
 				06C73DB119180C8A001D3CC8 /* ContentHandler.h */,
 				064FB7C2172707F200DC0D51 /* ContentHandler.h */,
 				0649A7B21AE07A4400DE2494 /* ContentHandler.m */,
@@ -11184,8 +11016,6 @@
 				0649A6651AE077E800DE2494 /* ECPublicKeySpec.m */,
 				063BDB3D2505B9FA000819BB /* EDIPartyName.h */,
 				063BDB8D2505BA09000819BB /* EDIPartyName.m */,
-				06C73D4F19180BD8001D3CC8 /* Editable.h */,
-				06C73D5019180BD8001D3CC8 /* Editable.m */,
 				063BE6562505E8FB000819BB /* Edits.h */,
 				063BE6642505E8FF000819BB /* Edits.m */,
 				0649A7851AE07A4200DE2494 /* Element.h */,
@@ -11508,8 +11338,6 @@
 				0649A7461AE0799100DE2494 /* GenericSignatureParser.m */,
 				063BE31B2505C131000819BB /* GetBooleanAction.h */,
 				06318C13243E6B3400BF119E /* GetBooleanAction.m */,
-				06C73D5119180BD8001D3CC8 /* GetChars.h */,
-				06C73D5219180BD8001D3CC8 /* GetChars.m */,
 				063BDD102505BAF8000819BB /* GetInstance.h */,
 				063BDCA42505BAE1000819BB /* GetInstance.m */,
 				063BE3112505C12E000819BB /* GetIntegerAction.h */,
@@ -11732,8 +11560,6 @@
 				0671E51A21BDEE4C002E0681 /* InMemoryCookieStore.m */,
 				063BE2AF2505C09C000819BB /* InnerNodeImpl.h */,
 				063BE2B92505C09F000819BB /* InnerNodeImpl.m */,
-				06C73D5319180BD8001D3CC8 /* InputFilter.h */,
-				06C73D5419180BD9001D3CC8 /* InputFilter.m */,
 				06721AEA1559CB9200645E1B /* InputMismatchException.h */,
 				06721A501559C99E00645E1B /* InputMismatchException.m */,
 				064FB7901727079100DC0D51 /* InputSource.h */,
@@ -11742,8 +11568,6 @@
 				0672199E1559C7FC00645E1B /* InputStream.m */,
 				06721A911559CB2500645E1B /* InputStreamReader.h */,
 				0672199F1559C7FC00645E1B /* InputStreamReader.m */,
-				06C73D5519180BD9001D3CC8 /* InputType.h */,
-				06C73D5619180BD9001D3CC8 /* InputType.m */,
 				063BDFBF2505BDEE000819BB /* Instant.h */,
 				063BDFC42505BDEF000819BB /* Instant.m */,
 				063BDD6F2505BB9F000819BB /* InstantiationError.h */,
@@ -12032,8 +11856,6 @@
 				063BE4ED2505C243000819BB /* LanguageTag.h */,
 				063BE58B2505D6FE000819BB /* LanguageTag.m */,
 				063BE4AC2505C239000819BB /* LanguageTag.m */,
-				06C73D4519180BBD001D3CC8 /* LargeTest.h */,
-				06C73D4619180BBD001D3CC8 /* LargeTest.m */,
 				063BDF5C2505BD91000819BB /* LDAPCertStoreParameters.h */,
 				063BDF242505BD81000819BB /* LDAPCertStoreParameters.m */,
 				063BE2C22505C0A1000819BB /* LeafNodeImpl.h */,
@@ -12080,8 +11902,6 @@
 				0649A74A1AE0799100DE2494 /* ListOfVariables.m */,
 				06AA056817E111190017C34A /* ListResourceBundle.h */,
 				06AA056917E111190017C34A /* ListResourceBundle.m */,
-				06C73D8D19180C0C001D3CC8 /* Lists.h */,
-				06C73D8E19180C0C001D3CC8 /* Lists.m */,
 				063BDF992505BDE5000819BB /* LocalDate.h */,
 				063BDFDA2505BDF4000819BB /* LocalDate.m */,
 				063BDFE32505BDFA000819BB /* LocalDateTime.h */,
@@ -12132,8 +11952,6 @@
 				06F2913F18972E2E00676F1D /* Lock.m */,
 				06F2914018972E2E00676F1D /* LockSupport.h */,
 				06F2914118972E2E00676F1D /* LockSupport.m */,
-				06C73D7919180C0C001D3CC8 /* Log.h */,
-				06C73D7A19180C0C001D3CC8 /* Log.m */,
 				06721AF31559CB9200645E1B /* Logger.h */,
 				06721A561559C99E00645E1B /* Logger.m */,
 				0671E4D721BDCEF2002E0681 /* Logging.h */,
@@ -12182,9 +12000,7 @@
 				063BE0C92505BE95000819BB /* LongToIntFunction.m */,
 				063BE09C2505BE8B000819BB /* LongUnaryOperator.h */,
 				063BE0E72505BEA0000819BB /* LongUnaryOperator.m */,
-				06C73D7B19180C0C001D3CC8 /* LruCache.h */,
 				063BE2FB2505C129000819BB /* LRUCache.h */,
-				06C73D7C19180C0C001D3CC8 /* LruCache.m */,
 				063BE2FF2505C12A000819BB /* LRUCache.m */,
 				0649A78D1AE07A4300DE2494 /* LSException.h */,
 				0649A78E1AE07A4300DE2494 /* LSException.m */,
@@ -12230,12 +12046,8 @@
 				063BDCF82505BAF3000819BB /* ManifestEntryVerifier.m */,
 				06721AF71559CB9200645E1B /* Map.h */,
 				06F290A118972DA300676F1D /* Map.m */,
-				06C73D7D19180C0C001D3CC8 /* MapCollections.h */,
-				06C73D7E19180C0C001D3CC8 /* MapCollections.m */,
 				0649A6081AE0778600DE2494 /* MappedByteBuffer.h */,
 				0649A6091AE0778600DE2494 /* MappedByteBuffer.m */,
-				06C73D8F19180C0C001D3CC8 /* Maps.h */,
-				06C73D9019180C0C001D3CC8 /* Maps.m */,
 				068677E2166C345F005A5AD7 /* Matcher.h */,
 				068677E3166C345F005A5AD7 /* Matcher.m */,
 				063BDBF12505BA36000819BB /* MatchOps.h */,
@@ -12252,8 +12064,6 @@
 				063BE6752505E903000819BB /* Measure.m */,
 				063BE6552505E8FB000819BB /* MeasureUnit.h */,
 				063BE71E2505E937000819BB /* MeasureUnit.m */,
-				06C73D4719180BBD001D3CC8 /* MediumTest.h */,
-				06C73D4819180BBD001D3CC8 /* MediumTest.m */,
 				06ED3D7A17D164DC0014750E /* Member.h */,
 				06ED3D7B17D164DC0014750E /* Member.m */,
 				063BDDFF2505BCBD000819BB /* MembershipKey.h */,
@@ -12392,8 +12202,6 @@
 				0649A5E71AE0773500DE2494 /* NoClassDefFoundError.m */,
 				06C73E7519180CC9001D3CC8 /* NoConnectionPendingException.h */,
 				06C73E7619180CC9001D3CC8 /* NoConnectionPendingException.m */,
-				06C73D5719180BD9001D3CC8 /* NoCopySpan.h */,
-				06C73D5819180BD9001D3CC8 /* NoCopySpan.m */,
 				063BDC262505BA41000819BB /* Node.h */,
 				0649A79F1AE07A4300DE2494 /* Node.h */,
 				063BDC292505BA41000819BB /* Node.m */,
@@ -12579,9 +12387,7 @@
 				06ED3D6A17D164AF0014750E /* Package.h */,
 				06ED3D6B17D164AF0014750E /* Package.m */,
 				063BE5472505D6E8000819BB /* Pair.h */,
-				06C73D7F19180C0C001D3CC8 /* Pair.h */,
 				063BE5C52505D70D000819BB /* Pair.m */,
-				06C73D8019180C0C001D3CC8 /* Pair.m */,
 				063BDD832505BBA3000819BB /* Parameter.h */,
 				063BDD872505BBA4000819BB /* Parameter.m */,
 				063BDC5A2505BA6B000819BB /* ParameterDescriptor.h */,
@@ -12762,8 +12568,6 @@
 				0671E4D221BDCEF1002E0681 /* PrimitiveIterator.m */,
 				06ED3DA917D165510014750E /* Principal.h */,
 				06ED3DAA17D165510014750E /* Principal.m */,
-				06C73D8119180C0C001D3CC8 /* Printer.h */,
-				06C73D8219180C0C001D3CC8 /* Printer.m */,
 				06721A981559CB2500645E1B /* PrintStream.h */,
 				067219A61559C7FC00645E1B /* PrintStream.m */,
 				06721A991559CB2500645E1B /* PrintWriter.h */,
@@ -13000,10 +12804,6 @@
 				063BDCE12505BAEE000819BB /* RevocationChecker.m */,
 				063BDB722505BA04000819BB /* RFC822Name.h */,
 				063BDB3E2505B9FA000819BB /* RFC822Name.m */,
-				06C73D6F19180BD9001D3CC8 /* Rfc822Token.h */,
-				06C73D7019180BD9001D3CC8 /* Rfc822Token.m */,
-				06C73D7119180BD9001D3CC8 /* Rfc822Tokenizer.h */,
-				06C73D7219180BD9001D3CC8 /* Rfc822Tokenizer.m */,
 				067855D7169F37710042431C /* RoundingMode.h */,
 				067855D8169F37710042431C /* RoundingMode.m */,
 				0649A6A81AE0780500DE2494 /* RowId.h */,
@@ -13152,8 +12952,6 @@
 				06C73E8A19180CC9001D3CC8 /* SelectableChannel.m */,
 				063BE6C42505E919000819BB /* SelectFormat.h */,
 				063BE71C2505E936000819BB /* SelectFormat.m */,
-				06C73D5919180BD9001D3CC8 /* Selection.h */,
-				06C73D5A19180BD9001D3CC8 /* Selection.m */,
 				06C73E8B19180CC9001D3CC8 /* SelectionKey.h */,
 				06C73E8C19180CC9001D3CC8 /* SelectionKey.m */,
 				063BE3B52505C1A3000819BB /* SelectionKeyImpl.h */,
@@ -13210,8 +13008,6 @@
 				06F290B118972DA300676F1D /* ServiceLoader.m */,
 				06721AFF1559CB9200645E1B /* Set.h */,
 				06F290B218972DA300676F1D /* Set.m */,
-				06C73D9119180C0C001D3CC8 /* Sets.h */,
-				06C73D9219180C0C001D3CC8 /* Sets.m */,
 				063BE30E2505C12E000819BB /* SharedSecrets.h */,
 				063BE3022505C12B000819BB /* SharedSecrets.m */,
 				06721B581559CC0300645E1B /* Short.h */,
@@ -13268,10 +13064,6 @@
 				06C73EE919180D6D001D3CC8 /* SizeOf.m */,
 				063BDC1F2505BA3F000819BB /* SliceOps.h */,
 				063BDBFF2505BA39000819BB /* SliceOps.m */,
-				06C73D4919180BBD001D3CC8 /* SmallTest.h */,
-				06C73D4A19180BBD001D3CC8 /* SmallTest.m */,
-				06C73D4B19180BBD001D3CC8 /* Smoke.h */,
-				06C73D4C19180BBD001D3CC8 /* Smoke.m */,
 				06C73F0E19180D90001D3CC8 /* SneakyThrow.h */,
 				06C73F0F19180D90001D3CC8 /* SneakyThrow.m */,
 				063BE19C2505BF15000819BB /* SNIHostName.h */,
@@ -13342,30 +13134,6 @@
 				063BE3D52505C1AB000819BB /* SourceChannelImpl.m */,
 				063BE1F42505BFA6000819BB /* SourceLocator.h */,
 				063BE2022505BFA9000819BB /* SourceLocator.m */,
-				06C73D5B19180BD9001D3CC8 /* Spannable.h */,
-				06C73D5C19180BD9001D3CC8 /* Spannable.m */,
-				06C73D5D19180BD9001D3CC8 /* SpannableString.h */,
-				06C73D5E19180BD9001D3CC8 /* SpannableString.m */,
-				06C73D5F19180BD9001D3CC8 /* SpannableStringBuilder.h */,
-				06C73D6019180BD9001D3CC8 /* SpannableStringBuilder.m */,
-				06C73D6119180BD9001D3CC8 /* SpannableStringInternal.h */,
-				06C73D6219180BD9001D3CC8 /* SpannableStringInternal.m */,
-				06C73D6319180BD9001D3CC8 /* Spanned.h */,
-				06C73D6419180BD9001D3CC8 /* Spanned.m */,
-				06C73D6519180BD9001D3CC8 /* SpannedString.h */,
-				06C73D6619180BD9001D3CC8 /* SpannedString.m */,
-				06C73D6719180BD9001D3CC8 /* SpanSet.h */,
-				06C73D6819180BD9001D3CC8 /* SpanSet.m */,
-				06C73D6919180BD9001D3CC8 /* SpanWatcher.h */,
-				06C73D6A19180BD9001D3CC8 /* SpanWatcher.m */,
-				06C73D8319180C0C001D3CC8 /* SparseArray.h */,
-				06C73D8419180C0C001D3CC8 /* SparseArray.m */,
-				06C73D8519180C0C001D3CC8 /* SparseBooleanArray.h */,
-				06C73D8619180C0C001D3CC8 /* SparseBooleanArray.m */,
-				06C73D8719180C0C001D3CC8 /* SparseIntArray.h */,
-				06C73D8819180C0C001D3CC8 /* SparseIntArray.m */,
-				06C73D8919180C0C001D3CC8 /* SparseLongArray.h */,
-				06C73D8A19180C0C001D3CC8 /* SparseLongArray.m */,
 				06C73E9319180CC9001D3CC8 /* spi */,
 				063BDC1A2505BA3E000819BB /* SpinedBuffer.h */,
 				063BDC002505BA39000819BB /* SpinedBuffer.m */,
@@ -13588,8 +13356,6 @@
 				063BDCFD2505BAF4000819BB /* SunCertPathBuilderResult.m */,
 				063BE0C22505BE93000819BB /* Supplier.h */,
 				063BE0E62505BEA0000819BB /* Supplier.m */,
-				06C73D4D19180BBD001D3CC8 /* Suppress.h */,
-				06C73D4E19180BBD001D3CC8 /* Suppress.m */,
 				063BE6702505E902000819BB /* SymbolTable.h */,
 				063BE6592505E8FC000819BB /* SymbolTable.m */,
 				067855B9169F367E0042431C /* SyncFailedException.h */,
@@ -13598,8 +13364,6 @@
 				06F2911518972DFA00676F1D /* SynchronousQueue.m */,
 				06721B5E1559CC0300645E1B /* System.h */,
 				067219F41559C87100645E1B /* System.m */,
-				06C73D4319180BBD001D3CC8 /* SystemClock.h */,
-				06C73D4419180BBD001D3CC8 /* SystemClock.m */,
 				063BE2772505C011000819BB /* SystemModulesMap.h */,
 				063BE2782505C011000819BB /* SystemModulesMap.m */,
 				06F2905B18972CE800676F1D /* Target.h */,
@@ -13642,10 +13406,6 @@
 				063BE00B2505BE04000819BB /* TextStyle.m */,
 				063BE5BC2505D70B000819BB /* TextTrieMap.h */,
 				063BE5332505D6E2000819BB /* TextTrieMap.m */,
-				06C73D6B19180BD9001D3CC8 /* TextUtils.h */,
-				06C73D6C19180BD9001D3CC8 /* TextUtils.m */,
-				06C73D6D19180BD9001D3CC8 /* TextWatcher.h */,
-				06C73D6E19180BD9001D3CC8 /* TextWatcher.m */,
 				06721B5F1559CC0300645E1B /* Thread.h */,
 				067219F51559C87100645E1B /* Thread.m */,
 				06721B601559CC0300645E1B /* ThreadDeath.h */,
@@ -14307,7 +14067,6 @@
 				7A4DE49524C61841003F4F75 /* AttributesTest.m */,
 				06C03DD8249D783C00C0CAD1 /* BadPaddingExceptionTest.m */,
 				065F96341DAC03F900807A81 /* Base64Test.m */,
-				062024F01D512AA2001EE455 /* Base64Test.m */,
 				0661FA0724E5E252003AD88E /* BasicFileAttributeViewTest.m */,
 				FAAB054622F3AB5E002A32D0 /* BasicLruCacheTest.m */,
 				0620271B1D512D82001EE455 /* BeanDescriptorTest.m */,
@@ -14876,7 +14635,6 @@
 				0620284A1D512E21001EE455 /* ModeTest.m */,
 				0671E51521BDE22D002E0681 /* ModifierTest.m */,
 				0620289C1D512E78001EE455 /* ModifierTest.m */,
-				062024EB1D512AA2001EE455 /* MoreAsserts.m */,
 				FA40675621C07E5F00988DFD /* MultipleAnnotation.m */,
 				FA40675B21C07E6000988DFD /* MultipleAnnotationExplicitSingle.m */,
 				FA40675A21C07E6000988DFD /* MultipleAnnotationOddity.m */,
@@ -15267,9 +15025,6 @@
 				062026781D512D08001EE455 /* SocketTest.m */,
 				062025721D512B77001EE455 /* SoftReferenceTest.m */,
 				06C143941F46135100CABE9A /* SourceChannelTest.m */,
-				062024EC1D512AA2001EE455 /* SpannableStringBuilderTest.m */,
-				062024ED1D512AA2001EE455 /* SpannableStringTest.m */,
-				062024EE1D512AA2001EE455 /* SpannableTest.m */,
 				0620286C1D512E3E001EE455 /* SpiEngUtils.m */,
 				FA61CF9922F35D88006F903E /* SpliteratorsTest.m */,
 				FA5C0CC321BFFFAA000B6275 /* SpliteratorTester.m */,
@@ -15500,7 +15255,6 @@
 				6A5D0D59219CCBB200709765 /* TestZoneOffsetParser.m */,
 				6A5D0D54219CCBB100709765 /* TestZoneOffsetPrinter.m */,
 				062029B11D514671001EE455 /* TextAttributeTest.m */,
-				062024EF1D512AA2001EE455 /* TextUtilsTest.m */,
 				062025191D512B37001EE455 /* Third.m */,
 				FA5C0C7021BFFE64000B6275 /* ThreadDeathTest.m */,
 				FA24DEAF22EA4822000DEC19 /* ThreadLocalRandom8Test.m */,
@@ -16104,19 +15858,16 @@
 				063BE60E2505D717000819BB /* IntTrie.m in Sources */,
 				063BD6AE250597BB000819BB /* ArrayList.m in Sources */,
 				063BDD312505BB00000819BB /* IndexedCollectionCertStore.m in Sources */,
-				063BD6AF250597BB000819BB /* ArrayMap.m in Sources */,
 				06C9D0FB2541FE1000EEA36A /* LocaleEquivalentMaps.m in Sources */,
 				063BD6B0250597BB000819BB /* ArrayPrefixHelpers.m in Sources */,
 				063BD6B1250597BB000819BB /* Arrays.m in Sources */,
 				063BDBE12505BA17000819BB /* GeneralName.m in Sources */,
 				063BE7752505E93E000819BB /* Currency.m in Sources */,
-				063BD6B2250597BB000819BB /* ArraySet.m in Sources */,
 				063BD6B3250597BB000819BB /* ArraysParallelSortHelpers.m in Sources */,
 				063BD6B4250597BB000819BB /* ArrayStoreException.m in Sources */,
 				063BDBC12505BA16000819BB /* PolicyMappingsExtension.m in Sources */,
 				063BD6B5250597BB000819BB /* ArrayUtils.m in Sources */,
 				063BDF772505BD94000819BB /* X509CRLSelector.m in Sources */,
-				063BD6B6250597BB000819BB /* ArrayUtils.m in Sources */,
 				063BDF092505BD46000819BB /* StandardWatchEventKinds.m in Sources */,
 				063BD6B7250597BB000819BB /* AssertionError.m in Sources */,
 				063BD6B8250597BB000819BB /* AsynchronousCloseException.m in Sources */,
@@ -16163,13 +15914,9 @@
 				063BDBE82505BA18000819BB /* SubjectKeyIdentifierExtension.m in Sources */,
 				063BD6D0250597BB000819BB /* AutoCloseable.m in Sources */,
 				063BD6D1250597BB000819BB /* Base64.m in Sources */,
-				063BD6D2250597BB000819BB /* Base64.m in Sources */,
 				063BE48E2505C1CD000819BB /* SocketAdaptor.m in Sources */,
 				063BDF742505BD94000819BB /* CertStoreSpi.m in Sources */,
-				063BD6D3250597BB000819BB /* Base64DataException.m in Sources */,
-				063BD6D4250597BB000819BB /* Base64InputStream.m in Sources */,
 				063BE74B2505E93B000819BB /* UnicodeFilter.m in Sources */,
-				063BD6D5250597BB000819BB /* Base64OutputStream.m in Sources */,
 				063BD6D6250597BB000819BB /* BasicLruCache.m in Sources */,
 				063BD6D7250597BB000819BB /* BasicPermission.m in Sources */,
 				063BD6D8250597BB000819BB /* BatchUpdateException.m in Sources */,
@@ -16424,7 +16171,6 @@
 				063BD751250597BC000819BB /* ConnectionResetException.m in Sources */,
 				063BE60D2505D717000819BB /* DateNumberFormat.m in Sources */,
 				063BD752250597BC000819BB /* ConsoleHandler.m in Sources */,
-				063BD753250597BC000819BB /* ContainerHelpers.m in Sources */,
 				063BDF792505BD94000819BB /* CertPathBuilderResult.m in Sources */,
 				063BD754250597BC000819BB /* ContentHandler.m in Sources */,
 				063BE1042505BEA4000819BB /* DoubleBinaryOperator.m in Sources */,
@@ -16605,7 +16351,6 @@
 				063BE26F2505BFF1000819BB /* TransformerFactoryConfigurationError.m in Sources */,
 				063BDBE92505BA18000819BB /* CertificateAlgorithmId.m in Sources */,
 				063BE6332505D71A000819BB /* Pair.m in Sources */,
-				063BD7B6250597BC000819BB /* Editable.m in Sources */,
 				063BD7B7250597BC000819BB /* Element.m in Sources */,
 				063BD7B8250597BC000819BB /* ElementType.m in Sources */,
 				063BE0402505BE0B000819BB /* IsoEra.m in Sources */,
@@ -16750,7 +16495,6 @@
 				063BD807250597BD000819BB /* GenericSignatureFormatError.m in Sources */,
 				063BD808250597BD000819BB /* GenericSignatureParser.m in Sources */,
 				063BD809250597BD000819BB /* GetBooleanAction.m in Sources */,
-				063BD80A250597BD000819BB /* GetChars.m in Sources */,
 				063BD80B250597BD000819BB /* GetIntegerAction.m in Sources */,
 				063BDD602505BB02000819BB /* ContentInfo.m in Sources */,
 				063BD80C250597BD000819BB /* GetPropertyAction.m in Sources */,
@@ -16860,7 +16604,6 @@
 				063BD845250597BE000819BB /* Inherited.m in Sources */,
 				063BD846250597BE000819BB /* InMemoryCookieStore.m in Sources */,
 				063BE4982505C1CE000819BB /* UnixFileModeAttribute.m in Sources */,
-				063BD847250597BE000819BB /* InputFilter.m in Sources */,
 				063BE7312505E939000819BB /* BreakIteratorFactory.m in Sources */,
 				063BD848250597BE000819BB /* InputMismatchException.m in Sources */,
 				063BE2EE2505C0A8000819BB /* ProcessingInstructionImpl.m in Sources */,
@@ -16871,7 +16614,6 @@
 				063BE1172505BEA5000819BB /* LongUnaryOperator.m in Sources */,
 				063BDD992505BBA7000819BB /* JavaLangAccess.m in Sources */,
 				063BE78B2505E940000819BB /* IllformedLocaleException.m in Sources */,
-				063BD84C250597BE000819BB /* InputType.m in Sources */,
 				063BE04D2505BE0C000819BB /* ZoneRulesException.m in Sources */,
 				063BE2232505BFAE000819BB /* TemplatesHandler.m in Sources */,
 				063BE2DD2505C0A7000819BB /* DocumentBuilderFactoryImpl.m in Sources */,
@@ -17036,7 +16778,6 @@
 				063BD893250597BE000819BB /* KXmlSerializer.m in Sources */,
 				063BE0652505BE0D000819BB /* Parsed.m in Sources */,
 				063BE46D2505C1CA000819BB /* BsdAsynchronousChannelProvider.m in Sources */,
-				063BD894250597BE000819BB /* LargeTest.m in Sources */,
 				063BE4532505C1C9000819BB /* UnixPath.m in Sources */,
 				063BD895250597BE000819BB /* Level.m in Sources */,
 				063BE2E42505C0A8000819BB /* ElementImpl.m in Sources */,
@@ -17068,7 +16809,6 @@
 				063BD8A4250597BE000819BB /* ListOfTypes.m in Sources */,
 				063BD8A5250597BE000819BB /* ListOfVariables.m in Sources */,
 				063BD8A6250597BE000819BB /* ListResourceBundle.m in Sources */,
-				063BD8A7250597BE000819BB /* Lists.m in Sources */,
 				063BDBBF2505BA16000819BB /* X400Address.m in Sources */,
 				063BD8A8250597BE000819BB /* Locale.m in Sources */,
 				063BD8A9250597BE000819BB /* LocaleData.m in Sources */,
@@ -17080,7 +16820,6 @@
 				063BD8AE250597BE000819BB /* Lock.m in Sources */,
 				063BDD4E2505BB01000819BB /* AdjacencyList.m in Sources */,
 				063BD8AF250597BE000819BB /* LockSupport.m in Sources */,
-				063BD8B0250597BE000819BB /* Log.m in Sources */,
 				063BD8B1250597BE000819BB /* Logger.m in Sources */,
 				063BDC4C2505BA45000819BB /* StreamShape.m in Sources */,
 				063BD8B2250597BE000819BB /* Logging.m in Sources */,
@@ -17105,7 +16844,6 @@
 				063BDED82505BD43000819BB /* FileAttribute.m in Sources */,
 				063BE6292505D719000819BB /* SoftCache.m in Sources */,
 				063BE7862505E93F000819BB /* RbnfLenientScanner.m in Sources */,
-				063BD8BD250597BE000819BB /* LruCache.m in Sources */,
 				063BD8BE250597BE000819BB /* LSException.m in Sources */,
 				063BDD692505BB03000819BB /* ReverseState.m in Sources */,
 				063BE2E62505C0A8000819BB /* DocumentBuilderImpl.m in Sources */,
@@ -17132,11 +16870,9 @@
 				063BD8CA250597BE000819BB /* MalformedURLException.m in Sources */,
 				063BD8CB250597BE000819BB /* ManagerFactoryParameters.m in Sources */,
 				063BD8CC250597BE000819BB /* Map.m in Sources */,
-				063BD8CD250597BE000819BB /* MapCollections.m in Sources */,
 				063BDD3E2505BB00000819BB /* ForwardBuilder.m in Sources */,
 				063BDF0A2505BD46000819BB /* AclEntry.m in Sources */,
 				063BD8CE250597BF000819BB /* MappedByteBuffer.m in Sources */,
-				063BD8CF250597BF000819BB /* Maps.m in Sources */,
 				063BE3252505C133000819BB /* FloatConsts.m in Sources */,
 				063BD8D0250597BF000819BB /* Matcher.m in Sources */,
 				063BE72C2505E939000819BB /* Calendar.m in Sources */,
@@ -17149,7 +16885,6 @@
 				063BD8D2250597BF000819BB /* Math.m in Sources */,
 				063BE21F2505BFAE000819BB /* SourceLocator.m in Sources */,
 				063BD8D3250597BF000819BB /* MathContext.m in Sources */,
-				063BD8D4250597BF000819BB /* MediumTest.m in Sources */,
 				063BD8D5250597BF000819BB /* Member.m in Sources */,
 				063BD8D6250597BF000819BB /* Memory.m in Sources */,
 				063BD8D7250597BF000819BB /* MemoryHandler.m in Sources */,
@@ -17224,7 +16959,6 @@
 				063BDD612505BB02000819BB /* PropertyExpander.m in Sources */,
 				063BD8FA250597BF000819BB /* NoClassDefFoundError.m in Sources */,
 				063BD8FB250597BF000819BB /* NoConnectionPendingException.m in Sources */,
-				063BD8FC250597BF000819BB /* NoCopySpan.m in Sources */,
 				063BD8FD250597BF000819BB /* Node.m in Sources */,
 				063BDF822505BD95000819BB /* PKIXCertPathChecker.m in Sources */,
 				063BDE102505BCC6000819BB /* CharBufferSpliterator.m in Sources */,
@@ -17313,7 +17047,6 @@
 				063BDD572505BB02000819BB /* X509CertificatePair.m in Sources */,
 				063BD92C250597BF000819BB /* OverlappingFileLockException.m in Sources */,
 				063BD92D250597BF000819BB /* Package.m in Sources */,
-				063BD92E250597BF000819BB /* Pair.m in Sources */,
 				063BDF102505BD46000819BB /* WatchService.m in Sources */,
 				063BE6082505D716000819BB /* ICUResourceBundleReader.m in Sources */,
 				063BD92F250597BF000819BB /* ParameterizedType.m in Sources */,
@@ -17380,7 +17113,6 @@
 				063BD94E250597C0000819BB /* PreparedStatement.m in Sources */,
 				063BD94F250597C0000819BB /* PrimitiveIterator.m in Sources */,
 				063BD950250597C0000819BB /* Principal.m in Sources */,
-				063BD951250597C0000819BB /* Printer.m in Sources */,
 				063BE1192505BEA6000819BB /* DoubleToIntFunction.m in Sources */,
 				063BDD5F2505BB02000819BB /* SunCertPathBuilderParameters.m in Sources */,
 				063BD952250597C0000819BB /* PrintStream.m in Sources */,
@@ -17533,8 +17265,6 @@
 				063BD992250597C0000819BB /* ResultSetMetaData.m in Sources */,
 				063BD993250597C0000819BB /* Retention.m in Sources */,
 				063BD994250597C0000819BB /* RetentionPolicy.m in Sources */,
-				063BD995250597C0000819BB /* Rfc822Token.m in Sources */,
-				063BD996250597C0000819BB /* Rfc822Tokenizer.m in Sources */,
 				063BD997250597C0000819BB /* RoundingMode.m in Sources */,
 				063BD998250597C0000819BB /* RowId.m in Sources */,
 				063BE02F2505BE0A000819BB /* ChronoLocalDateTimeImpl.m in Sources */,
@@ -17643,7 +17373,6 @@
 				063BDE142505BCC6000819BB /* CompletionHandler.m in Sources */,
 				063BD9C6250597C1000819BB /* SelectableChannel.m in Sources */,
 				063BDF732505BD94000819BB /* DSAPublicKey.m in Sources */,
-				063BD9C7250597C1000819BB /* Selection.m in Sources */,
 				063BDE1E2505BCC6000819BB /* AsynchronousFileChannel.m in Sources */,
 				063BDD962505BBA7000819BB /* AnnotatedArrayType.m in Sources */,
 				063BD9C8250597C1000819BB /* SelectionKey.m in Sources */,
@@ -17666,7 +17395,6 @@
 				063BE2522505BFD5000819BB /* NamespaceContext.m in Sources */,
 				063BD9D4250597C1000819BB /* Set.m in Sources */,
 				063BE5F62505D715000819BB /* ICULocaleService.m in Sources */,
-				063BD9D5250597C1000819BB /* Sets.m in Sources */,
 				063BDDE52505BC77000819BB /* MethodHandles.m in Sources */,
 				063BE18F2505BEE9000819BB /* KeyGeneratorSpi.m in Sources */,
 				063BD9D6250597C1000819BB /* Short.m in Sources */,
@@ -17687,9 +17415,7 @@
 				063BD9DD250597C1000819BB /* SimpleFormatter.m in Sources */,
 				063BD9DE250597C1000819BB /* SimpleTimeZone.m in Sources */,
 				063BD9DF250597C1000819BB /* SizeOf.m in Sources */,
-				063BD9E0250597C1000819BB /* SmallTest.m in Sources */,
 				063BE7742505E93E000819BB /* LocaleData.m in Sources */,
-				063BD9E1250597C1000819BB /* Smoke.m in Sources */,
 				063BDC852505BA87000819BB /* NumericShaper.m in Sources */,
 				063BE0622505BE0D000819BB /* ZoneOffset.m in Sources */,
 				063BDBE32505BA18000819BB /* CRLNumberExtension.m in Sources */,
@@ -17737,34 +17463,22 @@
 				063BE0362505BE0A000819BB /* Chronology.m in Sources */,
 				063BE62E2505D719000819BB /* CharTrie.m in Sources */,
 				063BE3262505C133000819BB /* CharacterDecoder.m in Sources */,
-				063BD9F8250597C1000819BB /* Spannable.m in Sources */,
 				063BDE1B2505BCC6000819BB /* ChannelFactoryImpl.m in Sources */,
 				063BE0552505BE0C000819BB /* OffsetTime.m in Sources */,
-				063BD9F9250597C1000819BB /* SpannableString.m in Sources */,
 				063BDC7E2505BA70000819BB /* BeanDescriptor.m in Sources */,
-				063BD9FA250597C1000819BB /* SpannableStringBuilder.m in Sources */,
-				063BD9FB250597C1000819BB /* SpannableStringInternal.m in Sources */,
-				063BD9FC250597C1000819BB /* Spanned.m in Sources */,
 				063BE03F2505BE0B000819BB /* ZoneRegion.m in Sources */,
 				063BE7A12505E963000819BB /* ExtendedWatchEventModifier.m in Sources */,
-				063BD9FD250597C1000819BB /* SpannedString.m in Sources */,
 				063BDBC72505BA16000819BB /* NameConstraintsExtension.m in Sources */,
 				063BDE0F2505BCC6000819BB /* ReadPendingException.m in Sources */,
 				063BDC3A2505BA44000819BB /* Sink.m in Sources */,
-				063BD9FE250597C1000819BB /* SpanSet.m in Sources */,
-				063BD9FF250597C1000819BB /* SpanWatcher.m in Sources */,
 				063BE0972505BE69000819BB /* Helpers.m in Sources */,
 				063BE48B2505C1CD000819BB /* MacOSXFileSystemProvider.m in Sources */,
-				063BDA00250597C1000819BB /* SparseArray.m in Sources */,
 				063BDC472505BA44000819BB /* LongStream.m in Sources */,
 				063BE21C2505BFAE000819BB /* XPathFactory.m in Sources */,
 				063BDC4F2505BA45000819BB /* Node.m in Sources */,
 				063BE24F2505BFD4000819BB /* DOMSource.m in Sources */,
-				063BDA01250597C1000819BB /* SparseBooleanArray.m in Sources */,
 				063BE1AA2505BF18000819BB /* SSLKeyException.m in Sources */,
 				063BE7442505E93A000819BB /* UResourceBundleIterator.m in Sources */,
-				063BDA02250597C1000819BB /* SparseIntArray.m in Sources */,
-				063BDA03250597C1000819BB /* SparseLongArray.m in Sources */,
 				063BDA04250597C1000819BB /* Spliterator.m in Sources */,
 				063BDA05250597C1000819BB /* Spliterators.m in Sources */,
 				063BDA06250597C1000819BB /* SQLClientInfoException.m in Sources */,
@@ -17898,19 +17612,15 @@
 				063BE7452505E93B000819BB /* CurrencyDisplayNames.m in Sources */,
 				063BDA4A250597C2000819BB /* StructTimeval.m in Sources */,
 				063BDA4B250597C2000819BB /* StructUtsname.m in Sources */,
-				063BDA4C250597C2000819BB /* Suppress.m in Sources */,
 				063BDA4D250597C2000819BB /* SyncFailedException.m in Sources */,
 				063BDA4E250597C2000819BB /* SynchronousQueue.m in Sources */,
 				063BE1812505BEE8000819BB /* ExemptionMechanism.m in Sources */,
 				063BE78C2505E940000819BB /* NFSubstitution.m in Sources */,
 				063BDA4F250597C2000819BB /* System.m in Sources */,
 				063BE1522505BECB000819BB /* PSource.m in Sources */,
-				063BDA50250597C2000819BB /* SystemClock.m in Sources */,
 				063BDA51250597C2000819BB /* Target.m in Sources */,
 				063BDA52250597C2000819BB /* Text.m in Sources */,
-				063BDA53250597C2000819BB /* TextUtils.m in Sources */,
 				063BE2A92505C06F000819BB /* NonNull.m in Sources */,
-				063BDA54250597C2000819BB /* TextWatcher.m in Sources */,
 				063BDA55250597C2000819BB /* Thread.m in Sources */,
 				063BDA56250597C2000819BB /* ThreadDeath.m in Sources */,
 				063BDA57250597C2000819BB /* ThreadFactory.m in Sources */,
@@ -18855,7 +18565,6 @@
 				062026C81D512D08001EE455 /* EventObjectTest.m in Sources */,
 				062025601D512B37001EE455 /* SocketPolicy.m in Sources */,
 				7A98C09324D907E400774306 /* WrappedDoubleBufferTest.m in Sources */,
-				062024FA1D512AA2001EE455 /* Base64Test.m in Sources */,
 				FA6C09CE2187C5AC006C646A /* TestIsoWeekFields.m in Sources */,
 				069C24491E9EF09900CE6BAF /* X509Certificate2Test.m in Sources */,
 				062026E51D512D17001EE455 /* AbstractZipFileTest.m in Sources */,
@@ -19204,7 +18913,6 @@
 				7A98C0A024D907E400774306 /* ReadOnlyHeapByteBufferTest.m in Sources */,
 				062028CA1D512E89001EE455 /* BigIntegerCompareTest.m in Sources */,
 				0620287E1D512E3E001EE455 /* SignatureSpiTest.m in Sources */,
-				062024F61D512AA2001EE455 /* SpannableStringBuilderTest.m in Sources */,
 				7A98C09F24D907E400774306 /* DirectByteBufferTest.m in Sources */,
 				0612B9061F4373740069EF58 /* ForkJoinTaskTest.m in Sources */,
 				FA24DE6A22E7628A000DEC19 /* InternalErrorTest.m in Sources */,
@@ -19246,7 +18954,6 @@
 				06C03E24249D78E900C0CAD1 /* AbstractDateTimeTest.m in Sources */,
 				062027431D512D82001EE455 /* ParameterDescriptorTest.m in Sources */,
 				062026CA1D512D08001EE455 /* ObjectsTest.m in Sources */,
-				062024F51D512AA2001EE455 /* MoreAsserts.m in Sources */,
 				FA61CFAD22F35D8A006F903E /* RandomTest.m in Sources */,
 				7A0F14A3248D99D000AFE2BC /* TCKDateTimeFormatter.m in Sources */,
 				0620264F1D512CA1001EE455 /* SerializationTest.m in Sources */,
@@ -19344,7 +19051,6 @@
 				0612B9391F4374C60069EF58 /* SSLEngineResultStatusTest.m in Sources */,
 				062026111D512CA1001EE455 /* ObjectOutputStreamTest.m in Sources */,
 				7A4DE4B424C618BB003F4F75 /* PlatformLoggerTest.m in Sources */,
-				062024F71D512AA2001EE455 /* SpannableStringTest.m in Sources */,
 				7A4DE4B224C618AB003F4F75 /* UserPrincipalNotFoundExceptionTest.m in Sources */,
 				062029381D512F25001EE455 /* RSAPrivateKeyTest.m in Sources */,
 				069C24201E9EEF7B00CE6BAF /* CalendarTest.m in Sources */,
@@ -19364,7 +19070,6 @@
 				FA24DE7422E7628A000DEC19 /* Character_UnicodeBlockTest.m in Sources */,
 				062027741D512D9D001EE455 /* MockFoo.m in Sources */,
 				06C03E72249D7A9500C0CAD1 /* KeyStoreExceptionTest.m in Sources */,
-				062024F81D512AA2001EE455 /* SpannableTest.m in Sources */,
 				FA61CFB222F35D8A006F903E /* WeakHashMapTest.m in Sources */,
 				062026BD1D512D08001EE455 /* CollatorTest.m in Sources */,
 				06C03FAF249D7F6100C0CAD1 /* CRLTest.m in Sources */,
@@ -19444,7 +19149,6 @@
 				FAF1050422F8828300ED7FF6 /* IllegalCharsetNameExceptionTest.m in Sources */,
 				FA5C0CAE21BFFE6B000B6275 /* ExceptionTest.m in Sources */,
 				FA24DE4F22E75B27000DEC19 /* JSONObjectTest.m in Sources */,
-				062024F91D512AA2001EE455 /* TextUtilsTest.m in Sources */,
 				0612B8F71F4373740069EF58 /* ConcurrentSkipListSubMapTest.m in Sources */,
 				0620262D1D512CA1001EE455 /* OldCharArrayWriterTest.m in Sources */,
 				7A98C18C24E20CAF00774306 /* FileTypeDetectorTest.m in Sources */,
@@ -19675,7 +19379,8 @@
 					android/platform/libcore/luni/src/objc/native,
 					openjdk/src/macosx/native,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LIBRARY_SEARCH_PATHS = "";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = "-ObjC";
@@ -19713,7 +19418,8 @@
 					android/platform/libcore/luni/src/objc/native,
 					openjdk/src/macosx/native,
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LIBRARY_SEARCH_PATHS = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = "-ObjC";
@@ -19934,11 +19640,11 @@
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = "${DERIVED_FILES_DIR}";
 				INFOPLIST_FILE = "junit_tests/junit_tests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					build_result,
-					../dist/lib,
+					../dist/lib/simulator,
 				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
@@ -19996,11 +19702,11 @@
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = "${DERIVED_FILES_DIR}";
 				INFOPLIST_FILE = "junit_tests/junit_tests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					build_result,
-					../dist/lib,
+					../dist/lib/simulator,
 				);
 				OTHER_LDFLAGS = (
 					"-ObjC",

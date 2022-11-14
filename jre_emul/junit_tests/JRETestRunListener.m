@@ -56,7 +56,7 @@ vm_size_t freeMemory(void) {
   return vm_stat.free_count * pagesize;
 }
 
-NSString *memUsage() {
+NSString *memUsage(void) {
   // compute memory usage and log if different by >= 100k
   static long prevMemUsage = 0;
   long curMemUsage = usedMemory();
@@ -89,11 +89,16 @@ NSString *memUsage() {
   }
 }
 
-- (void)testFinishedWithOrgJunitRunnerDescription:(OrgJunitRunnerDescription *)description_{
+- (void)testFinishedWithOrgJunitRunnerDescription:(OrgJunitRunnerDescription *)description_ {
   if (printStats) {
     CFTimeInterval elapsedTime = CACurrentMediaTime() - self.startTime;
     NSLog(@"    %.3f secs%@", elapsedTime, memUsage());
   }
+}
+
+- (void)testFailureWithOrgJunitRunnerNotificationFailure:(OrgJunitRunnerNotificationFailure *)failure {
+  // Set breakpoint here to catch failures in debugger.
+  [super testFailureWithOrgJunitRunnerNotificationFailure:failure];
 }
 
 + (const J2ObjcClassInfo *)__metadata {

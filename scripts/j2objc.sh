@@ -47,7 +47,7 @@ fi
 if [ -x "/usr/libexec/java_home" ]; then
   # java_home is available on all Mac systems.
   if [ -z "${JAVA_HOME}" ]; then
-    readonly JAVA_HOME=`/usr/libexec/java_home -v 1.8 2> /dev/null`
+    readonly JAVA_HOME=`/usr/libexec/java_home -v 11 2> /dev/null`
   fi
   readonly JAVA=${JAVA_HOME}/bin/java
 else
