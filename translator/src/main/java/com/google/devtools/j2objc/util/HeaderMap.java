@@ -165,11 +165,7 @@ public class HeaderMap {
 
     String name = inferSourceName(type);
     PackageElement pkg = ElementUtil.getPackage(type);
-    String pkgDir = outputDirFromPackage(pkg);
-    if (pkgDir.isEmpty() && pkg != null && !pkg.isUnnamed()) {
-      pkgDir = outputDirFromPackage(pkg, OutputStyleOption.PACKAGE);
-    }
-    return pkgDir + name + ".h";
+    return outputDirFromPackage(pkg) + name + ".h";
   }
 
   /**
@@ -210,13 +206,12 @@ public class HeaderMap {
       // mapping.
       style = OutputStyleOption.PACKAGE;
     }
-    return outputDirFromPackage(pkg, style);
-  }
-
-  private String outputDirFromPackage(PackageElement pkg, OutputStyleOption style) {
-    return style == OutputStyleOption.PACKAGE
-        ? ElementUtil.getName(pkg).replace('.', File.separatorChar) + File.separatorChar
-        : "";
+    switch (style) {
+      case PACKAGE:
+        return ElementUtil.getName(pkg).replace('.', File.separatorChar) + File.separatorChar;
+      default:
+        return "";
+    }
   }
 
   public void put(String qualifiedName, String header) {
