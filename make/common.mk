@@ -187,10 +187,24 @@ ifneq (,$(findstring build 1.8, $(shell $(JAVA) -version 2>&1)))
 JAVA_8 = 1
 else ifneq (,$(findstring build 11, $(shell $(JAVA) -version 2>&1)))
 JAVA_VERSION = 11
+else ifneq (,$(findstring build 12, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 12
+else ifneq (,$(findstring build 13, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 13
+else ifneq (,$(findstring build 14, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 14
 else ifneq (,$(findstring build 15, $(shell $(JAVA) -version 2>&1)))
 JAVA_VERSION = 15
+else ifneq (,$(findstring build 16, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 16
+else ifneq (,$(findstring build 17, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 17
+else ifneq (,$(findstring build 18, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 18
+else ifneq (,$(findstring build 19, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 19
 else
-$(error JDK not supported. Please set JAVA_HOME to JDK 1.8, 11 or 15.)
+$(error JDK not supported. Please set JAVA_HOME to JDK 1.8, 11 or higher.)
 endif
 
 ifndef MEMORY_MODEL_FLAG
