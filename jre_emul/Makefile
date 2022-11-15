@@ -87,7 +87,7 @@ JRE_OBJS_RELATIVE = $(call srcs_to_objs,$(JAVA_SOURCES) $(NATIVE_JRE_SOURCES))
 
 include ../make/fat_lib_macros.mk
 $(call emit_compile_rules,$(FAT_LIB_SOURCE_DIRS),$(FAT_LIB_COMPILE),$(FAT_LIB_PRECOMPILED_HEADER))
-LIBS := $(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE))
+LIBS := $(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE) $(JSON_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_core,$(CORE_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_io,$(IO_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_net,$(NET_OBJS_RELATIVE))
