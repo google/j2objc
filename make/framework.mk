@@ -90,7 +90,7 @@ DISALLOWED_WARNINGS = \
 VERIFY_FLAGS := -I$(FRAMEWORK_DIR)/Headers -I$(DIST_INCLUDE_DIR) \
 	-Werror -Weverything $(DISALLOWED_WARNINGS)
 
-framework: lib $(FRAMEWORK_DIR) resources
+framework:: lib $(FRAMEWORK_DIR) resources
 	@:
 
 # Create an xcframework from all appletv, iphone, maccatalyst, macosx, simulator and watchos libs.

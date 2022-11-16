@@ -26,7 +26,11 @@ STATIC_LIBRARY_NAME = json
 STATIC_HEADERS_DIR = $(ARCH_INCLUDE_DIR)
 include ../make/framework.mk
 
-dist:
+LIBS := $(call emit_library_rules,json,$(JSON_OBJS_RELATIVE))
+
+dist: framework
+
+lib: $(LIBS)
 
 clean:
 	@rm -rf $(FRAMEWORK_DIR)

@@ -109,7 +109,7 @@ DIST_LIBS = $(LIBS:$(ARCH_BUILD_DIR)/%=$(ARCH_LIB_DIR)/%)
 # This list overlaps with EMULATION_HEADERS, but only includes those headers
 # supported for use by native code.
 PUBLIC_EMULATION_HEADERS = $(PUBLIC_NATIVE_HEADERS)
-PUBLIC_TRANSLATED_HEADERS = $(JAVA_PUBLIC_SOURCES:.java=.h) $(JSON_PUBLIC_SOURCES:.java=.h)
+PUBLIC_TRANSLATED_HEADERS = $(JAVA_PUBLIC_SOURCES:.java=.h)
 INCLUDES = $(PUBLIC_TRANSLATED_HEADERS) $(PUBLIC_EMULATION_HEADERS)
 DIST_INCLUDES = $(INCLUDES:%=$(DIST_INCLUDE_DIR)/%)
 
@@ -188,8 +188,12 @@ clean:
 	@rm -f $(JRE_EMUL_LICENSES)
 	@rm -rf $(FRAMEWORK_DIR)
 	@$(MAKE) -f java.mk clean
+	@$(MAKE) -f subset_frameworks/json_framework.mk clean
 
 dist: framework
+
+framework::
+	@$(MAKE) -f subset_frameworks/json_framework.mk framework
 
 lib: jre_emul_jars_dist libs_dist $(DIST_DIR)/j2objcc licenses
 
