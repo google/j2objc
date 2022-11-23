@@ -153,6 +153,12 @@ typedef struct _jfieldID *jfieldID;
 struct _jmethodID;
 typedef struct _jmethodID *jmethodID;
 
+typedef struct {
+    char *name;
+    char *signature;
+    void *fnPtr;
+} JNINativeMethod;
+
 /* Forward declaration for JNIEnv */
 struct _JNIEnv;
 typedef const struct JNINativeInterface* C_JNIEnv;
@@ -255,6 +261,9 @@ struct JNINativeInterface {
   void          (*SetLongArrayRegion)(JNIEnv*, jlongArray, jsize, jsize, const jlong*);
   void          (*SetFloatArrayRegion)(JNIEnv*, jfloatArray, jsize, jsize, const jfloat*);
   void          (*SetDoubleArrayRegion)(JNIEnv*, jdoubleArray, jsize, jsize, const jdouble*);
+
+  jint          (*RegisterNatives)(JNIEnv*, jclass, const JNINativeMethod*, jint);
+  jint          (*UnregisterNatives)(JNIEnv*, jclass);
 
   void          (*GetStringRegion)(JNIEnv*, jstring, jsize, jsize, jchar*);
   void          (*GetStringUTFRegion)(JNIEnv*, jstring, jsize, jsize, char*);
@@ -699,6 +708,12 @@ struct _JNIEnv {
     void SetDoubleArrayRegion(jdoubleArray array, jsize start, jsize len,
         const jdouble* buf)
     { functions->SetDoubleArrayRegion(this, array, start, len, buf); }
+
+    jint RegisterNatives(jclass clazz, const JNINativeMethod *methods,
+        jint nMethods)
+    { return functions->RegisterNatives(this,clazz,methods,nMethods); }
+    jint UnregisterNatives(jclass clazz)
+    { return functions->UnregisterNatives(this,clazz); }
 
     void GetStringRegion(jstring str, jsize start, jsize len, jchar* buf)
     { functions->GetStringRegion(this, str, start, len, buf); }

@@ -808,6 +808,15 @@ void SetStaticDoubleField(JNIEnv *env, jclass clazz, jfieldID fieldID, jdouble v
   [(JavaLangReflectField *)fieldID setDoubleWithId:nil withDouble:value];
 }
 
+static jint RegisterNatives(JNIEnv* env, jclass clazz, const JNINativeMethod *methods,
+    jint nMethods) {
+  return JNI_OK;  // no-op
+}
+
+static jint UnregisterNatives(JNIEnv* env, jclass java_class) {
+  return JNI_OK;  // no-op
+}
+
 static jint GetJavaVM(JNIEnv *env, JavaVM **vm);
 
 static struct JNINativeInterface JNI_JNIEnvTable = {
@@ -878,6 +887,8 @@ static struct JNINativeInterface JNI_JNIEnvTable = {
   &SetLongArrayRegion,
   &SetFloatArrayRegion,
   &SetDoubleArrayRegion,
+  &RegisterNatives,
+  &UnregisterNatives,
   &GetStringRegion,
   &GetStringUTFRegion,
   &GetPrimitiveArrayCritical,
