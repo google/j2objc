@@ -965,7 +965,7 @@ public class TreeShakerTest extends TestCase {
         "@interface G { }");
     CodeReferenceMap unused = findUnusedCode();
 
-    assertThat(getUnusedClasses(unused)).containsExactly("p.D", "p.E", "p.F");
+    assertThat(getUnusedClasses(unused)).containsExactly("p.D", "p.E", "p.F", "p.G");
     assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("p.A", "A", "()V"));
   }
 
@@ -1036,7 +1036,7 @@ public class TreeShakerTest extends TestCase {
         "@interface B { enum D { E; } D b() default D.E; }");
     CodeReferenceMap unused = findUnusedCode();
 
-    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedClasses(unused)).containsExactly("p.B$D", "p.B");
     assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("p.A", "A", "()V"));
   }
 
@@ -1052,12 +1052,9 @@ public class TreeShakerTest extends TestCase {
     addSourceFile("D.java", "package p; enum D { E; }");
     CodeReferenceMap unused = findUnusedCode();
 
-    assertThat(getUnusedClasses(unused)).isEmpty();
+    assertThat(getUnusedClasses(unused)).containsExactly("p.B", "p.D");
     assertThat(getUnusedMethods(unused))
-        .containsExactly(
-            getMethodName("p.A", "A", "()V"),
-            getMethodName("p.D", "values", "()[Lp/D;"),
-            getMethodName("p.D", "valueOf", "(Ljava/lang/String;)Lp/D;"));
+        .containsExactly(getMethodName("p.A", "A", "()V"));
   }
 
   public void testPackageAnnotations() throws IOException {

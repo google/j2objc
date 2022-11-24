@@ -447,7 +447,6 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
     boolean isExported =
         context.exportedClasses.contains(typeName)
-            || ElementUtil.isRuntimeAnnotation(type)
             || ElementUtil.hasNamedAnnotation(type, USED_BY_NATIVE)
             || exportedClassInnerType;
 
