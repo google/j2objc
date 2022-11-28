@@ -40,9 +40,17 @@
 #define pread64 pread
 #define pwrite64 pwrite
 
-// TODO: Darwin appears to have an fdatasync syscall.
-#include <unistd.h> // For fsync
-static inline int fdatasync(int fd) { return fsync(fd); }
+// Darwin supports fcntl() with F_FULLFSYNC on internal storage devices, but must
+// fall back to fsync() in unsupported cases. See also LevelDB discussion:
+// https://github.com/google/leveldb/commit/296de8d5b8e4e57bd1e46c981114dfbe58a8c4fa
+#include <unistd.h>
+#include <fcntl.h>
+static inline int fdatasync(int fd) {
+  if (fcntl(fd, F_FULLFSYNC) == 0) {
+    return 0;
+  }
+  return fsync(fd);
+}
 
 // For Linux-compatible sendfile(3).
 #include <sys/socket.h>
