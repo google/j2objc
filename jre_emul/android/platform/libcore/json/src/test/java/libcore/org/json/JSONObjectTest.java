@@ -273,9 +273,6 @@ public class JSONObjectTest extends TestCase {
     }
 
     public void testNumbers() throws JSONException {
-        if (System.getProperty("os.arch").equals("armv7")) {
-            return;
-        }
         JSONObject object = new JSONObject();
         object.put("foo", Double.MIN_VALUE);
         object.put("bar", 9223372036854775806L);
@@ -436,7 +433,6 @@ public class JSONObjectTest extends TestCase {
         assertEquals("5.5", object.optString("bar"));
         assertEquals("true", object.optString("foo", "x"));
         assertFalse(object.isNull("foo"));
-      System.out.println("test 3");
 
         assertEquals(true, object.getBoolean("foo"));
         assertEquals(true, object.optBoolean("foo"));
@@ -963,9 +959,7 @@ public class JSONObjectTest extends TestCase {
         assertEquals("5", JSONObject.numberToString(5));
         assertEquals("-0", JSONObject.numberToString(-0.0d));
         assertEquals("9223372036854775806", JSONObject.numberToString(9223372036854775806L));
-        if (!System.getProperty("os.arch").equals("armv7")) {
-            assertEquals("4.9E-324", JSONObject.numberToString(Double.MIN_VALUE));
-        }
+        assertEquals("4.9E-324", JSONObject.numberToString(Double.MIN_VALUE));
         assertEquals("1.7976931348623157E308", JSONObject.numberToString(Double.MAX_VALUE));
         try {
             JSONObject.numberToString(Double.NaN);

@@ -98,10 +98,6 @@ public class JSONStringerTest extends TestCase {
      * to be rounded during parsing.
      */
     public void testNumericRepresentations() throws JSONException {
-        if (System.getProperty("os.arch").equals("armv7")) {
-          // On armv7, MIN_VALUE is indistinguishable from zero.
-          return;
-        }
         JSONStringer stringer = new JSONStringer();
         stringer.array();
         stringer.value(Long.MAX_VALUE);
