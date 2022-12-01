@@ -113,7 +113,12 @@ public class JavacParser extends Parser {
     try {
       JavacEnvironment parserEnv = createEnvironment(path, source);
       JavacTask task = parserEnv.task();
-      CompilationUnitTree unit = task.parse().iterator().next();
+      Iterator<? extends CompilationUnitTree> it = task.parse().iterator();
+      if (!it.hasNext()) {
+        processDiagnostics(parserEnv.diagnostics());
+        return null;
+      }
+      CompilationUnitTree unit = it.next();
       task.analyze();
       processDiagnostics(parserEnv.diagnostics());
       return TreeConverter.convertCompilationUnit(options, parserEnv, unit);
