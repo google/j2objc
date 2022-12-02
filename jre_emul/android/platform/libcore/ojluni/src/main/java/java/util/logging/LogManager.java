@@ -253,7 +253,7 @@ public class LogManager {
      * Protected constructor.  This is protected so that container applications
      * (such as J2EE containers) can subclass the object.  It is non-public as
      * it is intended that there only be one LogManager object, whose value is
-     * retrieved by calling Logmanager.getLogManager.
+     * retrieved by calling LogManager.getLogManager.
      */
     protected LogManager() {
         this(checkSubclassPermissions());
@@ -270,7 +270,6 @@ public class LogManager {
         }
     }
 
-
     private static Void checkSubclassPermissions() {
         final SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
@@ -283,7 +282,6 @@ public class LogManager {
         }
         return null;
     }
-
 
     /**
      * Lazy initialization: if this instance of manager is the global
@@ -803,6 +801,11 @@ public class LogManager {
             }
             LoggerWeakRef ref = namedLoggers.get(name);
             if (ref != null) {
+                // Android-changed: Use refersTo().
+                /* J2ObjC modified: we don't support Reference.refersTo(), added to Android from
+                 * OpenJDK 16.
+                if (ref.refersTo(null)) {
+                 */
                 if (ref.get() == null) {
                     // It's possible that the Logger was GC'ed after a
                     // drainLoggerRefQueueBounded() call above so allow
@@ -1302,7 +1305,7 @@ public class LogManager {
      *             the caller does not have LoggingPermission("control").
      * @exception  IOException if there are IO problems reading the configuration.
      */
-    public void readConfiguration() throws IOException {
+    public void readConfiguration() throws IOException, SecurityException {
         checkPermission();
 
         // if a configuration class is specified, load it and use it.
@@ -1382,9 +1385,10 @@ public class LogManager {
      *             the caller does not have LoggingPermission("control").
      */
 
-    public void reset() {
+    public void reset() throws SecurityException {
         checkPermission();
         synchronized (this) {
+            /* J2ObjC modified. */
             props = new Hashtable<>();
             // Since we are doing a reset we no longer want to initialize
             // the global handlers, if they haven't been initialized yet.
@@ -1468,7 +1472,7 @@ public class LogManager {
      *             the caller does not have LoggingPermission("control").
      * @exception  IOException if there are problems reading from the stream.
      */
-    public void readConfiguration(InputStream ins) throws IOException {
+    public void readConfiguration(InputStream ins) throws IOException, SecurityException {
         checkPermission();
         reset();
 
@@ -1759,6 +1763,7 @@ public class LogManager {
 
     // Private method to be called when the configuration has
     // changed to apply any level settings to any pre-existing loggers.
+    /* J2ObjC modified. */
     synchronized private void setLevelsOnExistingLoggers() {
         Enumeration<?> enm = props.keys();
         while (enm.hasMoreElements()) {
@@ -1834,7 +1839,6 @@ public class LogManager {
         props.putAll(newEntries);
     }
 
-
     /**
      * A class that provides access to the java.beans.PropertyChangeListener
      * and java.beans.PropertyChangeEvent without creating a static dependency
@@ -1847,6 +1851,18 @@ public class LogManager {
 
         private static final Class<?> propertyChangeEventClass =
             getClass("java.beans.PropertyChangeEvent");
+
+        private static final Method propertyChangeMethod =
+            getMethod(propertyChangeListenerClass,
+                      "propertyChange",
+                      propertyChangeEventClass);
+
+        private static final Constructor<?> propertyEventCtor =
+            getConstructor(propertyChangeEventClass,
+                           Object.class,
+                           String.class,
+                           Object.class,
+                           Object.class);
 
         private static Class<?> getClass(String name) {
             try {
@@ -1887,12 +1903,6 @@ public class LogManager {
                                              Object oldValue, Object newValue)
         {
             try {
-                Constructor<?> propertyEventCtor =
-                        getConstructor(propertyChangeEventClass,
-                                Object.class,
-                                String.class,
-                                Object.class,
-                                Object.class);
                 return propertyEventCtor.newInstance(source, prop, oldValue, newValue);
             } catch (InstantiationException | IllegalAccessException x) {
                 throw new AssertionError(x);
@@ -1912,10 +1922,6 @@ public class LogManager {
          */
         static void invokePropertyChange(Object listener, Object ev) {
             try {
-                Method propertyChangeMethod =
-                        getMethod(propertyChangeListenerClass,
-                                "propertyChange",
-                                propertyChangeEventClass);
                 propertyChangeMethod.invoke(listener, ev);
             } catch (IllegalAccessException x) {
                 throw new AssertionError(x);

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2000, 2010, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,10 +26,12 @@
 
 package java.util.logging;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.security.*;
 
 /**
  * Simple file logging <tt>Handler</tt>.
@@ -49,45 +51,58 @@ import java.security.*;
  * <p>
  * <b>Configuration:</b>
  * By default each <tt>FileHandler</tt> is initialized using the following
- * <tt>LogManager</tt> configuration properties.  If properties are not defined
+ * <tt>LogManager</tt> configuration properties where <tt>&lt;handler-name&gt;</tt>
+ * refers to the fully-qualified class name of the handler.
+ * If properties are not defined
  * (or have invalid values) then the specified default values are used.
  * <ul>
- * <li>   java.util.logging.FileHandler.level
+ * <li>   &lt;handler-name&gt;.level
  *        specifies the default level for the <tt>Handler</tt>
- *        (defaults to <tt>Level.ALL</tt>).
- * <li>   java.util.logging.FileHandler.filter
+ *        (defaults to <tt>Level.ALL</tt>). </li>
+ * <li>   &lt;handler-name&gt;.filter
  *        specifies the name of a <tt>Filter</tt> class to use
- *        (defaults to no <tt>Filter</tt>).
- * <li>   java.util.logging.FileHandler.formatter
+ *        (defaults to no <tt>Filter</tt>). </li>
+ * <li>   &lt;handler-name&gt;.formatter
  *        specifies the name of a <tt>Formatter</tt> class to use
- *        (defaults to <tt>java.util.logging.XMLFormatter</tt>)
- * <li>   java.util.logging.FileHandler.encoding
+ *        (defaults to <tt>java.util.logging.XMLFormatter</tt>) </li>
+ * <li>   &lt;handler-name&gt;.encoding
  *        the name of the character set encoding to use (defaults to
- *        the default platform encoding).
- * <li>   java.util.logging.FileHandler.limit
+ *        the default platform encoding). </li>
+ * <li>   &lt;handler-name&gt;.limit
  *        specifies an approximate maximum amount to write (in bytes)
  *        to any one file.  If this is zero, then there is no limit.
- *        (Defaults to no limit).
- * <li>   java.util.logging.FileHandler.count
- *        specifies how many output files to cycle through (defaults to 1).
- * <li>   java.util.logging.FileHandler.pattern
+ *        (Defaults to no limit). </li>
+ * <li>   &lt;handler-name&gt;.count
+ *        specifies how many output files to cycle through (defaults to 1). </li>
+ * <li>   &lt;handler-name&gt;.pattern
  *        specifies a pattern for generating the output file name.  See
- *        below for details. (Defaults to "%h/java%u.log").
- * <li>   java.util.logging.FileHandler.append
+ *        below for details. (Defaults to "%h/java%u.log"). </li>
+ * <li>   &lt;handler-name&gt;.append
  *        specifies whether the FileHandler should append onto
- *        any existing files (defaults to false).
+ *        any existing files (defaults to false). </li>
  * </ul>
  * <p>
+ * For example, the properties for {@code FileHandler} would be:
+ * <ul>
+ * <li>   java.util.logging.FileHandler.level=INFO </li>
+ * <li>   java.util.logging.FileHandler.formatter=java.util.logging.SimpleFormatter </li>
+ * </ul>
+ * <p>
+ * For a custom handler, e.g. com.foo.MyHandler, the properties would be:
+ * <ul>
+ * <li>   com.foo.MyHandler.level=INFO </li>
+ * <li>   com.foo.MyHandler.formatter=java.util.logging.SimpleFormatter </li>
+ * </ul>
  * <p>
  * A pattern consists of a string that includes the following special
  * components that will be replaced at runtime:
  * <ul>
- * <li>    "/"    the local pathname separator
- * <li>     "%t"   the system temporary directory
- * <li>     "%h"   the value of the "user.home" system property
- * <li>     "%g"   the generation number to distinguish rotated logs
- * <li>     "%u"   a unique number to resolve conflicts
- * <li>     "%%"   translates to a single percent sign "%"
+ * <li>    "/"    the local pathname separator </li>
+ * <li>     "%t"   the system temporary directory </li>
+ * <li>     "%h"   the value of the "user.home" system property </li>
+ * <li>     "%g"   the generation number to distinguish rotated logs </li>
+ * <li>     "%u"   a unique number to resolve conflicts </li>
+ * <li>     "%%"   translates to a single percent sign "%" </li>
  * </ul>
  * If no "%g" field has been specified and the file count is greater
  * than one, then the generation number will be added to the end of
@@ -130,11 +145,13 @@ public class FileHandler extends StreamHandler {
     private static final int MAX_LOCKS = 100;
     private static java.util.HashMap<String, String> locks = new java.util.HashMap<>();
 
-    // A metered stream is a subclass of OutputStream that
-    //   (a) forwards all its output to a target stream
-    //   (b) keeps track of how many bytes have been written
+    /**
+     * A metered stream is a subclass of OutputStream that
+     * (a) forwards all its output to a target stream
+     * (b) keeps track of how many bytes have been written
+     */
     private class MeteredStream extends OutputStream {
-        OutputStream out;
+        final OutputStream out;
         int written;
 
         MeteredStream(OutputStream out, int written) {
@@ -142,25 +159,30 @@ public class FileHandler extends StreamHandler {
             this.written = written;
         }
 
+        @Override
         public void write(int b) throws IOException {
             out.write(b);
             written++;
         }
 
+        @Override
         public void write(byte buff[]) throws IOException {
             out.write(buff);
             written += buff.length;
         }
 
+        @Override
         public void write(byte buff[], int off, int len) throws IOException {
             out.write(buff,off,len);
             written += len;
         }
 
+        @Override
         public void flush() throws IOException {
             out.flush();
         }
 
+        @Override
         public void close() throws IOException {
             out.close();
         }
@@ -177,9 +199,10 @@ public class FileHandler extends StreamHandler {
         setOutputStream(meter);
     }
 
-    // Private method to configure a FileHandler from LogManager
-    // properties and/or default values as specified in the class
-    // javadoc.
+    /**
+     * Configure a FileHandler from LogManager properties and/or default values
+     * as specified in the class javadoc.
+     */
     private void configure() {
         LogManager manager = LogManager.getLogManager();
 
@@ -275,7 +298,8 @@ public class FileHandler extends StreamHandler {
      *             the caller does not have <tt>LoggingPermission("control")</tt>.
      * @exception  IllegalArgumentException if pattern is an empty string
      */
-    public FileHandler(String pattern, boolean append) throws IOException, SecurityException {
+    public FileHandler(String pattern, boolean append) throws IOException,
+            SecurityException {
         if (pattern.length() < 1 ) {
             throw new IllegalArgumentException();
         }
@@ -308,7 +332,7 @@ public class FileHandler extends StreamHandler {
      * @exception  IOException if there are IO problems opening the files.
      * @exception  SecurityException  if a security manager exists and if
      *             the caller does not have <tt>LoggingPermission("control")</tt>.
-     * @exception IllegalArgumentException if limit < 0, or count < 1.
+     * @exception  IllegalArgumentException if {@code limit < 0}, or {@code count < 1}.
      * @exception  IllegalArgumentException if pattern is an empty string
      */
     public FileHandler(String pattern, int limit, int count)
@@ -346,7 +370,7 @@ public class FileHandler extends StreamHandler {
      * @exception  IOException if there are IO problems opening the files.
      * @exception  SecurityException  if a security manager exists and if
      *             the caller does not have <tt>LoggingPermission("control")</tt>.
-     * @exception IllegalArgumentException if limit < 0, or count < 1.
+     * @exception  IllegalArgumentException if {@code limit < 0}, or {@code count < 1}.
      * @exception  IllegalArgumentException if pattern is an empty string
      *
      */
@@ -364,8 +388,10 @@ public class FileHandler extends StreamHandler {
         openFiles();
     }
 
-    // Private method to open the set of output files, based on the
-    // configured instance variables.
+    /**
+     * Open the set of output files, based on the configured
+     * instance variables.
+     */
     private void openFiles() throws IOException {
         LogManager manager = LogManager.getLogManager();
         manager.checkPermission();
@@ -460,8 +486,17 @@ public class FileHandler extends StreamHandler {
         setErrorManager(new ErrorManager());
     }
 
-    // Generate a filename from a pattern.
-    private File generate(String pattern, int generation, int unique) throws IOException {
+    /**
+     * Generate a file based on a user-supplied pattern, generation number,
+     * and an integer uniqueness suffix
+     * @param pattern the pattern for naming the output file
+     * @param generation the generation number to distinguish rotated logs
+     * @param unique a unique number to resolve conflicts
+     * @return the generated File
+     * @throws IOException
+     */
+    private File generate(String pattern, int generation, int unique)
+            throws IOException {
         File file = null;
         String word = "";
         int ix = 0;
@@ -494,13 +529,14 @@ public class FileHandler extends StreamHandler {
                     continue;
                 } else if (ch2 == 'h') {
                     file = new File(System.getProperty("user.home"));
-                    // Android-changed: Don't make a special exemption for setuid programs.
-                    //
-                    // if (isSetUID()) {
-                    //     // Ok, we are in a set UID program.  For safety's sake
-                    //     // we disallow attempts to open files relative to %h.
-                    //     throw new IOException("can't use %h in set UID program");
-                    // }
+                    // Android-removed: Don't prohibit using user.home property in setuid programs.
+                    /*
+                    if (isSetUID()) {
+                        // Ok, we are in a set UID program.  For safety's sake
+                        // we disallow attempts to open files relative to %h.
+                        throw new IOException("can't use %h in set UID program");
+                    }
+                    */
                     ix++;
                     word = "";
                     continue;
@@ -538,7 +574,9 @@ public class FileHandler extends StreamHandler {
         return file;
     }
 
-    // Rotate the set of output files
+    /**
+     * Rotate the set of output files
+     */
     private synchronized void rotate() {
         Level oldLevel = getLevel();
         setLevel(Level.OFF);
@@ -571,6 +609,7 @@ public class FileHandler extends StreamHandler {
      * @param  record  description of the log event. A null record is
      *                 silently ignored and is not published
      */
+    @Override
     public synchronized void publish(LogRecord record) {
         if (!isLoggable(record)) {
             return;
@@ -601,6 +640,7 @@ public class FileHandler extends StreamHandler {
      * @exception  SecurityException  if a security manager exists and if
      *             the caller does not have <tt>LoggingPermission("control")</tt>.
      */
+    @Override
     public synchronized void close() throws SecurityException {
         super.close();
         // Unlock any lock file.
@@ -624,12 +664,17 @@ public class FileHandler extends StreamHandler {
 
     private static class InitializationErrorManager extends ErrorManager {
         Exception lastException;
+        @Override
         public void error(String msg, Exception ex, int code) {
             lastException = ex;
         }
     }
 
-    // Private native method to check if we are in a set UID program.
-    // Android-changed: Not required.
-    // private static native boolean isSetUID();
+    // Android-removed: isSetUID's only caller is removed.
+    /*
+    /**
+     * check if we are in a set UID program.
+     *
+    private static native boolean isSetUID();
+    */
 }
