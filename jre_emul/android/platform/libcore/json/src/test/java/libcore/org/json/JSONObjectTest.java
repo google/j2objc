@@ -676,9 +676,11 @@ public class JSONObjectTest extends TestCase {
     }
 
     public void testToStringWithUnsupportedNumbers() {
-        // when the object contains an unsupported number, toString returns null!
+        // j2objc: when the object contains an unsupported number, toString returns a stringified
+        // exception!
         JSONObject object = new JSONObject(Collections.singletonMap("foo", Double.NaN));
-        assertEquals(null, object.toString());
+        String result = object.toString();
+        assertTrue(result != null && result.contains("org.json.JSONException"));
     }
 
     public void testMapConstructorCopiesContents() throws JSONException {

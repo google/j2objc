@@ -117,7 +117,7 @@ public class JSONObject {
     };
 
     @UnsupportedAppUsage
-    private final LinkedHashMap<String, Object> nameValuePairs;
+    private final LinkedHashMap<@NonNull String, Object> nameValuePairs;
 
     /**
      * Creates a {@code JSONObject} with no name/value mappings.
@@ -702,7 +702,9 @@ public class JSONObject {
             writeTo(stringer);
             return stringer.toString();
         } catch (JSONException e) {
-            return null;
+            // j2objc: do not return null from @NonNull method.
+            // return null;
+            return e.toString();
         }
     }
 
