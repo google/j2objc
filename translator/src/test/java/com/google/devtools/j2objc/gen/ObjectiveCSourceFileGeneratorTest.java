@@ -58,7 +58,8 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     // First test with defaults, to see if warnings are reported.
     assertTrue(options.jsniWarnings());
     String translation = translateSourceFile(source, "Example", "Example.h");
-    assertWarningCount(2);
+    assertWarning("Example.java:1: JSNI comment found");
+    assertWarning("Example.java:-1: JSNI comment found");
 
     // Verify both methods are declared in the header. The OCNI method is
     // implemented in the source. The JSNI implementation wraps an unimplemented
@@ -82,7 +83,7 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     options.setJsniWarnings(false);
     ErrorUtil.reset();
     translation = translateSourceFile(source, "Example", "Example.h");
-    assertWarningCount(0);
+    assertNoWarnings();
 
     // Verify header and source file are not affected.
     assertTranslation(translation, "- (void)test1;");

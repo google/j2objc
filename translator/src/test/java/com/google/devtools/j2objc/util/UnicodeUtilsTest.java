@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
@@ -50,7 +49,7 @@ public class UnicodeUtilsTest extends GenerationTest {
       System.setErr(new PrintStream(new ByteArrayOutputStream()));
       String fragment = "abc\udfff";
       String escaped = UnicodeUtils.escapeStringLiteral(fragment);
-      assertErrorCount(1);
+      assertErrorRegex("Illegal .* Unicode character .*");
 
       // Verify the unicode is emitted anyways (it's useful as a diagnostic).
       assertEquals("abc\\udfff", escaped);

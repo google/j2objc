@@ -624,8 +624,8 @@ public class GenerationTest extends TestCase {
 
   protected void runPipeline(String... files) {
     J2ObjC.run(Arrays.asList(files), options);
-    assertErrorCount(0);
-    assertWarningCount(0);
+    assertNoErrors();
+    assertNoWarnings();
   }
 
   protected void loadHeaderMappings() {
@@ -690,28 +690,71 @@ public class GenerationTest extends TestCase {
     return file.getPath();
   }
 
-  /**
-   * Asserts that the correct number of warnings were reported during the
-   * last translation.
-   */
-  protected void assertWarningCount(int expectedCount) {
-    if (expectedCount != ErrorUtil.warningCount()) {
+  /** Asserts that a specific warning was reported during the last translation. */
+  protected void assertWarning(String warning) {
+    if (!ErrorUtil.getWarningMessages().contains(warning)) {
       failWithMessages(
-          String.format("Wrong number of warnings. Expected:%d but was:%d",
-                        expectedCount, ErrorUtil.warningCount()),
-          ErrorUtil.getWarningMessages());
+          "Expected warning was not reported: \"" + warning + "\"", ErrorUtil.getWarningMessages());
     }
   }
 
   /**
-   * Asserts that the correct number of errors were reported during the
-   * last translation.
+   * Asserts that a specific warning was reported during the last translation. This assertion is
+   * used when a warning has build-specific information, such as a failing file name.
    */
-  protected void assertErrorCount(int expectedCount) {
-    if (expectedCount != ErrorUtil.errorCount()) {
+  protected void assertWarningRegex(String regex) {
+    for (String message : ErrorUtil.getWarningMessages()) {
+      if (message.matches(regex)) {
+        return; // Warning found.
+      }
       failWithMessages(
-          String.format("Wrong number of errors. Expected:%d but was:%d",
-                        expectedCount, ErrorUtil.errorCount()),
+          "Expected warning was not reported: \"" + regex + "\"", ErrorUtil.getWarningMessages());
+    }
+  }
+
+  /** Asserts that no warnings were reported during the last translation. */
+  protected void assertNoWarnings() {
+    // TODO(tball): remove when b/261217081 is fixed.
+    int warningCount = ErrorUtil.warningCount();
+    for (String message : ErrorUtil.getWarningMessages()) {
+      if (message.startsWith("system modules path not set")) {
+        --warningCount;
+      }
+    }
+    if (warningCount > 0) {
+      failWithMessages(
+          String.format("No warnings were expected, but there were %d", warningCount),
+          ErrorUtil.getWarningMessages());
+    }
+  }
+
+  /** Asserts that a specific error was reported during the last translation. */
+  protected void assertError(String error) {
+    if (!ErrorUtil.getErrorMessages().contains(error)) {
+      failWithMessages(
+          "Expected error was not reported: \"" + error + "\"", ErrorUtil.getErrorMessages());
+    }
+  }
+
+  /**
+   * Asserts that a specific error was reported during the last translation. This assertion is used
+   * when an error has build-specific information, such as a failing file name.
+   */
+  protected void assertErrorRegex(String regex) {
+    for (String message : ErrorUtil.getErrorMessages()) {
+      if (message.matches(regex)) {
+        return; // Error found.
+      }
+      failWithMessages(
+          "Expected error was not reported: \"" + regex + "\"", ErrorUtil.getErrorMessages());
+    }
+  }
+
+  /** Asserts that no errors were reported during the last translation. */
+  protected void assertNoErrors() {
+    if (ErrorUtil.errorCount() > 0) {
+      failWithMessages(
+          String.format("No errors were expected, but there were %d", ErrorUtil.errorCount()),
           ErrorUtil.getErrorMessages());
     }
   }

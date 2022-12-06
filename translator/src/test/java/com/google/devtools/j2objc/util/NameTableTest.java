@@ -227,7 +227,8 @@ public class NameTableTest extends GenerationTest {
         + "static class B extends A { "
         + "@com.google.j2objc.annotations.ObjectiveCName(\"test:(NSString *)s offset:(int)n\")"
         + "@Override void test(String s, int n) {}}}", "A", "A.m");
-    assertWarningCount(1);
+    assertWarning("ObjectiveCName(test:(NSString *)s offset:(int)n): "
+        + "Renamed method overrides a method with a different name.");
   }
 
   public void testMethodConflictingName() throws IOException {
@@ -237,7 +238,8 @@ public class NameTableTest extends GenerationTest {
         + "static class B extends A { "
         + "@com.google.j2objc.annotations.ObjectiveCName(\"test:offset:\")"
         + "@Override void test(String s, int n) {}}}", "A", "A.m");
-    assertWarningCount(1);
+    assertWarning(
+        "ObjectiveCName(test:offset:): Renamed method overrides a method with a different name.");
   }
 
   // Verify enum constant names are not modified, even if they use a reserved word.

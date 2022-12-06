@@ -61,7 +61,7 @@ public class JavacParser extends Parser {
 
   private StandardJavaFileManager fileManager;
 
-  public JavacParser(Options options){
+  public JavacParser(Options options) {
     super(options);
   }
 

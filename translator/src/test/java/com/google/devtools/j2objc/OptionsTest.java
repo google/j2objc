@@ -33,7 +33,9 @@ public class OptionsTest extends GenerationTest {
       String javaVersion = System.getProperty("java.specification.version");
       options = new Options();
       options.load(new String[] {});
+    if (SourceVersion.executingOnSupportedVersion()) {
       assertTrue(javaVersion.startsWith(options.getSourceVersion().toString()));
+    }
 
     if (!onJava9OrAbove()) {
       System.setProperty("java.specification.version", "1.8");

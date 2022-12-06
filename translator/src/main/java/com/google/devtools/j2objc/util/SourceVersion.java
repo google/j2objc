@@ -114,6 +114,11 @@ public enum SourceVersion {
         : sourceVersion;
   }
 
+  public static boolean executingOnSupportedVersion() {
+    SourceVersion runningVersion = SourceVersion.parse(JAVA_SPECIFICATION_VERSION.value());
+    return runningVersion.version <= maxSupportedVersion.version;
+  }
+
   @Override
   public String toString() {
     return flag;

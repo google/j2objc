@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -81,6 +80,8 @@ public class VariableRenamerTest extends GenerationTest {
     assertTranslation(translation, "FOUNDATION_EXPORT Example *Example_values_[];");
     // User variable.
     assertTranslation(translation, "FOUNDATION_EXPORT NSString *Example_values_;");
-    assertErrorCount(1);
+    assertError(
+        "\"values\" field in Example collides with the generated Enum values field. "
+            + "Consider using ObjectiveCName to rename it.");
   }
 }

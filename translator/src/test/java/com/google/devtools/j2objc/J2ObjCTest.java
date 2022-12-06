@@ -79,7 +79,7 @@ public class J2ObjCTest extends GenerationTest {
         "  return @\"CBT\";",
         "}");
 
-    assertErrorCount(0);
+    assertNoErrors();
   }
 
   private void makeAssertionsForJar() throws Exception {
@@ -231,7 +231,7 @@ public class J2ObjCTest extends GenerationTest {
 
     String examplePath = addSourceFile(EXAMPLE_JAVA_SOURCE, "annotations/Example.java");
     J2ObjC.run(Collections.singletonList(examplePath), options);
-    assertErrorCount(0);
+    assertNoErrors();
 
     assertServiceAnnotationProcessorOutput();
   }
@@ -243,7 +243,7 @@ public class J2ObjCTest extends GenerationTest {
 
     String examplePath = addSourceFile(EXAMPLE_JAVA_SOURCE, "annotations/Example.java");
     J2ObjC.run(Collections.singletonList(examplePath), options);
-    assertErrorCount(0);
+    assertNoErrors();
 
     assertServiceAnnotationProcessorOutput();
   }
@@ -256,7 +256,7 @@ public class J2ObjCTest extends GenerationTest {
 
     String examplePath = addSourceFile(EXAMPLE_JAVA_SOURCE, "annotations/Example.java");
     J2ObjC.run(Collections.singletonList(examplePath), options);
-    assertErrorCount(0);
+    assertNoErrors();
 
     assertSpecifiedAnnotationProcessorOutput();
   }
@@ -269,7 +269,7 @@ public class J2ObjCTest extends GenerationTest {
 
     String examplePath = addSourceFile(EXAMPLE_JAVA_SOURCE, "annotations/Example.java");
     J2ObjC.run(Collections.singletonList(examplePath), options);
-    assertErrorCount(0);
+    assertNoErrors();
 
     assertSpecifiedAnnotationProcessorOutput();
   }
@@ -285,7 +285,7 @@ public class J2ObjCTest extends GenerationTest {
 
     String examplePath = addSourceFile(EXAMPLE_JAVA_SOURCE, "annotations/Example.java");
     J2ObjC.run(Collections.singletonList(examplePath), options);
-    assertErrorCount(0);
+    assertNoErrors();
 
     assertSpecifiedAnnotationProcessorOutput();
     assertFalse("Overridden processor generated output",
@@ -297,14 +297,14 @@ public class J2ObjCTest extends GenerationTest {
     options.setEmitLineDirectives(true);
     options.setLogLevel(Level.FINEST);
     J2ObjC.run(Collections.singletonList(jarPath), options);
-    assertWarningCount(1);
+    assertWarningRegex("source debugging of jar files is not supported: .*");
   }
 
   // Test for error if jar doesn't contain a Java source file.
   public void testJarNoJava() throws Exception {
     String processorJarPath = getResourceAsFile("annotations/Processor.jar");
     J2ObjC.run(Collections.singletonList(processorJarPath), options);
-    assertWarningCount(1);
+    assertWarningRegex(".* does not contain any Java source files.");
   }
 
   public void testSourcePathTypesIncludedInGlobalCombinedOutput() throws Exception {

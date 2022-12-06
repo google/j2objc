@@ -254,7 +254,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "  @Property(\"cause_exception\") private int fieldBar;"
         + "}";
     translateSourceFile(source, "FooBar", "FooBar.h");
-    assertErrorCount(1);
+    assertError("FooBar.java:1: Invalid @Property attribute: cause_exception");
   }
 
   public void testPropertySetterSelector() throws IOException {
@@ -273,7 +273,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "  @Property(\"setter=needs_colon\") private int fieldBar;"
         + "}";
     translateSourceFile(source, "FooBar", "FooBar.h");
-    assertErrorCount(1);
+    assertError("FooBar.java:1: Non-existent setter specified: needs_colon");
   }
 
   public void testNonexistentPropertySetter() throws IOException {
@@ -282,7 +282,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "  @Property(\"setter=nonexistent:\") private int fieldBar;"
         + "}";
     translateSourceFile(source, "FooBar", "FooBar.h");
-    assertErrorCount(1);
+    assertError("FooBar.java:1: Non-existent setter specified: nonexistent:");
   }
 
   public void testPropertyWeakAssignment() throws IOException {
@@ -315,7 +315,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "  @Property(\"strong\") @Weak Foo barA;"
         + "}";
     translateSourceFile(source, "Foo", "Foo.h");
-    assertErrorCount(1);
+    assertError("Foo.java:1: Weak field annotation conflicts with strong Property attribute");
   }
 
   public void testStrongProperties() throws IOException {
@@ -356,7 +356,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "import com.google.j2objc.annotations.Property; "
         + "public class Test {  "
         + "@Property(\"class\") int test; }", "Test", "Test.h");
-    assertErrorCount(1);
+    assertError("Test.java:-1: Only static fields can be translated to class properties");
 
     // Verify static accessor generation must be enabled for class properties.
     ErrorUtil.reset();
@@ -365,7 +365,9 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "import com.google.j2objc.annotations.Property; "
         + "public class Test {  "
         + "@Property static int test; }", "Test", "Test.h");
-    assertErrorCount(1);
+    assertError(
+        "Test.java:-1: Class properties require any of these flags: --swift-friendly,"
+            + " --class-properties or --static-accessor-methods");
 
     // Verify class properties are not supported for private static fields.
     ErrorUtil.reset();
@@ -374,7 +376,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "import com.google.j2objc.annotations.Property; "
             + "public class Test {  "
             + "@Property private static int test; }", "Test", "Test.h");
-    assertErrorCount(1);
+    assertError("Test.java:-1: Properties are not supported for private static fields.");
   }
 
   public void testClassPropertiesFlag() throws IOException {

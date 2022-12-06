@@ -20,7 +20,6 @@ import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -781,8 +780,8 @@ public class InnerClassExtractorTest extends GenerationTest {
     String source = "import com.google.j2objc.annotations.WeakOuter; "
         + "public class A { @WeakOuter static class B {}}";
     String translation = translateSourceFile(source, "A", "A.h");
-    assertWarningCount(1);
-    assertErrorCount(0);
+    assertWarning("static class A.B has WeakOuter annotation");
+    assertNoErrors();
     assertNotInTranslation(translation, "__unsafe_unretained");
   }
 

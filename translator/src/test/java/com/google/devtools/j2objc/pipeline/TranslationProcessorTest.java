@@ -39,8 +39,8 @@ public class TranslationProcessorTest extends GenerationTest {
 
     String translation = getTranslatedFile("Test.h");
     assertTranslation(translation, "@interface Test");
-    assertErrorCount(0);
-    assertWarningCount(0);
+    assertNoErrors();
+    assertNoWarnings();
   }
 
   public void testDuplicateSourceFileOnSourcepath() throws IOException {
