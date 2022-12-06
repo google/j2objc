@@ -64,7 +64,7 @@ public abstract class AsynchronousChannelProvider {
      *
      * @throws  SecurityException
      *          If a security manager has been installed and it denies
-     *          {@link RuntimePermission}<tt>("asynchronousChannelProvider")</tt>
+     *          {@link RuntimePermission}{@code ("asynchronousChannelProvider")}
      */
     protected AsynchronousChannelProvider() {
         this(checkPermission());
@@ -76,7 +76,7 @@ public abstract class AsynchronousChannelProvider {
 
         private static AsynchronousChannelProvider load() {
             return AccessController
-                .doPrivileged(new PrivilegedAction<AsynchronousChannelProvider>() {
+                .doPrivileged(new PrivilegedAction<>() {
                     public AsynchronousChannelProvider run() {
                         AsynchronousChannelProvider p;
                         p = loadProviderFromProperty();
@@ -94,9 +94,10 @@ public abstract class AsynchronousChannelProvider {
             if (cn == null)
                 return null;
             try {
-                Class<?> c = Class.forName(cn, true,
-                                           ClassLoader.getSystemClassLoader());
-                return (AsynchronousChannelProvider)c.newInstance();
+                @SuppressWarnings("deprecation")
+                Object tmp = Class.forName(cn, true,
+                                           ClassLoader.getSystemClassLoader()).newInstance();
+                return (AsynchronousChannelProvider)tmp;
             } catch (ClassNotFoundException x) {
                 throw new ServiceConfigurationError(null, x);
             } catch (IllegalAccessException x) {
@@ -137,7 +138,7 @@ public abstract class AsynchronousChannelProvider {
      * <ol>
      *
      *   <li><p> If the system property
-     *   <tt>java.nio.channels.spi.AsynchronousChannelProvider</tt> is defined
+     *   {@code java.nio.channels.spi.AsynchronousChannelProvider} is defined
      *   then it is taken to be the fully-qualified name of a concrete provider class.
      *   The class is loaded and instantiated; if this process fails then an
      *   unspecified error is thrown.  </p></li>
@@ -145,8 +146,8 @@ public abstract class AsynchronousChannelProvider {
      *   <li><p> If a provider class has been installed in a jar file that is
      *   visible to the system class loader, and that jar file contains a
      *   provider-configuration file named
-     *   <tt>java.nio.channels.spi.AsynchronousChannelProvider</tt> in the resource
-     *   directory <tt>META-INF/services</tt>, then the first class name
+     *   {@code java.nio.channels.spi.AsynchronousChannelProvider} in the resource
+     *   directory {@code META-INF/services}, then the first class name
      *   specified in that file is taken.  The class is loaded and
      *   instantiated; if this process fails then an unspecified error is
      *   thrown.  </p></li>
