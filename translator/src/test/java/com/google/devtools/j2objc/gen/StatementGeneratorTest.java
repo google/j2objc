@@ -316,6 +316,17 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "return JreLoadStatic(Test, FOO);");
   }
 
+  public void testStaticInnerSubclassAccessingOuterStaticVarStrictFieldLoad() throws IOException {
+    options.setStrictFieldLoad(true);
+    String translation =
+        translateSourceFile(
+            "public class Test { public static final Object FOO = new Object(); "
+                + "static class Inner { Object test() { return FOO; }}}",
+            "Test",
+            "Test.m");
+    assertTranslation(translation, "return JreStrictFieldStrongLoad(JreLoadStaticRef(Test, FOO));");
+  }
+
   public void testReservedIdentifierReference() throws IOException {
     String translation = translateSourceFile(
         "public class Test { public int test(int id) { return id; }}",
@@ -333,20 +344,42 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testFieldAccess() throws IOException {
-    String translation = translateSourceFile(
-        "import com.google.j2objc.annotations.Weak;"
-        + "public class Test { "
-        + "  Object i;"
-        + "  @Weak Object j;"
-        + "  Test(Object otherI, Object otherJ) {"
-        + "    i = otherI;"
-        + "    j = otherJ;"
-        + "  }"
-        + "}",
-        "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "import com.google.j2objc.annotations.Weak;"
+                + "public class Test { "
+                + "  Object i;"
+                + "  @Weak Object j;"
+                + "  Test(Object otherI, Object otherJ) {"
+                + "    i = otherI;"
+                + "    j = otherJ;"
+                + "  }"
+                + "}",
+            "Test",
+            "Test.m");
     assertTranslation(translation, "JreStrongAssign(&self->i_, otherI);");
     assertTranslation(translation, "j_ = otherJ;");
     assertTranslation(translation, "RELEASE_(i_);");
+  }
+
+  public void testFieldAccessStrictField() throws IOException {
+    options.setStrictFieldAssign(true);
+    String translation =
+        translateSourceFile(
+            "import com.google.j2objc.annotations.Weak;"
+                + "public class Test { "
+                + "  Object i;"
+                + "  @Weak Object j;"
+                + "  Test(Object otherI, Object otherJ) {"
+                + "    i = otherI;"
+                + "    j = otherJ;"
+                + "  }"
+                + "}",
+            "Test",
+            "Test.m");
+    assertTranslation(translation, "JreStrictFieldStrongAssign(&self->i_, otherI);");
+    assertTranslation(translation, "j_ = otherJ;");
+    assertTranslation(translation, "JreStrictFieldStrongRelease(&i_);");
   }
 
   public void testStaticFinalFieldAccessWithParenthesizedExpression() throws IOException {
@@ -370,6 +403,21 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation,
         "- (instancetype)initWithJavaLangInteger:(JavaLangInteger *)i {");
     assertTranslation(translation, "return [((JavaLangInteger *) nil_chk(i_)) intValue];");
+  }
+
+  public void testInnerInnerClassFieldAccessStrictField() throws IOException {
+    options.setStrictFieldLoad(true);
+    String translation =
+        translateSourceFile(
+            "public class Test { static class One {} static class Two extends Test { "
+                + "Integer i; Two(Integer i) { this.i = i; } int getI() { return i.intValue(); }}}",
+            "Test",
+            "Test.m");
+    assertTranslation(
+        translation, "- (instancetype)initWithJavaLangInteger:(JavaLangInteger *)i {");
+    assertTranslation(
+        translation,
+        "return [((JavaLangInteger *) nil_chk(JreStrictFieldStrongLoad(&i_))) intValue];");
   }
 
   public void testInnerClassSuperConstructor() throws IOException {
@@ -625,11 +673,24 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testNewFieldNotRetained() throws IOException {
-    String translation = translateSourceFile(
-        "import java.util.*; public class A { Map map; A() { map = new HashMap(); }}",
-        "A", "A.m");
+    String translation =
+        translateSourceFile(
+            "import java.util.*; public class A { Map map; A() { map = new HashMap(); }}",
+            "A",
+            "A.m");
     assertTranslation(translation,
         "JreStrongAssignAndConsume(&self->map_, new_JavaUtilHashMap_init())");
+  }
+
+  public void testCreatedFieldNotConsumedStrictFieldAssign() throws IOException {
+    options.setStrictFieldAssign(true);
+    String translation =
+        translateSourceFile(
+            "import java.util.*; public class A { Map map; A() { map = new HashMap(); }}",
+            "A",
+            "A.m");
+    assertTranslation(
+        translation, "JreStrictFieldStrongAssign(&self->map_, create_JavaUtilHashMap_init())");
   }
 
   public void testStringAddOperator() throws IOException {

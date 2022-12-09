@@ -26,6 +26,7 @@ id JreStrAppend(__unsafe_unretained id *lhs, const char *types, ...);
 id JreStrAppendStrong(__strong id *lhs, const char *types, ...);
 id JreStrAppendVolatile(volatile_id *lhs, const char *types, ...);
 id JreStrAppendVolatileStrong(volatile_id *lhs, const char *types, ...);
+id JreStrAppendStrictFieldStrong(__strong id *lhs, const char *types, ...);
 id JreStrAppendArray(JreArrayRef lhs, const char *types, ...);
 
 CF_EXTERN_C_END

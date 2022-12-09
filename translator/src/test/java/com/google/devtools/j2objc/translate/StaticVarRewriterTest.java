@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -35,12 +34,22 @@ public class StaticVarRewriterTest extends GenerationTest {
         "[nil_chk(((Test *) nil_chk(JreLoadStatic(Test, test)))->obj_) description];");
   }
 
-  public void testAssinmentToNewObject() throws IOException {
+  public void testAssignmentToNewObject() throws IOException {
     addSourceFile("class A { static Object o; }", "A.java");
     String translation = translateSourceFile(
         "class Test { void test() { A.o = new Object(); } }", "Test", "Test.m");
     assertTranslation(translation,
         "JreStrongAssignAndConsume(JreLoadStaticRef(A, o), new_NSObject_init());");
+  }
+
+  public void testAssignmentToNewObjectStrictFieldAssign() throws IOException {
+    options.setStrictFieldAssign(true);
+    options.setStrictFieldLoad(true);
+    addSourceFile("class A { static Object o; }", "A.java");
+    String translation =
+        translateSourceFile("class Test { void test() { A.o = new Object(); } }", "Test", "Test.m");
+    assertTranslation(
+        translation, "JreStrictFieldStrongAssign(JreLoadStaticRef(A, o), create_NSObject_init());");
   }
 
   public void testFieldAccessRewriting() throws IOException {
@@ -79,6 +88,24 @@ public class StaticVarRewriterTest extends GenerationTest {
         "return IOSIntArray_Get(JreLoadStatic(Test_Inner, ints), 0);");
   }
 
+  public void testStaticLoadWithArrayAccessStrictField() throws IOException {
+    options.setStrictFieldAssign(true);
+    options.setStrictFieldLoad(true);
+    String translation =
+        translateSourceFile(
+            "class Test { static class Inner { static int[] ints; } "
+                + " int test() { Inner.ints[0] = 1; Inner.ints[0] += 2; return Inner.ints[0]; } }",
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        "*IOSIntArray_GetRef(nil_chk(JreStrictFieldStrongLoad(JreLoadStaticRef(Test_Inner, ints))),"
+            + " 0) = 1;",
+        "*IOSIntArray_GetRef(JreStrictFieldStrongLoad(JreLoadStaticRef(Test_Inner, ints)), 0) +="
+            + " 2;",
+        "return IOSIntArray_Get(JreStrictFieldStrongLoad(JreLoadStaticRef(Test_Inner, ints)), 0);");
+  }
+
   // Verify that Class.CONSTANT_FIELD.CONSTANT translates correctly.
   public void testStaticFieldExpression() throws IOException {
     String translation = translateSourceFile(
@@ -87,5 +114,22 @@ public class StaticVarRewriterTest extends GenerationTest {
         + "static class BarHolder { static final Bar BAR = new Bar(); } "
         + "int test() { return BarHolder.BAR.N; }}", "Foo", "Foo.m");
     assertTranslatedLines(translation, "- (jint)test {", "return Bar_N;");
+  }
+
+  public void testStaticFieldExpressionStrictField() throws IOException {
+    options.setStrictFieldAssign(true);
+    options.setStrictFieldLoad(true);
+    String translation =
+        translateSourceFile(
+            "class Bar { static final int N = 1; }"
+                + "class Foo { "
+                + "static class BarHolder { static final Bar BAR = new Bar(); } "
+                + "int test() { return BarHolder.BAR.N; }}",
+            "Foo",
+            "Foo.m");
+    assertTranslatedLines(
+        translation,
+        "- (jint)test {",
+        "return (JreStrictFieldStrongLoad(JreLoadStaticRef(Foo_BarHolder, BAR)), Bar_N);");
   }
 }

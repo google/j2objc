@@ -317,6 +317,10 @@ public final class TranslationUtil {
     String modifier = "";
     if (ElementUtil.isVolatile(var)) {
       modifier += "Volatile";
+    } else if (!ElementUtil.isWeakReference(var)
+        && var.getKind().isField()
+        && options.useStrictFieldAssign()) {
+      modifier += "StrictField";
     }
     if (!ElementUtil.isWeakReference(var) && (var.getKind().isField() || options.useARC())) {
       modifier += "Strong";

@@ -70,6 +70,10 @@ void JreThrowArithmeticExceptionWithNSString(NSString *msg) __attribute__((noret
 id JreStrongAssign(__strong id *pIvar, id value);
 id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value);
 
+id JreStrictFieldStrongAssign(__strong id *pIvar, id value);
+id JreStrictFieldStrongLoad(__strong id *pIvar);
+void JreStrictFieldStrongRelease(__strong id *pIvar);
+
 id JreLoadVolatileId(volatile_id *pVar);
 id JreAssignVolatileId(volatile_id *pVar, id value);
 id JreVolatileStrongAssign(volatile_id *pIvar, id value);
@@ -84,6 +88,7 @@ id JreRetainedWithAssign(id parent, __strong id *pIvar, id value);
 id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, id value);
 void JreRetainedWithRelease(id parent, id child);
 void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar);
+void JreStrictFieldRetainedWithRelease(id parent, id *pVar);
 
 NSString *JreStrcat(const char *types, ...);
 
@@ -223,6 +228,15 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
     return cls; \
   }
 
+#ifdef J2OBJC_STRICT_FIELD_ASSIGN
+
+#define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE)                                                 \
+  __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+    return JreStrictFieldStrongAssign(&instance->FIELD, value);                                 \
+  }
+
+#else  // J2OBJC_STRICT_FIELD_ASSIGN
+
 #if __has_feature(objc_arc)
 #define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
   __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
@@ -238,6 +252,8 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
     return JreStrongAssignAndConsume(&instance->FIELD, value); \
   }
 #endif
+
+#endif  // J2OBJC_STRICT_FIELD_ASSIGN
 
 #define J2OBJC_VOLATILE_FIELD_SETTER(CLASS, FIELD, TYPE) \
   __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \

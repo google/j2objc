@@ -214,6 +214,10 @@ public class TypeImplementationGenerator extends TypeGenerator {
             printf(
                 "\n+ (%s)%s {\n  return JreLoadVolatile%s(&%s);\n}\n",
                 objcType, accessorName, typeSuffix, varName);
+          } else if (!isPrimitive && options.useStrictFieldLoad()) {
+            printf(
+                "\n+ (%s)%s {\n  return JreStrictFieldStrongLoad(&%s);\n}\n",
+                objcType, accessorName, varName);
           } else {
             printf("\n+ (%s)%s {\n  return %s;\n}\n", objcType, accessorName, varName);
           }
@@ -221,9 +225,12 @@ public class TypeImplementationGenerator extends TypeGenerator {
         ExecutableElement setter =
             ElementUtil.findSetterMethod(baseName, type, declaringClass, /* isStatic = */ true);
         if (setter == null && !ElementUtil.isFinal(varElement)) {
-          String setterFunc = isVolatile
-              ? (isPrimitive ? "JreAssignVolatile" + typeSuffix : "JreVolatileStrongAssign")
-              : (isPrimitive | options.useARC() ? null : "JreStrongAssign");
+          String setterFunc =
+              isVolatile
+                  ? (isPrimitive ? "JreAssignVolatile" + typeSuffix : "JreVolatileStrongAssign")
+                  : (!isPrimitive && options.useStrictFieldAssign()
+                      ? "JreStrictFieldStrongAssign"
+                      : isPrimitive || options.useARC() ? null : "JreStrongAssign");
           if (setterFunc == null) {
             printf("\n+ (void)set%s:(%s)value {\n  %s = value;\n}\n",
                 NameTable.capitalize(accessorName), objcType, varName);

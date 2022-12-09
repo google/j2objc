@@ -36,6 +36,32 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "return this$0_->foo_;");
   }
 
+  public void testOuterObjectVariableAccess() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class Example { "
+                + "java.util.Date foo; "
+                + "class Inner { java.util.Date test() { return foo; }}}",
+            "Example",
+            "Example.m");
+    assertTranslation(translation, "return this$0_->foo_;");
+  }
+
+  public void testOuterObjectVariableAccessStrictFieldLoad() throws IOException {
+    options.setStrictFieldLoad(true);
+    String translation =
+        translateSourceFile(
+            "public class Example { "
+                + "java.util.Date foo; "
+                + "class Inner { java.util.Date test() { return foo; }}}",
+            "Example",
+            "Example.m");
+    assertTranslation(
+        translation,
+        "return JreStrictFieldStrongLoad(&((Example *)"
+            + " JreStrictFieldStrongLoad(&this$0_))->foo_);");
+  }
+
   public void testTypeNameTranslation() throws IOException {
     String translation = translateSourceFile(
         "public class Example {}", "Example", "Example.m");
@@ -114,13 +140,28 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   }
 
   public void testStaticVariableWithInitInitialization() throws IOException {
-    String translation = translateSourceFile(
-        "public class Example { public static java.util.Date today = new java.util.Date();}",
-        "Example", "Example.m");
+    String translation =
+        translateSourceFile(
+            "public class Example { public static java.util.Date today = new java.util.Date();}",
+            "Example",
+            "Example.m");
     assertTranslation(translation, "JavaUtilDate *Example_today;");
     assertTranslation(translation, "+ (void)initialize {");
     assertTranslation(translation,
         "JreStrongAssignAndConsume(&Example_today, new_JavaUtilDate_init());");
+  }
+
+  public void testStaticVariableWithInitInitializationStrictFieldAssign() throws IOException {
+    options.setStrictFieldAssign(true);
+    String translation =
+        translateSourceFile(
+            "public class Example { public static java.util.Date today = new java.util.Date();}",
+            "Example",
+            "Example.m");
+    assertTranslation(translation, "JavaUtilDate *Example_today;");
+    assertTranslation(translation, "+ (void)initialize {");
+    assertTranslation(
+        translation, "JreStrictFieldStrongAssign(&Example_today, create_JavaUtilDate_init());");
   }
 
   public void testStaticVariableWithNonInitInitialization() throws IOException {
@@ -250,15 +291,37 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
   public void testClassField() throws IOException {
     String sourceContent =
         "import com.google.j2objc.annotations.Weak;"
-        + "public class FooBar {"
-        + "private static int fieldPhi;"
-        + "private Object fieldFoo;"
-        + "@Weak private Object fieldJar;"
-        + "private int newFieldBar;"
-        + "}";
+            + "public class FooBar {"
+            + "private static int fieldPhi;"
+            + "private Object fieldFoo;"
+            + "@Weak private Object fieldJar;"
+            + "private int newFieldBar;"
+            + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.m");
     assertTranslation(translation, "int FooBar_fieldPhi;");
     assertTranslation(translation, "RELEASE_(fieldFoo_);");
+    assertTranslation(translation, "id fieldFoo_;");
+    assertTranslation(translation, "id fieldJar_;");
+    assertTranslation(translation, "int newFieldBar_;");
+    assertTranslation(translation, "id fieldFoo_;");
+    assertTranslation(translation, "WEAK_ id fieldJar_;");
+    assertTranslation(translation, "int newFieldBar_;");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_PRIMITIVE(FooBar, fieldPhi, jint)");
+  }
+
+  public void testClassFieldStrictFieldAssign() throws IOException {
+    options.setStrictFieldAssign(true);
+    String sourceContent =
+        "import com.google.j2objc.annotations.Weak;"
+            + "public class FooBar {"
+            + "private static int fieldPhi;"
+            + "private Object fieldFoo;"
+            + "@Weak private Object fieldJar;"
+            + "private int newFieldBar;"
+            + "}";
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.m");
+    assertTranslation(translation, "int FooBar_fieldPhi;");
+    assertTranslation(translation, "JreStrictFieldStrongRelease(&fieldFoo_);");
     assertTranslation(translation, "id fieldFoo_;");
     assertTranslation(translation, "id fieldJar_;");
     assertTranslation(translation, "int newFieldBar_;");
@@ -980,5 +1043,30 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "#if !__has_feature(objc_arc_weak)\n"
             + "#error \"foo/bar/A must be compiled with weak references support (-fobjc-weak)\"\n"
             + "#endif");
+  }
+
+  public void testStrictFieldBuildFlagsGeneration() throws IOException {
+    String translation = translateSourceFile("public class Example {}", "Example", "Example.m");
+
+    assertNotInTranslation(translation, "J2OBJC_STRICT_FIELD_ASSIGN");
+    assertNotInTranslation(translation, "J2OBJC_STRICT_FIELD_LOAD");
+
+    options.setStrictFieldAssign(true);
+    translation = translateSourceFile("public class Example {}", "Example", "Example.m");
+
+    assertTranslation(translation, "J2OBJC_STRICT_FIELD_ASSIGN 1");
+    assertNotInTranslation(translation, "J2OBJC_STRICT_FIELD_LOAD");
+
+    options.setStrictFieldLoad(true);
+    translation = translateSourceFile("public class Example {}", "Example", "Example.m");
+
+    assertTranslation(translation, "J2OBJC_STRICT_FIELD_ASSIGN 1");
+    assertTranslation(translation, "J2OBJC_STRICT_FIELD_LOAD 1");
+
+    options.setStrictFieldAssign(false);
+    translation = translateSourceFile("public class Example {}", "Example", "Example.m");
+
+    assertNotInTranslation(translation, "J2OBJC_STRICT_FIELD_ASSIGN");
+    assertNotInTranslation(translation, "J2OBJC_STRICT_FIELD_LOAD");
   }
 }

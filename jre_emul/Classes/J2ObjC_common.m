@@ -183,6 +183,37 @@ void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther) {
   VOLATILE_UNLOCK(lock);
 }
 
+id JreStrictFieldStrongAssign(__strong id *pIvar, id value) {
+  // Reuse the volatile locks for strict field assignments.
+  volatile_lock_t lock = VOLATILE_GETLOCK(pIvar);
+  [value retain];
+  VOLATILE_LOCK(lock);
+  id oldValue = *(id *)pIvar;
+  *(id *)pIvar = value;
+  VOLATILE_UNLOCK(lock);
+  [oldValue autorelease];
+  return value;
+}
+
+id JreStrictFieldStrongLoad(__strong id *pIvar) {
+  // Reuse the volatile locks for strict field assignments.
+  volatile_lock_t lock = VOLATILE_GETLOCK(pIvar);
+  VOLATILE_LOCK(lock);
+  id value = [*(id *)pIvar retain];
+  VOLATILE_UNLOCK(lock);
+  return [value autorelease];
+}
+
+void JreStrictFieldStrongRelease(__strong id *pIvar) {
+  // This is only called from a dealloc method, so we can assume there are no
+  // concurrent threads with access to this address. Therefore, synchronization
+  // is unnecessary.
+  [*(id *)pIvar release];
+  // Unlike volatile fields, these fields are types also managed by ARC, so we need to nil
+  // to prevent subsequent duplicate release by ARC.
+  *(id *)pIvar = nil;
+}
+
 id JreRetainedWithAssign(id parent, __strong id *pIvar, id value) {
   if (*pIvar) {
     JreRetainedWithHandlePreviousValue(parent, *pIvar);
@@ -222,6 +253,15 @@ void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar) {
   // This is only called from a dealloc method, so we can assume there are no
   // concurrent threads with access to this address. Therefore, synchronization
   // is unnecessary.
+  [*(id *)pVar release];
+}
+
+void JreStrictFieldRetainedWithRelease(id parent, id *pVar) {
+  JreRetainedWithHandleDealloc(parent, *(id *)pVar);
+  // This is only called from a dealloc method, so we can assume there are no
+  // concurrent threads with access to this address. Therefore, synchronization
+  // is unnecessary. Also, no need to nil out, RetainedWith is manual memory
+  // management only.
   [*(id *)pVar release];
 }
 
@@ -409,6 +449,14 @@ id JreStrAppendVolatileStrong(volatile_id *lhs, const char *types, ...) {
   NSString *result = JreStrAppendInner(JreLoadVolatileId(lhs), types, va);
   va_end(va);
   return JreVolatileStrongAssign(lhs, result);
+}
+
+id JreStrAppendStrictFieldStrong(__strong id *lhs, const char *types, ...) {
+  va_list va;
+  va_start(va, types);
+  NSString *result = JreStrAppendInner(JreStrictFieldStrongLoad(lhs), types, va);
+  va_end(va);
+  return JreStrictFieldStrongAssign(lhs, result);
 }
 
 id JreStrAppendArray(JreArrayRef lhs, const char *types, ...) {

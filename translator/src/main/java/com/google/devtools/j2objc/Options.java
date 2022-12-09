@@ -65,6 +65,8 @@ public class Options {
   private List<String> processorPathEntries = new ArrayList<>();
   private OutputLanguageOption language = OutputLanguageOption.OBJECTIVE_C;
   private MemoryManagementOption memoryManagementOption = null;
+  private boolean strictFieldAssign = false;
+  private boolean strictFieldLoad = false;
   private EmitLineDirectivesOption emitLineDirectives = EmitLineDirectivesOption.NONE;
   private boolean warningsAsErrors = false;
   private boolean deprecatedDeclarations = false;
@@ -407,6 +409,11 @@ public class Options {
         fileUtil.setHeaderOutputDirectory(new File(getArgValue(args, arg)));
       } else if (arg.equals("-use-arc")) {
         checkMemoryManagementOption(MemoryManagementOption.ARC);
+      } else if (arg.equals("-Xstrict-field-assign")) {
+        strictFieldAssign = true;
+      } else if (arg.equals("-Xstrict-field-load")) {
+        strictFieldAssign = true;
+        strictFieldLoad = true;
       } else if (arg.equals("-g")) {
         emitLineDirectives = EmitLineDirectivesOption.NORMAL;
       } else if (arg.equals("-g:none")) {
@@ -788,6 +795,30 @@ public class Options {
 
   public MemoryManagementOption getMemoryManagementOption() {
     return memoryManagementOption;
+  }
+
+  public boolean useStrictFieldAssign() {
+    return strictFieldAssign;
+  }
+
+  @VisibleForTesting
+  public void setStrictFieldAssign(boolean b) {
+    strictFieldAssign = b;
+    if (!b && strictFieldLoad) {
+      strictFieldLoad = false;
+    }
+  }
+
+  public boolean useStrictFieldLoad() {
+    return strictFieldLoad;
+  }
+
+  @VisibleForTesting
+  public void setStrictFieldLoad(boolean b) {
+    if (b && !strictFieldAssign) {
+      strictFieldAssign = true;
+    }
+    strictFieldLoad = b;
   }
 
   @VisibleForTesting

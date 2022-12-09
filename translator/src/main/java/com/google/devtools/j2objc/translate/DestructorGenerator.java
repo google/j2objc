@@ -207,17 +207,31 @@ public class DestructorGenerator extends UnitTreeVisitor {
     }
     boolean isVolatile = ElementUtil.isVolatile(var);
     boolean isRetainedWith = ElementUtil.isRetainedWithField(var);
+    boolean strictFieldRelease = false;
     String funcName = null;
     if (options.useReferenceCounting()) {
       if (isRetainedWith) {
-        funcName = isVolatile ? "JreVolatileRetainedWithRelease" : "JreRetainedWithRelease";
+        if (isVolatile) {
+          funcName = "JreVolatileRetainedWithRelease";
+        } else if (options.useStrictFieldAssign()) {
+          funcName = "JreStrictFieldRetainedWithRelease";
+          strictFieldRelease = true;
+        } else {
+          funcName = "JreRetainedWithRelease";
+        }
       } else if (isVolatile) {
         funcName = "JreReleaseVolatile";
+      } else if (options.useStrictFieldAssign()) {
+        funcName = "JreStrictFieldStrongRelease";
+        strictFieldRelease = true;
       } else {
         funcName = "RELEASE_";
       }
     } else if (isVolatile) {
       funcName = "JreReleaseVolatile";
+    } else if (options.useStrictFieldAssign()) {
+      funcName = "JreStrictFieldStrongRelease";
+      strictFieldRelease = true;
     }
     if (funcName == null) {
       return null;
@@ -235,7 +249,7 @@ public class DestructorGenerator extends UnitTreeVisitor {
       element.addParameters(isVolatile ? TypeUtil.ID_PTR_TYPE : idType);
     }
     Expression arg = new SimpleName(var);
-    if (isVolatile) {
+    if (isVolatile || strictFieldRelease) {
       arg = new PrefixExpression(
           new PointerType(varType), PrefixExpression.Operator.ADDRESS_OF, arg);
     }

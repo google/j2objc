@@ -51,6 +51,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   public void generate() {
     print(J2ObjC.getFileHeader(options, getGenerationUnit().getSourceName()));
+    printOptionBuildFlags();
     printImports();
     printMemoryManagement();
     printIgnoreIncompletePragmas();
@@ -76,6 +77,17 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if (unit.hasIncompleteImplementation()) {
       println("#pragma clang diagnostic ignored \"-Wincomplete-implementation\"");
     }
+  }
+
+  private void printOptionBuildFlags() {
+    newline();
+    if (options.useStrictFieldAssign()) {
+      println("#define J2OBJC_STRICT_FIELD_ASSIGN 1");
+    }
+    if (options.useStrictFieldLoad()) {
+      println("#define J2OBJC_STRICT_FIELD_LOAD 1");
+    }
+    newline();
   }
 
   private void printImports() {

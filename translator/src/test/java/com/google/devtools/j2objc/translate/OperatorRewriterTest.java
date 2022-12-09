@@ -28,11 +28,27 @@ import java.util.List;
 public class OperatorRewriterTest extends GenerationTest {
 
   public void testSetFieldOnResultOfExpression() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { String s; static Test getTest() { return null; } "
-        + "void test(boolean b) { (b ? new Test() : getTest()).s = \"foo\"; } }", "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "class Test { String s; static Test getTest() { return null; } "
+                + "void test(boolean b) { (b ? new Test() : getTest()).s = \"foo\"; } }",
+            "Test",
+            "Test.m");
     assertTranslation(translation,
         "JreStrongAssign(&(b ? create_Test_init() : Test_getTest())->s_, @\"foo\");");
+  }
+
+  public void testSetFieldOnResultOfExpressionStrictFieldAssign() throws IOException {
+    options.setStrictFieldAssign(true);
+    String translation =
+        translateSourceFile(
+            "class Test { String s; static Test getTest() { return null; } "
+                + "void test(boolean b) { (b ? new Test() : getTest()).s = \"foo\"; } }",
+            "Test",
+            "Test.m");
+    assertTranslation(
+        translation,
+        "JreStrictFieldStrongAssign(&(b ? create_Test_init() : Test_getTest())->s_, @\"foo\");");
   }
 
   public void testDivisionOperator() {
@@ -111,10 +127,39 @@ public class OperatorRewriterTest extends GenerationTest {
         "JreStrAppendArray(IOSObjectArray_GetRef(nil_chk(as_), 0), \"$\", @\"baz\");");
   }
 
+  public void testStringAppendOperatorStrictField() throws IOException {
+    options.setStrictFieldAssign(true);
+    options.setStrictFieldLoad(true);
+
+    String translation =
+        translateSourceFile(
+            "import com.google.j2objc.annotations.Weak;"
+                + " class Test { String ss; @Weak String ws; String[] as;"
+                + " void test() { ss += \"foo\"; ws += \"bar\"; as[0] += \"baz\"; } }",
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        "JreStrAppendStrictFieldStrong(&ss_, \"$\", @\"foo\");",
+        "JreStrAppend(&ws_, \"$\", @\"bar\");",
+        "JreStrAppendArray(IOSObjectArray_GetRef(nil_chk(JreStrictFieldStrongLoad(&as_)), 0),"
+            + " \"$\", @\"baz\");");
+  }
+
   public void testParenthesizedLeftHandSide() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { String s; void test(String s2) { (s) = s2; } }", "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "class Test { String s; void test(String s2) { (s) = s2; } }", "Test", "Test.m");
     assertTranslation(translation, "JreStrongAssign(&(s_), s2);");
+  }
+
+  public void testParenthesizedLeftHandSideStrictField() throws IOException {
+    options.setStrictFieldAssign(true);
+    options.setStrictFieldLoad(true);
+    String translation =
+        translateSourceFile(
+            "class Test { String s; void test(String s2) { (s) = s2; } }", "Test", "Test.m");
+    assertTranslation(translation, "JreStrictFieldStrongAssign(&(s_), s2);");
   }
 
   public void testVolatileLoadAndAssign() throws IOException {
@@ -135,6 +180,27 @@ public class OperatorRewriterTest extends GenerationTest {
         "JreVolatileStrongAssign(&Test_vs, @\"foo\");",
         "ls = JreLoadVolatileId(&ws_);",
         "JreAssignVolatileId(&ws_, @\"foo\");");
+  }
+
+  public void testStrictFieldLoadAndAssign() throws IOException {
+    options.setStrictFieldAssign(true);
+    options.setStrictFieldLoad(true);
+    String translation =
+        translateSourceFile(
+            "import com.google.j2objc.annotations.Weak;"
+                + " class Test { String s; static String ss; @Weak String ws;"
+                + " void test() { String ls = s; s = \"foo\";"
+                + " ls = ss; ss = \"foo\"; ls = ws; ws = \"foo\"; } }",
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        "NSString *ls = JreStrictFieldStrongLoad(&s_);",
+        "JreStrictFieldStrongAssign(&s_, @\"foo\");",
+        "ls = JreStrictFieldStrongLoad(&Test_ss);",
+        "JreStrictFieldStrongAssign(&Test_ss, @\"foo\");",
+        "ls = ws_;",
+        "ws_ = @\"foo\";");
   }
 
   public void testPromotionTypesForCompundAssign() throws IOException {
@@ -190,6 +256,33 @@ public class OperatorRewriterTest extends GenerationTest {
     assertTranslation(translation, "JreVolatileRetainedWithRelease(self, &rwvo_);");
   }
 
+  public void testRetainedWithAnnotationStrictField() throws IOException {
+    options.setStrictFieldAssign(true);
+    options.setStrictFieldLoad(true);
+    String translation =
+        translateSourceFile(
+            "import com.google.j2objc.annotations.RetainedWith;"
+                + "class Test { @RetainedWith Object rwo; @RetainedWith volatile Object rwvo;"
+                + "Test getTest() { return new Test(); }"
+                + "void test() { rwo = new Object(); rwvo = new Object(); }"
+                + "void test2() { getTest().rwo = new Object(); } }",
+            "Test",
+            "Test.m");
+    assertTranslation(translation, "JreRetainedWithAssign(self, &rwo_, create_NSObject_init());");
+    assertTranslation(
+        translation, "JreVolatileRetainedWithAssign(self, &rwvo_, create_NSObject_init());");
+    assertTranslatedLines(
+        translation,
+        // The getTest() call must be extracted so that it can be passed as the parent ref without
+        // duplicating the expression.
+        "t *__rw$0;",
+        "((void) (__rw$0 = nil_chk([self getTest])), "
+            + "JreRetainedWithAssign(__rw$0, &__rw$0->rwo_, create_NSObject_init()));");
+    // Test the dealloc calls too.
+    assertTranslation(translation, "JreStrictFieldRetainedWithRelease(self, &rwo_);");
+    assertTranslation(translation, "JreVolatileRetainedWithRelease(self, &rwvo_);");
+  }
+
   public void testRetainedLocalRef() throws IOException {
     String translation = translateSourceFile(
         "class Test { "
@@ -216,6 +309,40 @@ public class OperatorRewriterTest extends GenerationTest {
         "thing = JreRetainedLocalValue(t2);",
         "return [((id<JavaUtilComparator>) nil_chk(((Test_Thing *) nil_chk(thing))->comp_)) "
           + "compareWithId:s1 withId:s2] == 0;");
+  }
+
+  public void testRetainedLocalRefStrictField() throws IOException {
+    options.setStrictFieldAssign(true);
+    options.setStrictFieldLoad(true);
+    String translation =
+        translateSourceFile(
+            "class Test { "
+                + "  boolean test1(String s1, String s2) {"
+                + "    @com.google.j2objc.annotations.RetainedLocalRef"
+                + "    java.util.Comparator<String> c = String.CASE_INSENSITIVE_ORDER;"
+                + "    return c.compare(s1, s2) == 0;"
+                + "    }   "
+                + "  boolean test2(Thing t, Thing t2, String s1, String s2) {"
+                + "    @com.google.j2objc.annotations.RetainedLocalRef"
+                + "    Thing thing = t;"
+                + "    thing = t2;"
+                + "    return thing.comp.compare(s1, s2) == 0;"
+                + "  }"
+                + "  private static class Thing { public java.util.Comparator<String> comp; }}",
+            "Test",
+            "Test.m");
+    assertNotInTranslation(translation, "RetainedLocalRef");
+    assertTranslatedLines(
+        translation,
+        "id<JavaUtilComparator> c = JreStrictFieldStrongLoad(JreLoadStaticRef("
+            + "NSString, CASE_INSENSITIVE_ORDER));",
+        "return [((id<JavaUtilComparator>) nil_chk(c)) compareWithId:s1 withId:s2] == 0;");
+    assertTranslatedLines(
+        translation,
+        "Test_Thing *thing = JreRetainedLocalValue(t);",
+        "thing = JreRetainedLocalValue(t2);",
+        "return [((id<JavaUtilComparator>) nil_chk(JreStrictFieldStrongLoad(&((Test_Thing *)"
+            + " nil_chk(thing))->comp_))) compareWithId:s1 withId:s2] == 0;");
   }
 
   // From jre_emul/misc_tests/RetentionTest.java.
@@ -268,7 +395,7 @@ public class OperatorRewriterTest extends GenerationTest {
         "J2OBJC_STATIC_FIELD_OBJ_VOLATILE(Test, lazyStaticStr, NSString *)");
   }
 
-  public void testRetaineLocal_synchronizedBlock() throws IOException {
+  public void testRetainedLocal_synchronizedBlock() throws IOException {
     String translation = translateSourceFile(
         "class Test {"
         + "  class Foo {}"
@@ -291,6 +418,43 @@ public class OperatorRewriterTest extends GenerationTest {
         + "  }"
         + "}", "Test", "Test.m");
     assertTranslation(translation, "Test_Foo *f2 = JreRetainedLocalValue(f_);");
+    assertTranslation(translation, "f1 = JreRetainedLocalValue(f2);");
+    assertTranslation(translation, "Test_Foo *f3 = JreRetainedLocalValue(f2);");
+    assertTranslation(translation, "s1 = @\"foo\";");
+    assertTranslation(translation, "c1 = 'a';");
+    assertTranslation(translation, "f3 = JreRetainedLocalValue(f1);");
+    assertTranslation(translation, "f3 = JreRetainedLocalValue(f2);");
+    assertTranslation(translation, "f2 = f1;");
+  }
+
+  public void testRetainedLocal_synchronizedBlock_StrictField() throws IOException {
+    options.setStrictFieldAssign(true);
+    options.setStrictFieldLoad(true);
+    String translation =
+        translateSourceFile(
+            "class Test {"
+                + "  class Foo {}"
+                + "  Foo f = new Foo();"
+                + "  void test(String s1, char c1) {"
+                + "    Foo f1 = new Foo(), f2 = f;"
+                + "    synchronized(f1) {"
+                + "      f1 = f2;"
+                + "      Foo f3 = f2;"
+                + "      s1 = \"foo\";"
+                + "      c1 = 'a';"
+                + "      synchronized(f3) {"
+                + "        f3 = f1;"
+                + "      }"
+                + "      synchronized(f3) {"
+                + "        f3 = f2;"
+                + "      }"
+                + "    }"
+                + "    f2 = f1;"
+                + "  }"
+                + "}",
+            "Test",
+            "Test.m");
+    assertTranslation(translation, "Test_Foo *f2 = JreStrictFieldStrongLoad(&f_);");
     assertTranslation(translation, "f1 = JreRetainedLocalValue(f2);");
     assertTranslation(translation, "Test_Foo *f3 = JreRetainedLocalValue(f2);");
     assertTranslation(translation, "s1 = @\"foo\";");
