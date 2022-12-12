@@ -220,7 +220,7 @@ public class AbstractSelectableChannelTest extends TestCase {
         // if channel closed
         msc.close();
         try {
-            msc.register(acceptSelector, SelectionKey.OP_READ, null);
+            msc.register(acceptSelector, SelectionKey.OP_ACCEPT, null);
             fail("Should throw ClosedChannelException");
         } catch (ClosedChannelException e) {
             // expected
