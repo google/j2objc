@@ -2063,6 +2063,7 @@ JAVA_PUBLIC_SOURCES_ICU = \
   android/icu/text/DecimalFormat.java \
   android/icu/text/DecimalFormatSymbols.java \
   android/icu/text/DisplayContext.java \
+  android/icu/text/ExtendedDateFormatSymbols.java \
   android/icu/text/LocaleDisplayNames.java \
   android/icu/text/MessageFormat.java \
   android/icu/text/MessagePattern.java \
@@ -2088,6 +2089,7 @@ JAVA_PUBLIC_SOURCES_ICU = \
   android/icu/util/Calendar.java \
   android/icu/util/Currency.java \
   android/icu/util/CurrencyAmount.java \
+  android/icu/util/ExtendedCalendar.java \
   android/icu/util/Freezable.java \
   android/icu/util/GregorianCalendar.java \
   android/icu/util/HebrewCalendar.java \

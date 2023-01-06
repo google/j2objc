@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package libcore.icu;
 
+import com.google.j2objc.LibraryNotLinkedError;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,7 +25,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import libcore.util.BasicLruCache;
 
 /**
  * Makes ICU data accessible to Java.
@@ -33,13 +33,9 @@ public final class ICU {
   /* J2ObjC unused.
   private static final BasicLruCache<String, String> CACHED_PATTERNS =
       new BasicLruCache<String, String>(8);*/
-
   private static Locale[] availableLocalesCache;
-
   private static String[] isoCountries;
-
   private static String[] isoLanguages;
-
   /**
    * Returns an array of two-letter ISO 639-1 language codes, either from ICU or our cache.
    */
@@ -49,7 +45,6 @@ public final class ICU {
     }
     return isoLanguages.clone();
   }
-
   /**
    * Returns an array of two-letter ISO 3166 country codes, either from ICU or our cache.
    */
@@ -64,7 +59,6 @@ public final class ICU {
   private static final int IDX_SCRIPT = 1;
   private static final int IDX_REGION = 2;
   private static final int IDX_VARIANT = 3;
-
   /*
    * Parse the {Language, Script, Region, Variant*} section of the ICU locale
    * ID. This is the bit that appears before the keyword separate "@". The general
@@ -80,17 +74,14 @@ public final class ICU {
     final int first = string.indexOf('_');
     final int second = string.indexOf('_', first + 1);
     final int third = string.indexOf('_', second + 1);
-
     if (first == -1) {
       outputArray[IDX_LANGUAGE] = string;
     } else if (second == -1) {
       // Language and country ("ja_JP") OR
       // Language and script ("en_Latn") OR
       // Language and variant ("en_POSIX").
-
       outputArray[IDX_LANGUAGE] = string.substring(0, first);
       final String secondString = string.substring(first + 1);
-
       if (secondString.length() == 4) {
           // 4 Letter ISO script code.
           outputArray[IDX_SCRIPT] = secondString;
@@ -108,15 +99,12 @@ public final class ICU {
       // Language and script and variant ("en_Latn_POSIX") OR
       // Language and script and region ("en_Latn_US"). OR
       // Language and variant with multiple subtags ("en_POSIX_XISOP")
-
       outputArray[IDX_LANGUAGE] = string.substring(0, first);
       final String secondString = string.substring(first + 1, second);
       final String thirdString = string.substring(second + 1);
-
       if (secondString.length() == 4) {
-          // The second subtag is a script.
-          outputArray[IDX_SCRIPT] = secondString;
-
+        // The second subtag is a script.
+        outputArray[IDX_SCRIPT] = secondString;
           // The third subtag can be either a region or a variant, depending
           // on its length.
           if (thirdString.length() == 2 || thirdString.length() == 3 ||
@@ -151,7 +139,6 @@ public final class ICU {
       }
     }
   }
-
   /**
    * Returns the appropriate {@code Locale} given a {@code String} of the form returned
    * by {@code toString}. This is very lenient, and doesn't care what's between the underscores:
@@ -161,16 +148,13 @@ public final class ICU {
   public static Locale localeFromIcuLocaleId(String localeId) {
     // @ == ULOC_KEYWORD_SEPARATOR_UNICODE (uloc.h).
     final int extensionsIndex = localeId.indexOf('@');
-
     Map<Character, String> extensionsMap = Collections.EMPTY_MAP;
     Map<String, String> unicodeKeywordsMap = Collections.EMPTY_MAP;
     Set<String> unicodeAttributeSet = Collections.EMPTY_SET;
-
     if (extensionsIndex != -1) {
       extensionsMap = new HashMap<Character, String>();
       unicodeKeywordsMap = new HashMap<String, String>();
       unicodeAttributeSet = new HashSet<String>();
-
       // ICU sends us a semi-colon (ULOC_KEYWORD_ITEM_SEPARATOR) delimited string
       // containing all "keywords" it could parse. An ICU keyword is a key-value pair
       // separated by an "=" (ULOC_KEYWORD_ASSIGN).
@@ -199,12 +183,10 @@ public final class ICU {
           }
         } else {
           final int separatorIndex = extension.indexOf('=');
-
           if (separatorIndex == 1) {
             // This is a BCP-47 extension subtag.
             final String value = extension.substring(2);
             final char extensionId = extension.charAt(0);
-
             extensionsMap.put(extensionId, value);
           } else {
             // This is a unicode extension keyword.
@@ -214,7 +196,6 @@ public final class ICU {
         }
       }
     }
-
     final String[] outputArray = new String[] { "", "", "", "" };
     if (extensionsIndex == -1) {
       parseLangScriptRegionAndVariants(localeId, outputArray);
@@ -233,11 +214,9 @@ public final class ICU {
     for (Entry<String, String> keyword : unicodeKeywordsMap.entrySet()) {
       builder.setUnicodeLocaleKeyword(keyword.getKey(), keyword.getValue());
     }
-
     for (Entry<Character, String> extension : extensionsMap.entrySet()) {
       builder.setExtension(extension.getKey(), extension.getValue());
     }
-
     return builder.build();
   }
 
@@ -286,7 +265,6 @@ public final class ICU {
   public static Locale[] getAvailableNumberFormatLocales() {
     return localesFromStrings(getAvailableNumberFormatLocalesNative());
   }
-
   /* J2ObjC unused.
   public static String getBestDateTimePattern(String skeleton, Locale locale) {
     String languageTag = locale.toLanguageTag();
@@ -300,16 +278,13 @@ public final class ICU {
       return pattern;
     }
   }
-
   private static native String getBestDateTimePatternNative(String skeleton, String languageTag);*/
-
   public static char[] getDateFormatOrder(String pattern) {
     char[] result = new char[3];
     int resultIndex = 0;
     boolean sawDay = false;
     boolean sawMonth = false;
     boolean sawYear = false;
-
     for (int i = 0; i < pattern.length(); ++i) {
       char ch = pattern.charAt(i);
       if (ch == 'd' || ch == 'L' || ch == 'M' || ch == 'y') {
@@ -343,41 +318,32 @@ public final class ICU {
     }
     return result;
   }
-
   /**
-   * Returns the version of the CLDR data in use, such as "22.1.1".
-   * J2ObjC unused.
-  public static native String getCldrVersion();*/
-
+   * Returns the version of the CLDR data in use, such as "22.1.1". J2ObjC unused. public static
+   * native String getCldrVersion();
+   */
   /**
-   * Returns the icu4c version in use, such as "50.1.1".
-   * J2ObjC unused.
-  public static native String getIcuVersion();*/
-
+   * Returns the icu4c version in use, such as "50.1.1". J2ObjC unused. public static native String
+   * getIcuVersion();
+   */
   /**
-   * Returns the Unicode version our ICU supports, such as "6.2".
-   * J2ObjC unused.
-  public static native String getUnicodeVersion();*/
-
+   * Returns the Unicode version our ICU supports, such as "6.2". J2ObjC unused. public static
+   * native String getUnicodeVersion();
+   */
   // --- Case mapping.
-
   /* J2ObjC unused.
   public static String toLowerCase(String s, Locale locale) {
     return toLowerCase(s, locale.toLanguageTag());
   }
-
   private static native String toLowerCase(String s, String languageTag);
-
   public static String toUpperCase(String s, Locale locale) {
     return toUpperCase(s, locale.toLanguageTag());
   }
-
   private static native String toUpperCase(String s, String languageTag);*/
-
   // --- Errors.
-
   // Just the subset of error codes needed by CharsetDecoderICU/CharsetEncoderICU.
   public static final int U_ZERO_ERROR = 0;
+
   public static final int U_INVALID_CHAR_FOUND = 10;
   public static final int U_TRUNCATED_CHAR_FOUND = 11;
   public static final int U_ILLEGAL_CHAR_FOUND = 12;
@@ -386,17 +352,18 @@ public final class ICU {
   public static boolean U_FAILURE(int error) {
     return error > U_ZERO_ERROR;
   }
-
   // --- Native methods accessing ICU's database.
-
   private static native String[] getAvailableBreakIteratorLocalesNative();
+
   private static native String[] getAvailableCalendarLocalesNative();
   private static native String[] getAvailableCollatorLocalesNative();
   private static native String[] getAvailableDateFormatLocalesNative();
   private static native String[] getAvailableLocalesNative();
+
   private static native String[] getAvailableNumberFormatLocalesNative();
 
   public static native String[] getAvailableCurrencyCodes();
+
   public static native String getCurrencyCode(Locale locale);
 
   public static String getCurrencyDisplayName(Locale locale, String currencyCode) {
@@ -406,8 +373,7 @@ public final class ICU {
   private static native String getCurrencyDisplayName(String languageTag, String currencyCode);
 
   public static native int getCurrencyFractionDigits(String currencyCode);
-  //public static native int getCurrencyNumericCode(String currencyCode); J2ObjC unused.
-
+  // public static native int getCurrencyNumericCode(String currencyCode); J2ObjC unused.
   public static String getCurrencySymbol(Locale locale, String currencyCode) {
     return getCurrencySymbol(locale.toLanguageTag(), currencyCode);
   }
@@ -418,19 +384,22 @@ public final class ICU {
     return getDisplayCountryNative(targetLocale.toLanguageTag(), locale.toLanguageTag());
   }
 
-  private static native String getDisplayCountryNative(String targetLanguageTag, String languageTag);
+  private static native String getDisplayCountryNative(
+      String targetLanguageTag, String languageTag);
 
   public static String getDisplayLanguage(Locale targetLocale, Locale locale) {
     return getDisplayLanguageNative(targetLocale.toLanguageTag(), locale.toLanguageTag());
   }
 
-  private static native String getDisplayLanguageNative(String targetLanguageTag, String languageTag);
+  private static native String getDisplayLanguageNative(
+      String targetLanguageTag, String languageTag);
 
   public static String getDisplayVariant(Locale targetLocale, Locale locale) {
     return getDisplayVariantNative(targetLocale.toLanguageTag(), locale.toLanguageTag());
   }
 
-  private static native String getDisplayVariantNative(String targetLanguageTag, String languageTag);
+  private static native String getDisplayVariantNative(
+      String targetLanguageTag, String languageTag);
 
   public static String getDisplayScript(Locale targetLocale, Locale locale) {
     return getDisplayScriptNative(targetLocale.toLanguageTag(), locale.toLanguageTag());
@@ -441,42 +410,159 @@ public final class ICU {
   public static native String getISO3Country(String languageTag);
 
   public static native String getISO3Language(String languageTag);
-
   /* J2ObjC unused.
   public static Locale addLikelySubtags(Locale locale) {
       return Locale.forLanguageTag(addLikelySubtags(locale.toLanguageTag()).replace('_', '-'));
   }
-
   /**
    * @deprecated use {@link #addLikelySubtags(java.util.Locale)} instead.
    * J2ObjC unused.
   @Deprecated
   public static native String addLikelySubtags(String locale);
-
   /**
    * @deprecated use {@link java.util.Locale#getScript()} instead. This has been kept
    *     around only for the support library.
    * J2ObjC unused.
   @Deprecated
   public static native String getScript(String locale);*/
-
   private static native String[] getISOLanguagesNative();
+
   private static native String[] getISOCountriesNative();
 
   static native boolean initLocaleDataNative(String languageTag, LocaleData result);
-
   /**
    * Takes a BCP-47 language tag (Locale.toLanguageTag()). e.g. en-US, not en_US
    */
   public static native void setDefaultLocale(String languageTag);
-
-  /**
-   * Returns a locale name, not a BCP-47 language tag. e.g. en_US not en-US.
-   */
-  //public static native String getDefaultLocale(); J2ObjC unused.
-
+  /** Returns a locale name, not a BCP-47 language tag. e.g. en_US not en-US. */
+  // public static native String getDefaultLocale(); J2ObjC unused.
   /** Returns the TZData version as reported by ICU4C. */
   /* J2ObjC unused.
    * TODO(kstanger): Enable when java.time is implemented.
   public static native String getTZDataVersion(); J2ObjC unused.*/
+  /**
+   * @param calendarType LDML-defined legacy calendar type. See keyTypeData.txt in ICU.
+   */
+  /* J2ObjC unused.
+  public static ExtendedCalendar getExtendedCalendar(Locale locale, String calendarType) {
+    ULocale uLocale = ULocale.forLocale(locale).setKeywordValue("calendar", calendarType);
+    return ExtendedCalendar.getInstance(uLocale);
+  }
+  */
+  /**
+   * {@link java.time.format.DateTimeFormatter} does not handle some date symbols, e.g. 'B' / 'b',
+   * and thus we use a heuristic algorithm to remove the symbol. See http://b/174804526. See {@link
+   * #transformIcuDateTimePattern(String)} for documentation about the implementation.
+   */
+  public static String transformIcuDateTimePattern_forJavaTime(String pattern) {
+    return transformIcuDateTimePattern(pattern);
+  }
+  /**
+   * Converts CLDR LDML short time zone id to an ID that can be recognized by {@link
+   * java.util.TimeZone#getTimeZone(String)}.
+   *
+   * @param cldrShortTzId
+   * @return null if no tz id can be matched to the short id.
+   */
+  public static String convertToTzId(String cldrShortTzId) {
+    if (cldrShortTzId == null) {
+      return null;
+    }
+    String tzid = null;
+    try {
+      Class<?> ulocaleClass = Class.forName("android.icu.util.ULocale");
+      Method m = ulocaleClass.getDeclaredMethod("toLegacyType", String.class, String.class);
+      tzid = (String) m.invoke(null, "tz", cldrShortTzId);
+    } catch (ClassNotFoundException e) {
+      throw new LibraryNotLinkedError("ICU support", "jre_icu", "AndroidIcuUtilULocale");
+    } catch (Exception e) {
+      // Ignore reflection exception and return null below.
+    }
+    // ULocale.toLegacyType() returns the lower case of the input ID if it matches the spec, but
+    // it's not a valid tz id.
+    if (tzid == null || tzid.equals(cldrShortTzId.toLowerCase(Locale.ROOT))) {
+      return null;
+    }
+    return tzid;
+  }
+  /**
+   * Rewrite the date/time pattern coming ICU to be consumed by libcore classes. It's an ideal place
+   * to rewrite the pattern entirely when multiple symbols not digested by libcore need to be
+   * removed/processed. Rewriting in single place could be more efficient in a small or constant
+   * number of scans instead of scanning for every symbol.
+   *
+   * <p>{@link LocaleData#initLocaleData(Locale)} also rewrites time format, but only a subset of
+   * patterns. In the future, that should migrate to this function in order to handle the symbols in
+   * one place, but now separate because java.text and java.time handles different sets of symbols.
+   */
+  private static String transformIcuDateTimePattern(String pattern) {
+    if (pattern == null) {
+      return null;
+    }
+    // For details about the different symbols, see
+    // http://cldr.unicode.org/translation/date-time-1/date-time-patterns#TOC-Day-period-patterns
+    // The symbols B means "Day periods with locale-specific ranges".
+    // English example: 2:00 at night, 10:00 in the morning, 12:00 in the afternoon.
+    boolean contains_B = pattern.indexOf('B') != -1;
+    // AM, PM, noon and midnight. English example: 10:00 AM, 12:00 noon, 7:00 PM
+    boolean contains_b = pattern.indexOf('b') != -1;
+    // Simply remove the symbol 'B' and 'b' if 24-hour 'H' exists because the 24-hour format
+    // provides enough information and the day periods are optional. See http://b/174804526.
+    // Don't handle symbol 'B'/'b' with 12-hour 'h' because it's much more complicated because
+    // we likely need to replace 'B'/'b' with 'a' inserted into a new right position or use other
+    // ways.
+    boolean remove_B_and_b = (contains_B || contains_b) && (pattern.indexOf('H') != -1);
+    if (remove_B_and_b) {
+      return removeBFromDateTimePattern(pattern);
+    }
+    // Non-ideal workaround until http://b/68139386 is implemented.
+    // This workaround may create a pattern that isn't usual / common for the language users.
+    if (pattern.indexOf('h') != -1) {
+      if (contains_b) {
+        pattern = pattern.replace('b', 'a');
+      }
+      if (contains_B) {
+        pattern = pattern.replace('B', 'a');
+      }
+    }
+    return pattern;
+  }
+  /** Remove 'b' and 'B' from simple patterns, e.g. "B H:mm" and "dd-MM-yy B HH:mm:ss" only. */
+  private static String removeBFromDateTimePattern(String pattern) {
+    // The below implementation can likely be replaced by a regular expression via
+    // String.replaceAll(). However, it's known that libcore's regex implementation is more
+    // memory-intensive, and the below implementation is likely cheaper, but it's not yet measured.
+    StringBuilder sb = new StringBuilder(pattern.length());
+    char prev = ' '; // the initial value is not used.
+    for (int i = 0; i < pattern.length(); i++) {
+      char curr = pattern.charAt(i);
+      switch (curr) {
+        case 'B':
+        case 'b':
+          // Ignore 'B' and 'b'
+          break;
+        case ' ': // Ascii whitespace
+          // caveat: Ideally it's a case for all Unicode whitespaces by UCharacter.isUWhiteSpace(c)
+          // but checking ascii whitespace only is enough for the CLDR data when this is written.
+          if (i != 0 && (prev == 'B' || prev == 'b')) {
+            // Ignore the whitespace behind the symbol 'B'/'b' because it's likely a whitespace to
+            // separate the day period with the next text.
+          } else {
+            sb.append(curr);
+          }
+          break;
+        default:
+          sb.append(curr);
+          break;
+      }
+      prev = curr;
+    }
+    // Remove the trailing whitespace which is likely following the symbol 'B'/'b' in the original
+    // pattern, e.g. "hh:mm B" (12:00 in the afternoon).
+    int lastIndex = sb.length() - 1;
+    if (lastIndex >= 0 && sb.charAt(lastIndex) == ' ') {
+      sb.deleteCharAt(lastIndex);
+    }
+    return sb.toString();
+  }
 }

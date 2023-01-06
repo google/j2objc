@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2016, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -146,7 +146,7 @@ final class DateTimePrintContext {
         if (overrideZone != null) {
             // if have zone and instant, calculation is simple, defaulting chrono if necessary
             if (temporal.isSupported(INSTANT_SECONDS)) {
-                Chronology chrono = (effectiveChrono != null ? effectiveChrono : IsoChronology.INSTANCE);
+        Chronology chrono = Objects.requireNonNullElse(effectiveChrono, IsoChronology.INSTANCE);
                 return chrono.zonedDateTime(Instant.from(temporal), overrideZone);
             }
             // block changing zone on OffsetTime, and similar problem cases
@@ -167,9 +167,12 @@ final class DateTimePrintContext {
                 if (!(overrideChrono == IsoChronology.INSTANCE && temporalChrono == null)) {
                     for (ChronoField f : ChronoField.values()) {
                         if (f.isDateBased() && temporal.isSupported(f)) {
-                            throw new DateTimeException("Unable to apply override chronology '" + overrideChrono +
-                                    "' because the temporal object being formatted contains date fields but" +
-                                    " does not represent a whole date: " + temporal);
+              throw new DateTimeException(
+                  "Unable to apply override chronology '"
+                      + overrideChrono
+                      + "' because the temporal object being formatted contains date fields but"
+                      + " does not represent a whole date: "
+                      + temporal);
                         }
                     }
                 }
@@ -179,46 +182,56 @@ final class DateTimePrintContext {
             effectiveDate = null;
         }
 
-        // combine available data
-        // this is a non-standard temporal that is almost a pure delegate
-        // this better handles map-like underlying temporal instances
-        return new TemporalAccessor() {
-            @Override
-            public boolean isSupported(TemporalField field) {
-                if (effectiveDate != null && field.isDateBased()) {
-                    return effectiveDate.isSupported(field);
-                }
-                return temporal.isSupported(field);
-            }
-            @Override
-            public ValueRange range(TemporalField field) {
-                if (effectiveDate != null && field.isDateBased()) {
-                    return effectiveDate.range(field);
-                }
-                return temporal.range(field);
-            }
-            @Override
-            public long getLong(TemporalField field) {
-                if (effectiveDate != null && field.isDateBased()) {
-                    return effectiveDate.getLong(field);
-                }
-                return temporal.getLong(field);
-            }
-            @SuppressWarnings("unchecked")
-            @Override
-            public <R> R query(TemporalQuery<R> query) {
-                if (query == TemporalQueries.chronology()) {
-                    return (R) effectiveChrono;
-                }
-                if (query == TemporalQueries.zoneId()) {
-                    return (R) effectiveZone;
-                }
-                if (query == TemporalQueries.precision()) {
-                    return temporal.query(query);
-                }
-                return query.queryFrom(this);
-            }
-        };
+    // combine available data
+    // this is a non-standard temporal that is almost a pure delegate
+    // this better handles map-like underlying temporal instances
+    return new TemporalAccessor() {
+      @Override
+      public boolean isSupported(TemporalField field) {
+        if (effectiveDate != null && field.isDateBased()) {
+          return effectiveDate.isSupported(field);
+        }
+        return temporal.isSupported(field);
+      }
+
+      @Override
+      public ValueRange range(TemporalField field) {
+        if (effectiveDate != null && field.isDateBased()) {
+          return effectiveDate.range(field);
+        }
+        return temporal.range(field);
+      }
+
+      @Override
+      public long getLong(TemporalField field) {
+        if (effectiveDate != null && field.isDateBased()) {
+          return effectiveDate.getLong(field);
+        }
+        return temporal.getLong(field);
+      }
+
+      @SuppressWarnings("unchecked")
+      @Override
+      public <R> R query(TemporalQuery<R> query) {
+        if (query == TemporalQueries.chronology()) {
+          return (R) effectiveChrono;
+        }
+        if (query == TemporalQueries.zoneId()) {
+          return (R) effectiveZone;
+        }
+        if (query == TemporalQueries.precision()) {
+          return temporal.query(query);
+        }
+        return query.queryFrom(this);
+      }
+
+      @Override
+      public String toString() {
+        return temporal
+            + (effectiveChrono != null ? " with chronology " + effectiveChrono : "")
+            + (effectiveZone != null ? " with zone " + effectiveZone : "");
+      }
+    };
     }
 
     //-----------------------------------------------------------------------
@@ -279,7 +292,7 @@ final class DateTimePrintContext {
     <R> R getValue(TemporalQuery<R> query) {
         R result = temporal.query(query);
         if (result == null && optional == 0) {
-            throw new DateTimeException("Unable to extract value: " + temporal.getClass());
+      throw new DateTimeException("Unable to extract " + query + " from temporal " + temporal);
         }
         return result;
     }
@@ -294,14 +307,10 @@ final class DateTimePrintContext {
      * @throws DateTimeException if the field is not available and the section is not optional
      */
     Long getValue(TemporalField field) {
-        try {
-            return temporal.getLong(field);
-        } catch (DateTimeException ex) {
-            if (optional > 0) {
-                return null;
-            }
-            throw ex;
-        }
+    if (optional > 0 && !temporal.isSupported(field)) {
+      return null;
+    }
+    return temporal.getLong(field);
     }
 
     //-----------------------------------------------------------------------

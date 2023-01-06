@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -143,15 +143,18 @@ public final class DecimalStyle {
         return of(Locale.getDefault(Locale.Category.FORMAT));
     }
 
-    /**
-     * Obtains the DecimalStyle for the specified locale.
-     * <p>
-     * This method provides access to locale sensitive decimal style symbols.
-     *
-     * @param locale  the locale, not null
-     * @return the decimal style, not null
-     */
-    public static DecimalStyle of(Locale locale) {
+  // Android-changed: Remove "rg" extension support in the javadoc. See http://b/228322300.
+  /**
+   * Obtains the DecimalStyle for the specified locale.
+   *
+   * <p>This method provides access to locale sensitive decimal style symbols. If the locale
+   * contains "nu" (Numbering System) <a href="../../util/Locale.html#def_locale_extension">Unicode
+   * extensions</a>, returned instance will reflect the values specified with those extensions.
+   *
+   * @param locale the locale, not null
+   * @return the decimal style, not null
+   */
+  public static DecimalStyle of(Locale locale) {
         Objects.requireNonNull(locale, "locale");
         DecimalStyle info = CACHE.get(locale);
         if (info == null) {
@@ -211,7 +214,6 @@ public final class DecimalStyle {
      *
      * @param zeroDigit  the character for zero
      * @return  a copy with a new character that represents zero, not null
-
      */
     public DecimalStyle withZeroDigit(char zeroDigit) {
         if (zeroDigit == this.zeroDigit) {
