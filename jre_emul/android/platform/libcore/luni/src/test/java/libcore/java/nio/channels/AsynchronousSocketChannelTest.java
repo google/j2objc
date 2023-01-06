@@ -16,11 +16,6 @@
 
 package libcore.java.nio.channels;
 
-import junit.framework.TestCase;
-import libcore.java.util.ResourceLeakageDetector;
-import org.junit.Rule;
-
-import java.io.IOException;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -36,12 +31,13 @@ import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.UnresolvedAddressException;
 import java.nio.channels.UnsupportedAddressTypeException;
 import java.nio.channels.spi.AsynchronousChannelProvider;
-import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import junit.framework.TestCase;
+
 /* J2ObjC removed: unsupported
 import libcore.junit.junit3.TestCaseWithRules;
 import libcore.junit.util.ResourceLeakageDetector;
@@ -782,65 +778,66 @@ public class AsynchronousSocketChannelTest extends TestCase {
         ss.close();
     }
 
+  /* b/264665118
+  public void test_shutdown() throws Exception {
+      ServerSocket ss = new ServerSocket(0);
+      AsynchronousSocketChannel asc = AsynchronousSocketChannel.open();
 
-    public void test_shutdown() throws Exception {
-        ServerSocket ss = new ServerSocket(0);
-        AsynchronousSocketChannel asc = AsynchronousSocketChannel.open();
+      // Connect
+      Future<Void> connectFuture = asc.connect(ss.getLocalSocketAddress());
+      connectFuture.get(1000, TimeUnit.MILLISECONDS);
+      assertNotNull(asc.getRemoteAddress());
 
-        // Connect
-        Future<Void> connectFuture = asc.connect(ss.getLocalSocketAddress());
-        connectFuture.get(1000, TimeUnit.MILLISECONDS);
-        assertNotNull(asc.getRemoteAddress());
+      // Accept & write data
+      final int messageSize = NON_BLOCKING_MESSAGE_SIZE;
+      ByteBuffer sendData = createTestByteBuffer(messageSize, false);
+      Socket sss = ss.accept();
+      // Small message, won't block on write
+      sss.getOutputStream().write(sendData.array());
 
-        // Accept & write data
-        final int messageSize = NON_BLOCKING_MESSAGE_SIZE;
-        ByteBuffer sendData = createTestByteBuffer(messageSize, false);
-        Socket sss = ss.accept();
-        // Small message, won't block on write
-        sss.getOutputStream().write(sendData.array());
+      // Shutdown input, expect -1 from read
+      asc.shutdownInput();
+      ByteBuffer receivedData = createTestByteBuffer(messageSize, false);
 
-        // Shutdown input, expect -1 from read
-        asc.shutdownInput();
-        ByteBuffer receivedData = createTestByteBuffer(messageSize, false);
+      // We did write something into the socket,  #shutdownInput javadocs
+      // say that "...effect on an outstanding read operation is system dependent and
+      // therefore not specified...". It looks like on android/linux the data in
+      // received buffer is discarded.
+      assertEquals(-1, (int)asc.read(receivedData).get(1000, TimeUnit.MILLISECONDS));
+      assertEquals(-1, (int)asc.read(receivedData).get(1000, TimeUnit.MILLISECONDS));
 
-        // We did write something into the socket,  #shutdownInput javadocs
-        // say that "...effect on an outstanding read operation is system dependent and
-        // therefore not specified...". It looks like on android/linux the data in
-        // received buffer is discarded.
-        assertEquals(-1, (int)asc.read(receivedData).get(1000, TimeUnit.MILLISECONDS));
-        assertEquals(-1, (int)asc.read(receivedData).get(1000, TimeUnit.MILLISECONDS));
+      // But we can still write!
+      assertEquals(32, (int)asc.write(sendData).get(1000, TimeUnit.MILLISECONDS));
+      byte[] readArray = new byte[32];
+      assertEquals(32, sss.getInputStream().read(readArray));
+      assertTrue(Arrays.equals(sendData.array(), readArray));
 
-        // But we can still write!
-        assertEquals(32, (int)asc.write(sendData).get(1000, TimeUnit.MILLISECONDS));
-        byte[] readArray = new byte[32];
-        assertEquals(32, sss.getInputStream().read(readArray));
-        assertTrue(Arrays.equals(sendData.array(), readArray));
+      // Shutdown output, expect ClosedChannelException from write
+      asc.shutdownOutput();
+      try {
+          assertEquals(-1, (int)asc.write(sendData).get(1000, TimeUnit.MILLISECONDS));
+          fail();
+      } catch(ExecutionException expected) {
+          assertTrue(expected.getCause() instanceof ClosedChannelException);
+      }
+      try {
+          assertEquals(-1, (int)asc.write(sendData).get(1000, TimeUnit.MILLISECONDS));
+          fail();
+      } catch(ExecutionException expected) {
+          assertTrue(expected.getCause() instanceof ClosedChannelException);
+      }
 
-        // Shutdown output, expect ClosedChannelException from write
-        asc.shutdownOutput();
-        try {
-            assertEquals(-1, (int)asc.write(sendData).get(1000, TimeUnit.MILLISECONDS));
-            fail();
-        } catch(ExecutionException expected) {
-            assertTrue(expected.getCause() instanceof ClosedChannelException);
-        }
-        try {
-            assertEquals(-1, (int)asc.write(sendData).get(1000, TimeUnit.MILLISECONDS));
-            fail();
-        } catch(ExecutionException expected) {
-            assertTrue(expected.getCause() instanceof ClosedChannelException);
-        }
+      // shutdownInput() & shudownOutput() != closed, shocking!
+      assertNotNull(asc.getRemoteAddress());
+      assertTrue(asc.isOpen());
 
-        // shutdownInput() & shudownOutput() != closed, shocking!
-        assertNotNull(asc.getRemoteAddress());
-        assertTrue(asc.isOpen());
+      asc.close();
+      sss.close();
+      ss.close();
+  }
+  */
 
-        asc.close();
-        sss.close();
-        ss.close();
-    }
-
-    public void test_options() throws Exception {
+  public void test_options() throws Exception {
         try (AsynchronousSocketChannel asc = AsynchronousSocketChannel.open()) {
 
             asc.setOption(StandardSocketOptions.SO_SNDBUF, 5000);
