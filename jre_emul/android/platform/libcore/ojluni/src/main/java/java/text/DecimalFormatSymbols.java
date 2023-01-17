@@ -50,6 +50,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import libcore.icu.ICU;
 import libcore.icu.LocaleData;
 
+// Android-removed: Remove javadoc related to "rg" Locale extension.
+// The "rg" extension isn't supported until https://unicode-org.atlassian.net/browse/ICU-21831
+// is resolved, because java.text.* stack relies on ICU on resource resolution.
 /**
  * This class represents the set of symbols (such as the decimal separator,
  * the grouping separator, and so on) needed by <code>DecimalFormat</code>
@@ -62,6 +65,7 @@ import libcore.icu.LocaleData;
  * @see          DecimalFormat
  * @author       Mark Davis
  * @author       Alan Liu
+ * @since 1.1
  */
 
 public class DecimalFormatSymbols implements Cloneable, Serializable {
@@ -517,14 +521,15 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
     {
         return exponential;
     }
-  /**
-   * Returns the string used to separate the mantissa from the exponent.
-   * Examples: "x10^" for 1.23x10^4, "E" for 1.23E4.
-   *
-   * @return the exponent separator string
-   * @see #setExponentSeparator(java.lang.String)
-   * @since 1.6
-   */
+
+    /**
+     * Returns the string used to separate the mantissa from the exponent.
+     * Examples: "x10^" for 1.23x10^4, "E" for 1.23E4.
+     *
+     * @return the exponent separator string
+     * @see #setExponentSeparator(java.lang.String)
+     * @since 1.6
+     */
     public String getExponentSeparator()
     {
         return exponentialSeparator;
@@ -539,22 +544,22 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         //cachedIcuDFS = null;
     }
 
-  /**
-   * Sets the string used to separate the mantissa from the exponent.
-   * Examples: "x10^" for 1.23x10^4, "E" for 1.23E4.
-   *
-   * @param exp the exponent separator string
-   * @exception NullPointerException if <code>exp</code> is null
-   * @see #getExponentSeparator()
-   * @since 1.6
-   */
+    /**
+     * Sets the string used to separate the mantissa from the exponent.
+     * Examples: "x10^" for 1.23x10^4, "E" for 1.23E4.
+     *
+     * @param exp the exponent separator string
+     * @exception NullPointerException if <code>exp</code> is null
+     * @see #getExponentSeparator()
+     * @since 1.6
+     */
     public void setExponentSeparator(String exp)
     {
         if (exp == null) {
             throw new NullPointerException();
         }
         exponentialSeparator = exp;
-     }
+    }
 
 
     //------------------------------------------------------------
@@ -593,7 +598,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         patternSeparator == other.patternSeparator &&
         infinity.equals(other.infinity) &&
         NaN.equals(other.NaN) &&
-        currencySymbol.equals(other.currencySymbol) &&
+        getCurrencySymbol().equals(other.getCurrencySymbol()) && // possible currency init occurs here
         intlCurrencySymbol.equals(other.intlCurrencySymbol) &&
         currency == other.currency &&
         monetarySeparator == other.monetarySeparator &&
@@ -669,7 +674,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         minusSign = maybeStripMarkers(numberElements[6], '-');
         exponential = numberElements[7].charAt(0);
         exponentialSeparator = numberElements[7]; //string representation new since 1.6
-        perMill = numberElements[8].charAt(0);
+        perMill = maybeStripMarkers(numberElements[8], '\u2030');
         infinity  = numberElements[9];
         NaN = numberElements[10];
 
@@ -677,13 +682,14 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         // Check for empty country string separately because it's a valid
         // country ID for Locale (and used for the C locale), but not a valid
         // ISO 3166 country code, and exceptions are expensive.
-        if (!"".equals(locale.getCountry())) {
+        if (!locale.getCountry().isEmpty()) {
             try {
                 currency = Currency.getInstance(locale);
             } catch (IllegalArgumentException e) {
                 // use default values below for compatibility
             }
         }
+
         if (currency != null) {
             intlCurrencySymbol = currency.getCurrencyCode();
             if (data[1] != null && data[1] == intlCurrencySymbol) {
@@ -724,17 +730,25 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
     // VisibleForTesting
     public static char maybeStripMarkers(String symbol, char fallback) {
         final int length = symbol.length();
-        if (length == 1) {
-            return symbol.charAt(0);
-        }
-
-        if (length > 1) {
-            char first = symbol.charAt(0);
-            if (first =='\u200E' || first =='\u200F' || first =='\u061C') {
-                return symbol.charAt(1);
+        if (length >= 1) {
+            boolean sawNonMarker = false;
+            char nonMarker = 0;
+            for (int i = 0; i < length; i++) {
+                final char c = symbol.charAt(i);
+                if (c == '\u200E' || c == '\u200F' || c == '\u061C') {
+                    continue;
+                }
+                if (sawNonMarker) {
+                    // More than one non-marker character.
+                    return fallback;
+                }
+                sawNonMarker = true;
+                nonMarker = c;
+            }
+            if (sawNonMarker) {
+                return nonMarker;
             }
         }
-
         return fallback;
     }
 
@@ -748,6 +762,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
             return cachedIcuDFS;
         }
 
+        initializeCurrency(this.locale);
         cachedIcuDFS = new android.icu.text.DecimalFormatSymbols(this.locale);
         // Do not localize plus sign. See "Special Pattern Characters" section in DecimalFormat.
         // http://b/67034519
@@ -771,7 +786,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
 
         try {
             cachedIcuDFS.setCurrency(
-                    android.icu.util.Currency.getInstance(currency.getCurrencyCode()));
+                    android.icu.util.Currency.getInstance(getCurrency().getCurrencyCode()));
         } catch (NullPointerException e) {
             currency = Currency.getInstance("XXX");
         }
@@ -816,8 +831,9 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
         result.setCurrencySymbol(dfs.getCurrencySymbol());
         return result;
     }*/
+    // END Android-added: getIcuDecimalFormatSymbols() and fromIcuInstance().
 
-
+    // BEGIN Android-added: Android specific serialization code.
     private static final ObjectStreamField[] serialPersistentFields = {
             new ObjectStreamField("currencySymbol", String.class),
             new ObjectStreamField("decimalSeparator", char.class),
@@ -884,9 +900,11 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      * default serialization will work properly if this object is streamed out again.
      * Initializes the currency from the intlCurrencySymbol field.
      *
-     * @since JDK 1.1.6
+     * @since  1.1.6
      */
-    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream stream)
+            throws IOException, ClassNotFoundException {
+        // BEGIN Android-changed: Android specific serialization code.
         ObjectInputStream.GetField fields = stream.readFields();
         final int serialVersionOnStream = fields.get("serialVersionOnStream", 0);
         currencySymbol = (String) fields.get("currencySymbol", "");
@@ -935,10 +953,13 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
             setExponentSeparator((String) fields.get("exponentialSeparator", "E"));
         }
 
-        try {
-            currency = Currency.getInstance(intlCurrencySymbol);
-        } catch (IllegalArgumentException e) {
-            currency = null;
+        if (intlCurrencySymbol != null) {
+            try {
+                currency = Currency.getInstance(intlCurrencySymbol);
+                currencyInitialized = true;
+            } catch (IllegalArgumentException e) {
+                currency = null;
+            }
         }
         // END Android-changed: Android specific serialization code.
     }
@@ -1037,7 +1058,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
     /**
      * The decimal separator used when formatting currency values.
      * @serial
-     * @since JDK 1.1.6
+     * @since  1.1.6
      * @see #getMonetaryDecimalSeparator
      */
     private  char    monetarySeparator; // Field new in JDK 1.1.6
@@ -1051,20 +1072,20 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      * The intent is that this will be added to the API in the future.
      *
      * @serial
-     * @since JDK 1.1.6
+     * @since  1.1.6
      */
     private  char    exponential;       // Field new in JDK 1.1.6
 
-  /**
-   * The string used to separate the mantissa from the exponent.
-   * Examples: "x10^" for 1.23x10^4, "E" for 1.23E4.
-   * <p>
-   * If both <code>exponential</code> and <code>exponentialSeparator</code>
-   * exist, this <code>exponentialSeparator</code> has the precedence.
-   *
-   * @serial
-   * @since 1.6
-   */
+    /**
+     * The string used to separate the mantissa from the exponent.
+     * Examples: "x10^" for 1.23x10^4, "E" for 1.23E4.
+     * <p>
+     * If both <code>exponential</code> and <code>exponentialSeparator</code>
+     * exist, this <code>exponentialSeparator</code> has the precedence.
+     *
+     * @serial
+     * @since 1.6
+     */
     private  String    exponentialSeparator;       // Field new in JDK 1.6
 
     /**
@@ -1077,6 +1098,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
 
     // currency; only the ISO code is serialized.
     private transient Currency currency;
+    private transient volatile boolean currencyInitialized;
 
     // Proclaim JDK 1.1 FCS compatibility
     static final long serialVersionUID = 5772796243397350300L;
@@ -1107,7 +1129,7 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
      * is always written.
      *
      * @serial
-     * @since JDK 1.1.6
+     * @since  1.1.6
      */
     private int serialVersionOnStream = currentSerialVersion;
 
@@ -1121,4 +1143,5 @@ public class DecimalFormatSymbols implements Cloneable, Serializable {
 
     /* J2ObjC: ICU4J is not supported.
     private transient android.icu.text.DecimalFormatSymbols cachedIcuDFS = null;*/
+    // END Android-added: cache for cachedIcuDFS.
 }

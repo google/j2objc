@@ -46,7 +46,6 @@ import java.text.AttributedCharacterIterator.Attribute;
  * @see Annotation
  * @since 1.2
  */
-
 public class AttributedString {
 
     // since there are no vectors of int, we have to use arrays.
@@ -88,7 +87,7 @@ public class AttributedString {
 
             text = buffer.toString();
 
-            if (text.length() > 0) {
+      if (!text.isEmpty()) {
                 // Determine the runs, creating a new run when the attributes
                 // differ.
                 int offset = 0;
@@ -147,7 +146,7 @@ public class AttributedString {
         }
         this.text = text;
 
-        if (text.length() == 0) {
+        if (text.isEmpty()) {
             if (attributes.isEmpty())
                 return;
             throw new IllegalArgumentException("Can't add attribute to 0-length text");
@@ -243,11 +242,11 @@ public class AttributedString {
             throw new IllegalArgumentException("Invalid substring range");
 
         // Copy the given string
-        StringBuffer textBuffer = new StringBuffer();
+        StringBuilder textBuilder = new StringBuilder();
         text.setIndex(beginIndex);
         for (char c = text.current(); text.getIndex() < endIndex; c = text.next())
-            textBuffer.append(c);
-        this.text = textBuffer.toString();
+            textBuilder.append(c);
+        this.text = textBuilder.toString();
 
         if (beginIndex == endIndex)
             return;
@@ -674,7 +673,7 @@ public class AttributedString {
     }
 
     // returns whether the two objects are either both null or equal
-    private final static boolean valuesMatch(Object value1, Object value2) {
+    private static final boolean valuesMatch(Object value1, Object value2) {
         if (value1 == null) {
             return value2 == null;
         } else {
@@ -736,10 +735,9 @@ public class AttributedString {
         return (!last.equals(attrs));
     }
 
-
     // the iterator class associated with this string class
 
-    final private class AttributedStringIterator implements AttributedCharacterIterator {
+    private final class AttributedStringIterator implements AttributedCharacterIterator {
 
         // note on synchronization:
         // we don't synchronize on the iterator, assuming that an iterator is only used in one thread.
@@ -1052,7 +1050,7 @@ public class AttributedString {
 
     // the map class associated with this string class, giving access to the attributes of one run
 
-    final private class AttributeMap extends AbstractMap<Attribute,Object> {
+    private final class AttributeMap extends AbstractMap<Attribute, Object> {
 
         int runIndex;
         int beginIndex;

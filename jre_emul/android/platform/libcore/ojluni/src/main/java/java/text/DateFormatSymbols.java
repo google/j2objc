@@ -47,7 +47,6 @@ import java.lang.ref.SoftReference;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -55,6 +54,9 @@ import libcore.icu.ICU;
 import libcore.icu.LocaleData;
 import libcore.icu.TimeZoneNames;
 
+// Android-removed: Remove javadoc related to "rg" Locale extension.
+// The "rg" extension isn't supported until https://unicode-org.atlassian.net/browse/ICU-21831
+// is resolved, because java.text.* stack relies on ICU on resource resolution.
 /**
  * <code>DateFormatSymbols</code> is a public class for encapsulating
  * localizable date-time formatting data, such as the names of the
@@ -99,6 +101,7 @@ import libcore.icu.TimeZoneNames;
  * @see          SimpleDateFormat
  * @see          java.util.SimpleTimeZone
  * @author       Chen-Lieh Huang
+ * @since 1.1
  */
 public class DateFormatSymbols implements Serializable, Cloneable {
 
@@ -214,7 +217,7 @@ public class DateFormatSymbols implements Serializable, Cloneable {
      * </ul>
      * The zone ID is <em>not</em> localized; it's one of the valid IDs of
      * the {@link java.util.TimeZone TimeZone} class that are not
-     * <a href="../java/util/TimeZone.html#CustomID">custom IDs</a>.
+     * <a href="../util/TimeZone.html#CustomID">custom IDs</a>.
      * All other entries are localized names.
      * @see java.util.TimeZone
      * @serial
@@ -256,10 +259,10 @@ public class DateFormatSymbols implements Serializable, Cloneable {
     static final int PATTERN_WEEK_YEAR            = 19; // Y
     static final int PATTERN_ISO_DAY_OF_WEEK      = 20; // u
     static final int PATTERN_ISO_ZONE             = 21; // X
-    static final int PATTERN_STANDALONE_MONTH     = 22; // L
+    static final int PATTERN_MONTH_STANDALONE     = 22; // L
     // Android-added: Constant for standalone day of week.
     static final int PATTERN_STANDALONE_DAY_OF_WEEK = 23; // c
-    // Android-added: Constant for pattern letter 'b', 'B'
+    // Android-added: Constant for pattern letter 'b', 'B'.
     static final int PATTERN_DAY_PERIOD = 24; // b
     static final int PATTERN_FLEXIBLE_DAY_PERIOD = 25; // B
 
@@ -422,6 +425,7 @@ public class DateFormatSymbols implements Serializable, Cloneable {
 
     // BEGIN Android-changed: Replace getProviderInstance() with getCachedInstance().
     // Android removed support for DateFormatSymbolsProviders, but still caches DFS.
+    // App compat change for b/159514442.
     /**
      * Returns a cached DateFormatSymbols if it's found in the
      * cache. Otherwise, this method returns a newly cached instance
@@ -467,6 +471,12 @@ public class DateFormatSymbols implements Serializable, Cloneable {
 
     /**
      * Gets month strings. For example: "January", "February", etc.
+     * An array with either 12 or 13 elements will be returned depending
+     * on whether or not {@link java.util.Calendar#UNDECIMBER Calendar.UNDECIMBER}
+     * is supported. Use
+     * {@link java.util.Calendar#JANUARY Calendar.JANUARY},
+     * {@link java.util.Calendar#FEBRUARY Calendar.FEBRUARY},
+     * etc. to index the result array.
      *
      * <p>If the language requires different forms for formatting and
      * stand-alone usages, this method returns month names in the
@@ -478,6 +488,8 @@ public class DateFormatSymbols implements Serializable, Cloneable {
      * Calendar Elements in the Unicode Locale Data Markup Language
      * (LDML) specification</a> for more details.
      *
+     * @implSpec This method returns 13 elements since
+     * {@link java.util.Calendar#UNDECIMBER Calendar.UNDECIMBER} is supported.
      * @return the month strings.
      */
     public String[] getMonths() {
@@ -486,7 +498,9 @@ public class DateFormatSymbols implements Serializable, Cloneable {
 
     /**
      * Sets month strings. For example: "January", "February", etc.
-     * @param newMonths the new month strings.
+     * @param newMonths the new month strings. The array should
+     * be indexed by {@link java.util.Calendar#JANUARY Calendar.JANUARY},
+     * {@link java.util.Calendar#FEBRUARY Calendar.FEBRUARY}, etc.
      */
     public void setMonths(String[] newMonths) {
         months = Arrays.copyOf(newMonths, newMonths.length);
@@ -495,9 +509,15 @@ public class DateFormatSymbols implements Serializable, Cloneable {
 
     /**
      * Gets short month strings. For example: "Jan", "Feb", etc.
+     * An array with either 12 or 13 elements will be returned depending
+     * on whether or not {@link java.util.Calendar#UNDECIMBER Calendar.UNDECIMBER}
+     * is supported. Use
+     * {@link java.util.Calendar#JANUARY Calendar.JANUARY},
+     * {@link java.util.Calendar#FEBRUARY Calendar.FEBRUARY},
+     * etc. to index the result array.
      *
      * <p>If the language requires different forms for formatting and
-     * stand-alone usages, This method returns short month names in
+     * stand-alone usages, this method returns short month names in
      * the formatting form. For example, the preferred abbreviation
      * for January in the Catalan language is <em>de gen.</em> in the
      * formatting form, while it is <em>gen.</em> in the stand-alone
@@ -506,6 +526,8 @@ public class DateFormatSymbols implements Serializable, Cloneable {
      * Calendar Elements in the Unicode Locale Data Markup Language
      * (LDML) specification</a> for more details.
      *
+     * @implSpec This method returns 13 elements since
+     * {@link java.util.Calendar#UNDECIMBER Calendar.UNDECIMBER} is supported.
      * @return the short month strings.
      */
     public String[] getShortMonths() {
@@ -514,7 +536,9 @@ public class DateFormatSymbols implements Serializable, Cloneable {
 
     /**
      * Sets short month strings. For example: "Jan", "Feb", etc.
-     * @param newShortMonths the new short month strings.
+     * @param newShortMonths the new short month strings. The array should
+     * be indexed by {@link java.util.Calendar#JANUARY Calendar.JANUARY},
+     * {@link java.util.Calendar#FEBRUARY Calendar.FEBRUARY}, etc.
      */
     public void setShortMonths(String[] newShortMonths) {
         shortMonths = Arrays.copyOf(newShortMonths, newShortMonths.length);
@@ -523,8 +547,10 @@ public class DateFormatSymbols implements Serializable, Cloneable {
 
     /**
      * Gets weekday strings. For example: "Sunday", "Monday", etc.
-     * @return the weekday strings. Use <code>Calendar.SUNDAY</code>,
-     * <code>Calendar.MONDAY</code>, etc. to index the result array.
+     * @return the weekday strings. Use
+     * {@link java.util.Calendar#SUNDAY Calendar.SUNDAY},
+     * {@link java.util.Calendar#MONDAY Calendar.MONDAY}, etc. to index
+     * the result array.
      */
     public String[] getWeekdays() {
         return Arrays.copyOf(weekdays, weekdays.length);
@@ -533,8 +559,8 @@ public class DateFormatSymbols implements Serializable, Cloneable {
     /**
      * Sets weekday strings. For example: "Sunday", "Monday", etc.
      * @param newWeekdays the new weekday strings. The array should
-     * be indexed by <code>Calendar.SUNDAY</code>,
-     * <code>Calendar.MONDAY</code>, etc.
+     * be indexed by {@link java.util.Calendar#SUNDAY Calendar.SUNDAY},
+     * {@link java.util.Calendar#MONDAY Calendar.MONDAY}, etc.
      */
     public void setWeekdays(String[] newWeekdays) {
         weekdays = Arrays.copyOf(newWeekdays, newWeekdays.length);
@@ -543,8 +569,10 @@ public class DateFormatSymbols implements Serializable, Cloneable {
 
     /**
      * Gets short weekday strings. For example: "Sun", "Mon", etc.
-     * @return the short weekday strings. Use <code>Calendar.SUNDAY</code>,
-     * <code>Calendar.MONDAY</code>, etc. to index the result array.
+     * @return the short weekday strings. Use
+     * {@link java.util.Calendar#SUNDAY Calendar.SUNDAY},
+     * {@link java.util.Calendar#MONDAY Calendar.MONDAY}, etc. to index
+     * the result array.
      */
     public String[] getShortWeekdays() {
         return Arrays.copyOf(shortWeekdays, shortWeekdays.length);
@@ -553,8 +581,8 @@ public class DateFormatSymbols implements Serializable, Cloneable {
     /**
      * Sets short weekday strings. For example: "Sun", "Mon", etc.
      * @param newShortWeekdays the new short weekday strings. The array should
-     * be indexed by <code>Calendar.SUNDAY</code>,
-     * <code>Calendar.MONDAY</code>, etc.
+     * be indexed by {@link java.util.Calendar#SUNDAY Calendar.SUNDAY},
+     * {@link java.util.Calendar#MONDAY Calendar.MONDAY}, etc.
      */
     public void setShortWeekdays(String[] newShortWeekdays) {
         shortWeekdays = Arrays.copyOf(newShortWeekdays, newShortWeekdays.length);
@@ -749,7 +777,9 @@ public class DateFormatSymbols implements Serializable, Cloneable {
             // Android-changed: Don't include zone strings in hashCode to avoid populating it.
             // hashCode = 11 * hashCode + Arrays.deepHashCode(getZoneStringsWrapper());
             hashCode = 11 * hashCode + Objects.hashCode(localPatternChars);
-            cachedHashCode = hashCode;
+            if (hashCode != 0) {
+                cachedHashCode = hashCode;
+            }
         }
 
         return hashCode;
@@ -804,12 +834,12 @@ public class DateFormatSymbols implements Serializable, Cloneable {
     private static final ConcurrentMap<Locale, SoftReference<DateFormatSymbols>> cachedInstances
         = new ConcurrentHashMap<>(3);
 
-    private transient int lastZoneIndex = 0;
+    private transient int lastZoneIndex;
 
     /**
      * Cached hash code
      */
-    transient volatile int cachedHashCode = 0;
+    transient volatile int cachedHashCode;
 
     // Android-changed: update comment to describe local modification.
     /**

@@ -26,6 +26,7 @@
 package java.text;
 
 import java.util.Calendar;
+import java.util.StringJoiner;
 import static java.util.GregorianCalendar.*;
 
 /**
@@ -146,19 +147,13 @@ class CalendarBuilder {
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("CalendarBuilder:[");
+        StringJoiner sj = new StringJoiner(",", "CalendarBuilder:[", "]");
         for (int i = 0; i < field.length; i++) {
             if (isSet(i)) {
-                sb.append(i).append('=').append(field[MAX_FIELD + i]).append(',');
+                sj.add(i + "=" + field[MAX_FIELD + i]);
             }
         }
-        int lastIndex = sb.length() - 1;
-        if (sb.charAt(lastIndex) == ',') {
-            sb.setLength(lastIndex);
-        }
-        sb.append(']');
-        return sb.toString();
+        return sj.toString();
     }
 
     static int toISODayOfWeek(int calendarDayOfWeek) {
