@@ -89,10 +89,10 @@ typedef struct SyncCache {
     SyncCacheItem list[0];
 } SyncCache;
 
-typedef struct {
+typedef struct  __attribute__((aligned(64))){
     J2OBJC_FAST_LOCK_TYPE lock;
     SyncData *data;
-} SyncList __attribute__((aligned(64)));
+} SyncList;
 // aligned to put locks on separate cache lines
 
 // Use multiple parallel lists to decrease contention among unrelated objects.
