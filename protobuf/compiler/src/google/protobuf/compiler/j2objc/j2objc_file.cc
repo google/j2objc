@@ -176,6 +176,7 @@ void FileGenerator::GenerateHeader(GeneratorContext* context) {
     }
   }
 
+  printer.Print("#import <Foundation/Foundation.h>\n");
   PrintImports(&headers, &printer);
   PrintForwardDeclarations(&declarations, &printer);
 
