@@ -193,7 +193,9 @@ class JarFile extends ZipFile {
         // Manifest man = manRef != null ? manRef.get() : null;
         Manifest man = manifest;
         if (man == null) {
+
             JarEntry manEntry = getManEntry();
+
             // If found then load the manifest
             if (manEntry != null) {
                 if (verify) {
