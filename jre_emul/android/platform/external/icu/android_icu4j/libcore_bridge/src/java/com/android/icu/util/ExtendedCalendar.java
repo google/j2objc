@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package android.icu.util;
+package com.android.icu.util;
 
+import android.icu.util.Calendar;
+import android.icu.util.ULocale;
 import java.util.Objects;
 import libcore.api.IntraCoreApi;
 

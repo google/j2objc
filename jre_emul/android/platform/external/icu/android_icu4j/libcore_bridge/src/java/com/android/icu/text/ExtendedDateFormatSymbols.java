@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package android.icu.text;
+package com.android.icu.text;
 
+import android.icu.text.DateFormatSymbols;
 import android.icu.text.DateFormatSymbols.AospExtendedDateFormatSymbols;
 import android.icu.util.ULocale;
 import libcore.api.IntraCoreApi;

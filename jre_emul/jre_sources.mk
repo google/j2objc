@@ -2063,7 +2063,6 @@ JAVA_PUBLIC_SOURCES_ICU = \
   android/icu/text/DecimalFormat.java \
   android/icu/text/DecimalFormatSymbols.java \
   android/icu/text/DisplayContext.java \
-  android/icu/text/ExtendedDateFormatSymbols.java \
   android/icu/text/LocaleDisplayNames.java \
   android/icu/text/MessageFormat.java \
   android/icu/text/MessagePattern.java \
@@ -2089,7 +2088,6 @@ JAVA_PUBLIC_SOURCES_ICU = \
   android/icu/util/Calendar.java \
   android/icu/util/Currency.java \
   android/icu/util/CurrencyAmount.java \
-  android/icu/util/ExtendedCalendar.java \
   android/icu/util/Freezable.java \
   android/icu/util/GregorianCalendar.java \
   android/icu/util/HebrewCalendar.java \
@@ -2105,6 +2103,9 @@ JAVA_PUBLIC_SOURCES_ICU = \
   android/icu/util/ULocale.java \
   android/icu/util/ValueIterator.java \
   android/icu/util/VersionInfo.java \
+  com/android/icu/util/ExtendedCalendar.java \
+  com/android/icu/text/ExtendedDateFormatSymbols.java \
+  com/android/icu/util/ExtendedTimeZone.java \
   java/text/BreakIterator.java \
 
 JAVA_PRIVATE_SOURCES_ICU = \
@@ -2259,7 +2260,7 @@ JAVA_PRIVATE_SOURCES_ICU = \
   android/icu/util/UResourceTypeMismatchException.java \
   android/icu/util/VTimeZone.java \
   java/text/IcuIteratorWrapper.java \
-
+  
 NATIVE_JRE_ICU_EMBEDDED_DATA = ICUData.m
 
 # These sources are not included in any sub-library, only the full jre_emul.
