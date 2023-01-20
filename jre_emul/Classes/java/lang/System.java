@@ -124,7 +124,7 @@ public class System {
   ]-*/;
 
   public static native int identityHashCode(Object anObject) /*-[
-    return (int) (intptr_t) anObject;
+    return (int)(intptr_t)anObject;
   ]-*/;
 
   public static native void arraycopy(Object src, int srcPos, Object dest, int destPos,
