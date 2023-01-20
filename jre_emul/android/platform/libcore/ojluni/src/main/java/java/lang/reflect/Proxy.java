@@ -44,6 +44,7 @@ import sun.reflect.CallerSensitive;
 #include "IOSProxyClass.h"
 #include "IOSReflection.h"
 #include "java/lang/IllegalArgumentException.h"
+#include "java/lang/System.h"
 #include "java/lang/reflect/Method.h"
 #include <objc/runtime.h>
 
@@ -872,7 +873,7 @@ public class Proxy implements java.io.Serializable {
     ]-*/;
 
     native int proxy_hashCode() /*-[
-      return (jint)(intptr_t)self;
+      return JavaLangSystem_identityHashCodeWithId_(self);
     ]-*/;
 
     @Override
