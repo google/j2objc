@@ -67,8 +67,8 @@ import static java.time.temporal.ChronoField.ERA;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 
 import android.icu.text.DateFormatSymbols;
-import android.icu.text.ExtendedDateFormatSymbols;
 import android.icu.util.ULocale;
+import com.android.icu.text.ExtendedDateFormatSymbols;
 import java.time.chrono.Chronology;
 import java.time.chrono.IsoChronology;
 import java.time.temporal.ChronoField;

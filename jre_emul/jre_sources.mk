@@ -2047,6 +2047,7 @@ JAVA_PRIVATE_SOURCES_TIME = \
   java/time/zone/ZoneRulesProvider.java \
   sun/util/locale/provider/CalendarDataUtility.java
 
+#ExtendedTimeZone, ExtendedCalendar and ExtendedDateFormatSymbols are really private but referenced from the java_time_lib#
 JAVA_PUBLIC_SOURCES_ICU = \
   android/icu/lang/UCharacter.java \
   android/icu/lang/UCharacterCategory.java \
@@ -2063,7 +2064,6 @@ JAVA_PUBLIC_SOURCES_ICU = \
   android/icu/text/DecimalFormat.java \
   android/icu/text/DecimalFormatSymbols.java \
   android/icu/text/DisplayContext.java \
-  android/icu/text/ExtendedDateFormatSymbols.java \
   android/icu/text/LocaleDisplayNames.java \
   android/icu/text/MessageFormat.java \
   android/icu/text/MessagePattern.java \
@@ -2089,7 +2089,6 @@ JAVA_PUBLIC_SOURCES_ICU = \
   android/icu/util/Calendar.java \
   android/icu/util/Currency.java \
   android/icu/util/CurrencyAmount.java \
-  android/icu/util/ExtendedCalendar.java \
   android/icu/util/Freezable.java \
   android/icu/util/GregorianCalendar.java \
   android/icu/util/HebrewCalendar.java \
@@ -2105,6 +2104,9 @@ JAVA_PUBLIC_SOURCES_ICU = \
   android/icu/util/ULocale.java \
   android/icu/util/ValueIterator.java \
   android/icu/util/VersionInfo.java \
+  com/android/icu/util/ExtendedTimeZone.java \
+  com/android/icu/util/ExtendedCalendar.java \
+  com/android/icu/text/ExtendedDateFormatSymbols.java \
   java/text/BreakIterator.java \
 
 JAVA_PRIVATE_SOURCES_ICU = \
