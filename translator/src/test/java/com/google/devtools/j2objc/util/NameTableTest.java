@@ -273,7 +273,7 @@ public class NameTableTest extends GenerationTest {
     addSourceFile("package foo.bar; public enum Test { FOO, BAR }", "foo/bar/Test.java");
     String translation = translateSourceFile("foo.bar.Test", "foo/bar/Test.h");
     assertTranslatedLines(translation,
-        "typedef NS_ENUM(NSUInteger, FBTest_Enum) {",
+        "typedef NS_ENUM(jint, FBTest_Enum) {",
         "  FBTest_Enum_FOO = 0,",
         "  FBTest_Enum_BAR = 1,",
         "};");

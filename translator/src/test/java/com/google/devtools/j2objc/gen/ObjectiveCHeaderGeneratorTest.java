@@ -36,7 +36,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "class MyClass {}", "Example", "mypackage/Example.h");
     assertTranslation(translation, "@interface MypackageExample");
     // enum declaration
-    assertTranslation(translation, "typedef NS_ENUM(NSUInteger, MypackageAbcd_Enum) {");
+    assertTranslation(translation, "typedef NS_ENUM(jint, MypackageAbcd_Enum) {");
     assertTranslation(translation, "@interface MypackageAbcd");
     assertTranslation(translation, "@interface MypackageMyClass");
     assertTranslation(translation, "MypackageMyClass *myclass_;");
@@ -486,7 +486,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "public enum Color { RED, WHITE, BLUE }",
       "Color", "Color.h");
     assertTranslatedLines(translation,
-        "typedef NS_ENUM(NSUInteger, Color_Enum) {",
+        "typedef NS_ENUM(jint, Color_Enum) {",
         "  Color_Enum_RED = 0,",
         "  Color_Enum_WHITE = 1,",
         "  Color_Enum_BLUE = 2,",
@@ -608,7 +608,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public enum MyEnum { ONE, TWO, THREE }",
         "MyEnum", "MyEnum.h");
-    assertTranslation(translation, "typedef NS_ENUM(NSUInteger, MyEnum_Enum) {");
+    assertTranslation(translation, "typedef NS_ENUM(jint, MyEnum_Enum) {");
     assertTranslation(translation, "@interface MyEnum : JavaLangEnum");
     assertTranslation(translation, "FOUNDATION_EXPORT MyEnum *MyEnum_values_[];");
     assertTranslation(translation, "inline MyEnum *MyEnum_get_ONE(void);");

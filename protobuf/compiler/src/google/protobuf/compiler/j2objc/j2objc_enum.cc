@@ -72,9 +72,8 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
   printer->Print(
     "\nJ2OBJC_CLASS_DECLARATION($classname$);\n",
     "classname", ClassName(descriptor_));
-  printer->Print(
-    "\ntypedef NS_ENUM(NSUInteger, $classname$) {\n",
-    "classname", CEnumName(descriptor_));
+  printer->Print("\ntypedef NS_ENUM(jint, $classname$) {\n", "classname",
+                 CEnumName(descriptor_));
   printer->Indent();
 
   for (int i = 0; i < canonical_values_.size(); i++) {
@@ -126,7 +125,7 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
       "FOUNDATION_EXPORT $classname$ *$classname$_forNumberWithInt_("
       "jint value);\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_fromOrdinal("
-      "NSUInteger ordinal);\n\n",
+      "jint ordinal);\n\n",
       "classname", ClassName(descriptor_));
 
   for (int i = 0; i < canonical_values_.size(); i++) {
@@ -259,7 +258,7 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "  return nil;\n"
       "}\n"
       "\n"
-      "$classname$ *$classname$_fromOrdinal(NSUInteger ordinal) {\n"
+      "$classname$ *$classname$_fromOrdinal(jint ordinal) {\n"
       "  $classname$_initialize();\n"
       "  if (ordinal >= $count$) {\n"
       "    return nil;\n"

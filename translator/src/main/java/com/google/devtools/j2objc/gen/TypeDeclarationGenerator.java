@@ -164,7 +164,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     // C enum declaration and generate the type declaration.
     if (!constants.isEmpty()) {
       newline();
-      printf("typedef NS_ENUM(NSUInteger, %s) {\n", nativeName);
+      printf("typedef NS_ENUM(jint, %s) {\n", nativeName);
 
       // Print C enum typedef.
       indent();
