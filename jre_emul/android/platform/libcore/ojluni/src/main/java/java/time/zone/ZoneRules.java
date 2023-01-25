@@ -71,9 +71,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.Year;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -302,8 +301,7 @@ public final class ZoneRules implements Serializable {
     /**
      * Creates an instance of ZoneRules that has fixed zone rules.
      *
-     * @param offset  the offset this fixed zone rules is based on, not null
-     * @return the zone rules, not null
+     * @param offset the offset this fixed zone rules is based on, not null
      * @see #isFixedOffset()
      */
     private ZoneRules(ZoneOffset offset) {
@@ -420,14 +418,19 @@ public final class ZoneRules implements Serializable {
     }
 
     /**
-     * Reads the state from the stream.
+     * Reads the state from the stream. The 1,024 limit to the lengths of stdTrans and savSize is
+     * intended to be the size well enough to accommodate the max number of transitions in current
+     * tzdb data (203 for Asia/Tehran).
      *
-     * @param in  the input stream, not null
+     * @param in the input stream, not null
      * @return the created object, not null
      * @throws IOException if an error occurs
      */
     static ZoneRules readExternal(DataInput in) throws IOException, ClassNotFoundException {
         int stdSize = in.readInt();
+        if (stdSize > 1024) {
+            throw new InvalidObjectException("Too many transitions");
+        }
         long[] stdTrans = (stdSize == 0) ? EMPTY_LONG_ARRAY
                                          : new long[stdSize];
         for (int i = 0; i < stdSize; i++) {
@@ -438,6 +441,9 @@ public final class ZoneRules implements Serializable {
             stdOffsets[i] = Ser.readOffset(in);
         }
         int savSize = in.readInt();
+        if (savSize > 1024) {
+            throw new InvalidObjectException("Too many saving offsets");
+        }
         long[] savTrans = (savSize == 0) ? EMPTY_LONG_ARRAY
                                          : new long[savSize];
         for (int i = 0; i < savSize; i++) {
@@ -448,6 +454,9 @@ public final class ZoneRules implements Serializable {
             savOffsets[i] = Ser.readOffset(in);
         }
         int ruleSize = in.readByte();
+        if (ruleSize > 16) {
+            throw new InvalidObjectException("Too many transition rules");
+        }
         ZoneOffsetTransitionRule[] rules = (ruleSize == 0) ?
             EMPTY_LASTRULES : new ZoneOffsetTransitionRule[ruleSize];
         for (int i = 0; i < ruleSize; i++) {
@@ -594,27 +603,29 @@ public final class ZoneRules implements Serializable {
 
     /**
      * Gets the offset transition applicable at the specified local date-time in these rules.
-     * <p>
-     * The mapping from a local date-time to an offset is not straightforward.
-     * There are three cases:
+     *
+     * <p>The mapping from a local date-time to an offset is not straightforward. There are three
+     * cases:
+     *
      * <ul>
-     * <li>Normal, with one valid offset. For the vast majority of the year, the normal
-     *  case applies, where there is a single valid offset for the local date-time.</li>
-     * <li>Gap, with zero valid offsets. This is when clocks jump forward typically
-     *  due to the spring daylight savings change from "winter" to "summer".
-     *  In a gap there are local date-time values with no valid offset.</li>
-     * <li>Overlap, with two valid offsets. This is when clocks are set back typically
-     *  due to the autumn daylight savings change from "summer" to "winter".
-     *  In an overlap there are local date-time values with two valid offsets.</li>
+     *   <li>Normal, with one valid offset. For the vast majority of the year, the normal case
+     *       applies, where there is a single valid offset for the local date-time.
+     *   <li>Gap, with zero valid offsets. This is when clocks jump forward typically due to the
+     *       spring daylight savings change from "winter" to "summer". In a gap there are local
+     *       date-time values with no valid offset.
+     *   <li>Overlap, with two valid offsets. This is when clocks are set back typically due to the
+     *       autumn daylight savings change from "summer" to "winter". In an overlap there are local
+     *       date-time values with two valid offsets.
      * </ul>
-     * A transition is used to model the cases of a Gap or Overlap.
-     * The Normal case will return null.
-     * <p>
-     * There are various ways to handle the conversion from a {@code LocalDateTime}.
-     * One technique, using this method, would be:
+     *
+     * A transition is used to model the cases of a Gap or Overlap. The Normal case will return null.
+     *
+     * <p>There are various ways to handle the conversion from a {@code LocalDateTime}. One technique,
+     * using this method, would be:
+     *
      * <pre>
      *  ZoneOffsetTransition trans = rules.getTransition(localDT);
-     *  if (trans == null) {
+     *  if (trans != null) {
      *    // Gap or Overlap: determine what to do from transition
      *  } else {
      *    // Normal case: only one valid offset
@@ -622,10 +633,10 @@ public final class ZoneRules implements Serializable {
      *  }
      * </pre>
      *
-     * @param localDateTime  the local date-time to query for offset transition, not null, but null
-     *  may be ignored if the rules have a single offset for all instants
+     * @param localDateTime the local date-time to query for offset transition, not null, but null may
+     *     be ignored if the rules have a single offset for all instants
      * @return the offset transition, null if the local date-time is not in transition
-     */
+    */
     public ZoneOffsetTransition getTransition(LocalDateTime localDateTime) {
         Object info = getOffsetInfo(localDateTime);
         return (info instanceof ZoneOffsetTransition ? (ZoneOffsetTransition) info : null);
@@ -871,14 +882,15 @@ public final class ZoneRules implements Serializable {
 
     /**
      * Gets the previous transition before the specified instant.
-     * <p>
-     * This returns details of the previous transition after the specified instant.
-     * For example, if the instant represents a point where "summer" daylight saving time
-     * applies, then the method will return the transition from the previous "winter" time.
      *
-     * @param instant  the instant to get the previous transition after, not null, but null
-     *  may be ignored if the rules have a single offset for all instants
-     * @return the previous transition after the specified instant, null if this is before the first transition
+     * <p>This returns details of the previous transition before the specified instant. For example,
+     * if the instant represents a point where "summer" daylight saving time applies, then the method
+     * will return the transition from the previous "winter" time.
+     *
+     * @param instant the instant to get the previous transition after, not null, but null may be
+     *     ignored if the rules have a single offset for all instants
+     * @return the previous transition before the specified instant, null if this is before the first
+     *     transition
      */
     public ZoneOffsetTransition previousTransition(Instant instant) {
         if (savingsInstantTransitions.length == 0) {
