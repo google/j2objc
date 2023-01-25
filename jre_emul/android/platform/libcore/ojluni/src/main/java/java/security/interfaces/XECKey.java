@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,44 +22,26 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-
 package java.security.interfaces;
 
-import java.math.BigInteger;
+import java.security.spec.AlgorithmParameterSpec;
 
 /**
- * Interface to a DSA-specific set of key parameters, which defines a
- * DSA <em>key family</em>. DSA (Digital Signature Algorithm) is defined
- * in NIST's FIPS-186.
+ * An interface for an elliptic curve public/private key as defined by
+ * RFC 7748. These keys are distinct from the keys represented by
+ * {@code ECKey}, and they are intended for use with algorithms based on RFC
+ * 7748 such as the XDH {@code KeyAgreement} algorithm. This interface allows
+ * access to the algorithm parameters associated with the key.
  *
- * @see DSAKey
- * @see java.security.Key
- * @see java.security.Signature
- *
- * @author Benjamin Renaud
- * @author Josh Bloch
- * @since 1.1
+ * @since 11
  */
-public interface DSAParams {
-
+public interface XECKey {
     /**
-     * Returns the prime, {@code p}.
+     * Returns the algorithm parameters associated
+     * with the key.
      *
-     * @return the prime, {@code p}.
+     * @return the associated algorithm parameters
      */
-    public BigInteger getP();
-
-    /**
-     * Returns the subprime, {@code q}.
-     *
-     * @return the subprime, {@code q}.
-     */
-    public BigInteger getQ();
-
-    /**
-     * Returns the base, {@code g}.
-     *
-     * @return the base, {@code g}.
-     */
-    public BigInteger getG();
+    AlgorithmParameterSpec getParams();
 }
+
