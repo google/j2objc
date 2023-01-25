@@ -1371,6 +1371,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/spec/InvalidParameterSpecException.java \
   java/security/spec/KeySpec.java \
   java/security/spec/MGF1ParameterSpec.java \
+  java/security/spec/NamedParameterSpec.java \
   java/security/spec/PKCS8EncodedKeySpec.java \
   java/security/spec/PSSParameterSpec.java \
   java/security/spec/RSAKeyGenParameterSpec.java \
@@ -1380,6 +1381,8 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/spec/RSAPrivateKeySpec.java \
   java/security/spec/RSAPublicKeySpec.java \
   java/security/spec/X509EncodedKeySpec.java \
+  java/security/spec/XECPrivateKeySpec.java \
+  java/security/spec/XECPublicKeySpec.java \
   java/util/UUID.java \
   javax/crypto/AEADBadTagException.java \
   javax/crypto/BadPaddingException.java \

@@ -598,6 +598,9 @@ TEST_SOURCES := \
     libcore/java/security/PrivilegedActionExceptionTest.java \
     libcore/java/security/cert/CRLReasonTest.java \
     libcore/java/security/cert/X509CRLSelectorTest.java \
+    libcore/java/security/spec/AlgorithmParametersPSSTest.java \
+    libcore/java/security/spec/XECPrivateKeySpecTest.java \
+    libcore/java/security/spec/XECPublicKeySpecTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/text/BreakIteratorTest.java \
     libcore/java/text/ChoiceFormatTest.java \
@@ -1392,6 +1395,7 @@ TEST_SOURCES := \
     tests/security/spec/ECPrivateKeySpecTest.java \
     tests/security/spec/ECPublicKeySpecTest.java \
     tests/security/spec/EllipticCurveTest.java \
+    tests/security/spec/EncodedKeySpec2Test.java \
     tests/security/spec/EncodedKeySpecTest.java \
     tests/security/spec/InvalidKeySpecExceptionTest.java \
     tests/security/spec/InvalidParameterSpecExceptionTest.java \
