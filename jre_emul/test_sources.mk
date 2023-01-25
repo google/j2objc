@@ -159,6 +159,8 @@ SUPPORT_SOURCES = \
     org/apache/harmony/security/tests/support/cert/MyCRL.java \
     org/apache/harmony/security/tests/support/cert/MyFailingCertPath.java \
     org/apache/harmony/security/tests/support/cert/TestUtils.java \
+    org/apache/harmony/security/tests/support/interfaces/DSAKeyPairGeneratorImpl.java \
+    org/apache/harmony/security/tests/support/interfaces/RSAMultiPrimePrivateCrtKeyImpl.java \
     org/apache/harmony/security/tests/support/spec/MyEncodedKeySpec.java \
     org/apache/harmony/testframework/serialization/SerializationTest.java \
     org/apache/harmony/tests/java/lang/MockEnum.java \
@@ -1369,8 +1371,14 @@ TEST_SOURCES := \
     tests/security/cert/X509CRLSelectorTest.java \
     tests/security/cert/X509CRLTest.java \
     tests/security/cert/X509Certificate2Test.java \
+    tests/security/interfaces/DSAKeyPairGeneratorTest.java \
+    tests/security/interfaces/DSAKeyTest.java \
     tests/security/interfaces/DSAParamsTest.java \
+    tests/security/interfaces/DSAPrivateKeyTest.java \
+    tests/security/interfaces/DSAPublicKeyTest.java \
     tests/security/interfaces/RSAKeyTest.java \
+    tests/security/interfaces/RSAMultiPrimePrivateCrtKeyTest.java \
+    tests/security/interfaces/RSAPrivateCrtKeyTest.java \
     tests/security/interfaces/RSAPrivateKeyTest.java \
     tests/security/interfaces/RSAPublicKeyTest.java \
     tests/security/spec/DSAParameterSpecTest.java \
