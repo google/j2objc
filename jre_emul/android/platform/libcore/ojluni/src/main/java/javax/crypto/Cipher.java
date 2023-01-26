@@ -47,6 +47,7 @@ import java.nio.ByteBuffer;
 import java.nio.ReadOnlyBufferException;
 import sun.security.jca.*;
 
+/* Android-changed: preformatted example updated to work with Dokka (b/209921086). */
 /**
  * This class provides the functionality of a cryptographic cipher for
  * encryption and decryption. It forms the core of the Java Cryptographic
@@ -75,9 +76,9 @@ import sun.security.jca.*;
  * provider-specific default values for the mode and padding scheme are used).
  * For example, the following is a valid transformation:
  *
- * <pre>
- *     Cipher c = Cipher.getInstance("<i>DES/CBC/PKCS5Padding</i>");
- * </pre>
+ * <pre>{@code
+ *     Cipher c = Cipher.getInstance("DES/CBC/PKCS5Padding");
+ * }</pre>
  *
  * Using modes such as <code>CFB</code> and <code>OFB</code>, block
  * ciphers can encrypt data in units smaller than the cipher's actual

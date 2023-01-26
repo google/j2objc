@@ -40,6 +40,7 @@ import java.security.spec.AlgorithmParameterSpec;
 
 import java.nio.ByteBuffer;
 
+/* Android-changed: preformatted example updated to work with Dokka (b/209921086). */
 /**
  * This class defines the <i>Service Provider Interface</i> (<b>SPI</b>)
  * for the <code>Cipher</code> class.
@@ -74,9 +75,9 @@ import java.nio.ByteBuffer;
  * provider-specific default values for the mode and padding scheme are used).
  * For example, the following is a valid transformation:
  *
- * <pre>
- *     Cipher c = Cipher.getInstance("<i>DES/CBC/PKCS5Padding</i>");
- * </pre>
+ * <pre>{@code
+ *     Cipher c = Cipher.getInstance("DES/CBC/PKCS5Padding");
+ * }</pre>
  *
  * <p>A provider may supply a separate class for each combination
  * of <i>algorithm/mode/padding</i>, or may decide to provide more generic
