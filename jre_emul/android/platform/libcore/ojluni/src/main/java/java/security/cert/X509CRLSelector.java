@@ -52,7 +52,7 @@ import sun.security.x509.X500Name;
  * {@link CertStore#getCRLs CertStore.getCRLs} or some similar
  * method.
  * <p>
- * Please refer to <a href="http://www.ietf.org/rfc/rfc3280.txt">RFC 3280:
+ * Please refer to <a href="http://tools.ietf.org/html/rfc5280">RFC 5280:
  * Internet X.509 Public Key Infrastructure Certificate and CRL Profile</a>
  * for definitions of the X.509 CRL fields and extensions mentioned below.
  * <p>
@@ -124,8 +124,8 @@ public class X509CRLSelector implements CRLSelector {
             issuerX500Principals = null;
         } else {
             // clone
-            issuerX500Principals = new HashSet<X500Principal>(issuers);
-            issuerNames = new HashSet<Object>();
+            issuerX500Principals = new HashSet<>(issuers);
+            issuerNames = new HashSet<>();
             for (X500Principal p : issuerX500Principals) {
                 issuerNames.add(p.getEncoded());
             }
@@ -288,10 +288,10 @@ public class X509CRLSelector implements CRLSelector {
      */
     private void addIssuerNameInternal(Object name, X500Principal principal) {
         if (issuerNames == null) {
-            issuerNames = new HashSet<Object>();
+            issuerNames = new HashSet<>();
         }
         if (issuerX500Principals == null) {
-            issuerX500Principals = new HashSet<X500Principal>();
+            issuerX500Principals = new HashSet<>();
         }
         issuerNames.add(name);
         issuerX500Principals.add(principal);
@@ -311,7 +311,7 @@ public class X509CRLSelector implements CRLSelector {
     private static HashSet<Object> cloneAndCheckIssuerNames(Collection<?> names)
         throws IOException
     {
-        HashSet<Object> namesCopy = new HashSet<Object>();
+        HashSet<Object> namesCopy = new HashSet<>();
         Iterator<?> i = names.iterator();
         while (i.hasNext()) {
             Object nameObject = i.next();
@@ -363,7 +363,7 @@ public class X509CRLSelector implements CRLSelector {
      */
     private static HashSet<X500Principal> parseIssuerNames(Collection<Object> names)
     throws IOException {
-        HashSet<X500Principal> x500Principals = new HashSet<X500Principal>();
+        HashSet<X500Principal> x500Principals = new HashSet<>();
         for (Iterator<Object> t = names.iterator(); t.hasNext(); ) {
             Object nameObject = t.next();
             if (nameObject instanceof String) {
@@ -566,7 +566,7 @@ public class X509CRLSelector implements CRLSelector {
      *         {@code X509CRLSelector}.
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("X509CRLSelector: [\n");
         if (issuerNames != null) {
             sb.append("  IssuerNames:\n");
@@ -705,9 +705,9 @@ public class X509CRLSelector implements CRLSelector {
             X509CRLSelector copy = (X509CRLSelector)super.clone();
             if (issuerNames != null) {
                 copy.issuerNames =
-                        new HashSet<Object>(issuerNames);
+                        new HashSet<>(issuerNames);
                 copy.issuerX500Principals =
-                        new HashSet<X500Principal>(issuerX500Principals);
+                        new HashSet<>(issuerX500Principals);
             }
             return copy;
         } catch (CloneNotSupportedException e) {

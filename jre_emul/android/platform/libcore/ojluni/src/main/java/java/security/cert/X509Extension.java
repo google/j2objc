@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2017, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -65,6 +65,7 @@ import java.util.Set;
  * be handled by a <em>Class</em> that understands the extension.
  *
  * @author Hemma Prafullchandra
+ * @since 1.2
  */
 
 public interface X509Extension {
@@ -152,30 +153,35 @@ public interface X509Extension {
      * by periods.
      *
      * <p>For example:<br>
-     * <table border=groove summary="Examples of OIDs and extension names">
+     * <table class="striped">
+     * <caption style="display:none">Examples of OIDs and extension names</caption>
+     * <thead>
      * <tr>
-     * <th>OID <em>(Object Identifier)</em></th>
-     * <th>Extension Name</th></tr>
-     * <tr><td>2.5.29.14</td>
+     * <th scope="col">OID <em>(Object Identifier)</em></th>
+     * <th scope="col">Extension Name</th></tr>
+     * </thead>
+     * <tbody style="text-align:left">
+     * <tr><th scope="row">2.5.29.14</th>
      * <td>SubjectKeyIdentifier</td></tr>
-     * <tr><td>2.5.29.15</td>
+     * <tr><th scope="row">2.5.29.15</th>
      * <td>KeyUsage</td></tr>
-     * <tr><td>2.5.29.16</td>
+     * <tr><th scope="row">2.5.29.16</th>
      * <td>PrivateKeyUsage</td></tr>
-     * <tr><td>2.5.29.17</td>
+     * <tr><th scope="row">2.5.29.17</th>
      * <td>SubjectAlternativeName</td></tr>
-     * <tr><td>2.5.29.18</td>
+     * <tr><th scope="row">2.5.29.18</th>
      * <td>IssuerAlternativeName</td></tr>
-     * <tr><td>2.5.29.19</td>
+     * <tr><th scope="row">2.5.29.19</th>
      * <td>BasicConstraints</td></tr>
-     * <tr><td>2.5.29.30</td>
+     * <tr><th scope="row">2.5.29.30</th>
      * <td>NameConstraints</td></tr>
-     * <tr><td>2.5.29.33</td>
+     * <tr><th scope="row">2.5.29.33</th>
      * <td>PolicyMappings</td></tr>
-     * <tr><td>2.5.29.35</td>
+     * <tr><th scope="row">2.5.29.35</th>
      * <td>AuthorityKeyIdentifier</td></tr>
-     * <tr><td>2.5.29.36</td>
+     * <tr><th scope="row">2.5.29.36</th>
      * <td>PolicyConstraints</td></tr>
+     * </tbody>
      * </table>
      *
      * @param oid the Object Identifier value for the extension.

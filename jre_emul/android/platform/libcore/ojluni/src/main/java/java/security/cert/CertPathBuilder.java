@@ -32,7 +32,7 @@ import java.security.NoSuchProviderException;
 import java.security.PrivilegedAction;
 import java.security.Provider;
 import java.security.Security;
-import sun.security.util.Debug;
+import java.util.Objects;
 
 import sun.security.jca.*;
 import sun.security.jca.GetInstance.Instance;
@@ -66,26 +66,15 @@ import sun.security.jca.GetInstance.Instance;
  * CertPathBuilderResult cpbr = cpb.build(params);
  * </pre>
  *
- * <p> Android provides the following {@code CertPathBuilder} algorithms:
- * <table>
- *   <thead>
- *     <tr>
- *       <th>Algorithm</th>
- *       <th>Supported API Levels</th>
- *     </tr>
- *   </thead>
- *   <tbody>
- *     <tr>
- *       <td>PKIX</td>
- *       <td>1+</td>
- *     </tr>
- *   </tbody>
- * </table>
- *
+ * <p>Every implementation of the Java platform is required to support the
+ * following standard {@code CertPathBuilder} algorithm:
+ * <ul>
+ * <li>{@code PKIX}</li>
+ * </ul>
  * This algorithm is described in the <a href=
- * "{@docRoot}/../technotes/guides/security/StandardNames.html#CertPathBuilder">
+ * "{@docRoot}/../specs/security/standard-names.html#certpathbuilder-algorithms">
  * CertPathBuilder section</a> of the
- * Java Cryptography Architecture Standard Algorithm Name Documentation.
+ * Java Security Standard Algorithm Names Specification.
  * Consult the release documentation for your implementation to see if any
  * other algorithms are supported.
  *
@@ -153,23 +142,34 @@ public class CertPathBuilder {
      * <p> Note that the list of registered providers may be retrieved via
      * the {@link Security#getProviders() Security.getProviders()} method.
      *
+     * @implNote
+     * The JDK Reference Implementation additionally uses the
+     * {@code jdk.security.provider.preferred}
+     * {@link Security#getProperty(String) Security} property to determine
+     * the preferred provider order for the specified algorithm. This
+     * may be different than the order of providers returned by
+     * {@link Security#getProviders() Security.getProviders()}.
+     *
      * @param algorithm the name of the requested {@code CertPathBuilder}
      *  algorithm.  See the CertPathBuilder section in the <a href=
-     *  "{@docRoot}/../technotes/guides/security/StandardNames.html#CertPathBuilder">
-     * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
+     *  "{@docRoot}/../specs/security/standard-names.html#certpathbuilder-algorithms">
+     * Java Security Standard Algorithm Names Specification</a>
      * for information about standard algorithm names.
      *
      * @return a {@code CertPathBuilder} object that implements the
-     *          specified algorithm.
+     *         specified algorithm
      *
-     * @throws NoSuchAlgorithmException if no Provider supports a
-     *          CertPathBuilderSpi implementation for the
-     *          specified algorithm.
+     * @throws NoSuchAlgorithmException if no {@code Provider} supports a
+     *         {@code CertPathBuilderSpi} implementation for the
+     *         specified algorithm
+     *
+     * @throws NullPointerException if {@code algorithm} is {@code null}
      *
      * @see java.security.Provider
      */
     public static CertPathBuilder getInstance(String algorithm)
             throws NoSuchAlgorithmException {
+        Objects.requireNonNull(algorithm, "null algorithm name");
         Instance instance = GetInstance.getInstance("CertPathBuilder",
             CertPathBuilderSpi.class, algorithm);
         return new CertPathBuilder((CertPathBuilderSpi)instance.impl,
@@ -190,29 +190,32 @@ public class CertPathBuilder {
      *
      * @param algorithm the name of the requested {@code CertPathBuilder}
      *  algorithm.  See the CertPathBuilder section in the <a href=
-     *  "{@docRoot}/../technotes/guides/security/StandardNames.html#CertPathBuilder">
-     * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
+     *  "{@docRoot}/../specs/security/standard-names.html#certpathbuilder-algorithms">
+     * Java Security Standard Algorithm Names Specification</a>
      * for information about standard algorithm names.
      *
      * @param provider the name of the provider.
      *
      * @return a {@code CertPathBuilder} object that implements the
-     *          specified algorithm.
+     *         specified algorithm
      *
-     * @throws NoSuchAlgorithmException if a CertPathBuilderSpi
-     *          implementation for the specified algorithm is not
-     *          available from the specified provider.
+     * @throws IllegalArgumentException if the {@code provider} is
+     *         {@code null} or empty
+     *
+     * @throws NoSuchAlgorithmException if a {@code CertPathBuilderSpi}
+     *         implementation for the specified algorithm is not
+     *         available from the specified provider
      *
      * @throws NoSuchProviderException if the specified provider is not
-     *          registered in the security provider list.
+     *         registered in the security provider list
      *
-     * @exception IllegalArgumentException if the {@code provider} is
-     *          null or empty.
+     * @throws NullPointerException if {@code algorithm} is {@code null}
      *
      * @see java.security.Provider
      */
     public static CertPathBuilder getInstance(String algorithm, String provider)
            throws NoSuchAlgorithmException, NoSuchProviderException {
+        Objects.requireNonNull(algorithm, "null algorithm name");
         Instance instance = GetInstance.getInstance("CertPathBuilder",
             CertPathBuilderSpi.class, algorithm, provider);
         return new CertPathBuilder((CertPathBuilderSpi)instance.impl,
@@ -230,26 +233,29 @@ public class CertPathBuilder {
      *
      * @param algorithm the name of the requested {@code CertPathBuilder}
      *  algorithm.  See the CertPathBuilder section in the <a href=
-     *  "{@docRoot}/../technotes/guides/security/StandardNames.html#CertPathBuilder">
-     * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
+     *  "{@docRoot}/../specs/security/standard-names.html#certpathbuilder-algorithms">
+     * Java Security Standard Algorithm Names Specification</a>
      * for information about standard algorithm names.
      *
      * @param provider the provider.
      *
      * @return a {@code CertPathBuilder} object that implements the
-     *          specified algorithm.
+     *         specified algorithm
      *
-     * @exception NoSuchAlgorithmException if a CertPathBuilderSpi
-     *          implementation for the specified algorithm is not available
-     *          from the specified Provider object.
+     * @throws IllegalArgumentException if the {@code provider} is
+     *         {@code null}
      *
-     * @exception IllegalArgumentException if the {@code provider} is
-     *          null.
+     * @throws NoSuchAlgorithmException if a {@code CertPathBuilderSpi}
+     *         implementation for the specified algorithm is not available
+     *         from the specified {@code Provider} object
+     *
+     * @throws NullPointerException if {@code algorithm} is {@code null}
      *
      * @see java.security.Provider
      */
     public static CertPathBuilder getInstance(String algorithm,
             Provider provider) throws NoSuchAlgorithmException {
+        Objects.requireNonNull(algorithm, "null algorithm name");
         Instance instance = GetInstance.getInstance("CertPathBuilder",
             CertPathBuilderSpi.class, algorithm, provider);
         return new CertPathBuilder((CertPathBuilderSpi)instance.impl,
@@ -310,9 +316,9 @@ public class CertPathBuilder {
      * by the {@code certpathbuilder.type} security property, or the string
      * {@literal "PKIX"} if no such property exists.
      */
-    public final static String getDefaultType() {
+    public static final String getDefaultType() {
         String cpbtype =
-            AccessController.doPrivileged(new PrivilegedAction<String>() {
+            AccessController.doPrivileged(new PrivilegedAction<>() {
                 public String run() {
                     return Security.getProperty(CPB_TYPE);
                 }

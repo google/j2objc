@@ -27,8 +27,8 @@ package java.security.cert;
 
 /**
  * The CRLReason enumeration specifies the reason that a certificate
- * is revoked, as defined in <a href="http://www.ietf.org/rfc/rfc3280.txt">
- * RFC 3280: Internet X.509 Public Key Infrastructure Certificate and CRL
+ * is revoked, as defined in <a href="http://tools.ietf.org/html/rfc5280">
+ * RFC 5280: Internet X.509 Public Key Infrastructure Certificate and CRL
  * Profile</a>.
  *
  * @author Sean Mullan

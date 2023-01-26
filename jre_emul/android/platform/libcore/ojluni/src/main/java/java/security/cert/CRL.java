@@ -52,9 +52,9 @@ public abstract class CRL {
      * Creates a CRL of the specified type.
      *
      * @param type the standard name of the CRL type.
-     * See Appendix A in the <a href=
-     * "../../../../technotes/guides/security/crypto/CryptoSpec.html#AppA">
-     * Java Cryptography Architecture API Specification &amp; Reference </a>
+     * See the <a href=
+     * "{@docRoot}/../specs/security/standard-names.html">
+     * Java Security Standard Algorithm Names</a> document
      * for information about standard CRL types.
      */
     protected CRL(String type) {

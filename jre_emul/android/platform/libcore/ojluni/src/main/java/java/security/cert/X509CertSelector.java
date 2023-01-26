@@ -65,7 +65,7 @@ import sun.security.x509.*;
  * number. Other unique combinations include the issuer, subject,
  * subjectKeyIdentifier and/or the subjectPublicKey criteria.
  * <p>
- * Please refer to <a href="http://www.ietf.org/rfc/rfc3280.txt">RFC 3280:
+ * Please refer to <a href="http://tools.ietf.org/html/rfc5280">RFC 5280:
  * Internet X.509 Public Key Infrastructure Certificate and CRL Profile</a> for
  * definitions of the X.509 certificate extensions mentioned below.
  * <p>
@@ -87,7 +87,7 @@ public class X509CertSelector implements CertSelector {
 
     private static final Debug debug = Debug.getInstance("certpath");
 
-    private final static ObjectIdentifier ANY_EXTENDED_KEY_USAGE =
+    private static final ObjectIdentifier ANY_EXTENDED_KEY_USAGE =
         ObjectIdentifier.newInternal(new int[] {2, 5, 29, 37, 0});
 
     static {
@@ -619,8 +619,8 @@ public class X509CertSelector implements CertSelector {
             keyPurposeOIDSet = null;
         } else {
             this.keyPurposeSet =
-                Collections.unmodifiableSet(new HashSet<String>(keyPurposeSet));
-            keyPurposeOIDSet = new HashSet<ObjectIdentifier>();
+                Collections.unmodifiableSet(new HashSet<>(keyPurposeSet));
+            keyPurposeOIDSet = new HashSet<>();
             for (String s : this.keyPurposeSet) {
                 keyPurposeOIDSet.add(new ObjectIdentifier(s));
             }
@@ -728,7 +728,7 @@ public class X509CertSelector implements CertSelector {
      * The name is provided in string format.
      * <a href="http://www.ietf.org/rfc/rfc822.txt">RFC 822</a>, DNS, and URI
      * names use the well-established string formats for those types (subject to
-     * the restrictions included in RFC 3280). IPv4 address names are
+     * the restrictions included in RFC 5280). IPv4 address names are
      * supplied using dotted quad notation. OID address names are represented
      * as a series of nonnegative integers separated by periods. And
      * directory names (distinguished names) are supplied in RFC 2253 format.
@@ -746,7 +746,7 @@ public class X509CertSelector implements CertSelector {
      * String form of some distinguished names.
      *
      * @param type the name type (0-8, as specified in
-     *             RFC 3280, section 4.2.1.7)
+     *             RFC 5280, section 4.2.1.6)
      * @param name the name in string form (not {@code null})
      * @throws IOException if a parsing error occurs
      */
@@ -770,7 +770,7 @@ public class X509CertSelector implements CertSelector {
      * <p>
      * The name is provided as a byte array. This byte array should contain
      * the DER encoded name, as it would appear in the GeneralName structure
-     * defined in RFC 3280 and X.509. The encoded byte array should only contain
+     * defined in RFC 5280 and X.509. The encoded byte array should only contain
      * the encoded value of the name, and should not include the tag associated
      * with the name in the GeneralName structure. The ASN.1 definition of this
      * structure appears below.
@@ -806,7 +806,7 @@ public class X509CertSelector implements CertSelector {
      * must contain the specified subjectAlternativeName.
      *
      * @param type the name type (0-8, as specified in
-     *             RFC 3280, section 4.2.1.7)
+     *             RFC 5280, section 4.2.1.6)
      * @param name the name in string or byte array form
      * @throws IOException if a parsing error occurs
      */
@@ -815,12 +815,12 @@ public class X509CertSelector implements CertSelector {
         // First, ensure that the name parses
         GeneralNameInterface tempName = makeGeneralNameInterface(type, name);
         if (subjectAlternativeNames == null) {
-            subjectAlternativeNames = new HashSet<List<?>>();
+            subjectAlternativeNames = new HashSet<>();
         }
         if (subjectAlternativeGeneralNames == null) {
-            subjectAlternativeGeneralNames = new HashSet<GeneralNameInterface>();
+            subjectAlternativeGeneralNames = new HashSet<>();
         }
-        List<Object> list = new ArrayList<Object>(2);
+        List<Object> list = new ArrayList<>(2);
         list.add(Integer.valueOf(type));
         list.add(name);
         subjectAlternativeNames.add(list);
@@ -845,7 +845,7 @@ public class X509CertSelector implements CertSelector {
      * @throws IOException if a parsing error occurs
      */
     private static Set<GeneralNameInterface> parseNames(Collection<List<?>> names) throws IOException {
-        Set<GeneralNameInterface> genNames = new HashSet<GeneralNameInterface>();
+        Set<GeneralNameInterface> genNames = new HashSet<>();
         for (List<?> nameList : names) {
             if (nameList.size() != 2) {
                 throw new IOException("name list size not 2");
@@ -995,7 +995,7 @@ public class X509CertSelector implements CertSelector {
      * <p>
      * The name constraints are specified as a byte array. This byte array
      * should contain the DER encoded form of the name constraints, as they
-     * would appear in the NameConstraints structure defined in RFC 3280
+     * would appear in the NameConstraints structure defined in RFC 5280
      * and X.509. The ASN.1 definition of this structure appears below.
      *
      * <pre>{@code
@@ -1096,10 +1096,10 @@ public class X509CertSelector implements CertSelector {
         } else {
             // Snapshot set and parse it
             Set<String> tempSet = Collections.unmodifiableSet
-                                        (new HashSet<String>(certPolicySet));
+                                        (new HashSet<>(certPolicySet));
             /* Convert to Vector of ObjectIdentifiers */
             Iterator<String> i = tempSet.iterator();
-            Vector<CertificatePolicyId> polIdVector = new Vector<CertificatePolicyId>();
+            Vector<CertificatePolicyId> polIdVector = new Vector<>();
             while (i.hasNext()) {
                 Object o = i.next();
                 if (!(o instanceof String)) {
@@ -1197,7 +1197,7 @@ public class X509CertSelector implements CertSelector {
      * <p>
      * The name is provided in string format. RFC 822, DNS, and URI names
      * use the well-established string formats for those types (subject to
-     * the restrictions included in RFC 3280). IPv4 address names are
+     * the restrictions included in RFC 5280). IPv4 address names are
      * supplied using dotted quad notation. OID address names are represented
      * as a series of nonnegative integers separated by periods. And
      * directory names (distinguished names) are supplied in RFC 2253 format.
@@ -1214,7 +1214,7 @@ public class X509CertSelector implements CertSelector {
      * String form of some distinguished names.
      *
      * @param type the name type (0-8, as specified in
-     *             RFC 3280, section 4.2.1.7)
+     *             RFC 5280, section 4.2.1.6)
      * @param name the name in string form
      * @throws IOException if a parsing error occurs
      */
@@ -1234,7 +1234,7 @@ public class X509CertSelector implements CertSelector {
      * <p>
      * The name is provided as a byte array. This byte array should contain
      * the DER encoded name, as it would appear in the GeneralName structure
-     * defined in RFC 3280 and X.509. The ASN.1 definition of this structure
+     * defined in RFC 5280 and X.509. The ASN.1 definition of this structure
      * appears in the documentation for
      * {@link #addSubjectAlternativeName(int type, byte [] name)
      * addSubjectAlternativeName(int type, byte [] name)}.
@@ -1243,7 +1243,7 @@ public class X509CertSelector implements CertSelector {
      * subsequent modifications.
      *
      * @param type the name type (0-8, as specified in
-     *             RFC 3280, section 4.2.1.7)
+     *             RFC 5280, section 4.2.1.6)
      * @param name a byte array containing the name in ASN.1 DER encoded form
      * @throws IOException if a parsing error occurs
      */
@@ -1258,7 +1258,7 @@ public class X509CertSelector implements CertSelector {
      * the specified pathToName.
      *
      * @param type the name type (0-8, as specified in
-     *             RFC 3280, section 4.2.1.7)
+     *             RFC 5280, section 4.2.1.6)
      * @param name the name in string or byte array form
      * @throws IOException if an encoding error occurs (incorrect form for DN)
      */
@@ -1267,10 +1267,10 @@ public class X509CertSelector implements CertSelector {
         // First, ensure that the name parses
         GeneralNameInterface tempName = makeGeneralNameInterface(type, name);
         if (pathToGeneralNames == null) {
-            pathToNames = new HashSet<List<?>>();
-            pathToGeneralNames = new HashSet<GeneralNameInterface>();
+            pathToNames = new HashSet<>();
+            pathToGeneralNames = new HashSet<>();
         }
-        List<Object> list = new ArrayList<Object>(2);
+        List<Object> list = new ArrayList<>(2);
         list.add(Integer.valueOf(type));
         list.add(name);
         pathToNames.add(list);
@@ -1671,10 +1671,10 @@ public class X509CertSelector implements CertSelector {
      */
     private static Set<List<?>> cloneAndCheckNames(Collection<List<?>> names) throws IOException {
         // Copy the Lists and Collection
-        Set<List<?>> namesCopy = new HashSet<List<?>>();
+        Set<List<?>> namesCopy = new HashSet<>();
         for (List<?> o : names)
         {
-            namesCopy.add(new ArrayList<Object>(o));
+            namesCopy.add(new ArrayList<>(o));
         }
 
         // Check the contents of the Lists and clone any byte arrays
@@ -1715,7 +1715,7 @@ public class X509CertSelector implements CertSelector {
      * <p>
      * The name constraints are returned as a byte array. This byte array
      * contains the DER encoded form of the name constraints, as they
-     * would appear in the NameConstraints structure defined in RFC 3280
+     * would appear in the NameConstraints structure defined in RFC 5280
      * and X.509. The ASN.1 notation for this structure is supplied in the
      * documentation for
      * {@link #setNameConstraints(byte [] bytes) setNameConstraints(byte [] bytes)}.
@@ -1811,7 +1811,7 @@ public class X509CertSelector implements CertSelector {
      *         {@code CertSelector}
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("X509CertSelector: [\n");
         if (x509Cert != null) {
             sb.append("  Certificate: " + x509Cert.toString() + "\n");
@@ -2238,7 +2238,7 @@ public class X509CertSelector implements CertSelector {
                     + subjectPublicKeyAlgID + ", xcert subjectPublicKeyAlgID = "
                     + algID.getOID());
             }
-            if (!subjectPublicKeyAlgID.equals((Object)algID.getOID())) {
+            if (!subjectPublicKeyAlgID.equals(algID.getOID())) {
                 if (debug != null) {
                     debug.println("X509CertSelector.match: "
                         + "subject public key alg IDs don't match");
@@ -2397,7 +2397,7 @@ public class X509CertSelector implements CertSelector {
              * Convert the Vector of PolicyInformation to a Vector
              * of CertificatePolicyIds for easier comparison.
              */
-            List<CertificatePolicyId> policyIDs = new ArrayList<CertificatePolicyId>(policies.size());
+            List<CertificatePolicyId> policyIDs = new ArrayList<>(policies.size());
             for (PolicyInformation info : policies) {
                 policyIDs.add(info.getPolicyIdentifier());
             }

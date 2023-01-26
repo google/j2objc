@@ -91,9 +91,9 @@ import java.util.List;
  * <li>{@code PkiPath}</li>
  * </ul>
  * These encodings are described in the <a href=
- * "{@docRoot}/../technotes/guides/security/StandardNames.html#CertPathEncodings">
+ * "{@docRoot}/../specs/security/standard-names.html#certpath-encodings">
  * CertPath Encodings section</a> of the
- * Java Cryptography Architecture Standard Algorithm Name Documentation.
+ * Java Security Standard Algorithm Names Specification.
  * Consult the release documentation for your implementation to see if any
  * other encodings are supported.
  * <p>
@@ -220,7 +220,7 @@ public abstract class CertPath implements Serializable {
      * @return a string representation of this certification path
      */
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         Iterator<? extends Certificate> stringIterator =
                                         getCertificates().iterator();
 
