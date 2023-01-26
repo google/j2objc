@@ -14,6 +14,8 @@ package org.w3c.dom.ls;
 
 import org.w3c.dom.traversal.NodeFilter;
 
+import android.compat.annotation.UnsupportedAppUsage;
+
 /**
  *  <code>LSSerializerFilter</code>s provide applications the ability to
  * examine nodes as they are being serialized and decide what nodes should
@@ -45,19 +47,22 @@ and Save Specification</a>.
  * @hide
  */
 public interface LSSerializerFilter extends NodeFilter {
-  /**
-   * Tells the <code>LSSerializer</code> what types of nodes to show to the filter. If a node is not
-   * shown to the filter using this attribute, it is automatically serialized. See <code>NodeFilter
-   * </code> for definition of the constants. The constants <code>SHOW_DOCUMENT</code> , <code>
-   * SHOW_DOCUMENT_TYPE</code>, <code>SHOW_DOCUMENT_FRAGMENT</code> , <code>SHOW_NOTATION</code>,
-   * and <code>SHOW_ENTITY</code> are meaningless here, such nodes will never be passed to a <code>
-   * LSSerializerFilter</code>. <br>
-   * Unlike [<a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Traversal-Range-20001113'>DOM Level
-   * 2 Traversal and Range</a>] , the <code>SHOW_ATTRIBUTE</code> constant indicates that the <code>
-   * Attr</code> nodes are shown and passed to the filter. <br>
-   * The constants used here are defined in [<a
-   * href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Traversal-Range-20001113'>DOM Level 2 Traversal
-   * and Range</a>] .
-   */
-  public int getWhatToShow();
+    /**
+     *  Tells the <code>LSSerializer</code> what types of nodes to show to the
+     * filter. If a node is not shown to the filter using this attribute, it
+     * is automatically serialized. See <code>NodeFilter</code> for
+     * definition of the constants. The constants <code>SHOW_DOCUMENT</code>
+     * , <code>SHOW_DOCUMENT_TYPE</code>, <code>SHOW_DOCUMENT_FRAGMENT</code>
+     * , <code>SHOW_NOTATION</code>, and <code>SHOW_ENTITY</code> are
+     * meaningless here, such nodes will never be passed to a
+     * <code>LSSerializerFilter</code>.
+     * <br> Unlike [<a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Traversal-Range-20001113'>DOM Level 2 Traversal and      Range</a>]
+     * , the <code>SHOW_ATTRIBUTE</code> constant indicates that the
+     * <code>Attr</code> nodes are shown and passed to the filter.
+     * <br> The constants used here are defined in [<a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Traversal-Range-20001113'>DOM Level 2 Traversal and      Range</a>]
+     * .
+     */
+    @UnsupportedAppUsage
+    public int getWhatToShow();
+
 }
