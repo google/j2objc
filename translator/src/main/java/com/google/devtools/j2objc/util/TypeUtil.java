@@ -446,6 +446,8 @@ public final class TypeUtil {
       return getIosArray(((ArrayType) t).getComponentType());
     } else if (isDeclaredType(t)) {
       return getObjcClass((TypeElement) ((DeclaredType) t).asElement());
+    } else if (t.getKind().isPrimitive()) {
+      return boxedClass((PrimitiveType) t);
     } else if (t.getKind() == TypeKind.UNION) {
       TypeMirror lub = leastUpperBound(((UnionType)t).getAlternatives());
       return getObjcClass(asTypeElement(lub));

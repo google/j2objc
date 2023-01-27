@@ -178,6 +178,31 @@ public class ArrayGenericsTest extends GenerationTest {
     assertTranslation(translation, "@class JavaLangStackTraceElement;");
   }
 
+  public void testGenericPrimitiveArrayTypeForwardDecl() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public abstract class Test {"
+                + "  abstract boolean[] readBooleans(); "
+                + "  abstract byte[] readBytes(); "
+                + "  abstract char[] readChars(); "
+                + "  abstract double[] readDoubles(); "
+                + "  abstract float[] readFloats(); "
+                + "  abstract int[] readInts(); "
+                + "  abstract long[] readLongs(); "
+                + "  abstract short[] readShorts(); "
+                + "}",
+            "Test",
+            "Test.h");
+    assertTranslation(translation, "@class JavaLangBoolean;");
+    assertTranslation(translation, "@class JavaLangByte;");
+    assertTranslation(translation, "@class JavaLangCharacter;");
+    assertTranslation(translation, "@class JavaLangDouble;");
+    assertTranslation(translation, "@class JavaLangFloat;");
+    assertTranslation(translation, "@class JavaLangInteger;");
+    assertTranslation(translation, "@class JavaLangLong;");
+    assertTranslation(translation, "@class JavaLangShort;");
+  }
+
   public void testGenericArrayInterfaceOrObjectComponent() throws IOException {
     String translation =
         translateSourceFile(
