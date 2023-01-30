@@ -115,7 +115,7 @@ import java.io.Serializable;
  * the field. For examples of these constants, see <code>ERA_FIELD</code> and its
  * friends in {@link DateFormat}.
  *
- * <h4><a name="synchronization">Synchronization</a></h4>
+ * <h4><a id="synchronization">Synchronization</a></h4>
  *
  * <p>
  * Formats are generally not synchronized.
@@ -129,6 +129,7 @@ import java.io.Serializable;
  * @see          java.text.DateFormat
  * @see          java.text.MessageFormat
  * @author       Mark Davis
+ * @since 1.1
  */
 public abstract class Format implements Serializable, Cloneable {
 
@@ -225,7 +226,7 @@ public abstract class Format implements Serializable, Cloneable {
      *            index information as described above.
      * @return An <code>Object</code> parsed from the string. In case of
      *         error, returns null.
-     * @exception NullPointerException if <code>pos</code> is null.
+     * @throws NullPointerException if {@code source} or {@code pos} is null.
      */
     public abstract Object parseObject (String source, ParsePosition pos);
 
@@ -237,6 +238,7 @@ public abstract class Format implements Serializable, Cloneable {
      * @return An <code>Object</code> parsed from the string.
      * @exception ParseException if the beginning of the specified string
      *            cannot be parsed.
+     * @throws NullPointerException if {@code source} is null.
      */
     public Object parseObject(String source) throws ParseException {
         ParsePosition pos = new ParsePosition(0);

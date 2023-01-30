@@ -39,7 +39,6 @@
 
 package java.text;
 
-import java.util.Comparator;
 import java.util.Locale;
 
 import libcore.icu.ICU;
@@ -121,7 +120,10 @@ import libcore.icu.ICU;
  * @author      Helena Shih, Laura Werner, Richard Gillam
  * @since 1.1
  */
-public abstract class Collator implements Comparator<Object>, Cloneable {
+
+public abstract class Collator
+    implements java.util.Comparator<Object>, Cloneable
+{
     /**
      * Collator strength value.  When set, only PRIMARY differences are
      * considered significant during comparison. The assignment of strengths
@@ -207,6 +209,16 @@ public abstract class Collator implements Comparator<Object>, Cloneable {
      * @see java.text.Collator#setDecomposition
      */
     public static final int FULL_DECOMPOSITION = 2;
+
+    /**
+     * Gets the Collator for the current default locale.
+     * The default locale is determined by java.util.Locale.getDefault.
+     * @return the Collator for the default locale.(for example, en_US)
+     * @see java.util.Locale#getDefault
+     */
+    public static synchronized Collator getInstance() {
+        return getInstance(Locale.getDefault());
+    }
 
     /**
      * Gets the Collator for the desired locale.
@@ -320,32 +332,36 @@ public abstract class Collator implements Comparator<Object>, Cloneable {
     public abstract void setStrength(int value);
 
     /**
-     * Returns the decomposition rule for this collator.
-     *
-     * @return the decomposition rule, either {@code NO_DECOMPOSITION} or
-     *         {@code CANONICAL_DECOMPOSITION}. {@code FULL_DECOMPOSITION} is
-     *         not supported.
+     * Get the decomposition mode of this Collator. Decomposition mode
+     * determines how Unicode composed characters are handled. Adjusting
+     * decomposition mode allows the user to select between faster and more
+     * complete collation behavior.
+     * <p>The three values for decomposition mode are:
+     * <UL>
+     * <LI>NO_DECOMPOSITION,
+     * <LI>CANONICAL_DECOMPOSITION
+     * <LI>FULL_DECOMPOSITION.
+     * </UL>
+     * See the documentation for these three constants for a description
+     * of their meaning.
+     * @return the decomposition mode
+     * @see java.text.Collator#setDecomposition
+     * @see java.text.Collator#NO_DECOMPOSITION
+     * @see java.text.Collator#CANONICAL_DECOMPOSITION
+     * @see java.text.Collator#FULL_DECOMPOSITION
      */
     public abstract int getDecomposition();
 
     /**
-     * Returns a {@code Collator} instance which is appropriate for the user's default
-     * {@code Locale}.
-     * See "<a href="../util/Locale.html#default_locale">Be wary of the default locale</a>".
-     */
-    public static Collator getInstance() {
-        return getInstance(Locale.getDefault());
-    }
-    /**
-     * Sets the decomposition rule for this collator.
-     *
-     * @param value
-     *            the decomposition rule, either {@code NO_DECOMPOSITION} or
-     *            {@code CANONICAL_DECOMPOSITION}. {@code FULL_DECOMPOSITION}
-     *            is not supported.
-     * @throws IllegalArgumentException
-     *            if the provided decomposition rule is not valid. This includes
-     *            {@code FULL_DECOMPOSITION}.
+     * Set the decomposition mode of this Collator. See getDecomposition
+     * for a description of decomposition mode.
+     * @param decompositionMode  the new decomposition mode.
+     * @see java.text.Collator#getDecomposition
+     * @see java.text.Collator#NO_DECOMPOSITION
+     * @see java.text.Collator#CANONICAL_DECOMPOSITION
+     * @see java.text.Collator#FULL_DECOMPOSITION
+     * @exception IllegalArgumentException If the given value is not a valid decomposition
+     * mode.
      */
     public abstract void setDecomposition(int value);
 
@@ -362,6 +378,7 @@ public abstract class Collator implements Comparator<Object>, Cloneable {
       // Android-changed: Removed reference to CollatorProvider. Switched to ICU.
         return ICU.getAvailableLocales();
     }
+    // END Android-added: conversion method for decompositionMode constants.
 
     // Android-changed: improve clone() documentation.
     /**
@@ -374,11 +391,12 @@ public abstract class Collator implements Comparator<Object>, Cloneable {
     @Override
     public Object clone()
     {
-      try {
-        return (IOSCollator) super.clone();
-      } catch (CloneNotSupportedException e) {
-        throw new AssertionError(e);
-      }
+        try {
+            // J2ObjC: switched to iOS-specific implementation.
+            return (IOSCollator) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(e);
+        }
     }
 
     /**
@@ -388,9 +406,10 @@ public abstract class Collator implements Comparator<Object>, Cloneable {
     public abstract int hashCode();
 
     /**
-     * Returns a {@code Collator} instance which is appropriate for the user's default
-     * {@code Locale}.
-     * See "<a href="../util/Locale.html#default_locale">Be wary of the default locale</a>".
+     * Default constructor.  This constructor is
+     * protected so subclasses can get access to it. Users typically create
+     * a Collator sub-class by calling the factory method getInstance.
+     * @see java.text.Collator#getInstance
      */
 
     // BEGIN Android-removed: Fields and constants.

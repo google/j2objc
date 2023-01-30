@@ -1193,7 +1193,6 @@ public class SimpleDateFormat extends DateFormat {
         CalendarBuilder.WEEK_YEAR,         // Pseudo Calendar field
         CalendarBuilder.ISO_DAY_OF_WEEK,   // Pseudo Calendar field
         Calendar.ZONE_OFFSET,
-        // 'L' and 'c',
         Calendar.MONTH,
         // Android-added: 'c' for standalone day of week.
         Calendar.DAY_OF_WEEK,
@@ -1227,7 +1226,6 @@ public class SimpleDateFormat extends DateFormat {
         DateFormat.YEAR_FIELD,
         DateFormat.DAY_OF_WEEK_FIELD,
         DateFormat.TIMEZONE_FIELD,
-        // 'L' and 'c',
         DateFormat.MONTH_FIELD,
         // Android-added: 'c' for standalone day of week.
         DateFormat.DAY_OF_WEEK_FIELD,
@@ -1261,7 +1259,6 @@ public class SimpleDateFormat extends DateFormat {
         Field.YEAR,
         Field.DAY_OF_WEEK,
         Field.TIME_ZONE,
-        // 'L' and 'c',
         Field.MONTH,
         // Android-added: 'c' for standalone day of week.
         Field.DAY_OF_WEEK,
