@@ -37,6 +37,13 @@ public class EnumRewriterTest extends GenerationTest {
         "Test_initWithId_withNSString_withInt_(e, @\"foo\", @\"A\", 0);");
   }
 
+  public void testOrdinalType() throws Exception {
+    String translation = translateSourceFile("enum Test { A }", "Test", "Test.m");
+    assertTranslatedLines(
+        translation, "- (Test_ORDINAL)ordinal {", "  return (Test_ORDINAL)[super ordinal];", "}");
+    assertTranslation(translation, "Test_fromOrdinal(Test_ORDINAL ordinal)");
+  }
+
   public void testToNsEnumConversion() throws Exception {
     String translation = translateSourceFile("enum Test { A }", "Test", "Test.m");
     assertTranslatedLines(translation,

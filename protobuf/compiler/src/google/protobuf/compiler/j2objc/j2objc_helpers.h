@@ -89,9 +89,15 @@ std::string ClassName(const Descriptor *descriptor);
 std::string ClassName(const EnumDescriptor *descriptor);
 std::string ClassName(const FileDescriptor *descriptor);
 
-std::string CEnumName(const EnumDescriptor *descriptor);
+// Return names for the JavaLangEnum superclass's enumeration.
+std::string COrdinalEnumName(const EnumDescriptor *descriptor);
+std::string EnumOrdinalName(const EnumValueDescriptor *descriptor);
+std::string COrdinalPreprocessorName(const EnumDescriptor *descriptor);
 
+// Return names for the proto's enumeration by value (wire value).
+std::string CValueEnumName(const EnumDescriptor *descriptor);
 std::string EnumValueName(const EnumValueDescriptor *descriptor);
+std::string CValuePreprocessorName(const EnumDescriptor *descriptor);
 
 // These return the Java class name corresponding to the given descriptor.
 std::string JavaClassName(const Descriptor *descriptor);

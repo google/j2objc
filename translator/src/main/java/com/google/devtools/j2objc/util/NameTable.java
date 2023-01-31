@@ -640,6 +640,10 @@ public class NameTable {
     return typeName + "_Enum";
   }
 
+  public static String getNativeOrdinalPreprocessorName(String typeName) {
+    return typeName + "_ORDINAL";
+  }
+
   /**
    * Return the full name of a type, including its package.  For outer types,
    * is the type's full name; for example, java.lang.Object's full name is

@@ -324,28 +324,41 @@ public class EnumRewriter extends UnitTreeVisitor {
 
   private void addExtraNativeDecls(EnumDeclaration node) {
     String typeName = nameTable.getFullName(node.getTypeElement());
+    String nativeName = NameTable.getNativeEnumName(typeName);
+    String ordinalName = NameTable.getNativeOrdinalPreprocessorName(typeName);
     int numConstants = node.getEnumConstants().size();
 
     // The native type is not declared for an empty enum.
     if (numConstants > 0) {
-      String nativeName = NameTable.getNativeEnumName(typeName);
-      node.addBodyDeclaration(NativeDeclaration.newInnerDeclaration(
-          UnicodeUtils.format("- (%s)toNSEnum;\n", nativeName),
-          UnicodeUtils.format(
-              "- (%s)toNSEnum {\n"
-              + "  return (%s)[self ordinal];\n"
-              + "}\n\n", nativeName, nativeName)));
+      // Native toNSEnum always uses C type.
+      node.addBodyDeclaration(
+          NativeDeclaration.newInnerDeclaration(
+              UnicodeUtils.format("- (%s)toNSEnum;\n", nativeName),
+              UnicodeUtils.format(
+                  "- (%s)toNSEnum {\n" + "  return (%s)[self ordinal];\n" + "}\n\n",
+                  nativeName, nativeName)));
+
+      // Redeclare ordinal with the appropriate type.
+      node.addBodyDeclaration(
+          NativeDeclaration.newInnerDeclaration(
+              UnicodeUtils.format("- (%s)ordinal;\n", ordinalName),
+              UnicodeUtils.format(
+                  "- (%s)ordinal {\n" + "  return (%s)[super ordinal];\n" + "}\n\n",
+                  ordinalName, ordinalName)));
     }
 
     StringBuilder outerHeader = new StringBuilder();
     StringBuilder outerImpl = new StringBuilder();
 
-    outerHeader.append(UnicodeUtils.format(
-        "FOUNDATION_EXPORT %s *%s_fromOrdinal(NSUInteger ordinal);\n",
-        typeName, typeName));
+    String ordinalArgType = (numConstants > 0) ? ordinalName : "jint";
+    outerHeader.append(
+        UnicodeUtils.format(
+            "FOUNDATION_EXPORT %s *%s_fromOrdinal(%s ordinal);\n",
+            typeName, typeName, ordinalArgType));
+    outerImpl.append(
+        UnicodeUtils.format(
+            "%s *%s_fromOrdinal(%s ordinal) {\n", typeName, typeName, ordinalArgType));
 
-    outerImpl.append(UnicodeUtils.format(
-        "%s *%s_fromOrdinal(NSUInteger ordinal) {\n", typeName, typeName));
     // Avoid "comparison of unsigned expression >= 0 is always true" error.
     if (numConstants == 0) {
       outerImpl.append("  return nil;\n}\n");

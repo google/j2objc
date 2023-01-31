@@ -320,16 +320,32 @@ std::string ClassName(const EnumDescriptor *descriptor) {
       + descriptor->name();
 }
 
-std::string CEnumName(const EnumDescriptor *descriptor) {
+std::string COrdinalEnumName(const EnumDescriptor *descriptor) {
   return ClassName(descriptor) + "_Enum";
+}
+
+std::string COrdinalPreprocessorName(const EnumDescriptor *descriptor) {
+  return ClassName(descriptor) + "_ORDINAL";
+}
+
+std::string CValueEnumName(const EnumDescriptor *descriptor) {
+  return ClassName(descriptor) + "_Value";
+}
+
+std::string CValuePreprocessorName(const EnumDescriptor *descriptor) {
+  return ClassName(descriptor) + "_VALUE";
 }
 
 std::string ClassName(const FileDescriptor *descriptor) {
   return GetPackagePrefix(descriptor) + FileClassName(descriptor);
 }
 
+std::string EnumOrdinalName(const EnumValueDescriptor *descriptor) {
+  return COrdinalEnumName(descriptor->type()) + "_" + descriptor->name();
+}
+
 std::string EnumValueName(const EnumValueDescriptor *descriptor) {
-  return CEnumName(descriptor->type()) + "_" + descriptor->name();
+  return CValueEnumName(descriptor->type()) + "_" + descriptor->name();
 }
 
 std::string FieldConstantName(const FieldDescriptor *field) {
@@ -569,7 +585,7 @@ std::string DefaultValue(const FieldDescriptor *field) {
       }
     }
     case FieldDescriptor::CPPTYPE_ENUM:
-      return EnumValueName(field->default_value_enum());
+      return EnumOrdinalName(field->default_value_enum());
     case FieldDescriptor::CPPTYPE_MESSAGE:
       return "nil";
   }

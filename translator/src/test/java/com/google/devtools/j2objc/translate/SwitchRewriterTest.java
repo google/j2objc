@@ -23,7 +23,6 @@ import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -85,9 +84,9 @@ public class SwitchRewriterTest extends GenerationTest {
       + "private void log(int i) {}}",
       "A", "A.m");
     int index = translation.indexOf("jint i;");
-    assertTrue(index >= 0 && index < translation.indexOf("switch"));
+    assertTrue(index >= 0 && index < translation.indexOf("switch (n)"));
     index = translation.indexOf("jint j;");
-    assertTrue(index >= 0 && index < translation.indexOf("switch"));
+    assertTrue(index >= 0 && index < translation.indexOf("switch (n)"));
     assertOccurrences(translation, "jint i;", 1);
     assertFalse(translation.contains("jint j = 2;"));
   }

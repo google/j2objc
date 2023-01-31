@@ -159,6 +159,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
     List<EnumConstantDeclaration> constants = ((EnumDeclaration) typeNode).getEnumConstants();
     String nativeName = NameTable.getNativeEnumName(typeName);
+    String ordinalName = NameTable.getNativeOrdinalPreprocessorName(typeName);
 
     // C doesn't allow empty enum declarations.  Java does, so we skip the
     // C enum declaration and generate the type declaration.
@@ -176,6 +177,17 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       }
       unindent();
       print("};\n");
+      // Use different types for transpiled Java ordinals (which expects ordinals to be jint) and
+      // native code using the enum (where stricter ordinal types help clang warnings).
+      printf(
+          "#if J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION\n"
+              + "#define %s jint\n"
+              + "#else\n"
+              + "#define %s %s\n"
+              + "#endif\n\n",
+          ordinalName, ordinalName, nativeName);
+    } else {
+      printf("#define %s jint\n", ordinalName);
     }
   }
 

@@ -72,26 +72,73 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
   printer->Print(
     "\nJ2OBJC_CLASS_DECLARATION($classname$);\n",
     "classname", ClassName(descriptor_));
-  printer->Print("\ntypedef NS_ENUM(jint, $classname$) {\n", "classname",
-                 CEnumName(descriptor_));
+  printer->Print(
+      "\n// Java enum ordinals for use with [... ordinal], etc.\n"
+      "// WARNING: NOT the proto enum value, for that use the value constants "
+      "below.\n");
+  printer->Print("typedef NS_ENUM(jint, $ordinalenumname$) {\n",
+                 "ordinalenumname", COrdinalEnumName(descriptor_));
   printer->Indent();
 
   for (int i = 0; i < canonical_values_.size(); i++) {
-    printer->Print(
-      "$name$ = $value$,\n",
-      "name", EnumValueName(canonical_values_[i]),
-      "value", SimpleItoa(i));
+      printer->Print("$ordinalname$ = $ordinal$,\n", "ordinalname",
+                     EnumOrdinalName(canonical_values_[i]), "ordinal",
+                     SimpleItoa(i));
   }
 
   printer->Outdent();
   printer->Print("};\n\n");
 
+  printer->Print(
+      "\n// Java enum ordinal preprocessor name that allows for stricter enum "
+      "types\n"
+      "// outside transpiled code.\n"
+      "#if J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION\n"
+      "#define $ordinalpreprocessorname$ jint\n"
+      "#else\n"
+      "#define $ordinalpreprocessorname$ $ordinalenumname$\n"
+      "#endif\n\n",
+      "ordinalpreprocessorname", COrdinalPreprocessorName(descriptor_),
+      "ordinalenumname", COrdinalEnumName(descriptor_));
+
+  printer->Print(
+      "// Value enum for use with [... getNumber], etc.\n"
+      "// These enum values are the proto (wire) values.");
+  printer->Print("\ntypedef NS_ENUM(jint, $valueenumname$) {\n",
+                 "valueenumname", CValueEnumName(descriptor_));
+  printer->Indent();
+
   for (int i = 0; i < canonical_values_.size(); i++) {
-    printer->Print(
-        "#define $classname$_$name$_VALUE $value$\n",
-        "classname", ClassName(descriptor_),
-        "name", canonical_values_[i]->name(),
-        "value", SimpleItoa(canonical_values_[i]->number()));
+      printer->Print("$valuename$ = $value$,\n", "valuename",
+                     EnumValueName(canonical_values_[i]), "value",
+                     SimpleItoa(canonical_values_[i]->number()));
+  }
+
+  printer->Outdent();
+  printer->Print("};\n\n");
+
+  printer->Print(
+      "\n// Java enum value preprocessor name that allows for stricter enum "
+      "types\n"
+      "// outside transpiled code.\n"
+      "#if J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION\n"
+      "#define $valuepreprocessorname$ jint\n"
+      "#else\n"
+      "#define $valuepreprocessorname$ $valueenumname$\n"
+      "#endif\n\n",
+      "valuepreprocessorname", CValuePreprocessorName(descriptor_),
+      "valueenumname", CValueEnumName(descriptor_));
+
+  printer->Print(
+      "// Proto enum preprocessor defines.\n"
+      "// Prefer to use the value enum above when possible.\n");
+  for (int i = 0; i < canonical_values_.size(); i++) {
+      printer->Print(
+          "#define $classname$_$name$_VALUE ($valuepreprocessorname$)$value$\n",
+          "classname", ClassName(descriptor_), "name",
+          canonical_values_[i]->name(), "value",
+          SimpleItoa(canonical_values_[i]->number()), "valuepreprocessorname",
+          CValuePreprocessorName(descriptor_));
   }
 
   printer->Print(
@@ -99,14 +146,14 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
       "@interface $classname$ :"
       " JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> {\n"
       " @private\n"
-      "  jint value_;\n"
+      "  $valueenumname$ value_;\n"
       "}\n"
       "\n"
       "+ (IOSObjectArray *)values;\n"
       "+ ($classname$ *)valueOfWithNSString:(NSString *)name;\n"
-      "+ ($classname$ *)valueOfWithInt:(jint)value;\n"
-      "+ ($classname$ *)forNumberWithInt:(jint)value;\n"
-      "- (jint)getNumber;\n"
+      "+ ($classname$ *)valueOfWithInt:($valuepreprocessorname$)value;\n"
+      "+ ($classname$ *)forNumberWithInt:($valuepreprocessorname$)value;\n"
+      "- ($valuepreprocessorname$)getNumber;\n"
       "\n"
       "@end\n"
       "\n"
@@ -121,12 +168,15 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
       "FOUNDATION_EXPORT $classname$ *$classname$_valueOfWithNSString_("
       "NSString *name);\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_valueOfWithInt_("
-      "jint value);\n"
+      "$valuepreprocessorname$ value);\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_forNumberWithInt_("
-      "jint value);\n"
+      "$valuepreprocessorname$ value);\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_fromOrdinal("
-      "jint ordinal);\n\n",
-      "classname", ClassName(descriptor_));
+      "$ordinalpreprocessorname$ ordinal);\n\n",
+      "classname", ClassName(descriptor_), "ordinalpreprocessorname",
+      COrdinalPreprocessorName(descriptor_), "valueenumname",
+      CValueEnumName(descriptor_), "valuepreprocessorname",
+      CValuePreprocessorName(descriptor_));
 
   for (int i = 0; i < canonical_values_.size(); i++) {
     printer->Print(
@@ -200,15 +250,15 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "  return $classname$_valueOfWithNSString_(name);\n"
       "}\n"
       "\n"
-      "+ ($classname$ *)valueOfWithInt:(jint)value {\n"
+      "+ ($classname$ *)valueOfWithInt:($valuepreprocessorname$)value {\n"
       "  return $classname$_valueOfWithInt_(value);\n"
       "}\n"
       "\n"
-      "+ ($classname$ *)forNumberWithInt:(jint)value {\n"
+      "+ ($classname$ *)forNumberWithInt:($valuepreprocessorname$)value {\n"
       "  return $classname$_forNumberWithInt_(value);\n"
       "}\n"
       "\n"
-      "- (jint)getNumber {\n"
+      "- ($valuepreprocessorname$)getNumber {\n"
       "  return value_;\n"
       "}\n"
       "\n"
@@ -243,11 +293,13 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "name);\n"
       "}\n"
       "\n"
-      "$classname$ *$classname$_valueOfWithInt_(jint value) {\n"
+      "$classname$ *$classname$_valueOfWithInt_($valuepreprocessorname$ value) "
+      "{\n"
       "  return $classname$_forNumberWithInt_(value);\n"
       "}\n"
       "\n"
-      "$classname$ *$classname$_forNumberWithInt_(jint value) {\n"
+      "$classname$ *$classname$_forNumberWithInt_($valuepreprocessorname$ "
+      "value) {\n"
       "  $classname$_initialize();"
       "  for (jint i = 0; i < $count$; i++) {\n"
       "    $classname$ *e = $classname$_values_[i];\n"
@@ -258,7 +310,8 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "  return nil;\n"
       "}\n"
       "\n"
-      "$classname$ *$classname$_fromOrdinal(jint ordinal) {\n"
+      "$classname$ *$classname$_fromOrdinal($ordinalpreprocessorname$ ordinal) "
+      "{\n"
       "  $classname$_initialize();\n"
       "  if (ordinal >= $count$) {\n"
       "    return nil;\n"
@@ -266,7 +319,10 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "  return $classname$_values_[ordinal];\n"
       "}\n",
       "classname", ClassName(descriptor_), "count",
-      SimpleItoa(canonical_values_.size()));
+      SimpleItoa(canonical_values_.size()), "ordinalpreprocessorname",
+      COrdinalPreprocessorName(descriptor_), "valueenumname",
+      CValueEnumName(descriptor_), "valuepreprocessorname",
+      CValuePreprocessorName(descriptor_));
 
   for (int i = 0; i < canonical_values_.size(); i++) {
     printer->Print(
