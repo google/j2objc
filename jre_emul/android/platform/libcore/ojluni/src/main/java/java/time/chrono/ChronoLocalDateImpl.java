@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -76,23 +76,24 @@ import java.util.Objects;
 
 /**
  * A date expressed in terms of a standard year-month-day calendar system.
- * <p>
- * This class is used by applications seeking to handle dates in non-ISO calendar systems.
- * For example, the Japanese, Minguo, Thai Buddhist and others.
- * <p>
- * {@code ChronoLocalDate} is built on the generic concepts of year, month and day.
- * The calendar system, represented by a {@link java.time.chrono.Chronology}, expresses the relationship between
- * the fields and this class allows the resulting date to be manipulated.
- * <p>
- * Note that not all calendar systems are suitable for use with this class.
- * For example, the Mayan calendar uses a system that bears no relation to years, months and days.
- * <p>
- * The API design encourages the use of {@code LocalDate} for the majority of the application.
- * This includes code to read and write from a persistent data store, such as a database,
- * and to send dates and times across a network. The {@code ChronoLocalDate} instance is then used
- * at the user interface level to deal with localized input/output.
  *
- * <P>Example: </p>
+ * <p>This class is used by applications seeking to handle dates in non-ISO calendar systems. For
+ * example, the Japanese, Minguo, Thai Buddhist and others.
+ *
+ * <p>{@code ChronoLocalDate} is built on the generic concepts of year, month and day. The calendar
+ * system, represented by a {@link java.time.chrono.Chronology}, expresses the relationship between
+ * the fields and this class allows the resulting date to be manipulated.
+ *
+ * <p>Note that not all calendar systems are suitable for use with this class. For example, the
+ * Mayan calendar uses a system that bears no relation to years, months and days.
+ *
+ * <p>The API design encourages the use of {@code LocalDate} for the majority of the application.
+ * This includes code to read and write from a persistent data store, such as a database, and to
+ * send dates and times across a network. The {@code ChronoLocalDate} instance is then used at the
+ * user interface level to deal with localized input/output.
+ *
+ * <p>Example:
+ *
  * <pre>
  *        System.out.printf("Example()%n");
  *        // Enumerate the list of available calendars and print today for each
@@ -110,7 +111,7 @@ import java.util.Objects;
  *        int year = date.get(ChronoField.YEAR);
  *        System.out.printf("  Today is %s %s %d-%s-%d%n", date.getChronology().getID(),
  *                dow, day, month, year);
-
+ *
  *        // Print today's date and the last day of the year
  *        ChronoLocalDate now1 = Chronology.of("Hijrah").dateNow();
  *        ChronoLocalDate first = now1.with(ChronoField.DAY_OF_MONTH, 1)
@@ -122,26 +123,26 @@ import java.util.Objects;
  * </pre>
  *
  * <h3>Adding Calendars</h3>
- * <p> The set of calendars is extensible by defining a subclass of {@link ChronoLocalDate}
- * to represent a date instance and an implementation of {@code Chronology}
- * to be the factory for the ChronoLocalDate subclass.
- * </p>
- * <p> To permit the discovery of the additional calendar types the implementation of
- * {@code Chronology} must be registered as a Service implementing the {@code Chronology} interface
- * in the {@code META-INF/Services} file as per the specification of {@link java.util.ServiceLoader}.
- * The subclass must function according to the {@code Chronology} class description and must provide its
- * {@link java.time.chrono.Chronology#getId() chronlogy ID} and {@link Chronology#getCalendarType() calendar type}. </p>
  *
- * @implSpec
- * This abstract class must be implemented with care to ensure other classes operate correctly.
- * All implementations that can be instantiated must be final, immutable and thread-safe.
- * Subclasses should be Serializable wherever possible.
+ * <p>The set of calendars is extensible by defining a subclass of {@link ChronoLocalDate} to
+ * represent a date instance and an implementation of {@code Chronology} to be the factory for the
+ * ChronoLocalDate subclass.
  *
+ * <p>To permit the discovery of the additional calendar types the implementation of {@code
+ * Chronology} must be registered as a Service implementing the {@code Chronology} interface in the
+ * {@code META-INF/Services} file as per the specification of {@link java.util.ServiceLoader}. The
+ * subclass must function according to the {@code Chronology} class description and must provide its
+ * {@link java.time.chrono.Chronology#getId() chronlogy ID} and {@link Chronology#getCalendarType()
+ * calendar type}.
+ *
+ * @implSpec This abstract class must be implemented with care to ensure other classes operate
+ *     correctly. All implementations that can be instantiated must be final, immutable and
+ *     thread-safe. Subclasses should be Serializable wherever possible.
  * @param <D> the ChronoLocalDate of this date-time
  * @since 1.8
  */
 abstract class ChronoLocalDateImpl<D extends ChronoLocalDate>
-        implements ChronoLocalDate, Temporal, TemporalAdjuster, Serializable {
+    implements ChronoLocalDate, Temporal, TemporalAdjuster, Serializable {
 
     /**
      * Serialization version.
@@ -161,7 +162,11 @@ abstract class ChronoLocalDateImpl<D extends ChronoLocalDate>
         @SuppressWarnings("unchecked")
         D other = (D) temporal;
         if (chrono.equals(other.getChronology()) == false) {
-            throw new ClassCastException("Chronology mismatch, expected: " + chrono.getId() + ", actual: " + other.getChronology().getId());
+            throw new ClassCastException(
+                "Chronology mismatch, expected: "
+                    + chrono.getId()
+                    + ", actual: "
+                    + other.getChronology().getId());
         }
         return other;
     }
@@ -400,7 +405,8 @@ abstract class ChronoLocalDateImpl<D extends ChronoLocalDate>
     private long monthsUntil(ChronoLocalDate end) {
         ValueRange range = getChronology().range(MONTH_OF_YEAR);
         if (range.getMaximum() != 12) {
-            throw new IllegalStateException("ChronoLocalDateImpl only supports Chronologies with 12 months per year");
+            throw new IllegalStateException(
+                "ChronoLocalDateImpl only supports Chronologies with 12 months per year");
         }
         long packed1 = getLong(PROLEPTIC_MONTH) * 32L + get(DAY_OF_MONTH);  // no overflow
         long packed2 = end.getLong(PROLEPTIC_MONTH) * 32L + end.get(DAY_OF_MONTH);  // no overflow

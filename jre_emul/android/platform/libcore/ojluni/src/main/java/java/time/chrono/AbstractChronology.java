@@ -85,7 +85,6 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
-import java.io.Serializable;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.format.ResolverStyle;
@@ -93,7 +92,6 @@ import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.time.temporal.ValueRange;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -102,7 +100,6 @@ import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import sun.util.logging.PlatformLogger;
 
 /**
@@ -125,36 +122,6 @@ import sun.util.logging.PlatformLogger;
  * @since 1.8
  */
 public abstract class AbstractChronology implements Chronology {
-
-    /**
-     * ChronoLocalDate order constant.
-     */
-    static final Comparator<ChronoLocalDate> DATE_ORDER =
-        (Comparator<ChronoLocalDate> & Serializable) (date1, date2) -> {
-            return Long.compare(date1.toEpochDay(), date2.toEpochDay());
-        };
-    /**
-     * ChronoLocalDateTime order constant.
-     */
-    static final Comparator<ChronoLocalDateTime<? extends ChronoLocalDate>> DATE_TIME_ORDER =
-        (Comparator<ChronoLocalDateTime<? extends ChronoLocalDate>> & Serializable) (dateTime1, dateTime2) -> {
-            int cmp = Long.compare(dateTime1.toLocalDate().toEpochDay(), dateTime2.toLocalDate().toEpochDay());
-            if (cmp == 0) {
-                cmp = Long.compare(dateTime1.toLocalTime().toNanoOfDay(), dateTime2.toLocalTime().toNanoOfDay());
-            }
-            return cmp;
-        };
-    /**
-     * ChronoZonedDateTime order constant.
-     */
-    static final Comparator<ChronoZonedDateTime<?>> INSTANT_ORDER =
-            (Comparator<ChronoZonedDateTime<?>> & Serializable) (dateTime1, dateTime2) -> {
-                int cmp = Long.compare(dateTime1.toEpochSecond(), dateTime2.toEpochSecond());
-                if (cmp == 0) {
-                    cmp = Long.compare(dateTime1.toLocalTime().getNano(), dateTime2.toLocalTime().getNano());
-                }
-                return cmp;
-            };
 
     /**
      * Map of available calendars by ID.

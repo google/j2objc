@@ -201,11 +201,16 @@ final class ChronoPeriodImpl
     private ChronoPeriodImpl validateAmount(TemporalAmount amount) {
         Objects.requireNonNull(amount, "amount");
         if (amount instanceof ChronoPeriodImpl == false) {
-            throw new DateTimeException("Unable to obtain ChronoPeriod from TemporalAmount: " + amount.getClass());
+            throw new DateTimeException(
+                "Unable to obtain ChronoPeriod from TemporalAmount: " + amount.getClass());
         }
         ChronoPeriodImpl period = (ChronoPeriodImpl) amount;
         if (chrono.equals(period.getChronology()) == false) {
-            throw new ClassCastException("Chronology mismatch, expected: " + chrono.getId() + ", actual: " + period.getChronology().getId());
+            throw new ClassCastException(
+                "Chronology mismatch, expected: "
+                    + chrono.getId()
+                    + ", actual: "
+                    + period.getChronology().getId());
         }
         return period;
     }
@@ -311,7 +316,11 @@ final class ChronoPeriodImpl
         Objects.requireNonNull(temporal, "temporal");
         Chronology temporalChrono = temporal.query(TemporalQueries.chronology());
         if (temporalChrono != null && chrono.equals(temporalChrono) == false) {
-            throw new DateTimeException("Chronology mismatch, expected: " + chrono.getId() + ", actual: " + temporalChrono.getId());
+            throw new DateTimeException(
+                "Chronology mismatch, expected: "
+                    + chrono.getId()
+                    + ", actual: "
+                    + temporalChrono.getId());
         }
     }
 

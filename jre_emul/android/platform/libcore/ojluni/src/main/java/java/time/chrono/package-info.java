@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -61,44 +61,38 @@
  */
 
 /**
- * <p>
  * Generic API for calendar systems other than the default ISO.
- * </p>
- * <p>
- * The main API is based around the calendar system defined in ISO-8601.
- * However, there are other calendar systems, and this package provides basic support for them.
- * The alternate calendars are provided in the {@link java.time.chrono} package.
- * </p>
- * <p>
- * A calendar system is defined by the {@link java.time.chrono.Chronology} interface,
- * while a date in a calendar system is defined by the {@link java.time.chrono.ChronoLocalDate} interface.
- * </p>
- * <p>
- * It is intended that applications use the main API whenever possible, including code to read and write
- * from a persistent data store, such as a database, and to send dates and times across a network.
- * The "chrono" classes are then used at the user interface level to deal with localized input/output.
- * See {@link java.time.chrono.ChronoLocalDate ChronoLocalDate}
- * for a full discussion of the issues.
- * </p>
- * <p>
- * Using non-ISO calendar systems in an application introduces significant extra complexity.
+ *
+ * <p>The main API is based around the calendar system defined in ISO-8601. However, there are other
+ * calendar systems, and this package provides basic support for them. The alternate calendars are
+ * provided in the {@link java.time.chrono} package.
+ *
+ * <p>A calendar system is defined by the {@link java.time.chrono.Chronology} interface, while a
+ * date in a calendar system is defined by the {@link java.time.chrono.ChronoLocalDate} interface.
+ *
+ * <p>It is intended that applications use the main API whenever possible, including code to read
+ * and write from a persistent data store, such as a database, and to send dates and times across a
+ * network. The "chrono" classes are then used at the user interface level to deal with localized
+ * input/output. See {@link java.time.chrono.ChronoLocalDate ChronoLocalDate} for a full discussion
+ * of the issues.
+ *
+ * <p>Using non-ISO calendar systems in an application introduces significant extra complexity.
  * Ensure that the warnings and recommendations in {@code ChronoLocalDate} have been read before
  * working with the "chrono" interfaces.
- * </p>
- * <p>
- * The supported calendar systems includes:
- * </p>
+ *
+ * <p>The supported calendar systems includes:
+ *
  * <ul>
- * <li>{@link java.time.chrono.HijrahChronology Hijrah calendar}</li>
- * <li>{@link java.time.chrono.JapaneseChronology Japanese calendar}</li>
- * <li>{@link java.time.chrono.MinguoChronology Minguo calendar}</li>
- * <li>{@link java.time.chrono.ThaiBuddhistChronology Thai Buddhist calendar}</li>
+ *   <li>{@link java.time.chrono.HijrahChronology Hijrah calendar}
+ *   <li>{@link java.time.chrono.JapaneseChronology Japanese calendar}
+ *   <li>{@link java.time.chrono.MinguoChronology Minguo calendar}
+ *   <li>{@link java.time.chrono.ThaiBuddhistChronology Thai Buddhist calendar}
  * </ul>
  *
- * <h3>Example</h3>
- * <p>
- * This example lists todays date for all of the available calendars.
- * </p>
+ * <h2>Example</h2>
+ *
+ * <p>This example lists todays date for all of the available calendars.
+ *
  * <pre>
  *   // Enumerate the list of available calendars and print todays date for each.
  *       Set&lt;Chronology&gt; chronos = Chronology.getAvailableChronologies();
@@ -108,9 +102,8 @@
  *       }
  * </pre>
  *
- * <p>
- * This example creates and uses a date in a named non-ISO calendar system.
- * </p>
+ * <p>This example creates and uses a date in a named non-ISO calendar system.
+ *
  * <pre>
  *   // Print the Thai Buddhist date
  *       ChronoLocalDate now1 = Chronology.of("ThaiBuddhist").dateNow();
@@ -131,9 +124,8 @@
  *                 first, last);
  *  </pre>
  *
- * <p>
- * This example creates and uses a date in a specific ThaiBuddhist calendar system.
- * </p>
+ * <p>This example creates and uses a date in a specific ThaiBuddhist calendar system.
+ *
  * <pre>
  *   // Print the Thai Buddhist date
  *       ThaiBuddhistDate now1 = ThaiBuddhistDate.now();
@@ -155,17 +147,17 @@
  *                 first, last);
  *  </pre>
  *
- * <h3>Package specification</h3>
- * <p>
- * Unless otherwise noted, passing a null argument to a constructor or method in any class or interface
- * in this package will cause a {@link java.lang.NullPointerException NullPointerException} to be thrown.
- * The Javadoc "@param" definition is used to summarise the null-behavior.
- * The "@throws {@link java.lang.NullPointerException}" is not explicitly documented in each method.
- * </p>
- * <p>
- * All calculations should check for numeric overflow and throw either an {@link java.lang.ArithmeticException}
- * or a {@link java.time.DateTimeException}.
- * </p>
- * @since JDK1.8
+ * <h2>Package specification</h2>
+ *
+ * <p>Unless otherwise noted, passing a null argument to a constructor or method in any class or
+ * interface in this package will cause a {@link java.lang.NullPointerException
+ * NullPointerException} to be thrown. The Javadoc "@param" definition is used to summarise the
+ * null-behavior. The "@throws {@link java.lang.NullPointerException}" is not explicitly documented
+ * in each method.
+ *
+ * <p>All calculations should check for numeric overflow and throw either an {@link
+ * java.lang.ArithmeticException} or a {@link java.time.DateTimeException}.
+ *
+ * @since 1.8
  */
 package java.time.chrono;
