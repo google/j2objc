@@ -41,7 +41,7 @@ void installSignalHandler() {
 @implementation JUnitXCTestCase
 
 - (void)testAll {
-  XCTAssertEqual([ComGoogleJ2objcTestingJUnitTestRunner mainWithNSStringArray:nil], 0);
+  XCTAssertEqual(ComGoogleJ2objcTestingJUnitTestRunner_mainWithNSStringArray_(nil), 0);
 }
 
 @end
