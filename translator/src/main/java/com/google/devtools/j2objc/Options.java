@@ -100,7 +100,7 @@ public class Options {
   private boolean emitSourceHeaders = true;
   private boolean injectLogSites = false;
   private boolean allVersions = false;
-  private boolean asObjCGenericDecl = false;
+  private boolean asObjCGenericDecl = true;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
