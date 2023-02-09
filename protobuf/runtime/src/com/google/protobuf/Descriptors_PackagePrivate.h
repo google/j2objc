@@ -169,7 +169,7 @@ typedef struct CGPOneofData {
 #define CGPToReflectionTypeBool(value, field) [JavaLangBoolean valueOfWithBoolean:value]
 #define CGPToReflectionTypeEnum(value, field) \
     ((CGPEnumDescriptor *)field->valueType_)->values_->buffer_[[(JavaLangEnum *)value ordinal]]
-#define CGPToReflectionTypeRetainable(value, field) value
+#define CGPToReflectionTypeRetainable(value, field) RETAIN_AND_AUTORELEASE(value)
 
 CF_EXTERN_C_BEGIN
 

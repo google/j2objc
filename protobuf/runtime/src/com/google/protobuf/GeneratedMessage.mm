@@ -92,16 +92,24 @@ static void WriteMessage(id msg, CGPDescriptor *descriptor, CGPCodedOutputStream
 static void MessageToString(
     id msg, CGPDescriptor *descriptor, NSMutableString *builder, int indent);
 
-#define REPEATED_FIELD_GETTER_IMP(NAME) \
+#define REPEATED_PRIMITIVE_FIELD_GETTER_IMP(NAME) \
   CGP_ALWAYS_INLINE inline TYPE_##NAME CGPRepeatedFieldGet##NAME( \
       CGPRepeatedField *field, jint idx) { \
     CGPRepeatedFieldCheckBounds(field, idx); \
     return ((TYPE_##NAME *)field->data->buffer)[idx]; \
   }
 
-FOR_EACH_TYPE_NO_ENUM(REPEATED_FIELD_GETTER_IMP)
+#define REPEATED_RETAINABLE_FIELD_GETTER_IMP(NAME) \
+  CGP_ALWAYS_INLINE inline TYPE_##NAME CGPRepeatedFieldGet##NAME( \
+      CGPRepeatedField *field, jint idx) { \
+    CGPRepeatedFieldCheckBounds(field, idx); \
+    return RETAIN_AND_AUTORELEASE(((TYPE_##NAME *)field->data->buffer)[idx]); \
+  }
 
-#undef REPEATED_FIELD_GETTER_IMP
+FOR_EACH_TYPE_NO_ENUM(REPEATED_PRIMITIVE_FIELD_GETTER_IMP, REPEATED_RETAINABLE_FIELD_GETTER_IMP)
+
+#undef REPEATED_PRIMITIVE_FIELD_GETTER_IMP
+#undef REPEATED_RETAINABLE_FIELD_GETTER_IMP
 
 #define REPEATED_FIELD_ADDER_IMP(NAME) \
   CGP_ALWAYS_INLINE inline void CGPRepeatedFieldAdd##NAME( \
@@ -320,7 +328,7 @@ FOR_EACH_TYPE_WITH_ENUM(SINGULAR_SETTER_IMP)
 // ********** Dynamic field accessors ******************************************
 // *****************************************************************************
 
-#define SINGULAR_GETTER_IMP(NAME) \
+#define SINGULAR_PRIMITIVE_GETTER_IMP(NAME) \
   static IMP GetSingularGetterImp##NAME( \
       size_t offset, CGPHasLocator hasLoc, TYPE_##NAME defaultValue) { \
     return imp_implementationWithBlock(^TYPE_##NAME(id msg) { \
@@ -331,9 +339,21 @@ FOR_EACH_TYPE_WITH_ENUM(SINGULAR_SETTER_IMP)
     }); \
   }
 
-FOR_EACH_TYPE_NO_ENUM(SINGULAR_GETTER_IMP)
+#define SINGULAR_RETAINABLE_GETTER_IMP(NAME) \
+  static IMP GetSingularGetterImp##NAME( \
+      size_t offset, CGPHasLocator hasLoc, TYPE_##NAME defaultValue) { \
+    return imp_implementationWithBlock(^TYPE_##NAME(id msg) { \
+      if (GetHas(msg, hasLoc)) { \
+        return RETAIN_AND_AUTORELEASE(*FIELD_PTR(TYPE_##NAME, msg, offset)); \
+      } \
+      return defaultValue; \
+    }); \
+  }
 
-#undef SINGULAR_GETTER_IMP
+FOR_EACH_TYPE_NO_ENUM(SINGULAR_PRIMITIVE_GETTER_IMP, SINGULAR_RETAINABLE_GETTER_IMP)
+
+#undef SINGULAR_PRIMITIVE_GETTER_IMP
+#undef SINGULAR_RETAINABLE_GETTER_IMP
 
 #define REPEATED_GETTER_IMP(NAME) \
   static IMP GetRepeatedGetterImp##NAME(size_t offset) { \
@@ -342,7 +362,9 @@ FOR_EACH_TYPE_NO_ENUM(SINGULAR_GETTER_IMP)
     }); \
   }
 
-FOR_EACH_TYPE_NO_ENUM(REPEATED_GETTER_IMP)
+// Same macro for all types, uses getter functions defined earlier that
+// already handle primitive vs retainable.
+FOR_EACH_TYPE_NO_ENUM(REPEATED_GETTER_IMP, REPEATED_GETTER_IMP)
 
 #undef REPEATED_GETTER_IMP
 
@@ -647,7 +669,7 @@ static BOOL AddContainsMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   return class_addMethod(cls, sel, imp, encoding);
 }
 
-#define GET_MAP_GETTER_IMP(KEY_NAME, VALUE_NAME) \
+#define GET_MAP_PRIMITIVE_GETTER_IMP(KEY_NAME, VALUE_NAME) \
   static IMP GetMapGetOrThrowImp##KEY_NAME##VALUE_NAME( \
       size_t offset, CGPFieldJavaType keyType, CGPFieldJavaType valueType) { \
     return imp_implementationWithBlock(^TYPE_##VALUE_NAME(id msg, TYPE_##KEY_NAME pKey) { \
@@ -676,15 +698,53 @@ static BOOL AddContainsMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
     }); \
   }
 
-#define GET_MAP_GETTER_IMP_FOR_VALUE(VALUE_NAME) \
-  GET_MAP_GETTER_IMP(Int, VALUE_NAME) \
-  GET_MAP_GETTER_IMP(Long, VALUE_NAME) \
-  GET_MAP_GETTER_IMP(Bool, VALUE_NAME) \
-  GET_MAP_GETTER_IMP(Id, VALUE_NAME) \
+#define GET_MAP_RETAINABLE_GETTER_IMP(KEY_NAME, VALUE_NAME) \
+  static IMP GetMapGetOrThrowImp##KEY_NAME##VALUE_NAME( \
+      size_t offset, CGPFieldJavaType keyType, CGPFieldJavaType valueType) { \
+    return imp_implementationWithBlock(^TYPE_##VALUE_NAME(id msg, TYPE_##KEY_NAME pKey) { \
+      CGPValue key; \
+      key.CGPValueField_##KEY_NAME = pKey; \
+      CGPMapFieldEntry *entry = CGPMapFieldGetWithKey( \
+          MAP_FIELD_PTR(msg, offset), key, keyType, valueType); \
+      if (entry) { \
+        return RETAIN_AND_AUTORELEASE(entry->value.CGPValueField_##VALUE_NAME); \
+      } \
+      @throw create_JavaLangIllegalArgumentException_init(); \
+    }); \
+  } \
+  static IMP GetMapGetOrDefaultImp##KEY_NAME##VALUE_NAME( \
+      size_t offset, CGPFieldJavaType keyType, CGPFieldJavaType valueType) { \
+    return imp_implementationWithBlock(^TYPE_##VALUE_NAME( \
+        id msg, TYPE_##KEY_NAME pKey, TYPE_##VALUE_NAME defaultValue) { \
+      CGPValue key; \
+      key.CGPValueField_##KEY_NAME = pKey; \
+      CGPMapFieldEntry *entry = CGPMapFieldGetWithKey( \
+          MAP_FIELD_PTR(msg, offset), key, keyType, valueType); \
+      if (entry) { \
+        return RETAIN_AND_AUTORELEASE(entry->value.CGPValueField_##VALUE_NAME); \
+      } \
+      return defaultValue; \
+    }); \
+  }
 
-FOR_EACH_TYPE_NO_ENUM(GET_MAP_GETTER_IMP_FOR_VALUE)
+#define GET_MAP_PRIMITIVE_GETTER_IMP_FOR_VALUE(VALUE_NAME) \
+  GET_MAP_PRIMITIVE_GETTER_IMP(Int, VALUE_NAME) \
+  GET_MAP_PRIMITIVE_GETTER_IMP(Long, VALUE_NAME) \
+  GET_MAP_PRIMITIVE_GETTER_IMP(Bool, VALUE_NAME) \
+  GET_MAP_PRIMITIVE_GETTER_IMP(Id, VALUE_NAME)
 
-#undef GET_MAP_GETTER_IMP
+#define GET_MAP_RETAINABLE_GETTER_IMP_FOR_VALUE(VALUE_NAME) \
+  GET_MAP_RETAINABLE_GETTER_IMP(Int, VALUE_NAME) \
+  GET_MAP_RETAINABLE_GETTER_IMP(Long, VALUE_NAME) \
+  GET_MAP_RETAINABLE_GETTER_IMP(Bool, VALUE_NAME) \
+  GET_MAP_RETAINABLE_GETTER_IMP(Id, VALUE_NAME)
+
+FOR_EACH_TYPE_NO_ENUM(GET_MAP_PRIMITIVE_GETTER_IMP_FOR_VALUE, GET_MAP_RETAINABLE_GETTER_IMP_FOR_VALUE)
+
+#undef GET_MAP_PRIMITIVE_GETTER_IMP
+#undef GET_MAP_RETAINABLE_GETTER_IMP
+#undef GET_MAP_PRIMITIVE_GETTER_IMP_FOR_VALUE
+#undef GET_MAP_RETAINABLE_GETTER_IMP_FOR_VALUE
 
 static BOOL AddMapGetWithKeyMethod(Class cls, SEL sel, CGPFieldDescriptor *field, bool orDefault) {
   IMP imp = NULL;
@@ -753,7 +813,8 @@ static BOOL AddMapGetWithKeyMethod(Class cls, SEL sel, CGPFieldDescriptor *field
   GET_PUT_IMP(Bool, VALUE_NAME) \
   GET_PUT_IMP(Id, VALUE_NAME)
 
-FOR_EACH_TYPE_NO_ENUM(GET_PUT_IMP_FOR_VALUE)
+// No difference in put implementation by type, CGPMapFieldPut() handles both types.
+FOR_EACH_TYPE_NO_ENUM(GET_PUT_IMP_FOR_VALUE, GET_PUT_IMP_FOR_VALUE)
 
 #undef GET_PUT_IMP
 #undef GET_PUT_IMP_FOR_VALUE

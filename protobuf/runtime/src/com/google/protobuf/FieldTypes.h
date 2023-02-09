@@ -166,15 +166,18 @@
       CASE_MACRO(Enum) \
   }
 
+
 // Declares the given macro once for each java field type, grouping enums and
-// the other object types together as "Id".
-#define FOR_EACH_TYPE_NO_ENUM(MACRO) \
-  MACRO(Int) \
-  MACRO(Long) \
-  MACRO(Float) \
-  MACRO(Double) \
-  MACRO(Bool) \
-  MACRO(Id)
+// the other object types together as "Id". Non-retainable types use the
+// PRIMITIVE_TYPE_MACRO, retainable types use the RETAINABLE_TYPE_MACRO
+#define FOR_EACH_TYPE_NO_ENUM(PRIMITIVE_TYPE_MACRO, RETAINABLE_TYPE_MACRO) \
+  PRIMITIVE_TYPE_MACRO(Int) \
+  PRIMITIVE_TYPE_MACRO(Long) \
+  PRIMITIVE_TYPE_MACRO(Float) \
+  PRIMITIVE_TYPE_MACRO(Double) \
+  PRIMITIVE_TYPE_MACRO(Bool) \
+  RETAINABLE_TYPE_MACRO(Id)
+
 
 // Declares the given macro once for each java field type, declaring it
 // separately for enums (as "Enum) and the other object types (as "Retainable").
