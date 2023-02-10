@@ -162,7 +162,7 @@ public class GenerationBatch {
             containsJavaFile = true;
           }
         }
-        if (!options.translateClassfiles() && !containsJavaFile) {
+        if (!options.translateClassfiles() && !containsJavaFile && !options.ignoreJarWarnings()) {
           ErrorUtil.warning(filename + " does not contain any Java source files.");
         }
       } finally {

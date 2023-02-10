@@ -101,6 +101,7 @@ public class Options {
   private boolean injectLogSites = false;
   private boolean allVersions = false;
   private boolean asObjCGenericDecl = false;
+  private boolean ignoreJarWarnings = false;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -443,6 +444,8 @@ public class Options {
         // TODO(tball): remove flag when all client builds stop using it.
       } else if (arg.equals("-Xno-jsni-warnings")) {
         jsniWarnings = false;
+      } else if (arg.equals("-Xignore-jar-warnings")) {
+        ignoreJarWarnings = true;
       } else if (arg.equals("-encoding")) {
         try {
           fileUtil.setFileEncoding(getArgValue(args, arg));
@@ -1166,5 +1169,9 @@ public class Options {
   @VisibleForTesting
   public void setAsObjCGenericDecl(boolean b) {
     asObjCGenericDecl = b;
+  }
+
+  public boolean ignoreJarWarnings() {
+    return ignoreJarWarnings;
   }
 }
