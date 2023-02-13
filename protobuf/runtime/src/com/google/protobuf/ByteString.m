@@ -433,6 +433,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufByteString)
 
 @end
 
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufByteString_ByteIterator)
+
 void ByteStringIterator_initWithComGoogleProtobufByteString_(
     ByteStringIterator *self, ComGoogleProtobufByteString *byteString) {
   JreStrongAssign(&self->byteString_, byteString);
