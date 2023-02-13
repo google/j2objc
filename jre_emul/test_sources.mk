@@ -323,24 +323,49 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # libcore/java/lang/CharacterTest.java \
 # libcore/java/net/URLConnectionTest.java \
 # libcore/java/nio/channels/SocketChannelTest.java \
+# libcore/java/security/spec/AlgorithmParametersPSSTest.java \
+# libcore/java/text/ChoiceFormatTest.java \
 # libcore/java/text/DateFormatSymbolsTest.java \
 # libcore/java/text/SimpleDateFormatTest.java \
 # libcore/java/util/LocaleTest.java \
+# libcore/javax/xml/datatype/DatatypeFactoryTest.java \
+# libcore/javax/xml/datatype/DurationImpl.java \
+# libcore/javax/xml/datatype/DurationTest.java \
+# libcore/javax/xml/parsers/DocumentBuilderFactoryTest.java \
+# libcore/javax/xml/parsers/DocumentBuilderTest.java \
+# libcore/javax/xml/transform/SourceLocatorImpl.java \
+# libcore/javax/xml/transform/TransformerConfigurationExceptionTest.java \
+# libcore/javax/xml/transform/TransformerExceptionTest.java \
 # libcore/libcore/icu/LocaleDataTest.java \
+# org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.java \
+# org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
 # org/apache/harmony/tests/java/lang/CharacterTest.java \
 # org/apache/harmony/tests/java/nio/channels/SocketChannelTest.java \
+# org/apache/harmony/tests/java/text/ChoiceFormatTest.java \
 # org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \
 # org/apache/harmony/tests/java/text/SimpleDateFormatTest.java \
 # org/apache/harmony/tests/java/util/DateTest.java \
 # org/apache/harmony/tests/java/util/TimeZoneTest.java \
+# org/apache/harmony/tests/javax/xml/parsers/DocumentBuilderFactoryTest.java \
+# org/apache/harmony/tests/javax/xml/parsers/DocumentBuilderTest.java \
+# org/apache/harmony/tests/javax/xml/parsers/MockSchemaFactoryLoader.java \
+# org/apache/harmony/tests/javax/xml/parsers/SAXParserTest.java \
+# org/apache/harmony/tests/javax/xml/parsers/SAXParserFactoryTest.java \
 # org/xmlpull/v1/XmlPullParserFactoryTest.java \
 # sun/misc/UnsafeTest.java \
+# tck/java/time/TCKZoneId.java \
 # tck/java/time/TCKZonedDateTime.java \
 # tck/java/time/format/TCKDateTimeFormatterBuilder.java \
 # tck/java/time/format/TCKLocalizedFieldParser.java \
 # tck/java/time/format/TCKZoneIdPrinterParser.java \
+# tck/java/time/zone/TCKZoneRulesProvider.java \
 # test/java/time/format/TestDateTimeFormatterBuilder.java \
 # test/java/time/format/TestZoneOffsetParser.java \
+# tests/security/interfaces/DSAKeyTest.java \
+# tests/security/interfaces/DSAPublicKeyTest.java \
+# tests/security/interfaces/RSAPrivateCrtKeyTest.java \
+# tests/security/interfaces/DSAPrivateKeyTest.java \
+# tests/security/spec/EncodedKeySpec2Test.java \
 
 TEST_SOURCES := \
     android/icu/dev/test/timezone/TimeZoneAliasTest.java \
@@ -598,12 +623,10 @@ TEST_SOURCES := \
     libcore/java/security/PrivilegedActionExceptionTest.java \
     libcore/java/security/cert/CRLReasonTest.java \
     libcore/java/security/cert/X509CRLSelectorTest.java \
-    libcore/java/security/spec/AlgorithmParametersPSSTest.java \
     libcore/java/security/spec/XECPrivateKeySpecTest.java \
     libcore/java/security/spec/XECPublicKeySpecTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/text/BreakIteratorTest.java \
-    libcore/java/text/ChoiceFormatTest.java \
     libcore/java/text/CollatorTest.java \
     libcore/java/text/DecimalFormatSymbolsTest.java \
     libcore/java/text/DecimalFormatTest.java \
@@ -729,7 +752,26 @@ TEST_SOURCES := \
     libcore/javax/net/ssl/SSLSocketFactoryTest.java \
     libcore/javax/net/ssl/SSLSocketTest.java \
     libcore/javax/sql/OldConnectionEventTest.java \
-    libcore/javax/xml/parsers/DocumentBuilderTest.java \
+    libcore/javax/xml/datatype/DatatypeConfigurationExceptionTest.java \
+    libcore/javax/xml/datatype/DatatypeConstantsTest.java \
+    libcore/javax/xml/datatype/XMLGregorianCalendarTest.java \
+    libcore/javax/xml/namespace/QNameTest.java \
+    libcore/javax/xml/transform/TransformerFactoryConfigurationErrorTest.java \
+    libcore/javax/xml/transform/TransformerFactoryTest.java \
+    libcore/javax/xml/transform/TransformerTest.java \
+    libcore/javax/xml/transform/dom/DOMResultTest.java \
+    libcore/javax/xml/transform/dom/DOMSourceTest.java \
+    libcore/javax/xml/transform/sax/SAXResultTest.java \
+    libcore/javax/xml/transform/sax/SAXSourceTest.java \
+    libcore/javax/xml/transform/stream/StreamResultTest.java \
+    libcore/javax/xml/transform/stream/StreamSourceTest.java \
+    libcore/javax/xml/validation/ValidatorHandlerTest.java \
+    libcore/javax/xml/validation/ValidatorTest.java \
+    libcore/javax/xml/xpath/XPathExceptionTest.java \
+    libcore/javax/xml/xpath/XPathExpressionExceptionTest.java \
+    libcore/javax/xml/xpath/XPathFactoryConfigurationExceptionTest.java \
+    libcore/javax/xml/xpath/XPathFactoryTest.java \
+    libcore/javax/xml/xpath/XPathFunctionExceptionTest.java \
     libcore/libcore/icu/ICUTest.java \
     libcore/libcore/io/MemoryTest.java \
     libcore/libcore/net/url/UrlUtilsTest.java \
@@ -788,8 +830,6 @@ TEST_SOURCES := \
     org/apache/harmony/regex/tests/java/util/regex/Matcher2Test.java \
     org/apache/harmony/regex/tests/java/util/regex/ModeTest.java \
     org/apache/harmony/regex/tests/java/util/regex/Pattern2Test.java \
-    org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.java \
-    org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
     org/apache/harmony/regex/tests/java/util/regex/ReplaceTest.java \
     org/apache/harmony/regex/tests/java/util/regex/SplitTest.java \
     org/apache/harmony/security/tests/java/security/AlgorithmParameterGenerator2Test.java \
@@ -1071,7 +1111,6 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/text/AttributedCharacterIteratorTest.java \
     org/apache/harmony/tests/java/text/AttributedStringTest.java \
     org/apache/harmony/tests/java/text/BreakIteratorTest.java \
-    org/apache/harmony/tests/java/text/ChoiceFormatTest.java \
     org/apache/harmony/tests/java/text/CollatorTest.java \
     org/apache/harmony/tests/java/text/DateFormatTest.java \
     org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.java \
@@ -1189,7 +1228,6 @@ TEST_SOURCES := \
     org/apache/harmony/tests/javax/security/cert/CertificateParsingExceptionTest.java \
     org/apache/harmony/tests/javax/security/cert/CertificateTest.java \
     org/apache/harmony/tests/javax/security/cert/X509CertificateTest.java \
-    org/apache/harmony/tests/javax/xml/parsers/DocumentBuilderFactoryTest.java \
     org/apache/harmony/tests/javax/xml/parsers/FactoryConfigurationErrorTest.java \
     org/apache/harmony/tests/javax/xml/parsers/ParserConfigurationExceptionTest.java \
     org/apache/harmony/tests/org/xml/sax/HandlerBaseTest.java \
@@ -1229,7 +1267,6 @@ TEST_SOURCES := \
     tck/java/time/TCKPeriod.java \
     tck/java/time/TCKYear.java \
     tck/java/time/TCKYearMonth.java \
-    tck/java/time/TCKZoneId.java \
     tck/java/time/TCKZoneOffset.java \
     tck/java/time/TestIsoChronology.java \
     tck/java/time/chrono/TCKChronoLocalDate.java \
@@ -1287,7 +1324,6 @@ TEST_SOURCES := \
     tck/java/time/zone/TCKZoneOffsetTransition.java \
     tck/java/time/zone/TCKZoneOffsetTransitionRule.java \
     tck/java/time/zone/TCKZoneRules.java \
-    tck/java/time/zone/TCKZoneRulesProvider.java \
     tck/java/time/zone/serial/TCKFixedZoneRulesSerialization.java \
     tck/java/time/zone/serial/TCKZoneOffsetTransitionRuleSerialization.java \
     tck/java/time/zone/serial/TCKZoneOffsetTransitionSerialization.java \
@@ -1375,13 +1411,9 @@ TEST_SOURCES := \
     tests/security/cert/X509CRLTest.java \
     tests/security/cert/X509Certificate2Test.java \
     tests/security/interfaces/DSAKeyPairGeneratorTest.java \
-    tests/security/interfaces/DSAKeyTest.java \
     tests/security/interfaces/DSAParamsTest.java \
-    tests/security/interfaces/DSAPrivateKeyTest.java \
-    tests/security/interfaces/DSAPublicKeyTest.java \
     tests/security/interfaces/RSAKeyTest.java \
     tests/security/interfaces/RSAMultiPrimePrivateCrtKeyTest.java \
-    tests/security/interfaces/RSAPrivateCrtKeyTest.java \
     tests/security/interfaces/RSAPrivateKeyTest.java \
     tests/security/interfaces/RSAPublicKeyTest.java \
     tests/security/spec/DSAParameterSpecTest.java \
@@ -1395,7 +1427,6 @@ TEST_SOURCES := \
     tests/security/spec/ECPrivateKeySpecTest.java \
     tests/security/spec/ECPublicKeySpecTest.java \
     tests/security/spec/EllipticCurveTest.java \
-    tests/security/spec/EncodedKeySpec2Test.java \
     tests/security/spec/EncodedKeySpecTest.java \
     tests/security/spec/InvalidKeySpecExceptionTest.java \
     tests/security/spec/InvalidParameterSpecExceptionTest.java \

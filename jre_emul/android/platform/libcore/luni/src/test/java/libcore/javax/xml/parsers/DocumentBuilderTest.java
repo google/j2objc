@@ -16,7 +16,17 @@
 
 package libcore.javax.xml.parsers;
 
-import static tests.support.Support_Xml.*;
+import static tests.support.Support_Xml.attrOf;
+import static tests.support.Support_Xml.domOf;
+import static tests.support.Support_Xml.firstChildTextOf;
+import static tests.support.Support_Xml.firstElementOf;
+
+import javax.xml.parsers.DocumentBuilder;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 
 public class DocumentBuilderTest extends junit.framework.TestCase {
     // http://code.google.com/p/android/issues/detail?id=2607
@@ -61,4 +71,35 @@ public class DocumentBuilderTest extends junit.framework.TestCase {
             // Expected.
         }
     }
+
+    public void testGetSchema() {
+        DocumentBuilder db = new DocumentBuilder() {
+            @Override
+            public Document parse(InputSource is) { return null; }
+
+            @Override
+            public boolean isNamespaceAware() { return false; }
+
+            @Override
+            public boolean isValidating() { return false; }
+
+            @Override
+            public void setEntityResolver(EntityResolver er) {}
+
+            @Override
+            public void setErrorHandler(ErrorHandler eh) {}
+
+            @Override
+            public Document newDocument() { return null; }
+
+            @Override
+            public DOMImplementation getDOMImplementation() { return null; }
+        };
+
+        try {
+            db.getSchema();
+            fail("Unexpectedly didn't throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException expected) {}
+    }
+
 }

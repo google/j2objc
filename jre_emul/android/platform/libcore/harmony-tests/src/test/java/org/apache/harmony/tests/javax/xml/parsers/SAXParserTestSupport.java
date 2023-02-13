@@ -34,7 +34,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * Compares the result of the parser with golden data.
  * Contains the handler classes used to track the output of the parser.
  */
-public class SAXParserTestSupport {
+class SAXParserTestSupport {
 
     public static final char SEPARATOR_ELEMENT = '^';
     public static final char SEPARATOR_STRING = '$';

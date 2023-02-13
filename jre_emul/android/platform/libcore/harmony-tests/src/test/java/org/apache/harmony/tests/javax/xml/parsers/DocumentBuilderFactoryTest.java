@@ -23,17 +23,27 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.SchemaFactoryLoader;
 
 public class DocumentBuilderFactoryTest extends TestCase {
 
@@ -243,14 +253,13 @@ public class DocumentBuilderFactoryTest extends TestCase {
         assertFalse(dbf.isValidating());
     }
 
-/*    public void test_isSetXIncludeAware() {
+    public void test_isSetXIncludeAware() {
         dbf.setXIncludeAware(true);
         assertTrue(dbf.isXIncludeAware());
 
         dbf.setXIncludeAware(false);
         assertFalse(dbf.isXIncludeAware());
     }
-*/
 
     /**
      * javax.xml.parsers.DocumentBuilderFactory#newInstance().
@@ -689,18 +698,65 @@ public class DocumentBuilderFactoryTest extends TestCase {
     /**
      * javax.xml.parsers.DocumentBuilderFactory#setSchema(javax.xml.validation.Schema).
      */
- /*   public void test_setSchemaLjavax_xml_validation_Schema() {
-        SchemaFactory sf =
-            SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    public void test_setSchemaLjavax_xml_validation_Schema()
+        throws MalformedURLException, SAXException, SAXNotSupportedException {
+        String language = XMLConstants.W3C_XML_SCHEMA_NS_URI;
+        String propName = SchemaFactory.class.getName() + ":" + language;
+        String className =
+            "org.apache.harmony.tests.javax.xml.parsers.MockSchemaFactory";
+
+        // Test `SchemaFactory.newInstance` methods. Set system property for
+        // schema language to make `newInstance` use the mock implementation of
+        // `SchemaFactory`.
+        System.setProperty(propName, className);
+        SchemaFactory f1 = SchemaFactory.newInstance(language);
+        SchemaFactory f2 = SchemaFactory.newInstance(language, className, null);
+
+        // Test `SchemaFactory.newSchema` method for `File`, `URL` and `Source`.
         try {
-            Schema schema = sf.newSchema();
-            dbf.setSchema(schema);
+            Schema s = f1.newSchema();
+            s = f1.newSchema(new File("test.dtd"));
+            s = f1.newSchema(new URL("https://test.org"));
+            s = f1.newSchema(new StreamSource());
+            dbf.setSchema(s);
             assertNotNull(dbf.getSchema());
-        } catch (SAXException sax) {
-            fail("Unexpected exception " + sax.toString());
+        } catch (UnsupportedOperationException e) {
+            // Expected.
+        }
+
+        // Test `newFactory` method for the mock `SchemaFactoryLoader`.
+        SchemaFactoryLoader loader = new MockSchemaFactoryLoader();
+        assertNull(loader.newFactory(language));
+
+        // Test `getFeature` (the mock implementation always throws).
+        try {
+            f2.getFeature("woot");
+        } catch (SAXNotRecognizedException e) {
+            // Expected.
+        }
+
+        // Test `setFeature` (the mock implementation always throws).
+        try {
+            f2.setFeature("woot", true);
+        } catch (SAXNotRecognizedException e) {
+            // Expected.
+        }
+
+        // Test `getProperty` (the mock implementation always throws).
+        try {
+            f2.getProperty("woot");
+        } catch (SAXNotRecognizedException e) {
+            // Expected.
+        }
+
+        // Test `setProperty` (the mock implementation always throws).
+        try {
+            f2.setProperty("woot", null);
+        } catch (SAXNotRecognizedException e) {
+            // Expected.
         }
     }
-*/
+
     /**
      * javax.xml.parsers.DocumentBuilderFactory#setValidating(boolean).
      */

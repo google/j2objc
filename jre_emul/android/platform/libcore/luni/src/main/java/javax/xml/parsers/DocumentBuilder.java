@@ -60,16 +60,16 @@ public abstract class DocumentBuilder {
     }
 
     /**
-      * <p>Reset this <code>DocumentBuilder</code> to its original configuration.</p>
+      * <p>Reset this <code>DocumentBuilder</code>.</p>
       *
-      * <p><code>DocumentBuilder</code> is reset to the same state as when it was created with
-      * {@link DocumentBuilderFactory#newDocumentBuilder()}.
-      * <code>reset()</code> is designed to allow the reuse of existing <code>DocumentBuilder</code>s
-      * thus saving resources associated with the creation of new <code>DocumentBuilder</code>s.</p>
+      * This method removes both the <code>EntityResolver</code> and <code>ErrorHandler</code>
+      * instances associated with this <code>DocumentBuilder</code> and sets all internal
+      * properties to false including those set by the <code>DocumentBuilderFactory</code> when
+      * this <code>DocumentBuilder</code> was created.
       *
-      * <p>The reset <code>DocumentBuilder</code> is not guaranteed to have the same {@link EntityResolver} or {@link ErrorHandler}
-      * <code>Object</code>s, e.g. {@link Object#equals(Object obj)}.  It is guaranteed to have a functionally equal
-      * <code>EntityResolver</code> and <code>ErrorHandler</code>.</p>
+      * @see #setEntityResolver(EntityResolver)
+      * @see #setErrorHandler(ErrorHandler)
+      * @see DocumentBuilderFactory
       *
       * @since 1.5
       */
