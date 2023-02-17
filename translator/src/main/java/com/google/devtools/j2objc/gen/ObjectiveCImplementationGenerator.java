@@ -110,6 +110,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     if (options.useStrictFieldLoad()) {
       println("#define J2OBJC_STRICT_FIELD_LOAD 1");
     }
+    if (options.useRetainAutoreleaseReturns()) {
+      println("#define J2OBJC_RETAIN_AUTORELEASE_RETURNS 1");
+    }
+    if (options.useARCAutoreleaseReturns()) {
+      println("#define J2OBJC_ARC_AUTORELEASE_RETURNS 1");
+    }
     newline();
   }
 

@@ -79,6 +79,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
   private final LinkedList<Set<VariableElement>> retainedLocalCandidateStack = new LinkedList<>();
   private Set<VariableElement> retainedLocalCandidates = new HashSet<>();
   private boolean maybeRetainMethodReturn = false;
+  private boolean methodIsConstructorOrDestructor = false;
 
   public OperatorRewriter(CompilationUnit unit) {
     super(unit);
@@ -146,6 +147,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
   @Override
   public boolean visit(MethodDeclaration node) {
     ExecutableElement method = node.getExecutableElement();
+    methodIsConstructorOrDestructor = isConstructorOrDestructor(method);
     maybeRetainMethodReturn = Modifier.isSynchronized(node.getModifiers())
         || maybeRetainLambdaOrAnonymousClassMethod(method);
     retainedLocalCandidates.addAll(
@@ -156,6 +158,12 @@ public class OperatorRewriter extends UnitTreeVisitor {
     return true;
   }
 
+  // Returns true if the method is a constructor or destructor
+  private boolean isConstructorOrDestructor(ExecutableElement method) {
+    String methodName = ElementUtil.getName(method);
+    return ElementUtil.isConstructor(method) || methodName.equals("dealloc");
+  }
+
   // Returns true if the method isn't a constructor or destructor, and returns a retainable type.
   private boolean maybeRetainLambdaOrAnonymousClassMethod(ExecutableElement method) {
     TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
@@ -163,8 +171,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
       return false;
     }
     String methodName = ElementUtil.getName(method);
-    if (ElementUtil.isConstructor(method)
-        || methodName.equals("dealloc")
+    if (isConstructorOrDestructor(method)
         || methodName.startsWith("__")) { // True for translator-generated internal methods.
       return false;
     }
@@ -176,6 +183,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     retainedLocalCandidateStack.clear();
     retainedLocalCandidates.clear();
     maybeRetainMethodReturn = false;
+    methodIsConstructorOrDestructor = false;
   }
 
   @Override
@@ -193,9 +201,11 @@ public class OperatorRewriter extends UnitTreeVisitor {
   @Override
   public void endVisit(ReturnStatement node) {
     Expression expr = node.getExpression();
-    if ((maybeRetainMethodReturn || !retainedLocalCandidateStack.isEmpty())
-        && expr != null
-        && !expr.getTypeMirror().getKind().isPrimitive()) {
+    boolean isRetainableReturnType = expr != null && TypeUtil.isReferenceType(expr.getTypeMirror());
+    if (options.useRetainAutoreleaseReturns() && isRetainableReturnType) {
+      rewriteRetainedAutoreleaseReturnValue(expr);
+    } else if ((maybeRetainMethodReturn || !retainedLocalCandidateStack.isEmpty())
+        && isRetainableReturnType) {
       rewriteRetainedLocal(expr);
     }
   }
@@ -306,6 +316,27 @@ public class OperatorRewriter extends UnitTreeVisitor {
     if (isRetainedLocal(var)) {
       rewriteRetainedLocal(rhs);
     }
+  }
+
+  private void rewriteRetainedAutoreleaseReturnValue(Expression expr) {
+    if (options.useARC() // ARC generates equivalent code.
+        // Literals do not need retain.
+        || expr.getKind() == TreeNode.Kind.STRING_LITERAL
+        // Methods and functions allow innermost call to handle retain/autorelease.
+        || expr.getKind() == TreeNode.Kind.FUNCTION_INVOCATION
+        || expr.getKind() == TreeNode.Kind.METHOD_INVOCATION
+        // Constructor methods do not need additional retain/autorelease.
+        || methodIsConstructorOrDestructor) {
+      return;
+    }
+    String funcName =
+        options.useARCAutoreleaseReturns()
+            ? "objc_retainAutoreleaseReturnValue"
+            : "JreRetainedAutoreleasedReturnValue";
+    FunctionElement element = new FunctionElement(funcName, TypeUtil.ID_TYPE, null);
+    FunctionInvocation invocation = new FunctionInvocation(element, expr.getTypeMirror());
+    expr.replaceWith(invocation);
+    invocation.addArgument(expr);
   }
 
   private void rewriteVolatileLoad(Expression node) {

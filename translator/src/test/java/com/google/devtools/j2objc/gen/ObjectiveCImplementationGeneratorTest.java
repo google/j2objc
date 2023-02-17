@@ -1069,4 +1069,29 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation, "J2OBJC_STRICT_FIELD_ASSIGN");
     assertNotInTranslation(translation, "J2OBJC_STRICT_FIELD_LOAD");
   }
+
+  public void testRetainedAutoreleasedReturnBuildFlagsGeneration() throws IOException {
+    String translation = translateSourceFile("public class Example {}", "Example", "Example.m");
+
+    assertNotInTranslation(translation, "J2OBJC_RETAIN_AUTORELEASE_RETURNS");
+    assertNotInTranslation(translation, "J2OBJC_ARC_AUTORELEASE_RETURNS");
+
+    options.setRetainAutoreleaseReturns(true);
+    translation = translateSourceFile("public class Example {}", "Example", "Example.m");
+
+    assertTranslation(translation, "J2OBJC_RETAIN_AUTORELEASE_RETURNS 1");
+    assertNotInTranslation(translation, "J2OBJC_STRICT_FIELD_LOAD");
+
+    options.setARCAutoreleaseReturns(true);
+    translation = translateSourceFile("public class Example {}", "Example", "Example.m");
+
+    assertTranslation(translation, "J2OBJC_RETAIN_AUTORELEASE_RETURNS 1");
+    assertTranslation(translation, "J2OBJC_ARC_AUTORELEASE_RETURNS 1");
+
+    options.setRetainAutoreleaseReturns(false);
+    translation = translateSourceFile("public class Example {}", "Example", "Example.m");
+
+    assertNotInTranslation(translation, "J2OBJC_RETAIN_AUTORELEASE_RETURNS");
+    assertNotInTranslation(translation, "J2OBJC_ARC_AUTORELEASE_RETURNS");
+  }
 }

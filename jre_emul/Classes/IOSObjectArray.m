@@ -66,7 +66,7 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
 }
 
 + (instancetype)arrayWithLength:(NSUInteger)length type:(IOSClass *)type {
-  return AUTORELEASE(IOSObjectArray_CreateArray((jint)length, type));
+  return ALWAYS_AUTORELEASED_RETURN_VALUE(IOSObjectArray_CreateArray((jint)length, type));
 }
 
 + (instancetype)newArrayWithObjects:(const id *)objects
@@ -78,7 +78,8 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
 + (instancetype)arrayWithObjects:(const id *)objects
                            count:(NSUInteger)count
                             type:(IOSClass *)type {
-  return AUTORELEASE(IOSObjectArray_CreateArrayWithObjects((jint)count, type, objects));
+  return ALWAYS_AUTORELEASED_RETURN_VALUE(
+      IOSObjectArray_CreateArrayWithObjects((jint)count, type, objects));
 }
 
 + (instancetype)arrayWithArray:(IOSObjectArray *)array {
@@ -89,19 +90,19 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
 
 + (instancetype)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type {
   NSUInteger count = [array count];
-  IOSObjectArray *result = AUTORELEASE(IOSObjectArray_CreateArray((jint)count, type));
+  IOSObjectArray *result = IOSObjectArray_CreateArray((jint)count, type);
   [array getObjects:result->buffer_ range:NSMakeRange(0, count)];
   for (NSUInteger i = 0; i < count; i++) {
     RETAIN_(result->buffer_[i]);
   }
-  return result;
+  return ALWAYS_AUTORELEASED_RETURN_VALUE(result);
 }
 
 + (instancetype)arrayWithDimensions:(NSUInteger)dimensionCount
                             lengths:(const jint *)dimensionLengths
                                type:(IOSClass *)type {
-  return AUTORELEASE(IOSArray_NewArrayWithDimensions(
-      self, dimensionCount, dimensionLengths, type));
+  return ALWAYS_AUTORELEASED_RETURN_VALUE(
+      IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, type));
 }
 
 + (instancetype)newArrayWithDimensions:(NSUInteger)dimensionCount
@@ -150,19 +151,20 @@ id IOSObjectArray_Set(
     __unsafe_unretained IOSObjectArray *array, NSUInteger index, __unsafe_unretained id value) {
   IOSArray_checkIndex(array->size_, (jint)index);
   IOSObjectArray_checkValue(array, value);
-  return JreAutoreleasedAssign(&array->buffer_[index], RETAIN_(value));
+  return X_RETAINED_AUTORELEASED_RETURN_VALUE(
+      JreAutoreleasedAssign(&array->buffer_[index], RETAIN_(value)));
 }
 
 id IOSObjectArray_SetAndConsume(IOSObjectArray *array, NSUInteger index, id value) {
   IOSObjectArray_checkIndexRetainedValue(array->size_, (jint)index, value);
   IOSObjectArray_checkRetainedValue(array, value);
-  return JreAutoreleasedAssign(&array->buffer_[index], value);
+  return X_RETAINED_AUTORELEASED_RETURN_VALUE(JreAutoreleasedAssign(&array->buffer_[index], value));
 }
 
 id IOSObjectArray_SetRef(JreArrayRef ref, id value) {
   // Index is checked when accessing the JreArrayRef.
   IOSObjectArray_checkValue(ref.arr, value);
-  return JreAutoreleasedAssign(ref.pValue, RETAIN_(value));
+  return X_RETAINED_AUTORELEASED_RETURN_VALUE(JreAutoreleasedAssign(ref.pValue, RETAIN_(value)));
 }
 
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value {

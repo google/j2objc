@@ -488,6 +488,75 @@ public class OperatorRewriterTest extends GenerationTest {
     assertTranslation(translation, "return val;");
   }
 
+  public void testRetainAutoreleaseReturns() throws IOException {
+    options.setRetainAutoreleaseReturns(true);
+    String translation =
+        translateSourceFile(
+            "class Test {"
+                + "  class Foo {}"
+                + "  Foo f = new Foo();"
+                + "  String test1(String s1, char c1) {"
+                + "    return s1;"
+                + "  }"
+                + "  Foo test2() {"
+                + "    Foo f1 = f;"
+                + "    return f1;"
+                + "  }"
+                + "  Foo test3() {"
+                + "    return test2();"
+                + "  }"
+                + "  String test4() {"
+                + "    return \"bar\";"
+                + "  }"
+                + "  int test5() {"
+                + "    int val = 1;"
+                + "    return val;"
+                + "  }"
+                + "}",
+            "Test",
+            "Test.m");
+    assertTranslation(translation, "return JreRetainedAutoreleasedReturnValue(s1);");
+    assertTranslation(translation, "return JreRetainedAutoreleasedReturnValue(f1)");
+    assertTranslation(translation, "return [self test2]");
+    assertTranslation(translation, "return @\"bar\"");
+    assertTranslation(translation, "return val;");
+  }
+
+  public void testRetainAutoreleaseReturnsARC() throws IOException {
+    options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    options.setRetainAutoreleaseReturns(true);
+    String translation =
+        translateSourceFile(
+            "class Test {"
+                + "  class Foo {}"
+                + "  Foo f = new Foo();"
+                + "  String test1(String s1, char c1) {"
+                + "    return s1;"
+                + "  }"
+                + "  Foo test2() {"
+                + "    Foo f1 = f;"
+                + "    return f1;"
+                + "  }"
+                + "  Foo test3() {"
+                + "    return test2();"
+                + "  }"
+                + "  String test4() {"
+                + "    return \"bar\";"
+                + "  }"
+                + "  int test5() {"
+                + "    int val = 1;"
+                + "    return val;"
+                + "  }"
+                + "}",
+            "Test",
+            "Test.m");
+    assertTranslation(translation, "return s1;");
+    assertTranslation(translation, "return f1");
+    assertTranslation(translation, "return [self test2]");
+    assertTranslation(translation, "return @\"bar\"");
+    assertTranslation(translation, "return val;");
+  }
+
   public void testObjectEquality() throws IOException {
     String translation = translateSourceFile(
         "class Test {"

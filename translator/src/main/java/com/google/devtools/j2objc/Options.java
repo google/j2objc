@@ -60,6 +60,7 @@ import java.util.regex.Pattern;
  *
  * @author Tom Ball
  */
+@SuppressWarnings("SystemExitOutsideMain")
 public class Options {
 
   private List<String> processorPathEntries = new ArrayList<>();
@@ -67,6 +68,8 @@ public class Options {
   private MemoryManagementOption memoryManagementOption = null;
   private boolean strictFieldAssign = false;
   private boolean strictFieldLoad = false;
+  private boolean retainAutoreleaseReturns = false;
+  private boolean arcAutoreleaseReturns = false;
   private EmitLineDirectivesOption emitLineDirectives = EmitLineDirectivesOption.NONE;
   private boolean warningsAsErrors = false;
   private boolean deprecatedDeclarations = false;
@@ -415,6 +418,11 @@ public class Options {
       } else if (arg.equals("-Xstrict-field-load")) {
         strictFieldAssign = true;
         strictFieldLoad = true;
+      } else if (arg.equals("-Xretain-autorelease-returns")) {
+        retainAutoreleaseReturns = true;
+      } else if (arg.equals("-Xarc-autorelease-returns")) {
+        retainAutoreleaseReturns = true;
+        arcAutoreleaseReturns = true;
       } else if (arg.equals("-g")) {
         emitLineDirectives = EmitLineDirectivesOption.NORMAL;
       } else if (arg.equals("-g:none")) {
@@ -822,6 +830,30 @@ public class Options {
       strictFieldAssign = true;
     }
     strictFieldLoad = b;
+  }
+
+  public boolean useRetainAutoreleaseReturns() {
+    return retainAutoreleaseReturns;
+  }
+
+  @VisibleForTesting
+  public void setRetainAutoreleaseReturns(boolean b) {
+    retainAutoreleaseReturns = b;
+    if (!b) {
+      arcAutoreleaseReturns = false;
+    }
+  }
+
+  public boolean useARCAutoreleaseReturns() {
+    return arcAutoreleaseReturns;
+  }
+
+  @VisibleForTesting
+  public void setARCAutoreleaseReturns(boolean b) {
+    arcAutoreleaseReturns = b;
+    if (b) {
+      retainAutoreleaseReturns = true;
+    }
   }
 
   @VisibleForTesting
