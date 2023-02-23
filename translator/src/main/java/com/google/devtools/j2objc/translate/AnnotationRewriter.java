@@ -29,14 +29,17 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
+import com.google.j2objc.annotations.GenerateObjectiveCGenerics;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -76,6 +79,27 @@ public class AnnotationRewriter extends UnitTreeVisitor {
     addConstructor(node, fieldElements);
     addEqualsMethod(node);
     addHashCodeMethod(node);
+  }
+
+  @Override
+  public void endVisit(TypeDeclaration node) {
+    checkAnnotationValidation(node);
+  }
+
+  private void checkAnnotationValidation(TypeDeclaration node) {
+    if (ElementUtil.hasAnnotation(
+        TypeUtil.asTypeElement(node.getTypeElement().asType()), GenerateObjectiveCGenerics.class)) {
+      if (node.isInterface()) {
+        ErrorUtil.error(node, "@GenerateObjectiveCGenerics can't be used for interface.");
+      }
+      if (TypeUtil.hasBounds(node.getTypeElement().asType())) {
+        ErrorUtil.error(node, "@GenerateObjectiveCGenerics can't be used for bounded bypes.");
+      }
+      if (node.getTypeElement().getTypeParameters().isEmpty()) {
+        ErrorUtil.warning(
+            node, "@GenerateObjectiveCGenerics has no effect if type doesn't have parameters.");
+      }
+    }
   }
 
   // Create an instance field for each member.

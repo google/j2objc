@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.gen;
 
+import static java.util.stream.Collectors.joining;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -118,7 +120,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (typeElement.getKind().isInterface()) {
       printf("@protocol %s", typeName);
     } else {
-      printf("@interface %s : %s", typeName, getSuperTypeName());
+      printInterfaceType();
     }
     printImplementedProtocols();
     if (!typeElement.getKind().isInterface()) {
@@ -222,6 +224,22 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       names.add("JavaObject");
     }
     return names;
+  }
+
+  private void printInterfaceType() {
+    printf("@interface %s", typeName);
+    if (needsGenerateObjectiveCGenerics() && !typeElement.getTypeParameters().isEmpty()) {
+      printf(
+          "<%s>",
+          typeElement.getTypeParameters().stream()
+              .map(Element::getSimpleName)
+              .collect(joining(", ")));
+    }
+    printf(" : %s", getSuperTypeName());
+  }
+
+  private boolean needsGenerateObjectiveCGenerics() {
+    return options.asObjCGenericDecl() || hasGenerateObjectiveCGenerics(typeElement.asType());
   }
 
   private void printImplementedProtocols() {
@@ -587,7 +605,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     newline();
     JavadocGenerator.printDocComment(getBuilder(), m.getJavadoc());
 
-    String methodSignature = getMethodSignature(m, options.asObjCGenericDecl());
+    String methodSignature = getMethodSignature(m, needsGenerateObjectiveCGenerics());
 
     // In order to properly map the method name from the entire signature, we must isolate it from
     // associated type and parameter declarations.  The method name is guaranteed to be between the

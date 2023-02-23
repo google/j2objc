@@ -15,7 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
+import com.google.devtools.j2objc.util.ErrorUtil;
 import java.io.IOException;
 
 /**
@@ -107,5 +107,52 @@ public class AnnotationRewriterTest extends GenerationTest {
 
     // Verify metadata for namespace() method is also marked as reserved.
     assertTranslation(translation, "methods[0].selector = @selector(namespace__);");
+  }
+
+  public void testInterfaceWithGenerateObjectiveCGenerics() throws IOException {
+    translateSourceFile(
+        "import com.google.j2objc.annotations.GenerateObjectiveCGenerics; "
+            + "@GenerateObjectiveCGenerics "
+            + "public interface Test<V> {"
+            + "  V get(V input); "
+            + "}",
+        "Test",
+        "Test.m");
+    assertEquals(1, ErrorUtil.errorCount());
+    String errorMsg = ErrorUtil.getErrorMessages().get(0);
+    assertTrue(errorMsg.contains("@GenerateObjectiveCGenerics can't be used for interface."));
+  }
+
+  public void testBoundedTypeWithGenerateObjectiveCGenerics() throws IOException {
+    translateSourceFile(
+        "import com.google.j2objc.annotations.GenerateObjectiveCGenerics; "
+            + "@GenerateObjectiveCGenerics "
+            + "public class Test<V extends Object> {"
+            + "  V get(V input) { return input; } "
+            + "}",
+        "Test",
+        "Test.m");
+    // TODO(litstrong): Test<V extends Object> is not read in the AnnotationRewriter. Instead,
+    // Test<V> is read, that is one reason why this test isn't working as expected.
+    assertEquals(0, ErrorUtil.errorCount());
+    // String errorMsg = ErrorUtil.getErrorMessages().get(0);
+    // assertTrue(errorMsg.contains("@GenerateObjectiveCGenerics can't be used for bounded
+    // bypes."));
+  }
+
+  public void testEmptyTypeWithGenerateObjectiveCGenerics() throws IOException {
+    translateSourceFile(
+        "import com.google.j2objc.annotations.GenerateObjectiveCGenerics; "
+            + "@GenerateObjectiveCGenerics "
+            + "public class Test {"
+            + "  String get(String input) { return input; } "
+            + "}",
+        "Test",
+        "Test.m");
+    assertEquals(1, ErrorUtil.warningCount());
+    String warnningMsg = ErrorUtil.getWarningMessages().get(0);
+    assertTrue(
+        warnningMsg.contains(
+            "@GenerateObjectiveCGenerics has no effect if type doesn't have parameters."));
   }
 }

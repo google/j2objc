@@ -449,7 +449,7 @@ public final class TypeUtil {
     } else if (t.getKind().isPrimitive()) {
       return boxedClass((PrimitiveType) t);
     } else if (t.getKind() == TypeKind.UNION) {
-      TypeMirror lub = leastUpperBound(((UnionType)t).getAlternatives());
+      TypeMirror lub = leastUpperBound(((UnionType) t).getAlternatives());
       return getObjcClass(asTypeElement(lub));
     }
     return null;
@@ -744,6 +744,22 @@ public final class TypeUtil {
         return getUpperBounds(((WildcardType) t).getExtendsBound());
       default:
         return Collections.singletonList(t);
+    }
+  }
+
+  public static boolean hasBounds(TypeMirror t) {
+    if (t == null) {
+      return false;
+    }
+    switch (t.getKind()) {
+      case TYPEVAR:
+        return ((TypeVariable) t).getUpperBound() != null
+            || ((TypeVariable) t).getLowerBound() != null;
+      case WILDCARD:
+        return ((WildcardType) t).getExtendsBound() != null
+            || ((WildcardType) t).getSuperBound() != null;
+      default:
+        return false;
     }
   }
 

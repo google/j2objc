@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.MethodReferenceTest;
 import com.google.devtools.j2objc.gen.ArrayAccessTest;
 import com.google.devtools.j2objc.gen.ArrayCreationTest;
 import com.google.devtools.j2objc.gen.ArrayGenericsTest;
+import com.google.devtools.j2objc.gen.GenerateObjectiveCGenericsTest;
 import com.google.devtools.j2objc.gen.JavadocGeneratorTest;
 import com.google.devtools.j2objc.gen.LineDirectivesTest;
 import com.google.devtools.j2objc.gen.LiteralGeneratorTest;
@@ -127,6 +128,7 @@ public class SmallTests {
         ExternalAnnotationInjectorTest.class,
         FileUtilTest.class,
         FunctionizerTest.class,
+        GenerateObjectiveCGenericsTest.class,
         GwtConverterTest.class,
         HeaderImportCollectorTest.class,
         ImplementationImportCollectorTest.class,
