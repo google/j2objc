@@ -297,7 +297,9 @@ public class TreeShaker {
       TreeShaker shaker = new TreeShaker(options);
       shaker.testFileExistence();
       exitOnErrorsOrWarnings(treatWarningsAsErrors);
-      writeToFile(options, shaker.findUnusedCode());
+      CodeReferenceMap unusedCode = shaker.findUnusedCode();
+      exitOnErrorsOrWarnings(treatWarningsAsErrors);
+      writeToFile(options, unusedCode);
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
     }
