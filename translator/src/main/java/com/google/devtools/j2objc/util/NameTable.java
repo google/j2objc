@@ -614,7 +614,8 @@ public class NameTable {
       objcType = type.toString();
     } else if (TypeUtil.isDeclaredType(type)
         && asObjCGenericDecl
-        && !((DeclaredType) type).getTypeArguments().isEmpty()) {
+        && !((DeclaredType) type).getTypeArguments().isEmpty()
+        && !TypeUtil.isInterface(type)) {
       final String finalQualifiers = qualifiers;
       objcType =
           String.format(

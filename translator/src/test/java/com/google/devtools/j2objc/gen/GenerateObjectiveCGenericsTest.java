@@ -146,12 +146,13 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     assertTranslation(testHeader, "- (Map<NSString *, List<List<NSString *> *> *> *)getWithMap");
   }
 
-  public void testAnnotatedClass2() throws IOException {
+  public void testReturnTypedInterfaces() throws IOException {
     addSourceFile(
         "import com.google.j2objc.annotations.GenerateObjectiveCGenerics; "
+            + "import com.google.common.util.concurrent.ListenableFuture; "
             + "@GenerateObjectiveCGenerics "
-            + "public class Test<V extends Object> {"
-            + "  V get(V input) { "
+            + "public class Test<V> {"
+            + "  ListenableFuture<V> get(ListenableFuture<V> input) { "
             + "    return input; "
             + "  }"
             + "}",
@@ -160,8 +161,15 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertTranslation(testHeader, "@interface Test<V> : NSObject");
-    assertTranslation(testHeader, "- (V)getWithId:(V)input;");
-    assertTranslation(testSource, "- (id)getWithId:(id)input");
+    assertTranslation(
+        testHeader,
+        "- (id<ComGoogleCommonUtilConcurrentListenableFuture>)"
+            + "getWithComGoogleCommonUtilConcurrentListenableFuture:"
+            + "(id<ComGoogleCommonUtilConcurrentListenableFuture>)input;");
+    assertTranslation(
+        testSource,
+        "- (id<ComGoogleCommonUtilConcurrentListenableFuture>)"
+            + "getWithComGoogleCommonUtilConcurrentListenableFuture:"
+            + "(id<ComGoogleCommonUtilConcurrentListenableFuture>)input");
   }
 }
