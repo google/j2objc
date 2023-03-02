@@ -298,8 +298,9 @@ public class TreeShaker {
       shaker.testFileExistence();
       exitOnErrorsOrWarnings(treatWarningsAsErrors);
       CodeReferenceMap unusedCode = shaker.findUnusedCode();
-      exitOnErrorsOrWarnings(treatWarningsAsErrors);
-      writeToFile(options, unusedCode);
+      if (unusedCode != null) {
+        writeToFile(options, unusedCode);
+      }
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
     }
