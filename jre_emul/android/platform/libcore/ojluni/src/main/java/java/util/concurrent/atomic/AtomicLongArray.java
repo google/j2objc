@@ -39,44 +39,28 @@ package java.util.concurrent.atomic;
 #include "java/lang/IndexOutOfBoundsException.h"
 ]-*/
 
+/* J2ObjC removed
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+*/
+
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongUnaryOperator;
 
 /**
  * A {@code long} array in which elements may be updated atomically.
- * See the {@link java.util.concurrent.atomic} package specification
- * for description of the properties of atomic variables.
+ * See the {@link VarHandle} specification for descriptions of the
+ * properties of atomic accesses.
  * @since 1.5
  * @author Doug Lea
  */
 public class AtomicLongArray implements java.io.Serializable {
     private static final long serialVersionUID = -2308431214976778248L;
-
-    private final long[] array;
     /* J2ObjC removed.
-    private static final sun.misc.Unsafe U = sun.misc.Unsafe.getUnsafe();
-    private static final int ABASE;
-    private static final int ASHIFT;
-
-    static {
-        ABASE = U.arrayBaseOffset(long[].class);
-        int scale = U.arrayIndexScale(long[].class);
-        if ((scale & (scale - 1)) != 0)
-            throw new Error("array index scale not a power of two");
-        ASHIFT = 31 - Integer.numberOfLeadingZeros(scale);
-    }
-
-    private long checkedByteOffset(int i) {
-        if (i < 0 || i >= array.length)
-            throw new IndexOutOfBoundsException("index " + i);
-
-        return byteOffset(i);
-    }
-
-    private static long byteOffset(int i) {
-        return ((long) i << ASHIFT) + ABASE;
-    }
+    private static final VarHandle AA
+        = MethodHandles.arrayElementVarHandle(long[].class);
     */
+    private final long[] array;
 
     /**
      * Creates a new AtomicLongArray of the given length, with all
@@ -130,7 +114,8 @@ public class AtomicLongArray implements java.io.Serializable {
     ]-*/
 
     /**
-     * Gets the current value at position {@code i}.
+     * Returns the current value of the element at index {@code i},
+     * with memory effects as specified by {@link VarHandle#getVolatile}.
      *
      * @param i the index
      * @return the current value
@@ -144,7 +129,8 @@ public class AtomicLongArray implements java.io.Serializable {
     ]-*/;
 
     /**
-     * Sets the element at position {@code i} to the given value.
+     * Sets the element at index {@code i} to {@code newValue},
+     * with memory effects as specified by {@link VarHandle#setVolatile}.
      *
      * @param i the index
      * @param newValue the new value
@@ -154,7 +140,8 @@ public class AtomicLongArray implements java.io.Serializable {
     ]-*/;
 
     /**
-     * Eventually sets the element at position {@code i} to the given value.
+     * Sets the element at index {@code i} to {@code newValue},
+     * with memory effects as specified by {@link VarHandle#setRelease}.
      *
      * @param i the index
      * @param newValue the new value
@@ -165,8 +152,9 @@ public class AtomicLongArray implements java.io.Serializable {
     ]-*/;
 
     /**
-     * Atomically sets the element at position {@code i} to the given value
-     * and returns the old value.
+     * Atomically sets the element at index {@code i} to {@code
+     * newValue} and returns the old value,
+     * with memory effects as specified by {@link VarHandle#getAndSet}.
      *
      * @param i the index
      * @param newValue the new value
@@ -177,12 +165,13 @@ public class AtomicLongArray implements java.io.Serializable {
     ]-*/;
 
     /**
-     * Atomically sets the element at position {@code i} to the given
-     * updated value if the current value {@code ==} the expected value.
+     * Atomically sets the element at index {@code i} to {@code newValue}
+     * if the element's current value {@code == expectedValue},
+     * with memory effects as specified by {@link VarHandle#compareAndSet}.
      *
      * @param i the index
-     * @param expect the expected value
-     * @param update the new value
+     * @param expectedValue the expected value
+     * @param newValue the new value
      * @return {@code true} if successful. False return indicates that
      * the actual value was not equal to the expected value.
      */
@@ -192,25 +181,50 @@ public class AtomicLongArray implements java.io.Serializable {
     ]-*/;
 
     /**
-     * Atomically sets the element at position {@code i} to the given
-     * updated value if the current value {@code ==} the expected value.
+     * Possibly atomically sets the element at index {@code i} to
+     * {@code newValue} if the element's current value {@code == expectedValue},
+     * with memory effects as specified by {@link VarHandle#weakCompareAndSetPlain}.
      *
-     * <p><a href="package-summary.html#weakCompareAndSet">May fail
-     * spuriously and does not provide ordering guarantees</a>, so is
-     * only rarely an appropriate alternative to {@code compareAndSet}.
+     * @deprecated This method has plain memory effects but the method
+     * name implies volatile memory effects (see methods such as
+     * {@link #compareAndExchange} and {@link #compareAndSet}).  To avoid
+     * confusion over plain or volatile memory effects it is recommended that
+     * the method {@link #weakCompareAndSetPlain} be used instead.
      *
      * @param i the index
-     * @param expect the expected value
-     * @param update the new value
+     * @param expectedValue the expected value
+     * @param newValue the new value
      * @return {@code true} if successful
+     * @see #weakCompareAndSetPlain
      */
+    @Deprecated() // J2ObjC modified: removed since="9" argument
     public final native boolean weakCompareAndSet(int i, long expect, long update) /*-[
       return __c11_atomic_compare_exchange_weak(
           GetPtrChecked(self, i), &expect, update, __ATOMIC_RELAXED, __ATOMIC_RELAXED);
     ]-*/;
 
     /**
-     * Atomically increments by one the element at index {@code i}.
+     * Possibly atomically sets the element at index {@code i} to
+     * {@code newValue} if the element's current value {@code == expectedValue},
+     * with memory effects as specified by {@link VarHandle#weakCompareAndSetPlain}.
+     *
+     * @param i the index
+     * @param expectedValue the expected value
+     * @param newValue the new value
+     * @return {@code true} if successful
+     * @since 9
+     */
+    /* J2ObjC removed
+    public final boolean weakCompareAndSetPlain(int i, long expectedValue, long newValue) {
+        return AA.weakCompareAndSetPlain(array, i, expectedValue, newValue);
+    }
+    */
+
+    /**
+     * Atomically increments the value of the element at index {@code i},
+     * with memory effects as specified by {@link VarHandle#getAndAdd}.
+     *
+     * <p>Equivalent to {@code getAndAdd(i, 1)}.
      *
      * @param i the index
      * @return the previous value
@@ -220,7 +234,10 @@ public class AtomicLongArray implements java.io.Serializable {
     }
 
     /**
-     * Atomically decrements by one the element at index {@code i}.
+     * Atomically decrements the value of the element at index {@code i},
+     * with memory effects as specified by {@link VarHandle#getAndAdd}.
+     *
+     * <p>Equivalent to {@code getAndAdd(i, -1)}.
      *
      * @param i the index
      * @return the previous value
@@ -230,7 +247,8 @@ public class AtomicLongArray implements java.io.Serializable {
     }
 
     /**
-     * Atomically adds the given value to the element at index {@code i}.
+     * Atomically adds the given value to the element at index {@code i},
+     * with memory effects as specified by {@link VarHandle#getAndAdd}.
      *
      * @param i the index
      * @param delta the value to add
@@ -241,7 +259,10 @@ public class AtomicLongArray implements java.io.Serializable {
     ]-*/;
 
     /**
-     * Atomically increments by one the element at index {@code i}.
+     * Atomically increments the value of the element at index {@code i},
+     * with memory effects as specified by {@link VarHandle#getAndAdd}.
+     *
+     * <p>Equivalent to {@code addAndGet(i, 1)}.
      *
      * @param i the index
      * @return the updated value
@@ -251,7 +272,10 @@ public class AtomicLongArray implements java.io.Serializable {
     }
 
     /**
-     * Atomically decrements by one the element at index {@code i}.
+     * Atomically decrements the value of the element at index {@code i},
+     * with memory effects as specified by {@link VarHandle#getAndAdd}.
+     *
+     * <p>Equivalent to {@code addAndGet(i, -1)}.
      *
      * @param i the index
      * @return the updated value
@@ -261,7 +285,8 @@ public class AtomicLongArray implements java.io.Serializable {
     }
 
     /**
-     * Atomically adds the given value to the element at index {@code i}.
+     * Atomically adds the given value to the element at index {@code i},
+     * with memory effects as specified by {@link VarHandle#getAndAdd}.
      *
      * @param i the index
      * @param delta the value to add
@@ -272,10 +297,12 @@ public class AtomicLongArray implements java.io.Serializable {
     }
 
     /**
-     * Atomically updates the element at index {@code i} with the results
-     * of applying the given function, returning the previous value. The
-     * function should be side-effect-free, since it may be re-applied
-     * when attempted updates fail due to contention among threads.
+     * Atomically updates (with memory effects as specified by {@link
+     * VarHandle#compareAndSet}) the element at index {@code i} with
+     * the results of applying the given function, returning the
+     * previous value. The function should be side-effect-free, since
+     * it may be re-applied when attempted updates fail due to
+     * contention among threads.
      *
      * @param i the index
      * @param updateFunction a side-effect-free function
@@ -293,10 +320,12 @@ public class AtomicLongArray implements java.io.Serializable {
     }
 
     /**
-     * Atomically updates the element at index {@code i} with the results
-     * of applying the given function, returning the updated value. The
-     * function should be side-effect-free, since it may be re-applied
-     * when attempted updates fail due to contention among threads.
+     * Atomically updates (with memory effects as specified by {@link
+     * VarHandle#compareAndSet}) the element at index {@code i} with
+     * the results of applying the given function, returning the
+     * updated value. The function should be side-effect-free, since it
+     * may be re-applied when attempted updates fail due to contention
+     * among threads.
      *
      * @param i the index
      * @param updateFunction a side-effect-free function
@@ -314,13 +343,15 @@ public class AtomicLongArray implements java.io.Serializable {
     }
 
     /**
-     * Atomically updates the element at index {@code i} with the
-     * results of applying the given function to the current and
+     * Atomically updates (with memory effects as specified by {@link
+     * VarHandle#compareAndSet}) the element at index {@code i} with
+     * the results of applying the given function to the current and
      * given values, returning the previous value. The function should
      * be side-effect-free, since it may be re-applied when attempted
      * updates fail due to contention among threads.  The function is
-     * applied with the current value at index {@code i} as its first
-     * argument, and the given update as the second argument.
+     * applied with the current value of the element at index {@code i}
+     * as its first argument, and the given update as the second
+     * argument.
      *
      * @param i the index
      * @param x the update value
@@ -340,13 +371,15 @@ public class AtomicLongArray implements java.io.Serializable {
     }
 
     /**
-     * Atomically updates the element at index {@code i} with the
-     * results of applying the given function to the current and
+     * Atomically updates (with memory effects as specified by {@link
+     * VarHandle#compareAndSet}) the element at index {@code i} with
+     * the results of applying the given function to the current and
      * given values, returning the updated value. The function should
      * be side-effect-free, since it may be re-applied when attempted
      * updates fail due to contention among threads.  The function is
-     * applied with the current value at index {@code i} as its first
-     * argument, and the given update as the second argument.
+     * applied with the current value of the element at index {@code i}
+     * as its first argument, and the given update as the second
+     * argument.
      *
      * @param i the index
      * @param x the update value
@@ -377,11 +410,190 @@ public class AtomicLongArray implements java.io.Serializable {
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = 0; ; i++) {
-            b.append(getUnchecked(i));
+            b.append(get(i));
             if (i == iMax)
                 return b.append(']').toString();
             b.append(',').append(' ');
         }
     }
 
+    /* J2ObjC removed
+    // jdk9
+
+    /**
+     * Returns the current value of the element at index {@code i},
+     * with memory semantics of reading as if the variable was declared
+     * non-{@code volatile}.
+     *
+     * @param i the index
+     * @return the value
+     * @since 9
+     * /
+    public final long getPlain(int i) {
+        return (long)AA.get(array, i);
+    }
+
+    /**
+     * Sets the element at index {@code i} to {@code newValue},
+     * with memory semantics of setting as if the variable was
+     * declared non-{@code volatile} and non-{@code final}.
+     *
+     * @param i the index
+     * @param newValue the new value
+     * @since 9
+     * /
+    public final void setPlain(int i, long newValue) {
+        AA.set(array, i, newValue);
+    }
+
+    /**
+     * Returns the current value of the element at index {@code i},
+     * with memory effects as specified by {@link VarHandle#getOpaque}.
+     *
+     * @param i the index
+     * @return the value
+     * @since 9
+     * /
+    public final long getOpaque(int i) {
+        return (long)AA.getOpaque(array, i);
+    }
+
+    /**
+     * Sets the element at index {@code i} to {@code newValue},
+     * with memory effects as specified by {@link VarHandle#setOpaque}.
+     *
+     * @param i the index
+     * @param newValue the new value
+     * @since 9
+     * /
+    public final void setOpaque(int i, long newValue) {
+        AA.setOpaque(array, i, newValue);
+    }
+
+    /**
+     * Returns the current value of the element at index {@code i},
+     * with memory effects as specified by {@link VarHandle#getAcquire}.
+     *
+     * @param i the index
+     * @return the value
+     * @since 9
+     * /
+    public final long getAcquire(int i) {
+        return (long)AA.getAcquire(array, i);
+    }
+
+    /**
+     * Sets the element at index {@code i} to {@code newValue},
+     * with memory effects as specified by {@link VarHandle#setRelease}.
+     *
+     * @param i the index
+     * @param newValue the new value
+     * @since 9
+     * /
+    public final void setRelease(int i, long newValue) {
+        AA.setRelease(array, i, newValue);
+    }
+
+    /**
+     * Atomically sets the element at index {@code i} to {@code newValue}
+     * if the element's current value, referred to as the <em>witness
+     * value</em>, {@code == expectedValue},
+     * with memory effects as specified by
+     * {@link VarHandle#compareAndExchange}.
+     *
+     * @param i the index
+     * @param expectedValue the expected value
+     * @param newValue the new value
+     * @return the witness value, which will be the same as the
+     * expected value if successful
+     * @since 9
+     * /
+    public final long compareAndExchange(int i, long expectedValue, long newValue) {
+        return (long)AA.compareAndExchange(array, i, expectedValue, newValue);
+    }
+
+    /**
+     * Atomically sets the element at index {@code i} to {@code newValue}
+     * if the element's current value, referred to as the <em>witness
+     * value</em>, {@code == expectedValue},
+     * with memory effects as specified by
+     * {@link VarHandle#compareAndExchangeAcquire}.
+     *
+     * @param i the index
+     * @param expectedValue the expected value
+     * @param newValue the new value
+     * @return the witness value, which will be the same as the
+     * expected value if successful
+     * @since 9
+     * /
+    public final long compareAndExchangeAcquire(int i, long expectedValue, long newValue) {
+        return (long)AA.compareAndExchangeAcquire(array, i, expectedValue, newValue);
+    }
+
+    /**
+     * Atomically sets the element at index {@code i} to {@code newValue}
+     * if the element's current value, referred to as the <em>witness
+     * value</em>, {@code == expectedValue},
+     * with memory effects as specified by
+     * {@link VarHandle#compareAndExchangeRelease}.
+     *
+     * @param i the index
+     * @param expectedValue the expected value
+     * @param newValue the new value
+     * @return the witness value, which will be the same as the
+     * expected value if successful
+     * @since 9
+     * /
+    public final long compareAndExchangeRelease(int i, long expectedValue, long newValue) {
+        return (long)AA.compareAndExchangeRelease(array, i, expectedValue, newValue);
+    }
+
+    /**
+     * Possibly atomically sets the element at index {@code i} to
+     * {@code newValue} if the element's current value {@code == expectedValue},
+     * with memory effects as specified by
+     * {@link VarHandle#weakCompareAndSet}.
+     *
+     * @param i the index
+     * @param expectedValue the expected value
+     * @param newValue the new value
+     * @return {@code true} if successful
+     * @since 9
+     * /
+    public final boolean weakCompareAndSetVolatile(int i, long expectedValue, long newValue) {
+        return AA.weakCompareAndSet(array, i, expectedValue, newValue);
+    }
+
+    /**
+     * Possibly atomically sets the element at index {@code i} to
+     * {@code newValue} if the element's current value {@code == expectedValue},
+     * with memory effects as specified by
+     * {@link VarHandle#weakCompareAndSetAcquire}.
+     *
+     * @param i the index
+     * @param expectedValue the expected value
+     * @param newValue the new value
+     * @return {@code true} if successful
+     * @since 9
+     * /
+    public final boolean weakCompareAndSetAcquire(int i, long expectedValue, long newValue) {
+        return AA.weakCompareAndSetAcquire(array, i, expectedValue, newValue);
+    }
+
+    /**
+     * Possibly atomically sets the element at index {@code i} to
+     * {@code newValue} if the element's current value {@code == expectedValue},
+     * with memory effects as specified by
+     * {@link VarHandle#weakCompareAndSetRelease}.
+     *
+     * @param i the index
+     * @param expectedValue the expected value
+     * @param newValue the new value
+     * @return {@code true} if successful
+     * @since 9
+     * /
+    public final boolean weakCompareAndSetRelease(int i, long expectedValue, long newValue) {
+        return AA.weakCompareAndSetRelease(array, i, expectedValue, newValue);
+    }
+    */
 }

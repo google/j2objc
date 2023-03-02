@@ -59,16 +59,17 @@ import java.util.function.LongBinaryOperator;
  * applicable to functions for which the order of accumulation does
  * not matter. The supplied accumulator function should be
  * side-effect-free, since it may be re-applied when attempted updates
- * fail due to contention among threads. The function is applied with
- * the current value as its first argument, and the given update as
- * the second argument.  For example, to maintain a running maximum
- * value, you could supply {@code Long::max} along with {@code
- * Long.MIN_VALUE} as the identity.
+ * fail due to contention among threads. For predictable results, the
+ * accumulator function should be associative and commutative. The
+ * function is applied with an existing value (or identity) as one
+ * argument, and a given update as the other argument.  For example,
+ * to maintain a running maximum value, you could supply {@code
+ * Long::max} along with {@code Long.MIN_VALUE} as the identity.
  *
  * <p>Class {@link LongAdder} provides analogs of the functionality of
  * this class for the common special case of maintaining counts and
  * sums.  The call {@code new LongAdder()} is equivalent to {@code new
- * LongAccumulator((x, y) -> x + y, 0L}.
+ * LongAccumulator((x, y) -> x + y, 0L)}.
  *
  * <p>This class extends {@link Number}, but does <em>not</em> define
  * methods such as {@code equals}, {@code hashCode} and {@code
@@ -102,15 +103,17 @@ public class LongAccumulator extends Striped64 implements Serializable {
      * @param x the value
      */
     public void accumulate(long x) {
-        Cell[] as; long b, v, r; int m; Cell a;
-        if ((as = cells) != null ||
-            (r = function.applyAsLong(b = base, x)) != b && !casBase(b, r)) {
+        Cell[] cs; long b, v, r; int m; Cell c;
+        if ((cs = cells) != null
+            || ((r = function.applyAsLong(b = base, x)) != b
+                && !casBase(b, r))) {
             boolean uncontended = true;
-            if (as == null || (m = as.length - 1) < 0 ||
-                (a = as[getProbe() & m]) == null ||
-                !(uncontended =
-                  (r = function.applyAsLong(v = a.value, x)) == v ||
-                  a.cas(v, r)))
+            if (cs == null
+                || (m = cs.length - 1) < 0
+                || (c = cs[getProbe() & m]) == null
+                || !(uncontended =
+                     (r = function.applyAsLong(v = c.value, x)) == v
+                     || c.cas(v, r)))
                 longAccumulate(x, function, uncontended);
         }
     }
@@ -125,12 +128,12 @@ public class LongAccumulator extends Striped64 implements Serializable {
      * @return the current value
      */
     public long get() {
-        Cell[] as = cells;
+        Cell[] cs = cells;
         long result = base;
-        if (as != null) {
-            for (Cell a : as)
-                if (a != null)
-                    result = function.applyAsLong(result, a.value);
+        if (cs != null) {
+            for (Cell c : cs)
+                if (c != null)
+                    result = function.applyAsLong(result, c.value);
         }
         return result;
     }
@@ -144,12 +147,12 @@ public class LongAccumulator extends Striped64 implements Serializable {
      * updating.
      */
     public void reset() {
-        Cell[] as = cells;
+        Cell[] cs = cells;
         base = identity;
-        if (as != null) {
-            for (Cell a : as)
-                if (a != null)
-                    a.reset(identity);
+        if (cs != null) {
+            for (Cell c : cs)
+                if (c != null)
+                    c.reset(identity);
         }
     }
 
