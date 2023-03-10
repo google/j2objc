@@ -35,22 +35,17 @@
 
 package java.util.concurrent;
 
+import java.lang.reflect.Field;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.Spliterator;
-
-// BEGIN android-note
-// removed link to collections framework docs
-// fixed framework docs link to "Collection#optional"
-// END android-note
 
 /**
  * A scalable concurrent {@link NavigableSet} implementation based on
@@ -75,12 +70,12 @@ import java.util.Spliterator;
  * asynchronous nature of these sets, determining the current number
  * of elements requires a traversal of the elements, and so may report
  * inaccurate results if this collection is modified during traversal.
- * Additionally, the bulk operations {@code addAll},
- * {@code removeAll}, {@code retainAll}, {@code containsAll},
- * {@code equals}, and {@code toArray} are <em>not</em> guaranteed
- * to be performed atomically. For example, an iterator operating
- * concurrently with an {@code addAll} operation might view only some
- * of the added elements.
+ *
+ * <p>Bulk operations that add, remove, or examine multiple elements,
+ * such as {@link #addAll}, {@link #removeIf} or {@link #forEach},
+ * are <em>not</em> guaranteed to be performed atomically.
+ * For example, a {@code forEach} traversal concurrent with an {@code
+ * addAll} operation might observe only some of the added elements.
  *
  * <p>This class and its iterators implement all of the
  * <em>optional</em> methods of the {@link Set} and {@link Iterator}
@@ -88,6 +83,10 @@ import java.util.Spliterator;
  * this class does not permit the use of {@code null} elements,
  * because {@code null} arguments and return values cannot be reliably
  * distinguished from the absence of elements.
+ *
+ * <p>This class is a member of the
+ * <a href="{@docRoot}/java.base/java/util/package-summary.html#CollectionsFramework">
+ * Java Collections Framework</a>.
  *
  * @author Doug Lea
  * @param <E> the type of elements maintained by this set
@@ -310,9 +309,7 @@ public class ConcurrentSkipListSet<E>
         Collection<?> c = (Collection<?>) o;
         try {
             return containsAll(c) && c.containsAll(this);
-        } catch (ClassCastException unused) {
-            return false;
-        } catch (NullPointerException unused) {
+        } catch (ClassCastException | NullPointerException unused) {
             return false;
         }
     }
@@ -327,7 +324,7 @@ public class ConcurrentSkipListSet<E>
      * @return {@code true} if this set changed as a result of the call
      * @throws ClassCastException if the class of an element of this set
      *         is incompatible with the specified collection
-     * (<a href="../Collection.html#optional-restrictions">optional</a>)
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
      * @throws NullPointerException if the specified collection or any
      *         of its elements are null
      */
@@ -491,9 +488,9 @@ public class ConcurrentSkipListSet<E>
      * encounter order that is ascending order.  Overriding implementations
      * should document the reporting of additional characteristic values.
      *
-     * <p>The spliterator's comparator (see
-     * {@link java.util.Spliterator#getComparator()}) is {@code null} if
-     * the set's comparator (see {@link #comparator()}) is {@code null}.
+     * <p>The {@linkplain Spliterator#getComparator() spliterator's comparator}
+     * is {@code null} if the {@linkplain #comparator() set's comparator}
+     * is {@code null}.
      * Otherwise, the spliterator's comparator is the same as or imposes the
      * same total ordering as the set's comparator.
      *
@@ -506,18 +503,21 @@ public class ConcurrentSkipListSet<E>
             : ((ConcurrentSkipListMap.SubMap<E,?>)m).new SubMapKeyIterator();
     }
 
-    // Support for resetting map in clone
+    /** Initializes map field; for use in clone. */
     private void setMap(ConcurrentNavigableMap<E,Object> map) {
-        U.putObjectVolatile(this, MAP, map);
-    }
-
-    private static final sun.misc.Unsafe U = sun.misc.Unsafe.getUnsafe();
-    private static final long MAP;
-    static {
+        Field mapField = java.security.AccessController.doPrivileged(
+            (java.security.PrivilegedAction<Field>) () -> {
+                try {
+                    Field f = ConcurrentSkipListSet.class
+                        .getDeclaredField("m");
+                    f.setAccessible(true);
+                    return f;
+                } catch (ReflectiveOperationException e) {
+                    throw new Error(e);
+                }});
         try {
-            MAP = U.objectFieldOffset
-                (ConcurrentSkipListSet.class.getDeclaredField("m"));
-        } catch (ReflectiveOperationException e) {
+            mapField.set(this, map);
+        } catch (IllegalAccessException e) {
             throw new Error(e);
         }
     }

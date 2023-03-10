@@ -38,16 +38,10 @@ package java.util.concurrent;
 import java.util.Collection;
 import java.util.Queue;
 
-// BEGIN android-note
-// removed link to collections framework docs from header
-// fixed framework docs link to "Collection#optional"
-// END android-note
-
 /**
- * A {@link java.util.Queue} that additionally supports operations
- * that wait for the queue to become non-empty when retrieving an
- * element, and wait for space to become available in the queue when
- * storing an element.
+ * A {@link Queue} that additionally supports operations that wait for
+ * the queue to become non-empty when retrieving an element, and wait
+ * for space to become available in the queue when storing an element.
  *
  * <p>{@code BlockingQueue} methods come in four forms, with different ways
  * of handling operations that cannot be satisfied immediately, but may be
@@ -58,35 +52,35 @@ import java.util.Queue;
  * and the fourth blocks for only a given maximum time limit before giving
  * up.  These methods are summarized in the following table:
  *
- * <table BORDER CELLPADDING=3 CELLSPACING=1>
+ * <table class="plain">
  * <caption>Summary of BlockingQueue methods</caption>
  *  <tr>
  *    <td></td>
- *    <td ALIGN=CENTER><em>Throws exception</em></td>
- *    <td ALIGN=CENTER><em>Special value</em></td>
- *    <td ALIGN=CENTER><em>Blocks</em></td>
- *    <td ALIGN=CENTER><em>Times out</em></td>
+ *    <th scope="col" style="font-weight:normal; font-style:italic">Throws exception</th>
+ *    <th scope="col" style="font-weight:normal; font-style:italic">Special value</th>
+ *    <th scope="col" style="font-weight:normal; font-style:italic">Blocks</th>
+ *    <th scope="col" style="font-weight:normal; font-style:italic">Times out</th>
  *  </tr>
  *  <tr>
- *    <td><b>Insert</b></td>
- *    <td>{@link #add add(e)}</td>
- *    <td>{@link #offer offer(e)}</td>
- *    <td>{@link #put put(e)}</td>
+ *    <th scope="row" style="text-align:left">Insert</th>
+ *    <td>{@link #add(Object) add(e)}</td>
+ *    <td>{@link #offer(Object) offer(e)}</td>
+ *    <td>{@link #put(Object) put(e)}</td>
  *    <td>{@link #offer(Object, long, TimeUnit) offer(e, time, unit)}</td>
  *  </tr>
  *  <tr>
- *    <td><b>Remove</b></td>
- *    <td>{@link #remove remove()}</td>
- *    <td>{@link #poll poll()}</td>
- *    <td>{@link #take take()}</td>
+ *    <th scope="row" style="text-align:left">Remove</th>
+ *    <td>{@link #remove() remove()}</td>
+ *    <td>{@link #poll() poll()}</td>
+ *    <td>{@link #take() take()}</td>
  *    <td>{@link #poll(long, TimeUnit) poll(time, unit)}</td>
  *  </tr>
  *  <tr>
- *    <td><b>Examine</b></td>
- *    <td>{@link #element element()}</td>
- *    <td>{@link #peek peek()}</td>
- *    <td><em>not applicable</em></td>
- *    <td><em>not applicable</em></td>
+ *    <th scope="row" style="text-align:left">Examine</th>
+ *    <td>{@link #element() element()}</td>
+ *    <td>{@link #peek() peek()}</td>
+ *    <td style="font-style: italic">not applicable</td>
+ *    <td style="font-style: italic">not applicable</td>
  *  </tr>
  * </table>
  *
@@ -104,7 +98,7 @@ import java.util.Queue;
  *
  * <p>{@code BlockingQueue} implementations are designed to be used
  * primarily for producer-consumer queues, but additionally support
- * the {@link java.util.Collection} interface.  So, for example, it is
+ * the {@link Collection} interface.  So, for example, it is
  * possible to remove an arbitrary element from a queue using
  * {@code remove(x)}. However, such operations are in general
  * <em>not</em> performed very efficiently, and are intended for only
@@ -173,6 +167,10 @@ import java.util.Queue;
  * <a href="package-summary.html#MemoryVisibility"><i>happen-before</i></a>
  * actions subsequent to the access or removal of that element from
  * the {@code BlockingQueue} in another thread.
+ *
+ * <p>This interface is a member of the
+ * <a href="{@docRoot}/java.base/java/util/package-summary.html#CollectionsFramework">
+ * Java Collections Framework</a>.
  *
  * @since 1.5
  * @author Doug Lea
@@ -304,9 +302,9 @@ public interface BlockingQueue<E> extends Queue<E> {
      * @return {@code true} if this queue changed as a result of the call
      * @throws ClassCastException if the class of the specified element
      *         is incompatible with this queue
-     * (<a href="../Collection.html#optional-restrictions">optional</a>)
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
      * @throws NullPointerException if the specified element is null
-     * (<a href="../Collection.html#optional-restrictions">optional</a>)
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
      */
     boolean remove(Object o);
 
@@ -319,9 +317,9 @@ public interface BlockingQueue<E> extends Queue<E> {
      * @return {@code true} if this queue contains the specified element
      * @throws ClassCastException if the class of the specified element
      *         is incompatible with this queue
-     * (<a href="../Collection.html#optional-restrictions">optional</a>)
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
      * @throws NullPointerException if the specified element is null
-     * (<a href="../Collection.html#optional-restrictions">optional</a>)
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
      */
     boolean contains(Object o);
 

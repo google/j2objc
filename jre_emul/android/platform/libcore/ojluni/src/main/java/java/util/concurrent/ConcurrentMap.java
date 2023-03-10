@@ -41,14 +41,8 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-// BEGIN android-note
-// removed link to collections framework docs
-// fixed framework docs link to "Collection#optional"
-// END android-note
-
 /**
- * A {@link java.util.Map} providing thread safety and atomicity
- * guarantees.
+ * A {@link Map} providing thread safety and atomicity guarantees.
  *
  * <p>To maintain the specified guarantees, default implementations of
  * methods including {@link #putIfAbsent} inherited from {@link Map}
@@ -64,6 +58,10 @@ import java.util.function.Function;
  * <a href="package-summary.html#MemoryVisibility"><i>happen-before</i></a>
  * actions subsequent to the access or removal of that object from
  * the {@code ConcurrentMap} in another thread.
+ *
+ * <p>This interface is a member of the
+ * <a href="{@docRoot}/java.base/java/util/package-summary.html#CollectionsFramework">
+ * Java Collections Framework</a>.
  *
  * @since 1.5
  * @author Doug Lea
@@ -182,10 +180,10 @@ public interface ConcurrentMap<K,V> extends Map<K,V> {
      *         is not supported by this map
      * @throws ClassCastException if the key or value is of an inappropriate
      *         type for this map
-     * (<a href="../Collection.html#optional-restrictions">optional</a>)
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
      * @throws NullPointerException if the specified key or value is null,
      *         and this map does not permit null keys or values
-     * (<a href="../Collection.html#optional-restrictions">optional</a>)
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
      */
     boolean remove(Object key, Object value);
 

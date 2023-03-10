@@ -84,8 +84,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *   public Solver(float[][] matrix) {
  *     data = matrix;
  *     N = matrix.length;
- *     Runnable barrierAction =
- *       new Runnable() { public void run() { mergeRows(...); }};
+ *     Runnable barrierAction = () -> mergeRows(...);
  *     barrier = new CyclicBarrier(N, barrierAction);
  *
  *     List<Thread> threads = new ArrayList<>(N);
@@ -134,10 +133,10 @@ import java.util.concurrent.locks.ReentrantLock;
  * <i>happen-before</i> actions following a successful return from the
  * corresponding {@code await()} in other threads.
  *
- * @since 1.5
  * @see CountDownLatch
  *
  * @author Doug Lea
+ * @since 1.5
  */
 public class CyclicBarrier {
     /**
@@ -152,7 +151,8 @@ public class CyclicBarrier {
      * but no subsequent reset.
      */
     private static class Generation {
-        boolean broken;         // initially false
+        Generation() {}                 // prevent access constructor creation
+        boolean broken;                 // initially false
     }
 
     /** The lock for guarding barrier entry */

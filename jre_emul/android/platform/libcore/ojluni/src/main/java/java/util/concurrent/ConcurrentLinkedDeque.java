@@ -35,6 +35,12 @@
 
 package java.util.concurrent;
 
+/* J2ObjC removed
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.util.function.Predicate;
+*/
+
 import java.util.AbstractCollection;
 import java.util.Arrays;
 import java.util.Collection;
@@ -46,10 +52,6 @@ import java.util.Queue;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Consumer;
-
-// BEGIN android-note
-// removed link to collections framework docs
-// END android-note
 
 /**
  * An unbounded concurrent {@linkplain Deque deque} based on linked nodes.
@@ -68,12 +70,12 @@ import java.util.function.Consumer;
  * asynchronous nature of these deques, determining the current number
  * of elements requires a traversal of the elements, and so may report
  * inaccurate results if this collection is modified during traversal.
- * Additionally, the bulk operations {@code addAll},
- * {@code removeAll}, {@code retainAll}, {@code containsAll},
- * {@code equals}, and {@code toArray} are <em>not</em> guaranteed
- * to be performed atomically. For example, an iterator operating
- * concurrently with an {@code addAll} operation might view only some
- * of the added elements.
+ *
+ * <p>Bulk operations that add, remove, or examine multiple elements,
+ * such as {@link #addAll}, {@link #removeIf} or {@link #forEach},
+ * are <em>not</em> guaranteed to be performed atomically.
+ * For example, a {@code forEach} traversal concurrent with an {@code
+ * addAll} operation might observe only some of the added elements.
  *
  * <p>This class and its iterator implement all of the <em>optional</em>
  * methods of the {@link Deque} and {@link Iterator} interfaces.
@@ -84,6 +86,10 @@ import java.util.function.Consumer;
  * <a href="package-summary.html#MemoryVisibility"><i>happen-before</i></a>
  * actions subsequent to the access or removal of that element from
  * the {@code ConcurrentLinkedDeque} in another thread.
+ *
+ * <p>This class is a member of the
+ * <a href="{@docRoot}/java.base/java/util/package-summary.html#CollectionsFramework">
+ * Java Collections Framework</a>.
  *
  * @since 1.7
  * @author Doug Lea
@@ -228,15 +234,16 @@ public class ConcurrentLinkedDeque<E>
      *
      * The implementation is completely directionally symmetrical,
      * except that most public methods that iterate through the list
-     * follow next pointers ("forward" direction).
+     * follow next pointers, in the "forward" direction.
      *
-     * We believe (without full proof) that all single-element deque
-     * operations (e.g., addFirst, peekLast, pollLast) are linearizable
-     * (see Herlihy and Shavit's book).  However, some combinations of
+     * We believe (without full proof) that all single-element Deque
+     * operations that operate directly at the two ends of the Deque
+     * (e.g., addFirst, peekLast, pollLast) are linearizable (see
+     * Herlihy and Shavit's book).  However, some combinations of
      * operations are known not to be linearizable.  In particular,
-     * when an addFirst(A) is racing with pollFirst() removing B, it is
-     * possible for an observer iterating over the elements to observe
-     * A B C and subsequently observe A C, even though no interior
+     * when an addFirst(A) is racing with pollFirst() removing B, it
+     * is possible for an observer iterating over the elements to
+     * observe first [A B C] and then [A C], even though no interior
      * removes are ever performed.  Nevertheless, iterators behave
      * reasonably, providing the "weakly consistent" guarantees.
      *
@@ -822,7 +829,7 @@ public class ConcurrentLinkedDeque<E>
      * Constructs an empty deque.
      */
     public ConcurrentLinkedDeque() {
-        head = tail = new Node<E>(null);
+        head = tail = new Node<E>();
     }
 
     /**
@@ -856,7 +863,7 @@ public class ConcurrentLinkedDeque<E>
     private void initHeadTail(Node<E> h, Node<E> t) {
         if (h == t) {
             if (h == null)
-                h = t = new Node<E>(null);
+                h = t = new Node<E>();
             else {
                 // Avoid edge case of a single Node with non-null item.
                 Node<E> newNode = new Node<E>(null);
@@ -920,21 +927,33 @@ public class ConcurrentLinkedDeque<E>
     }
 
     public E peekFirst() {
-        for (Node<E> p = first(); p != null; p = succ(p)) {
-            E item = p.item;
-            if (item != null)
-                return item;
+        restart: for (;;) {
+            E item;
+            Node<E> first = first(), p = first;
+            while ((item = p.item) == null) {
+                if (p == (p = p.next)) continue restart;
+                if (p == null)
+                    break;
+            }
+            // recheck for linearizability
+            if (first.prev != null) continue restart;
+            return item;
         }
-        return null;
     }
 
     public E peekLast() {
-        for (Node<E> p = last(); p != null; p = pred(p)) {
-            E item = p.item;
-            if (item != null)
-                return item;
+        restart: for (;;) {
+            E item;
+            Node<E> last = last(), p = last;
+            while ((item = p.item) == null) {
+                if (p == (p = p.prev)) continue restart;
+                if (p == null)
+                    break;
+            }
+            // recheck for linearizability
+            if (last.next != null) continue restart;
+            return item;
         }
-        return null;
     }
 
     /**
@@ -1094,8 +1113,8 @@ public class ConcurrentLinkedDeque<E>
     public boolean contains(Object o) {
         if (o != null) {
             for (Node<E> p = first(); p != null; p = succ(p)) {
-                E item = p.item;
-                if (item != null && o.equals(item))
+                final E item;
+                if ((item = p.item) != null && o.equals(item))
                     return true;
             }
         }
@@ -1128,14 +1147,14 @@ public class ConcurrentLinkedDeque<E>
      * @return the number of elements in this deque
      */
     public int size() {
-        restartFromHead: for (;;) {
+        restart: for (;;) {
             int count = 0;
             for (Node<E> p = first(); p != null;) {
                 if (p.item != null)
                     if (++count == Integer.MAX_VALUE)
                         break;  // @see Collection.size()
-                if (sentinel() == (p = p.next))
-                    continue restartFromHead;
+                if (p == (p = p.next))
+                    continue restart;
             }
             return count;
         }
@@ -1232,12 +1251,12 @@ public class ConcurrentLinkedDeque<E>
 
     public String toString() {
         String[] a = null;
-        restartFromHead: for (;;) {
+        restart: for (;;) {
             int charLength = 0;
             int size = 0;
             for (Node<E> p = first(); p != null;) {
-                E item = p.item;
-                if (item != null) {
+                final E item;
+                if ((item = p.item) != null) {
                     if (a == null)
                         a = new String[4];
                     else if (size == a.length)
@@ -1246,8 +1265,8 @@ public class ConcurrentLinkedDeque<E>
                     a[size++] = s;
                     charLength += s.length();
                 }
-                if (sentinel() == (p = p.next))
-                    continue restartFromHead;
+                if (p == (p = p.next))
+                    continue restart;
             }
 
             if (size == 0)
@@ -1259,19 +1278,19 @@ public class ConcurrentLinkedDeque<E>
 
     private Object[] toArrayInternal(Object[] a) {
         Object[] x = a;
-        restartFromHead: for (;;) {
+        restart: for (;;) {
             int size = 0;
             for (Node<E> p = first(); p != null;) {
-                E item = p.item;
-                if (item != null) {
+                final E item;
+                if ((item = p.item) != null) {
                     if (x == null)
                         x = new Object[4];
                     else if (size == x.length)
                         x = Arrays.copyOf(x, 2 * (size + 4));
                     x[size++] = item;
                 }
-                if (sentinel() == (p = p.next))
-                    continue restartFromHead;
+                if (p == (p = p.next))
+                    continue restart;
             }
             if (x == null)
                 return new Object[0];
@@ -1415,8 +1434,8 @@ public class ConcurrentLinkedDeque<E>
                     nextItem = null;
                     break;
                 }
-                E item = p.item;
-                if (item != null) {
+                final E item;
+                if ((item = p.item) != null) {
                     nextNode = p;
                     nextItem = item;
                     break;
@@ -1446,90 +1465,75 @@ public class ConcurrentLinkedDeque<E>
 
     /** Forward iterator */
     private class Itr extends AbstractItr {
+        Itr() {}                        // prevent access constructor creation
         Node<E> startNode() { return first(); }
         Node<E> nextNode(Node<E> p) { return succ(p); }
     }
 
     /** Descending iterator */
     private class DescendingItr extends AbstractItr {
+        DescendingItr() {}              // prevent access constructor creation
         Node<E> startNode() { return last(); }
         Node<E> nextNode(Node<E> p) { return pred(p); }
     }
 
     /** A customized variant of Spliterators.IteratorSpliterator */
-    static final class CLDSpliterator<E> implements Spliterator<E> {
+    final class CLDSpliterator implements Spliterator<E> {
         static final int MAX_BATCH = 1 << 25;  // max batch array size;
-        final ConcurrentLinkedDeque<E> queue;
         Node<E> current;    // current node; null until initialized
         int batch;          // batch size for splits
         boolean exhausted;  // true when no more nodes
-        CLDSpliterator(ConcurrentLinkedDeque<E> queue) {
-            this.queue = queue;
-        }
 
         public Spliterator<E> trySplit() {
-            Node<E> p;
-            final ConcurrentLinkedDeque<E> q = this.queue;
-            int b = batch;
-            int n = (b <= 0) ? 1 : (b >= MAX_BATCH) ? MAX_BATCH : b + 1;
-            if (!exhausted &&
-                ((p = current) != null || (p = q.first()) != null)) {
-                if (p.item == null && q.sentinel() == (p = p.next))
-                    current = p = q.first();
-                if (p != null && p.next != null) {
-                    Object[] a = new Object[n];
-                    int i = 0;
-                    do {
-                        if ((a[i] = p.item) != null)
-                            ++i;
-                        if (q.sentinel() == (p = p.next))
-                            p = q.first();
-                    } while (p != null && i < n);
-                    if ((current = p) == null)
-                        exhausted = true;
-                    if (i > 0) {
-                        batch = i;
-                        return Spliterators.spliterator
-                            (a, 0, i, (Spliterator.ORDERED |
-                                       Spliterator.NONNULL |
-                                       Spliterator.CONCURRENT));
-                    }
+            Node<E> p, q;
+            if ((p = current()) == null || (q = p.next) == null)
+                return null;
+            int i = 0, n = batch = Math.min(batch + 1, MAX_BATCH);
+            Object[] a = null;
+            do {
+                final E e;
+                if ((e = p.item) != null) {
+                    if (a == null)
+                        a = new Object[n];
+                    a[i++] = e;
                 }
-            }
-            return null;
+                if (p == (p = q))
+                    p = first();
+            } while (p != null && (q = p.next) != null && i < n);
+            setCurrent(p);
+            return (i == 0) ? null :
+                Spliterators.spliterator(a, 0, i, (Spliterator.ORDERED |
+                                                   Spliterator.NONNULL |
+                                                   Spliterator.CONCURRENT));
         }
 
         public void forEachRemaining(Consumer<? super E> action) {
+            Objects.requireNonNull(action);
             Node<E> p;
-            if (action == null) throw new NullPointerException();
-            final ConcurrentLinkedDeque<E> q = this.queue;
-            if (!exhausted &&
-                ((p = current) != null || (p = q.first()) != null)) {
+            if ((p = current()) != null) {
+                current = null;
                 exhausted = true;
                 do {
-                    E e = p.item;
-                    if (q.sentinel() == (p = p.next))
-                        p = q.first();
-                    if (e != null)
+                    final E e;
+                    if ((e = p.item) != null)
                         action.accept(e);
+                    if (p == (p = p.next))
+                        p = first();
                 } while (p != null);
             }
         }
 
         public boolean tryAdvance(Consumer<? super E> action) {
+            Objects.requireNonNull(action);
             Node<E> p;
-            if (action == null) throw new NullPointerException();
-            final ConcurrentLinkedDeque<E> q = this.queue;
-            if (!exhausted &&
-                ((p = current) != null || (p = q.first()) != null)) {
+            if ((p = current()) != null) {
                 E e;
                 do {
                     e = p.item;
-                    if (q.sentinel() == (p = p.next))
-                        p = q.first();
+                    if (p == (p = p.next))
+                        p = first();
                 } while (e == null && p != null);
-                if ((current = p) == null)
-                    exhausted = true;
+                setCurrent(p);
                 if (e != null) {
                     action.accept(e);
                     return true;
@@ -1538,11 +1542,24 @@ public class ConcurrentLinkedDeque<E>
             return false;
         }
 
+        private void setCurrent(Node<E> p) {
+            if ((current = p) == null)
+                exhausted = true;
+        }
+
+        private Node<E> current() {
+            Node<E> p;
+            if ((p = current) == null && !exhausted)
+                setCurrent(p = first());
+            return p;
+        }
+
         public long estimateSize() { return Long.MAX_VALUE; }
 
         public int characteristics() {
-            return Spliterator.ORDERED | Spliterator.NONNULL |
-                Spliterator.CONCURRENT;
+            return (Spliterator.ORDERED |
+                    Spliterator.NONNULL |
+                    Spliterator.CONCURRENT);
         }
     }
 
@@ -1563,7 +1580,7 @@ public class ConcurrentLinkedDeque<E>
      * @since 1.8
      */
     public Spliterator<E> spliterator() {
-        return new CLDSpliterator<E>(this);
+        return new CLDSpliterator();
     }
 
     /**
@@ -1582,8 +1599,8 @@ public class ConcurrentLinkedDeque<E>
 
         // Write out all elements in the proper order.
         for (Node<E> p = first(); p != null; p = succ(p)) {
-            E item = p.item;
-            if (item != null)
+            final E item;
+            if ((item = p.item) != null)
                 s.writeObject(item);
         }
 
@@ -1626,6 +1643,18 @@ public class ConcurrentLinkedDeque<E>
         return U.compareAndSwapObject(this, TAIL, cmp, val);
     }
 
+
+    /**
+     * @throws NullPointerException {@inheritDoc}
+     */
+    public void forEach(Consumer<? super E> action) {
+        Objects.requireNonNull(action);
+        E item;
+        for (Node<E> p = first(); p != null; p = succ(p))
+            if ((item = p.item) != null)
+                action.accept(item);
+    }
+
     @Override
     protected void finalize() throws Throwable {
         try {
@@ -1648,9 +1677,6 @@ public class ConcurrentLinkedDeque<E>
             super.finalize();
         }
     }
-
-    // Unsafe mechanics
-
     private static final sun.misc.Unsafe U = sun.misc.Unsafe.getUnsafe();
     private static final long HEAD;
     private static final long TAIL;
@@ -1666,7 +1692,7 @@ public class ConcurrentLinkedDeque<E>
             TAIL = U.objectFieldOffset
                 (ConcurrentLinkedDeque.class.getDeclaredField("tail"));
         } catch (ReflectiveOperationException e) {
-            throw new Error(e);
+            throw new ExceptionInInitializerError(e);
         }
     }
 }

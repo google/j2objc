@@ -36,6 +36,12 @@
 
 package java.util.concurrent;
 
+/* J2Objc removed.
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.util.concurrent.locks.LockSupport;
+*/
+
 /**
  * A synchronization point at which threads can pair and swap elements
  * within pairs.  Each thread presents some object on entry to the
@@ -155,9 +161,7 @@ public class Exchanger<V> {
      * a value that is enough for common platforms.  Additionally,
      * extra care elsewhere is taken to avoid other false/unintended
      * sharing and to enhance locality, including adding padding (via
-     * @Contended) to Nodes, embedding "bound" as an Exchanger field,
-     * and reworking some park/unpark mechanics compared to
-     * LockSupport versions.
+     * @Contended) to Nodes, embedding "bound" as an Exchanger field.
      *
      * The arena starts out with only one used slot. We expand the
      * effective arena size by tracking collisions; i.e., failed CASes
@@ -233,29 +237,23 @@ public class Exchanger<V> {
      * As is too common in this sort of code, methods are monolithic
      * because most of the logic relies on reads of fields that are
      * maintained as local variables so can't be nicely factored --
-     * mainly, here, bulky spin->yield->block/cancel code), and
-     * heavily dependent on intrinsics (Unsafe) to use inlined
-     * embedded CAS and related memory access operations (that tend
-     * not to be as readily inlined by dynamic compilers when they are
-     * hidden behind other methods that would more nicely name and
-     * encapsulate the intended effects). This includes the use of
-     * putOrderedX to clear fields of the per-thread Nodes between
-     * uses. Note that field Node.item is not declared as volatile
-     * even though it is read by releasing threads, because they only
-     * do so after CAS operations that must precede access, and all
-     * uses by the owning thread are otherwise acceptably ordered by
-     * other operations. (Because the actual points of atomicity are
-     * slot CASes, it would also be legal for the write to Node.match
-     * in a release to be weaker than a full volatile write. However,
-     * this is not done because it could allow further postponement of
-     * the write, delaying progress.)
+     * mainly, here, bulky spin->yield->block/cancel code.  Note that
+     * field Node.item is not declared as volatile even though it is
+     * read by releasing threads, because they only do so after CAS
+     * operations that must precede access, and all uses by the owning
+     * thread are otherwise acceptably ordered by other operations.
+     * (Because the actual points of atomicity are slot CASes, it
+     * would also be legal for the write to Node.match in a release to
+     * be weaker than a full volatile write. However, this is not done
+     * because it could allow further postponement of the write,
+     * delaying progress.)
      */
 
     /**
-     * The byte distance (as a shift value) between any two used slots
-     * in the arena.  1 << ASHIFT should be at least cacheline size.
+     * The index distance (as a shift value) between any two used slots
+     * in the arena, spacing them out to avoid false sharing.
      */
-    private static final int ASHIFT = 7;
+    private static final int ASHIFT = 5;
 
     /**
      * The maximum supported arena index. The maximum allocatable
@@ -558,8 +556,9 @@ public class Exchanger<V> {
     @SuppressWarnings("unchecked")
     public V exchange(V x) throws InterruptedException {
         Object v;
+        Node[] a;
         Object item = (x == null) ? NULL_ITEM : x; // translate null args
-        if ((arena != null ||
+        if (((a = arena) != null ||
              (v = slotExchange(item, false, 0L)) == null) &&
             ((Thread.interrupted() || // disambiguates null return
               (v = arenaExchange(item, false, 0L)) == null)))
@@ -651,7 +650,7 @@ public class Exchanger<V> {
             // ABASE absorbs padding in front of element 0
             ABASE = U.arrayBaseOffset(Node[].class) + (1 << ASHIFT);
         } catch (ReflectiveOperationException e) {
-            throw new Error(e);
+            throw new ExceptionInInitializerError(e);
         }
     }
 

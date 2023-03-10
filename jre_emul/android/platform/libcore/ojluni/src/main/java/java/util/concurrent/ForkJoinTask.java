@@ -35,6 +35,11 @@
 
 package java.util.concurrent;
 
+/* J2Objc removed.
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+*/
+
 import com.google.j2objc.ReflectionStrippedError;
 import com.google.j2objc.annotations.AutoreleasePool;
 
@@ -99,7 +104,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * encountering the exception; minimally only the latter.
  *
  * <p>It is possible to define and use ForkJoinTasks that may block,
- * but doing do requires three further considerations: (1) Completion
+ * but doing so requires three further considerations: (1) Completion
  * of few if any <em>other</em> tasks should be dependent on a task
  * that blocks on external synchronization or I/O. Event-style async
  * tasks that are never joined (for example, those subclassing {@link
@@ -139,11 +144,11 @@ import java.util.concurrent.locks.ReentrantLock;
  * {@link #isCompletedNormally} is true if a task completed without
  * cancellation or encountering an exception; {@link #isCancelled} is
  * true if the task was cancelled (in which case {@link #getException}
- * returns a {@link java.util.concurrent.CancellationException}); and
+ * returns a {@link CancellationException}); and
  * {@link #isCompletedAbnormally} is true if a task was either
  * cancelled or encountered an exception, in which case {@link
  * #getException} will return either the encountered exception or
- * {@link java.util.concurrent.CancellationException}.
+ * {@link CancellationException}.
  *
  * <p>The ForkJoinTask class is not usually directly subclassed.
  * Instead, you subclass one of the abstract classes that support a
@@ -224,29 +229,21 @@ public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
      * methods in a way that flows well in javadocs.
      */
 
-    /*
+    /**
      * The status field holds run control status bits packed into a
-     * single int to minimize footprint and to ensure atomicity (via
-     * CAS).  Status is initially zero, and takes on nonnegative
-     * values until completed, upon which status (anded with
-     * DONE_MASK) holds value NORMAL, CANCELLED, or EXCEPTIONAL. Tasks
-     * undergoing blocking waits by other threads have the SIGNAL bit
-     * set.  Completion of a stolen task with SIGNAL set awakens any
-     * waiters via notifyAll. Even though suboptimal for some
-     * purposes, we use basic builtin wait/notify to take advantage of
-     * "monitor inflation" in JVMs that we would otherwise need to
-     * emulate to avoid adding further per-task bookkeeping overhead.
-     * We want these monitors to be "fat", i.e., not use biasing or
-     * thin-lock techniques, so use some odd coding idioms that tend
-     * to avoid them, mainly by arranging that every synchronized
-     * block performs a wait, notifyAll or both.
+     * single int to ensure atomicity.  Status is initially zero, and
+     * takes on nonnegative values until completed, upon which it
+     * holds (sign bit) DONE, possibly with ABNORMAL (cancelled or
+     * exceptional) and THROWN (in which case an exception has been
+     * stored). Tasks with dependent blocked waiting joiners have the
+     * SIGNAL bit set.  Completion of a task with SIGNAL set awakens
+     * any waiters via notifyAll. (Waiters also help signal others
+     * upon completion.)
      *
      * These control bits occupy only (some of) the upper half (16
      * bits) of status field. The lower bits are used for user-defined
      * tags.
      */
-
-    /** The run status of this task */
     volatile int status; // accessed directly by pool and workers
     static final int DONE_MASK   = 0xf0000000;  // mask out non-completion bits
     static final int NORMAL      = 0xf0000000;  // must be negative
@@ -287,7 +284,8 @@ public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
             try {
                 completed = exec();
             } catch (Throwable rex) {
-                return setExceptionalCompletion(rex);
+                completed = false;
+                s = setExceptionalCompletion(rex);
             }
             if (completed)
                 s = setCompletion(NORMAL);
@@ -374,6 +372,21 @@ public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
     }
 
     /**
+     * Tries to help with tasks allowed for external callers.
+     *
+     * @return current status
+     */
+    private int tryExternalHelp() {
+        int s;
+        return ((s = status) < 0 ? s:
+                (this instanceof CountedCompleter) ?
+                ForkJoinPool.common.externalHelpComplete(
+                    (CountedCompleter<?>)this, 0) :
+                ForkJoinPool.common.tryExternalUnpush(this) ?
+                doExec() : 0);
+    }
+
+    /**
      * Implementation for join, get, quietlyJoin. Directly handles
      * only cases of already-completed, external wait, and
      * unfork+exec.  Others are relayed to ForkJoinPool.awaitJoin.
@@ -407,22 +420,24 @@ public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
     // Exception table support
 
     /**
-     * Table of exceptions thrown by tasks, to enable reporting by
-     * callers. Because exceptions are rare, we don't directly keep
+     * Hash table of exceptions thrown by tasks, to enable reporting
+     * by callers. Because exceptions are rare, we don't directly keep
      * them with task objects, but instead use a weak ref table.  Note
      * that cancellation exceptions don't appear in the table, but are
      * instead recorded as status values.
      *
-     * Note: These statics are initialized below in static block.
+     * The exception table has a fixed capacity.
      */
-    private static final ExceptionNode[] exceptionTable;
-    private static final ReentrantLock exceptionTableLock;
-    private static final ReferenceQueue<Object> exceptionTableRefQueue;
+    private static final ExceptionNode[] exceptionTable
+        = new ExceptionNode[32];
 
-    /**
-     * Fixed capacity for exceptionTable.
-     */
-    private static final int EXCEPTION_MAP_CAPACITY = 32;
+    /** Lock protecting access to exceptionTable. */
+    private static final ReentrantLock exceptionTableLock
+        = new ReentrantLock();
+
+    /** Reference queue of stale exceptionally completed tasks. */
+    private static final ReferenceQueue<Object> exceptionTableRefQueue
+        = new ReferenceQueue<>();
 
     /**
      * Key-value nodes for exception table.  The chained hash table
@@ -609,9 +624,8 @@ public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
     private static void expungeStaleExceptions() {
         for (Object x; (x = exceptionTableRefQueue.poll()) != null;) {
             if (x instanceof ExceptionNode) {
-                int hashCode = ((ExceptionNode)x).hashCode;
                 ExceptionNode[] t = exceptionTable;
-                int i = hashCode & (t.length - 1);
+                int i = ((ExceptionNode)x).hashCode & (t.length - 1);
                 ExceptionNode e = t[i];
                 ExceptionNode pred = null;
                 while (e != null) {
@@ -702,13 +716,13 @@ public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
     }
 
     /**
-     * Returns the result of the computation when it {@link #isDone is
-     * done}.  This method differs from {@link #get()} in that
-     * abnormal completion results in {@code RuntimeException} or
-     * {@code Error}, not {@code ExecutionException}, and that
-     * interrupts of the calling thread do <em>not</em> cause the
-     * method to abruptly return by throwing {@code
-     * InterruptedException}.
+     * Returns the result of the computation when it
+     * {@linkplain #isDone is done}.
+     * This method differs from {@link #get()} in that abnormal
+     * completion results in {@code RuntimeException} or {@code Error},
+     * not {@code ExecutionException}, and that interrupts of the
+     * calling thread do <em>not</em> cause the method to abruptly
+     * return by throwing {@code InterruptedException}.
      *
      * @return the computed result
      */
@@ -1385,6 +1399,9 @@ public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
         public final boolean exec() { runnable.run(); return true; }
         @AutoreleasePool
         public final void run() { invoke(); }
+        public String toString() {
+            return super.toString() + "[Wrapped task = " + runnable + "]";
+        }
         private static final long serialVersionUID = 5232453952276885070L;
     }
 
@@ -1402,6 +1419,9 @@ public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
         public final void setRawResult(Void v) { }
         public final boolean exec() { runnable.run(); return true; }
         public final void run() { invoke(); }
+        public String toString() {
+            return super.toString() + "[Wrapped task = " + runnable + "]";
+        }
         private static final long serialVersionUID = 5232453952276885070L;
     }
 
@@ -1449,6 +1469,9 @@ public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
         }
         @AutoreleasePool
         public final void run() { invoke(); }
+        public String toString() {
+            return super.toString() + "[Wrapped task = " + callable + "]";
+        }
         private static final long serialVersionUID = 2838392045355241008L;
     }
 
@@ -1530,14 +1553,11 @@ public abstract class ForkJoinTask<V> implements Future<V>, Serializable {
     private static final long STATUS;
 
     static {
-        exceptionTableLock = new ReentrantLock();
-        exceptionTableRefQueue = new ReferenceQueue<Object>();
-        exceptionTable = new ExceptionNode[EXCEPTION_MAP_CAPACITY];
         try {
             STATUS = U.objectFieldOffset
                 (ForkJoinTask.class.getDeclaredField("status"));
         } catch (ReflectiveOperationException e) {
-            throw new Error(e);
+            throw new ExceptionInInitializerError(e);
         }
     }
 

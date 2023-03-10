@@ -35,6 +35,12 @@
 
 package java.util.concurrent;
 
+/* J2Objc removed
+import jdk.internal.misc.Unsafe;
+import jdk.internal.misc.VM;
+import java.security.AccessControlContext;
+*/
+
 import java.io.ObjectStreamField;
 import java.util.Random;
 import java.util.Spliterator;
@@ -64,7 +70,7 @@ import java.util.stream.StreamSupport;
  * {@code ThreadLocalRandom.current().nextX(...)} (where
  * {@code X} is {@code Int}, {@code Long}, etc).
  * When all usages are of this form, it is never possible to
- * accidently share a {@code ThreadLocalRandom} across multiple threads.
+ * accidentally share a {@code ThreadLocalRandom} across multiple threads.
  *
  * <p>This class also provides additional commonly used bounded random
  * generation methods.
@@ -95,7 +101,9 @@ public class ThreadLocalRandom extends Random {
      * ThreadLocalRandom sequence.  The dual use is a marriage of
      * convenience, but is a simple and efficient way of reducing
      * application-level overhead and footprint of most concurrent
-     * programs.
+     * programs. Even more opportunistically, we also define here
+     * other package-private utilities that access Thread class
+     * fields.
      *
      * Even though this class subclasses java.util.Random, it uses the
      * same basic algorithm as java.util.SplittableRandom.  (See its
@@ -193,9 +201,17 @@ public class ThreadLocalRandom extends Random {
         return r;
     }
 
-    // We must define this, but never use it.
+    /**
+     * Generates a pseudorandom number with the indicated number of
+     * low-order bits.  Because this class has no subclasses, this
+     * method cannot be invoked or overridden.
+     *
+     * @param  bits random bits
+     * @return the next pseudorandom value from this random number
+     *         generator's sequence
+     */
     protected int next(int bits) {
-        return (int)(mix64(nextSeed()) >>> (64 - bits));
+        return nextInt() >>> (32 - bits);
     }
 
     /**
@@ -455,12 +471,13 @@ public class ThreadLocalRandom extends Random {
             s = v1 * v1 + v2 * v2;
         } while (s >= 1 || s == 0);
         double multiplier = StrictMath.sqrt(-2 * StrictMath.log(s)/s);
-        nextLocalGaussian.set(new Double(v2 * multiplier));
+        nextLocalGaussian.set(Double.valueOf(v2 * multiplier));
         return v1 * multiplier;
     }
 
     // stream methods, coded in a way intended to better isolate for
     // maintenance purposes the small differences across forms.
+
     /**
      * Returns a stream producing the given {@code streamSize} number of
      * pseudorandom {@code int} values.
@@ -686,8 +703,7 @@ public class ThreadLocalRandom extends Random {
      * @return a stream of pseudorandom {@code double} values,
      *         each with the given origin (inclusive) and bound (exclusive)
      * @throws IllegalArgumentException if {@code streamSize} is
-     *         less than zero
-     * @throws IllegalArgumentException if {@code randomNumberOrigin}
+     *         less than zero, or {@code randomNumberOrigin}
      *         is greater than or equal to {@code randomNumberBound}
      * @since 1.8
      */
@@ -1011,7 +1027,10 @@ public class ThreadLocalRandom extends Random {
      */
     private static final long SEEDER_INCREMENT = 0xbb67ae8584caa73bL;
 
-    // Constants from SplittableRandom
+    /**
+     * The least non-zero value returned by nextDouble(). This value
+     * is scaled by a random value of 53 bits to produce a result.
+     */
     private static final double DOUBLE_UNIT = 0x1.0p-53;  // 1.0  / (1L << 53)
     private static final float  FLOAT_UNIT  = 0x1.0p-24f; // 1.0f / (1 << 24)
 

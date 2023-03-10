@@ -38,13 +38,13 @@ package java.util.concurrent;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
 
-// BEGIN android-note
-// removed link to collections framework docs
-// END android-note
-
 /**
  * A {@link ConcurrentMap} supporting {@link NavigableMap} operations,
  * and recursively so for its navigable sub-maps.
+ *
+ * <p>This interface is a member of the
+ * <a href="{@docRoot}/java.base/java/util/package-summary.html#CollectionsFramework">
+ * Java Collections Framework</a>.
  *
  * @author Doug Lea
  * @param <K> the type of keys maintained by this map

@@ -37,6 +37,12 @@ package java.util.concurrent;
 
 import com.google.j2objc.annotations.RetainedWith;
 
+/* J2Objc removed
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.util.concurrent.atomic.LongAdder;
+*/
+
 import java.io.Serializable;
 import java.util.AbstractCollection;
 import java.util.AbstractMap;
@@ -48,7 +54,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -60,9 +65,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-// BEGIN android-note
-// removed link to collections framework docs
-// END android-note
 
 /**
  * A scalable concurrent {@link ConcurrentNavigableMap} implementation.
@@ -91,12 +93,7 @@ import java.util.function.Predicate;
  * associated map using {@code put}, {@code putIfAbsent}, or
  * {@code replace}, depending on exactly which effect you need.)
  *
- * <p>Beware that, unlike in most collections, the {@code size}
- * method is <em>not</em> a constant-time operation. Because of the
- * asynchronous nature of these maps, determining the current number
- * of elements requires a traversal of the elements, and so may report
- * inaccurate results if this collection is modified during traversal.
- * Additionally, the bulk operations {@code putAll}, {@code equals},
+ * <p>Beware that bulk operations {@code putAll}, {@code equals},
  * {@code toArray}, {@code containsValue}, and {@code clear} are
  * <em>not</em> guaranteed to be performed atomically. For example, an
  * iterator operating concurrently with a {@code putAll} operation
@@ -108,6 +105,10 @@ import java.util.function.Predicate;
  * <em>not</em> permit the use of {@code null} keys or values because some
  * null return values cannot be reliably distinguished from the absence of
  * elements.
+ *
+ * <p>This class is a member of the
+ * <a href="{@docRoot}/java.base/java/util/package-summary.html#CollectionsFramework">
+ * Java Collections Framework</a>.
  *
  * @author Doug Lea
  * @param <K> the type of keys maintained by this map
@@ -159,42 +160,35 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * be slow and space-intensive using AtomicMarkedReference), nodes
      * use direct CAS'able next pointers.  On deletion, instead of
      * marking a pointer, they splice in another node that can be
-     * thought of as standing for a marked pointer (indicating this by
-     * using otherwise impossible field values).  Using plain nodes
-     * acts roughly like "boxed" implementations of marked pointers,
-     * but uses new nodes only when nodes are deleted, not for every
-     * link.  This requires less space and supports faster
-     * traversal. Even if marked references were better supported by
-     * JVMs, traversal using this technique might still be faster
-     * because any search need only read ahead one more node than
-     * otherwise required (to check for trailing marker) rather than
-     * unmasking mark bits or whatever on each read.
+     * thought of as standing for a marked pointer (see method
+     * unlinkNode).  Using plain nodes acts roughly like "boxed"
+     * implementations of marked pointers, but uses new nodes only
+     * when nodes are deleted, not for every link.  This requires less
+     * space and supports faster traversal. Even if marked references
+     * were better supported by JVMs, traversal using this technique
+     * might still be faster because any search need only read ahead
+     * one more node than otherwise required (to check for trailing
+     * marker) rather than unmasking mark bits or whatever on each
+     * read.
      *
      * This approach maintains the essential property needed in the HM
      * algorithm of changing the next-pointer of a deleted node so
      * that any other CAS of it will fail, but implements the idea by
-     * changing the pointer to point to a different node, not by
-     * marking it.  While it would be possible to further squeeze
-     * space by defining marker nodes not to have key/value fields, it
-     * isn't worth the extra type-testing overhead.  The deletion
-     * markers are rarely encountered during traversal and are
-     * normally quickly garbage collected. (Note that this technique
-     * would not work well in systems without garbage collection.)
+     * changing the pointer to point to a different node (with
+     * otherwise illegal null fields), not by marking it.  While it
+     * would be possible to further squeeze space by defining marker
+     * nodes not to have key/value fields, it isn't worth the extra
+     * type-testing overhead.  The deletion markers are rarely
+     * encountered during traversal, are easily detected via null
+     * checks that are needed anyway, and are normally quickly garbage
+     * collected. (Note that this technique would not work well in
+     * systems without garbage collection.)
      *
      * In addition to using deletion markers, the lists also use
      * nullness of value fields to indicate deletion, in a style
      * similar to typical lazy-deletion schemes.  If a node's value is
      * null, then it is considered logically deleted and ignored even
-     * though it is still reachable. This maintains proper control of
-     * concurrent replace vs delete operations -- an attempted replace
-     * must fail if a delete beat it by nulling field, and a delete
-     * must return the last non-null value held in the field. (Note:
-     * Null, rather than some special marker, is used for value fields
-     * here because it just so happens to mesh with the Map API
-     * requirement that method get returns null if there is no
-     * mapping, which allows nodes to remain concurrently readable
-     * even when deleted. Using any other marker value here would be
-     * messy at best.)
+     * though it is still reachable.
      *
      * Here's the sequence of events for a deletion of node n with
      * predecessor b and successor f, initially:
@@ -204,9 +198,8 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      *        +------+       +------+      +------+
      *
      * 1. CAS n's value field from non-null to null.
-     *    From this point on, no public operations encountering
-     *    the node consider this mapping to exist. However, other
-     *    ongoing insertions and deletions might still modify
+     *    Traversals encountering a node with null value ignore it.
+     *    However, ongoing insertions and deletions might still modify
      *    n's next pointer.
      *
      * 2. CAS n's next pointer to point to a new marker node.
@@ -229,12 +222,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * thread noticed during a traversal a node with null value and
      * helped out by marking and/or unlinking.  This helping-out
      * ensures that no thread can become stuck waiting for progress of
-     * the deleting thread.  The use of marker nodes slightly
-     * complicates helping-out code because traversals must track
-     * consistent reads of up to four nodes (b, n, marker, f), not
-     * just (b, n, f), although the next field of a marker is
-     * immutable, and once a next field is CAS'ed to point to a
-     * marker, it never again changes, so this requires less care.
+     * the deleting thread.
      *
      * Skip lists add indexing to this scheme, so that the base-level
      * traversals start close to the locations being found, inserted
@@ -244,92 +232,90 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * b) that are not (structurally) deleted, otherwise retrying
      * after processing the deletion.
      *
-     * Index levels are maintained as lists with volatile next fields,
-     * using CAS to link and unlink.  Races are allowed in index-list
-     * operations that can (rarely) fail to link in a new index node
-     * or delete one. (We can't do this of course for data nodes.)
-     * However, even when this happens, the index lists remain sorted,
-     * so correctly serve as indices.  This can impact performance,
-     * but since skip lists are probabilistic anyway, the net result
-     * is that under contention, the effective "p" value may be lower
-     * than its nominal value. And race windows are kept small enough
-     * that in practice these failures are rare, even under a lot of
-     * contention.
+     * Index levels are maintained using CAS to link and unlink
+     * successors ("right" fields).  Races are allowed in index-list
+     * operations that can (rarely) fail to link in a new index node.
+     * (We can't do this of course for data nodes.)  However, even
+     * when this happens, the index lists correctly guide search.
+     * This can impact performance, but since skip lists are
+     * probabilistic anyway, the net result is that under contention,
+     * the effective "p" value may be lower than its nominal value.
      *
-     * The fact that retries (for both base and index lists) are
-     * relatively cheap due to indexing allows some minor
-     * simplifications of retry logic. Traversal restarts are
-     * performed after most "helping-out" CASes. This isn't always
-     * strictly necessary, but the implicit backoffs tend to help
-     * reduce other downstream failed CAS's enough to outweigh restart
-     * cost.  This worsens the worst case, but seems to improve even
-     * highly contended cases.
-     *
-     * Unlike most skip-list implementations, index insertion and
-     * deletion here require a separate traversal pass occurring after
-     * the base-level action, to add or remove index nodes.  This adds
-     * to single-threaded overhead, but improves contended
-     * multithreaded performance by narrowing interference windows,
-     * and allows deletion to ensure that all index nodes will be made
-     * unreachable upon return from a public remove operation, thus
-     * avoiding unwanted garbage retention. This is more important
-     * here than in some other data structures because we cannot null
-     * out node fields referencing user keys since they might still be
-     * read by other ongoing traversals.
+     * Index insertion and deletion sometimes require a separate
+     * traversal pass occurring after the base-level action, to add or
+     * remove index nodes.  This adds to single-threaded overhead, but
+     * improves contended multithreaded performance by narrowing
+     * interference windows, and allows deletion to ensure that all
+     * index nodes will be made unreachable upon return from a public
+     * remove operation, thus avoiding unwanted garbage retention.
      *
      * Indexing uses skip list parameters that maintain good search
      * performance while using sparser-than-usual indices: The
-     * hardwired parameters k=1, p=0.5 (see method doPut) mean
-     * that about one-quarter of the nodes have indices. Of those that
-     * do, half have one level, a quarter have two, and so on (see
-     * Pugh's Skip List Cookbook, sec 3.4).  The expected total space
-     * requirement for a map is slightly less than for the current
-     * implementation of java.util.TreeMap.
+     * hardwired parameters k=1, p=0.5 (see method doPut) mean that
+     * about one-quarter of the nodes have indices. Of those that do,
+     * half have one level, a quarter have two, and so on (see Pugh's
+     * Skip List Cookbook, sec 3.4), up to a maximum of 62 levels
+     * (appropriate for up to 2^63 elements).  The expected total
+     * space requirement for a map is slightly less than for the
+     * current implementation of java.util.TreeMap.
      *
      * Changing the level of the index (i.e, the height of the
-     * tree-like structure) also uses CAS. The head index has initial
-     * level/height of one. Creation of an index with height greater
-     * than the current level adds a level to the head index by
-     * CAS'ing on a new top-most head. To maintain good performance
-     * after a lot of removals, deletion methods heuristically try to
-     * reduce the height if the topmost levels appear to be empty.
-     * This may encounter races in which it possible (but rare) to
-     * reduce and "lose" a level just as it is about to contain an
-     * index (that will then never be encountered). This does no
-     * structural harm, and in practice appears to be a better option
-     * than allowing unrestrained growth of levels.
+     * tree-like structure) also uses CAS.  Creation of an index with
+     * height greater than the current level adds a level to the head
+     * index by CAS'ing on a new top-most head. To maintain good
+     * performance after a lot of removals, deletion methods
+     * heuristically try to reduce the height if the topmost levels
+     * appear to be empty.  This may encounter races in which it is
+     * possible (but rare) to reduce and "lose" a level just as it is
+     * about to contain an index (that will then never be
+     * encountered). This does no structural harm, and in practice
+     * appears to be a better option than allowing unrestrained growth
+     * of levels.
      *
-     * The code for all this is more verbose than you'd like. Most
-     * operations entail locating an element (or position to insert an
-     * element). The code to do this can't be nicely factored out
-     * because subsequent uses require a snapshot of predecessor
-     * and/or successor and/or value fields which can't be returned
-     * all at once, at least not without creating yet another object
-     * to hold them -- creating such little objects is an especially
-     * bad idea for basic internal search operations because it adds
-     * to GC overhead.  (This is one of the few times I've wished Java
-     * had macros.) Instead, some traversal code is interleaved within
-     * insertion and removal operations.  The control logic to handle
-     * all the retry conditions is sometimes twisty. Most search is
-     * broken into 2 parts. findPredecessor() searches index nodes
-     * only, returning a base-level predecessor of the key. findNode()
-     * finishes out the base-level search. Even with this factoring,
-     * there is a fair amount of near-duplication of code to handle
-     * variants.
+     * This class provides concurrent-reader-style memory consistency,
+     * ensuring that read-only methods report status and/or values no
+     * staler than those holding at method entry. This is done by
+     * performing all publication and structural updates using
+     * (volatile) CAS, placing an acquireFence in a few access
+     * methods, and ensuring that linked objects are transitively
+     * acquired via dependent reads (normally once) unless performing
+     * a volatile-mode CAS operation (that also acts as an acquire and
+     * release).  This form of fence-hoisting is similar to RCU and
+     * related techniques (see McKenney's online book
+     * https://www.kernel.org/pub/linux/kernel/people/paulmck/perfbook/perfbook.html)
+     * It minimizes overhead that may otherwise occur when using so
+     * many volatile-mode reads. Using explicit acquireFences is
+     * logistically easier than targeting particular fields to be read
+     * in acquire mode: fences are just hoisted up as far as possible,
+     * to the entry points or loop headers of a few methods. A
+     * potential disadvantage is that these few remaining fences are
+     * not easily optimized away by compilers under exclusively
+     * single-thread use.  It requires some care to avoid volatile
+     * mode reads of other fields. (Note that the memory semantics of
+     * a reference dependently read in plain mode exactly once are
+     * equivalent to those for atomic opaque mode.)  Iterators and
+     * other traversals encounter each node and value exactly once.
+     * Other operations locate an element (or position to insert an
+     * element) via a sequence of dereferences. This search is broken
+     * into two parts. Method findPredecessor (and its specialized
+     * embeddings) searches index nodes only, returning a base-level
+     * predecessor of the key. Callers carry out the base-level
+     * search, restarting if encountering a marker preventing link
+     * modification.  In some cases, it is possible to encounter a
+     * node multiple times while descending levels. For mutative
+     * operations, the reported value is validated using CAS (else
+     * retrying), preserving linearizability with respect to each
+     * other. Others may return any (non-null) value holding in the
+     * course of the method call.  (Search-based methods also include
+     * some useless-looking explicit null checks designed to allow
+     * more fields to be nulled out upon removal, to reduce floating
+     * garbage, but which is not currently done, pending discovery of
+     * a way to do this with less impact on other operations.)
      *
      * To produce random values without interference across threads,
      * we use within-JDK thread local random support (via the
      * "secondary seed", to avoid interference with user-level
      * ThreadLocalRandom.)
-     *
-     * A previous version of this class wrapped non-comparable keys
-     * with their comparators to emulate Comparables when using
-     * comparators vs Comparables.  However, JVMs now appear to better
-     * handle infusing comparator-vs-comparable choice into search
-     * loops. Static method cpr(comparator, x, y) is used for all
-     * comparisons, which works well as long as the comparator
-     * argument is set up outside of loops (thus sometimes passed as
-     * an argument to internal methods) to avoid field re-reads.
      *
      * For explanation of algorithms sharing at least a couple of
      * features with this one, see Mikhail Fomitchev's thesis
@@ -337,20 +323,10 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * (http://www.cl.cam.ac.uk/users/kaf24/), and Hakan Sundell's
      * thesis (http://www.cs.chalmers.se/~phs/).
      *
-     * Given the use of tree-like index nodes, you might wonder why
-     * this doesn't use some kind of search tree instead, which would
-     * support somewhat faster search operations. The reason is that
-     * there are no known efficient lock-free insertion and deletion
-     * algorithms for search trees. The immutability of the "down"
-     * links of index nodes (as opposed to mutable "left" fields in
-     * true trees) makes this tractable using only CAS operations.
-     *
      * Notation guide for local variables
-     * Node:         b, n, f    for  predecessor, node, successor
+     * Node:         b, n, f, p for  predecessor, node, successor, aux
      * Index:        q, r, d    for index node, right, down.
-     *               t          for another index node
      * Head:         h
-     * Levels:       j
      * Keys:         k, key
      * Values:       v, value
      * Comparisons:  c
@@ -381,11 +357,11 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     // is unsafe when translated to Objective-C.
     /** Lazily initialized key set */
     @RetainedWith private transient volatile KeySet<K,V> keySet;
-    /** Lazily initialized entry set */
-    @RetainedWith private transient volatile EntrySet<K,V> entrySet;
     /** Lazily initialized values collection */
     @RetainedWith private transient volatile Values<K,V> values;
-    /** Lazily initialized descending key set */
+    /** Lazily initialized entry set */
+    @RetainedWith private transient volatile EntrySet<K,V> entrySet;
+    /** Lazily initialized descending map */
     private transient ConcurrentNavigableMap<K,V> descendingMap;
 
     /**
@@ -409,23 +385,17 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
         return U.compareAndSwapObject(this, HEAD, cmp, val);
     }
 
-    /* ---------------- Nodes -------------- */
-
     /**
      * Nodes hold keys and values, and are singly linked in sorted
      * order, possibly with some intervening marker nodes. The list is
-     * headed by a dummy node accessible as head.node. The value field
-     * is declared only as Object because it takes special non-V
-     * values for marker and header nodes.
+     * headed by a header node accessible as head.node. Headers and
+     * marker nodes have null keys. The val field (but currently not
+     * the key field) is nulled out upon deletion.
      */
     static final class Node<K,V> {
-        final K key;
+        final K key; // currently, never detached
         volatile Object value;
         volatile Node<K,V> next;
-
-        /**
-         * Creates a new regular node.
-         */
         Node(K key, Object value, Node<K,V> next) {
             this.key = key;
             this.value = value;
@@ -457,19 +427,6 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
          */
         boolean casNext(Node<K,V> cmp, Node<K,V> val) {
             return U.compareAndSwapObject(this, NEXT, cmp, val);
-        }
-
-        /**
-         * Returns true if this node is a marker. This method isn't
-         * actually called in any current code checking for markers
-         * because callers will have already read value field and need
-         * to use that read (not another done here) and so directly
-         * test if value points to node.
-         *
-         * @return true if this node is a marker node
-         */
-        boolean isMarker() {
-            return value == sentinel();
         }
 
         /**
@@ -536,9 +493,6 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
             @SuppressWarnings("unchecked") V vv = (V)v;
             return new AbstractMap.SimpleImmutableEntry<K,V>(key, vv);
         }
-
-        // Unsafe mechanics
-
         private static final sun.misc.Unsafe U = sun.misc.Unsafe.getUnsafe();
         private static final long VALUE;
         private static final long NEXT;
@@ -555,23 +509,14 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
         }
     }
 
-    /* ---------------- Indexing -------------- */
-
     /**
-     * Index nodes represent the levels of the skip list.  Note that
-     * even though both Nodes and Indexes have forward-pointing
-     * fields, they have different types and are handled in different
-     * ways, that can't nicely be captured by placing field in a
-     * shared abstract class.
+     * Index nodes represent the levels of the skip list.
      */
+    // static final class Index<K,V> {
     static class Index<K,V> {
-        final Node<K,V> node;
+        final Node<K,V> node;  // currently, never detached
         final Index<K,V> down;
         volatile Index<K,V> right;
-
-        /**
-         * Creates index node with given values.
-         */
         Index(Node<K,V> node, Index<K,V> down, Index<K,V> right) {
             this.node = node;
             this.down = down;
@@ -644,26 +589,27 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
         }
     }
 
-    /* ---------------- Comparison utilities -------------- */
+    /* ----------------  Utilities -------------- */
 
     /**
      * Compares using comparator or natural ordering if null.
      * Called only by methods that have performed required type checks.
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    static final int cpr(Comparator c, Object x, Object y) {
+    static int cpr(Comparator c, Object x, Object y) {
         return (c != null) ? c.compare(x, y) : ((Comparable)x).compareTo(y);
     }
 
     /* ---------------- Traversal -------------- */
 
     /**
-     * Returns a base-level node with key strictly less than given key,
-     * or the base-level header if there is no such node.  Also
-     * unlinks indexes to deleted nodes found along the way.  Callers
-     * rely on this side-effect of clearing indices to deleted nodes.
-     * @param key the key
-     * @return a predecessor of key
+     * Returns an index node with key strictly less than given key.
+     * Also unlinks indexes to deleted nodes found along the way.
+     * Callers rely on this side-effect of clearing indices to deleted
+     * nodes.
+     *
+     * @param key if nonnull the key
+     * @return a predecessor node of key, or null if uninitialized or null key
      */
     private Node<K,V> findPredecessor(Object key, Comparator<? super K> cmp) {
         if (key == null)
@@ -698,41 +644,11 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * deleted nodes seen along the way.  Repeatedly traverses at
      * base-level looking for key starting at predecessor returned
      * from findPredecessor, processing base-level deletions as
-     * encountered. Some callers rely on this side-effect of clearing
-     * deleted nodes.
-     *
-     * Restarts occur, at traversal step centered on node n, if:
-     *
-     *   (1) After reading n's next field, n is no longer assumed
-     *       predecessor b's current successor, which means that
-     *       we don't have a consistent 3-node snapshot and so cannot
-     *       unlink any subsequent deleted nodes encountered.
-     *
-     *   (2) n's value field is null, indicating n is deleted, in
-     *       which case we help out an ongoing structural deletion
-     *       before retrying.  Even though there are cases where such
-     *       unlinking doesn't require restart, they aren't sorted out
-     *       here because doing so would not usually outweigh cost of
-     *       restarting.
-     *
-     *   (3) n is a marker or n's predecessor's value field is null,
-     *       indicating (among other possibilities) that
-     *       findPredecessor returned a deleted node. We can't unlink
-     *       the node because we don't know its predecessor, so rely
-     *       on another call to findPredecessor to notice and return
-     *       some earlier predecessor, which it will do. This check is
-     *       only strictly needed at beginning of loop, (and the
-     *       b.value check isn't strictly needed at all) but is done
-     *       each iteration to help avoid contention with other
-     *       threads by callers that will fail to be able to change
-     *       links, and so will retry anyway.
-     *
-     * The traversal loops in doPut, doRemove, and findNear all
-     * include the same three kinds of checks. And specialized
-     * versions appear in findFirst, and findLast and their variants.
-     * They can't easily share code because each uses the reads of
-     * fields held in locals occurring in the orders they were
-     * performed.
+     * encountered. Restarts occur, at traversal step encountering
+     * node n, if n's key field is null, indicating it is a marker, so
+     * its predecessor is deleted before continuing, which we help do
+     * by re-finding a valid predecessor.  The traversal loops in
+     * doPut, doRemove, and findNear all include the same checks.
      *
      * @param key the key
      * @return node holding key, or null if no such
@@ -767,8 +683,9 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     /**
-     * Gets value for key. Almost the same as findNode, but returns
-     * the found value (to avoid retries during re-reads)
+     * Gets value for key. Same idea as findNode, except skips over
+     * deletions and markers, and returns first encountered value to
+     * avoid possibly inconsistent rereads.
      *
      * @param key the key
      * @return the value, or null if absent
@@ -809,6 +726,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     /**
      * Main insertion method.  Adds element if not present, or
      * replaces value if present and onlyIfAbsent is false.
+     *
      * @param key the key
      * @param value the value that must be associated with key
      * @param onlyIfAbsent if should not insert if already present
@@ -938,15 +856,6 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * deletion marker, unlinks predecessor, removes associated index
      * nodes, and possibly reduces head index level.
      *
-     * Index nodes are cleared out simply by calling findPredecessor.
-     * which unlinks indexes to deleted nodes found along path to key,
-     * which will include the indexes to this node.  This is done
-     * unconditionally. We can't check beforehand whether there are
-     * index nodes because it might be the case that some or all
-     * indexes hadn't been inserted yet for this node during initial
-     * search for it, and we'd like to ensure lack of garbage
-     * retention, so must call to be sure.
-     *
      * @param key the key
      * @param value if non-null, the value that must be
      * associated with key
@@ -1033,7 +942,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     /* ---------------- Finding and removing first element -------------- */
 
     /**
-     * Specialized variant of findNode to get first valid node.
+     * Gets first valid node, unlinking deleted nodes if encountered.
      * @return first node or null if empty
      */
     final Node<K,V> findFirst() {
@@ -1089,54 +998,6 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
             }
         }
     }
-
-    /**
-     * Removes last entry; returns its snapshot.
-     * Specialized variant of doRemove.
-     * @return null if empty, else snapshot of last entry
-     */
-    private Map.Entry<K,V> doRemoveLastEntry() {
-        for (;;) {
-            Node<K,V> b = findPredecessorOfLast();
-            Node<K,V> n = b.next;
-            if (n == null) {
-                if (b.isBaseHeader())               // empty
-                    return null;
-                else
-                    continue; // all b's successors are deleted; retry
-            }
-            for (;;) {
-                Node<K,V> f = n.next;
-                if (n != b.next)                    // inconsistent read
-                    break;
-                Object v = n.value;
-                if (v == null) {                    // n is deleted
-                    n.helpDelete(b, f);
-                    break;
-                }
-                if (b.value == null || v == sentinel())      // b is deleted
-                    break;
-                if (f != null) {
-                    b = n;
-                    n = f;
-                    continue;
-                }
-                if (!n.casValue(v, null))
-                    break;
-                K key = n.key;
-                if (!n.appendMarker(f) || !b.casNext(n, f))
-                    findNode(key);                  // retry via findNode
-                else {                              // clean index
-                    findPredecessor(key, comparator);
-                    if (head.right == null)
-                        tryReduceLevel();
-                }
-                @SuppressWarnings("unchecked") V vv = (V)v;
-                return new AbstractMap.SimpleImmutableEntry<K,V>(key, vv);
-            }
-        }
-    }
-
     /* ---------------- Finding and removing last element -------------- */
 
     /**
@@ -1212,6 +1073,53 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
             }
         }
     }
+    
+    /**
+     * Removes last entry; returns its snapshot.
+     * Specialized variant of doRemove.
+     * @return null if empty, else snapshot of last entry
+     */
+    private Map.Entry<K,V> doRemoveLastEntry() {
+        for (;;) {
+            Node<K,V> b = findPredecessorOfLast();
+            Node<K,V> n = b.next;
+            if (n == null) {
+                if (b.isBaseHeader())               // empty
+                    return null;
+                else
+                    continue; // all b's successors are deleted; retry
+            }
+            for (;;) {
+                Node<K,V> f = n.next;
+                if (n != b.next)                    // inconsistent read
+                    break;
+                Object v = n.value;
+                if (v == null) {                    // n is deleted
+                    n.helpDelete(b, f);
+                    break;
+                }
+                if (b.value == null || v == sentinel())      // b is deleted
+                    break;
+                if (f != null) {
+                    b = n;
+                    n = f;
+                    continue;
+                }
+                if (!n.casValue(v, null))
+                    break;
+                K key = n.key;
+                if (!n.appendMarker(f) || !b.casNext(n, f))
+                    findNode(key);                  // retry via findNode
+                else {                              // clean index
+                    findPredecessor(key, comparator);
+                    if (head.right == null)
+                        tryReduceLevel();
+                }
+                @SuppressWarnings("unchecked") V vv = (V)v;
+                return new AbstractMap.SimpleImmutableEntry<K,V>(key, vv);
+            }
+        }
+    }
 
     /* ---------------- Relational operations -------------- */
 
@@ -1257,7 +1165,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     /**
-     * Returns SimpleImmutableEntry for results of findNear.
+     * Variant of findNear returning SimpleImmutableEntry
      * @param key the key
      * @param rel the relation -- OR'ed combination of EQ, LT, GT
      * @return Entry fitting relation, or null if no such
@@ -1327,7 +1235,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     public ConcurrentSkipListMap(SortedMap<K, ? extends V> m) {
         this.comparator = m.comparator();
         initialize();
-        buildFromSorted(m);
+        buildFromSorted(m); // initializes transients
     }
 
     /**
@@ -1619,20 +1527,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     /**
-     * Returns the number of key-value mappings in this map.  If this map
-     * contains more than {@code Integer.MAX_VALUE} elements, it
-     * returns {@code Integer.MAX_VALUE}.
-     *
-     * <p>Beware that, unlike in most collections, this method is
-     * <em>NOT</em> a constant-time operation. Because of the
-     * asynchronous nature of these maps, determining the current
-     * number of elements requires traversing them all to count them.
-     * Additionally, it is possible for the size to change during
-     * execution of this method, in which case the returned result
-     * will be inaccurate. Thus, this method is typically not very
-     * useful in concurrent applications.
-     *
-     * @return the number of elements in this map
+     * {@inheritDoc}
      */
     public int size() {
         long count = 0;
@@ -1644,8 +1539,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     }
 
     /**
-     * Returns {@code true} if this map contains no key-value mappings.
-     * @return {@code true} if this map contains no key-value mappings
+     * {@inheritDoc}
      */
     public boolean isEmpty() {
         return findFirst() == null;
@@ -1810,9 +1704,11 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * The set's spliterator additionally reports {@link Spliterator#CONCURRENT},
      * {@link Spliterator#NONNULL}, {@link Spliterator#SORTED} and
      * {@link Spliterator#ORDERED}, with an encounter order that is ascending
-     * key order.  The spliterator's comparator (see
-     * {@link java.util.Spliterator#getComparator()}) is {@code null} if
-     * the map's comparator (see {@link #comparator()}) is {@code null}.
+     * key order.
+     *
+     * <p>The {@linkplain Spliterator#getComparator() spliterator's comparator}
+     * is {@code null} if the {@linkplain #comparator() map's comparator}
+     * is {@code null}.
      * Otherwise, the spliterator's comparator is the same as or imposes the
      * same total ordering as the map's comparator.
      *
@@ -1832,13 +1728,15 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * @return a navigable set view of the keys in this map
      */
     public NavigableSet<K> keySet() {
-        KeySet<K,V> ks = keySet;
-        return (ks != null) ? ks : (keySet = new KeySet<>(this));
+        KeySet<K,V> ks;
+        if ((ks = keySet) != null) return ks;
+        return keySet = new KeySet<>(this);
     }
 
     public NavigableSet<K> navigableKeySet() {
-        KeySet<K,V> ks = keySet;
-        return (ks != null) ? ks : (keySet = new KeySet<>(this));
+        KeySet<K,V> ks;
+        if ((ks = keySet) != null) return ks;
+        return keySet = new KeySet<>(this);
     }
 
     /**
@@ -1861,8 +1759,9 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * <a href="package-summary.html#Weakly"><i>weakly consistent</i></a>.
      */
     public Collection<V> values() {
-        Values<K,V> vs = values;
-        return (vs != null) ? vs : (values = new Values<>(this));
+        Values<K,V> vs;
+        if ((vs = values) != null) return vs;
+        return values = new Values<>(this);
     }
 
     /**
@@ -1893,14 +1792,16 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      *         sorted in ascending key order
      */
     public Set<Map.Entry<K,V>> entrySet() {
-        EntrySet<K,V> es = entrySet;
-        return (es != null) ? es : (entrySet = new EntrySet<K,V>(this));
+        EntrySet<K,V> es;
+        if ((es = entrySet) != null) return es;
+        return entrySet = new EntrySet<K,V>(this);
     }
 
     public ConcurrentNavigableMap<K,V> descendingMap() {
-        ConcurrentNavigableMap<K,V> dm = descendingMap;
-        return (dm != null) ? dm : (descendingMap = new SubMap<K,V>
-                                    (this, null, false, null, false, true));
+        ConcurrentNavigableMap<K,V> dm;
+        if ((dm = descendingMap) != null) return dm;
+        return descendingMap =
+            new SubMap<K,V>(this, null, false, null, false, true);
     }
 
     public NavigableSet<K> descendingKeySet() {
@@ -2267,7 +2168,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     /* ---------------- Iterators -------------- */
 
     /**
-     * Base of iterator classes:
+     * Base of iterator classes
      */
     abstract class Iter<T> implements Iterator<T> {
         /** the last node returned by next() */
@@ -2398,9 +2299,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
             Collection<?> c = (Collection<?>) o;
             try {
                 return containsAll(c) && c.containsAll(this);
-            } catch (ClassCastException unused) {
-                return false;
-            } catch (NullPointerException unused) {
+            } catch (ClassCastException | NullPointerException unused) {
                 return false;
             }
         }
@@ -2525,9 +2424,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
             Collection<?> c = (Collection<?>) o;
             try {
                 return containsAll(c) && c.containsAll(this);
-            } catch (ClassCastException unused) {
-                return false;
-            } catch (NullPointerException unused) {
+            } catch (ClassCastException | NullPointerException unused) {
                 return false;
             }
         }
@@ -2569,7 +2466,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * @serial include
      */
     static final class SubMap<K,V> extends AbstractMap<K,V>
-        implements ConcurrentNavigableMap<K,V>, Cloneable, Serializable {
+        implements ConcurrentNavigableMap<K,V>, Serializable {
         private static final long serialVersionUID = -7647078645895051609L;
 
         /** Underlying map */
@@ -2650,9 +2547,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
             if (k == null) // pass by markers and headers
                 return true;
             int c = cpr(cmp, k, hi);
-            if (c > 0 || (c == 0 && !hiInclusive))
-                return false;
-            return true;
+            return c < 0 || (c == 0 && hiInclusive);
         }
 
         /**
@@ -2762,7 +2657,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
         }
 
         /**
-         * Submap version of ConcurrentSkipListMap.getNearEntry.
+         * Submap version of ConcurrentSkipListMap.findNearEntry.
          */
         Map.Entry<K,V> getNearEntry(K key, int rel) {
             Comparator<? super K> cmp = m.comparator;
@@ -3057,13 +2952,15 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
         /* ---------------- Submap Views -------------- */
 
         public NavigableSet<K> keySet() {
-            KeySet<K,V> ks = keySetView;
-            return (ks != null) ? ks : (keySetView = new KeySet<>(this));
+            KeySet<K,V> ks;
+            if ((ks = keySetView) != null) return ks;
+            return keySetView = new KeySet<>(this);
         }
 
         public NavigableSet<K> navigableKeySet() {
-            KeySet<K,V> ks = keySetView;
-            return (ks != null) ? ks : (keySetView = new KeySet<>(this));
+            KeySet<K,V> ks;
+            if ((ks = keySetView) != null) return ks;
+            return keySetView = new KeySet<>(this);
         }
 
         public Collection<V> values() {
@@ -3304,30 +3201,27 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
      * off, or the end of row is encountered. Control of the number of
      * splits relies on some statistical estimation: The expected
      * remaining number of elements of a skip list when advancing
-     * either across or down decreases by about 25%. To make this
-     * observation useful, we need to know initial size, which we
-     * don't. But we can just use Integer.MAX_VALUE so that we
-     * don't prematurely zero out while splitting.
+     * either across or down decreases by about 25%.
      */
     abstract static class CSLMSpliterator<K,V> {
         final Comparator<? super K> comparator;
         final K fence;     // exclusive upper bound for keys, or null if to end
         Index<K,V> row;    // the level to split out
         Node<K,V> current; // current traversal node; initialize at origin
-        int est;           // pseudo-size estimate
+        long est;          // size estimate
         CSLMSpliterator(Comparator<? super K> comparator, Index<K,V> row,
-                        Node<K,V> origin, K fence, int est) {
+                        Node<K,V> origin, K fence, long est) {
             this.comparator = comparator; this.row = row;
             this.current = origin; this.fence = fence; this.est = est;
         }
 
-        public final long estimateSize() { return (long)est; }
+        public final long estimateSize() { return est; }
     }
 
     static final class KeySpliterator<K,V> extends CSLMSpliterator<K,V>
         implements Spliterator<K> {
         KeySpliterator(Comparator<? super K> comparator, Index<K,V> row,
-                       Node<K,V> origin, K fence, int est) {
+                       Node<K,V> origin, K fence, long est) {
             super(comparator, row, origin, fence, est);
         }
 
@@ -3415,7 +3309,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     static final class ValueSpliterator<K,V> extends CSLMSpliterator<K,V>
         implements Spliterator<V> {
         ValueSpliterator(Comparator<? super K> comparator, Index<K,V> row,
-                       Node<K,V> origin, K fence, int est) {
+                       Node<K,V> origin, K fence, long est) {
             super(comparator, row, origin, fence, est);
         }
 
@@ -3502,7 +3396,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
     static final class EntrySpliterator<K,V> extends CSLMSpliterator<K,V>
         implements Spliterator<Map.Entry<K,V>> {
         EntrySpliterator(Comparator<? super K> comparator, Index<K,V> row,
-                         Node<K,V> origin, K fence, int est) {
+                         Node<K,V> origin, K fence, long est) {
             super(comparator, row, origin, fence, est);
         }
 
@@ -3612,7 +3506,7 @@ public class ConcurrentSkipListMap<K,V> extends AbstractMap<K,V>
             HEAD = U.objectFieldOffset
                 (ConcurrentSkipListMap.class.getDeclaredField("head"));
         } catch (ReflectiveOperationException e) {
-            throw new Error(e);
+            throw new ExceptionInInitializerError(e);
         }
     }
 

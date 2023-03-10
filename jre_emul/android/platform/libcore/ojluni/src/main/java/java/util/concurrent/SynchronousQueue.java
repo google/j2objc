@@ -36,18 +36,20 @@
 
 package java.util.concurrent;
 
+/* J2Objc removed.
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+*/
+
 import java.util.AbstractQueue;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.locks.LockSupport;
 import java.util.concurrent.locks.ReentrantLock;
-
-// BEGIN android-note
-// removed link to collections framework docs
-// END android-note
 
 /**
  * A {@linkplain BlockingQueue blocking queue} in which each insert
@@ -77,9 +79,12 @@ import java.util.concurrent.locks.ReentrantLock;
  * is not guaranteed. However, a queue constructed with fairness set
  * to {@code true} grants threads access in FIFO order.
  *
- * <p>This class and its iterator implement all of the
- * <em>optional</em> methods of the {@link Collection} and {@link
- * Iterator} interfaces.
+ * <p>This class and its iterator implement all of the <em>optional</em>
+ * methods of the {@link Collection} and {@link Iterator} interfaces.
+ *
+ * <p>This class is a member of the
+ * <a href="{@docRoot}/java.base/java/util/package-summary.html#CollectionsFramework">
+ * Java Collections Framework</a>.
  *
  * @since 1.5
  * @author Doug Lea and Bill Scherer and Michael Scott
@@ -250,7 +255,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
 
             boolean casNext(SNode cmp, SNode val) {
                 return cmp == next &&
-                    U.compareAndSwapObject(this, NEXT, cmp, val);
+                    U.compareAndSwapObject(this, SNEXT, cmp, val);
             }
 
             /**
@@ -263,7 +268,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
              */
             boolean tryMatch(SNode s) {
                 if (match == null &&
-                    U.compareAndSwapObject(this, MATCH, null, s)) {
+                    U.compareAndSwapObject(this, SMATCH, null, s)) {
                     Thread w = waiter;
                     if (w != null) {    // waiters need at most one unpark
                         waiter = null;
@@ -278,26 +283,26 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
              * Tries to cancel a wait by matching node to itself.
              */
             void tryCancel() {
-                U.compareAndSwapObject(this, MATCH, null, CANCELLED);
+                U.compareAndSwapObject(this, SMATCH, null, CANCELLED);
             }
 
             boolean isCancelled() {
-                return match == CANCELLED;
+                return match == this;
             }
 
             // Unsafe mechanics
             private static final sun.misc.Unsafe U = sun.misc.Unsafe.getUnsafe();
-            private static final long MATCH;
-            private static final long NEXT;
+            private static final long SMATCH;
+            private static final long SNEXT;
 
             static {
                 try {
-                    MATCH = U.objectFieldOffset
+                    SMATCH = U.objectFieldOffset
                         (SNode.class.getDeclaredField("match"));
-                    NEXT = U.objectFieldOffset
+                    SNEXT = U.objectFieldOffset
                         (SNode.class.getDeclaredField("next"));
                 } catch (ReflectiveOperationException e) {
-                    throw new Error(e);
+                    throw new ExceptionInInitializerError(e);
                 }
             }
         }
@@ -307,7 +312,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
 
         boolean casHead(SNode h, SNode nh) {
             return h == head &&
-                U.compareAndSwapObject(this, HEAD, h, nh);
+                U.compareAndSwapObject(this, SHEAD, h, nh);
         }
 
         /**
@@ -455,8 +460,11 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                         continue;
                     }
                 }
-                if (spins > 0)
+                if (spins > 0) {
+                    // Android-removed: remove usage of Thread.onSpinWait. http://b/202837191
+                    // Thread.onSpinWait();
                     spins = shouldSpin(s) ? (spins - 1) : 0;
+                }
                 else if (s.waiter == null)
                     s.waiter = w; // establish waiter so can park next iter
                 else if (!timed)
@@ -514,13 +522,13 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
 
         // Unsafe mechanics
         private static final sun.misc.Unsafe U = sun.misc.Unsafe.getUnsafe();
-        private static final long HEAD;
+        private static final long SHEAD;
         static {
             try {
-                HEAD = U.objectFieldOffset
+                SHEAD = U.objectFieldOffset
                     (TransferStack.class.getDeclaredField("head"));
             } catch (ReflectiveOperationException e) {
-                throw new Error(e);
+                throw new ExceptionInInitializerError(e);
             }
         }
     }
@@ -553,19 +561,19 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
 
             boolean casNext(QNode cmp, QNode val) {
                 return next == cmp &&
-                    U.compareAndSwapObject(this, NEXT, cmp, val);
+                    U.compareAndSwapObject(this, QNEXT, cmp, val);
             }
 
             boolean casItem(Object cmp, Object val) {
                 return item == cmp &&
-                    U.compareAndSwapObject(this, ITEM, cmp, val);
+                    U.compareAndSwapObject(this, QITEM, cmp, val);
             }
 
             /**
              * Tries to cancel by CAS'ing ref to this as item.
              */
             void tryCancel(Object cmp) {
-                U.compareAndSwapObject(this, ITEM, cmp, CANCELLED);
+                U.compareAndSwapObject(this, QITEM, cmp, CANCELLED);
             }
 
             boolean isCancelled() {
@@ -583,17 +591,17 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
 
             // Unsafe mechanics
             private static final sun.misc.Unsafe U = sun.misc.Unsafe.getUnsafe();
-            private static final long ITEM;
-            private static final long NEXT;
+            private static final long QITEM;
+            private static final long QNEXT;
 
             static {
                 try {
-                    ITEM = U.objectFieldOffset
+                    QITEM = U.objectFieldOffset
                         (QNode.class.getDeclaredField("item"));
-                    NEXT = U.objectFieldOffset
+                    QNEXT = U.objectFieldOffset
                         (QNode.class.getDeclaredField("next"));
                 } catch (ReflectiveOperationException e) {
-                    throw new Error(e);
+                    throw new ExceptionInInitializerError(e);
                 }
             }
         }
@@ -621,7 +629,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
          */
         void advanceHead(QNode h, QNode nh) {
             if (h == head &&
-                U.compareAndSwapObject(this, HEAD, h, nh))
+                U.compareAndSwapObject(this, QHEAD, h, nh))
                 h.next = UNLINKED; // forget old next
         }
 
@@ -630,7 +638,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
          */
         void advanceTail(QNode t, QNode nt) {
             if (tail == t)
-                U.compareAndSwapObject(this, TAIL, t, nt);
+                U.compareAndSwapObject(this, QTAIL, t, nt);
         }
 
         /**
@@ -638,7 +646,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
          */
         boolean casCleanMe(QNode cmp, QNode val) {
             return cleanMe == cmp &&
-                U.compareAndSwapObject(this, CLEANME, cmp, val);
+                U.compareAndSwapObject(this, QCLEANME, cmp, val);
         }
 
         /**
@@ -759,8 +767,11 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                         continue;
                     }
                 }
-                if (spins > 0)
+                if (spins > 0) {
                     --spins;
+                    // Android-removed: remove usage of Thread.onSpinWait. http://b/202837191
+                    // Thread.onSpinWait();
+                }
                 else if (s.waiter == null)
                     s.waiter = w;
                 else if (!timed)
@@ -825,19 +836,19 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
         }
 
         private static final sun.misc.Unsafe U = sun.misc.Unsafe.getUnsafe();
-        private static final long HEAD;
-        private static final long TAIL;
-        private static final long CLEANME;
+        private static final long QHEAD;
+        private static final long QTAIL;
+        private static final long QCLEANME;
         static {
             try {
-                HEAD = U.objectFieldOffset
+                QHEAD = U.objectFieldOffset
                     (TransferQueue.class.getDeclaredField("head"));
-                TAIL = U.objectFieldOffset
+                QTAIL = U.objectFieldOffset
                     (TransferQueue.class.getDeclaredField("tail"));
-                CLEANME = U.objectFieldOffset
+                QCLEANME = U.objectFieldOffset
                     (TransferQueue.class.getDeclaredField("cleanMe"));
             } catch (ReflectiveOperationException e) {
-                throw new Error(e);
+                throw new ExceptionInInitializerError(e);
             }
         }
     }
@@ -1073,7 +1084,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
 
     /**
      * Returns an empty spliterator in which calls to
-     * {@link java.util.Spliterator#trySplit()} always return {@code null}.
+     * {@link Spliterator#trySplit() trySplit} always return {@code null}.
      *
      * @return an empty spliterator
      * @since 1.8
@@ -1119,15 +1130,12 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
      * @throws IllegalArgumentException      {@inheritDoc}
      */
     public int drainTo(Collection<? super E> c) {
-        if (c == null)
-            throw new NullPointerException();
+        Objects.requireNonNull(c);
         if (c == this)
             throw new IllegalArgumentException();
         int n = 0;
-        for (E e; (e = poll()) != null;) {
+        for (E e; (e = poll()) != null; n++)
             c.add(e);
-            ++n;
-        }
         return n;
     }
 
@@ -1138,15 +1146,12 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
      * @throws IllegalArgumentException      {@inheritDoc}
      */
     public int drainTo(Collection<? super E> c, int maxElements) {
-        if (c == null)
-            throw new NullPointerException();
+        Objects.requireNonNull(c);
         if (c == this)
             throw new IllegalArgumentException();
         int n = 0;
-        for (E e; n < maxElements && (e = poll()) != null;) {
+        for (E e; n < maxElements && (e = poll()) != null; n++)
             c.add(e);
-            ++n;
-        }
         return n;
     }
 

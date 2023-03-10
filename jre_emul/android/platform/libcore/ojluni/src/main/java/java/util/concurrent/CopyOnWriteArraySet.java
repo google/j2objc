@@ -45,13 +45,8 @@ import java.util.Spliterators;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-// BEGIN android-note
-// removed link to collections framework docs
-// fixed framework docs link to "Collection#optional"
-// END android-note
-
 /**
- * A {@link java.util.Set} that uses an internal {@link CopyOnWriteArrayList}
+ * A {@link Set} that uses an internal {@link CopyOnWriteArrayList}
  * for all of its operations.  Thus, it shares the same basic properties:
  * <ul>
  *  <li>It is best suited for applications in which set sizes generally
@@ -90,6 +85,10 @@ import java.util.function.Predicate;
  *       handler.handle();
  *   }
  * }}</pre>
+ *
+ * <p>This class is a member of the
+ * <a href="{@docRoot}/java.base/java/util/package-summary.html#CollectionsFramework">
+ * Java Collections Framework</a>.
  *
  * @see CopyOnWriteArrayList
  * @since 1.5
@@ -341,10 +340,10 @@ public class CopyOnWriteArraySet<E> extends AbstractSet<E>
      * @return {@code true} if this set changed as a result of the call
      * @throws ClassCastException if the class of an element of this set
      *         is incompatible with the specified collection
-     * (<a href="../Collection.html#optional-restrictions">optional</a>)
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
      * @throws NullPointerException if this set contains a null element and the
      *         specified collection does not permit null elements
-     * (<a href="../Collection.html#optional-restrictions">optional</a>),
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>),
      *         or if the specified collection is null
      * @see #remove(Object)
      */
@@ -364,10 +363,10 @@ public class CopyOnWriteArraySet<E> extends AbstractSet<E>
      * @return {@code true} if this set changed as a result of the call
      * @throws ClassCastException if the class of an element of this set
      *         is incompatible with the specified collection
-     * (<a href="../Collection.html#optional-restrictions">optional</a>)
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>)
      * @throws NullPointerException if this set contains a null element and the
      *         specified collection does not permit null elements
-     * (<a href="../Collection.html#optional-restrictions">optional</a>),
+     * (<a href="{@docRoot}/java.base/java/util/Collection.html#optional-restrictions">optional</a>),
      *         or if the specified collection is null
      * @see #remove(Object)
      */
@@ -412,10 +411,16 @@ public class CopyOnWriteArraySet<E> extends AbstractSet<E>
                 && compareSets(al.getArray(), (Set<?>) o) == 0);
     }
 
+    /**
+     * @throws NullPointerException {@inheritDoc}
+     */
     public boolean removeIf(Predicate<? super E> filter) {
         return al.removeIf(filter);
     }
 
+    /**
+     * @throws NullPointerException {@inheritDoc}
+     */
     public void forEach(Consumer<? super E> action) {
         al.forEach(action);
     }

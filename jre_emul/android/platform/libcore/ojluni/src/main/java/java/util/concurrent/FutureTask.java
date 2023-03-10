@@ -35,6 +35,11 @@
 
 package java.util.concurrent;
 
+/* J2Objc removed.
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+*/
+
 import java.util.concurrent.locks.LockSupport;
 
 /**
@@ -69,9 +74,6 @@ public class FutureTask<V> implements RunnableFuture<V> {
      * cancellation races. Sync control in the current design relies
      * on a "state" field updated via CAS to track completion, along
      * with a simple Treiber stack to hold waiting threads.
-     *
-     * Style note: As usual, we bypass overhead of using
-     * AtomicXFieldUpdaters and instead directly use Unsafe intrinsics.
      */
 
     /**
@@ -500,7 +502,7 @@ public class FutureTask<V> implements RunnableFuture<V> {
             WAITERS = U.objectFieldOffset
                 (FutureTask.class.getDeclaredField("waiters"));
         } catch (ReflectiveOperationException e) {
-            throw new Error(e);
+            throw new ExceptionInInitializerError(e);
         }
 
         // Reduce the risk of rare disastrous classloading in first call to

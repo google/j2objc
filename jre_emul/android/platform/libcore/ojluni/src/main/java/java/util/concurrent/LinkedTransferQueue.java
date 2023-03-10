@@ -35,20 +35,23 @@
 
 package java.util.concurrent;
 
+/* J2Objc removed.
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.util.function.Predicate;
+*/
+
 import java.util.AbstractQueue;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.concurrent.locks.LockSupport;
 import java.util.function.Consumer;
-
-// BEGIN android-note
-// removed link to collections framework docs
-// END android-note
 
 /**
  * An unbounded {@link TransferQueue} based on linked nodes.
@@ -63,16 +66,15 @@ import java.util.function.Consumer;
  * asynchronous nature of these queues, determining the current number
  * of elements requires a traversal of the elements, and so may report
  * inaccurate results if this collection is modified during traversal.
- * Additionally, the bulk operations {@code addAll},
- * {@code removeAll}, {@code retainAll}, {@code containsAll},
- * {@code equals}, and {@code toArray} are <em>not</em> guaranteed
- * to be performed atomically. For example, an iterator operating
- * concurrently with an {@code addAll} operation might view only some
- * of the added elements.
  *
- * <p>This class and its iterator implement all of the
- * <em>optional</em> methods of the {@link Collection} and {@link
- * Iterator} interfaces.
+ * <p>Bulk operations that add, remove, or examine multiple elements,
+ * such as {@link #addAll}, {@link #removeIf} or {@link #forEach},
+ * are <em>not</em> guaranteed to be performed atomically.
+ * For example, a {@code forEach} traversal concurrent with an {@code
+ * addAll} operation might observe only some of the added elements.
+ *
+ * <p>This class and its iterator implement all of the <em>optional</em>
+ * methods of the {@link Collection} and {@link Iterator} interfaces.
  *
  * <p>Memory consistency effects: As with other concurrent
  * collections, actions in a thread prior to placing an object into a
@@ -80,6 +82,10 @@ import java.util.function.Consumer;
  * <a href="package-summary.html#MemoryVisibility"><i>happen-before</i></a>
  * actions subsequent to the access or removal of that element from
  * the {@code LinkedTransferQueue} in another thread.
+ *
+ * <p>This class is a member of the
+ * <a href="{@docRoot}/java.base/java/util/package-summary.html#CollectionsFramework">
+ * Java Collections Framework</a>.
  *
  * @since 1.7
  * @author Doug Lea
@@ -93,8 +99,8 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * *** Overview of Dual Queues with Slack ***
      *
      * Dual Queues, introduced by Scherer and Scott
-     * (http://www.cs.rice.edu/~wns1/papers/2004-DISC-DDS.pdf) are
-     * (linked) queues in which nodes may represent either data or
+     * (http://www.cs.rochester.edu/~scott/papers/2004_DISC_dual_DS.pdf)
+     * are (linked) queues in which nodes may represent either data or
      * requests.  When a thread tries to enqueue a data node, but
      * encounters a request node, it instead "matches" and removes it;
      * and vice versa for enqueuing requests. Blocking Dual Queues
@@ -156,9 +162,8 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * correctly perform enqueue and dequeue operations by traversing
      * from a pointer to the initial node; CASing the item of the
      * first unmatched node on match and CASing the next field of the
-     * trailing node on appends. (Plus some special-casing when
-     * initially empty).  While this would be a terrible idea in
-     * itself, it does have the benefit of not requiring ANY atomic
+     * trailing node on appends.  While this would be a terrible idea
+     * in itself, it does have the benefit of not requiring ANY atomic
      * updates on head/tail fields.
      *
      * We introduce here an approach that lies between the extremes of
@@ -194,15 +199,15 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * with a given probability per traversal step.
      *
      * In any strategy along these lines, because CASes updating
-     * fields may fail, the actual slack may exceed targeted
-     * slack. However, they may be retried at any time to maintain
-     * targets.  Even when using very small slack values, this
-     * approach works well for dual queues because it allows all
-     * operations up to the point of matching or appending an item
-     * (hence potentially allowing progress by another thread) to be
-     * read-only, thus not introducing any further contention. As
-     * described below, we implement this by performing slack
-     * maintenance retries only after these points.
+     * fields may fail, the actual slack may exceed targeted slack.
+     * However, they may be retried at any time to maintain targets.
+     * Even when using very small slack values, this approach works
+     * well for dual queues because it allows all operations up to the
+     * point of matching or appending an item (hence potentially
+     * allowing progress by another thread) to be read-only, thus not
+     * introducing any further contention.  As described below, we
+     * implement this by performing slack maintenance retries only
+     * after these points.
      *
      * As an accompaniment to such techniques, traversal overhead can
      * be further reduced without increasing contention of head
@@ -221,7 +226,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * (Similar issues arise in non-GC environments.)  To cope with
      * this in our implementation, upon CASing to advance the head
      * pointer, we set the "next" link of the previous head to point
-     * only to itself; thus limiting the length of connected dead lists.
+     * only to itself; thus limiting the length of chains of dead nodes.
      * (We also take similar care to wipe out possibly garbage
      * retaining values held in other Node fields.)  However, doing so
      * adds some further complexity to traversal: If any "next"
@@ -264,15 +269,6 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * interior nodes) except in the case of cancellation/removal (see
      * below).
      *
-     * We allow both the head and tail fields to be null before any
-     * nodes are enqueued; initializing upon first append.  This
-     * simplifies some other logic, as well as providing more
-     * efficient explicit control paths instead of letting JVMs insert
-     * implicit NullPointerExceptions when they are null.  While not
-     * currently fully implemented, we also leave open the possibility
-     * of re-nulling these fields when empty (which is complicated to
-     * arrange, for little benefit.)
-     *
      * All enqueue/dequeue operations are handled by the single method
      * "xfer" with parameters indicating whether to act as some form
      * of offer, put, poll, take, or transfer (each possibly with
@@ -280,44 +276,40 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * method outweighs the code bulk and maintenance problems of
      * using separate methods for each case.
      *
-     * Operation consists of up to three phases. The first is
-     * implemented within method xfer, the second in tryAppend, and
-     * the third in method awaitMatch.
+     * Operation consists of up to two phases. The first is implemented
+     * in method xfer, the second in method awaitMatch.
      *
-     * 1. Try to match an existing node
+     * 1. Traverse until matching or appending (method xfer)
      *
-     *    Starting at head, skip already-matched nodes until finding
-     *    an unmatched node of opposite mode, if one exists, in which
-     *    case matching it and returning, also if necessary updating
-     *    head to one past the matched node (or the node itself if the
-     *    list has no other unmatched nodes). If the CAS misses, then
-     *    a loop retries advancing head by two steps until either
-     *    success or the slack is at most two. By requiring that each
-     *    attempt advances head by two (if applicable), we ensure that
-     *    the slack does not grow without bound. Traversals also check
-     *    if the initial head is now off-list, in which case they
-     *    start at the new head.
+     *    Conceptually, we simply traverse all nodes starting from head.
+     *    If we encounter an unmatched node of opposite mode, we match
+     *    it and return, also updating head (by at least 2 hops) to
+     *    one past the matched node (or the node itself if it's the
+     *    pinned trailing node).  Traversals also check for the
+     *    possibility of falling off-list, in which case they restart.
      *
-     *    If no candidates are found and the call was untimed
-     *    poll/offer, (argument "how" is NOW) return.
+     *    If the trailing node of the list is reached, a match is not
+     *    possible.  If this call was untimed poll or tryTransfer
+     *    (argument "how" is NOW), return empty-handed immediately.
+     *    Else a new node is CAS-appended.  On successful append, if
+     *    this call was ASYNC (e.g. offer), an element was
+     *    successfully added to the end of the queue and we return.
      *
-     * 2. Try to append a new node (method tryAppend)
+     *    Of course, this naive traversal is O(n) when no match is
+     *    possible.  We optimize the traversal by maintaining a tail
+     *    pointer, which is expected to be "near" the end of the list.
+     *    It is only safe to fast-forward to tail (in the presence of
+     *    arbitrary concurrent changes) if it is pointing to a node of
+     *    the same mode, even if it is dead (in this case no preceding
+     *    node could still be matchable by this traversal).  If we
+     *    need to restart due to falling off-list, we can again
+     *    fast-forward to tail, but only if it has changed since the
+     *    last traversal (else we might loop forever).  If tail cannot
+     *    be used, traversal starts at head (but in this case we
+     *    expect to be able to match near head).  As with head, we
+     *    CAS-advance the tail pointer by at least two hops.
      *
-     *    Starting at current tail pointer, find the actual last node
-     *    and try to append a new node (or if head was null, establish
-     *    the first node). Nodes can be appended only if their
-     *    predecessors are either already matched or are of the same
-     *    mode. If we detect otherwise, then a new node with opposite
-     *    mode must have been appended during traversal, so we must
-     *    restart at phase 1. The traversal and update steps are
-     *    otherwise similar to phase 1: Retrying upon CAS misses and
-     *    checking for staleness.  In particular, if a self-link is
-     *    encountered, then we can safely jump to a node on the list
-     *    by continuing the traversal at current head.
-     *
-     *    On successful append, if the call was ASYNC, return.
-     *
-     * 3. Await match or cancellation (method awaitMatch)
+     * 2. Await match or cancellation (method awaitMatch)
      *
      *    Wait for another thread to match node; instead cancelling if
      *    the current thread was interrupted or the wait timed out. On
@@ -371,12 +363,12 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * from, the head of list.
      *
      * Without taking these into account, it would be possible for an
-     * unbounded number of supposedly removed nodes to remain
-     * reachable.  Situations leading to such buildup are uncommon but
-     * can occur in practice; for example when a series of short timed
-     * calls to poll repeatedly time out but never otherwise fall off
-     * the list because of an untimed call to take at the front of the
-     * queue.
+     * unbounded number of supposedly removed nodes to remain reachable.
+     * Situations leading to such buildup are uncommon but can occur
+     * in practice; for example when a series of short timed calls to
+     * poll repeatedly time out at the trailing node but otherwise
+     * never fall off the list because of an untimed call to take() at
+     * the front of the queue.
      *
      * When these cases arise, rather than always retraversing the
      * entire list to find an actual predecessor to unlink (which
@@ -389,10 +381,9 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * We perform sweeps by the thread hitting threshold (rather than
      * background threads or by spreading work to other threads)
      * because in the main contexts in which removal occurs, the
-     * caller is already timed-out, cancelled, or performing a
-     * potentially O(n) operation (e.g. remove(x)), none of which are
-     * time-critical enough to warrant the overhead that alternatives
-     * would impose on other threads.
+     * caller is timed-out or cancelled, which are not time-critical
+     * enough to warrant the overhead that alternatives would impose
+     * on other threads.
      *
      * Because the sweepVotes estimate is conservative, and because
      * nodes become unlinked "naturally" as they fall off the head of
@@ -403,6 +394,13 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * providing a worst-case bound on retention of interior nodes in
      * quiescent queues. The value defined below was chosen
      * empirically to balance these under various timeout scenarios.
+     *
+     * Because traversal operations on the linked list of nodes are a
+     * natural opportunity to sweep dead nodes, we generally do so,
+     * including all the operations that might remove elements as they
+     * traverse, such as removeIf and Iterator.remove.  This largely
+     * eliminates long chains of dead interior nodes, except from
+     * cancelled or timed out blocking operations.
      *
      * Note that we cannot self-link unlinked interior nodes during
      * sweeps. However, the associated garbage chains terminate when
@@ -447,17 +445,21 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
 
     /**
      * Queue nodes. Uses Object, not E, for items to allow forgetting
-     * them after use.  Relies heavily on Unsafe mechanics to minimize
-     * unnecessary ordering constraints: Writes that are intrinsically
-     * ordered wrt other accesses or CASes use simple relaxed forms.
+     * them after use.  Writes that are intrinsically ordered wrt
+     * other accesses or CASes use simple relaxed forms.
      */
     static final class Node {
         final boolean isData;   // false if this is a request node
         volatile Object item;   // initially non-null if isData; CASed to match
         volatile Node next;
-        volatile Thread waiter; // null until waiting
+        volatile Thread waiter; // null when not waiting for a match
 
-        // CAS methods for fields
+
+        /** Constructs a (matched data) dummy node. */
+        Node() {
+            isData = true;
+        }
+
         final boolean casNext(Node cmp, Node val) {
             return U.compareAndSwapObject(this, NEXT, cmp, val);
         }
@@ -485,13 +487,14 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
         }
 
         /**
-         * Sets item to self and waiter to null, to avoid garbage
-         * retention after matching or cancelling. Uses relaxed writes
-         * because order is already constrained in the only calling
-         * contexts: item is forgotten only after volatile/atomic
-         * mechanics that extract items.  Similarly, clearing waiter
-         * follows either CAS or return from park (if ever parked;
-         * else we don't care).
+         * Sets item (of a request node) to self and waiter to null,
+         * to avoid garbage retention after matching or cancelling.
+         * Uses relaxed writes because order is already constrained in
+         * the only calling contexts: item is forgotten only after
+         * volatile/atomic mechanics that extract items, and visitors
+         * of request nodes only ever check whether item is null.
+         * Similarly, clearing waiter follows either CAS or return
+         * from park (if ever parked; else we don't care).
          */
         final void forgetContents() {
             U.putObject(this, ITEM, FORGOTTEN);
@@ -507,11 +510,13 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
             return (x == FORGOTTEN) || ((x == null) == isData);
         }
 
-        /**
-         * Returns true if this is an unmatched request node.
-         */
-        final boolean isUnmatchedRequest() {
-            return !isData && item == null;
+        /** Tries to CAS-match this node; if successful, wakes waiter. */
+        final boolean tryMatch(Object cmp, Object val) {
+            if (casItem(cmp, val)) {
+                LockSupport.unpark(waiter);
+                return true;
+            }
+            return false;
         }
 
         /**
@@ -559,16 +564,37 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
         }
     }
 
-    /** head of the queue; null until first enqueue */
+    /**
+     * A node from which the first live (non-matched) node (if any)
+     * can be reached in O(1) time.
+     * Invariants:
+     * - all live nodes are reachable from head via .next
+     * - head != null
+     * - (tmp = head).next != tmp || tmp != head
+     * Non-invariants:
+     * - head may or may not be live
+     * - it is permitted for tail to lag behind head, that is, for tail
+     *   to not be reachable from head!
+     */
     transient volatile Node head;
 
-    /** tail of the queue; null until first append */
+    /**
+     * A node from which the last node on list (that is, the unique
+     * node with node.next == null) can be reached in O(1) time.
+     * Invariants:
+     * - the last node is always reachable from tail via .next
+     * - tail != null
+     * Non-invariants:
+     * - tail may or may not be live
+     * - it is permitted for tail to lag behind head, that is, for tail
+     *   to not be reachable from head!
+     * - tail.next may or may not be self-linked.
+     */
     private transient volatile Node tail;
 
-    /** The number of apparent failures to unsplice removed nodes */
+    /** The number of apparent failures to unsplice cancelled nodes */
     private transient volatile int sweepVotes;
 
-    // CAS methods for fields
     private boolean casTail(Node cmp, Node val) {
         return U.compareAndSwapObject(this, TAIL, cmp, val);
     }
@@ -581,9 +607,8 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
         return U.compareAndSwapInt(this, SWEEPVOTES, cmp, val);
     }
 
-    /*
-     * Possible values for "how" argument in xfer method.
-     */
+    /* Possible values for "how" argument in xfer method. */
+
     private static final int NOW   = 0; // for untimed poll, tryTransfer
     private static final int ASYNC = 1; // for offer, put, add
     private static final int SYNC  = 2; // for transfer, take
@@ -599,6 +624,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * @return an item if matched, else e
      * @throws NullPointerException if haveData mode but e is null
      */
+    @SuppressWarnings("unchecked")
     private E xfer(E e, boolean haveData, int how, long nanos) {
         if (haveData && (e == null))
             throw new NullPointerException();
@@ -685,9 +711,9 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * Spins/yields/blocks until node s is matched or caller gives up.
      *
      * @param s the waiting node
-     * @param pred the predecessor of s, or s itself if it has no
-     * predecessor, or null if unknown (the null case does not occur
-     * in any current calls but may in possible future extensions)
+     * @param pred the predecessor of s, or null if unknown (the null
+     * case does not occur in any current calls but may in possible
+     * future extensions)
      * @param e the comparison value for checking match
      * @param timed if true, wait only until timeout elapses
      * @param nanos timeout in nanosecs, used only if timed is true
@@ -700,8 +726,8 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
         ThreadLocalRandom randomYields = null; // bound if needed
 
         for (;;) {
-            Object item = s.item;
-            if (item != e) {                  // matched
+            final Object item;
+            if ((item = s.item) != e) {       // matched
                 // assert item != s;
                 s.forgetContents();           // avoid garbage
                 @SuppressWarnings("unchecked") E itemE = (E) item;
@@ -765,8 +791,8 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
 
     /**
      * Returns the first unmatched data node, or null if none.
-     * Callers must recheck if the returned node's item field is null
-     * or self-linked before using.
+     * Callers must recheck if the returned node is unmatched
+     * before using.
      */
     final Node firstDataNode() {
         restartFromHead: for (;;) {
@@ -922,10 +948,16 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      */
     @SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] a) {
-        if (a == null) throw new NullPointerException();
+        Objects.requireNonNull(a);
         return (T[]) toArrayInternal(a);
     }
 
+    /**
+     * Weakly-consistent iterator.
+     *
+     * Lazily updated ancestor is expected to be amortized O(1) remove(),
+     * but O(n) in the worst case, when lastRet is concurrently deleted.
+     */
     final class Itr implements Iterator<E> {
         private Node nextNode;   // next node to return item for
         private E nextItem;      // the corresponding item
@@ -933,7 +965,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
         private Node lastPred;   // predecessor to unlink lastRet
 
         /**
-         * Moves to next node after prev, or first node if prev null.
+         * Moves to next node after pred, or first node if pred null.
          */
         private void advance(Node prev) {
             /*
@@ -1003,11 +1035,20 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
         }
 
         public final E next() {
-            Node p = nextNode;
-            if (p == null) throw new NoSuchElementException();
+            final Node p;
+            if ((p = nextNode) == null) throw new NoSuchElementException();
             E e = nextItem;
-            advance(p);
+            advance(lastRet = p);
             return e;
+        }
+
+        public void forEachRemaining(Consumer<? super E> action) {
+            Objects.requireNonNull(action);
+            Node q = null;
+            for (Node p; (p = nextNode) != null; advance(q = p))
+                action.accept(nextItem);
+            if (q != null)
+                lastRet = q;
         }
 
         public final void remove() {
@@ -1097,11 +1138,24 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
             return false;
         }
 
+        private void setCurrent(Node p) {
+            if ((current = p) == null)
+                exhausted = true;
+        }
+
+        private Node current() {
+            Node p;
+            if ((p = current) == null && !exhausted)
+                setCurrent(p = firstDataNode());
+            return p;
+        }
+
         public long estimateSize() { return Long.MAX_VALUE; }
 
         public int characteristics() {
-            return Spliterator.ORDERED | Spliterator.NONNULL |
-                Spliterator.CONCURRENT;
+            return (Spliterator.ORDERED |
+                    Spliterator.NONNULL |
+                    Spliterator.CONCURRENT);
         }
     }
 
@@ -1132,10 +1186,15 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * the given predecessor.
      *
      * @param pred a node that was at one time known to be the
-     * predecessor of s, or null or s itself if s is/was at head
+     * predecessor of s
      * @param s the node to be unspliced
      */
     final void unsplice(Node pred, Node s) {
+        // assert pred != null;
+        // assert pred != s;
+        // assert s != null;
+        // assert s.isMatched();
+        // assert (SWEEP_THRESHOLD & (SWEEP_THRESHOLD - 1)) == 0;
         s.waiter = null; // disable signals
         /*
          * See above for rationale. Briefly: if pred still points to
@@ -1258,8 +1317,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * return {@code false}.
      *
      * @return {@code true} (as specified by
-     *  {@link java.util.concurrent.BlockingQueue#offer(Object,long,TimeUnit)
-     *  BlockingQueue.offer})
+     *  {@link BlockingQueue#offer(Object,long,TimeUnit) BlockingQueue.offer})
      * @throws NullPointerException if the specified element is null
      */
     public boolean offer(E e, long timeout, TimeUnit unit) {
@@ -1371,15 +1429,12 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * @throws IllegalArgumentException {@inheritDoc}
      */
     public int drainTo(Collection<? super E> c) {
-        if (c == null)
-            throw new NullPointerException();
+        Objects.requireNonNull(c);
         if (c == this)
             throw new IllegalArgumentException();
         int n = 0;
-        for (E e; (e = poll()) != null;) {
+        for (E e; (e = poll()) != null; n++)
             c.add(e);
-            ++n;
-        }
         return n;
     }
 
@@ -1388,15 +1443,12 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * @throws IllegalArgumentException {@inheritDoc}
      */
     public int drainTo(Collection<? super E> c, int maxElements) {
-        if (c == null)
-            throw new NullPointerException();
+        Objects.requireNonNull(c);
         if (c == this)
             throw new IllegalArgumentException();
         int n = 0;
-        for (E e; n < maxElements && (e = poll()) != null;) {
+        for (E e; n < maxElements && (e = poll()) != null; n++)
             c.add(e);
-            ++n;
-        }
         return n;
     }
 
@@ -1521,8 +1573,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * {@code LinkedTransferQueue} is not capacity constrained.
      *
      * @return {@code Integer.MAX_VALUE} (as specified by
-     *         {@link java.util.concurrent.BlockingQueue#remainingCapacity()
-     *         BlockingQueue.remainingCapacity})
+     *         {@link BlockingQueue#remainingCapacity()})
      */
     public int remainingCapacity() {
         return Integer.MAX_VALUE;
@@ -1565,8 +1616,6 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
         }
     }
 
-    // Unsafe mechanics
-
     private static final sun.misc.Unsafe U = sun.misc.Unsafe.getUnsafe();
     private static final long HEAD;
     private static final long TAIL;
@@ -1580,7 +1629,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
             SWEEPVOTES = U.objectFieldOffset
                 (LinkedTransferQueue.class.getDeclaredField("sweepVotes"));
         } catch (ReflectiveOperationException e) {
-            throw new Error(e);
+            throw new ExceptionInInitializerError(e);
         }
 
         // Reduce the risk of rare disastrous classloading in first call to
