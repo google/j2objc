@@ -377,7 +377,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   }
   for (int i = 0; i < descriptor_->oneof_decl_count(); i++) {
     const OneofDescriptor* oneof = descriptor_->oneof_decl(i);
-    if (oneof->is_synthetic()) {
+    if (oneof->field_count() == 1) {
       field_generators_.get(oneof->field(0)).GenerateDeclaration(printer);
     } else {
       printer->Print("union {\n");

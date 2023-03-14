@@ -283,8 +283,7 @@ void FieldGenerator::GenerateStaticRefs(io::Printer *printer) const {
 SingleFieldGenerator::SingleFieldGenerator(
     const FieldDescriptor *descriptor, uint32_t *numHasBits)
   : FieldGenerator(descriptor) {
-  if (descriptor->containing_oneof() == nullptr ||
-      descriptor->containing_oneof()->is_synthetic()) {
+  if (descriptor->real_containing_oneof() == nullptr) {
     variables_["has_bit_index"] = SimpleItoa((*numHasBits)++);
   }
 }
