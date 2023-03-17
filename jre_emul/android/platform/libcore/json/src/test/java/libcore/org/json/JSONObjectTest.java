@@ -50,6 +50,7 @@ public class JSONObjectTest extends TestCase {
 ]-*/
 
     public void testEmptyObject() throws JSONException {
+        fail();
         JSONObject object = new JSONObject();
         assertEquals(0, object.length());
 
