@@ -358,7 +358,6 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
     data_ = data;
     tag_ = TagFromData(data);
     javaType_ = [GetTypeObj(data->type)->javaType_ ordinal];
-    fieldOptions_ = InitFieldOptions(data->optionsData);
     containingType_ = containingType;
     CGPFieldFixDefaultValue(self);
   }
@@ -424,6 +423,9 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
 
 - (ComGoogleProtobufDescriptorProtos_FieldOptions *)getOptions {
   if (fieldOptions_ != nil) {
+    return fieldOptions_;
+  } else if (data_->optionsData != NULL) {
+    fieldOptions_ = InitFieldOptions(data_->optionsData);
     return fieldOptions_;
   } else {
     return [ComGoogleProtobufDescriptorProtos_FieldOptions getDefaultInstance];
