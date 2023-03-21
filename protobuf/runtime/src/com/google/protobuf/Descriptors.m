@@ -358,7 +358,11 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
     data_ = data;
     tag_ = TagFromData(data);
     javaType_ = [GetTypeObj(data->type)->javaType_ ordinal];
-    fieldOptions_ = InitFieldOptions(data->optionsData);
+    // TODO(b/274513881) Properly implement field options on field options.  Until then, skip
+    // parsing nested field options instead to avoid crashing.
+    if(containingType != [ComGoogleProtobufDescriptorProtos_FieldOptions getDescriptor]) {
+      fieldOptions_ = InitFieldOptions(data->optionsData);
+    }
     containingType_ = containingType;
     CGPFieldFixDefaultValue(self);
   }
