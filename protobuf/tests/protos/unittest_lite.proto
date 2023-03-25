@@ -449,7 +449,10 @@ message TestHugeFieldNumbersLite {
     bytes oneof_bytes = 536870014;
   }
 
-  extensions 536860000 to 536869999;
+  extensions 536860000 [metadata = {
+    full_name: ".protobuf_unittest.test_all_types_lite"
+    type: ".protobuf_unittest.TestAllTypesLite"
+  }];
 }
 
 extend TestHugeFieldNumbersLite {
