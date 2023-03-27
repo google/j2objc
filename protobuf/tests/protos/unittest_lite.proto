@@ -321,8 +321,7 @@ extend TestAllExtensionsLite {
       [ctype = STRING_PIECE, default = "abc"];
   // TODO(b/273349148): ctype=CORD is not supported for extension. Add
   // ctype=CORD option back after it is supported.
-  optional string default_cord_extension_lite = 85
-      [default = "123"];
+  optional string default_cord_extension_lite = 85 [default = "123"];
 
   // For oneof test
   optional uint32 oneof_uint32_extension_lite = 111;
@@ -408,7 +407,9 @@ message TestEmptyMessageWithExtensionsLite {
   extensions 1 to max;
 }
 
-enum V1EnumLite { V1_FIRST = 1; }
+enum V1EnumLite {
+  V1_FIRST = 1;
+}
 
 enum V2EnumLite {
   V2_FIRST = 1;
@@ -449,7 +450,11 @@ message TestHugeFieldNumbersLite {
     bytes oneof_bytes = 536870014;
   }
 
-  extensions 536860000 to 536869999;
+  extensions 536860000 to 536869999 [declaration = {
+    number: 536860000
+    full_name: ".protobuf_unittest.test_all_types_lite"
+    type: ".protobuf_unittest.TestAllTypesLite"
+  }];
 }
 
 extend TestHugeFieldNumbersLite {
