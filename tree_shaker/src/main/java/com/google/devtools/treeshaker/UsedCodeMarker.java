@@ -392,7 +392,9 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   private void visitAnnotation(Annotation node) {
     // A reference to an annotation implicitly constructs an instance of that annotation.
-    addPseudoConstructorInvocation(node.getTypeMirror());
+    if (ElementUtil.isRuntimeAnnotation(node.getAnnotationMirror())) {
+      addPseudoConstructorInvocation(node.getTypeMirror());
+    }
   }
 
   private Integer getTypeId(String typeName) {
