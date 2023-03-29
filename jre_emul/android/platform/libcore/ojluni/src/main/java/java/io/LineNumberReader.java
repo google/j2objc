@@ -34,17 +34,17 @@ package java.io;
  *
  * <p> By default, line numbering begins at 0. This number increments at every
  * <a href="#lt">line terminator</a> as the data is read, and can be changed
- * with a call to <tt>setLineNumber(int)</tt>.  Note however, that
- * <tt>setLineNumber(int)</tt> does not actually change the current position in
+ * with a call to {@code setLineNumber(int)}.  Note however, that
+ * {@code setLineNumber(int)} does not actually change the current position in
  * the stream; it only changes the value that will be returned by
- * <tt>getLineNumber()</tt>.
+ * {@code getLineNumber()}.
  *
- * <p> A line is considered to be <a name="lt">terminated</a> by any one of a
+ * <p> A line is considered to be <a id="lt">terminated</a> by any one of a
  * line feed ('\n'), a carriage return ('\r'), or a carriage return followed
  * immediately by a linefeed.
  *
  * @author      Mark Reinhold
- * @since       JDK1.1
+ * @since       1.1
  */
 
 public class LineNumberReader extends BufferedReader {
@@ -159,6 +159,8 @@ public class LineNumberReader extends BufferedReader {
      *
      * @throws  IOException
      *          If an I/O error occurs
+     *
+     * @throws  IndexOutOfBoundsException {@inheritDoc}
      */
     @SuppressWarnings("fallthrough")
     public int read(char cbuf[], int off, int len) throws IOException {
@@ -191,7 +193,7 @@ public class LineNumberReader extends BufferedReader {
      *
      * @return  A String containing the contents of the line, not including
      *          any <a href="#lt">line termination characters</a>, or
-     *          <tt>null</tt> if the end of the stream has been reached
+     *          {@code null} if the end of the stream has been reached
      *
      * @throws  IOException
      *          If an I/O error occurs
@@ -224,7 +226,7 @@ public class LineNumberReader extends BufferedReader {
      *          If an I/O error occurs
      *
      * @throws  IllegalArgumentException
-     *          If <tt>n</tt> is negative
+     *          If {@code n} is negative
      */
     public long skip(long n) throws IOException {
         if (n < 0)
@@ -259,6 +261,11 @@ public class LineNumberReader extends BufferedReader {
      */
     public void mark(int readAheadLimit) throws IOException {
         synchronized (lock) {
+            // If the most recently read character is '\r', then increment the
+            // read ahead limit as in this case if the next character is '\n',
+            // two characters would actually be read by the next read().
+            if (skipLF)
+                readAheadLimit++;
             super.mark(readAheadLimit);
             markedLineNumber = lineNumber;
             markedSkipLF     = skipLF;

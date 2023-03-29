@@ -65,7 +65,7 @@ import java.util.stream.StreamSupport;
  * @see java.nio.file.Files#newBufferedReader
  *
  * @author      Mark Reinhold
- * @since       JDK1.1
+ * @since       1.1
  */
 
 public class BufferedReader extends Reader {
@@ -283,6 +283,7 @@ public class BufferedReader extends Reader {
      *             stream has been reached
      *
      * @exception  IOException  If an I/O error occurs
+     * @exception  IndexOutOfBoundsException {@inheritDoc}
      */
     public int read(char cbuf[], int off, int len) throws IOException {
         synchronized (lock) {
@@ -307,21 +308,22 @@ public class BufferedReader extends Reader {
 
     /**
      * Reads a line of text.  A line is considered to be terminated by any one
-     * of a line feed ('\n'), a carriage return ('\r'), or a carriage return
-     * followed immediately by a linefeed.
+     * of a line feed ('\n'), a carriage return ('\r'), a carriage return
+     * followed immediately by a line feed, or by reaching the end-of-file
+     * (EOF).
      *
      * @param      ignoreLF  If true, the next '\n' will be skipped
      *
      * @return     A String containing the contents of the line, not including
      *             any line-termination characters, or null if the end of the
-     *             stream has been reached
+     *             stream has been reached without reading any characters
      *
      * @see        java.io.LineNumberReader#readLine()
      *
      * @exception  IOException  If an I/O error occurs
      */
     String readLine(boolean ignoreLF) throws IOException {
-        StringBuffer s = null;
+        StringBuilder s = null;
         int startChar;
 
         synchronized (lock) {
@@ -378,7 +380,7 @@ public class BufferedReader extends Reader {
                 }
 
                 if (s == null)
-                    s = new StringBuffer(defaultExpectedLineLength);
+                    s = new StringBuilder(defaultExpectedLineLength);
                 s.append(cb, startChar, i - startChar);
             }
         }
@@ -386,12 +388,13 @@ public class BufferedReader extends Reader {
 
     /**
      * Reads a line of text.  A line is considered to be terminated by any one
-     * of a line feed ('\n'), a carriage return ('\r'), or a carriage return
-     * followed immediately by a linefeed.
+     * of a line feed ('\n'), a carriage return ('\r'), a carriage return
+     * followed immediately by a line feed, or by reaching the end-of-file
+     * (EOF).
      *
      * @return     A String containing the contents of the line, not including
      *             any line-termination characters, or null if the end of the
-     *             stream has been reached
+     *             stream has been reached without reading any characters
      *
      * @exception  IOException  If an I/O error occurs
      *
@@ -571,7 +574,7 @@ public class BufferedReader extends Reader {
      * @since 1.8
      */
     public Stream<String> lines() {
-        Iterator<String> iter = new Iterator<String>() {
+        Iterator<String> iter = new Iterator<>() {
             String nextLine = null;
 
             @Override

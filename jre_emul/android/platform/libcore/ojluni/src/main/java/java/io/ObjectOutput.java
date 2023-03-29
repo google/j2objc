@@ -1,94 +1,90 @@
 /*
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
+ * Copyright (c) 1996, 2010, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package java.io;
 
 /**
- * Defines an interface for classes that allow reading serialized objects.
+ * ObjectOutput extends the DataOutput interface to include writing of objects.
+ * DataOutput includes methods for output of primitive types, ObjectOutput
+ * extends that interface to include objects, arrays, and Strings.
  *
- * @see ObjectOutputStream
- * @see ObjectInput
+ * @author  unascribed
+ * @see java.io.InputStream
+ * @see java.io.ObjectOutputStream
+ * @see java.io.ObjectInputStream
+ * @since   1.1
  */
 public interface ObjectOutput extends DataOutput, AutoCloseable {
     /**
-     * Closes the target stream. Implementations of this method should free any
-     * resources used by the stream.
+     * Write an object to the underlying storage or stream.  The
+     * class that implements this interface defines how the object is
+     * written.
      *
-     * @throws IOException
-     *             if an error occurs while closing the target stream.
+     * @param obj the object to be written
+     * @exception IOException Any of the usual Input/Output related exceptions.
      */
-    public void close() throws IOException;
+    public void writeObject(Object obj)
+      throws IOException;
 
     /**
-     * Flushes the target stream. Implementations of this method should ensure
-     * that any pending writes are written out to the target stream.
-     *
-     * @throws IOException
-     *             if an error occurs while flushing the target stream.
+     * Writes a byte. This method will block until the byte is actually
+     * written.
+     * @param b the byte
+     * @exception IOException If an I/O error has occurred.
+     */
+    public void write(int b) throws IOException;
+
+    /**
+     * Writes an array of bytes. This method will block until the bytes
+     * are actually written.
+     * @param b the data to be written
+     * @exception IOException If an I/O error has occurred.
+     */
+    public void write(byte b[]) throws IOException;
+
+    /**
+     * Writes a sub array of bytes.
+     * @param b the data to be written
+     * @param off       the start offset in the data
+     * @param len       the number of bytes that are written
+     * @exception IOException If an I/O error has occurred.
+     */
+    public void write(byte b[], int off, int len) throws IOException;
+
+    /**
+     * Flushes the stream. This will write any buffered
+     * output bytes.
+     * @exception IOException If an I/O error has occurred.
      */
     public void flush() throws IOException;
 
     /**
-     * Writes the entire contents of the byte array {@code buffer} to the output
-     * stream. Blocks until all bytes are written.
-     *
-     * @param buffer
-     *            the buffer to write.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
+     * Closes the stream. This method must be called
+     * to release any resources associated with the
+     * stream.
+     * @exception IOException If an I/O error has occurred.
      */
-    public void write(byte[] buffer) throws IOException;
-
-    /**
-     * Writes {@code count} bytes from the byte array {@code buffer} starting at
-     * position {@code offset} to the target stream. Blocks until all bytes are
-     * written.
-     *
-     * @param buffer
-     *            the buffer to write.
-     * @param offset
-     *            the index of the first byte in {@code buffer} to write.
-     * @param count
-     *            the number of bytes from {@code buffer} to write to the target
-     *            stream.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     */
-    public void write(byte[] buffer, int offset, int count) throws IOException;
-
-    /**
-     * Writes a single byte to the target stream. Only the least significant
-     * byte of the integer {@code value} is written to the stream. Blocks until
-     * the byte is actually written.
-     *
-     * @param value
-     *            the byte to write.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     */
-    public void write(int value) throws IOException;
-
-    /**
-     * Writes the specified object {@code obj} to the target stream.
-     *
-     * @param obj
-     *            the object to write.
-     * @throws IOException
-     *             if an error occurs while writing to the target stream.
-     */
-    public void writeObject(Object obj) throws IOException;
+    public void close() throws IOException;
 }

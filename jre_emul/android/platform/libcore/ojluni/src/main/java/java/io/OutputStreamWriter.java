@@ -1,328 +1,235 @@
 /*
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
+ * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package java.io;
 
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
-import java.nio.charset.CoderResult;
-import java.nio.charset.CodingErrorAction;
-import java.util.Arrays;
+import sun.nio.cs.StreamEncoder;
+
 
 /**
- * A class for turning a character stream into a byte stream. Data written to
- * the target input stream is converted into bytes by either a default or a
- * provided character converter. The default encoding is taken from the
- * "file.encoding" system property. {@code OutputStreamWriter} contains a buffer
- * of bytes to be written to target stream and converts these into characters as
- * needed. The buffer size is 8K.
+ * An OutputStreamWriter is a bridge from character streams to byte streams:
+ * Characters written to it are encoded into bytes using a specified {@link
+ * java.nio.charset.Charset charset}.  The charset that it uses
+ * may be specified by name or may be given explicitly, or the platform's
+ * default charset may be accepted.
  *
- * @see InputStreamReader
+ * <p> Each invocation of a write() method causes the encoding converter to be
+ * invoked on the given character(s).  The resulting bytes are accumulated in a
+ * buffer before being written to the underlying output stream.  The size of
+ * this buffer may be specified, but by default it is large enough for most
+ * purposes.  Note that the characters passed to the write() methods are not
+ * buffered.
+ *
+ * <p> For top efficiency, consider wrapping an OutputStreamWriter within a
+ * BufferedWriter so as to avoid frequent converter invocations.  For example:
+ *
+ * <pre>
+ * Writer out
+ *   = new BufferedWriter(new OutputStreamWriter(System.out));
+ * </pre>
+ *
+ * <p> A <i>surrogate pair</i> is a character represented by a sequence of two
+ * <tt>char</tt> values: A <i>high</i> surrogate in the range '&#92;uD800' to
+ * '&#92;uDBFF' followed by a <i>low</i> surrogate in the range '&#92;uDC00' to
+ * '&#92;uDFFF'.
+ *
+ * <p> A <i>malformed surrogate element</i> is a high surrogate that is not
+ * followed by a low surrogate or a low surrogate that is not preceded by a
+ * high surrogate.
+ *
+ * <p> This class always replaces malformed surrogate elements and unmappable
+ * character sequences with the charset's default <i>substitution sequence</i>.
+ * The {@linkplain java.nio.charset.CharsetEncoder} class should be used when more
+ * control over the encoding process is required.
+ *
+ * @see BufferedWriter
+ * @see OutputStream
+ * @see java.nio.charset.Charset
+ *
+ * @author      Mark Reinhold
+ * @since       JDK1.1
  */
+
 public class OutputStreamWriter extends Writer {
 
-    private final OutputStream out;
-
-    private CharsetEncoder encoder;
-
-    private ByteBuffer bytes = ByteBuffer.allocate(8192);
+    private final StreamEncoder se;
 
     /**
-     * Constructs a new OutputStreamWriter using {@code out} as the target
-     * stream to write converted characters to. The default character encoding
-     * is used.
+     * Creates an OutputStreamWriter that uses the named charset.
      *
-     * @param out
-     *            the non-null target stream to write converted bytes to.
+     * @param  out
+     *         An OutputStream
+     *
+     * @param  charsetName
+     *         The name of a supported
+     *         {@link java.nio.charset.Charset charset}
+     *
+     * @exception  UnsupportedEncodingException
+     *             If the named encoding is not supported
+     */
+    public OutputStreamWriter(OutputStream out, String charsetName)
+        throws UnsupportedEncodingException
+    {
+        super(out);
+        if (charsetName == null)
+            throw new NullPointerException("charsetName");
+        se = StreamEncoder.forOutputStreamWriter(out, this, charsetName);
+    }
+
+    /**
+     * Creates an OutputStreamWriter that uses the default character encoding.
+     *
+     * @param  out  An OutputStream
      */
     public OutputStreamWriter(OutputStream out) {
-        this(out, Charset.defaultCharset());
-    }
-
-    /**
-     * Constructs a new OutputStreamWriter using {@code out} as the target
-     * stream to write converted characters to and {@code charsetName} as the character
-     * encoding. If the encoding cannot be found, an
-     * UnsupportedEncodingException error is thrown.
-     *
-     * @param out
-     *            the target stream to write converted bytes to.
-     * @param charsetName
-     *            the string describing the desired character encoding.
-     * @throws NullPointerException
-     *             if {@code charsetName} is {@code null}.
-     * @throws UnsupportedEncodingException
-     *             if the encoding specified by {@code charsetName} cannot be found.
-     */
-    public OutputStreamWriter(OutputStream out, final String charsetName)
-            throws UnsupportedEncodingException {
         super(out);
-        if (charsetName == null) {
-            throw new NullPointerException("charsetName == null");
-        }
-        this.out = out;
         try {
-            encoder = Charset.forName(charsetName).newEncoder();
-        } catch (Exception e) {
-            throw new UnsupportedEncodingException(charsetName);
+            se = StreamEncoder.forOutputStreamWriter(out, this, (String)null);
+        } catch (UnsupportedEncodingException e) {
+            throw new Error(e);
         }
-        encoder.onMalformedInput(CodingErrorAction.REPLACE);
-        encoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
     }
 
     /**
-     * Constructs a new OutputStreamWriter using {@code out} as the target
-     * stream to write converted characters to and {@code cs} as the character
-     * encoding.
+     * Creates an OutputStreamWriter that uses the given charset.
      *
-     * @param out
-     *            the target stream to write converted bytes to.
-     * @param cs
-     *            the {@code Charset} that specifies the character encoding.
+     * @param  out
+     *         An OutputStream
+     *
+     * @param  cs
+     *         A charset
+     *
+     * @since 1.4
+     * @spec JSR-51
      */
     public OutputStreamWriter(OutputStream out, Charset cs) {
         super(out);
-        this.out = out;
-        encoder = cs.newEncoder();
-        encoder.onMalformedInput(CodingErrorAction.REPLACE);
-        encoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
+        if (cs == null)
+            throw new NullPointerException("charset");
+        se = StreamEncoder.forOutputStreamWriter(out, this, cs);
     }
 
     /**
-     * Constructs a new OutputStreamWriter using {@code out} as the target
-     * stream to write converted characters to and {@code charsetEncoder} as the character
-     * encoder.
+     * Creates an OutputStreamWriter that uses the given charset encoder.
      *
-     * @param out
-     *            the target stream to write converted bytes to.
-     * @param charsetEncoder
-     *            the character encoder used for character conversion.
+     * @param  out
+     *         An OutputStream
+     *
+     * @param  enc
+     *         A charset encoder
+     *
+     * @since 1.4
+     * @spec JSR-51
      */
-    public OutputStreamWriter(OutputStream out, CharsetEncoder charsetEncoder) {
+    public OutputStreamWriter(OutputStream out, CharsetEncoder enc) {
         super(out);
-        charsetEncoder.charset();
-        this.out = out;
-        encoder = charsetEncoder;
+        if (enc == null)
+            throw new NullPointerException("charset encoder");
+        se = StreamEncoder.forOutputStreamWriter(out, this, enc);
     }
 
     /**
-     * Closes this writer. This implementation flushes the buffer as well as the
-     * target stream. The target stream is then closed and the resources for the
-     * buffer and converter are released.
+     * Returns the name of the character encoding being used by this stream.
      *
-     * <p>Only the first invocation of this method has any effect. Subsequent calls
-     * do nothing.
+     * <p> If the encoding has an historical name then that name is returned;
+     * otherwise the encoding's canonical name is returned.
      *
-     * @throws IOException
-     *             if an error occurs while closing this writer.
-     */
-    @Override
-    public void close() throws IOException {
-        synchronized (lock) {
-            if (encoder != null) {
-                drainEncoder();
-                flushBytes(false);
-                out.close();
-                encoder = null;
-                bytes = null;
-            }
-        }
-    }
-
-    /**
-     * Flushes this writer. This implementation ensures that all buffered bytes
-     * are written to the target stream. After writing the bytes, the target
-     * stream is flushed as well.
+     * <p> If this instance was created with the {@link
+     * #OutputStreamWriter(OutputStream, String)} constructor then the returned
+     * name, being unique for the encoding, may differ from the name passed to
+     * the constructor.  This method may return <tt>null</tt> if the stream has
+     * been closed. </p>
      *
-     * @throws IOException
-     *             if an error occurs while flushing this writer.
-     */
-    @Override
-    public void flush() throws IOException {
-        flushBytes(true);
-    }
-
-    private void flushBytes(boolean flushUnderlyingStream) throws IOException {
-        synchronized (lock) {
-            checkStatus();
-            int position = bytes.position();
-            if (position > 0) {
-                bytes.flip();
-                out.write(bytes.array(), bytes.arrayOffset(), position);
-                bytes.clear();
-            }
-            if (flushUnderlyingStream) {
-                out.flush();
-            }
-        }
-    }
-
-    private void convert(CharBuffer chars) throws IOException {
-        while (true) {
-            CoderResult result = encoder.encode(chars, bytes, false);
-            if (result.isOverflow()) {
-                // Make room and try again.
-                flushBytes(false);
-                continue;
-            } else if (result.isError()) {
-                result.throwException();
-            }
-            break;
-        }
-    }
-
-    private void drainEncoder() throws IOException {
-        // Strictly speaking, I think it's part of the CharsetEncoder contract that you call
-        // encode with endOfInput true before flushing. Our ICU-based implementations don't
-        // actually need this, and you'd hope that any reasonable implementation wouldn't either.
-        // CharsetEncoder.encode doesn't actually pass the boolean through to encodeLoop anyway!
-        CharBuffer chars = CharBuffer.allocate(0);
-        while (true) {
-            CoderResult result = encoder.encode(chars, bytes, true);
-            if (result.isError()) {
-                result.throwException();
-            } else if (result.isOverflow()) {
-                flushBytes(false);
-                continue;
-            }
-            break;
-        }
-
-        // Some encoders (such as ISO-2022-JP) have stuff to write out after all the
-        // characters (such as shifting back into a default state). In our implementation,
-        // this is actually the first time ICU is told that we've run out of input.
-        CoderResult result = encoder.flush(bytes);
-        while (!result.isUnderflow()) {
-            if (result.isOverflow()) {
-                flushBytes(false);
-                result = encoder.flush(bytes);
-            } else {
-                result.throwException();
-            }
-        }
-    }
-
-    private void checkStatus() throws IOException {
-        if (encoder == null) {
-            throw new IOException("OutputStreamWriter is closed");
-        }
-    }
-
-    /**
-     * Returns the canonical name of the encoding used by this writer to convert characters to
-     * bytes, or null if this writer has been closed. Most callers should probably keep
-     * track of the String or Charset they passed in; this method may not return the same
-     * name.
+     * @return The historical name of this encoding, or possibly
+     *         <code>null</code> if the stream has been closed
+     *
+     * @see java.nio.charset.Charset
+     *
+     * @revised 1.4
+     * @spec JSR-51
      */
     public String getEncoding() {
-        if (encoder == null) {
-            return null;
-        }
-        return encoder.charset().name();
+        return se.getEncoding();
     }
 
     /**
-     * Writes {@code count} characters starting at {@code offset} in {@code buf}
-     * to this writer. The characters are immediately converted to bytes by the
-     * character converter and stored in a local buffer. If the buffer gets full
-     * as a result of the conversion, this writer is flushed.
-     *
-     * @param buffer
-     *            the array containing characters to write.
-     * @param offset
-     *            the index of the first character in {@code buf} to write.
-     * @param count
-     *            the maximum number of characters to write.
-     * @throws IndexOutOfBoundsException
-     *             if {@code offset < 0} or {@code count < 0}, or if
-     *             {@code offset + count} is greater than the size of
-     *             {@code buf}.
-     * @throws IOException
-     *             if this writer has already been closed or another I/O error
-     *             occurs.
+     * Flushes the output buffer to the underlying byte stream, without flushing
+     * the byte stream itself.  This method is non-private only so that it may
+     * be invoked by PrintStream.
      */
-    @Override
-    public void write(char[] buffer, int offset, int count) throws IOException {
-        synchronized (lock) {
-            checkStatus();
-            CharBuffer chars = CharBuffer.wrap(buffer, offset, count);
-            convert(chars);
-        }
-    }
-
-    /**
-     * Writes the character {@code oneChar} to this writer. The lowest two bytes
-     * of the integer {@code oneChar} are immediately converted to bytes by the
-     * character converter and stored in a local buffer. If the buffer gets full
-     * by converting this character, this writer is flushed.
-     *
-     * @param oneChar
-     *            the character to write.
-     * @throws IOException
-     *             if this writer is closed or another I/O error occurs.
-     */
-    @Override
-    public void write(int oneChar) throws IOException {
-        synchronized (lock) {
-            checkStatus();
-            CharBuffer chars = CharBuffer.wrap(new char[] { (char) oneChar });
-            convert(chars);
-        }
-    }
-
-    /**
-     * Writes {@code count} characters starting at {@code offset} in {@code str}
-     * to this writer. The characters are immediately converted to bytes by the
-     * character converter and stored in a local buffer. If the buffer gets full
-     * as a result of the conversion, this writer is flushed.
-     *
-     * @param str
-     *            the string containing characters to write.
-     * @param offset
-     *            the start position in {@code str} for retrieving characters.
-     * @param count
-     *            the maximum number of characters to write.
-     * @throws IOException
-     *             if this writer has already been closed or another I/O error
-     *             occurs.
-     * @throws IndexOutOfBoundsException
-     *             if {@code offset < 0} or {@code count < 0}, or if
-     *             {@code offset + count} is bigger than the length of
-     *             {@code str}.
-     */
-    @Override
-    //TODO: use StreamEncoder per the update
-    public void write(String str, int offset, int count) throws IOException {
-        synchronized (lock) {
-            if ((offset | count) < 0 || offset > str.length() - count) {
-                throw new StringIndexOutOfBoundsException(str + "offset=" + offset + "formatElementIndex=" + count);
-            }
-            if (str == null) {
-                throw new NullPointerException("str == null");
-            }
-            checkStatus();
-            CharBuffer chars = CharBuffer.wrap(str, offset, count + offset);
-            convert(chars);
-        }
-    }
-
     void flushBuffer() throws IOException {
-        flushBytes(false);
+        se.flushBuffer();
+    }
+
+    /**
+     * Writes a single character.
+     *
+     * @exception  IOException  If an I/O error occurs
+     */
+    public void write(int c) throws IOException {
+        se.write(c);
+    }
+
+    /**
+     * Writes a portion of an array of characters.
+     *
+     * @param  cbuf  Buffer of characters
+     * @param  off   Offset from which to start writing characters
+     * @param  len   Number of characters to write
+     *
+     * @exception  IOException  If an I/O error occurs
+     */
+    public void write(char cbuf[], int off, int len) throws IOException {
+        se.write(cbuf, off, len);
+    }
+
+    /**
+     * Writes a portion of a string.
+     *
+     * @param  str  A String
+     * @param  off  Offset from which to start writing characters
+     * @param  len  Number of characters to write
+     *
+     * @exception  IOException  If an I/O error occurs
+     */
+    public void write(String str, int off, int len) throws IOException {
+        se.write(str, off, len);
+    }
+
+    /**
+     * Flushes the stream.
+     *
+     * @exception  IOException  If an I/O error occurs
+     */
+    public void flush() throws IOException {
+        se.flush();
+    }
+
+    public void close() throws IOException {
+        se.close();
     }
 }

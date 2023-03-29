@@ -35,7 +35,7 @@ package java.io;
  * additional methods and fields.
  *
  * @author      Mark Reinhold
- * @since       JDK1.1
+ * @since       1.1
  */
 
 public abstract class FilterReader extends Reader {
@@ -69,6 +69,7 @@ public abstract class FilterReader extends Reader {
      * Reads characters into a portion of an array.
      *
      * @exception  IOException  If an I/O error occurs
+     * @exception  IndexOutOfBoundsException {@inheritDoc}
      */
     public int read(char cbuf[], int off, int len) throws IOException {
         return in.read(cbuf, off, len);

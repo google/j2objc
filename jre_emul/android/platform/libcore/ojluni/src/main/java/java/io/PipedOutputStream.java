@@ -1,178 +1,179 @@
 /*
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
+ * Copyright (c) 1995, 2006, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package java.io;
 
+import java.io.*;
+
 /**
- * Places information on a communications pipe. When two threads want to pass
- * data back and forth, one creates a piped output stream and the other one
- * creates a piped input stream.
+ * A piped output stream can be connected to a piped input stream
+ * to create a communications pipe. The piped output stream is the
+ * sending end of the pipe. Typically, data is written to a
+ * <code>PipedOutputStream</code> object by one thread and data is
+ * read from the connected <code>PipedInputStream</code> by some
+ * other thread. Attempting to use both objects from a single thread
+ * is not recommended as it may deadlock the thread.
+ * The pipe is said to be <a id=BROKEN> <i>broken</i> </a> if a
+ * thread that was reading data bytes from the connected piped input
+ * stream is no longer alive.
  *
- * @see PipedInputStream
+ * @author  James Gosling
+ * @see     java.io.PipedInputStream
+ * @since   1.0
  */
-public class PipedOutputStream extends OutputStream {
+public
+class PipedOutputStream extends OutputStream {
+
+        /* REMIND: identification of the read and write sides needs to be
+           more sophisticated.  Either using thread groups (but what about
+           pipes within a thread?) or using finalization (but it may be a
+           long time until the next GC). */
+    private PipedInputStream sink;
 
     /**
-     * The destination PipedInputStream
+     * Creates a piped output stream connected to the specified piped
+     * input stream. Data bytes written to this stream will then be
+     * available as input from <code>snk</code>.
+     *
+     * @param      snk   The piped input stream to connect to.
+     * @exception  IOException  if an I/O error occurs.
      */
-    private PipedInputStream target;
+    public PipedOutputStream(PipedInputStream snk)  throws IOException {
+        connect(snk);
+    }
 
     /**
-     * Constructs a new unconnected {@code PipedOutputStream}. The resulting
-     * stream must be connected to a {@link PipedInputStream} before data can be
-     * written to it.
+     * Creates a piped output stream that is not yet connected to a
+     * piped input stream. It must be connected to a piped input stream,
+     * either by the receiver or the sender, before being used.
+     *
+     * @see     java.io.PipedInputStream#connect(java.io.PipedOutputStream)
+     * @see     java.io.PipedOutputStream#connect(java.io.PipedInputStream)
      */
     public PipedOutputStream() {
     }
 
     /**
-     * Constructs a new {@code PipedOutputStream} connected to the
-     * {@link PipedInputStream} {@code target}. Any data written to this stream
-     * can be read from the target stream.
-     *
-     * @param target
-     *            the piped input stream to connect to.
-     * @throws IOException
-     *             if this stream or {@code target} are already connected.
-     */
-    public PipedOutputStream(PipedInputStream target) throws IOException {
-        connect(target);
-    }
-
-    /**
-     * Closes this stream. If this stream is connected to an input stream, the
-     * input stream is closed and the pipe is disconnected.
-     *
-     * @throws IOException
-     *             if an error occurs while closing this stream.
-     */
-    @Override
-    public void close() throws IOException {
-        // Is the pipe connected?
-        PipedInputStream stream = target;
-        if (stream != null) {
-            stream.done();
-            target = null;
-        }
-    }
-
-    /**
-     * Connects this stream to a {@link PipedInputStream}. Any data written to
-     * this output stream becomes readable in the input stream.
-     *
-     * @param stream
-     *            the piped input stream to connect to.
-     * @throws IOException
-     *             if either stream is already connected.
-     */
-    public void connect(PipedInputStream stream) throws IOException {
-        if (stream == null) {
-            throw new NullPointerException("stream == null");
-        }
-        synchronized (stream) {
-            if (this.target != null) {
-                throw new IOException("Already connected");
-            }
-            if (stream.isConnected) {
-                throw new IOException("Pipe already connected");
-            }
-            stream.establishConnection();
-            this.target = stream;
-        }
-    }
-
-    /**
-     * Notifies the readers of this {@link PipedInputStream} that bytes can be
-     * read. This method does nothing if this stream is not connected.
-     *
-     * @throws IOException
-     *             if an I/O error occurs while flushing this stream.
-     */
-    @Override
-    public void flush() throws IOException {
-        PipedInputStream stream = target;
-        if (stream == null) {
-            return;
-        }
-
-        synchronized (stream) {
-            stream.notifyAll();
-        }
-    }
-
-    /**
-     * Writes {@code count} bytes from the byte array {@code buffer} starting at
-     * {@code offset} to this stream. The written data can then be read from the
-     * connected input stream.
+     * Connects this piped output stream to a receiver. If this object
+     * is already connected to some other piped input stream, an
+     * <code>IOException</code> is thrown.
      * <p>
-     * Separate threads should be used to write to a {@code PipedOutputStream}
-     * and to read from the connected {@link PipedInputStream}. If the same
-     * thread is used, a deadlock may occur.
+     * If <code>snk</code> is an unconnected piped input stream and
+     * <code>src</code> is an unconnected piped output stream, they may
+     * be connected by either the call:
+     * <blockquote><pre>
+     * src.connect(snk)</pre></blockquote>
+     * or the call:
+     * <blockquote><pre>
+     * snk.connect(src)</pre></blockquote>
+     * The two calls have the same effect.
      *
-     * @param buffer
-     *            the buffer to write.
-     * @param offset
-     *            the index of the first byte in {@code buffer} to write.
-     * @param count
-     *            the number of bytes from {@code buffer} to write to this
-     *            stream.
-     * @throws IndexOutOfBoundsException
-     *             if {@code offset < 0} or {@code count < 0}, or if {@code
-     *             offset + count} is bigger than the length of {@code buffer}.
-     * @throws InterruptedIOException
-     *             if the pipe is full and the current thread is interrupted
-     *             waiting for space to write data. This case is not currently
-     *             handled correctly.
-     * @throws IOException
-     *             if this stream is not connected, if the target stream is
-     *             closed or if the thread reading from the target stream is no
-     *             longer alive. This case is currently not handled correctly.
+     * @param      snk   the piped input stream to connect to.
+     * @exception  IOException  if an I/O error occurs.
      */
-    @Override
-    public void write(byte[] buffer, int offset, int count) throws IOException {
-        super.write(buffer, offset, count);
+    public synchronized void connect(PipedInputStream snk) throws IOException {
+        if (snk == null) {
+            throw new NullPointerException();
+        } else if (sink != null || snk.connected) {
+            throw new IOException("Already connected");
+        }
+        sink = snk;
+        snk.in = -1;
+        snk.out = 0;
+        snk.connected = true;
     }
 
     /**
-     * Writes a single byte to this stream. Only the least significant byte of
-     * the integer {@code oneByte} is written. The written byte can then be read
-     * from the connected input stream.
+     * Writes the specified <code>byte</code> to the piped output stream.
      * <p>
-     * Separate threads should be used to write to a {@code PipedOutputStream}
-     * and to read from the connected {@link PipedInputStream}. If the same
-     * thread is used, a deadlock may occur.
+     * Implements the <code>write</code> method of <code>OutputStream</code>.
      *
-     * @param oneByte
-     *            the byte to write.
-     * @throws InterruptedIOException
-     *             if the pipe is full and the current thread is interrupted
-     *             waiting for space to write data. This case is not currently
-     *             handled correctly.
-     * @throws IOException
-     *             if this stream is not connected, if the target stream is
-     *             closed or if the thread reading from the target stream is no
-     *             longer alive. This case is currently not handled correctly.
+     * @param      b   the <code>byte</code> to be written.
+     * @exception IOException if the pipe is <a href=#BROKEN> broken</a>,
+     *          {@link #connect(java.io.PipedInputStream) unconnected},
+     *          closed, or if an I/O error occurs.
      */
-    @Override
-    public void write(int oneByte) throws IOException {
-        PipedInputStream stream = target;
-        if (stream == null) {
+    public void write(int b)  throws IOException {
+        if (sink == null) {
             throw new IOException("Pipe not connected");
         }
-        stream.receive(oneByte);
+        sink.receive(b);
+    }
+
+    /**
+     * Writes <code>len</code> bytes from the specified byte array
+     * starting at offset <code>off</code> to this piped output stream.
+     * This method blocks until all the bytes are written to the output
+     * stream.
+     *
+     * @param      b     the data.
+     * @param      off   the start offset in the data.
+     * @param      len   the number of bytes to write.
+     * @exception IOException if the pipe is <a href=#BROKEN> broken</a>,
+     *          {@link #connect(java.io.PipedInputStream) unconnected},
+     *          closed, or if an I/O error occurs.
+     */
+    public void write(byte b[], int off, int len) throws IOException {
+        if (sink == null) {
+            throw new IOException("Pipe not connected");
+        } else if (b == null) {
+            throw new NullPointerException();
+        } else if ((off < 0) || (off > b.length) || (len < 0) ||
+                   ((off + len) > b.length) || ((off + len) < 0)) {
+            throw new IndexOutOfBoundsException();
+        } else if (len == 0) {
+            return;
+        }
+        sink.receive(b, off, len);
+    }
+
+    /**
+     * Flushes this output stream and forces any buffered output bytes
+     * to be written out.
+     * This will notify any readers that bytes are waiting in the pipe.
+     *
+     * @exception IOException if an I/O error occurs.
+     */
+    public synchronized void flush() throws IOException {
+        if (sink != null) {
+            synchronized (sink) {
+                sink.notifyAll();
+            }
+        }
+    }
+
+    /**
+     * Closes this piped output stream and releases any system resources
+     * associated with this stream. This stream may no longer be used for
+     * writing bytes.
+     *
+     * @exception  IOException  if an I/O error occurs.
+     */
+    public void close()  throws IOException {
+        if (sink != null) {
+            sink.receivedLast();
+        }
     }
 }

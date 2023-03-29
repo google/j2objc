@@ -26,13 +26,22 @@
 
 package java.io;
 
+/* J2ObjC removed
+import dalvik.annotation.optimization.ReachabilitySensitive;
+import libcore.io.IoTracker;
+import dalvik.system.BlockGuard;
+import libcore.io.IoUtils;
+*/
+
 import static libcore.io.OsConstants.ESPIPE;
 import static libcore.io.OsConstants.O_RDONLY;
 import static libcore.io.OsConstants.SEEK_CUR;
 
 import android.system.ErrnoException;
-import dalvik.system.CloseGuard;
 import java.nio.channels.FileChannel;
+
+import dalvik.system.CloseGuard;
+import sun.nio.ch.FileChannelImpl;
 import libcore.io.IoBridge;
 import libcore.io.Libcore;
 
@@ -177,6 +186,7 @@ class FileInputStream extends InputStream
     }
 
     // Android-removed: Documentation around SecurityException. Not thrown on Android.
+    // Android-changed: Added doc for the Android-specific file descriptor ownership.
     /**
      * Creates a <code>FileInputStream</code> by using the file descriptor
      * <code>fdObj</code>, which represents an existing connection to an
@@ -194,6 +204,10 @@ class FileInputStream extends InputStream
      * is {@link java.io.FileDescriptor#valid() invalid}.
      * However, if the methods are invoked on the resulting stream to attempt
      * I/O on the stream, an <code>IOException</code> is thrown.
+     * <p>
+     * Android-specific warning: {@link #close()} method doesn't close the {@code fdObj} provided,
+     * because this object doesn't own the file descriptor, but the caller does. The caller can
+     * call {@link android.system.Os#close(FileDescriptor)} to close the fd.
      *
      * @param      fdObj   the file descriptor to be opened for reading.
      */
