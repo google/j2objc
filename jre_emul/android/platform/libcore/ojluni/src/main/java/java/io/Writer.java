@@ -32,19 +32,18 @@ package java.io;
  * Most subclasses, however, will override some of the methods defined here in
  * order to provide higher efficiency, additional functionality, or both.
  *
- * @see Writer
  * @see   BufferedWriter
  * @see   CharArrayWriter
  * @see   FilterWriter
  * @see   OutputStreamWriter
- * @see     FileWriter
+ * @see   FileWriter
  * @see   PipedWriter
  * @see   PrintWriter
  * @see   StringWriter
  * @see Reader
  *
  * @author      Mark Reinhold
- * @since       JDK1.1
+ * @since       1.1
  */
 
 public abstract class Writer implements Appendable, Closeable, Flushable {
@@ -63,7 +62,7 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
      * The object used to synchronize operations on this stream.  For
      * efficiency, a character-stream object may use an object other than
      * itself to protect critical sections.  A subclass should therefore use
-     * the object in this field rather than <tt>this</tt> or a synchronized
+     * the object in this field rather than {@code this} or a synchronized
      * method.
      */
     protected Object lock;
@@ -140,10 +139,16 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
      * @param  len
      *         Number of characters to write
      *
+     * @throws  IndexOutOfBoundsException
+     *          Implementations should throw this exception
+     *          if {@code off} is negative, or {@code len} is negative,
+     *          or {@code off + len} is negative or greater than the length
+     *          of the given array
+     *
      * @throws  IOException
      *          If an I/O error occurs
      */
-    abstract public void write(char cbuf[], int off, int len) throws IOException;
+    public abstract void write(char cbuf[], int off, int len) throws IOException;
 
     /**
      * Writes a string.
@@ -161,6 +166,11 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
     /**
      * Writes a portion of a string.
      *
+     * @implSpec
+     * The implementation in this class throws an
+     * {@code IndexOutOfBoundsException} for the indicated conditions;
+     * overriding methods may choose to do otherwise.
+     *
      * @param  str
      *         A String
      *
@@ -171,8 +181,9 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
      *         Number of characters to write
      *
      * @throws  IndexOutOfBoundsException
-     *          If <tt>off</tt> is negative, or <tt>len</tt> is negative,
-     *          or <tt>off+len</tt> is negative or greater than the length
+     *          Implementations should throw this exception
+     *          if {@code off} is negative, or {@code len} is negative,
+     *          or {@code off + len} is negative or greater than the length
      *          of the given string
      *
      * @throws  IOException
@@ -197,21 +208,21 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
     /**
      * Appends the specified character sequence to this writer.
      *
-     * <p> An invocation of this method of the form <tt>out.append(csq)</tt>
+     * <p> An invocation of this method of the form {@code out.append(csq)}
      * behaves in exactly the same way as the invocation
      *
      * <pre>
      *     out.write(csq.toString()) </pre>
      *
-     * <p> Depending on the specification of <tt>toString</tt> for the
-     * character sequence <tt>csq</tt>, the entire sequence may not be
-     * appended. For instance, invoking the <tt>toString</tt> method of a
+     * <p> Depending on the specification of {@code toString} for the
+     * character sequence {@code csq}, the entire sequence may not be
+     * appended. For instance, invoking the {@code toString} method of a
      * character buffer will return a subsequence whose content depends upon
      * the buffer's position and limit.
      *
      * @param  csq
-     *         The character sequence to append.  If <tt>csq</tt> is
-     *         <tt>null</tt>, then the four characters <tt>"null"</tt> are
+     *         The character sequence to append.  If {@code csq} is
+     *         {@code null}, then the four characters {@code "null"} are
      *         appended to this writer.
      *
      * @return  This writer
@@ -222,29 +233,28 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
      * @since  1.5
      */
     public Writer append(CharSequence csq) throws IOException {
-        if (csq == null)
-            write("null");
-        else
-            write(csq.toString());
+        write(String.valueOf(csq));
         return this;
     }
 
     /**
      * Appends a subsequence of the specified character sequence to this writer.
-     * <tt>Appendable</tt>.
+     * {@code Appendable}.
      *
-     * <p> An invocation of this method of the form <tt>out.append(csq, start,
-     * end)</tt> when <tt>csq</tt> is not <tt>null</tt> behaves in exactly the
+     * <p> An invocation of this method of the form
+     * {@code out.append(csq, start, end)} when {@code csq}
+     * is not {@code null} behaves in exactly the
      * same way as the invocation
      *
-     * <pre>
-     *     out.write(csq.subSequence(start, end).toString()) </pre>
+     * <pre>{@code
+     *     out.write(csq.subSequence(start, end).toString())
+     * }</pre>
      *
      * @param  csq
      *         The character sequence from which a subsequence will be
-     *         appended.  If <tt>csq</tt> is <tt>null</tt>, then characters
-     *         will be appended as if <tt>csq</tt> contained the four
-     *         characters <tt>"null"</tt>.
+     *         appended.  If {@code csq} is {@code null}, then characters
+     *         will be appended as if {@code csq} contained the four
+     *         characters {@code "null"}.
      *
      * @param  start
      *         The index of the first character in the subsequence
@@ -256,9 +266,9 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
      * @return  This writer
      *
      * @throws  IndexOutOfBoundsException
-     *          If <tt>start</tt> or <tt>end</tt> are negative, <tt>start</tt>
-     *          is greater than <tt>end</tt>, or <tt>end</tt> is greater than
-     *          <tt>csq.length()</tt>
+     *          If {@code start} or {@code end} are negative, {@code start}
+     *          is greater than {@code end}, or {@code end} is greater than
+     *          {@code csq.length()}
      *
      * @throws  IOException
      *          If an I/O error occurs
@@ -266,15 +276,14 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
      * @since  1.5
      */
     public Writer append(CharSequence csq, int start, int end) throws IOException {
-        CharSequence cs = (csq == null ? "null" : csq);
-        write(cs.subSequence(start, end).toString());
-        return this;
+        if (csq == null) csq = "null";
+        return append(csq.subSequence(start, end));
     }
 
     /**
      * Appends the specified character to this writer.
      *
-     * <p> An invocation of this method of the form <tt>out.append(c)</tt>
+     * <p> An invocation of this method of the form {@code out.append(c)}
      * behaves in exactly the same way as the invocation
      *
      * <pre>
@@ -311,7 +320,7 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
      * @throws  IOException
      *          If an I/O error occurs
      */
-    abstract public void flush() throws IOException;
+    public abstract void flush() throws IOException;
 
     /**
      * Closes the stream, flushing it first. Once the stream has been closed,
@@ -321,6 +330,6 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
      * @throws  IOException
      *          If an I/O error occurs
      */
-    abstract public void close() throws IOException;
+    public abstract void close() throws IOException;
 
 }

@@ -40,7 +40,7 @@ package java.io;
  * and fields.
  *
  * @author  Jonathan Payne
- * @since   JDK1.0
+ * @since   1.0
  */
 public
 class FilterInputStream extends InputStream {
@@ -84,7 +84,7 @@ class FilterInputStream extends InputStream {
     }
 
     /**
-     * Reads up to <code>byte.length</code> bytes of data from this
+     * Reads up to <code>b.length</code> bytes of data from this
      * input stream into an array of bytes. This method blocks until some
      * input is available.
      * <p>
@@ -144,8 +144,7 @@ class FilterInputStream extends InputStream {
      *
      * @param      n   the number of bytes to be skipped.
      * @return     the actual number of bytes skipped.
-     * @exception  IOException  if the stream does not support seek,
-     *                          or if some other I/O error occurs.
+     * @throws     IOException  if {@code in.skip(n)} throws an IOException.
      */
     public long skip(long n) throws IOException {
         return in.skip(n);

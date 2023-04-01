@@ -28,11 +28,12 @@ package java.io;
  * Base class for character conversion exceptions.
  *
  * @author      Asmus Freytag
- * @since       JDK1.1
+ * @since       1.1
  */
 public class CharConversionException
     extends java.io.IOException
 {
+    @java.io.Serial
     private static final long serialVersionUID = -8680016352018427031L;
 
     /**

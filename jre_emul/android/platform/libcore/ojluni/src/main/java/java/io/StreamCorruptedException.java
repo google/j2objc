@@ -29,11 +29,11 @@ package java.io;
  * Thrown when control information that was read from an object stream
  * violates internal consistency checks.
  *
- * @author  unascribed
- * @since   JDK1.1
+ * @since   1.1
  */
 public class StreamCorruptedException extends ObjectStreamException {
 
+    @java.io.Serial
     private static final long serialVersionUID = 8983558202217591746L;
 
     /**

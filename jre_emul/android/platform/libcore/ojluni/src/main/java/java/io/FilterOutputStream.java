@@ -39,27 +39,30 @@ package java.io;
  * methods as well as provide additional methods and fields.
  *
  * @author  Jonathan Payne
- * @since   JDK1.0
+ * @since   1.0
  */
-public
-class FilterOutputStream extends OutputStream {
+public class FilterOutputStream extends OutputStream {
     /**
      * The underlying output stream to be filtered.
      */
     protected OutputStream out;
 
-    //Android-added: Integrate OpenJDK 9 fix for double-close. http://b/122733269.
     /**
      * Whether the stream is closed; implicitly initialized to false.
-    */
-    private boolean closed;
+     */
+    private volatile boolean closed;
+
+    /**
+     * Object used to prevent a race on the 'closed' instance variable.
+     */
+    private final Object closeLock = new Object();
 
     /**
      * Creates an output stream filter built on top of the specified
      * underlying output stream.
      *
      * @param   out   the underlying output stream to be assigned to
-     *                the field <tt>this.out</tt> for later use, or
+     *                the field {@code this.out} for later use, or
      *                <code>null</code> if this instance is to be
      *                created without an underlying stream.
      */
@@ -72,13 +75,14 @@ class FilterOutputStream extends OutputStream {
      * <p>
      * The <code>write</code> method of <code>FilterOutputStream</code>
      * calls the <code>write</code> method of its underlying output stream,
-     * that is, it performs <tt>out.write(b)</tt>.
+     * that is, it performs {@code out.write(b)}.
      * <p>
-     * Implements the abstract <tt>write</tt> method of <tt>OutputStream</tt>.
+     * Implements the abstract {@code write} method of {@code OutputStream}.
      *
      * @param      b   the <code>byte</code>.
      * @exception  IOException  if an I/O error occurs.
      */
+    @Override
     public void write(int b) throws IOException {
         out.write(b);
     }
@@ -92,13 +96,14 @@ class FilterOutputStream extends OutputStream {
      * <code>b.length</code>.
      * <p>
      * Note that this method does not call the one-argument
-     * <code>write</code> method of its underlying stream with the single
-     * argument <code>b</code>.
+     * <code>write</code> method of its underlying output stream with
+     * the single argument <code>b</code>.
      *
      * @param      b   the data to be written.
      * @exception  IOException  if an I/O error occurs.
      * @see        java.io.FilterOutputStream#write(byte[], int, int)
      */
+    @Override
     public void write(byte b[]) throws IOException {
         write(b, 0, b.length);
     }
@@ -113,7 +118,7 @@ class FilterOutputStream extends OutputStream {
      * <code>byte</code> to output.
      * <p>
      * Note that this method does not call the <code>write</code> method
-     * of its underlying input stream with the same arguments. Subclasses
+     * of its underlying output stream with the same arguments. Subclasses
      * of <code>FilterOutputStream</code> should provide a more efficient
      * implementation of this method.
      *
@@ -123,6 +128,7 @@ class FilterOutputStream extends OutputStream {
      * @exception  IOException  if an I/O error occurs.
      * @see        java.io.FilterOutputStream#write(int)
      */
+    @Override
     public void write(byte b[], int off, int len) throws IOException {
         if ((off | len | (b.length - (len + off)) | (off + len)) < 0)
             throw new IndexOutOfBoundsException();
@@ -142,6 +148,7 @@ class FilterOutputStream extends OutputStream {
      * @exception  IOException  if an I/O error occurs.
      * @see        java.io.FilterOutputStream#out
      */
+    @Override
     public void flush() throws IOException {
         out.flush();
     }
@@ -150,29 +157,25 @@ class FilterOutputStream extends OutputStream {
      * Closes this output stream and releases any system resources
      * associated with the stream.
      * <p>
-     * The <code>close</code> method of <code>FilterOutputStream</code>
-     * calls its <code>flush</code> method, and then calls the
-     * <code>close</code> method of its underlying output stream.
+     * When not already closed, the {@code close} method of {@code
+     * FilterOutputStream} calls its {@code flush} method, and then
+     * calls the {@code close} method of its underlying output stream.
      *
      * @exception  IOException  if an I/O error occurs.
      * @see        java.io.FilterOutputStream#flush()
      * @see        java.io.FilterOutputStream#out
-     */
-    // BEGIN Android-changed: Integrate OpenJDK 9 fix for double-close. http://b/122733269.
-    /*
-    @SuppressWarnings("try")
-    public void close() throws IOException {
-        try (OutputStream ostream = out) {
-            flush();
-        }
-    }
      */
     @Override
     public void close() throws IOException {
         if (closed) {
             return;
         }
-        closed = true;
+        synchronized (closeLock) {
+            if (closed) {
+                return;
+            }
+            closed = true;
+        }
 
         Throwable flushException = null;
         try {
@@ -187,12 +190,12 @@ class FilterOutputStream extends OutputStream {
                 try {
                     out.close();
                 } catch (Throwable closeException) {
-                    // evaluate possible precedence of flushException over closeException
-                    if ((flushException instanceof ThreadDeath) &&
-                            !(closeException instanceof ThreadDeath)) {
-                        flushException.addSuppressed(closeException);
-                        throw (ThreadDeath) flushException;
-                    }
+                   // evaluate possible precedence of flushException over closeException
+                   if ((flushException instanceof ThreadDeath) &&
+                       !(closeException instanceof ThreadDeath)) {
+                       flushException.addSuppressed(closeException);
+                       throw (ThreadDeath) flushException;
+                   }
 
                     if (flushException != closeException) {
                         closeException.addSuppressed(flushException);
@@ -204,4 +207,3 @@ class FilterOutputStream extends OutputStream {
         }
     }
 }
-// END Android-changed: Integrate OpenJDK 9 fix for double-close. http://b/122733269.

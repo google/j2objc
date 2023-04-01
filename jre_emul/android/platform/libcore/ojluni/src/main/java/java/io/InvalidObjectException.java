@@ -30,17 +30,17 @@ package java.io;
  * tests.  The argument should provide the reason for the failure.
  *
  * @see ObjectInputValidation
- * @since JDK1.1
+ * @since 1.1
  *
- * @author  unascribed
- * @since   JDK1.1
+ * @since   1.1
  */
 public class InvalidObjectException extends ObjectStreamException {
 
+    @java.io.Serial
     private static final long serialVersionUID = 3233174318281839583L;
 
     /**
-     * Constructs an <code>InvalidObjectException</code>.
+     * Constructs an {@code InvalidObjectException}.
      * @param reason Detailed message explaining the reason for the failure.
      *
      * @see ObjectInputValidation

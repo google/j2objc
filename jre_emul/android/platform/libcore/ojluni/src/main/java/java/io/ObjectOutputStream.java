@@ -162,17 +162,17 @@ import sun.reflect.misc.ReflectUtil;
  * @since       JDK1.1
  */
 public class ObjectOutputStream
-        extends OutputStream implements ObjectOutput, ObjectStreamConstants
+    extends OutputStream implements ObjectOutput, ObjectStreamConstants
 {
 
     private static class Caches {
         /** cache of subclass security audit results */
         static final ConcurrentMap<WeakClassKey,Boolean> subclassAudits =
-                new ConcurrentHashMap<>();
+            new ConcurrentHashMap<>();
 
         /** queue for WeakReferences to audited subclasses */
         static final ReferenceQueue<Class<?>> subclassAuditsQueue =
-                new ReferenceQueue<>();
+            new ReferenceQueue<>();
     }
 
     /** filter stream for handling block data conversion */
@@ -201,7 +201,6 @@ public class ObjectOutputStream
      * Null when not during writeObject upcall.
      */
     private SerialCallbackContext curContext;
-
     /** current PutField object */
     private PutFieldImpl curPut;
 
@@ -322,7 +321,7 @@ public class ObjectOutputStream
 
             default:
                 throw new IllegalArgumentException(
-                        "unknown version: " + version);
+                    "unknown version: " + version);
         }
     }
 
@@ -633,7 +632,7 @@ public class ObjectOutputStream
      * @see java.io.SerializablePermission
      */
     protected boolean enableReplaceObject(boolean enable)
-            throws SecurityException
+        throws SecurityException
     {
         if (enable == enableReplace) {
             return enable;
@@ -687,7 +686,7 @@ public class ObjectOutputStream
      * @since 1.3
      */
     protected void writeClassDescriptor(ObjectStreamClass desc)
-            throws IOException
+        throws IOException
     {
         desc.writeNonProxy(this);
     }
@@ -1091,27 +1090,27 @@ public class ObjectOutputStream
      */
     private static boolean auditSubclass(final Class<?> subcl) {
         Boolean result = AccessController.doPrivileged(
-                new PrivilegedAction<Boolean>() {
-                    public Boolean run() {
-                        for (Class<?> cl = subcl;
-                             cl != ObjectOutputStream.class;
-                             cl = cl.getSuperclass())
-                        {
-                            try {
-                                cl.getDeclaredMethod(
-                                        "writeUnshared", new Class<?>[] { Object.class });
-                                return Boolean.FALSE;
-                            } catch (NoSuchMethodException ex) {
-                            }
-                            try {
-                                cl.getDeclaredMethod("putFields", (Class<?>[]) null);
-                                return Boolean.FALSE;
-                            } catch (NoSuchMethodException ex) {
-                            }
+            new PrivilegedAction<Boolean>() {
+                public Boolean run() {
+                    for (Class<?> cl = subcl;
+                         cl != ObjectOutputStream.class;
+                         cl = cl.getSuperclass())
+                    {
+                        try {
+                            cl.getDeclaredMethod(
+                                "writeUnshared", new Class<?>[] { Object.class });
+                            return Boolean.FALSE;
+                        } catch (NoSuchMethodException ex) {
                         }
-                        return Boolean.TRUE;
+                        try {
+                            cl.getDeclaredMethod("putFields", (Class<?>[]) null);
+                            return Boolean.FALSE;
+                        } catch (NoSuchMethodException ex) {
+                        }
                     }
+                    return Boolean.TRUE;
                 }
+            }
         );
         return result.booleanValue();
     }
@@ -1128,7 +1127,7 @@ public class ObjectOutputStream
      * Underlying writeObject/writeUnshared implementation.
      */
     private void writeObject0(Object obj, boolean unshared)
-            throws IOException
+        throws IOException
     {
         boolean oldMode = bout.setBlockDataMode(false);
         depth++;
@@ -1141,7 +1140,7 @@ public class ObjectOutputStream
             } else if (!unshared && (h = handles.lookup(obj)) != -1) {
                 writeHandle(h);
                 return;
-                // BEGIN Android-changed:  Make Class and ObjectStreamClass replaceable.
+            // BEGIN Android-changed:  Make Class and ObjectStreamClass replaceable.
             /*
             } else if (obj instanceof Class) {
                 writeClass((Class) obj, unshared);
@@ -1150,7 +1149,7 @@ public class ObjectOutputStream
                 writeClassDesc((ObjectStreamClass) obj, unshared);
                 return;
             */
-                // END Android-changed:  Make Class and ObjectStreamClass replaceable.
+            // END Android-changed:  Make Class and ObjectStreamClass replaceable.
             }
 
             // check for replacement object
@@ -1180,8 +1179,8 @@ public class ObjectOutputStream
             Class repCl;
             desc = ObjectStreamClass.lookup(cl, true);
             if (desc.hasWriteReplaceMethod() &&
-                    (obj = desc.invokeWriteReplace(obj)) != null &&
-                    (repCl = obj.getClass()) != cl)
+                (obj = desc.invokeWriteReplace(obj)) != null &&
+                (repCl = obj.getClass()) != cl)
             {
                 cl = repCl;
                 desc = ObjectStreamClass.lookup(cl, true);
@@ -1225,7 +1224,7 @@ public class ObjectOutputStream
                 writeClass((Class) obj, unshared);
             } else if (obj instanceof ObjectStreamClass) {
                 writeClassDesc((ObjectStreamClass) obj, unshared);
-                // END Android-changed: Make Class and ObjectStreamClass replaceable.
+            // END Android-changed: Make Class and ObjectStreamClass replaceable.
             } else if (obj instanceof String) {
                 writeString((String) obj, unshared);
             } else if (cl.isArray()) {
@@ -1237,7 +1236,7 @@ public class ObjectOutputStream
             } else {
                 if (extendedDebugInfo) {
                     throw new NotSerializableException(
-                            cl.getName() + "\n" + debugInfoStack.toString());
+                        cl.getName() + "\n" + debugInfoStack.toString());
                 } else {
                     throw new NotSerializableException(cl.getName());
                 }
@@ -1276,7 +1275,7 @@ public class ObjectOutputStream
      * Writes representation of given class descriptor to stream.
      */
     private void writeClassDesc(ObjectStreamClass desc, boolean unshared)
-            throws IOException
+        throws IOException
     {
         int handle;
         if (desc == null) {
@@ -1293,14 +1292,14 @@ public class ObjectOutputStream
     private boolean isCustomSubclass() {
         // Return true if this class is a custom subclass of ObjectOutputStream
         return getClass().getClassLoader()
-                != ObjectOutputStream.class.getClassLoader();
+                   != ObjectOutputStream.class.getClassLoader();
     }
 
     /**
      * Writes class descriptor representing a dynamic proxy class to stream.
      */
     private void writeProxyDesc(ObjectStreamClass desc, boolean unshared)
-            throws IOException
+        throws IOException
     {
         bout.writeByte(TC_PROXYCLASSDESC);
         handles.assign(unshared ? null : desc);
@@ -1328,7 +1327,7 @@ public class ObjectOutputStream
      * proxy) class to stream.
      */
     private void writeNonProxyDesc(ObjectStreamClass desc, boolean unshared)
-            throws IOException
+        throws IOException
     {
         bout.writeByte(TC_CLASSDESC);
         handles.assign(unshared ? null : desc);
@@ -1374,7 +1373,7 @@ public class ObjectOutputStream
     private void writeArray(Object array,
                             ObjectStreamClass desc,
                             boolean unshared)
-            throws IOException
+        throws IOException
     {
         bout.writeByte(TC_ARRAY);
         writeClassDesc(desc, false);
@@ -1423,14 +1422,14 @@ public class ObjectOutputStream
             bout.writeInt(len);
             if (extendedDebugInfo) {
                 debugInfoStack.push(
-                        "array (class \"" + array.getClass().getName() +
-                                "\", size: " + len  + ")");
+                    "array (class \"" + array.getClass().getName() +
+                    "\", size: " + len  + ")");
             }
             try {
                 for (int i = 0; i < len; i++) {
                     if (extendedDebugInfo) {
                         debugInfoStack.push(
-                                "element of array (index: " + i + ")");
+                            "element of array (index: " + i + ")");
                     }
                     try {
                         writeObject0(objs[i], false);
@@ -1454,7 +1453,7 @@ public class ObjectOutputStream
     private void writeEnum(Enum<?> en,
                            ObjectStreamClass desc,
                            boolean unshared)
-            throws IOException
+        throws IOException
     {
         bout.writeByte(TC_ENUM);
         ObjectStreamClass sdesc = desc.getSuperDesc();
@@ -1471,12 +1470,12 @@ public class ObjectOutputStream
     private void writeOrdinaryObject(Object obj,
                                      ObjectStreamClass desc,
                                      boolean unshared)
-            throws IOException
+        throws IOException
     {
         if (extendedDebugInfo) {
             debugInfoStack.push(
-                    (depth == 1 ? "root " : "") + "object (class \"" +
-                            obj.getClass().getName() + "\", " + obj.toString() + ")");
+                (depth == 1 ? "root " : "") + "object (class \"" +
+                obj.getClass().getName() + "\", " + obj.toString() + ")");
         }
         try {
             desc.checkSerialize();
@@ -1533,7 +1532,7 @@ public class ObjectOutputStream
      * superclass to subclass.
      */
     private void writeSerialData(Object obj, ObjectStreamClass desc)
-            throws IOException
+        throws IOException
     {
         ObjectStreamClass.ClassDataSlot[] slots = desc.getClassDataLayout();
         for (int i = 0; i < slots.length; i++) {
@@ -1545,8 +1544,8 @@ public class ObjectOutputStream
 
                 if (extendedDebugInfo) {
                     debugInfoStack.push(
-                            "custom writeObject data (class \"" +
-                                    slotDesc.getName() + "\")");
+                        "custom writeObject data (class \"" +
+                        slotDesc.getName() + "\")");
                 }
                 try {
                     curContext = new SerialCallbackContext(obj, slotDesc);
@@ -1575,7 +1574,7 @@ public class ObjectOutputStream
      * write, and in which order they should be written.
      */
     private void defaultWriteFields(Object obj, ObjectStreamClass desc)
-            throws IOException
+        throws IOException
     {
         Class<?> cl = desc.forClass();
         if (cl != null && obj != null && !cl.isInstance(obj)) {
@@ -1598,13 +1597,13 @@ public class ObjectOutputStream
         for (int i = 0; i < objVals.length; i++) {
             if (extendedDebugInfo) {
                 debugInfoStack.push(
-                        "field (class \"" + desc.getName() + "\", name: \"" +
-                                fields[numPrimFields + i].getName() + "\", type: \"" +
-                                fields[numPrimFields + i].getType() + "\")");
+                    "field (class \"" + desc.getName() + "\", name: \"" +
+                    fields[numPrimFields + i].getName() + "\", type: \"" +
+                    fields[numPrimFields + i].getType() + "\")");
             }
             try {
                 writeObject0(objVals[i],
-                        fields[numPrimFields + i].isUnshared());
+                             fields[numPrimFields + i].isUnshared());
             } finally {
                 if (extendedDebugInfo) {
                     debugInfoStack.pop();
@@ -1758,13 +1757,13 @@ public class ObjectOutputStream
             for (int i = 0; i < objVals.length; i++) {
                 if (extendedDebugInfo) {
                     debugInfoStack.push(
-                            "field (class \"" + desc.getName() + "\", name: \"" +
-                                    fields[numPrimFields + i].getName() + "\", type: \"" +
-                                    fields[numPrimFields + i].getType() + "\")");
+                        "field (class \"" + desc.getName() + "\", name: \"" +
+                        fields[numPrimFields + i].getName() + "\", type: \"" +
+                        fields[numPrimFields + i].getType() + "\")");
                 }
                 try {
                     writeObject0(objVals[i],
-                            fields[numPrimFields + i].isUnshared());
+                                 fields[numPrimFields + i].isUnshared());
                 } finally {
                     if (extendedDebugInfo) {
                         debugInfoStack.pop();
@@ -1783,7 +1782,7 @@ public class ObjectOutputStream
             ObjectStreamField field = desc.getField(name, type);
             if (field == null) {
                 throw new IllegalArgumentException("no such field " + name +
-                        " with type " + type);
+                                                   " with type " + type);
             }
             return field.getOffset();
         }
@@ -1796,7 +1795,7 @@ public class ObjectOutputStream
      * for details).
      */
     private static class BlockDataOutputStream
-            extends OutputStream implements DataOutput
+        extends OutputStream implements DataOutput
     {
         /** maximum data block length */
         private static final int MAX_BLOCK_SIZE = 1024;
@@ -1930,7 +1929,7 @@ public class ObjectOutputStream
          * original byte array).
          */
         void write(byte[] b, int off, int len, boolean copy)
-                throws IOException
+            throws IOException
         {
             if (!(copy || blkmode)) {           // write directly
                 drain();

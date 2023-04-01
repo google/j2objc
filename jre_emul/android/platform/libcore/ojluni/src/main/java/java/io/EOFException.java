@@ -36,14 +36,14 @@ package java.io;
  * @author  Frank Yellin
  * @see     java.io.DataInputStream
  * @see     java.io.IOException
- * @since   JDK1.0
+ * @since   1.0
  */
-public
-class EOFException extends IOException {
+public class EOFException extends IOException {
+    @java.io.Serial
     private static final long serialVersionUID = 6433858223774886977L;
 
     /**
-     * Constructs an <code>EOFException</code> with <code>null</code>
+     * Constructs an {@code EOFException} with {@code null}
      * as its error detail message.
      */
     public EOFException() {
@@ -51,10 +51,10 @@ class EOFException extends IOException {
     }
 
     /**
-     * Constructs an <code>EOFException</code> with the specified detail
-     * message. The string <code>s</code> may later be retrieved by the
-     * <code>{@link java.lang.Throwable#getMessage}</code> method of class
-     * <code>java.lang.Throwable</code>.
+     * Constructs an {@code EOFException} with the specified detail
+     * message. The string {@code s} may later be retrieved by the
+     * {@link java.lang.Throwable#getMessage} method of class
+     * {@code java.lang.Throwable}.
      *
      * @param   s   the detail message.
      */

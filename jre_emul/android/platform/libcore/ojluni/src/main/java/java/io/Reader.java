@@ -45,7 +45,7 @@ package java.io;
  * @see Writer
  *
  * @author      Mark Reinhold
- * @since       JDK1.1
+ * @since       1.1
  */
 
 public abstract class Reader implements Readable, Closeable {
@@ -54,7 +54,7 @@ public abstract class Reader implements Readable, Closeable {
      * The object used to synchronize operations on this stream.  For
      * efficiency, a character-stream object may use an object other than
      * itself to protect critical sections.  A subclass should therefore use
-     * the object in this field rather than <tt>this</tt> or a synchronized
+     * the object in this field rather than {@code this} or a synchronized
      * method.
      */
     protected Object lock;
@@ -112,7 +112,7 @@ public abstract class Reader implements Readable, Closeable {
      * should override this method.
      *
      * @return     The character read, as an integer in the range 0 to 65535
-     *             (<tt>0x00-0xffff</tt>), or -1 if the end of the stream has
+     *             ({@code 0x00-0xffff}), or -1 if the end of the stream has
      *             been reached
      *
      * @exception  IOException  If an I/O error occurs
@@ -154,8 +154,11 @@ public abstract class Reader implements Readable, Closeable {
      *             stream has been reached
      *
      * @exception  IOException  If an I/O error occurs
+     * @exception  IndexOutOfBoundsException
+     *             If {@code off} is negative, or {@code len} is negative,
+     *             or {@code len} is greater than {@code cbuf.length - off}
      */
-    abstract public int read(char cbuf[], int off, int len) throws IOException;
+    public abstract int read(char cbuf[], int off, int len) throws IOException;
 
     /** Maximum skip-buffer size */
     private static final int maxSkipBufferSize = 8192;

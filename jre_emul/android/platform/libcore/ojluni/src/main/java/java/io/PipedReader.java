@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2014 The Android Open Source Project
  * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
@@ -25,12 +26,13 @@
 
 package java.io;
 
+import libcore.io.IoUtils;
 
 /**
  * Piped character-input streams.
  *
  * @author      Mark Reinhold
- * @since       JDK1.1
+ * @since       1.1
  */
 
 public class PipedReader extends Reader {
@@ -184,7 +186,9 @@ public class PipedReader extends Reader {
             try {
                 wait(1000);
             } catch (InterruptedException ex) {
-                throw new java.io.InterruptedIOException();
+                // Android-changed: re-set the thread's interrupt status
+                // throw new java.io.InterruptedIOException();
+                IoUtils.throwInterruptedIoException();
             }
         }
         if (in < 0) {
@@ -255,7 +259,9 @@ public class PipedReader extends Reader {
             try {
                 wait(1000);
             } catch (InterruptedException ex) {
-                throw new java.io.InterruptedIOException();
+              // Android-changed: re-set the thread's interrupt status
+              // throw new java.io.InterruptedIOException();
+              IoUtils.throwInterruptedIoException();
             }
         }
         int ret = buffer[out++];
@@ -286,6 +292,7 @@ public class PipedReader extends Reader {
      *                  <a href=PipedInputStream.html#BROKEN> <code>broken</code></a>,
      *                  {@link #connect(java.io.PipedWriter) unconnected}, closed,
      *                  or an I/O error occurs.
+     * @exception  IndexOutOfBoundsException {@inheritDoc}
      */
     public synchronized int read(char cbuf[], int off, int len)  throws IOException {
         if (!connected) {

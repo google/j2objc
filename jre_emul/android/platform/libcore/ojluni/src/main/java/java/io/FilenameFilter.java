@@ -38,7 +38,7 @@ package java.io;
  * @author  Jonathan Payne
  * @see     java.io.File
  * @see     java.io.File#list(java.io.FilenameFilter)
- * @since   JDK1.0
+ * @since   1.0
  */
 @FunctionalInterface
 public interface FilenameFilter {

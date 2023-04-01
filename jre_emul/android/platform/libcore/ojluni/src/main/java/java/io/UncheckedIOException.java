@@ -32,6 +32,7 @@ import java.util.Objects;
  * @since   1.8
  */
 public class UncheckedIOException extends RuntimeException {
+    @java.io.Serial
     private static final long serialVersionUID = -8134305061645241065L;
 
     /**
@@ -75,10 +76,14 @@ public class UncheckedIOException extends RuntimeException {
     /**
      * Called to read the object from a stream.
      *
+     * @param  s the {@code ObjectInputStream} from which data is read
+     * @throws IOException if an I/O error occurs
+     * @throws ClassNotFoundException if a serialized class cannot be loaded
      * @throws  InvalidObjectException
      *          if the object is invalid or has a cause that is not
      *          an {@code IOException}
      */
+    @java.io.Serial
     private void readObject(ObjectInputStream s)
         throws IOException, ClassNotFoundException
     {

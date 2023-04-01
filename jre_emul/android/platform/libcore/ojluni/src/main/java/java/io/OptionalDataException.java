@@ -42,15 +42,15 @@ package java.io;
  *       is set to 0.
  * </ul>
  *
- * @author  unascribed
- * @since   JDK1.1
+ * @since   1.1
  */
 public class OptionalDataException extends ObjectStreamException {
 
+    @java.io.Serial
     private static final long serialVersionUID = -8011121865681257820L;
 
     /*
-     * Create an <code>OptionalDataException</code> with a length.
+     * Create an {@code OptionalDataException} with a length.
      */
     OptionalDataException(int len) {
         eof = false;
@@ -58,7 +58,7 @@ public class OptionalDataException extends ObjectStreamException {
     }
 
     /*
-     * Create an <code>OptionalDataException</code> signifying no
+     * Create an {@code OptionalDataException} signifying no
      * more primitive data is available.
      */
     OptionalDataException(boolean end) {

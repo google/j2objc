@@ -35,7 +35,7 @@ package java.io;
  * provide additional methods and fields.
  *
  * @author      Mark Reinhold
- * @since       JDK1.1
+ * @since       1.1
  */
 
 public abstract class FilterWriter extends Writer {
@@ -72,7 +72,12 @@ public abstract class FilterWriter extends Writer {
      * @param  off   Offset from which to start reading characters
      * @param  len   Number of characters to be written
      *
-     * @exception  IOException  If an I/O error occurs
+     * @throws  IndexOutOfBoundsException
+     *          If the values of the {@code off} and {@code len} parameters
+     *          cause the corresponding method of the underlying {@code Writer}
+     *          to throw an {@code IndexOutOfBoundsException}
+     *
+     * @throws  IOException  If an I/O error occurs
      */
     public void write(char cbuf[], int off, int len) throws IOException {
         out.write(cbuf, off, len);
@@ -85,7 +90,12 @@ public abstract class FilterWriter extends Writer {
      * @param  off  Offset from which to start reading characters
      * @param  len  Number of characters to be written
      *
-     * @exception  IOException  If an I/O error occurs
+     * @throws  IndexOutOfBoundsException
+     *          If the values of the {@code off} and {@code len} parameters
+     *          cause the corresponding method of the underlying {@code Writer}
+     *          to throw an {@code IndexOutOfBoundsException}
+     *
+     * @throws  IOException  If an I/O error occurs
      */
     public void write(String str, int off, int len) throws IOException {
         out.write(str, off, len);

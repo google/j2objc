@@ -48,87 +48,96 @@ package java.io;
  * may be thrown if the input stream has been
  * closed.
  *
- * <h3><a name="modified-utf-8">Modified UTF-8</a></h3>
+ * <h3><a id="modified-utf-8">Modified UTF-8</a></h3>
  * <p>
  * Implementations of the DataInput and DataOutput interfaces represent
  * Unicode strings in a format that is a slight modification of UTF-8.
  * (For information regarding the standard UTF-8 format, see section
  * <i>3.9 Unicode Encoding Forms</i> of <i>The Unicode Standard, Version
- * 4.0</i>).
- * Note that in the following table, the most significant bit appears in the
- * far left-hand column.
+ * 4.0</i>)
  *
- * <blockquote>
- *   <table border="1" cellspacing="0" cellpadding="8"
- *          summary="Bit values and bytes">
- *     <tr>
- *       <th colspan="9"><span style="font-weight:normal">
- *         All characters in the range {@code '\u005Cu0001'} to
- *         {@code '\u005Cu007F'} are represented by a single byte:</span></th>
- *     </tr>
- *     <tr>
- *       <td></td>
- *       <th colspan="8" id="bit_a">Bit Values</th>
- *     </tr>
- *     <tr>
- *       <th id="byte1_a">Byte 1</th>
- *       <td><center>0</center>
- *       <td colspan="7"><center>bits 6-0</center>
- *     </tr>
- *     <tr>
- *       <th colspan="9"><span style="font-weight:normal">
- *         The null character {@code '\u005Cu0000'} and characters
+ * <ul>
+ * <li>Characters in the range {@code '\u005Cu0001'} to
+ *         {@code '\u005Cu007F'} are represented by a single byte.
+ * <li>The null character {@code '\u005Cu0000'} and characters
  *         in the range {@code '\u005Cu0080'} to {@code '\u005Cu07FF'} are
- *         represented by a pair of bytes:</span></th>
+ *         represented by a pair of bytes.
+ * <li>Characters in the range {@code '\u005Cu0800'}
+ *         to {@code '\u005CuFFFF'} are represented by three bytes.
+ * </ul>
+ *
+ *   <table class="plain" style="margin-left:2em;">
+ *     <caption>Encoding of UTF-8 values</caption>
+ *     <thead>
+ *     <tr>
+ *       <th scope="col" rowspan="2">Value</th>
+ *       <th scope="col" rowspan="2">Byte</th>
+ *       <th scope="col" colspan="8" id="bit_a">Bit Values</th>
  *     </tr>
  *     <tr>
- *       <td></td>
- *       <th colspan="8" id="bit_b">Bit Values</th>
+ *       <!-- Value -->
+ *       <!-- Byte -->
+ *       <th scope="col" style="width:3em"> 7 </th>
+ *       <th scope="col" style="width:3em"> 6 </th>
+ *       <th scope="col" style="width:3em"> 5 </th>
+ *       <th scope="col" style="width:3em"> 4 </th>
+ *       <th scope="col" style="width:3em"> 3 </th>
+ *       <th scope="col" style="width:3em"> 2 </th>
+ *       <th scope="col" style="width:3em"> 1 </th>
+ *       <th scope="col" style="width:3em"> 0 </th>
+ *     </thead>
+ *     <tbody>
+ *     <tr>
+ *       <th scope="row" style="text-align:left; font-weight:normal">
+ *         {@code \u005Cu0001} to {@code \u005Cu007F} </th>
+ *       <th scope="row" style="font-weight:normal; text-align:center"> 1 </th>
+ *       <td style="text-align:center">0
+ *       <td colspan="7" style="text-align:right; padding-right:6em">bits 6-0
  *     </tr>
  *     <tr>
- *       <th id="byte1_b">Byte 1</th>
- *       <td><center>1</center>
- *       <td><center>1</center>
- *       <td><center>0</center>
- *       <td colspan="5"><center>bits 10-6</center>
+ *       <th scope="row" rowspan="2" style="text-align:left; font-weight:normal">
+ *           {@code \u005Cu0000},<br>
+ *           {@code \u005Cu0080} to {@code \u005Cu07FF} </th>
+ *       <th scope="row" style="font-weight:normal; text-align:center"> 1 </th>
+ *       <td style="text-align:center">1
+ *       <td style="text-align:center">1
+ *       <td style="text-align:center">0
+ *       <td colspan="5" style="text-align:right; padding-right:6em">bits 10-6
  *     </tr>
  *     <tr>
- *       <th id="byte2_a">Byte 2</th>
- *       <td><center>1</center>
- *       <td><center>0</center>
- *       <td colspan="6"><center>bits 5-0</center>
+ *       <!-- (value) -->
+ *       <th scope="row" style="font-weight:normal; text-align:center"> 2 </th>
+ *       <td style="text-align:center">1
+ *       <td style="text-align:center">0
+ *       <td colspan="6" style="text-align:right; padding-right:6em">bits 5-0
  *     </tr>
  *     <tr>
- *       <th colspan="9"><span style="font-weight:normal">
- *         {@code char} values in the range {@code '\u005Cu0800'}
- *         to {@code '\u005CuFFFF'} are represented by three bytes:</span></th>
+ *       <th scope="row" rowspan="3" style="text-align:left; font-weight:normal">
+ *         {@code \u005Cu0800} to {@code \u005CuFFFF} </th>
+ *       <th scope="row" style="font-weight:normal; text-align:center"> 1 </th>
+ *       <td style="text-align:center">1
+ *       <td style="text-align:center">1
+ *       <td style="text-align:center">1
+ *       <td style="text-align:center">0
+ *       <td colspan="4" style="text-align:right; padding-right:6em">bits 15-12
  *     </tr>
  *     <tr>
- *       <td></td>
- *       <th colspan="8"id="bit_c">Bit Values</th>
+ *       <!-- (value) -->
+ *       <th scope="row" style="font-weight:normal; text-align:center"> 2 </th>
+ *       <td style="text-align:center">1
+ *       <td style="text-align:center">0
+ *       <td colspan="6" style="text-align:right; padding-right:6em">bits 11-6
  *     </tr>
  *     <tr>
- *       <th id="byte1_c">Byte 1</th>
- *       <td><center>1</center>
- *       <td><center>1</center>
- *       <td><center>1</center>
- *       <td><center>0</center>
- *       <td colspan="4"><center>bits 15-12</center>
+ *       <!-- (value) -->
+ *       <th scope="row" style="font-weight:normal; text-align:center"> 3 </th>
+ *       <td style="text-align:center">1
+ *       <td style="text-align:center">0
+ *       <td colspan="6" style="text-align:right; padding-right:6em">bits 5-0
  *     </tr>
- *     <tr>
- *       <th id="byte2_b">Byte 2</th>
- *       <td><center>1</center>
- *       <td><center>0</center>
- *       <td colspan="6"><center>bits 11-6</center>
- *     </tr>
- *     <tr>
- *       <th id="byte3">Byte 3</th>
- *       <td><center>1</center>
- *       <td><center>0</center>
- *       <td colspan="6"><center>bits 5-0</center>
- *     </tr>
+ *     </tbody>
  *   </table>
- * </blockquote>
+ *
  * <p>
  * The differences between this format and the
  * standard UTF-8 format are the following:
@@ -143,7 +152,7 @@ package java.io;
  * @author  Frank Yellin
  * @see     java.io.DataInputStream
  * @see     java.io.DataOutput
- * @since   JDK1.0
+ * @since   1.0
  */
 public
 interface DataInput {
@@ -182,10 +191,11 @@ interface DataInput {
      * not all bytes of {@code b} have been
      * updated with data from the input stream.
      *
-     * @param     b   the buffer into which the data is read.
-     * @exception  EOFException  if this stream reaches the end before reading
-     *               all the bytes.
-     * @exception  IOException   if an I/O error occurs.
+     * @param   b   the buffer into which the data is read.
+     * @throws  NullPointerException if {@code b} is {@code null}.
+     * @throws  EOFException  if this stream reaches the end before reading
+     *          all the bytes.
+     * @throws  IOException   if an I/O error occurs.
      */
     void readFully(byte b[]) throws IOException;
 
@@ -226,12 +236,16 @@ interface DataInput {
      * and so on. The number of bytes read is,
      * at most, equal to {@code len}.
      *
-     * @param     b   the buffer into which the data is read.
-     * @param off  an int specifying the offset into the data.
-     * @param len  an int specifying the number of bytes to read.
-     * @exception  EOFException  if this stream reaches the end before reading
-     *               all the bytes.
-     * @exception  IOException   if an I/O error occurs.
+     * @param   b    the buffer into which the data is read.
+     * @param   off  an int specifying the offset in the data array {@code b}.
+     * @param   len  an int specifying the number of bytes to read.
+     * @throws  NullPointerException if {@code b} is {@code null}.
+     * @throws  IndexOutOfBoundsException if {@code off} is negative,
+     *          {@code len} is negative, or {@code len} is greater than
+     *          {@code b.length - off}.
+     * @throws  EOFException  if this stream reaches the end before reading
+     *          all the bytes.
+     * @throws  IOException   if an I/O error occurs.
      */
     void readFully(byte b[], int off, int len) throws IOException;
 

@@ -31,7 +31,7 @@ package java.io;
  * stream.
  *
  * @author      Mark Reinhold
- * @since       JDK1.1
+ * @since       1.1
  */
 
 public class PushbackReader extends FilterReader {
@@ -102,6 +102,7 @@ public class PushbackReader extends FilterReader {
      *             stream has been reached
      *
      * @exception  IOException  If an I/O error occurs
+     * @exception  IndexOutOfBoundsException {@inheritDoc}
      */
     public int read(char cbuf[], int off, int len) throws IOException {
         synchronized (lock) {
@@ -240,13 +241,16 @@ public class PushbackReader extends FilterReader {
      * Closes the stream and releases any system resources associated with
      * it. Once the stream has been closed, further read(),
      * unread(), ready(), or skip() invocations will throw an IOException.
-     * Closing a previously closed stream has no effect.
+     * Closing a previously closed stream has no effect. This method will block
+     * while there is another thread blocking on the reader.
      *
      * @exception  IOException  If an I/O error occurs
      */
     public void close() throws IOException {
-        super.close();
-        buf = null;
+        synchronized (lock) {
+            super.close();
+            buf = null;
+        }
     }
 
     /**

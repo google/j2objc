@@ -63,6 +63,9 @@ public final class FileDescriptor {
     /** @hide */
     public static final long NO_OWNER = 0L;
 
+    // Android-added: lock for release$.
+    private final Object releaseLock = new Object();
+
     /**
      * Constructs an (invalid) FileDescriptor
      * object.
@@ -178,10 +181,6 @@ public final class FileDescriptor {
         this.descriptor = fd;
     }
 
-    @Override public String toString() {
-        return "FileDescriptor[" + descriptor + "]";
-    }
-
     // BEGIN Android-added: Method to clone standard file descriptors.
     // Required as a consequence of RuntimeInit#redirectLogStreams. Cloning is used in
     // ZygoteHooks.onEndPreload().
@@ -229,14 +228,21 @@ public final class FileDescriptor {
 
     /**
      * Returns a copy of this FileDescriptor, and sets this to an invalid state.
+     *
+     * The returned instance is not necessarily {@code valid()}, if the original FileDescriptor
+     * was invalid, or if another thread concurrently calls {@code release$()}.
+     *
      * @hide internal use only
      */
     public FileDescriptor release$() {
       FileDescriptor result = new FileDescriptor();
-      result.descriptor = this.descriptor;
-      result.ownerId = this.ownerId;
-      this.descriptor = -1;
-      this.ownerId = FileDescriptor.NO_OWNER;
+      synchronized (releaseLock) {
+          result.descriptor = this.descriptor;
+          result.ownerId = this.ownerId;
+          this.descriptor = -1;
+          this.ownerId = FileDescriptor.NO_OWNER;
+      }
+
       return result;
     }
     // END Android-added: Methods to enable ownership enforcement of Unix file descriptors.
@@ -250,4 +256,30 @@ public final class FileDescriptor {
     }
 
     private static native boolean isSocket(int descriptor);
+
+    /* J2Objc removed
+    // Set up JavaIOFileDescriptorAccess in SharedSecrets
+    static {
+        sun.misc.SharedSecrets.setJavaIOFileDescriptorAccess(
+            new sun.misc.JavaIOFileDescriptorAccess() {
+                public void set(FileDescriptor obj, int fd) {
+                    obj.descriptor = fd;
+                }
+
+                public int get(FileDescriptor obj) {
+                    return obj.descriptor;
+                }
+
+                public void setHandle(FileDescriptor obj, long handle) {
+                    throw new UnsupportedOperationException();
+                }
+
+                public long getHandle(FileDescriptor obj) {
+                    throw new UnsupportedOperationException();
+                }
+            }
+        );
+    }
+// Android-removed: Removed method required for parents reference counting.
+    */
 }

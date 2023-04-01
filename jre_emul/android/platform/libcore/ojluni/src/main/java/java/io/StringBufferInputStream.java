@@ -37,7 +37,7 @@ package java.io;
  * @author     Arthur van Hoff
  * @see        java.io.ByteArrayInputStream
  * @see        java.io.StringReader
- * @since      JDK1.0
+ * @since      1.0
  * @deprecated This class does not properly convert characters into bytes.  As
  *             of JDK&nbsp;1.1, the preferred way to create a stream from a
  *             string is via the <code>StringReader</code> class.
@@ -108,6 +108,7 @@ class StringBufferInputStream extends InputStream {
      *             <code>-1</code> if there is no more data because the end of
      *             the stream has been reached.
      */
+    @SuppressWarnings("deprecation")
     public synchronized int read(byte b[], int off, int len) {
         if (b == null) {
             throw new NullPointerException();
@@ -127,12 +128,8 @@ class StringBufferInputStream extends InputStream {
         if (len <= 0) {
             return 0;
         }
-        String  s = buffer;
-        int cnt = len;
-        while (--cnt >= 0) {
-            b[off++] = (byte)s.charAt(pos++);
-        }
-
+        buffer.getBytes(pos, pos + len, b, off);
+        pos += len;
         return len;
     }
 

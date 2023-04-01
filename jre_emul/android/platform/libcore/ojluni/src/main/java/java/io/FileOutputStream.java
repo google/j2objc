@@ -26,6 +26,14 @@
 
 package java.io;
 
+/* J2ObjC removed
+import dalvik.annotation.optimization.ReachabilitySensitive;
+import dalvik.system.BlockGuard;
+import libcore.io.IoTracker;
+import libcore.io.IoUtils;
+import sun.nio.ch.FileChannelImpl;
+*/
+
 import static libcore.io.OsConstants.O_APPEND;
 import static libcore.io.OsConstants.O_CREAT;
 import static libcore.io.OsConstants.O_TRUNC;
@@ -250,6 +258,7 @@ class FileOutputStream extends OutputStream
     }
 
     // Android-removed: Documentation around SecurityException. Not thrown on Android.
+    // Android-changed: Added doc for the Android-specific file descriptor ownership.
     /**
      * Creates a file output stream to write to the specified file
      * descriptor, which represents an existing connection to an actual
@@ -266,6 +275,10 @@ class FileOutputStream extends OutputStream
      * is {@link java.io.FileDescriptor#valid() invalid}.
      * However, if the methods are invoked on the resulting stream to attempt
      * I/O on the stream, an <code>IOException</code> is thrown.
+     * <p>
+     * Android-specific warning: {@link #close()} method doesn't close the {@code fdObj} provided,
+     * because this object doesn't own the file descriptor, but the caller does. The caller can
+     * call {@link android.system.Os#close(FileDescriptor)} to close the fd.
      *
      * @param      fdObj   the file descriptor to be opened for writing
      */

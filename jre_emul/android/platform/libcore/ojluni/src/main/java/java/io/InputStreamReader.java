@@ -56,16 +56,12 @@ import sun.nio.cs.StreamDecoder;
  * @see java.nio.charset.Charset
  *
  * @author      Mark Reinhold
- * @since       JDK1.1
+ * @since       1.1
  */
 
 public class InputStreamReader extends Reader {
 
     private final StreamDecoder sd;
-
-    // J2ObjC added: Avoid creating a reference cycle by passing "this" for the mutex to
-    // StreamDecoder.
-    private final Object lock = new Object();
 
     /**
      * Creates an InputStreamReader that uses the default charset.
@@ -74,12 +70,8 @@ public class InputStreamReader extends Reader {
      */
     public InputStreamReader(InputStream in) {
         super(in);
-        try {
-            sd = StreamDecoder.forInputStreamReader(in, lock, (String)null); // ## check lock object
-        } catch (UnsupportedEncodingException e) {
-            // The default encoding should always be available
-            throw new Error(e);
-        }
+        sd = StreamDecoder.forInputStreamReader(in, this,
+                Charset.defaultCharset()); // ## check lock object
     }
 
     /**
@@ -101,7 +93,7 @@ public class InputStreamReader extends Reader {
         super(in);
         if (charsetName == null)
             throw new NullPointerException("charsetName");
-        sd = StreamDecoder.forInputStreamReader(in, lock, charsetName);
+        sd = StreamDecoder.forInputStreamReader(in, this, charsetName);
     }
 
     /**
@@ -117,7 +109,7 @@ public class InputStreamReader extends Reader {
         super(in);
         if (cs == null)
             throw new NullPointerException("charset");
-        sd = StreamDecoder.forInputStreamReader(in, lock, cs);
+        sd = StreamDecoder.forInputStreamReader(in, this, cs);
     }
 
     /**
@@ -133,7 +125,7 @@ public class InputStreamReader extends Reader {
         super(in);
         if (dec == null)
             throw new NullPointerException("charset decoder");
-        sd = StreamDecoder.forInputStreamReader(in, lock, dec);
+        sd = StreamDecoder.forInputStreamReader(in, this, dec);
     }
 
     /**

@@ -26,9 +26,16 @@
 package java.io;
 
 // Android-added: Notes about serialVersionUID, using serialization judiciously, JSON.
+// Android-removed: External links to serialization guidelinenes.
 /**
  * Serializability of a class is enabled by the class implementing the
- * java.io.Serializable interface. Classes that do not implement this
+ * java.io.Serializable interface.
+ *
+ * <p><strong>Warning: Deserialization of untrusted data is inherently dangerous
+ * and should be avoided. Untrusted data should be carefully validated.
+ * </strong></p>
+ *
+ * Classes that do not implement this
  * interface will not have any of their state serialized or
  * deserialized.  All subtypes of a serializable class are themselves
  * serializable.  The serialization interface has no methods or fields
@@ -85,9 +92,9 @@ package java.io;
  * correspondingly named fields in the current object.  This handles the case
  * when the class has evolved to add new fields. The method does not need to
  * concern itself with the state belonging to its superclasses or subclasses.
- * State is saved by writing the individual fields to the
- * ObjectOutputStream using the writeObject method or by using the
- * methods for primitive data types supported by DataOutput.
+ * State is restored by reading data from the ObjectInputStream for
+ * the individual fields and making assignments to the appropriate fields
+ * of the object. Reading primitive data types is supported by DataInput.
  *
  * <p>The readObjectNoData method is responsible for initializing the state of
  * the object for its particular class in the event that the serialization
@@ -183,7 +190,7 @@ package java.io;
  * @see java.io.ObjectOutput
  * @see java.io.ObjectInput
  * @see java.io.Externalizable
- * @since   JDK1.1
+ * @since   1.1
  */
 public interface Serializable {
 }

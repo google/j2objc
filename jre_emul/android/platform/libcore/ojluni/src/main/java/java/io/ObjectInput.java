@@ -1,111 +1,107 @@
 /*
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
+ * Copyright (c) 1996, 2010, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This code is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 only, as
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * This code is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * version 2 for more details (a copy is included in the LICENSE file that
+ * accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License version
+ * 2 along with this work; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
+ * or visit www.oracle.com if you need additional information or have any
+ * questions.
  */
 
 package java.io;
 
 /**
- * Defines an interface for classes that allow reading serialized objects.
+ * ObjectInput extends the DataInput interface to include the reading of
+ * objects. DataInput includes methods for the input of primitive types,
+ * ObjectInput extends that interface to include objects, arrays, and Strings.
  *
- * @see ObjectInputStream
- * @see ObjectOutput
+ * @author  unascribed
+ * @see java.io.InputStream
+ * @see java.io.ObjectOutputStream
+ * @see java.io.ObjectInputStream
+ * @since   1.1
  */
 public interface ObjectInput extends DataInput, AutoCloseable {
     /**
-     * Indicates the number of bytes of primitive data that can be read without
-     * blocking.
+     * Read and return an object. The class that implements this interface
+     * defines where the object is "read" from.
      *
-     * @return the number of bytes available.
-     * @throws IOException
-     *             if an I/O error occurs.
+     * @return the object read from the stream
+     * @exception java.lang.ClassNotFoundException If the class of a serialized
+     *      object cannot be found.
+     * @exception IOException If any of the usual Input/Output
+     * related exceptions occur.
      */
-    public int available() throws IOException;
+    public Object readObject()
+        throws ClassNotFoundException, IOException;
 
     /**
-     * Closes this stream. Implementations of this method should free any
-     * resources used by the stream.
-     *
-     * @throws IOException
-     *             if an I/O error occurs while closing the input stream.
-     */
-    public void close() throws IOException;
-
-    /**
-     * Reads a single byte from this stream and returns it as an integer in the
-     * range from 0 to 255. Returns -1 if the end of this stream has been
-     * reached. Blocks if no input is available.
-     *
-     * @return the byte read or -1 if the end of this stream has been reached.
-     * @throws IOException
-     *             if this stream is closed or another I/O error occurs.
+     * Reads a byte of data. This method will block if no input is
+     * available.
+     * @return  the byte read, or -1 if the end of the
+     *          stream is reached.
+     * @exception IOException If an I/O error has occurred.
      */
     public int read() throws IOException;
 
     /**
-     * Reads bytes from this stream into the byte array {@code buffer}. Blocks
-     * while waiting for input.
-     *
-     * @param buffer
-     *            the array in which to store the bytes read.
-     * @return the number of bytes read or -1 if the end of this stream has been
-     *         reached.
-     * @throws IOException
-     *             if this stream is closed or another I/O error occurs.
+     * Reads into an array of bytes.  This method will
+     * block until some input is available.
+     * @param b the buffer into which the data is read
+     * @return  the actual number of bytes read, -1 is
+     *          returned when the end of the stream is reached.
+     * @exception IOException If an I/O error has occurred.
      */
-    public int read(byte[] buffer) throws IOException;
+    public int read(byte b[]) throws IOException;
 
     /**
-     * Reads at most {@code count} bytes from this stream and stores them in
-     * byte array {@code buffer} starting at offset {@code count}. Blocks while
-     * waiting for input.
-     *
-     * @param buffer
-     *            the array in which to store the bytes read.
-     * @param offset
-     *            the initial position in {@code buffer} to store the bytes read
-     *            from this stream.
-     * @param count
-     *            the maximum number of bytes to store in {@code buffer}.
-     * @return the number of bytes read or -1 if the end of this stream has been
-     *         reached.
-     * @throws IOException
-     *             if this stream is closed or another I/O error occurs.
+     * Reads into an array of bytes.  This method will
+     * block until some input is available.
+     * @param b the buffer into which the data is read
+     * @param off the start offset of the data
+     * @param len the maximum number of bytes read
+     * @return  the actual number of bytes read, -1 is
+     *          returned when the end of the stream is reached.
+     * @exception IOException If an I/O error has occurred.
      */
-    public int read(byte[] buffer, int offset, int count) throws IOException;
+    public int read(byte b[], int off, int len) throws IOException;
 
     /**
-     * Reads the next object from this stream.
-     *
-     * @return the object read.
-     *
-     * @throws ClassNotFoundException
-     *             if the object's class cannot be found.
-     * @throws IOException
-     *             if this stream is closed or another I/O error occurs.
+     * Skips n bytes of input.
+     * @param n the number of bytes to be skipped
+     * @return  the actual number of bytes skipped.
+     * @exception IOException If an I/O error has occurred.
      */
-    public Object readObject() throws ClassNotFoundException, IOException;
+    public long skip(long n) throws IOException;
 
     /**
-     * Skips {@code byteCount} bytes on this stream. Less than {@code byteCount} byte are
-     * skipped if the end of this stream is reached before the operation
-     * completes.
-     *
-     * @return the number of bytes actually skipped.
-     * @throws IOException
-     *             if this stream is closed or another I/O error occurs.
+     * Returns the number of bytes that can be read
+     * without blocking.
+     * @return the number of available bytes.
+     * @exception IOException If an I/O error has occurred.
      */
-    public long skip(long byteCount) throws IOException;
+    public int available() throws IOException;
+
+    /**
+     * Closes the input stream. Must be called
+     * to release any resources associated with
+     * the stream.
+     * @exception IOException If an I/O error has occurred.
+     */
+    public void close() throws IOException;
 }

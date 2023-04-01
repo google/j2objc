@@ -28,11 +28,12 @@ package java.io;
  * The Character Encoding is not supported.
  *
  * @author  Asmus Freytag
- * @since   JDK1.1
+ * @since   1.1
  */
 public class UnsupportedEncodingException
     extends IOException
 {
+    @java.io.Serial
     private static final long serialVersionUID = -4274276298326136670L;
 
     /**
