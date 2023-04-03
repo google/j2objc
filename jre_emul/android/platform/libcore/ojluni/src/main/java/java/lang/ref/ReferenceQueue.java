@@ -26,15 +26,15 @@
 
 package java.lang.ref;
 
-import sun.misc.Cleaner;
-
 /**
- * Reference queues, to which registered reference objects are appended by the
- * garbage collector after the appropriate reachability changes are detected.
+ * Reference queues, to which registered reference objects are appended by the garbage collector
+ * after the appropriate reachability changes are detected.
  *
- * @author   Mark Reinhold
- * @since    1.2
+ * @author Mark Reinhold
+ * @since 1.2
  */
+// BEGIN Android-changed: Reimplemented to accomodate a different GC and compiler.
+
 public class ReferenceQueue<T> {
 
     // Reference.queueNext will be set to sQueueNextUnenqueued to indicate
@@ -51,10 +51,11 @@ public class ReferenceQueue<T> {
 
     private final Object lock = new Object();
 
-    /**
-     * Constructs a new reference-object queue.
-     */
-    public ReferenceQueue() { }
+  // J2ObjC unused.
+  // private static ReferenceQueue currentQueue = null; // Current target of enqueuePending.
+
+  /** Constructs a new reference-object queue. */
+  public ReferenceQueue() {}
 
     /**
      * Enqueue the given reference onto this queue.
@@ -95,11 +96,19 @@ public class ReferenceQueue<T> {
         return true;
     }
 
-    /**
-     * Test if the given reference object has been enqueued but not yet
-     * removed from the queue, assuming this is the reference object's queue.
-     */
-    boolean isEnqueued(Reference<? extends T> reference) {
+  /**
+   * J2ObjC unused. The queue currently being targeted by enqueuePending. Used only to get slightly
+   * informative output for timeouts. May be read via a data race, but only for crash debugging
+   * output.
+   *
+   * @hide public static ReferenceQueue getCurrentQueue() { return currentQueue; }
+   */
+
+  /**
+   * Test if the given reference object has been enqueued but not yet removed from the queue,
+   * assuming this is the reference object's queue.
+   */
+  boolean isEnqueued(Reference<? extends T> reference) {
         synchronized (lock) {
             return reference.queueNext != null && reference.queueNext != sQueueNextUnenqueued;
         }
@@ -214,72 +223,77 @@ public class ReferenceQueue<T> {
         return remove(0);
     }
 
-    /* J2ObjC unused.
-     * Enqueue the given list of currently pending (unenqueued) references.
-     *
-     * @hide
-    public static void enqueuePending(Reference<?> list) {
-        Reference<?> start = list;
-        do {
-            ReferenceQueue queue = list.queue;
-            if (queue == null) {
-                Reference<?> next = list.pendingNext;
+  /* J2ObjC unused.
+   * Enqueue the given list of currently pending (unenqueued) references.
+   *
+   * @hide
+  public static void enqueuePending(Reference<?> list, AtomicInteger progressCounter) {
+      Reference<?> start = list;
+      do {
+          ReferenceQueue queue = list.queue;
+          currentQueue = queue;
+          if (queue == null) {
+              Reference<?> next = list.pendingNext;
 
-                // Make pendingNext a self-loop to preserve the invariant that
-                // once enqueued, pendingNext is non-null -- without leaking
-                // the object pendingNext was previously pointing to.
-                list.pendingNext = list;
-                list = next;
-            } else {
-                // To improve performance, we try to avoid repeated
-                // synchronization on the same queue by batching enqueue of
-                // consecutive references in the list that have the same
-                // queue.
-                synchronized (queue.lock) {
-                    do {
-                        Reference<?> next = list.pendingNext;
+              // Make pendingNext a self-loop to preserve the invariant that
+              // once enqueued, pendingNext is non-null -- without leaking
+              // the object pendingNext was previously pointing to.
+              list.pendingNext = list;
+              list = next;
+          } else {
+              // To improve performance, we try to avoid repeated
+              // synchronization on the same queue by batching enqueueing of
+              // consecutive references in the list that have the same
+              // queue. We limit this so that progressCounter gets incremented
+              // occasionally,
+              final int MAX_ITERS = 100;
+              int i = 0;
+              synchronized (queue.lock) {
+                  do {
+                      Reference<?> next = list.pendingNext;
 
-                        // Make pendingNext a self-loop to preserve the
-                        // invariant that once enqueued, pendingNext is
-                        // non-null -- without leaking the object pendingNext
-                        // was previously pointing to.
-                        list.pendingNext = list;
-                        queue.enqueueLocked(list);
-                        list = next;
-                    } while (list != start && list.queue == queue);
-                    queue.lock.notifyAll();
-                }
-            }
-        } while (list != start);
-    }
-    */
+                      // Make pendingNext a self-loop to preserve the
+                      // invariant that once enqueued, pendingNext is
+                      // non-null -- without leaking the object pendingNext
+                      // was previously pointing to.
+                      list.pendingNext = list;
+                      queue.enqueueLocked(list);
+                      list = next;
+                  } while (list != start && list.queue == queue && ++i <= MAX_ITERS);
+                  queue.lock.notifyAll();
+              }
+          }
+      progressCounter.incrementAndGet();
+      } while (list != start);
+  }
+  */
 
-    /* J2ObjC unused.
-     * List of references that the GC says need to be enqueued.
-     * Protected by ReferenceQueue.class lock.
-     * @hide
-    public static Reference<?> unenqueued = null;
+  /* J2ObjC unused.
+   * List of references that the GC says need to be enqueued.
+   * Protected by ReferenceQueue.class lock.
+   * @hide
+  public static Reference<?> unenqueued = null;
 
-    static void add(Reference<?> list) {
-        synchronized (ReferenceQueue.class) {
-            if (unenqueued == null) {
-                unenqueued = list;
-            } else {
-                // Find the last element in unenqueued.
-                Reference<?> last = unenqueued;
-                while (last.pendingNext != unenqueued) {
+  static void add(Reference<?> list) {
+      synchronized (ReferenceQueue.class) {
+          if (unenqueued == null) {
+              unenqueued = list;
+          } else {
+              // Find the last element in unenqueued.
+              Reference<?> last = unenqueued;
+              while (last.pendingNext != unenqueued) {
+                last = last.pendingNext;
+              }
+              // Add our list to the end. Update the pendingNext to point back to enqueued.
+              last.pendingNext = list;
+              last = list;
+              while (last.pendingNext != list) {
                   last = last.pendingNext;
-                }
-                // Add our list to the end. Update the pendingNext to point back to enqueued.
-                last.pendingNext = list;
-                last = list;
-                while (last.pendingNext != list) {
-                    last = last.pendingNext;
-                }
-                last.pendingNext = unenqueued;
-            }
-            ReferenceQueue.class.notifyAll();
-        }
-    }
-    */
+              }
+              last.pendingNext = unenqueued;
+          }
+          ReferenceQueue.class.notifyAll();
+      }
+  }
+  */
 }
