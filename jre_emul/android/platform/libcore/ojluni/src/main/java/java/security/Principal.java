@@ -35,6 +35,7 @@ import javax.security.auth.Subject;
  * @see java.security.cert.X509Certificate
  *
  * @author Li Gong
+ * @since 1.1
  */
 public interface Principal {
 
@@ -74,7 +75,8 @@ public interface Principal {
     /**
      * Returns true if the specified subject is implied by this principal.
      *
-     * <p>The default implementation of this method returns true if
+     * @implSpec
+     * The default implementation of this method returns true if
      * {@code subject} is non-null and contains at least one principal that
      * is equal to this principal.
      *

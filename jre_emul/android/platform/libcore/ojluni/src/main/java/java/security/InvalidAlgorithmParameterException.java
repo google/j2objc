@@ -40,6 +40,7 @@ package java.security;
 public class InvalidAlgorithmParameterException
 extends GeneralSecurityException {
 
+    @java.io.Serial
     private static final long serialVersionUID = 2864672297499471472L;
 
     /**
@@ -65,7 +66,7 @@ extends GeneralSecurityException {
     }
 
     /**
-     * Creates a {@code InvalidAlgorithmParameterException} with the
+     * Creates an {@code InvalidAlgorithmParameterException} with the
      * specified detail message and cause.
      *
      * @param message the detail message (which is saved for later retrieval
@@ -80,7 +81,7 @@ extends GeneralSecurityException {
     }
 
     /**
-     * Creates a {@code InvalidAlgorithmParameterException} with the
+     * Creates an {@code InvalidAlgorithmParameterException} with the
      * specified cause and a detail message of
      * {@code (cause==null ? null : cause.toString())}
      * (which typically contains the class and detail message of

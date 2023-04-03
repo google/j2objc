@@ -25,8 +25,6 @@
 
 package java.security;
 
-// Android-changed: Stubbed the implementation.  Android doesn't support SecurityManager.
-// See comments in java.lang.SecurityManager for details.
 /**
  * Legacy security code; do not use.
  */

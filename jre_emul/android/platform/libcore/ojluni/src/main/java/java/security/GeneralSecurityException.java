@@ -31,10 +31,12 @@ package java.security;
  * security-related exception classes that extend from it.
  *
  * @author Jan Luehe
+ * @since 1.2
  */
 
 public class GeneralSecurityException extends Exception {
 
+    @java.io.Serial
     private static final long serialVersionUID = 894798122053539237L;
 
     /**

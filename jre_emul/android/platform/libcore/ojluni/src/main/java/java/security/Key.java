@@ -63,7 +63,7 @@ package java.security;
  * </pre>
  *
  * For more information, see
- * <a href="http://www.ietf.org/rfc/rfc3280.txt">RFC 3280:
+ * <a href="http://tools.ietf.org/html/rfc5280">RFC 5280:
  * Internet X.509 Public Key Infrastructure Certificate and CRL Profile</a>.
  *
  * <LI>A Format
@@ -74,7 +74,7 @@ package java.security;
  * </UL>
  *
  * Keys are generally obtained through key generators, certificates,
- * or various Identity classes used to manage keys.
+ * key stores or other classes used to manage keys.
  * Keys may also be obtained from key specifications (transparent
  * representations of the underlying key material) through the use of a key
  * factory (see {@link KeyFactory}).
@@ -82,7 +82,7 @@ package java.security;
  * <p> A Key should use KeyRep as its serialized representation.
  * Note that a serialized Key may contain sensitive information
  * which should not be exposed in untrusted environments.  See the
- * <a href="../../../platform/serialization/spec/security.html">
+ * <a href="{@docRoot}/../specs/serialization/security.html">
  * Security Appendix</a>
  * of the Serialization Specification for more information.
  *
@@ -97,6 +97,7 @@ package java.security;
  * @see Signer
  *
  * @author Benjamin Renaud
+ * @since 1.1
  */
 
 public interface Key extends java.io.Serializable {
@@ -107,16 +108,23 @@ public interface Key extends java.io.Serializable {
     * The class fingerprint that is set to indicate
     * serialization compatibility with a previous
     * version of the class.
+    *
+    * @deprecated A {@code serialVersionUID} field in an interface is
+    * ineffectual. Do not use; no replacement.
     */
+    @Deprecated
+    @SuppressWarnings("serial")
+    @java.io.Serial
     static final long serialVersionUID = 6603384152749567654L;
 
     /**
      * Returns the standard algorithm name for this key. For
      * example, "DSA" would indicate that this key is a DSA key.
-     * See Appendix A in the <a href=
-     * "../../../technotes/guides/security/crypto/CryptoSpec.html#AppA">
-     * Java Cryptography Architecture API Specification &amp; Reference </a>
-     * for information about standard algorithm names.
+     * See the key related sections (KeyFactory, KeyGenerator,
+     * KeyPairGenerator, and SecretKeyFactory) in the <a href=
+     * "{@docRoot}/../specs/security/standard-names.html">
+     * Java Security Standard Algorithm Names Specification</a>
+     * for information about standard key algorithm names.
      *
      * @return the name of the algorithm associated with this key.
      */

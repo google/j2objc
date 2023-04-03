@@ -25,6 +25,10 @@
 
 package java.security;
 
+/* J2ObjC removed
+import dalvik.system.VMRuntime;
+*/
+
 import java.util.*;
 import java.util.regex.*;
 
@@ -98,7 +102,7 @@ import sun.security.jca.GetInstance.Instance;
 
 public class SecureRandom extends java.util.Random {
 
-    // Android-removed: this debugging mechanism is not used in Android.
+    // Android-removed: this debugging mechanism is not supported in Android.
     /*
     private static final Debug pdebug =
                         Debug.getInstance("provider", "Provider");
@@ -150,7 +154,7 @@ public class SecureRandom extends java.util.Random {
      * the {@link Security#getProviders() Security.getProviders()} method.
      *
      * <p> See the SecureRandom section in the <a href=
-     * "{@docRoot}/../technotes/guides/security/StandardNames.html#SecureRandom">
+     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#SecureRandom">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard RNG algorithm names.
      *
@@ -188,7 +192,7 @@ public class SecureRandom extends java.util.Random {
      * the {@link Security#getProviders() Security.getProviders()} method.
      *
      * <p> See the SecureRandom section in the <a href=
-     * "{@docRoot}/../technotes/guides/security/StandardNames.html#SecureRandom">
+     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#SecureRandom">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard RNG algorithm names.
      *
@@ -202,7 +206,7 @@ public class SecureRandom extends java.util.Random {
     private void getDefaultPRNG(boolean setSeed, byte[] seed) {
         String prng = getPrngAlgorithm();
         if (prng == null) {
-            // Android-changed: This should never happen, we always provide a SecureRandom
+            // Android-changed, should never happen
             throw new IllegalStateException("No SecureRandom implementation!");
         } else {
             try {
@@ -252,7 +256,7 @@ public class SecureRandom extends java.util.Random {
                 " algorithm from: " + this.provider.getName());
         }
         */
-        // END Android-removed: this debugging mechanism is not supported in Android.
+        // END Android-removed
     }
 
     /**
@@ -277,7 +281,7 @@ public class SecureRandom extends java.util.Random {
      *
      * @param algorithm the name of the RNG algorithm.
      * See the SecureRandom section in the <a href=
-     * "{@docRoot}/../technotes/guides/security/StandardNames.html#SecureRandom">
+     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#SecureRandom">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard RNG algorithm names.
      *
@@ -297,6 +301,39 @@ public class SecureRandom extends java.util.Random {
             SecureRandomSpi.class, algorithm);
         return new SecureRandom((SecureRandomSpi)instance.impl,
             instance.provider, algorithm);
+    }
+
+    /**
+     * Maximum SDK version for which the workaround for the Crypto provider is in place.
+     *
+     * <p> We provide instances from the Crypto provider (although the provider is not installed) to
+     * apps targeting M or earlier versions of the SDK.
+     *
+     * <p> Default is 23 (M). We have it as a field for testability and it shouldn't be changed.
+     *
+     * @hide
+     */
+    public static final int DEFAULT_SDK_TARGET_FOR_CRYPTO_PROVIDER_WORKAROUND = 23;
+
+    private static int sdkTargetForCryptoProviderWorkaround =
+            DEFAULT_SDK_TARGET_FOR_CRYPTO_PROVIDER_WORKAROUND;
+
+    /**
+     * Only for testing.
+     *
+     * @hide
+     */
+    public static void setSdkTargetForCryptoProviderWorkaround(int sdkTargetVersion) {
+        sdkTargetForCryptoProviderWorkaround = sdkTargetVersion;
+    }
+
+    /**
+     * Only for testing.
+     *
+     * @hide
+     */
+    public static int getSdkTargetForCryptoProviderWorkaround() {
+        return sdkTargetForCryptoProviderWorkaround;
     }
 
     /**
@@ -320,7 +357,7 @@ public class SecureRandom extends java.util.Random {
      *
      * @param algorithm the name of the RNG algorithm.
      * See the SecureRandom section in the <a href=
-     * "{@docRoot}/../technotes/guides/security/StandardNames.html#SecureRandom">
+     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#SecureRandom">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard RNG algorithm names.
      *
@@ -368,7 +405,7 @@ public class SecureRandom extends java.util.Random {
      *
      * @param algorithm the name of the RNG algorithm.
      * See the SecureRandom section in the <a href=
-     * "{@docRoot}/../technotes/guides/security/StandardNames.html#SecureRandom">
+     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#SecureRandom">
      * Java Cryptography Architecture Standard Algorithm Name Documentation</a>
      * for information about standard RNG algorithm names.
      *
@@ -472,9 +509,6 @@ public class SecureRandom extends java.util.Random {
      * @param bytes the array to be filled in with random bytes.
      */
     @Override
-    // Android-changed: Added synchronized
-    // This method has been synchronized at least since Cupcake, so it would probably
-    // lead to problems if it was removed.
     synchronized public void nextBytes(byte[] bytes) {
         secureRandomSpi.engineNextBytes(bytes);
     }
@@ -600,7 +634,7 @@ public class SecureRandom extends java.util.Random {
     /**
      * Returns a {@code SecureRandom} object.
      *
-     * In Android this is equivalent to get a SHA1PRNG from AndroidOpenSSL.
+     * In Android this is equivalent to get a SHA1PRNG from OpenSSLProvider.
      *
      * Some situations require strong random values, such as when
      * creating high-value/long-lived secrets like RSA public/private
@@ -623,7 +657,6 @@ public class SecureRandom extends java.util.Random {
      */
     public static SecureRandom getInstanceStrong()
             throws NoSuchAlgorithmException {
-
         String property = AccessController.doPrivileged(
             new PrivilegedAction<String>() {
                 @Override
