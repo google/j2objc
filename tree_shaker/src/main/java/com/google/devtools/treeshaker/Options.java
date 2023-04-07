@@ -31,6 +31,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
 
+@SuppressWarnings("SystemExitOutsideMain")
 class Options {
 
   private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
@@ -60,6 +61,7 @@ class Options {
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private boolean treatWarningsAsErrors = false;
   private boolean useClassHierarchyAnalyzer = false;
+  private boolean stripReflection = false;
   private File treeShakerRoots;
   private File outputFile = new File("tree-shaker-report.txt");
 
@@ -97,6 +99,14 @@ class Options {
 
   public boolean useClassHierarchyAnalyzer() {
     return useClassHierarchyAnalyzer;
+  }
+
+  public boolean stripReflection() {
+    return stripReflection;
+  }
+
+  public void setStripReflection(boolean stripReflection) {
+    this.stripReflection = stripReflection;
   }
 
   public void setUseClassHierarchyAnalyzer(boolean useClassHierarchyAnalyzer) {
@@ -141,7 +151,7 @@ class Options {
 
   @VisibleForTesting
   void setSourceVersion(SourceVersion sv) {
-      sourceVersion = sv;
+    sourceVersion = sv;
   }
 
   public static void usage(String invalidUseMsg) {
@@ -227,7 +237,7 @@ class Options {
           usage("-encoding requires an argument");
         }
         options.fileEncoding = args[nArg];
-      }  else if (arg.equals("-source")) {
+      } else if (arg.equals("-source")) {
         if (++nArg == args.length) {
           usage("-source requires an argument");
         }
@@ -246,6 +256,9 @@ class Options {
         options.useClassHierarchyAnalyzer = false;
       } else if (arg.equals("-Xprint-args")) {
         printArgs = true;
+      } else if (arg.equals("--strip-reflection")) {
+        // strips the reflection support
+        options.stripReflection = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {

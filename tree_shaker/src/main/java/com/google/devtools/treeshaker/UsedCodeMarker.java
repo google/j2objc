@@ -14,6 +14,7 @@
 
 package com.google.devtools.treeshaker;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.lang.Math.max;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -66,7 +67,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.lang.model.AnnotatedConstruct;
 import javax.lang.model.element.ExecutableElement;
@@ -86,10 +86,12 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   private static final String USED_BY_NATIVE = "UsedByNative";
 
   private final Context context;
+  private boolean needsReflection;
 
   UsedCodeMarker(CompilationUnit unit, Context context) {
     super(unit);
     this.context = context;
+    this.needsReflection = !options.stripReflection();
   }
 
   @Override
@@ -255,6 +257,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public boolean visit(PackageDeclaration node) {
+    needsReflection = translationUtil.needsReflection(node);
     if (!node.getAnnotations().isEmpty()) {
       // Package annotations are only allowed in package-info.java files.
       startPackage(node.getPackageElement());
@@ -392,7 +395,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   private void visitAnnotation(Annotation node) {
     // A reference to an annotation implicitly constructs an instance of that annotation.
-    if (ElementUtil.isRuntimeAnnotation(node.getAnnotationMirror())) {
+    if (needsReflection && ElementUtil.isRuntimeAnnotation(node.getAnnotationMirror())) {
       addPseudoConstructorInvocation(node.getTypeMirror());
     }
   }
@@ -439,8 +442,10 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     TypeElement superType = ElementUtil.getSuperclass(type);
     String superName =
         superType == null ? INTERFACE_SUPERTYPE : elementUtil.getBinaryName(superType);
-    List<String> interfaces = ElementUtil.getInterfaces(type).stream()
-                                .map(elementUtil::getBinaryName).collect(Collectors.toList());
+    ImmutableList<String> interfaces =
+        ElementUtil.getInterfaces(type).stream()
+            .map(elementUtil::getBinaryName)
+            .collect(toImmutableList());
 
     boolean exportedClassInnerType =
         ElementUtil.isPublic(type)
@@ -449,7 +454,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
     boolean isExported =
         context.exportedClasses.contains(typeName)
-            || ElementUtil.isRuntimeAnnotation(type)
+            || (ElementUtil.isRuntimeAnnotation(type) && needsReflection)
             || ElementUtil.hasNamedAnnotation(type, USED_BY_NATIVE)
             || exportedClassInnerType;
 
@@ -465,20 +470,28 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     return Annotations.newBuilder().setUsedByNative(usedByNative).build();
   }
 
-  private void startTypeScope(String typeName, String superName,
-      List<String> interfaces, boolean isExported) {
+  private void startTypeScope(
+      String typeName, String superName, List<String> interfaces, boolean isExported) {
     Integer id = getTypeId(typeName);
     Integer eid = getTypeId(superName);
-    List<Integer> iids = interfaces.stream().map(this::getTypeId).collect(Collectors.toList());
+    ImmutableList<Integer> iids =
+        interfaces.stream().map(this::getTypeId).collect(toImmutableList());
     context.currentTypeNameScope.push(typeName);
-    context.currentTypeInfoScope.push(TypeInfo.newBuilder()
-        .setTypeId(id).setExtendsType(eid).addAllImplementsType(iids).setExported(isExported));
+    context.currentTypeInfoScope.push(
+        TypeInfo.newBuilder()
+            .setTypeId(id)
+            .setExtendsType(eid)
+            .addAllImplementsType(iids)
+            .setExported(isExported));
     // Push the initializer as the current method in scope.
-    startMethodScope(MemberInfo.newBuilder()
-        .setName(INITIALIZER_NAME).setStatic(false).setExported(isExported));
+    startMethodScope(
+        MemberInfo.newBuilder().setName(INITIALIZER_NAME).setStatic(false).setExported(isExported));
     // Push the new static initializer in scope.
-    context.clinitMemberScope.push(MemberInfo.newBuilder()
-        .setName(CLASS_INITIALIZER_NAME).setStatic(true).setExported(isExported));
+    context.clinitMemberScope.push(
+        MemberInfo.newBuilder()
+            .setName(CLASS_INITIALIZER_NAME)
+            .setStatic(true)
+            .setExported(isExported));
     context.clinitReferencedTypesScope.push(new HashSet<>());
   }
 
@@ -528,7 +541,7 @@ final class UsedCodeMarker extends UnitTreeVisitor {
       AnnotatedConstruct annotatedConstruct) {
     boolean isExported =
         context.exportedMethods.contains(getQualifiedMethodName(declTypeName, methodName))
-        || context.currentTypeInfoScope.peek().getExported();
+            || context.currentTypeInfoScope.peek().getExported();
     Integer originalTypeId = getTypeId(originalClassName);
     startMethodScope(
         MemberInfo.newBuilder()
@@ -552,15 +565,18 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   private void addMethodInvocation(String methodName, String declTypeName) {
     int declTypeId = getTypeId(declTypeName);
-    context.memberScope.peek()
-            .addInvokedMethods(com.google.devtools.treeshaker.MethodInvocation.newBuilder()
+    context
+        .memberScope
+        .peek()
+        .addInvokedMethods(
+            com.google.devtools.treeshaker.MethodInvocation.newBuilder()
                 .setMethod(methodName)
                 .setEnclosingType(declTypeId)
                 .build());
   }
 
   private void addReferencedType(TypeMirror type) {
-    if (type.getKind().isPrimitive())  {
+    if (type.getKind().isPrimitive()) {
       return;
     }
     addReferencedTypeName(getTypeMirrorName(type));
@@ -617,12 +633,18 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
     Context(CodeReferenceMap rootSet) {
       exportedMethods = new HashSet<>();
-      rootSet.getReferencedMethods().cellSet().forEach(cell -> {
-        String type  = cell.getRowKey();
-        String name = cell.getColumnKey();
-        cell.getValue().forEach(signature ->
-            exportedMethods.add(getQualifiedMethodName(type, name, signature)));
-      });
+      rootSet
+          .getReferencedMethods()
+          .cellSet()
+          .forEach(
+              cell -> {
+                String type = cell.getRowKey();
+                String name = cell.getColumnKey();
+                cell.getValue()
+                    .forEach(
+                        signature ->
+                            exportedMethods.add(getQualifiedMethodName(type, name, signature)));
+              });
       exportedClasses = rootSet.getReferencedClasses();
     }
 
