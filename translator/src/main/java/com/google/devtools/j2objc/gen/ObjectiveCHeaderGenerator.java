@@ -32,6 +32,7 @@ import java.util.Set;
  *
  * @author Tom Ball
  */
+@SuppressWarnings("UngroupedOverloads")
 public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   private final Options options;
@@ -59,7 +60,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     return options.getLanguage().headerSuffix();
   }
 
-  public final void generate() {
+  public void generate() {
     println(J2ObjC.getFileHeader(options, getGenerationUnit().getSourceName()));
     for (String javadoc : getGenerationUnit().getJavadocBlocks()) {
       print(javadoc);
@@ -81,6 +82,10 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     }
 
     save(getOutputPath(), options.fileUtil().getHeaderOutputDirectory());
+
+    if (getGenerationUnit().options().linkSourcePathHeaders()) {
+      new RelativeSourcePathGenerator(getGenerationUnit()).generate();
+    }
   }
 
   protected void printTypeDeclaration(GeneratedType generatedType) {
@@ -223,5 +228,31 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     println("/* This file contains Kythe metadata.");
     print(wrappedMetadata.toString());
     println("*/");
+  }
+
+  /**
+   * Source-relative paths define headers which have the same path as their Java source (with a ".h"
+   * instead of ".java" suffix), and a single #include directive that includes the package-relative
+   * path to the actual header.
+   *
+   * <p>For example, the Java source file "src/main/java/foo/bar/Mumble.java" defines
+   * "foo.bar.Mumble". The package-relative header would therefore be "foo/bar/Mumble.h", which
+   * makes sense for a Java developer. However, an Objective-C developer not familiar with Java
+   * packages may prefer to import "src/main/java/foo/bar/Mumble.h", so as to easily find the
+   * original Java source. If a relative-source-path is also generated, then both types of
+   * developers can navigate the project easily.
+   */
+  private static class RelativeSourcePathGenerator extends ObjectiveCHeaderGenerator {
+
+    RelativeSourcePathGenerator(GenerationUnit unit) {
+      super(unit);
+    }
+
+    @Override
+    public final void generate() {
+      String relativeSourcePath = getGenerationUnit().getSourceName().replace(".java", getSuffix());
+      printf("#include \"%s\"\n", getOutputPath());
+      save(relativeSourcePath, getGenerationUnit().options().fileUtil().getHeaderOutputDirectory());
+    }
   }
 }

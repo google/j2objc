@@ -18,6 +18,7 @@ import static com.google.common.io.FileWriteMode.APPEND;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Ascii;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableSet;
@@ -105,6 +106,7 @@ public class Options {
   private boolean allVersions = false;
   private boolean asObjCGenericDecl = false;
   private boolean ignoreJarWarnings = false;
+  private boolean linkSourcePathHeaders = false;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -440,7 +442,7 @@ public class Options {
       } else if (arg.startsWith(TIMING_INFO_ARG + ':')) {
         String timingArg = arg.substring(TIMING_INFO_ARG.length() + 1);
         try {
-          timingLevel = TimingLevel.valueOf(timingArg.toUpperCase());
+          timingLevel = TimingLevel.valueOf(Ascii.toUpperCase(timingArg));
         } catch (IllegalArgumentException e) {
           usage("invalid --timing-info argument");
         }
@@ -454,6 +456,8 @@ public class Options {
         jsniWarnings = false;
       } else if (arg.equals("-Xignore-jar-warnings")) {
         ignoreJarWarnings = true;
+      } else if (arg.equals("-Xlink-source-path-headers")) {
+        linkSourcePathHeaders = true;
       } else if (arg.equals("-encoding")) {
         try {
           fileUtil.setFileEncoding(getArgValue(args, arg));
@@ -1205,5 +1209,14 @@ public class Options {
 
   public boolean ignoreJarWarnings() {
     return ignoreJarWarnings;
+  }
+
+  public boolean linkSourcePathHeaders() {
+    return linkSourcePathHeaders;
+  }
+
+  @VisibleForTesting
+  public void setLinkSourcePathHeaders(boolean b) {
+    linkSourcePathHeaders = b;
   }
 }
