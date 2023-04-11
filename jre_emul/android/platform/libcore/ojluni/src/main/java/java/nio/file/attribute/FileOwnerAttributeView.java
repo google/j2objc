@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2007, 2016, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -59,7 +59,7 @@ public interface FileOwnerAttributeView
     /**
      * Read the file owner.
      *
-     * <p> It it implementation specific if the file owner can be a {@link
+     * <p> It is implementation specific if the file owner can be a {@link
      * GroupPrincipal group}.
      *
      * @return  the file owner
@@ -69,7 +69,7 @@ public interface FileOwnerAttributeView
      * @throws  SecurityException
      *          In the case of the default provider, a security manager is
      *          installed, and it denies {@link
-     *          RuntimePermission}<tt>("accessUserInformation")</tt> or its
+     *          RuntimePermission}{@code ("accessUserInformation")} or its
      *          {@link SecurityManager#checkRead(String) checkRead} method
      *          denies read access to the file.
      */
@@ -78,7 +78,7 @@ public interface FileOwnerAttributeView
     /**
      * Updates the file owner.
      *
-     * <p> It it implementation specific if the file owner can be a {@link
+     * <p> It is implementation specific if the file owner can be a {@link
      * GroupPrincipal group}. To ensure consistent and correct behavior
      * across platforms it is recommended that this method should only be used
      * to set the file owner to a user principal that is not a group.
@@ -93,7 +93,7 @@ public interface FileOwnerAttributeView
      * @throws  SecurityException
      *          In the case of the default provider, a security manager is
      *          installed, and it denies {@link
-     *          RuntimePermission}<tt>("accessUserInformation")</tt> or its
+     *          RuntimePermission}{@code ("accessUserInformation")} or its
      *          {@link SecurityManager#checkWrite(String) checkWrite} method
      *          denies write access to the file.
      */

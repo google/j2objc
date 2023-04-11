@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2007, 2017, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -48,7 +48,7 @@ import java.util.*;
  *    {@link AclEntryPermission permissions}
  *    </p></li>
  *
- *    <li><p> The {@link #flags flags} component is a set of {@link AclEntryFlag
+ *    <li><p> The {@link #flags() flags} component is a set of {@link AclEntryFlag
  *    flags} to indicate how entries are inherited and propagated </p></li>
  * </ol>
  *
@@ -306,7 +306,7 @@ public final class AclEntry {
      * @return the permissions component
      */
     public Set<AclEntryPermission> permissions() {
-        return new HashSet<AclEntryPermission>(perms);
+        return new HashSet<>(perms);
     }
 
     /**
@@ -317,7 +317,7 @@ public final class AclEntry {
      * @return the flags component
      */
     public Set<AclEntryFlag> flags() {
-        return new HashSet<AclEntryFlag>(flags);
+        return new HashSet<>(flags);
     }
 
     /**
