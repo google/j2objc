@@ -25,6 +25,8 @@
 
 package java.nio;
 
+// Android-removed: Use Bits class to retrieve byte order.
+// import jdk.internal.misc.Unsafe;
 
 /**
  * A typesafe enumeration for byte orders.
@@ -57,6 +59,16 @@ public final class ByteOrder {
     public static final ByteOrder LITTLE_ENDIAN
         = new ByteOrder("LITTLE_ENDIAN");
 
+    // BEGIN Android-removed: Use Bits class to retrieve native order.
+    /*
+    // Retrieve the native byte order. It's used early during bootstrap, and
+    // must be initialized after BIG_ENDIAN and LITTLE_ENDIAN.
+    private static final ByteOrder NATIVE_ORDER
+        = Unsafe.getUnsafe().isBigEndian()
+            ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN;
+    */
+    // END Android-removed: Use Bits class to retrieve native order.
+
     /**
      * Retrieves the native byte order of the underlying platform.
      *
@@ -69,15 +81,20 @@ public final class ByteOrder {
      *          virtual machine is running
      */
     public static ByteOrder nativeOrder() {
+        // BEGIN Android-changed: Use Bits class to retrieve byte order.
+        /*
+        return NATIVE_ORDER;
+        */
+        // END Android-changed: Use Bits class to retrieve byte order.
         return Bits.byteOrder();
     }
 
     /**
      * Constructs a string describing this object.
      *
-     * <p> This method returns the string <tt>"BIG_ENDIAN"</tt> for {@link
-     * #BIG_ENDIAN} and <tt>"LITTLE_ENDIAN"</tt> for {@link #LITTLE_ENDIAN}.
-     * </p>
+     * <p> This method returns the string
+     * {@code "BIG_ENDIAN"} for {@link #BIG_ENDIAN} and
+     * {@code "LITTLE_ENDIAN"} for {@link #LITTLE_ENDIAN}.
      *
      * @return  The specified string
      */

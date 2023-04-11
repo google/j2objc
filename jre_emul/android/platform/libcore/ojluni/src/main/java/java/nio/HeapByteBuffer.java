@@ -81,6 +81,19 @@ final class HeapByteBuffer extends ByteBuffer {
                 isReadOnly);
     }
 
+    ByteBuffer slice(int pos, int lim) {
+        assert (pos >= 0);
+        assert (pos <= lim);
+        int rem = lim - pos;
+        return new HeapByteBuffer(hb,
+                                  -1,
+                                  0,
+                                  rem,
+                                  rem,
+                                  pos + offset,
+                                  isReadOnly);
+    }
+
     @Override
     public ByteBuffer duplicate() {
         return new HeapByteBuffer(hb,

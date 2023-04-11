@@ -26,6 +26,10 @@
 
 package java.nio;
 
+/* J2ObjC removed
+* import dalvik.system.VMRuntime;
+*/
+
 import java.io.FileDescriptor;
 
 import libcore.io.Memory;
@@ -167,6 +171,18 @@ public class DirectByteBuffer extends MappedByteBuffer implements DirectBuffer {
         }
         int pos = position();
         int lim = limit();
+        assert (pos <= lim);
+        int rem = (pos <= lim ? lim - pos : 0);
+        int off = pos + offset;
+        assert (off >= 0);
+        return new DirectByteBuffer(memoryRef, -1, 0, rem, rem, off, isReadOnly);
+    }
+
+    ByteBuffer slice(int pos, int lim) {
+        if (!memoryRef.isAccessible) {
+            throw new IllegalStateException("buffer is inaccessible");
+        }
+        assert (pos >= 0);
         assert (pos <= lim);
         int rem = (pos <= lim ? lim - pos : 0);
         int off = pos + offset;

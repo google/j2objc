@@ -563,30 +563,15 @@ class Bits {                            // package-private
 
     // -- Processor and memory-system properties --
 
-    /* ----- BEGIN android -----
-    private static final ByteOrder byteOrder;*/
-    /* J2ObjC: unused.
-    private static final ByteOrder byteOrder = ByteOrder.LITTLE_ENDIAN;
-    */
-    // ----- END android -----
-
-    private static native boolean isLittleEndian() /*-[
-        return CFByteOrderGetCurrent() == CFByteOrderLittleEndian;
-    ]-*/;
+    private static final ByteOrder byteOrder;
 
     static ByteOrder byteOrder() {
-        // Android changed : android is always little endian.
-        if (isLittleEndian()) {
-            return ByteOrder.LITTLE_ENDIAN;
-        } else {
-            return ByteOrder.BIG_ENDIAN;
-        }
-
-        /* ----- BEGIN android -----
+        // Android-removed: Android is always little-endian.
+        /*
         if (byteOrder == null)
             throw new Error("Unknown byte order");
-        return byteOrder;
         */
+        return byteOrder;
     }
 
     static {
@@ -606,8 +591,8 @@ class Bits {                            // package-private
         } finally {
             unsafe.freeMemory(a);
         }
-        byteOrder = ByteOrder.LITTLE_ENDIAN;
         */
+        byteOrder = ByteOrder.LITTLE_ENDIAN;
         // END Android-changed: Android is always little-endian.
     }
 
@@ -656,61 +641,97 @@ class Bits {                            // package-private
     // 1, 2, 4, 8, 16, 32, 64, 128, 256 (total 511 ms ~ 0.5 s)
     // which means that OOME will be thrown after 0.5 s of trying
     private static final int MAX_SLEEPS = 9;
-     */
-    //private static volatile long maxMemory = VM.maxDirectMemory();
-    private static volatile long reservedMemory;
-    private static volatile long totalCapacity;
-    private static volatile long count;
-    private static boolean memoryLimitSet = false;
 
     // These methods should be called whenever direct memory is allocated or
     // freed.  They allow the user to control the amount of direct memory
     // which a process may access.  All sizes are specified in bytes.
     static void reserveMemory(long size, int cap) {
-        synchronized (Bits.class) {
-          /*
-            if (!memoryLimitSet && VM.isBooted()) {
-                maxMemory = VM.maxDirectMemory();
-                memoryLimitSet = true;
-            }
-            */
-            // -XX:MaxDirectMemorySize limits the total capacity rather than the
-            // actual memory usage, which will differ when buffers are page
-            // aligned.
-            //if (cap <= maxMemory - totalCapacity) {
-                reservedMemory += size;
-                totalCapacity += cap;
-                count++;
+
+        if (!memoryLimitSet && VM.isBooted()) {
+            maxMemory = VM.maxDirectMemory();
+            memoryLimitSet = true;
+        }
+
+        // optimist!
+        if (tryReserveMemory(size, cap)) {
+            return;
+        }
+
+        final JavaLangRefAccess jlra = SharedSecrets.getJavaLangRefAccess();
+
+        // retry while helping enqueue pending Reference objects
+        // which includes executing pending Cleaner(s) which includes
+        // Cleaner(s) that free direct buffer memory
+        while (jlra.tryHandlePendingReference()) {
+            if (tryReserveMemory(size, cap)) {
                 return;
-            //}
+            }
         }
 
-        /* System.gc();
+        // trigger VM's Reference processing
+        System.gc();
+
+        // a retry loop with exponential back-off delays
+        // (this gives VM some time to do it's job)
+        boolean interrupted = false;
         try {
-            Thread.sleep(100);
-        } catch (InterruptedException x) {
-            // Restore interrupt status
-            Thread.currentThread().interrupt();
-        }
-        synchronized (Bits.class) {
-            if (totalCapacity + cap > maxMemory)
-                throw new OutOfMemoryError("Direct buffer memory");
-            reservedMemory += size;
-            totalCapacity += cap;
-            count++;
-        }
-                */
+            long sleepTime = 1;
+            int sleeps = 0;
+            while (true) {
+                if (tryReserveMemory(size, cap)) {
+                    return;
+                }
+                if (sleeps >= MAX_SLEEPS) {
+                    break;
+                }
+                if (!jlra.tryHandlePendingReference()) {
+                    try {
+                        Thread.sleep(sleepTime);
+                        sleepTime <<= 1;
+                        sleeps++;
+                    } catch (InterruptedException e) {
+                        interrupted = true;
+                    }
+                }
+            }
 
+            // no luck
+            throw new OutOfMemoryError("Direct buffer memory");
+
+        } finally {
+            if (interrupted) {
+                // don't swallow interrupts
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
-    static synchronized void unreserveMemory(long size, int cap) {
-        if (reservedMemory > 0) {
-            reservedMemory -= size;
-            totalCapacity -= cap;
-            count--;
-            assert (reservedMemory > -1);
+    private static boolean tryReserveMemory(long size, int cap) {
+
+        // -XX:MaxDirectMemorySize limits the total capacity rather than the
+        // actual memory usage, which will differ when buffers are page
+        // aligned.
+        long totalCap;
+        while (cap <= maxMemory - (totalCap = totalCapacity.get())) {
+            if (totalCapacity.compareAndSet(totalCap, totalCap + cap)) {
+                reservedMemory.addAndGet(size);
+                count.incrementAndGet();
+                return true;
+            }
         }
+
+        return false;
     }
+
+
+    static void unreserveMemory(long size, int cap) {
+        long cnt = count.decrementAndGet();
+        long reservedMem = reservedMemory.addAndGet(-size);
+        long totalCap = totalCapacity.addAndGet(-cap);
+        assert cnt >= 0 && reservedMem >= 0 && totalCap >= 0;
+    }
+    */
+    // END Android-removed: Direct memory management unused on Android.
 
     // -- Monitoring of direct buffer usage --
 
@@ -774,7 +795,7 @@ class Bits {                            // package-private
     // result in memory corruption should be done prior to invocation.
     // All positions and lengths are specified in bytes.
 
-    /* J2ObjC: unused.
+    /**
      * Copy from given source array to destination address.
      *
      * @param   src
@@ -800,9 +821,8 @@ class Bits {                            // package-private
             dstAddr += size;
         }
     }
-    */
 
-    /* J2ObjC: unused.
+    /**
      * Copy from source address into given destination array.
      *
      * @param   srcAddr
