@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
-
 import java.io.IOException;
 
 /**
@@ -239,7 +238,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertNotInTranslation(translation, "- (void)g");
   }
 
-  public void testDeadClass_DeadInnerClassConstructor() throws IOException {
+  public void testDeadClass_deadInnerClassConstructor() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
         .addField("Foo$A", "z")
         .addField("Foo$A", "this$0")
@@ -267,7 +266,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertNotInTranslation(translation, "- (jint)f");
   }
 
-  public void testDeadClass_SupertypeRemoval() throws IOException {
+  public void testDeadClass_supertypeRemoval() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
         .addClass("Foo")
         .build();
@@ -282,7 +281,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertNotInTranslation(translation, "SuperI");
   }
 
-  // Verify that annotation bodies aren't stripped when specified in a dead code report.
+  // Verifies that annotation bodies aren't stripped when specified in a dead code report.
   public void testDeadAnnotation() throws IOException {
     CodeReferenceMap map = CodeReferenceMap.builder()
         .addClass("Foo")
@@ -296,6 +295,52 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "}\n";
     String translation = translateSourceFile(source, "Foo", "Foo.h");
     assertTranslation(translation, "@property (readonly) NSString *value;");
+  }
+
+  // Verifies that RUNTIME annotations are stripped when the strip-reflection flag is on
+  public void testDeadAnnotation_removeRuntimeAnnotation_whenStripReflectionIsOn()
+      throws IOException {
+    options.setStripReflection(true);
+    CodeReferenceMap map = CodeReferenceMap.builder().addClass("Foo").build();
+    setDeadCodeMap(map);
+    String source =
+        "import java.lang.annotation.Retention;\n"
+            + "import java.lang.annotation.RetentionPolicy;\n"
+            + "@Retention(RetentionPolicy.RUNTIME)\n"
+            + "public @interface Foo {\n"
+            + "  String value() default \"\";\n"
+            + "}\n";
+    String translation = translateSourceFile(source, "Foo", "Foo.h");
+    assertNotInTranslation(translation, "@protocol Foo < JavaLangAnnotationAnnotation >");
+  }
+
+  // Verifies that default (CLASS) annotations are stripped.
+  public void testDeadAnnotation_removeDefaultClassAnnotation() throws IOException {
+    CodeReferenceMap map = CodeReferenceMap.builder().addClass("Foo").build();
+    setDeadCodeMap(map);
+    String source =
+        "import java.lang.annotation.Retention;\n"
+            + "import java.lang.annotation.RetentionPolicy;\n"
+            + "public @interface Foo {\n"
+            + "  String value() default \"\";\n"
+            + "}\n";
+    String translation = translateSourceFile(source, "Foo", "Foo.h");
+    assertNotInTranslation(translation, "@protocol Foo < JavaLangAnnotationAnnotation >");
+  }
+
+  // Verifies that CLASS annotations are stripped.
+  public void testDeadAnnotation_removeClassAnnotation() throws IOException {
+    CodeReferenceMap map = CodeReferenceMap.builder().addClass("Foo").build();
+    setDeadCodeMap(map);
+    String source =
+        "import java.lang.annotation.Retention;\n"
+            + "import java.lang.annotation.RetentionPolicy;\n"
+            + "@Retention(RetentionPolicy.CLASS)\n"
+            + "public @interface Foo {\n"
+            + "  String value() default \"\";\n"
+            + "}\n";
+    String translation = translateSourceFile(source, "Foo", "Foo.h");
+    assertNotInTranslation(translation, "@protocol Foo < JavaLangAnnotationAnnotation >");
   }
 
   public void testDeadDefaultConstructor() throws IOException {

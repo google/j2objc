@@ -226,16 +226,20 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
   }
 
   /**
-   * Remove empty classes marked as dead. This needs to be done after translation
-   * to avoid inner class references in the AST returned by DeadCodeEliminator.
+   * Remove empty classes marked as dead. This needs to be done after translation to avoid inner
+   * class references in the AST returned by DeadCodeEliminator.
    */
-  public static void removeDeadClasses(CompilationUnit unit, CodeReferenceMap deadCodeMap) {
+  public void removeDeadClasses() {
     ElementUtil elementUtil = unit.getEnv().elementUtil();
     Iterator<AbstractTypeDeclaration> iter = unit.getTypes().iterator();
     while (iter.hasNext()) {
       AbstractTypeDeclaration type = iter.next();
       TypeElement typeElement = type.getTypeElement();
-      if (!ElementUtil.isGeneratedAnnotation(typeElement)) {
+
+      // If it's not annotation or it's annotations that need to be removed,
+      // check if it exists in the dead code report.
+      if (!ElementUtil.isAnnotationType(typeElement)
+          || ElementUtil.isToBeRemovedAnnotations(typeElement, options)) {
         if (deadCodeMap.containsClass(typeElement, elementUtil)) {
           type.setDeadClass(true);
         } else {

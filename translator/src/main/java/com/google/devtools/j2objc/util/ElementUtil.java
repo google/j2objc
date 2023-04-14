@@ -690,6 +690,19 @@ public final class ElementUtil {
     return isGeneratedAnnotation(mirror.getAnnotationType().asElement());
   }
 
+  public static boolean isToBeRemovedAnnotations(Element e, Options options) {
+    if (isAnnotationType(e)) {
+      if (options.stripReflection()) {
+        // If --strip-reflection flag is on, CLASS, SOURCE or RUNTIME annotations will be removed.
+        return true;
+      } else {
+        // If --strip-reflection flag is off, CLASS or SOURCE annotations will be removed.
+        return !isRuntimeAnnotation(e);
+      }
+    } 
+    return false;
+  }
+
   public static boolean isGeneratedAnnotation(Element e) {
     // Use a negative check, since CLASS retention is the default.
     return isAnnotationType(e) && !hasRetentionPolicy(e, "SOURCE");

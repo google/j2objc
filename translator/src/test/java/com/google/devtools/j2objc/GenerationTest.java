@@ -514,20 +514,21 @@ public class GenerationTest extends TestCase {
     String source = "public class Test { " + method + " }";
     CompilationUnit unit = translateType("Test", source);
     final MethodDeclaration[] result = new MethodDeclaration[1];
-    unit.accept(new TreeVisitor() {
-      @Override
-      public boolean visit(MethodDeclaration node) {
-        String name = ElementUtil.getName(node.getExecutableElement());
-        if (name.equals(NameTable.INIT_NAME)
-            || name.equals(NameTable.FINALIZE_METHOD)
-            || name.equals(NameTable.DEALLOC_METHOD)) {
-          return false;
-        }
-        assert result[0] == null;
-        result[0] = node;
-        return false;
-      }
-    });
+    unit.accept(
+        new TreeVisitor() {
+          @Override
+          public boolean visit(MethodDeclaration node) {
+            String name = ElementUtil.getName(node.getExecutableElement());
+            if (name.equals(NameTable.INIT_NAME)
+                || name.equals(NameTable.FINALIZE_METHOD)
+                || name.equals(NameTable.DEALLOC_METHOD)) {
+              return false;
+            }
+            assert result[0] == null;
+            result[0] = node;
+            return false;
+          }
+        });
     return result[0];
   }
 
