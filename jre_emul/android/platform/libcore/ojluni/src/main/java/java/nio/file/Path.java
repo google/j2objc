@@ -28,7 +28,9 @@ package java.nio.file;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.spi.FileSystemProvider;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * An object that may be used to locate a file in a file system. It will
@@ -75,7 +77,7 @@ import java.util.Iterator;
  *     BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
  * </pre>
  *
- * <a name="interop"></a><h2>Interoperability</h2>
+ * <a id="interop"></a><h2>Interoperability</h2>
  * <p> Paths associated with the default {@link
  * java.nio.file.spi.FileSystemProvider provider} are generally interoperable
  * with the {@link java.io.File java.io.File} class. Paths created by other
@@ -92,7 +94,6 @@ import java.util.Iterator;
  * multiple concurrent threads.
  *
  * @since 1.7
- * @see Paths
  */
 
 public interface Path

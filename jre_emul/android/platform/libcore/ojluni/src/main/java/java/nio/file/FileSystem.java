@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2007, 2017, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -202,7 +202,7 @@ public abstract class FileSystem
      *
      * <p> In the case of the default provider, and a security manager is
      * installed, the security manager is invoked to check {@link
-     * RuntimePermission}<tt>("getFileStoreAttributes")</tt>. If denied, then
+     * RuntimePermission}{@code ("getFileStoreAttributes")}. If denied, then
      * no file stores are returned by the iterator. In addition, the security
      * manager's {@link SecurityManager#checkRead(String)} method is invoked to
      * check read access to the file store's <em>top-most</em> directory. If
@@ -315,37 +315,43 @@ public abstract class FileSystem
      * representation of the path is matched using a limited pattern language
      * that resembles regular expressions but with a simpler syntax. For example:
      *
-     * <blockquote>
-     * <table border="0" summary="Pattern Language">
+     * <table class="striped" style="text-align:left; margin-left:2em">
+     * <caption style="display:none">Pattern Language</caption>
+     * <thead>
      * <tr>
-     *   <td>{@code *.java}</td>
+     *   <th scope="col">Example
+     *   <th scope="col">Description
+     * </tr>
+     * </thead>
+     * <tbody>
+     * <tr>
+     *   <th scope="row">{@code *.java}</th>
      *   <td>Matches a path that represents a file name ending in {@code .java}</td>
      * </tr>
      * <tr>
-     *   <td>{@code *.*}</td>
+     *   <th scope="row">{@code *.*}</th>
      *   <td>Matches file names containing a dot</td>
      * </tr>
      * <tr>
-     *   <td>{@code *.{java,class}}</td>
+     *   <th scope="row">{@code *.{java,class}}</th>
      *   <td>Matches file names ending with {@code .java} or {@code .class}</td>
      * </tr>
      * <tr>
-     *   <td>{@code foo.?}</td>
+     *   <th scope="row">{@code foo.?}</th>
      *   <td>Matches file names starting with {@code foo.} and a single
      *   character extension</td>
      * </tr>
      * <tr>
-     *   <td><tt>&#47;home&#47;*&#47;*</tt>
-     *   <td>Matches <tt>&#47;home&#47;gus&#47;data</tt></td>
+     *   <th scope="row"><code>&#47;home&#47;*&#47;*</code>
+     *   <td>Matches <code>&#47;home&#47;gus&#47;data</code></td>
      * </tr>
      * <tr>
-     *   <td><tt>&#47;home&#47;**</tt>
-     *   <td>Matches <tt>&#47;home&#47;gus</tt> and
-     *   <tt>&#47;home&#47;gus&#47;data</tt></td>
+     *   <th scope="row"><code>&#47;home&#47;**</code>
+     *   <td>Matches <code>&#47;home&#47;gus</code> and
+     *   <code>&#47;home&#47;gus&#47;data</code></td>
      * </tr>
-     *
+     * </tbody>
      * </table>
-     * </blockquote>
      *
      * <p> The following rules are used to interpret glob patterns:
      *
@@ -385,7 +391,7 @@ public abstract class FileSystem
      *   character is used to separate the subpatterns. Groups cannot be nested.
      *   </p></li>
      *
-     *   <li><p> Leading period<tt>&#47;</tt>dot characters in file name are
+     *   <li><p> Leading period<code>&#47;</code>dot characters in file name are
      *   treated as regular characters in match operations. For example,
      *   the {@code "*"} glob pattern matches file name {@code ".login"}.
      *   The {@link Files#isHidden} method may be used to test whether a file
