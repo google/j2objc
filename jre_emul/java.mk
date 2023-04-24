@@ -63,8 +63,10 @@ $(EMULATION_JAR): $(ALL_JAVA_SOURCES)
 	@echo "building jre_emul.jar"
 	@set -e; stage_dir=`${MKTEMP_CMD}`; \
 	  ../scripts/javac_no_deprecated_warnings.sh $(JAVAC) \
+	  -Xlint:-rawtypes,-unchecked --patch-module=java.base=. \
+	  -XDstringConcat=inline --add-reads java.base=ALL-UNNAMED \
 	  -classpath $(ANNOTATIONS_JAR) \
-	  -d $$stage_dir -encoding UTF-8 -source 1.8 -target 1.8 -nowarn $^; \
+	  -d $$stage_dir -encoding UTF-8 -source 11 -target 11 -nowarn $^; \
 	jar cf $(EMULATION_JAR) -C $$stage_dir .; \
 	rm -rf $$stage_dir
 
@@ -115,7 +117,7 @@ $(JSON_JAR): $(JSON_PUBLIC_SOURCES) $(JSON_PRIVATE_SOURCES) $(JSON_SOURCE_RETENT
 	@echo "building json.jar"
 	@set -e; stage_dir=`${MKTEMP_CMD}`; \
 	  ../scripts/javac_no_deprecated_warnings.sh $(JAVAC) \
-	  -d $$stage_dir -encoding UTF-8 -source 1.8 -target 1.8 -nowarn $^; \
+	  -d $$stage_dir -encoding UTF-8 -source 11 -target 11 -nowarn $^; \
 	jar cf $(JSON_JAR) -C $$stage_dir .; \
 	rm -rf $$stage_dir
 

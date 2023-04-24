@@ -220,6 +220,9 @@ TRANSLATOR_BUILD_FLAGS = \
   -Xlint:unchecked -encoding UTF-8 -nowarn
 ifndef JAVA_8
 TRANSLATOR_BUILD_FLAGS += \
+  --add-exports java.compiler/javax.lang.model.element=ALL-UNNAMED \
+  --add-exports java.compiler/javax.lang.model.type=ALL-UNNAMED \
+  --add-exports java.compiler/javax.lang.model.util=ALL-UNNAMED \
   --add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
   --add-exports jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED \
   --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED \
