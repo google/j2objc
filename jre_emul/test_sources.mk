@@ -22,7 +22,6 @@
 # com/google/j2objc/NativeUtil.java \
 # com/google/j2objc/ObjectTest.java \
 # com/google/j2objc/TestAnnotation.java \
-# com/google/j2objc/TestUtil.java \
 # com/google/j2objc/java8/Lambdas.java \
 # com/google/j2objc/mappedpkg/TestClass.java \
 # com/google/j2objc/mappedpkg/package-info.java \
@@ -35,6 +34,7 @@ SUPPORT_SOURCES = \
     android/icu/dev/test/TestFmwk.java \
     android/icu/dev/test/TestLog.java \
     android/icu/dev/test/TestUtil.java \
+    com/google/j2objc/TestUtil.java \
     foo/Fourth.java \
     foo/bar/First.java \
     foo/mumble/Second.java \
@@ -326,6 +326,7 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # libcore/java/security/spec/AlgorithmParametersPSSTest.java \
 # libcore/java/text/ChoiceFormatTest.java \
 # libcore/java/text/DateFormatSymbolsTest.java \
+# libcore/java/text/DecimalFormatTest.java \
 # libcore/java/text/SimpleDateFormatTest.java \
 # libcore/java/util/LocaleTest.java \
 # libcore/javax/xml/datatype/DatatypeFactoryTest.java \
@@ -629,7 +630,6 @@ TEST_SOURCES := \
     libcore/java/text/BreakIteratorTest.java \
     libcore/java/text/CollatorTest.java \
     libcore/java/text/DecimalFormatSymbolsTest.java \
-    libcore/java/text/DecimalFormatTest.java \
     libcore/java/text/NormalizerTest.java \
     libcore/java/text/NumberFormatTest.java \
     libcore/java/time/DateTimeExceptionTest.java \
@@ -1449,22 +1449,25 @@ TEST_SOURCES := \
     tests/targets/security/SignatureTestMD2withRSA.java \
 
 SUITE_SOURCES = \
-    android/icu/dev/test/Tests.java \
     jsr166/ConcurrencyTests.java \
-    com/google/j2objc/ReflectionTests.java \
     com/google/j2objc/crypto/CryptoTests.java \
-    com/google/j2objc/java8/SmallTests.java \
     com/google/j2objc/nio/NioTests.java \
-    com/google/j2objc/security/IosSecurityProviderTests.java \
     com/google/j2objc/security/SecurityTests.java \
-    libcore/java/io/SmallTests.java \
-    libcore/java/net/SmallTests.java \
-    libcore/java/text/LargeTests.java \
-    libcore/java/text/SmallTests.java \
     libcore/java/util/zip/LargeTests.java \
     libcore/java/util/zip/SmallTests.java \
     org/apache/harmony/beans/tests/java/beans/AllTests.java \
-    test/java/time/Tests.java
+
+# TODO(b/265202484): packages that are commmented need to be moved for Java 11
+# or fixed because of ICU difference between each xcode version.
+#     android/icu/dev/test/Tests.java \
+#     com/google/j2objc/ReflectionTests.java \
+#     com/google/j2objc/java8/SmallTests.java \
+#     com/google/j2objc/security/IosSecurityProviderTests.java \
+#     libcore/java/io/SmallTests.java \
+#     libcore/java/net/SmallTests.java \
+#     libcore/java/text/LargeTests.java \
+#     libcore/java/text/SmallTests.java \
+#     test/java/time/Tests.java
 
 
 # TODO(b/265202484): packages that are commmented need to be moved for Java 11

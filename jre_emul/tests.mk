@@ -197,7 +197,6 @@ run-core-size-test: $(TESTS_DIR)/core_size \
   $(TESTS_DIR)/core_plus_file \
   $(TESTS_DIR)/core_plus_concurrent \
   $(TESTS_DIR)/core_plus_io \
-  $(TESTS_DIR)/core_plus_icu \
   $(TESTS_DIR)/core_plus_json \
   $(TESTS_DIR)/core_plus_net \
   $(TESTS_DIR)/core_plus_security \
@@ -330,11 +329,6 @@ $(TESTS_DIR)/full_jre_size:
 $(TESTS_DIR)/core_plus_io:
 	@mkdir -p $(@D)
 	$(J2OBJCC) -ljre_io -o $@ -ObjC $(COVERAGE_FLAGS)
-
-$(TESTS_DIR)/core_plus_icu:
-	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_icu -ljre_channels -ljre_net -ljre_util -ljre_security \
-	    -ljre_zip -ljre_io -ljre_concurrent -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_json:
 	@mkdir -p $(@D)
