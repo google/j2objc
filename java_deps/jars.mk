@@ -30,7 +30,7 @@ JUNIT_DATAPROVIDER_SOURCE_JAR = junit-dataprovider-1.10.4-sources.jar
 HAMCREST_JAR = hamcrest-core-1.3.jar
 HAMCREST_SOURCE_JAR = hamcrest-core-1.3-sources.jar
 
-PROTOBUF_JAR = protobuf-java-3.21.7.jar
+PROTOBUF_JAR = protobuf-java-3.22.3.jar
 
 ERROR_PRONE_ANNOTATIONS_JAR = error_prone_annotations-2.11.0.jar
 ERROR_PRONE_ANNOTATIONS_SOURCE_JAR = error_prone_annotations-2.11.0-sources.jar
