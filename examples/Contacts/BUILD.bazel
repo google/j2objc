@@ -16,25 +16,28 @@ load("@rules_java//java:defs.bzl", "java_library")
 ios_application(
     name = "Contacts",
     bundle_id = "com.google.j2objc.example.contacts",
+    families = [
+        "iphone",
+        "ipad",
+    ],
     infoplists = ["src/Info.plist"],
-    families = ["iphone", "ipad"],
-    deps = [":ContactsMainLib"],
     minimum_os_version = "11.4",
+    deps = [":ContactsMainLib"],
 )
 
 objc_library(
     name = "ContactsMainLib",
     srcs = glob(["src/*.m"]),
     hdrs = glob(["src/*.h"]),
+    data = ["//resources"],
     sdk_frameworks = ["CoreGraphics"],
     deps = [":ContactsJava"],
-    data = ["//resources"],
 )
 
-j2objc_library(
+j2objc_library_legacy(
     name = "ContactsJava",
-    deps = [":ContactsJavaLib"],
     jre_deps = ["@bazel_j2objc//:jre_net_lib"],
+    deps = [":ContactsJavaLib"],
 )
 
 java_library(
