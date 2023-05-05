@@ -183,6 +183,10 @@ public class JavacParser extends Parser {
     } else {
       javacOptions.add("-proc:none");
     }
+    // Disable javac warnings, as all sources j2objc transpiles are separately compiled by javac.
+    if (options.javacWarnings()) {
+      javacOptions.add("-nowarn");
+    }
     javacOptions.addAll(options.getPlatformModuleSystemOptions());
     return javacOptions;
   }
@@ -354,7 +358,6 @@ public class JavacParser extends Parser {
    * Extract the name of a Java source's package, or null if not found. This method is only used
    * before javac parsing to determine the main type name.
    */
-  @SuppressWarnings("fallthrough")
   static String packageName(String source) {
     try (StringReader r = new StringReader(source)) {
       StreamTokenizer tokenizer = new StreamTokenizer(r);

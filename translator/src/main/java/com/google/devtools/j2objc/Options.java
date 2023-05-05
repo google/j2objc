@@ -93,7 +93,7 @@ public class Options {
   private boolean defaultNonnull = false;
   private TimingLevel timingLevel = TimingLevel.NONE;
   private boolean dumpAST = false;
-  private String lintArgument = null;
+  private String lintArgument = "-Xlint:none"; // Disable all lint warnings by default.
   private boolean reportJavadocWarnings = false;
   private boolean translateBootclasspath = false;
   private boolean translateClassfiles = false;
@@ -107,6 +107,7 @@ public class Options {
   private boolean asObjCGenericDecl = false;
   private boolean ignoreJarWarnings = false;
   private boolean linkSourcePathHeaders = false;
+  private boolean javacWarnings = true;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -470,6 +471,21 @@ public class Options {
         includedMetadata = EnumSet.of(MetadataSupport.ENUM_CONSTANTS);
       } else if (arg.equals("-Xstrip-enum-constants")) {
         includedMetadata.remove(MetadataSupport.ENUM_CONSTANTS);
+      } else if (arg.startsWith("-Xjavac-warnings:")) {
+        String subArg = arg.substring(arg.indexOf(':') + 1);
+        switch (subArg) {
+          case "true": {
+            javacWarnings = true;
+            break;
+          }
+          case "false": {
+            javacWarnings = false;
+            break;
+          }
+          default: {
+            usage("invalid -Xjavac-warnings argument: " + subArg);
+          }
+        }
       } else if (arg.startsWith("--reflection:")) {
         includedMetadata.remove(MetadataSupport.FULL);
         String[] subArgs = arg.substring(arg.indexOf(':') + 1).split(",", -1);
@@ -1218,5 +1234,9 @@ public class Options {
   @VisibleForTesting
   public void setLinkSourcePathHeaders(boolean b) {
     linkSourcePathHeaders = b;
+  }
+
+  public boolean javacWarnings() {
+    return javacWarnings;
   }
 }
