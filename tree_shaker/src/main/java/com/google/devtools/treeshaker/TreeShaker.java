@@ -34,6 +34,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import org.jspecify.nullness.Nullable;
 
 /** A tool for finding unused code in a Java program. */
 public class TreeShaker {
@@ -55,10 +56,19 @@ public class TreeShaker {
     j2objcOptions = new com.google.devtools.j2objc.Options();
     j2objcOptions.load(
         new String[] {
-          "-sourcepath", Strings.nullToEmpty(options.getSourcepath()),
-          "-classpath", Strings.nullToEmpty(options.getClasspath()),
-          "-encoding", options.fileEncoding(),
-          "-source", options.sourceVersion().flag(),
+          "-sourcepath",
+          Strings.nullToEmpty(options.getSourcepath()),
+          "-classpath",
+          Strings.nullToEmpty(options.getClasspath()),
+          "-encoding",
+          options.fileEncoding(),
+          "-source",
+          options.sourceVersion().flag(),
+
+          // Disable all warnings, minimize diagnostic output to save memory.
+          "-Xlint:none",
+          "-Xjavac-warnings:true",
+          "-Xignore-jar-warnings"
         });
     j2objcOptions.setStripReflection(options.stripReflection());
   }
@@ -134,8 +144,26 @@ public class TreeShaker {
     return strippedDir;
   }
 
+  @Nullable
   @VisibleForTesting
   CodeReferenceMap findUnusedCode() throws IOException {
+    TypeGraphBuilder tgb = createTypeGraphBuilder();
+    if (tgb == null) {
+      return null;
+    }
+    logger.atFine().log("External Types: %s", String.join(", ", tgb.getExternalTypeReferences()));
+    Collection<String> unknownMethodReferences = tgb.getUnknownMethodReferences();
+    if (!unknownMethodReferences.isEmpty()) {
+      logger.atWarning().log("Unknown Methods: %s", String.join(", ", unknownMethodReferences));
+    }
+    if (options.useClassHierarchyAnalyzer()) {
+      return ClassHierarchyAnalyzer.analyze(tgb.getTypes());
+    } else {
+      return RapidTypeAnalyser.analyse(tgb.getTypes());
+    }
+  }
+
+  private TypeGraphBuilder createTypeGraphBuilder() throws IOException {
     UsedCodeMarker.Context context =
         new UsedCodeMarker.Context(
             ProGuardUsageParser.parseDeadCodeFile(options.getTreeShakerRoots()));
@@ -155,20 +183,11 @@ public class TreeShaker {
 
     parser.parseFiles(sourceFiles, handler, options.sourceVersion());
     FileUtil.deleteTempDir(strippedDir);
+    parser.close();
     if (ErrorUtil.errorCount() > 0) {
       return null;
     }
-    TypeGraphBuilder tgb = new TypeGraphBuilder(context.getLibraryInfo());
-    logger.atFine().log("External Types: %s", String.join(", ", tgb.getExternalTypeReferences()));
-    Collection<String> unknownMethodReferences = tgb.getUnknownMethodReferences();
-    if (!unknownMethodReferences.isEmpty()) {
-      logger.atWarning().log("Unknown Methods: %s", String.join(", ", unknownMethodReferences));
-    }
-    if (options.useClassHierarchyAnalyzer()) {
-      return ClassHierarchyAnalyzer.analyze(tgb.getTypes());
-    } else {
-      return RapidTypeAnalyser.analyse(tgb.getTypes());
-    }
+    return new TypeGraphBuilder(context.getLibraryInfo());
   }
 
   private List<String> getSourceFiles() {
