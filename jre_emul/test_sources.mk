@@ -34,7 +34,6 @@ SUPPORT_SOURCES = \
     android/icu/dev/test/TestFmwk.java \
     android/icu/dev/test/TestLog.java \
     android/icu/dev/test/TestUtil.java \
-    com/google/j2objc/TestUtil.java \
     foo/Fourth.java \
     foo/bar/First.java \
     foo/mumble/Second.java \

@@ -110,4 +110,8 @@ abstract class AbstractStringBuilder implements Appendable, CharSequence {
   public AbstractStringBuilder append(CharSequence s, int start, int end) {
     return null;
   }
+
+  public int compareTo(AbstractStringBuilder another) {
+    return 0;
+  }
 }
