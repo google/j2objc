@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1994, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1994, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -29,22 +29,21 @@ package java.lang;
  * Thrown when a stack overflow occurs because an application
  * recurses too deeply.
  *
- * @author unascribed
- * @since   JDK1.0
+ * @since   1.0
  */
-public
-class StackOverflowError extends VirtualMachineError {
+public class StackOverflowError extends VirtualMachineError {
+    @java.io.Serial
     private static final long serialVersionUID = 8609175038441759607L;
 
     /**
-     * Constructs a <code>StackOverflowError</code> with no detail message.
+     * Constructs a {@code StackOverflowError} with no detail message.
      */
     public StackOverflowError() {
         super();
     }
 
     /**
-     * Constructs a <code>StackOverflowError</code> with the specified
+     * Constructs a {@code StackOverflowError} with the specified
      * detail message.
      *
      * @param   s   the detail message.

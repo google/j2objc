@@ -24,6 +24,11 @@
  */
 
 package java.lang;
+
+/* J2ObjC removed
+import jdk.internal.misc.TerminatingThreadLocal;
+*/
+
 import java.lang.ref.*;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -171,6 +176,19 @@ public class ThreadLocal<T> {
     }
 
     /**
+     * Returns {@code true} if there is a value in the current thread's copy of
+     * this thread-local variable, even if that values is {@code null}.
+     *
+     * @return {@code true} if current thread has associated value in this
+     *         thread-local variable; {@code false} if not
+     */
+    boolean isPresent() {
+        Thread t = Thread.currentThread();
+        ThreadLocalMap map = getMap(t);
+        return map != null && map.getEntry(this) != null;
+    }
+
+    /**
      * Variant of set() to establish initialValue. Used instead
      * of set() in case user has overridden the set() method.
      *
@@ -199,10 +217,11 @@ public class ThreadLocal<T> {
     public void set(T value) {
         Thread t = Thread.currentThread();
         ThreadLocalMap map = getMap(t);
-        if (map != null)
+        if (map != null) {
             map.set(this, value);
-        else
+        } else {
             createMap(t, value);
+        }
     }
 
     /**
@@ -218,8 +237,9 @@ public class ThreadLocal<T> {
      */
      public void remove() {
          ThreadLocalMap m = getMap(Thread.currentThread());
-         if (m != null)
+         if (m != null) {
              m.remove(this);
+         }
      }
 
     /**
@@ -382,8 +402,7 @@ public class ThreadLocal<T> {
             setThreshold(len);
             table = new Entry[len];
 
-            for (int j = 0; j < len; j++) {
-                Entry e = parentTable[j];
+            for (Entry e : parentTable) {
                 if (e != null) {
                     @SuppressWarnings("unchecked")
                     ThreadLocal<Object> key = (ThreadLocal<Object>) e.get();
@@ -685,8 +704,7 @@ public class ThreadLocal<T> {
             Entry[] newTab = new Entry[newLen];
             int count = 0;
 
-            for (int j = 0; j < oldLen; ++j) {
-                Entry e = oldTab[j];
+            for (Entry e : oldTab) {
                 if (e != null) {
                     ThreadLocal<?> k = e.get();
                     if (k == null) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1994, 2012, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1994, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -29,13 +29,11 @@ package java.lang;
  * Thrown to indicate that a method has been passed an illegal or
  * inappropriate argument.
  *
- * @author  unascribed
- * @since   JDK1.0
+ * @since   1.0
  */
-public
-class IllegalArgumentException extends RuntimeException {
+public class IllegalArgumentException extends RuntimeException {
     /**
-     * Constructs an <code>IllegalArgumentException</code> with no
+     * Constructs an {@code IllegalArgumentException} with no
      * detail message.
      */
     public IllegalArgumentException() {
@@ -43,7 +41,7 @@ class IllegalArgumentException extends RuntimeException {
     }
 
     /**
-     * Constructs an <code>IllegalArgumentException</code> with the
+     * Constructs an {@code IllegalArgumentException} with the
      * specified detail message.
      *
      * @param   s   the detail message.
@@ -56,14 +54,14 @@ class IllegalArgumentException extends RuntimeException {
      * Constructs a new exception with the specified detail message and
      * cause.
      *
-     * <p>Note that the detail message associated with <code>cause</code> is
+     * <p>Note that the detail message associated with {@code cause} is
      * <i>not</i> automatically incorporated in this exception's detail
      * message.
      *
      * @param  message the detail message (which is saved for later retrieval
      *         by the {@link Throwable#getMessage()} method).
      * @param  cause the cause (which is saved for later retrieval by the
-     *         {@link Throwable#getCause()} method).  (A <tt>null</tt> value
+     *         {@link Throwable#getCause()} method).  (A {@code null} value
      *         is permitted, and indicates that the cause is nonexistent or
      *         unknown.)
      * @since 1.5
@@ -74,14 +72,14 @@ class IllegalArgumentException extends RuntimeException {
 
     /**
      * Constructs a new exception with the specified cause and a detail
-     * message of <tt>(cause==null ? null : cause.toString())</tt> (which
-     * typically contains the class and detail message of <tt>cause</tt>).
+     * message of {@code (cause==null ? null : cause.toString())} (which
+     * typically contains the class and detail message of {@code cause}).
      * This constructor is useful for exceptions that are little more than
      * wrappers for other throwables (for example, {@link
      * java.security.PrivilegedActionException}).
      *
      * @param  cause the cause (which is saved for later retrieval by the
-     *         {@link Throwable#getCause()} method).  (A <tt>null</tt> value is
+     *         {@link Throwable#getCause()} method).  (A {@code null} value is
      *         permitted, and indicates that the cause is nonexistent or
      *         unknown.)
      * @since  1.5
@@ -90,5 +88,6 @@ class IllegalArgumentException extends RuntimeException {
         super(cause);
     }
 
+    @java.io.Serial
     private static final long serialVersionUID = -5365630128856068164L;
 }

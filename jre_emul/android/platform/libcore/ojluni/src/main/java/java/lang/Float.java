@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1994, 2021, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,9 +25,16 @@
 
 package java.lang;
 
+// BEGIN Android-removed: dynamic constants not supported on Android.
+/*
+import java.lang.invoke.MethodHandles;
+import java.lang.constant.Constable;
+import java.lang.constant.ConstantDesc;
+import java.util.Optional;
+*/
+// END Android-removed: dynamic constants not supported on Android.
+
 import sun.misc.FloatingDecimal;
-import sun.misc.FloatConsts;
-import sun.misc.DoubleConsts;
 
 /**
  * The {@code Float} class wraps a value of primitive type
@@ -42,12 +48,34 @@ import sun.misc.DoubleConsts;
  * constants and methods useful when dealing with a
  * {@code float}.
  *
+ * <!-- Android-removed: paragraph on ValueBased
+ * <p>This is a <a href="{@docRoot}/java.base/java/lang/doc-files/ValueBased.html">value-based</a>
+ * class; programmers should treat instances that are
+ * {@linkplain #equals(Object) equal} as interchangeable and should not
+ * use instances for synchronization, or unpredictable behavior may
+ * occur. For example, in a future release, synchronization may fail.
+ * -->
+ *
+ * <h2><a id=equivalenceRelation>Floating-point Equality, Equivalence,
+ * and Comparison</a></h2>
+ *
+ * The class {@code java.lang.Double} has a <a
+ * href="Double.html#equivalenceRelation">discussion of equality,
+ * equivalence, and comparison of floating-point values</a> that is
+ * equality applicable to {@code float} values.
+ *
  * @author  Lee Boynton
  * @author  Arthur van Hoff
  * @author  Joseph D. Darcy
- * @since JDK1.0
+ * @since 1.0
  */
-public final class Float extends Number implements Comparable<Float> {
+// Android-removed: ValueBased
+// @jdk.internal.ValueBased
+public final class Float extends Number
+        implements Comparable<Float>
+// Android-removed: no Constable support.
+// , Constable, ConstantDesc
+{
     /**
      * A constant holding the positive infinity of type
      * {@code float}. It is equal to the value returned by
@@ -132,7 +160,7 @@ public final class Float extends Number implements Comparable<Float> {
      * The {@code Class} instance representing the primitive type
      * {@code float}.
      *
-     * @since JDK1.1
+     * @since 1.1
      */
     @SuppressWarnings("unchecked")
     public static final Class<Float> TYPE = (Class<Float>) float[].class.getComponentType();
@@ -258,23 +286,27 @@ public final class Float extends Number implements Comparable<Float> {
      *
      * </ul>
      *
-     * <table border>
+     * <table class="striped">
      * <caption>Examples</caption>
-     * <tr><th>Floating-point Value</th><th>Hexadecimal String</th>
-     * <tr><td>{@code 1.0}</td> <td>{@code 0x1.0p0}</td>
-     * <tr><td>{@code -1.0}</td>        <td>{@code -0x1.0p0}</td>
-     * <tr><td>{@code 2.0}</td> <td>{@code 0x1.0p1}</td>
-     * <tr><td>{@code 3.0}</td> <td>{@code 0x1.8p1}</td>
-     * <tr><td>{@code 0.5}</td> <td>{@code 0x1.0p-1}</td>
-     * <tr><td>{@code 0.25}</td>        <td>{@code 0x1.0p-2}</td>
-     * <tr><td>{@code Float.MAX_VALUE}</td>
+     * <thead>
+     * <tr><th scope="col">Floating-point Value</th><th scope="col">Hexadecimal String</th>
+     * </thead>
+     * <tbody>
+     * <tr><th scope="row">{@code 1.0}</th> <td>{@code 0x1.0p0}</td>
+     * <tr><th scope="row">{@code -1.0}</th>        <td>{@code -0x1.0p0}</td>
+     * <tr><th scope="row">{@code 2.0}</th> <td>{@code 0x1.0p1}</td>
+     * <tr><th scope="row">{@code 3.0}</th> <td>{@code 0x1.8p1}</td>
+     * <tr><th scope="row">{@code 0.5}</th> <td>{@code 0x1.0p-1}</td>
+     * <tr><th scope="row">{@code 0.25}</th>        <td>{@code 0x1.0p-2}</td>
+     * <tr><th scope="row">{@code Float.MAX_VALUE}</th>
      *     <td>{@code 0x1.fffffep127}</td>
-     * <tr><td>{@code Minimum Normal Value}</td>
+     * <tr><th scope="row">{@code Minimum Normal Value}</th>
      *     <td>{@code 0x1.0p-126}</td>
-     * <tr><td>{@code Maximum Subnormal Value}</td>
+     * <tr><th scope="row">{@code Maximum Subnormal Value}</th>
      *     <td>{@code 0x0.fffffep-126}</td>
-     * <tr><td>{@code Float.MIN_VALUE}</td>
+     * <tr><th scope="row">{@code Float.MIN_VALUE}</th>
      *     <td>{@code 0x0.000002p-126}</td>
+     * </tbody>
      * </table>
      * @param   f   the {@code float} to be converted.
      * @return a hex string representation of the argument.
@@ -282,15 +314,15 @@ public final class Float extends Number implements Comparable<Float> {
      * @author Joseph D. Darcy
      */
     public static String toHexString(float f) {
-        if (Math.abs(f) < FloatConsts.MIN_NORMAL
+        if (Math.abs(f) < Float.MIN_NORMAL
             &&  f != 0.0f ) {// float subnormal
             // Adjust exponent to create subnormal double, then
             // replace subnormal double exponent with subnormal float
             // exponent
             String s = Double.toHexString(Math.scalb((double)f,
                                                      /* -1022+126 */
-                                                     DoubleConsts.MIN_EXPONENT-
-                                                     FloatConsts.MIN_EXPONENT));
+                                                     Double.MIN_EXPONENT-
+                                                     Float.MIN_EXPONENT));
             return s.replaceFirst("p-1022$", "p-126");
         }
         else // double string will be the same as float string
@@ -354,7 +386,7 @@ public final class Float extends Number implements Comparable<Float> {
      * <i>HexNumeral</i>, <i>HexDigits</i>, <i>SignedInteger</i> and
      * <i>FloatTypeSuffix</i> are as defined in the lexical structure
      * sections of
-     * <cite>The Java&trade; Language Specification</cite>,
+     * <cite>The Java Language Specification</cite>,
      * except that underscores are not accepted between digits.
      * If {@code s} does not have the form of
      * a <i>FloatValue</i>, then a {@code NumberFormatException}
@@ -430,6 +462,9 @@ public final class Float extends Number implements Comparable<Float> {
      * @return a {@code Float} instance representing {@code f}.
      * @since  1.5
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static Float valueOf(float f) {
         return new Float(f);
     }
@@ -488,7 +523,7 @@ public final class Float extends Number implements Comparable<Float> {
      * @since 1.8
      */
      public static boolean isFinite(float f) {
-        return Math.abs(f) <= FloatConsts.MAX_VALUE;
+        return Math.abs(f) <= Float.MAX_VALUE;
     }
 
     /**
@@ -503,7 +538,14 @@ public final class Float extends Number implements Comparable<Float> {
      * represents the primitive {@code float} argument.
      *
      * @param   value   the value to be represented by the {@code Float}.
+     *
+     * @deprecated
+     * It is rarely appropriate to use this constructor. The static factory
+     * {@link #valueOf(float)} is generally a better choice, as it is
+     * likely to yield significantly better space and time performance.
      */
+    // Android-changed: not yet forRemoval on Android.
+    @Deprecated(/*, forRemoval = true*/) // J2ObjC modified: removed since="9"
     public Float(float value) {
         this.value = value;
     }
@@ -513,7 +555,14 @@ public final class Float extends Number implements Comparable<Float> {
      * represents the argument converted to type {@code float}.
      *
      * @param   value   the value to be represented by the {@code Float}.
+     *
+     * @deprecated
+     * It is rarely appropriate to use this constructor. Instead, use the
+     * static factory method {@link #valueOf(float)} method as follows:
+     * {@code Float.valueOf((float)value)}.
      */
+    // Android-changed: not yet forRemoval on Android.
+    @Deprecated(/*, forRemoval = true*/) // J2ObjC modified: removed since="9"
     public Float(double value) {
         this.value = (float)value;
     }
@@ -524,11 +573,18 @@ public final class Float extends Number implements Comparable<Float> {
      * represented by the string. The string is converted to a
      * {@code float} value as if by the {@code valueOf} method.
      *
-     * @param      s   a string to be converted to a {@code Float}.
-     * @throws  NumberFormatException  if the string does not contain a
-     *               parsable number.
-     * @see        java.lang.Float#valueOf(java.lang.String)
+     * @param   s   a string to be converted to a {@code Float}.
+     * @throws      NumberFormatException if the string does not contain a
+     *              parsable number.
+     *
+     * @deprecated
+     * It is rarely appropriate to use this constructor.
+     * Use {@link #parseFloat(String)} to convert a string to a
+     * {@code float} primitive, or use {@link #valueOf(String)}
+     * to convert a string to a {@code Float} object.
      */
+    // Android-changed: not yet forRemoval on Android.
+    @Deprecated(/*, forRemoval = true*/) // J2ObjC modified: removed since="9"
     public Float(String s) throws NumberFormatException {
         value = parseFloat(s);
     }
@@ -575,7 +631,7 @@ public final class Float extends Number implements Comparable<Float> {
      *
      * @return  the {@code float} value represented by this object
      *          converted to type {@code byte}
-     * @jls 5.1.3 Narrowing Primitive Conversions
+     * @jls 5.1.3 Narrowing Primitive Conversion
      */
     public byte byteValue() {
         return (byte)value;
@@ -587,8 +643,8 @@ public final class Float extends Number implements Comparable<Float> {
      *
      * @return  the {@code float} value represented by this object
      *          converted to type {@code short}
-     * @jls 5.1.3 Narrowing Primitive Conversions
-     * @since JDK1.1
+     * @jls 5.1.3 Narrowing Primitive Conversion
+     * @since 1.1
      */
     public short shortValue() {
         return (short)value;
@@ -600,7 +656,7 @@ public final class Float extends Number implements Comparable<Float> {
      *
      * @return  the {@code float} value represented by this object
      *          converted to type {@code int}
-     * @jls 5.1.3 Narrowing Primitive Conversions
+     * @jls 5.1.3 Narrowing Primitive Conversion
      */
     public int intValue() {
         return (int)value;
@@ -612,7 +668,7 @@ public final class Float extends Number implements Comparable<Float> {
      *
      * @return  the {@code float} value represented by this object
      *          converted to type {@code long}
-     * @jls 5.1.3 Narrowing Primitive Conversions
+     * @jls 5.1.3 Narrowing Primitive Conversion
      */
     public long longValue() {
         return (long)value;
@@ -623,6 +679,9 @@ public final class Float extends Number implements Comparable<Float> {
      *
      * @return the {@code float} value represented by this object
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public float floatValue() {
         return value;
     }
@@ -633,7 +692,7 @@ public final class Float extends Number implements Comparable<Float> {
      *
      * @return the {@code float} value represented by this
      *         object converted to type {@code double}
-     * @jls 5.1.2 Widening Primitive Conversions
+     * @jls 5.1.2 Widening Primitive Conversion
      */
     public double doubleValue() {
         return (double)value;
@@ -666,7 +725,6 @@ public final class Float extends Number implements Comparable<Float> {
     }
 
     /**
-
      * Compares this object against the specified object.  The result
      * is {@code true} if and only if the argument is not
      * {@code null} and is a {@code Float} object that
@@ -677,33 +735,21 @@ public final class Float extends Number implements Comparable<Float> {
      * returns the identical {@code int} value when applied to
      * each.
      *
-     * <p>Note that in most cases, for two instances of class
-     * {@code Float}, {@code f1} and {@code f2}, the value
-     * of {@code f1.equals(f2)} is {@code true} if and only if
-     *
-     * <blockquote><pre>
-     *   f1.floatValue() == f2.floatValue()
-     * </pre></blockquote>
-     *
-     * <p>also has the value {@code true}. However, there are two exceptions:
-     * <ul>
-     * <li>If {@code f1} and {@code f2} both represent
-     *     {@code Float.NaN}, then the {@code equals} method returns
-     *     {@code true}, even though {@code Float.NaN==Float.NaN}
-     *     has the value {@code false}.
-     * <li>If {@code f1} represents {@code +0.0f} while
-     *     {@code f2} represents {@code -0.0f}, or vice
-     *     versa, the {@code equal} test has the value
-     *     {@code false}, even though {@code 0.0f==-0.0f}
-     *     has the value {@code true}.
-     * </ul>
-     *
-     * This definition allows hash tables to operate properly.
+     * @apiNote
+     * This method is defined in terms of {@link
+     * #floatToIntBits(float)} rather than the {@code ==} operator on
+     * {@code float} values since the {@code ==} operator does
+     * <em>not</em> define an equivalence relation and to satisfy the
+     * {@linkplain Object#equals equals contract} an equivalence
+     * relation must be implemented; see <a
+     * href="Double.html#equivalenceRelation">this discussion</a> for
+     * details of floating-point equality and equivalence.
      *
      * @param obj the object to be compared
      * @return  {@code true} if the objects are the same;
      *          {@code false} otherwise.
      * @see java.lang.Float#floatToIntBits(float)
+     * @jls 15.21.1 Numerical Equality Operators == and !=
      */
     public boolean equals(Object obj) {
         return (obj instanceof Float)
@@ -741,15 +787,14 @@ public final class Float extends Number implements Comparable<Float> {
      * @param   value   a floating-point number.
      * @return the bits that represent the floating-point number.
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static int floatToIntBits(float value) {
-        int result = floatToRawIntBits(value);
-        // Check for NaN based on values of bit fields, maximum
-        // exponent and nonzero significand.
-        if ( ((result & FloatConsts.EXP_BIT_MASK) ==
-              FloatConsts.EXP_BIT_MASK) &&
-             (result & FloatConsts.SIGNIF_BIT_MASK) != 0)
-            result = 0x7fc00000;
-        return result;
+        if (!isNaN(value)) {
+            return floatToRawIntBits(value);
+        }
+        return 0x7fc00000;
     }
 
     /**
@@ -787,6 +832,9 @@ public final class Float extends Number implements Comparable<Float> {
      * @return the bits that represent the floating-point number.
      * @since 1.3
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static native int floatToRawIntBits(float value) /*-[
       return *(int *) &value;
     ]-*/;
@@ -850,29 +898,40 @@ public final class Float extends Number implements Comparable<Float> {
      * @return  the {@code float} floating-point value with the same bit
      *          pattern.
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static native float intBitsToFloat(int bits) /*-[
       return *(float *) &bits;
     ]-*/;
 
     /**
-     * Compares two {@code Float} objects numerically.  There are
-     * two ways in which comparisons performed by this method differ
-     * from those performed by the Java language numerical comparison
-     * operators ({@code <, <=, ==, >=, >}) when
-     * applied to primitive {@code float} values:
+     * Compares two {@code Float} objects numerically.
      *
-     * <ul><li>
-     *          {@code Float.NaN} is considered by this method to
-     *          be equal to itself and greater than all other
-     *          {@code float} values
-     *          (including {@code Float.POSITIVE_INFINITY}).
-     * <li>
-     *          {@code 0.0f} is considered by this method to be greater
-     *          than {@code -0.0f}.
+     * This method imposes a total order on {@code Float} objects
+     * with two differences compared to the incomplete order defined by
+     * the Java language numerical comparison operators ({@code <, <=,
+     * ==, >=, >}) on {@code float} values.
+     *
+     * <ul><li> A NaN is <em>unordered</em> with respect to other
+     *          values and unequal to itself under the comparison
+     *          operators.  This method chooses to define {@code
+     *          Float.NaN} to be equal to itself and greater than all
+     *          other {@code double} values (including {@code
+     *          Float.POSITIVE_INFINITY}).
+     *
+     *      <li> Positive zero and negative zero compare equal
+     *      numerically, but are distinct and distinguishable values.
+     *      This method chooses to define positive zero ({@code +0.0f}),
+     *      to be greater than negative zero ({@code -0.0f}).
      * </ul>
      *
      * This ensures that the <i>natural ordering</i> of {@code Float}
-     * objects imposed by this method is <i>consistent with equals</i>.
+     * objects imposed by this method is <i>consistent with
+     * equals</i>; see <a href="Double.html#equivalenceRelation">this
+     * discussion</a> for details of floating-point comparison and
+     * ordering.
+     *
      *
      * @param   anotherFloat   the {@code Float} to be compared.
      * @return  the value {@code 0} if {@code anotherFloat} is
@@ -883,8 +942,8 @@ public final class Float extends Number implements Comparable<Float> {
      *          {@code Float} is numerically greater than
      *          {@code anotherFloat}.
      *
+     * @jls 15.20.1 Numerical Comparison Operators {@code <}, {@code <=}, {@code >}, and {@code >=}
      * @since   1.2
-     * @see Comparable#compareTo(Object)
      */
     public int compareTo(Float anotherFloat) {
         return Float.compare(value, anotherFloat.value);
@@ -965,7 +1024,35 @@ public final class Float extends Number implements Comparable<Float> {
         return Math.min(a, b);
     }
 
+    // BEGIN Android-removed: dynamic constants not supported on Android.
+    /**
+     * Returns an {@link Optional} containing the nominal descriptor for this
+     * instance, which is the instance itself.
+     *
+     * @return an {@link Optional} describing the {@linkplain Float} instance
+     * @since 12
+     *
+    @Override
+    public Optional<Float> describeConstable() {
+        return Optional.of(this);
+    }
+
+    /**
+     * Resolves this instance as a {@link ConstantDesc}, the result of which is
+     * the instance itself.
+     *
+     * @param lookup ignored
+     * @return the {@linkplain Float} instance
+     * @since 12
+     *
+    @Override
+    public Float resolveConstantDesc(MethodHandles.Lookup lookup) {
+        return this;
+    }
+    // END Android-removed: dynamic constants not supported on Android.
+
     /** use serialVersionUID from JDK 1.0.2 for interoperability */
+    @java.io.Serial
     private static final long serialVersionUID = -2671257302660747028L;
 
     /*

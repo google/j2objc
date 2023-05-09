@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1994, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1994, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -32,22 +32,21 @@ package java.lang;
  * incompatibly changed since the currently executing method was last
  * compiled.
  *
- * @author  unascribed
- * @since   JDK1.0
+ * @since   1.0
  */
-public
-class AbstractMethodError extends IncompatibleClassChangeError {
+public class AbstractMethodError extends IncompatibleClassChangeError {
+    @java.io.Serial
     private static final long serialVersionUID = -1654391082989018462L;
 
     /**
-     * Constructs an <code>AbstractMethodError</code> with no detail  message.
+     * Constructs an {@code AbstractMethodError} with no detail  message.
      */
     public AbstractMethodError() {
         super();
     }
 
     /**
-     * Constructs an <code>AbstractMethodError</code> with the specified
+     * Constructs an {@code AbstractMethodError} with the specified
      * detail message.
      *
      * @param   s   the detail message.

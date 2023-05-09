@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1994, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1994, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -30,15 +30,14 @@ package java.lang;
  * definition. The definition of some class, on which the currently
  * executing method depends, has since changed.
  *
- * @author  unascribed
- * @since   JDK1.0
+ * @since   1.0
  */
-public
-class IncompatibleClassChangeError extends LinkageError {
+public class IncompatibleClassChangeError extends LinkageError {
+    @java.io.Serial
     private static final long serialVersionUID = -4914975503642802119L;
 
     /**
-     * Constructs an <code>IncompatibleClassChangeError</code> with no
+     * Constructs an {@code IncompatibleClassChangeError} with no
      * detail message.
      */
     public IncompatibleClassChangeError () {
@@ -46,7 +45,7 @@ class IncompatibleClassChangeError extends LinkageError {
     }
 
     /**
-     * Constructs an <code>IncompatibleClassChangeError</code> with the
+     * Constructs an {@code IncompatibleClassChangeError} with the
      * specified detail message.
      *
      * @param   s   the detail message.

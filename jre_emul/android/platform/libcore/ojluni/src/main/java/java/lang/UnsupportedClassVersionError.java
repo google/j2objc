@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1998, 2019, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -32,12 +32,12 @@ package java.lang;
  *
  * @since   1.2
  */
-public
-class UnsupportedClassVersionError extends ClassFormatError {
+public class UnsupportedClassVersionError extends ClassFormatError {
+    @java.io.Serial
     private static final long serialVersionUID = -7123279212883497373L;
 
     /**
-     * Constructs a <code>UnsupportedClassVersionError</code>
+     * Constructs a {@code UnsupportedClassVersionError}
      * with no detail message.
      */
     public UnsupportedClassVersionError() {
@@ -45,7 +45,7 @@ class UnsupportedClassVersionError extends ClassFormatError {
     }
 
     /**
-     * Constructs a <code>UnsupportedClassVersionError</code> with
+     * Constructs a {@code UnsupportedClassVersionError} with
      * the specified detail message.
      *
      * @param   s   the detail message.

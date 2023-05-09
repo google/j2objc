@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1996, 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -31,8 +30,7 @@ package java.lang;
  * reference to the {@code Class} object representing the Java keyword
  * void.
  *
- * @author  unascribed
- * @since   JDK1.1
+ * @since   1.1
  */
 public final
 class Void {

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2003, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -31,7 +31,11 @@ import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import libcore.util.BasicLruCache;
+
+import static java.util.Objects.requireNonNull;
 
 /*-[
 #include "IOSReflection.h"
@@ -44,26 +48,38 @@ import libcore.util.BasicLruCache;
 ]-*/
 
 /**
- * This is the common base class of all Java language enumeration types.
+ * This is the common base class of all Java language enumeration classes.
  *
  * More information about enums, including descriptions of the
  * implicitly declared methods synthesized by the compiler, can be
- * found in section 8.9 of
- * <cite>The Java&trade; Language Specification</cite>.
+ * found in section {@jls 8.9} of <cite>The Java Language
+ * Specification</cite>.
+ *
+ * Enumeration classes are all serializable and receive special handling
+ * by the serialization mechanism. The serialized representation used
+ * for enum constants cannot be customized. Declarations of methods
+ * and fields that would otherwise interact with serialization are
+ * ignored, including {@code serialVersionUID}; see the <cite>Java
+ * Object Serialization Specification</cite> for details.
  *
  * <p> Note that when using an enumeration type as the type of a set
  * or as the type of the keys in a map, specialized and efficient
  * {@linkplain java.util.EnumSet set} and {@linkplain
  * java.util.EnumMap map} implementations are available.
  *
- * @param <E> The enum type subclass
+ * @param <E> The type of the enum subclass
+ * @serial exclude
  * @author  Josh Bloch
  * @author  Neal Gafter
  * @see     Class#getEnumConstants()
  * @see     java.util.EnumSet
  * @see     java.util.EnumMap
+ * @jls 8.9 Enum Classes
+ * @jls 8.9.3 Enum Members
  * @since   1.5
  */
+@SuppressWarnings("serial") // No serialVersionUID needed due to
+                            // special-casing of enum classes.
 public abstract class Enum<E extends Enum<E>>
         implements Comparable<E>, Serializable {
     /**
@@ -86,7 +102,7 @@ public abstract class Enum<E extends Enum<E>>
      * @return the name of this enum constant
      */
     public final String name() {
-      return getEnumConstantName(ordinal);
+        return name;
     }
 
     private native String getEnumConstantName(int ordinal) /*-[
@@ -123,7 +139,7 @@ public abstract class Enum<E extends Enum<E>>
     /**
      * Sole constructor.  Programmers cannot invoke this constructor.
      * It is for use by code emitted by the compiler in response to
-     * enum type declarations.
+     * enum class declarations.
      *
      * @param name - The name of this enum constant, which is the identifier
      *               used to declare it.
@@ -139,13 +155,13 @@ public abstract class Enum<E extends Enum<E>>
     /**
      * Returns the name of this enum constant, as contained in the
      * declaration.  This method may be overridden, though it typically
-     * isn't necessary or desirable.  An enum type should override this
+     * isn't necessary or desirable.  An enum class should override this
      * method when a more "programmer-friendly" string form exists.
      *
      * @return the name of this enum constant
      */
     public String toString() {
-        return name();
+        return name;
     }
 
     /**
@@ -217,45 +233,71 @@ public abstract class Enum<E extends Enum<E>>
         return (zuper == Enum.class) ? (Class<E>)clazz : (Class<E>)zuper;
     }
 
+    // BEGIN Android-removed: dynamic constants not supported on Android.
+    /*
     /**
-     * Returns the enum constant of the specified enum type with the
+     * Returns an enum descriptor {@code EnumDesc} for this instance, if one can be
+     * constructed, or an empty {@link Optional} if one cannot be.
+     *
+     * @return An {@link Optional} containing the resulting nominal descriptor,
+     * or an empty {@link Optional} if one cannot be constructed.
+     * @since 12
+     *
+    @Override
+    public final Optional<EnumDesc<E>> describeConstable() {
+        return getDeclaringClass()
+                .describeConstable()
+                .map(c -> EnumDesc.of(c, name));
+    }
+     */
+    // END Android-removed: dynamic constants not supported on Android.   
+
+    /**
+     * Returns the enum constant of the specified enum class with the
      * specified name.  The name must match exactly an identifier used
-     * to declare an enum constant in this type.  (Extraneous whitespace
+     * to declare an enum constant in this class.  (Extraneous whitespace
      * characters are not permitted.)
      *
-     * <p>Note that for a particular enum type {@code T}, the
+     * <p>Note that for a particular enum class {@code T}, the
      * implicitly declared {@code public static T valueOf(String)}
      * method on that enum may be used instead of this method to map
      * from a name to the corresponding enum constant.  All the
-     * constants of an enum type can be obtained by calling the
+     * constants of an enum class can be obtained by calling the
      * implicit {@code public static T[] values()} method of that
-     * type.
+     * class.
      *
-     * @param <T> The enum type whose constant is to be returned
-     * @param enumType the {@code Class} object of the enum type from which
+     * @param <T> The enum class whose constant is to be returned
+     * @param enumClass the {@code Class} object of the enum class from which
      *      to return a constant
      * @param name the name of the constant to return
-     * @return the enum constant of the specified enum type with the
+     * @return the enum constant of the specified enum class with the
      *      specified name
-     * @throws IllegalArgumentException if the specified enum type has
+     * @throws IllegalArgumentException if the specified enum class has
      *         no constant with the specified name, or the specified
-     *         class object does not represent an enum type
-     * @throws NullPointerException if {@code enumType} or {@code name}
+     *         class object does not represent an enum class
+     * @throws NullPointerException if {@code enumClass} or {@code name}
      *         is null
      * @since 1.5
      */
-    public static <T extends Enum<T>> T valueOf(Class<T> enumType,
+    // BEGIN Android-changed: Use a static BasicLruCache mapping Enum class -> Enum instance array.
+    // This change was made to fix a performance regression. See b/4087759 and b/109791362 for more
+    // background information.
+    /*
+    public static <T extends Enum<T>> T valueOf(Class<T> enumClass,
                                                 String name) {
-        // Android-changed: Use a static BasicLruCache mapping Enum class -> Enum instance array.
-        if (enumType == null) {
-            throw new NullPointerException("enumType == null");
-        }
-        if (name == null) {
-            throw new NullPointerException("name == null");
-        }
-        T[] values = getSharedConstants(enumType);
+        T result = enumClass.enumConstantDirectory().get(name);
+        if (result != null)
+            return result;
+        if (name == null)
+            throw new NullPointerException("Name is null");
+     */
+    public static <T extends Enum<T>> T valueOf(Class<T> enumClass,
+                                                String name) {
+        requireNonNull(enumClass, "enumClass == null");
+        requireNonNull(name, "name == null");
+        T[] values = getSharedConstants(enumClass);
         if (values == null) {
-            throw new IllegalArgumentException(enumType.toString() + " is not an enum type.");
+            throw new IllegalArgumentException(enumClass.toString() + " is not an enum type.");
         }
 
         // Iterate backwards through the array to retain historic Android behavior in the
@@ -267,10 +309,23 @@ public abstract class Enum<E extends Enum<E>>
             }
         }
         throw new IllegalArgumentException(
-                "No enum constant " + enumType.getCanonicalName() + "." + name);
+            "No enum constant " + enumClass.getCanonicalName() + "." + name);
     }
 
-    @SuppressWarnings("rawtypes")
+    private static Object[] enumValues(Class<? extends Enum> clazz) {
+        if (!clazz.isEnum()) {
+            // Either clazz is Enum.class itself, or it is not an enum class and the method was
+            // called unsafely e.g. using an unchecked cast or via reflection.
+            return null;
+        }
+        try {
+            Method valueMethod = clazz.getDeclaredMethod("values");
+            return (Object[]) valueMethod.invoke(null);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static final BasicLruCache<Class<? extends Enum>, Object[]> sharedConstantsCache
             = new BasicLruCache<Class<? extends Enum>, Object[]>(64) {
         // Use a native reflective lookup so that enums with stripped reflection will work.
@@ -302,20 +357,24 @@ public abstract class Enum<E extends Enum<E>>
     public static <T extends Enum<T>> T[] getSharedConstants(Class<T> enumType) {
         return (T[]) sharedConstantsCache.get(enumType);
     }
+    // END Android-changed: Use a static BasicLruCache mapping Enum class -> Enum instance array.
 
     /**
      * enum classes cannot have finalize methods.
      */
+    @SuppressWarnings("deprecation")
     protected final void finalize() { }
 
     /**
      * prevent default deserialization
      */
+    @java.io.Serial
     private void readObject(ObjectInputStream in) throws IOException,
         ClassNotFoundException {
         throw new InvalidObjectException("can't deserialize enum");
     }
 
+    @java.io.Serial
     private void readObjectNoData() throws ObjectStreamException {
         throw new InvalidObjectException("can't deserialize enum");
     }
@@ -323,4 +382,60 @@ public abstract class Enum<E extends Enum<E>>
     /*-[
     J2OBJC_ETERNAL_SINGLETON
     ]-*/
+
+    // BEGIN Android-removed: dynamic constants not supported on Android.
+    /*
+    /**
+     * A <a href="{@docRoot}/java.base/java/lang/constant/package-summary.html#nominal">nominal descriptor</a> for an
+     * {@code enum} constant.
+     *
+     * @param <E> the type of the enum constant
+     *
+     * @since 12
+     *
+    public static final class EnumDesc<E extends Enum<E>>
+            extends DynamicConstantDesc<E> {
+
+        /**
+         * Constructs a nominal descriptor for the specified {@code enum} class and name.
+         *
+         * @param constantClass a {@link ClassDesc} describing the {@code enum} class
+         * @param constantName the unqualified name of the enum constant
+         * @throws NullPointerException if any argument is null
+         * @jvms 4.2.2 Unqualified Names
+         *
+        private EnumDesc(ClassDesc constantClass, String constantName) {
+            super(ConstantDescs.BSM_ENUM_CONSTANT, requireNonNull(constantName), requireNonNull(constantClass));
+        }
+
+        /**
+         * Returns a nominal descriptor for the specified {@code enum} class and name
+         *
+         * @param <E> the type of the enum constant
+         * @param enumClass a {@link ClassDesc} describing the {@code enum} class
+         * @param constantName the unqualified name of the enum constant
+         * @return the nominal descriptor
+         * @throws NullPointerException if any argument is null
+         * @jvms 4.2.2 Unqualified Names
+         * @since 12
+         *
+        public static<E extends Enum<E>> EnumDesc<E> of(ClassDesc enumClass,
+                                                        String constantName) {
+            return new EnumDesc<>(enumClass, constantName);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public E resolveConstantDesc(MethodHandles.Lookup lookup)
+                throws ReflectiveOperationException {
+            return Enum.valueOf((Class<E>) constantType().resolveConstantDesc(lookup), constantName());
+        }
+
+        @Override
+        public String toString() {
+            return String.format("EnumDesc[%s.%s]", constantType().displayName(), constantName());
+        }
+    }
+     */
+    // END Android-removed: dynamic constants not supported on Android.
 }

@@ -25,16 +25,45 @@
  */
 package java.lang;
 
-import java.io.IOException;
+/* J2ObjC removed
+import dalvik.system.PathClassLoader;
+import sun.misc.Resource;
+import sun.misc.URLClassPath;
+import sun.misc.VM;
+*/
+
 import java.io.InputStream;
+import java.io.IOException;
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.AccessControlContext;
+import java.security.CodeSource;
+import java.security.Policy;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.security.ProtectionDomain;
+import java.security.cert.Certificate;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
 import java.util.Map;
+import java.util.Vector;
+import java.util.Hashtable;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 import sun.misc.CompoundEnumeration;
 import sun.reflect.CallerSensitive;
+import sun.reflect.Reflection;
+import sun.security.util.SecurityConstants;
 
 /**
  * A class loader is an object that is responsible for loading classes. The
@@ -153,6 +182,12 @@ import sun.reflect.CallerSensitive;
  */
 public abstract class ClassLoader {
 
+    /* J2ObjC removed
+    static private class SystemClassLoader {
+        public static ClassLoader loader = ClassLoader.createSystemClassLoader();
+    }
+    */
+
     /**
      * To avoid unloading individual classes, {@link java.lang.reflect.Proxy}
      * only generates one class for each set of interfaces. This maps sets of
@@ -170,6 +205,32 @@ public abstract class ClassLoader {
     // must be added *after* it.
     private final ClassLoader parent;
 
+    /**
+     * Encapsulates the set of parallel capable loader types.
+     */
+    /* J2ObjC removed
+    private static ClassLoader createSystemClassLoader() {
+        String classPath = System.getProperty("java.class.path", ".");
+        String librarySearchPath = System.getProperty("java.library.path", "");
+
+        // String[] paths = classPath.split(":");
+        // URL[] urls = new URL[paths.length];
+        // for (int i = 0; i < paths.length; i++) {
+        // try {
+        // urls[i] = new URL("file://" + paths[i]);
+        // }
+        // catch (Exception ex) {
+        // ex.printStackTrace();
+        // }
+        // }
+        //
+        // return new java.net.URLClassLoader(urls, null);
+
+        // TODO Make this a java.net.URLClassLoader once we have those?
+        return new PathClassLoader(classPath, librarySearchPath, BootClassLoader.getInstance());
+    }
+    */
+
     // The packages defined in this class loader.  Each package name is mapped
     // to its corresponding Package object.
     // @GuardedBy("itself")
@@ -179,13 +240,13 @@ public abstract class ClassLoader {
      * Pointer to the allocator used by the runtime to allocate metadata such
      * as ArtFields and ArtMethods.
      */
-    // j2objc: unused
+    // J2ObjC removed: unused
     // private transient long allocator;
 
     /**
      * Pointer to the class table, only used from within the runtime.
      */
-    // j2objc: unused
+    // J2ObjC removed: unused
     // private transient long classTable;
 
     private static Void checkCreateClassLoader() {
@@ -490,7 +551,7 @@ public abstract class ClassLoader {
      * bootstrap class loader.  If <tt>name</tt> is not <tt>null</tt>, it
      * must be equal to the <a href="#name">binary name</a> of the class
      * specified by the byte array "<tt>b</tt>", otherwise a {@link
-     * NoClassDefFoundError} will be thrown.  </p>
+     * NoClassDefFoundError <tt>NoClassDefFoundError</tt>} will be thrown. </p>
      *
      * @param  name
      *         The expected <a href="#name">binary name</a> of the class, or
@@ -994,6 +1055,7 @@ public abstract class ClassLoader {
         return parent;
     }
 
+    // Android-changed: Removed "java.system.class.loader" paragraph.
     /**
      * Returns the system class loader for delegation.  This is the default
      * delegation parent for new <tt>ClassLoader</tt> instances, and is
@@ -1005,16 +1067,6 @@ public abstract class ClassLoader {
      *
      * <p> The default system class loader is an implementation-dependent
      * instance of this class.
-     *
-     * <p> If the system property "<tt>java.system.class.loader</tt>" is defined
-     * when this method is first invoked then the value of that property is
-     * taken to be the name of a class that will be returned as the system
-     * class loader.  The class is loaded using the default system class loader
-     * and must define a public constructor that takes a single parameter of
-     * type <tt>ClassLoader</tt> which is used as the delegation parent.  An
-     * instance is then created using this constructor with the default system
-     * class loader as the parameter.  The resulting class loader is defined
-     * to be the system class loader.
      *
      * <p> If a security manager is present, and the invoker's class loader is
      * not <tt>null</tt> and the invoker's class loader is not the same as or
@@ -1052,6 +1104,18 @@ public abstract class ClassLoader {
     @CallerSensitive
     public static ClassLoader getSystemClassLoader() {
         return SystemClassLoader.loader;
+    }
+
+    // Returns the class's class loader, or null if none.
+    static ClassLoader getClassLoader(Class<?> caller) {
+        // This can be null if the VM is requesting it
+        if (caller == null) {
+            return null;
+        }
+        // Android-changed: Use Class.getClassLoader(); there is no Class.getClassLoader0().
+        // // Circumvent security check since this is package-private
+        // return caller.getClassLoader0();
+        return caller.getClassLoader();
     }
 
     // -- Package --
@@ -1150,6 +1214,7 @@ public abstract class ClassLoader {
         synchronized (packages) {
             map = new HashMap<>(packages);
         }
+        Package[] pkgs;
         return map.values().toArray(new Package[map.size()]);
     }
 
@@ -1185,6 +1250,8 @@ public abstract class ClassLoader {
      * invoking {@link #setPackageAssertionStatus(String, boolean)} or {@link
      * #setClassAssertionStatus(String, boolean)}.
      *
+     * Android-note: AssertionStatuses are unsupported. This method is a no-op.
+     *
      * @param  enabled
      *         <tt>true</tt> if classes loaded by this class loader will
      *         henceforth have assertions enabled by default, <tt>false</tt>
@@ -1217,6 +1284,8 @@ public abstract class ClassLoader {
      * assertion status, and may be overridden on a per-class basis by invoking
      * {@link #setClassAssertionStatus(String, boolean)}.  </p>
      *
+     * Android-note: AssertionStatuses are unsupported. This method is a no-op.
+     *
      * @param  packageName
      *         The name of the package whose package default assertion status
      *         is to be set. A <tt>null</tt> value indicates the unnamed
@@ -1247,6 +1316,8 @@ public abstract class ClassLoader {
      * <p> If the named class is not a top-level class, this invocation will
      * have no effect on the actual assertion status of any class. </p>
      *
+     * Android-note: AssertionStatuses are unsupported. This method is a no-op.
+     *
      * @param  className
      *         The fully qualified class name of the top-level class whose
      *         assertion status is to be set.
@@ -1267,6 +1338,8 @@ public abstract class ClassLoader {
      * status settings associated with the class loader.  This method is
      * provided so that class loaders can be made to ignore any command line or
      * persistent assertion status settings and "start with a clean slate."
+     *
+     * Android-note: AssertionStatuses are unsupported. This method is a no-op.
      *
      * @since  1.4
      */

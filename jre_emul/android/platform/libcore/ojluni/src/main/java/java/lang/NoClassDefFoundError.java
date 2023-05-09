@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1994, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1994, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -27,31 +27,30 @@
 package java.lang;
 
 /**
- * Thrown if the Java Virtual Machine or a <code>ClassLoader</code> instance
+ * Thrown if the Java Virtual Machine or a {@code ClassLoader} instance
  * tries to load in the definition of a class (as part of a normal method call
- * or as part of creating a new instance using the <code>new</code> expression)
+ * or as part of creating a new instance using the {@code new} expression)
  * and no definition of the class could be found.
  * <p>
  * The searched-for class definition existed when the currently
  * executing class was compiled, but the definition can no longer be
  * found.
  *
- * @author  unascribed
- * @since   JDK1.0
+ * @since   1.0
  */
-public
-class NoClassDefFoundError extends LinkageError {
+public class NoClassDefFoundError extends LinkageError {
+    @java.io.Serial
     private static final long serialVersionUID = 9095859863287012458L;
 
     /**
-     * Constructs a <code>NoClassDefFoundError</code> with no detail message.
+     * Constructs a {@code NoClassDefFoundError} with no detail message.
      */
     public NoClassDefFoundError() {
         super();
     }
 
     /**
-     * Constructs a <code>NoClassDefFoundError</code> with the specified
+     * Constructs a {@code NoClassDefFoundError} with the specified
      * detail message.
      *
      * @param   s   the detail message.
@@ -60,6 +59,7 @@ class NoClassDefFoundError extends LinkageError {
         super(s);
     }
 
+    // Android-added: A new constructor for use by the Android runtime.
     /**
      * Constructs a new {@code NoClassDefFoundError} with the current stack
      * trace, the specified detail message and the specified cause. Used

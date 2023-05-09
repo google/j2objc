@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1994, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -24,6 +24,11 @@
  */
 
 package java.lang;
+
+/* J2ObjC removed
+import java.util.Arrays;
+import jdk.internal.HotSpotIntrinsicCandidate;
+*/
 
 /**
  * A thread-safe, mutable sequence of characters.
@@ -87,16 +92,32 @@ package java.lang;
  * this one, as it supports all of the same operations but it is faster, as
  * it performs no synchronization.
  *
+ * @apiNote
+ * {@code StringBuffer} implements {@code Comparable} but does not override
+ * {@link Object#equals equals}. Thus, the natural ordering of {@code StringBuffer}
+ * is inconsistent with equals. Care should be exercised if {@code StringBuffer}
+ * objects are used as keys in a {@code SortedMap} or elements in a {@code SortedSet}.
+ * See {@link Comparable}, {@link java.util.SortedMap SortedMap}, or
+ * {@link java.util.SortedSet SortedSet} for more information.
+ *
  * @author      Arthur van Hoff
  * @see     java.lang.StringBuilder
  * @see     java.lang.String
- * @since   JDK1.0
+ * @since   1.0
  */
  public final class StringBuffer
     extends AbstractStringBuilder
-    implements java.io.Serializable, CharSequence
+    implements java.io.Serializable, Comparable<StringBuffer>, CharSequence
 {
 
+    /**
+     * A cache of the last value returned by toString. Cleared
+     * whenever the StringBuffer is modified.
+     */
+    /* J2ObjC removed
+    private transient String toStringCache;
+    */
+   
     /** use serialVersionUID from JDK 1.0.2 for interoperability */
     static final long serialVersionUID = 3388685877147921107L;
 
@@ -104,6 +125,9 @@ package java.lang;
      * Constructs a string buffer with no characters in it and an
      * initial capacity of 16 characters.
      */
+    /* J2ObjC removed
+    @HotSpotIntrinsicCandidate
+    */
     public StringBuffer() {
         super(16);
     }
@@ -113,9 +137,12 @@ package java.lang;
      * the specified initial capacity.
      *
      * @param      capacity  the initial capacity.
-     * @exception  NegativeArraySizeException  if the {@code capacity}
-     *               argument is less than {@code 0}.
+     * @throws     NegativeArraySizeException  if the {@code capacity}
+     *             argument is less than {@code 0}.
      */
+    /* J2ObjC removed
+    @HotSpotIntrinsicCandidate
+    */
     public StringBuffer(int capacity) {
         super(capacity);
     }
@@ -127,6 +154,9 @@ package java.lang;
      *
      * @param   str   the initial contents of the buffer.
      */
+    /* J2ObjC removed
+    @HotSpotIntrinsicCandidate
+    */
     public StringBuffer(String str) {
         super(str.length() + 16);
         append(str);
@@ -148,6 +178,35 @@ package java.lang;
     public StringBuffer(CharSequence seq) {
         this(seq.length() + 16);
         append(seq);
+    }
+
+    /**
+     * Compares two {@code StringBuffer} instances lexicographically. This method
+     * follows the same rules for lexicographical comparison as defined in the
+     * {@linkplain java.lang.CharSequence#compare(java.lang.CharSequence,
+     * java.lang.CharSequence)  CharSequence.compare(this, another)} method.
+     *
+     * <p>
+     * For finer-grained, locale-sensitive String comparison, refer to
+     * {@link java.text.Collator}.
+     *
+     * @implNote
+     * This method synchronizes on {@code this}, the current object, but not
+     * {@code StringBuffer another} with which {@code this StringBuffer} is compared.
+     *
+     * @param another the {@code StringBuffer} to be compared with
+     *
+     * @return  the value {@code 0} if this {@code StringBuffer} contains the same
+     * character sequence as that of the argument {@code StringBuffer}; a negative integer
+     * if this {@code StringBuffer} is lexicographically less than the
+     * {@code StringBuffer} argument; or a positive integer if this {@code StringBuffer}
+     * is lexicographically greater than the {@code StringBuffer} argument.
+     *
+     * @since 11
+     */
+    @Override
+    public synchronized int compareTo(StringBuffer another) {
+        return super.compareTo(another);
     }
 
     @Override
@@ -180,6 +239,8 @@ package java.lang;
      */
     @Override
     public synchronized void setLength(int newLength) {
+        // J2ObjC removed
+        // toStringCache = null;
         super.setLength(newLength);
     }
 
@@ -193,6 +254,7 @@ package java.lang;
     }
 
     /**
+     * @throws IndexOutOfBoundsException {@inheritDoc}
      * @since      1.5
      */
     @Override
@@ -201,6 +263,7 @@ package java.lang;
     }
 
     /**
+     * @throws IndexOutOfBoundsException {@inheritDoc}
      * @since     1.5
      */
     @Override
@@ -209,6 +272,7 @@ package java.lang;
     }
 
     /**
+     * @throws IndexOutOfBoundsException {@inheritDoc}
      * @since     1.5
      */
     @Override
@@ -217,6 +281,7 @@ package java.lang;
     }
 
     /**
+     * @throws IndexOutOfBoundsException {@inheritDoc}
      * @since     1.5
      */
     @Override
@@ -240,6 +305,8 @@ package java.lang;
      */
     @Override
     public synchronized void setCharAt(int index, char ch) {
+        // J2ObjC removed
+        // toStringCache = null;
         super.setCharAt(index, ch);
     }
 
@@ -284,7 +351,9 @@ package java.lang;
     /**
      * @since 1.8
      * J2ObjC - Unused.
+    @Override
     synchronized StringBuffer append(AbstractStringBuilder asb) {
+        toStringCache = null;
         super.append(asb);
         return this;
     }*/
@@ -343,12 +412,18 @@ package java.lang;
         return append(Boolean.toString(b));
     }
 
+    /* J2ObjC removed
+    @HotSpotIntrinsicCandidate
+    */
     @Override
     public synchronized native StringBuffer append(char c) /*-[
       JreStringBuilder_appendChar(&self->delegate_, c);
       return self;
     ]-*/;
 
+    /* J2ObjC removed
+    @HotSpotIntrinsicCandidate
+    */
     public synchronized native StringBuffer append(int i) /*-[
       JreStringBuilder_appendInt(&self->delegate_, i);
       return self;
@@ -559,13 +634,16 @@ package java.lang;
     }
 
     /**
-     * @since   JDK1.0.2
+     * @since   1.0.2
      */
     public synchronized native StringBuffer reverse() /*-[
       JreStringBuilder_reverse(&self->delegate_);
       return self;
     ]-*/;
 
+    /* J2ObjC removed
+    @HotSpotIntrinsicCandidate
+    */
     @Override
     public synchronized native String toString() /*-[
       return JreStringBuilder_toString(&self->delegate_);

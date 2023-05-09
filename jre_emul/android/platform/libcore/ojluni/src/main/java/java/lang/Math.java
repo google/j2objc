@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1994, 2021, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -25,19 +25,31 @@
  */
 
 package java.lang;
-import dalvik.annotation.optimization.FastNative;
-import java.util.Random;
 
+/* J2ObjC removed
+import jdk.internal.vm.annotation.IntrinsicCandidate;
+import dalvik.annotation.optimization.CriticalNative;
+*/
+
+import dalvik.annotation.optimization.FastNative;
 import sun.misc.FloatConsts;
 import sun.misc.DoubleConsts;
 
+import java.math.BigDecimal;
+import java.util.Random;
+
+// Android-note: Document that the results from Math are based on libm's behavior.
+// For performance, Android implements many of the methods in this class in terms of the underlying
+// OS's libm functions. libm has well-defined behavior for special cases. Where known these are
+// marked with the tag above and the documentation has been modified as needed.
+// Android-changed: Fixed method links in the last paragraph.
 /**
  * The class {@code Math} contains methods for performing basic
  * numeric operations such as the elementary exponential, logarithm,
  * square root, and trigonometric functions.
  *
  * <p>Unlike some of the numeric methods of class
- * {@code StrictMath}, all implementations of the equivalent
+ * {@link java.lang.StrictMath StrictMath}, all implementations of the equivalent
  * functions of class {@code Math} are not defined to return the
  * bit-for-bit same results.  This relaxation permits
  * better-performing implementations where strict reproducibility is
@@ -92,16 +104,37 @@ import sun.misc.DoubleConsts;
  * The best practice is to choose the primitive type and algorithm to avoid
  * overflow. In cases where the size is {@code int} or {@code long} and
  * overflow errors need to be detected, the methods {@code addExact},
- * {@code subtractExact}, {@code multiplyExact}, and {@code toIntExact}
+ * {@code subtractExact}, {@code multiplyExact}, {@code toIntExact},
+ * {@code incrementExact}, {@code decrementExact} and {@code negateExact}
  * throw an {@code ArithmeticException} when the results overflow.
- * For other arithmetic operations such as divide, absolute value,
- * increment, decrement, and negation overflow occurs only with
- * a specific minimum or maximum value and should be checked against
- * the minimum or maximum as appropriate.
+ * For the arithmetic operations divide and absolute value, overflow
+ * occurs only with a specific minimum or maximum value and
+ * should be checked against the minimum or maximum as appropriate.
  *
- * @author  unascribed
+ * <h2><a id=Ieee754RecommendedOps>IEEE 754 Recommended
+ * Operations</a></h2>
+ *
+ * The 2019 revision of the IEEE 754 floating-point standard includes
+ * a section of recommended operations and the semantics of those
+ * operations if they are included in a programming environment. The
+ * recommended operations present in this class include {@link #sin(double)
+ * sin}, {@link #cos(double) cos}, {@link #tan(double) tan}, {@link #asin(double) asin}, {@link
+ * #acos(double) acos}, {@link #atan(double) atan}, {@link #exp(double) exp}, {@link #expm1(double)
+ * expm1}, {@link #log(double) log}, {@link #log10(double) log10}, {@link #log1p(double) log1p},
+ * {@link #sinh(double) sinh}, {@link #cosh(double) cosh}, {@link #tanh(double) tanh}, {@link
+ * #hypot(double, double) hypot}, and {@link #pow(double, double) pow}.  (The {@link #sqrt(double) sqrt}
+ * operation is a required part of IEEE 754 from a different section
+ * of the standard.) The special case behavior of the recommended
+ * operations generally follows the guidance of the IEEE 754
+ * standard. However, the {@code pow} method defines different
+ * behavior for some arguments, as noted in its {@linkplain #pow(double, double)
+ * specification}. The IEEE 754 standard defines its operations to be
+ * correctly rounded, which is a more stringent quality of
+ * implementation condition than required for most of the methods in
+ * question that are also included in this class.
+ *
  * @author  Joseph D. Darcy
- * @since   JDK1.0
+ * @since   1.0
  */
 
 public final class Math {
@@ -125,6 +158,18 @@ public final class Math {
     public static final double PI = 3.14159265358979323846;
 
     /**
+     * Constant by which to multiply an angular value in degrees to obtain an
+     * angular value in radians.
+     */
+    private static final double DEGREES_TO_RADIANS = 0.017453292519943295;
+
+    /**
+     * Constant by which to multiply an angular value in radians to obtain an
+     * angular value in degrees.
+     */
+    private static final double RADIANS_TO_DEGREES = 57.29577951308232;
+
+    /**
      * Returns the trigonometric sine of an angle.  Special cases:
      * <ul><li>If the argument is NaN or an infinity, then the
      * result is NaN.
@@ -137,13 +182,23 @@ public final class Math {
      * @param   a   an angle, in radians.
      * @return  the sine of the argument.
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    @IntrinsicCandidate
+    public static double sin(double a) {
+        return StrictMath.sin(a); // default impl. delegates to StrictMath
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double sin(double a);
 
     /**
      * Returns the trigonometric cosine of an angle. Special cases:
      * <ul><li>If the argument is NaN or an infinity, then the
-     * result is NaN.</ul>
+     * result is NaN.
+     * <li>If the argument is zero, then the result is {@code 1.0}.
+     *</ul>
      *
      * <p>The computed result must be within 1 ulp of the exact result.
      * Results must be semi-monotonic.
@@ -151,6 +206,14 @@ public final class Math {
      * @param   a   an angle, in radians.
      * @return  the cosine of the argument.
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    @IntrinsicCandidate
+    public static double cos(double a) {
+        return StrictMath.cos(a); // default impl. delegates to StrictMath
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double cos(double a);
 
@@ -167,6 +230,14 @@ public final class Math {
      * @param   a   an angle, in radians.
      * @return  the tangent of the argument.
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    @IntrinsicCandidate
+    public static double tan(double a) {
+        return StrictMath.tan(a); // default impl. delegates to StrictMath
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double tan(double a);
 
@@ -184,6 +255,13 @@ public final class Math {
      * @param   a   the value whose arc sine is to be returned.
      * @return  the arc sine of the argument.
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    public static double asin(double a) {
+        return StrictMath.asin(a); // default impl. delegates to StrictMath
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double asin(double a);
 
@@ -191,7 +269,9 @@ public final class Math {
      * Returns the arc cosine of a value; the returned angle is in the
      * range 0.0 through <i>pi</i>.  Special case:
      * <ul><li>If the argument is NaN or its absolute value is greater
-     * than 1, then the result is NaN.</ul>
+     * than 1, then the result is NaN.
+     * <li>If the argument is {@code 1.0}, the result is positive zero.
+     * </ul>
      *
      * <p>The computed result must be within 1 ulp of the exact result.
      * Results must be semi-monotonic.
@@ -199,6 +279,13 @@ public final class Math {
      * @param   a   the value whose arc cosine is to be returned.
      * @return  the arc cosine of the argument.
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    public static double acos(double a) {
+        return StrictMath.acos(a); // default impl. delegates to StrictMath
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double acos(double a);
 
@@ -207,7 +294,11 @@ public final class Math {
      * range -<i>pi</i>/2 through <i>pi</i>/2.  Special cases:
      * <ul><li>If the argument is NaN, then the result is NaN.
      * <li>If the argument is zero, then the result is a zero with the
-     * same sign as the argument.</ul>
+     * same sign as the argument.
+     * <li>If the argument is {@linkplain Double#isInfinite infinite},
+     * then the result is the closest value to <i>pi</i>/2 with the
+     * same sign as the input.
+     * </ul>
      *
      * <p>The computed result must be within 1 ulp of the exact result.
      * Results must be semi-monotonic.
@@ -215,6 +306,13 @@ public final class Math {
      * @param   a   the value whose arc tangent is to be returned.
      * @return  the arc tangent of the argument.
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    public static double atan(double a) {
+        return StrictMath.atan(a); // default impl. delegates to StrictMath
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double atan(double a);
 
@@ -229,7 +327,7 @@ public final class Math {
      * @since   1.2
      */
     public static double toRadians(double angdeg) {
-        return angdeg / 180.0 * PI;
+        return angdeg * DEGREES_TO_RADIANS;
     }
 
     /**
@@ -245,7 +343,7 @@ public final class Math {
      * @since   1.2
      */
     public static double toDegrees(double angrad) {
-        return angrad * 180.0 / PI;
+        return angrad * RADIANS_TO_DEGREES;
     }
 
     /**
@@ -255,7 +353,9 @@ public final class Math {
      * <li>If the argument is positive infinity, then the result is
      * positive infinity.
      * <li>If the argument is negative infinity, then the result is
-     * positive zero.</ul>
+     * positive zero.
+     * <li>If the argument is zero, then the result is {@code 1.0}.
+     * </ul>
      *
      * <p>The computed result must be within 1 ulp of the exact result.
      * Results must be semi-monotonic.
@@ -264,6 +364,14 @@ public final class Math {
      * @return  the value <i>e</i><sup>{@code a}</sup>,
      *          where <i>e</i> is the base of the natural logarithms.
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    @IntrinsicCandidate
+    public static double exp(double a) {
+        return StrictMath.exp(a); // default impl. delegates to StrictMath
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double exp(double a);
 
@@ -275,7 +383,10 @@ public final class Math {
      * <li>If the argument is positive infinity, then the result is
      * positive infinity.
      * <li>If the argument is positive zero or negative zero, then the
-     * result is negative infinity.</ul>
+     * result is negative infinity.
+     * <li>If the argument is {@code 1.0}, then the result is positive
+     * zero.
+     * </ul>
      *
      * <p>The computed result must be within 1 ulp of the exact result.
      * Results must be semi-monotonic.
@@ -284,6 +395,14 @@ public final class Math {
      * @return  the value ln&nbsp;{@code a}, the natural logarithm of
      *          {@code a}.
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    @IntrinsicCandidate
+    public static double log(double a) {
+        return StrictMath.log(a); // default impl. delegates to StrictMath
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double log(double a);
 
@@ -297,8 +416,10 @@ public final class Math {
      * positive infinity.
      * <li>If the argument is positive zero or negative zero, then the
      * result is negative infinity.
-     * <li> If the argument is equal to 10<sup><i>n</i></sup> for
-     * integer <i>n</i>, then the result is <i>n</i>.
+     * <li>If the argument is equal to 10<sup><i>n</i></sup> for
+     * integer <i>n</i>, then the result is <i>n</i>. In particular,
+     * if the argument is {@code 1.0} (10<sup>0</sup>), then the
+     * result is positive zero.
      * </ul>
      *
      * <p>The computed result must be within 1 ulp of the exact result.
@@ -308,6 +429,14 @@ public final class Math {
      * @return  the base 10 logarithm of  {@code a}.
      * @since 1.5
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    @IntrinsicCandidate
+    public static double log10(double a) {
+        return StrictMath.log10(a); // default impl. delegates to StrictMath
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double log10(double a);
 
@@ -328,6 +457,18 @@ public final class Math {
      * @return  the positive square root of {@code a}.
      *          If the argument is NaN or less than zero, the result is NaN.
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    @IntrinsicCandidate
+    public static double sqrt(double a) {
+        return StrictMath.sqrt(a); // default impl. delegates to StrictMath
+                                   // Note that hardware sqrt instructions
+                                   // frequently can be directly used by JITs
+                                   // and should be much faster than doing
+                                   // Math.sqrt in software.
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double sqrt(double a);
 
@@ -358,6 +499,13 @@ public final class Math {
      * @return  the cube root of {@code a}.
      * @since 1.5
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    public static double cbrt(double a) {
+        return StrictMath.cbrt(a);
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double cbrt(double a);
 
@@ -383,6 +531,13 @@ public final class Math {
      * @return  the remainder when {@code f1} is divided by
      *          {@code f2}.
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    public static double IEEEremainder(double f1, double f2) {
+        return StrictMath.IEEEremainder(f1, f2); // delegate to StrictMath
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double IEEEremainder(double f1, double f2);
 
@@ -405,6 +560,14 @@ public final class Math {
      *          floating-point value that is greater than or equal to
      *          the argument and is equal to a mathematical integer.
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    @IntrinsicCandidate
+    public static double ceil(double a) {
+        return StrictMath.ceil(a); // default impl. delegates to StrictMath
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double ceil(double a);
 
@@ -423,6 +586,14 @@ public final class Math {
      *          floating-point value that less than or equal to the argument
      *          and is equal to a mathematical integer.
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    @IntrinsicCandidate
+    public static double floor(double a) {
+        return StrictMath.floor(a); // default impl. delegates to StrictMath
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double floor(double a);
 
@@ -441,6 +612,14 @@ public final class Math {
      * @return  the closest floating-point value to {@code a} that is
      *          equal to a mathematical integer.
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    @IntrinsicCandidate
+    public static double rint(double a) {
+        return StrictMath.rint(a); // default impl. delegates to StrictMath
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double rint(double a);
 
@@ -489,6 +668,15 @@ public final class Math {
      * <p>The computed result must be within 2 ulps of the exact result.
      * Results must be semi-monotonic.
      *
+     * @apiNote
+     * For <i>y</i> with a positive sign and finite nonzero
+     * <i>x</i>, the exact mathematical value of {@code atan2} is
+     * equal to:
+     * <ul>
+     * <li>If <i>x</i> {@literal >} 0, atan(abs(<i>y</i>/<i>x</i>))
+     * <li>If <i>x</i> {@literal <} 0, &pi; - atan(abs(<i>y</i>/<i>x</i>))
+     * </ul>
+     *
      * @param   y   the ordinate coordinate
      * @param   x   the abscissa coordinate
      * @return  the <i>theta</i> component of the point
@@ -496,9 +684,22 @@ public final class Math {
      *          in polar coordinates that corresponds to the point
      *          (<i>x</i>,&nbsp;<i>y</i>) in Cartesian coordinates.
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    @IntrinsicCandidate
+    public static double atan2(double y, double x) {
+        return StrictMath.atan2(y, x); // default impl. delegates to StrictMath
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double atan2(double y, double x);
 
+    // Android-changed: Document that the results from Math are based on libm's behavior.
+    // The cases known to differ with libm's pow():
+    //   If the first argument is 1.0 then result is always 1.0 (not NaN).
+    //   If the first argument is -1.0 and the second argument is infinite, the result is 1.0 (not
+    //   NaN).
     /**
      * Returns the value of the first argument raised to the power of the
      * second argument. Special cases:
@@ -507,7 +708,9 @@ public final class Math {
      * result is 1.0.
      * <li>If the second argument is 1.0, then the result is the same as the
      * first argument.
-     * <li>If the second argument is NaN, then the result is NaN.
+     * <li>If the first argument is 1.0, then the result is 1.0.
+     * <li>If the second argument is NaN, then the result is NaN except where the first argument is
+     * 1.0.
      * <li>If the first argument is NaN and the second argument is nonzero,
      * then the result is NaN.
      *
@@ -531,7 +734,7 @@ public final class Math {
      * then the result is positive zero.
      *
      * <li>If the absolute value of the first argument equals 1 and the
-     * second argument is infinite, then the result is NaN.
+     * second argument is infinite, then the result is 1.0.
      *
      * <li>If
      * <ul>
@@ -618,10 +821,28 @@ public final class Math {
      * <p>The computed result must be within 1 ulp of the exact result.
      * Results must be semi-monotonic.
      *
+     * @apiNote
+     * The special cases definitions of this method differ from the
+     * special case definitions of the IEEE 754 recommended {@code
+     * pow} operation for &plusmn;{@code 1.0} raised to an infinite
+     * power. This method treats such cases as indeterminate and
+     * specifies a NaN is returned. The IEEE 754 specification treats
+     * the infinite power as a large integer (large-magnitude
+     * floating-point numbers are numerically integers, specifically
+     * even integers) and therefore specifies {@code 1.0} be returned.
+     *
      * @param   a   the base.
      * @param   b   the exponent.
      * @return  the value {@code a}<sup>{@code b}</sup>.
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    @IntrinsicCandidate
+    public static double pow(double a, double b) {
+        return StrictMath.pow(a, b); // default impl. delegates to StrictMath
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double pow(double a, double b);
 
@@ -746,14 +967,27 @@ public final class Math {
      * pseudorandom numbers at a great rate, it may reduce contention
      * for each thread to have its own pseudorandom-number generator.
      *
+     * @apiNote
+     * As the largest {@code double} value less than {@code 1.0}
+     * is {@code Math.nextDown(1.0)}, a value {@code x} in the closed range
+     * {@code [x1,x2]} where {@code x1<=x2} may be defined by the statements
+     *
+     * <blockquote><pre>{@code
+     * double f = Math.random()/Math.nextDown(1.0);
+     * double x = x1*(1.0 - f) + x2*f;
+     * }</pre></blockquote>
+     *
      * @return  a pseudorandom {@code double} greater than or equal
      * to {@code 0.0} and less than {@code 1.0}.
+     * @see #nextDown(double)
      * @see Random#nextDouble()
      */
     public static double random() {
         return RandomNumberGeneratorHolder.randomNumberGenerator.nextDouble();
     }
 
+    // Android-added: setRandomSeedInternal(long), called after zygote forks.
+    // This allows different processes to have different random seeds.
     /**
      * Set the seed for the pseudo random generator used by {@link #random()}
      * and {@link #randomIntInternal()}.
@@ -764,6 +998,7 @@ public final class Math {
         RandomNumberGeneratorHolder.randomNumberGenerator.setSeed(seed);
     }
 
+    // Android-added: randomIntInternal() method: like random() but for int.
     /**
      * @hide for internal use only.
      */
@@ -771,6 +1006,7 @@ public final class Math {
         return RandomNumberGeneratorHolder.randomNumberGenerator.nextInt();
     }
 
+    // Android-added: randomLongInternal() method: like random() but for long.
     /**
      * @hide for internal use only.
      */
@@ -788,6 +1024,9 @@ public final class Math {
      * @throws ArithmeticException if the result overflows an int
      * @since 1.8
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static int addExact(int x, int y) {
         int r = x + y;
         // HD 2-12 Overflow iff both arguments have the opposite sign of the result
@@ -807,6 +1046,9 @@ public final class Math {
      * @throws ArithmeticException if the result overflows a long
      * @since 1.8
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static long addExact(long x, long y) {
         long r = x + y;
         // HD 2-12 Overflow iff both arguments have the opposite sign of the result
@@ -826,10 +1068,13 @@ public final class Math {
      * @throws ArithmeticException if the result overflows an int
      * @since 1.8
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static int subtractExact(int x, int y) {
         int r = x - y;
         // HD 2-12 Overflow iff the arguments have different signs and
-        // the sign of the result is different than the sign of x
+        // the sign of the result is different from the sign of x
         if (((x ^ y) & (x ^ r)) < 0) {
             throw new ArithmeticException("integer overflow");
         }
@@ -846,10 +1091,13 @@ public final class Math {
      * @throws ArithmeticException if the result overflows a long
      * @since 1.8
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static long subtractExact(long x, long y) {
         long r = x - y;
         // HD 2-12 Overflow iff the arguments have different signs and
-        // the sign of the result is different than the sign of x
+        // the sign of the result is different from the sign of x
         if (((x ^ y) & (x ^ r)) < 0) {
             throw new ArithmeticException("long overflow");
         }
@@ -866,12 +1114,29 @@ public final class Math {
      * @throws ArithmeticException if the result overflows an int
      * @since 1.8
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static int multiplyExact(int x, int y) {
         long r = (long)x * (long)y;
         if ((int)r != r) {
             throw new ArithmeticException("integer overflow");
         }
         return (int)r;
+    }
+
+    /**
+     * Returns the product of the arguments, throwing an exception if the result
+     * overflows a {@code long}.
+     *
+     * @param x the first value
+     * @param y the second value
+     * @return the result
+     * @throws ArithmeticException if the result overflows a long
+     * @since 9
+     */
+    public static long multiplyExact(long x, int y) {
+        return multiplyExact(x, (long)y);
     }
 
     /**
@@ -884,6 +1149,9 @@ public final class Math {
      * @throws ArithmeticException if the result overflows a long
      * @since 1.8
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static long multiplyExact(long x, long y) {
         long r = x * y;
         long ax = Math.abs(x);
@@ -903,12 +1171,16 @@ public final class Math {
     /**
      * Returns the argument incremented by one, throwing an exception if the
      * result overflows an {@code int}.
+     * The overflow only occurs for {@linkplain Integer#MAX_VALUE the maximum value}.
      *
      * @param a the value to increment
      * @return the result
      * @throws ArithmeticException if the result overflows an int
      * @since 1.8
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static int incrementExact(int a) {
         if (a == Integer.MAX_VALUE) {
             throw new ArithmeticException("integer overflow");
@@ -920,12 +1192,16 @@ public final class Math {
     /**
      * Returns the argument incremented by one, throwing an exception if the
      * result overflows a {@code long}.
+     * The overflow only occurs for {@linkplain Long#MAX_VALUE the maximum value}.
      *
      * @param a the value to increment
      * @return the result
      * @throws ArithmeticException if the result overflows a long
      * @since 1.8
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static long incrementExact(long a) {
         if (a == Long.MAX_VALUE) {
             throw new ArithmeticException("long overflow");
@@ -937,12 +1213,16 @@ public final class Math {
     /**
      * Returns the argument decremented by one, throwing an exception if the
      * result overflows an {@code int}.
+     * The overflow only occurs for {@linkplain Integer#MIN_VALUE the minimum value}.
      *
      * @param a the value to decrement
      * @return the result
      * @throws ArithmeticException if the result overflows an int
      * @since 1.8
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static int decrementExact(int a) {
         if (a == Integer.MIN_VALUE) {
             throw new ArithmeticException("integer overflow");
@@ -954,12 +1234,16 @@ public final class Math {
     /**
      * Returns the argument decremented by one, throwing an exception if the
      * result overflows a {@code long}.
+     * The overflow only occurs for {@linkplain Long#MIN_VALUE the minimum value}.
      *
      * @param a the value to decrement
      * @return the result
      * @throws ArithmeticException if the result overflows a long
      * @since 1.8
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static long decrementExact(long a) {
         if (a == Long.MIN_VALUE) {
             throw new ArithmeticException("long overflow");
@@ -971,12 +1255,16 @@ public final class Math {
     /**
      * Returns the negation of the argument, throwing an exception if the
      * result overflows an {@code int}.
+     * The overflow only occurs for {@linkplain Integer#MIN_VALUE the minimum value}.
      *
      * @param a the value to negate
      * @return the result
      * @throws ArithmeticException if the result overflows an int
      * @since 1.8
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static int negateExact(int a) {
         if (a == Integer.MIN_VALUE) {
             throw new ArithmeticException("integer overflow");
@@ -988,12 +1276,16 @@ public final class Math {
     /**
      * Returns the negation of the argument, throwing an exception if the
      * result overflows a {@code long}.
+     * The overflow only occurs for {@linkplain Long#MIN_VALUE the minimum value}.
      *
      * @param a the value to negate
      * @return the result
      * @throws ArithmeticException if the result overflows a long
      * @since 1.8
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static long negateExact(long a) {
         if (a == Long.MIN_VALUE) {
             throw new ArithmeticException("long overflow");
@@ -1003,7 +1295,7 @@ public final class Math {
     }
 
     /**
-     * Returns the value of the {@code long} argument;
+     * Returns the value of the {@code long} argument,
      * throwing an exception if the value overflows an {@code int}.
      *
      * @param value the long value
@@ -1019,17 +1311,69 @@ public final class Math {
     }
 
     /**
+     * Returns the exact mathematical product of the arguments.
+     *
+     * @param x the first value
+     * @param y the second value
+     * @return the result
+     * @since 9
+     */
+    public static long multiplyFull(int x, int y) {
+        return (long)x * (long)y;
+    }
+
+    /**
+     * Returns as a {@code long} the most significant 64 bits of the 128-bit
+     * product of two 64-bit factors.
+     *
+     * @param x the first value
+     * @param y the second value
+     * @return the result
+     * @since 9
+     */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
+    public static long multiplyHigh(long x, long y) {
+        if (x < 0 || y < 0) {
+            // Use technique from section 8-2 of Henry S. Warren, Jr.,
+            // Hacker's Delight (2nd ed.) (Addison Wesley, 2013), 173-174.
+            long x1 = x >> 32;
+            long x2 = x & 0xFFFFFFFFL;
+            long y1 = y >> 32;
+            long y2 = y & 0xFFFFFFFFL;
+            long z2 = x2 * y2;
+            long t = x1 * y2 + (z2 >>> 32);
+            long z1 = t & 0xFFFFFFFFL;
+            long z0 = t >> 32;
+            z1 += x2 * y1;
+            return x1 * y1 + z0 + (z1 >> 32);
+        } else {
+            // Use Karatsuba technique with two base 2^32 digits.
+            long x1 = x >>> 32;
+            long y1 = y >>> 32;
+            long x2 = x & 0xFFFFFFFFL;
+            long y2 = y & 0xFFFFFFFFL;
+            long A = x1 * y1;
+            long B = x2 * y2;
+            long C = (x1 + x2) * (y1 + y2);
+            long K = C - A - B;
+            return (((B >>> 32) + K) >>> 32) + A;
+        }
+    }
+
+    /**
      * Returns the largest (closest to positive infinity)
      * {@code int} value that is less than or equal to the algebraic quotient.
      * There is one special case, if the dividend is the
      * {@linkplain Integer#MIN_VALUE Integer.MIN_VALUE} and the divisor is {@code -1},
      * then integer overflow occurs and
-     * the result is equal to the {@code Integer.MIN_VALUE}.
+     * the result is equal to {@code Integer.MIN_VALUE}.
      * <p>
      * Normal integer division operates under the round to zero rounding mode
      * (truncation).  This operation instead acts under the round toward
      * negative infinity (floor) rounding mode.
-     * The floor rounding mode gives different results than truncation
+     * The floor rounding mode gives different results from truncation
      * when the exact result is negative.
      * <ul>
      *   <li>If the signs of the arguments are the same, the results of
@@ -1042,7 +1386,6 @@ public final class Math {
      *       whereas {@code (-4 / 3) == -1}.
      *   </li>
      * </ul>
-     * <p>
      *
      * @param x the dividend
      * @param y the divisor
@@ -1068,12 +1411,41 @@ public final class Math {
      * There is one special case, if the dividend is the
      * {@linkplain Long#MIN_VALUE Long.MIN_VALUE} and the divisor is {@code -1},
      * then integer overflow occurs and
-     * the result is equal to the {@code Long.MIN_VALUE}.
+     * the result is equal to {@code Long.MIN_VALUE}.
      * <p>
      * Normal integer division operates under the round to zero rounding mode
      * (truncation).  This operation instead acts under the round toward
      * negative infinity (floor) rounding mode.
-     * The floor rounding mode gives different results than truncation
+     * The floor rounding mode gives different results from truncation
+     * when the exact result is negative.
+     * <p>
+     * For examples, see {@link #floorDiv(int, int)}.
+     *
+     * @param x the dividend
+     * @param y the divisor
+     * @return the largest (closest to positive infinity)
+     * {@code int} value that is less than or equal to the algebraic quotient.
+     * @throws ArithmeticException if the divisor {@code y} is zero
+     * @see #floorMod(long, int)
+     * @see #floor(double)
+     * @since 9
+     */
+    public static long floorDiv(long x, int y) {
+        return floorDiv(x, (long)y);
+    }
+
+    /**
+     * Returns the largest (closest to positive infinity)
+     * {@code long} value that is less than or equal to the algebraic quotient.
+     * There is one special case, if the dividend is the
+     * {@linkplain Long#MIN_VALUE Long.MIN_VALUE} and the divisor is {@code -1},
+     * then integer overflow occurs and
+     * the result is equal to {@code Long.MIN_VALUE}.
+     * <p>
+     * Normal integer division operates under the round to zero rounding mode
+     * (truncation).  This operation instead acts under the round toward
+     * negative infinity (floor) rounding mode.
+     * The floor rounding mode gives different results from truncation
      * when the exact result is negative.
      * <p>
      * For examples, see {@link #floorDiv(int, int)}.
@@ -1117,16 +1489,17 @@ public final class Math {
      * Examples:
      * <ul>
      *   <li>If the signs of the arguments are the same, the results
-     *       of {@code floorMod} and the {@code %} operator are the same.  <br>
+     *       of {@code floorMod} and the {@code %} operator are the same.<br>
      *       <ul>
-     *       <li>{@code floorMod(4, 3) == 1}; &nbsp; and {@code (4 % 3) == 1}</li>
+     *       <li>{@code floorMod(+4, +3) == +1}; &nbsp; and {@code (+4 % +3) == +1}</li>
+     *       <li>{@code floorMod(-4, -3) == -1}; &nbsp; and {@code (-4 % -3) == -1}</li>
      *       </ul>
-     *   <li>If the signs of the arguments are different, the results differ from the {@code %} operator.<br>
-     *      <ul>
-     *      <li>{@code floorMod(+4, -3) == -2}; &nbsp; and {@code (+4 % -3) == +1} </li>
-     *      <li>{@code floorMod(-4, +3) == +2}; &nbsp; and {@code (-4 % +3) == -1} </li>
-     *      <li>{@code floorMod(-4, -3) == -1}; &nbsp; and {@code (-4 % -3) == -1 } </li>
-     *      </ul>
+     *   <li>If the signs of the arguments are different, the results
+     *       differ from the {@code %} operator.<br>
+     *       <ul>
+     *       <li>{@code floorMod(+4, -3) == -2}; &nbsp; and {@code (+4 % -3) == +1}</li>
+     *       <li>{@code floorMod(-4, +3) == +2}; &nbsp; and {@code (-4 % +3) == -1}</li>
+     *       </ul>
      *   </li>
      * </ul>
      * <p>
@@ -1141,8 +1514,39 @@ public final class Math {
      * @since 1.8
      */
     public static int floorMod(int x, int y) {
-        int r = x - floorDiv(x, y) * y;
-        return r;
+        int mod = x % y;
+        // if the signs are different and modulo not zero, adjust result
+        if ((mod ^ y) < 0 && mod != 0) {
+            mod += y;
+        }
+        return mod;
+    }
+
+    /**
+     * Returns the floor modulus of the {@code long} and {@code int} arguments.
+     * <p>
+     * The floor modulus is {@code x - (floorDiv(x, y) * y)},
+     * has the same sign as the divisor {@code y}, and
+     * is in the range of {@code -abs(y) < r < +abs(y)}.
+     *
+     * <p>
+     * The relationship between {@code floorDiv} and {@code floorMod} is such that:
+     * <ul>
+     *   <li>{@code floorDiv(x, y) * y + floorMod(x, y) == x}
+     * </ul>
+     * <p>
+     * For examples, see {@link #floorMod(int, int)}.
+     *
+     * @param x the dividend
+     * @param y the divisor
+     * @return the floor modulus {@code x - (floorDiv(x, y) * y)}
+     * @throws ArithmeticException if the divisor {@code y} is zero
+     * @see #floorDiv(long, int)
+     * @since 9
+     */
+    public static int floorMod(long x, int y) {
+        // Result cannot overflow the range of int.
+        return (int)floorMod(x, (long)y);
     }
 
     /**
@@ -1168,7 +1572,12 @@ public final class Math {
      * @since 1.8
      */
     public static long floorMod(long x, long y) {
-        return x - floorDiv(x, y) * y;
+        long mod = x % y;
+        // if the signs are different and modulo not zero, adjust result
+        if ((x ^ y) < 0 && mod != 0) {
+            mod += y;
+        }
+        return mod;
     }
 
     /**
@@ -1176,16 +1585,47 @@ public final class Math {
      * If the argument is not negative, the argument is returned.
      * If the argument is negative, the negation of the argument is returned.
      *
-     * <p>Note that if the argument is equal to the value of
-     * {@link Integer#MIN_VALUE}, the most negative representable
-     * {@code int} value, the result is that same value, which is
-     * negative.
+     * <p>Note that if the argument is equal to the value of {@link
+     * Integer#MIN_VALUE}, the most negative representable {@code int}
+     * value, the result is that same value, which is negative. In
+     * contrast, the {@link Math#absExact(int)} method throws an
+     * {@code ArithmeticException} for this value.
      *
      * @param   a   the argument whose absolute value is to be determined
      * @return  the absolute value of the argument.
+     * @see Math#absExact(int)
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static int abs(int a) {
         return (a < 0) ? -a : a;
+    }
+
+    /**
+     * Returns the mathematical absolute value of an {@code int} value
+     * if it is exactly representable as an {@code int}, throwing
+     * {@code ArithmeticException} if the result overflows the
+     * positive {@code int} range.
+     *
+     * <p>Since the range of two's complement integers is asymmetric
+     * with one additional negative value (JLS {@jls 4.2.1}), the
+     * mathematical absolute value of {@link Integer#MIN_VALUE}
+     * overflows the positive {@code int} range, so an exception is
+     * thrown for that argument.
+     *
+     * @param  a  the argument whose absolute value is to be determined
+     * @return the absolute value of the argument, unless overflow occurs
+     * @throws ArithmeticException if the argument is {@link Integer#MIN_VALUE}
+     * @see Math#abs(int)
+     * @since 15
+     */
+    public static int absExact(int a) {
+        if (a == Integer.MIN_VALUE)
+            throw new ArithmeticException(
+                "Overflow to represent absolute value of Integer.MIN_VALUE");
+        else
+            return abs(a);
     }
 
     /**
@@ -1193,16 +1633,47 @@ public final class Math {
      * If the argument is not negative, the argument is returned.
      * If the argument is negative, the negation of the argument is returned.
      *
-     * <p>Note that if the argument is equal to the value of
-     * {@link Long#MIN_VALUE}, the most negative representable
-     * {@code long} value, the result is that same value, which
-     * is negative.
+     * <p>Note that if the argument is equal to the value of {@link
+     * Long#MIN_VALUE}, the most negative representable {@code long}
+     * value, the result is that same value, which is negative. In
+     * contrast, the {@link Math#absExact(long)} method throws an
+     * {@code ArithmeticException} for this value.
      *
      * @param   a   the argument whose absolute value is to be determined
      * @return  the absolute value of the argument.
+     * @see Math#absExact(long)
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static long abs(long a) {
         return (a < 0) ? -a : a;
+    }
+
+    /**
+     * Returns the mathematical absolute value of an {@code long} value
+     * if it is exactly representable as an {@code long}, throwing
+     * {@code ArithmeticException} if the result overflows the
+     * positive {@code long} range.
+     *
+     * <p>Since the range of two's complement integers is asymmetric
+     * with one additional negative value (JLS {@jls 4.2.1}), the
+     * mathematical absolute value of {@link Long#MIN_VALUE} overflows
+     * the positive {@code long} range, so an exception is thrown for
+     * that argument.
+     *
+     * @param  a  the argument whose absolute value is to be determined
+     * @return the absolute value of the argument, unless overflow occurs
+     * @throws ArithmeticException if the argument is {@link Long#MIN_VALUE}
+     * @see Math#abs(long)
+     * @since 15
+     */
+    public static long absExact(long a) {
+        if (a == Long.MIN_VALUE)
+            throw new ArithmeticException(
+                "Overflow to represent absolute value of Long.MIN_VALUE");
+        else
+            return abs(a);
     }
 
     /**
@@ -1214,16 +1685,27 @@ public final class Math {
      * result is positive zero.
      * <li>If the argument is infinite, the result is positive infinity.
      * <li>If the argument is NaN, the result is NaN.</ul>
-     * In other words, the result is the same as the value of the expression:
-     * <p>{@code Float.intBitsToFloat(0x7fffffff & Float.floatToIntBits(a))}
+     *
+     * @apiNote As implied by the above, one valid implementation of
+     * this method is given by the expression below which computes a
+     * {@code float} with the same exponent and significand as the
+     * argument but with a guaranteed zero sign bit indicating a
+     * positive value:<br>
+     * {@code Float.intBitsToFloat(0x7fffffff & Float.floatToRawIntBits(a))}
      *
      * @param   a   the argument whose absolute value is to be determined
      * @return  the absolute value of the argument.
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static float abs(float a) {
+        // Android-changed: Implementation modified to exactly match ART intrinsics behavior.
         // Note, as a "quality of implementation", rather than pure "spec compliance",
         // we require that Math.abs() clears the sign bit (but changes nothing else)
         // for all numbers, including NaN (signaling NaN may become quiet though).
+        // http://b/30758343
+        // return (a <= 0.0F) ? 0.0F - a : a;
         return Float.intBitsToFloat(0x7fffffff & Float.floatToRawIntBits(a));
     }
 
@@ -1236,16 +1718,27 @@ public final class Math {
      * is positive zero.
      * <li>If the argument is infinite, the result is positive infinity.
      * <li>If the argument is NaN, the result is NaN.</ul>
-     * In other words, the result is the same as the value of the expression:
-     * <p>{@code Double.longBitsToDouble((Double.doubleToLongBits(a)<<1)>>>1)}
+     *
+     * @apiNote As implied by the above, one valid implementation of
+     * this method is given by the expression below which computes a
+     * {@code double} with the same exponent and significand as the
+     * argument but with a guaranteed zero sign bit indicating a
+     * positive value:<br>
+     * {@code Double.longBitsToDouble((Double.doubleToRawLongBits(a)<<1)>>>1)}
      *
      * @param   a   the argument whose absolute value is to be determined
      * @return  the absolute value of the argument.
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static double abs(double a) {
+        // Android-changed: Implementation modified to exactly match ART intrinsics behavior.
         // Note, as a "quality of implementation", rather than pure "spec compliance",
         // we require that Math.abs() clears the sign bit (but changes nothing else)
         // for all numbers, including NaN (signaling NaN may become quiet though).
+        // http://b/30758343
+        // return (a <= 0.0D) ? 0.0D - a : a;
         return Double.longBitsToDouble(0x7fffffffffffffffL & Double.doubleToRawLongBits(a));
     }
 
@@ -1259,6 +1752,9 @@ public final class Math {
      * @param   b   another argument.
      * @return  the larger of {@code a} and {@code b}.
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static int max(int a, int b) {
         return (a >= b) ? a : b;
     }
@@ -1278,8 +1774,8 @@ public final class Math {
     }
 
     // Use raw bit-wise conversions on guaranteed non-NaN arguments.
-    private static long negativeZeroFloatBits  = Float.floatToRawIntBits(-0.0f);
-    private static long negativeZeroDoubleBits = Double.doubleToRawLongBits(-0.0d);
+    private static final long negativeZeroFloatBits  = Float.floatToRawIntBits(-0.0f);
+    private static final long negativeZeroDoubleBits = Double.doubleToRawLongBits(-0.0d);
 
     /**
      * Returns the greater of two {@code float} values.  That is,
@@ -1295,6 +1791,9 @@ public final class Math {
      * @param   b   another argument.
      * @return  the larger of {@code a} and {@code b}.
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static float max(float a, float b) {
         if (a != a)
             return a;   // a is NaN
@@ -1321,6 +1820,9 @@ public final class Math {
      * @param   b   another argument.
      * @return  the larger of {@code a} and {@code b}.
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static double max(double a, double b) {
         if (a != a)
             return a;   // a is NaN
@@ -1343,6 +1845,9 @@ public final class Math {
      * @param   b   another argument.
      * @return  the smaller of {@code a} and {@code b}.
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static int min(int a, int b) {
         return (a <= b) ? a : b;
     }
@@ -1375,6 +1880,9 @@ public final class Math {
      * @param   b   another argument.
      * @return  the smaller of {@code a} and {@code b}.
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static float min(float a, float b) {
         if (a != a)
             return a;   // a is NaN
@@ -1401,6 +1909,9 @@ public final class Math {
      * @param   b   another argument.
      * @return  the smaller of {@code a} and {@code b}.
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static double min(double a, double b) {
         if (a != a)
             return a;   // a is NaN
@@ -1411,6 +1922,196 @@ public final class Math {
             return b;
         }
         return (a <= b) ? a : b;
+    }
+
+    /**
+     * Returns the fused multiply add of the three arguments; that is,
+     * returns the exact product of the first two arguments summed
+     * with the third argument and then rounded once to the nearest
+     * {@code double}.
+     *
+     * The rounding is done using the {@linkplain
+     * java.math.RoundingMode#HALF_EVEN round to nearest even
+     * rounding mode}.
+     *
+     * In contrast, if {@code a * b + c} is evaluated as a regular
+     * floating-point expression, two rounding errors are involved,
+     * the first for the multiply operation, the second for the
+     * addition operation.
+     *
+     * <p>Special cases:
+     * <ul>
+     * <li> If any argument is NaN, the result is NaN.
+     *
+     * <li> If one of the first two arguments is infinite and the
+     * other is zero, the result is NaN.
+     *
+     * <li> If the exact product of the first two arguments is infinite
+     * (in other words, at least one of the arguments is infinite and
+     * the other is neither zero nor NaN) and the third argument is an
+     * infinity of the opposite sign, the result is NaN.
+     *
+     * </ul>
+     *
+     * <p>Note that {@code fma(a, 1.0, c)} returns the same
+     * result as ({@code a + c}).  However,
+     * {@code fma(a, b, +0.0)} does <em>not</em> always return the
+     * same result as ({@code a * b}) since
+     * {@code fma(-0.0, +0.0, +0.0)} is {@code +0.0} while
+     * ({@code -0.0 * +0.0}) is {@code -0.0}; {@code fma(a, b, -0.0)} is
+     * equivalent to ({@code a * b}) however.
+     *
+     * @apiNote This method corresponds to the fusedMultiplyAdd
+     * operation defined in IEEE 754-2008.
+     *
+     * @param a a value
+     * @param b a value
+     * @param c a value
+     *
+     * @return (<i>a</i>&nbsp;&times;&nbsp;<i>b</i>&nbsp;+&nbsp;<i>c</i>)
+     * computed, as if with unlimited range and precision, and rounded
+     * once to the nearest {@code double} value
+     *
+     * @since 9
+     */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
+    public static double fma(double a, double b, double c) {
+        /*
+         * Infinity and NaN arithmetic is not quite the same with two
+         * roundings as opposed to just one so the simple expression
+         * "a * b + c" cannot always be used to compute the correct
+         * result.  With two roundings, the product can overflow and
+         * if the addend is infinite, a spurious NaN can be produced
+         * if the infinity from the overflow and the infinite addend
+         * have opposite signs.
+         */
+
+        // First, screen for and handle non-finite input values whose
+        // arithmetic is not supported by BigDecimal.
+        if (Double.isNaN(a) || Double.isNaN(b) || Double.isNaN(c)) {
+            return Double.NaN;
+        } else { // All inputs non-NaN
+            boolean infiniteA = Double.isInfinite(a);
+            boolean infiniteB = Double.isInfinite(b);
+            boolean infiniteC = Double.isInfinite(c);
+            double result;
+
+            if (infiniteA || infiniteB || infiniteC) {
+                if (infiniteA && b == 0.0 ||
+                    infiniteB && a == 0.0 ) {
+                    return Double.NaN;
+                }
+                // Store product in a double field to cause an
+                // overflow even if non-strictfp evaluation is being
+                // used.
+                double product = a * b;
+                if (Double.isInfinite(product) && !infiniteA && !infiniteB) {
+                    // Intermediate overflow; might cause a
+                    // spurious NaN if added to infinite c.
+                    assert Double.isInfinite(c);
+                    return c;
+                } else {
+                    result = product + c;
+                    assert !Double.isFinite(result);
+                    return result;
+                }
+            } else { // All inputs finite
+                BigDecimal product = (new BigDecimal(a)).multiply(new BigDecimal(b));
+                if (c == 0.0) { // Positive or negative zero
+                    // If the product is an exact zero, use a
+                    // floating-point expression to compute the sign
+                    // of the zero final result. The product is an
+                    // exact zero if and only if at least one of a and
+                    // b is zero.
+                    if (a == 0.0 || b == 0.0) {
+                        return a * b + c;
+                    } else {
+                        // The sign of a zero addend doesn't matter if
+                        // the product is nonzero. The sign of a zero
+                        // addend is not factored in the result if the
+                        // exact product is nonzero but underflows to
+                        // zero; see IEEE-754 2008 section 6.3 "The
+                        // sign bit".
+                        return product.doubleValue();
+                    }
+                } else {
+                    return product.add(new BigDecimal(c)).doubleValue();
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns the fused multiply add of the three arguments; that is,
+     * returns the exact product of the first two arguments summed
+     * with the third argument and then rounded once to the nearest
+     * {@code float}.
+     *
+     * The rounding is done using the {@linkplain
+     * java.math.RoundingMode#HALF_EVEN round to nearest even
+     * rounding mode}.
+     *
+     * In contrast, if {@code a * b + c} is evaluated as a regular
+     * floating-point expression, two rounding errors are involved,
+     * the first for the multiply operation, the second for the
+     * addition operation.
+     *
+     * <p>Special cases:
+     * <ul>
+     * <li> If any argument is NaN, the result is NaN.
+     *
+     * <li> If one of the first two arguments is infinite and the
+     * other is zero, the result is NaN.
+     *
+     * <li> If the exact product of the first two arguments is infinite
+     * (in other words, at least one of the arguments is infinite and
+     * the other is neither zero nor NaN) and the third argument is an
+     * infinity of the opposite sign, the result is NaN.
+     *
+     * </ul>
+     *
+     * <p>Note that {@code fma(a, 1.0f, c)} returns the same
+     * result as ({@code a + c}).  However,
+     * {@code fma(a, b, +0.0f)} does <em>not</em> always return the
+     * same result as ({@code a * b}) since
+     * {@code fma(-0.0f, +0.0f, +0.0f)} is {@code +0.0f} while
+     * ({@code -0.0f * +0.0f}) is {@code -0.0f}; {@code fma(a, b, -0.0f)} is
+     * equivalent to ({@code a * b}) however.
+     *
+     * @apiNote This method corresponds to the fusedMultiplyAdd
+     * operation defined in IEEE 754-2008.
+     *
+     * @param a a value
+     * @param b a value
+     * @param c a value
+     *
+     * @return (<i>a</i>&nbsp;&times;&nbsp;<i>b</i>&nbsp;+&nbsp;<i>c</i>)
+     * computed, as if with unlimited range and precision, and rounded
+     * once to the nearest {@code float} value
+     *
+     * @since 9
+     */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
+    public static float fma(float a, float b, float c) {
+        if (Float.isFinite(a) && Float.isFinite(b) && Float.isFinite(c)) {
+            if (a == 0.0 || b == 0.0) {
+                return a * b + c; // Handled signed zero cases
+            } else {
+                return (new BigDecimal((double)a * (double)b) // Exact multiply
+                        .add(new BigDecimal((double)c)))      // Exact sum
+                    .floatValue();                            // One rounding
+                                                              // to a float value
+            }
+        } else {
+            // At least one of a,b, and c is non-finite. The result
+            // will be non-finite as well and will be the same
+            // non-finite value under double as float arithmetic.
+            return (float)fma((double)a, (double)b, (double)c);
+        }
     }
 
     /**
@@ -1440,18 +2141,18 @@ public final class Math {
         int exp = getExponent(d);
 
         switch(exp) {
-        case DoubleConsts.MAX_EXPONENT+1:       // NaN or infinity
+        case Double.MAX_EXPONENT + 1:       // NaN or infinity
             return Math.abs(d);
 
-        case DoubleConsts.MIN_EXPONENT-1:       // zero or subnormal
+        case Double.MIN_EXPONENT - 1:       // zero or subnormal
             return Double.MIN_VALUE;
 
         default:
-            assert exp <= DoubleConsts.MAX_EXPONENT && exp >= DoubleConsts.MIN_EXPONENT;
+            assert exp <= Double.MAX_EXPONENT && exp >= Double.MIN_EXPONENT;
 
             // ulp(x) is usually 2^(SIGNIFICAND_WIDTH-1)*(2^ilogb(x))
             exp = exp - (DoubleConsts.SIGNIFICAND_WIDTH-1);
-            if (exp >= DoubleConsts.MIN_EXPONENT) {
+            if (exp >= Double.MIN_EXPONENT) {
                 return powerOfTwoD(exp);
             }
             else {
@@ -1459,7 +2160,7 @@ public final class Math {
                 // representation of Double.MIN_VALUE appropriate
                 // number of positions
                 return Double.longBitsToDouble(1L <<
-                (exp - (DoubleConsts.MIN_EXPONENT - (DoubleConsts.SIGNIFICAND_WIDTH-1)) ));
+                (exp - (Double.MIN_EXPONENT - (DoubleConsts.SIGNIFICAND_WIDTH-1)) ));
             }
         }
     }
@@ -1491,26 +2192,25 @@ public final class Math {
         int exp = getExponent(f);
 
         switch(exp) {
-        case FloatConsts.MAX_EXPONENT+1:        // NaN or infinity
+        case Float.MAX_EXPONENT+1:        // NaN or infinity
             return Math.abs(f);
 
-        case FloatConsts.MIN_EXPONENT-1:        // zero or subnormal
-            return FloatConsts.MIN_VALUE;
+        case Float.MIN_EXPONENT-1:        // zero or subnormal
+            return Float.MIN_VALUE;
 
         default:
-            assert exp <= FloatConsts.MAX_EXPONENT && exp >= FloatConsts.MIN_EXPONENT;
+            assert exp <= Float.MAX_EXPONENT && exp >= Float.MIN_EXPONENT;
 
             // ulp(x) is usually 2^(SIGNIFICAND_WIDTH-1)*(2^ilogb(x))
             exp = exp - (FloatConsts.SIGNIFICAND_WIDTH-1);
-            if (exp >= FloatConsts.MIN_EXPONENT) {
+            if (exp >= Float.MIN_EXPONENT) {
                 return powerOfTwoF(exp);
-            }
-            else {
+            } else {
                 // return a subnormal result; left shift integer
                 // representation of FloatConsts.MIN_VALUE appropriate
                 // number of positions
                 return Float.intBitsToFloat(1 <<
-                (exp - (FloatConsts.MIN_EXPONENT - (FloatConsts.SIGNIFICAND_WIDTH-1)) ));
+                (exp - (Float.MIN_EXPONENT - (FloatConsts.SIGNIFICAND_WIDTH-1)) ));
             }
         }
     }
@@ -1532,6 +2232,9 @@ public final class Math {
      * @author Joseph D. Darcy
      * @since 1.5
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static double signum(double d) {
         return (d == 0.0 || Double.isNaN(d))?d:copySign(1.0, d);
     }
@@ -1553,6 +2256,9 @@ public final class Math {
      * @author Joseph D. Darcy
      * @since 1.5
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static float signum(float f) {
         return (f == 0.0f || Float.isNaN(f))?f:copySign(1.0f, f);
     }
@@ -1582,6 +2288,13 @@ public final class Math {
      * @return  The hyperbolic sine of {@code x}.
      * @since 1.5
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    public static double sinh(double x) {
+        return StrictMath.sinh(x);
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double sinh(double x);
 
@@ -1609,6 +2322,13 @@ public final class Math {
      * @return  The hyperbolic cosine of {@code x}.
      * @since 1.5
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    public static double cosh(double x) {
+        return StrictMath.cosh(x);
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double cosh(double x);
 
@@ -1648,6 +2368,13 @@ public final class Math {
      * @return  The hyperbolic tangent of {@code x}.
      * @since 1.5
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    public static double tanh(double x) {
+        return StrictMath.tanh(x);
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double tanh(double x);
 
@@ -1664,6 +2391,7 @@ public final class Math {
      * <li> If either argument is NaN and neither argument is infinite,
      * then the result is NaN.
      *
+     * <li> If both arguments are zero, the result is positive zero.
      * </ul>
      *
      * <p>The computed result must be within 1 ulp of the exact
@@ -1676,6 +2404,13 @@ public final class Math {
      * without intermediate overflow or underflow
      * @since 1.5
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    public static double hypot(double x, double y) {
+        return StrictMath.hypot(x, y);
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double hypot(double x, double y);
 
@@ -1713,6 +2448,13 @@ public final class Math {
      * @return  the value <i>e</i><sup>{@code x}</sup>&nbsp;-&nbsp;1.
      * @since 1.5
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    public static double expm1(double x) {
+        return StrictMath.expm1(x);
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double expm1(double x);
 
@@ -1749,6 +2491,13 @@ public final class Math {
      * log of {@code x}&nbsp;+&nbsp;1
      * @since 1.5
      */
+    // BEGIN Android-changed: Reimplement in native
+    /*
+    public static double log1p(double x) {
+        return StrictMath.log1p(x);
+    }
+    */
+    // END Android-changed: Reimplement in native
     @FastNative
     public static native double log1p(double x);
 
@@ -1767,6 +2516,9 @@ public final class Math {
      * and the sign of {@code sign}.
      * @since 1.6
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static double copySign(double magnitude, double sign) {
         return Double.longBitsToDouble((Double.doubleToRawLongBits(sign) &
                                         (DoubleConsts.SIGN_BIT_MASK)) |
@@ -1790,6 +2542,9 @@ public final class Math {
      * and the sign of {@code sign}.
      * @since 1.6
      */
+    /* J2ObjC removed
+    @IntrinsicCandidate
+    */
     public static float copySign(float magnitude, float sign) {
         return Float.intBitsToFloat((Float.floatToRawIntBits(sign) &
                                      (FloatConsts.SIGN_BIT_MASK)) |
@@ -1898,51 +2653,36 @@ public final class Math {
          * are naturally handled without any additional testing
          */
 
-        // First check for NaN values
-        if (Double.isNaN(start) || Double.isNaN(direction)) {
-            // return a NaN derived from the input NaN(s)
-            return start + direction;
-        } else if (start == direction) {
-            return direction;
-        } else {        // start > direction or start < direction
+        /*
+         * IEEE 754 floating-point numbers are lexicographically
+         * ordered if treated as signed-magnitude integers.
+         * Since Java's integers are two's complement,
+         * incrementing the two's complement representation of a
+         * logically negative floating-point value *decrements*
+         * the signed-magnitude representation. Therefore, when
+         * the integer representation of a floating-point value
+         * is negative, the adjustment to the representation is in
+         * the opposite direction from what would initially be expected.
+         */
+
+        // Branch to descending case first as it is more costly than ascending
+        // case due to start != 0.0d conditional.
+        if (start > direction) { // descending
+            if (start != 0.0d) {
+                final long transducer = Double.doubleToRawLongBits(start);
+                return Double.longBitsToDouble(transducer + ((transducer > 0L) ? -1L : 1L));
+            } else { // start == 0.0d && direction < 0.0d
+                return -Double.MIN_VALUE;
+            }
+        } else if (start < direction) { // ascending
             // Add +0.0 to get rid of a -0.0 (+0.0 + -0.0 => +0.0)
             // then bitwise convert start to integer.
-            long transducer = Double.doubleToRawLongBits(start + 0.0d);
-
-            /*
-             * IEEE 754 floating-point numbers are lexicographically
-             * ordered if treated as signed- magnitude integers .
-             * Since Java's integers are two's complement,
-             * incrementing" the two's complement representation of a
-             * logically negative floating-point value *decrements*
-             * the signed-magnitude representation. Therefore, when
-             * the integer representation of a floating-point values
-             * is less than zero, the adjustment to the representation
-             * is in the opposite direction than would be expected at
-             * first .
-             */
-            if (direction > start) { // Calculate next greater value
-                transducer = transducer + (transducer >= 0L ? 1L:-1L);
-            } else  { // Calculate next lesser value
-                assert direction < start;
-                if (transducer > 0L)
-                    --transducer;
-                else
-                    if (transducer < 0L )
-                        ++transducer;
-                    /*
-                     * transducer==0, the result is -MIN_VALUE
-                     *
-                     * The transition from zero (implicitly
-                     * positive) to the smallest negative
-                     * signed magnitude value must be done
-                     * explicitly.
-                     */
-                    else
-                        transducer = DoubleConsts.SIGN_BIT_MASK | 1L;
-            }
-
-            return Double.longBitsToDouble(transducer);
+            final long transducer = Double.doubleToRawLongBits(start + 0.0d);
+            return Double.longBitsToDouble(transducer + ((transducer >= 0L) ? 1L : -1L));
+        } else if (start == direction) {
+            return direction;
+        } else { // isNaN(start) || isNaN(direction)
+            return start + direction;
         }
     }
 
@@ -1997,51 +2737,36 @@ public final class Math {
          * are naturally handled without any additional testing
          */
 
-        // First check for NaN values
-        if (Float.isNaN(start) || Double.isNaN(direction)) {
-            // return a NaN derived from the input NaN(s)
-            return start + (float)direction;
-        } else if (start == direction) {
-            return (float)direction;
-        } else {        // start > direction or start < direction
+        /*
+         * IEEE 754 floating-point numbers are lexicographically
+         * ordered if treated as signed-magnitude integers.
+         * Since Java's integers are two's complement,
+         * incrementing the two's complement representation of a
+         * logically negative floating-point value *decrements*
+         * the signed-magnitude representation. Therefore, when
+         * the integer representation of a floating-point value
+         * is negative, the adjustment to the representation is in
+         * the opposite direction from what would initially be expected.
+         */
+
+        // Branch to descending case first as it is more costly than ascending
+        // case due to start != 0.0f conditional.
+        if (start > direction) { // descending
+            if (start != 0.0f) {
+                final int transducer = Float.floatToRawIntBits(start);
+                return Float.intBitsToFloat(transducer + ((transducer > 0) ? -1 : 1));
+            } else { // start == 0.0f && direction < 0.0f
+                return -Float.MIN_VALUE;
+            }
+        } else if (start < direction) { // ascending
             // Add +0.0 to get rid of a -0.0 (+0.0 + -0.0 => +0.0)
             // then bitwise convert start to integer.
-            int transducer = Float.floatToRawIntBits(start + 0.0f);
-
-            /*
-             * IEEE 754 floating-point numbers are lexicographically
-             * ordered if treated as signed- magnitude integers .
-             * Since Java's integers are two's complement,
-             * incrementing" the two's complement representation of a
-             * logically negative floating-point value *decrements*
-             * the signed-magnitude representation. Therefore, when
-             * the integer representation of a floating-point values
-             * is less than zero, the adjustment to the representation
-             * is in the opposite direction than would be expected at
-             * first.
-             */
-            if (direction > start) {// Calculate next greater value
-                transducer = transducer + (transducer >= 0 ? 1:-1);
-            } else  { // Calculate next lesser value
-                assert direction < start;
-                if (transducer > 0)
-                    --transducer;
-                else
-                    if (transducer < 0 )
-                        ++transducer;
-                    /*
-                     * transducer==0, the result is -MIN_VALUE
-                     *
-                     * The transition from zero (implicitly
-                     * positive) to the smallest negative
-                     * signed magnitude value must be done
-                     * explicitly.
-                     */
-                    else
-                        transducer = FloatConsts.SIGN_BIT_MASK | 1;
-            }
-
-            return Float.intBitsToFloat(transducer);
+            final int transducer = Float.floatToRawIntBits(start + 0.0f);
+            return Float.intBitsToFloat(transducer + ((transducer >= 0) ? 1 : -1));
+        } else if (start == direction) {
+            return (float)direction;
+        } else { // isNaN(start) || isNaN(direction)
+            return start + (float)direction;
         }
     }
 
@@ -2071,12 +2796,13 @@ public final class Math {
      * @since 1.6
      */
     public static double nextUp(double d) {
-        if( Double.isNaN(d) || d == Double.POSITIVE_INFINITY)
+        // Use a single conditional and handle the likely cases first.
+        if (d < Double.POSITIVE_INFINITY) {
+            // Add +0.0 to get rid of a -0.0 (+0.0 + -0.0 => +0.0).
+            final long transducer = Double.doubleToRawLongBits(d + 0.0D);
+            return Double.longBitsToDouble(transducer + ((transducer >= 0L) ? 1L : -1L));
+        } else { // d is NaN or +Infinity
             return d;
-        else {
-            d += 0.0d;
-            return Double.longBitsToDouble(Double.doubleToRawLongBits(d) +
-                                           ((d >= 0.0d)?+1L:-1L));
         }
     }
 
@@ -2106,12 +2832,13 @@ public final class Math {
      * @since 1.6
      */
     public static float nextUp(float f) {
-        if( Float.isNaN(f) || f == FloatConsts.POSITIVE_INFINITY)
+        // Use a single conditional and handle the likely cases first.
+        if (f < Float.POSITIVE_INFINITY) {
+            // Add +0.0 to get rid of a -0.0 (+0.0 + -0.0 => +0.0).
+            final int transducer = Float.floatToRawIntBits(f + 0.0F);
+            return Float.intBitsToFloat(transducer + ((transducer >= 0) ? 1 : -1));
+        } else { // f is NaN or +Infinity
             return f;
-        else {
-            f += 0.0f;
-            return Float.intBitsToFloat(Float.floatToRawIntBits(f) +
-                                        ((f >= 0.0f)?+1:-1));
         }
     }
 
@@ -2190,20 +2917,17 @@ public final class Math {
     }
 
     /**
-     * Returns {@code d} &times;
-     * 2<sup>{@code scaleFactor}</sup> rounded as if performed
-     * by a single correctly rounded floating-point multiply to a
-     * member of the double value set.  See the Java
-     * Language Specification for a discussion of floating-point
-     * value sets.  If the exponent of the result is between {@link
-     * Double#MIN_EXPONENT} and {@link Double#MAX_EXPONENT}, the
-     * answer is calculated exactly.  If the exponent of the result
-     * would be larger than {@code Double.MAX_EXPONENT}, an
-     * infinity is returned.  Note that if the result is subnormal,
-     * precision may be lost; that is, when {@code scalb(x, n)}
-     * is subnormal, {@code scalb(scalb(x, n), -n)} may not equal
-     * <i>x</i>.  When the result is non-NaN, the result has the same
-     * sign as {@code d}.
+     * Returns {@code d} &times; 2<sup>{@code scaleFactor}</sup>
+     * rounded as if performed by a single correctly rounded
+     * floating-point multiply.  If the exponent of the result is
+     * between {@link Double#MIN_EXPONENT} and {@link
+     * Double#MAX_EXPONENT}, the answer is calculated exactly.  If the
+     * exponent of the result would be larger than {@code
+     * Double.MAX_EXPONENT}, an infinity is returned.  Note that if
+     * the result is subnormal, precision may be lost; that is, when
+     * {@code scalb(x, n)} is subnormal, {@code scalb(scalb(x, n),
+     * -n)} may not equal <i>x</i>.  When the result is non-NaN, the
+     * result has the same sign as {@code d}.
      *
      * <p>Special cases:
      * <ul>
@@ -2221,9 +2945,7 @@ public final class Math {
      */
     public static double scalb(double d, int scaleFactor) {
         /*
-         * This method does not need to be declared strictfp to
-         * compute the same correct result on all platforms.  When
-         * scaling up, it does not matter what order the
+         * When scaling up, it does not matter what order the
          * multiply-store operations are done; the result will be
          * finite or overflow regardless of the operation ordering.
          * However, to get the correct result when scaling down, a
@@ -2235,34 +2957,16 @@ public final class Math {
          * multiply-store result is subnormal, the next multiply will
          * round it away to zero.  This is done by first multiplying
          * by 2 ^ (scaleFactor % n) and then multiplying several
-         * times by by 2^n as needed where n is the exponent of number
-         * that is a covenient power of two.  In this way, at most one
-         * real rounding error occurs.  If the double value set is
-         * being used exclusively, the rounding will occur on a
-         * multiply.  If the double-extended-exponent value set is
-         * being used, the products will (perhaps) be exact but the
-         * stores to d are guaranteed to round to the double value
-         * set.
-         *
-         * It is _not_ a valid implementation to first multiply d by
-         * 2^MIN_EXPONENT and then by 2 ^ (scaleFactor %
-         * MIN_EXPONENT) since even in a strictfp program double
-         * rounding on underflow could occur; e.g. if the scaleFactor
-         * argument was (MIN_EXPONENT - n) and the exponent of d was a
-         * little less than -(MIN_EXPONENT - n), meaning the final
-         * result would be subnormal.
-         *
-         * Since exact reproducibility of this method can be achieved
-         * without any undue performance burden, there is no
-         * compelling reason to allow double rounding on underflow in
-         * scalb.
+         * times by 2^n as needed where n is the exponent of number
+         * that is a convenient power of two.  In this way, at most one
+         * real rounding error occurs.
          */
 
         // magnitude of a power of two so large that scaling a finite
         // nonzero value by it would be guaranteed to over or
-        // underflow; due to rounding, scaling down takes takes an
+        // underflow; due to rounding, scaling down takes an
         // additional power of two which is reflected here
-        final int MAX_SCALE = DoubleConsts.MAX_EXPONENT + -DoubleConsts.MIN_EXPONENT +
+        final int MAX_SCALE = Double.MAX_EXPONENT + -Double.MIN_EXPONENT +
                               DoubleConsts.SIGNIFICAND_WIDTH + 1;
         int exp_adjust = 0;
         int scale_increment = 0;
@@ -2297,20 +3001,17 @@ public final class Math {
     }
 
     /**
-     * Returns {@code f} &times;
-     * 2<sup>{@code scaleFactor}</sup> rounded as if performed
-     * by a single correctly rounded floating-point multiply to a
-     * member of the float value set.  See the Java
-     * Language Specification for a discussion of floating-point
-     * value sets.  If the exponent of the result is between {@link
-     * Float#MIN_EXPONENT} and {@link Float#MAX_EXPONENT}, the
-     * answer is calculated exactly.  If the exponent of the result
-     * would be larger than {@code Float.MAX_EXPONENT}, an
-     * infinity is returned.  Note that if the result is subnormal,
-     * precision may be lost; that is, when {@code scalb(x, n)}
-     * is subnormal, {@code scalb(scalb(x, n), -n)} may not equal
-     * <i>x</i>.  When the result is non-NaN, the result has the same
-     * sign as {@code f}.
+     * Returns {@code f} &times; 2<sup>{@code scaleFactor}</sup>
+     * rounded as if performed by a single correctly rounded
+     * floating-point multiply.  If the exponent of the result is
+     * between {@link Float#MIN_EXPONENT} and {@link
+     * Float#MAX_EXPONENT}, the answer is calculated exactly.  If the
+     * exponent of the result would be larger than {@code
+     * Float.MAX_EXPONENT}, an infinity is returned.  Note that if the
+     * result is subnormal, precision may be lost; that is, when
+     * {@code scalb(x, n)} is subnormal, {@code scalb(scalb(x, n),
+     * -n)} may not equal <i>x</i>.  When the result is non-NaN, the
+     * result has the same sign as {@code f}.
      *
      * <p>Special cases:
      * <ul>
@@ -2329,9 +3030,9 @@ public final class Math {
     public static float scalb(float f, int scaleFactor) {
         // magnitude of a power of two so large that scaling a finite
         // nonzero value by it would be guaranteed to over or
-        // underflow; due to rounding, scaling down takes takes an
+        // underflow; due to rounding, scaling down takes an
         // additional power of two which is reflected here
-        final int MAX_SCALE = FloatConsts.MAX_EXPONENT + -FloatConsts.MIN_EXPONENT +
+        final int MAX_SCALE = Float.MAX_EXPONENT + -Float.MIN_EXPONENT +
                               FloatConsts.SIGNIFICAND_WIDTH + 1;
 
         // Make sure scaling factor is in a reasonable range
@@ -2342,9 +3043,7 @@ public final class Math {
          * exponent range and + float -> double conversion is exact
          * the multiplication below will be exact. Therefore, the
          * rounding that occurs when the double product is cast to
-         * float will be the correctly rounded float result.  Since
-         * all operations other than the final multiply will be exact,
-         * it is not necessary to declare this method strictfp.
+         * float will be the correctly rounded float result.
          */
         return (float)((double)f*powerOfTwoD(scaleFactor));
     }
@@ -2357,7 +3056,7 @@ public final class Math {
      * Returns a floating-point power of two in the normal range.
      */
     static double powerOfTwoD(int n) {
-        assert(n >= DoubleConsts.MIN_EXPONENT && n <= DoubleConsts.MAX_EXPONENT);
+        assert(n >= Double.MIN_EXPONENT && n <= Double.MAX_EXPONENT);
         return Double.longBitsToDouble((((long)n + (long)DoubleConsts.EXP_BIAS) <<
                                         (DoubleConsts.SIGNIFICAND_WIDTH-1))
                                        & DoubleConsts.EXP_BIT_MASK);
@@ -2367,7 +3066,7 @@ public final class Math {
      * Returns a floating-point power of two in the normal range.
      */
     static float powerOfTwoF(int n) {
-        assert(n >= FloatConsts.MIN_EXPONENT && n <= FloatConsts.MAX_EXPONENT);
+        assert(n >= Float.MIN_EXPONENT && n <= Float.MAX_EXPONENT);
         return Float.intBitsToFloat(((n + FloatConsts.EXP_BIAS) <<
                                      (FloatConsts.SIGNIFICAND_WIDTH-1))
                                     & FloatConsts.EXP_BIT_MASK);

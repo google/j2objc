@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -25,6 +25,27 @@
 
 package java.lang;
 
+/* J2ObjC removed
+import jdk.internal.vm.annotation.IntrinsicCandidate;
+import libcore.util.HexEncoding;
+*/
+
+// Android-removed: CDS is not used on Android.
+// import jdk.internal.misc.CDS;
+
+// BEGIN Android-removed: dynamic constants not supported on Android.
+/*
+import java.lang.constant.Constable;
+import java.lang.constant.DynamicConstantDesc;
+import java.util.Optional;
+
+import static java.lang.constant.ConstantDescs.BSM_EXPLICIT_CAST;
+import static java.lang.constant.ConstantDescs.CD_byte;
+import static java.lang.constant.ConstantDescs.CD_int;
+import static java.lang.constant.ConstantDescs.DEFAULT_NAME;
+*/
+// END Android-removed: dynamic constants not supported on Android.
+
 /**
  *
  * The {@code Byte} class wraps a value of primitive type {@code byte}
@@ -36,12 +57,25 @@ package java.lang;
  * byte}, as well as other constants and methods useful when dealing
  * with a {@code byte}.
  *
+ * <!-- Android-removed: paragraph on ValueBased
+ * <p>This is a <a href="{@docRoot}/java.base/java/lang/doc-files/ValueBased.html">value-based</a>
+ * class; programmers should treat instances that are
+ * {@linkplain #equals(Object) equal} as interchangeable and should not
+ * use instances for synchronization, or unpredictable behavior may
+ * occur. For example, in a future release, synchronization may fail.
+ *  -->
+ *
  * @author  Nakul Saraiya
  * @author  Joseph D. Darcy
  * @see     java.lang.Number
- * @since   JDK1.1
+ * @since   1.1
  */
-public final class Byte extends Number implements Comparable<Byte> {
+// Android-removed: ValueBased
+// @jdk.internal.ValueBased
+public final class Byte extends Number implements Comparable<Byte>
+// Android-removed: no Constable support.
+// , Constable
+{
 
     /**
      * A constant holding the minimum value a {@code byte} can
@@ -74,8 +108,23 @@ public final class Byte extends Number implements Comparable<Byte> {
         return Integer.toString((int)b, 10);
     }
 
+    // BEGIN Android-removed: dynamic constants not supported on Android.
+    /**
+     * Returns an {@link Optional} containing the nominal descriptor for this
+     * instance.
+     *
+     * @return an {@link Optional} describing the {@linkplain Byte} instance
+     * @since 15
+     *
+    @Override
+    public Optional<DynamicConstantDesc<Byte>> describeConstable() {
+        return Optional.of(DynamicConstantDesc.ofNamed(BSM_EXPLICIT_CAST, DEFAULT_NAME, CD_byte, intValue()));
+    }
+    */
+    // END Android-removed: dynamic constants not supported on Android.
+
     private static class ByteCache {
-        private ByteCache(){}
+        private ByteCache() {}
 
         static final Byte cache[] = new Byte[-(-128) + 127 + 1];
 
@@ -110,6 +159,9 @@ public final class Byte extends Number implements Comparable<Byte> {
      * @return a {@code Byte} instance representing {@code b}.
      * @since  1.5
      */
+    /* J2Objc removed
+    @IntrinsicCandidate
+    */
     public static Byte valueOf(byte b) {
         final int offset = 128;
         return ByteCache.cache[(int)b + offset];
@@ -264,8 +316,8 @@ public final class Byte extends Number implements Comparable<Byte> {
      * </blockquote>
      *
      * <i>DecimalNumeral</i>, <i>HexDigits</i>, and <i>OctalDigits</i>
-     * are as defined in section 3.10.1 of
-     * <cite>The Java&trade; Language Specification</cite>,
+     * are as defined in section {@jls 3.10.1} of
+     * <cite>The Java Language Specification</cite>,
      * except that underscores are not accepted between digits.
      *
      * <p>The sequence of characters following an optional
@@ -306,7 +358,14 @@ public final class Byte extends Number implements Comparable<Byte> {
      *
      * @param value     the value to be represented by the
      *                  {@code Byte}.
+     *
+     * @deprecated
+     * It is rarely appropriate to use this constructor. The static factory
+     * {@link #valueOf(byte)} is generally a better choice, as it is
+     * likely to yield significantly better space and time performance.
      */
+    // Android-changed: not yet forRemoval on Android.
+    @Deprecated(/*, forRemoval = true*/) // J2ObjC modified: removed since="9"
     public Byte(byte value) {
         this.value = value;
     }
@@ -320,10 +379,17 @@ public final class Byte extends Number implements Comparable<Byte> {
      *
      * @param s         the {@code String} to be converted to a
      *                  {@code Byte}
-     * @throws           NumberFormatException If the {@code String}
+     * @throws          NumberFormatException if the {@code String}
      *                  does not contain a parsable {@code byte}.
-     * @see        java.lang.Byte#parseByte(java.lang.String, int)
+     *
+     * @deprecated
+     * It is rarely appropriate to use this constructor.
+     * Use {@link #parseByte(String)} to convert a string to a
+     * {@code byte} primitive, or use {@link #valueOf(String)}
+     * to convert a string to a {@code Byte} object.
      */
+    // Android-changed: not yet forRemoval on Android.
+    @Deprecated(/*, forRemoval = true*/) // J2ObjC modified: removed since="9"
     public Byte(String s) throws NumberFormatException {
         this.value = parseByte(s, 10);
     }
@@ -332,6 +398,9 @@ public final class Byte extends Number implements Comparable<Byte> {
      * Returns the value of this {@code Byte} as a
      * {@code byte}.
      */
+    /* J2Objc removed
+    @IntrinsicCandidate
+    */
     public byte byteValue() {
         return value;
     }
@@ -339,7 +408,7 @@ public final class Byte extends Number implements Comparable<Byte> {
     /**
      * Returns the value of this {@code Byte} as a {@code short} after
      * a widening primitive conversion.
-     * @jls 5.1.2 Widening Primitive Conversions
+     * @jls 5.1.2 Widening Primitive Conversion
      */
     public short shortValue() {
         return (short)value;
@@ -348,7 +417,7 @@ public final class Byte extends Number implements Comparable<Byte> {
     /**
      * Returns the value of this {@code Byte} as an {@code int} after
      * a widening primitive conversion.
-     * @jls 5.1.2 Widening Primitive Conversions
+     * @jls 5.1.2 Widening Primitive Conversion
      */
     public int intValue() {
         return (int)value;
@@ -357,7 +426,7 @@ public final class Byte extends Number implements Comparable<Byte> {
     /**
      * Returns the value of this {@code Byte} as a {@code long} after
      * a widening primitive conversion.
-     * @jls 5.1.2 Widening Primitive Conversions
+     * @jls 5.1.2 Widening Primitive Conversion
      */
     public long longValue() {
         return (long)value;
@@ -366,7 +435,7 @@ public final class Byte extends Number implements Comparable<Byte> {
     /**
      * Returns the value of this {@code Byte} as a {@code float} after
      * a widening primitive conversion.
-     * @jls 5.1.2 Widening Primitive Conversions
+     * @jls 5.1.2 Widening Primitive Conversion
      */
     public float floatValue() {
         return (float)value;
@@ -375,7 +444,7 @@ public final class Byte extends Number implements Comparable<Byte> {
     /**
      * Returns the value of this {@code Byte} as a {@code double}
      * after a widening primitive conversion.
-     * @jls 5.1.2 Widening Primitive Conversions
+     * @jls 5.1.2 Widening Primitive Conversion
      */
     public double doubleValue() {
         return (double)value;
@@ -471,6 +540,22 @@ public final class Byte extends Number implements Comparable<Byte> {
     }
 
     /**
+     * Compares two {@code byte} values numerically treating the values
+     * as unsigned.
+     *
+     * @param  x the first {@code byte} to compare
+     * @param  y the second {@code byte} to compare
+     * @return the value {@code 0} if {@code x == y}; a value less
+     *         than {@code 0} if {@code x < y} as unsigned values; and
+     *         a value greater than {@code 0} if {@code x > y} as
+     *         unsigned values
+     * @since 9
+     */
+    public static int compareUnsigned(byte x, byte y) {
+        return Byte.toUnsignedInt(x) - Byte.toUnsignedInt(y);
+    }
+
+    /**
      * Converts the argument to an {@code int} by an unsigned
      * conversion.  In an unsigned conversion to an {@code int}, the
      * high-order 24 bits of the {@code int} are zero and the
@@ -528,9 +613,10 @@ public final class Byte extends Number implements Comparable<Byte> {
     public static final int BYTES = SIZE / Byte.SIZE;
 
     /** use serialVersionUID from JDK 1.1. for interoperability */
+    @java.io.Serial
     private static final long serialVersionUID = -7183698231559129828L;
 
-    // BEGIN Android-changed
+    // BEGIN Android-added: toHexString() for internal use.
     /**
      * @hide
      */

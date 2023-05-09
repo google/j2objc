@@ -32,16 +32,13 @@ import java.util.Spliterators;
 import java.util.function.Consumer;
 
 /**
- * Implementing this interface allows an object to be the target of
- * the "for-each loop" statement. See
- * <strong>
- * <a href="{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/language/foreach.html">For-each Loop</a>
- * </strong>
+ * Implementing this interface allows an object to be the target of the enhanced
+ * {@code for} statement (sometimes called the "for-each loop" statement).
  *
  * @param <T> the type of elements returned by the iterator
  *
  * @since 1.5
- * @jls 14.14.2 The enhanced for statement
+ * @jls 14.14.2 The enhanced {@code for} statement
  */
 public interface Iterable<T> extends NSFastEnumeration {  // J2ObjC modified.
     /**
@@ -54,10 +51,13 @@ public interface Iterable<T> extends NSFastEnumeration {  // J2ObjC modified.
     /**
      * Performs the given action for each element of the {@code Iterable}
      * until all elements have been processed or the action throws an
-     * exception.  Unless otherwise specified by the implementing class,
-     * actions are performed in the order of iteration (if an iteration order
-     * is specified).  Exceptions thrown by the action are relayed to the
+     * exception.  Actions are performed in the order of iteration, if that
+     * order is specified.  Exceptions thrown by the action are relayed to the
      * caller.
+     * <p>
+     * The behavior of this method is unspecified if the action performs
+     * side-effects that modify the underlying source of elements, unless an
+     * overriding class has specified a concurrent modification policy.
      *
      * @implSpec
      * <p>The default implementation behaves as if:
@@ -83,7 +83,7 @@ public interface Iterable<T> extends NSFastEnumeration {  // J2ObjC modified.
      *
      * @implSpec
      * The default implementation creates an
-     * <em><a href="Spliterator.html#binding">early-binding</a></em>
+     * <em><a href="../util/Spliterator.html#binding">early-binding</a></em>
      * spliterator from the iterable's {@code Iterator}.  The spliterator
      * inherits the <em>fail-fast</em> properties of the iterable's iterator.
      *

@@ -26,6 +26,35 @@
 
 package java.lang;
 
+/* J2ObjC removed
+import dalvik.system.VMRuntime;
+import java.io.InputStream;
+import java.util.Enumeration;
+
+import java.util.StringTokenizer;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
+import java.util.jar.JarInputStream;
+import java.util.jar.Manifest;
+import java.util.jar.Attributes;
+import java.util.jar.Attributes.Name;
+import java.util.jar.JarException;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import sun.net.www.ParseUtil;
+import sun.reflect.Reflection;
+*/
+
+import sun.reflect.CallerSensitive;
+
 import java.lang.reflect.AnnotatedElement;
 import java.lang.annotation.Annotation;
 import java.net.URL;
@@ -268,6 +297,7 @@ public class Package implements java.lang.reflect.AnnotatedElement {
      * @return a new array of packages known to the callers {@code ClassLoader}
      * instance.  An zero length array is returned if none are known.
      */
+    @CallerSensitive
     public static Package[] getPackages() {
         ClassLoader classloader = ClassLoader.getSystemClassLoader();
         return classloader.getPackages();
@@ -289,7 +319,8 @@ public class Package implements java.lang.reflect.AnnotatedElement {
      * @return the string representation of the package.
      */
     public String toString() {
-        // Android changed: Several apps try to parse the output of toString(). This is a really
+        // BEGIN Android-added: Backwards compatibility fix for target API <= 24.
+        // Several apps try to parse the output of toString(). This is a really
         // bad idea - especially when there's a Package.getName() function as well as a
         // Class.getName() function that can be used instead.
         //
@@ -408,6 +439,168 @@ public class Package implements java.lang.reflect.AnnotatedElement {
         sealBase = sealbase;
         this.loader = loader;
     }
+
+    /* J2ObjC removed
+    /*
+     * Construct a package using the attributes from the specified manifest.
+     *
+     * @param name the package name
+     * @param man the optional manifest for the package
+     * @param url the optional code source url for the package
+     * /
+    private Package(String name, Manifest man, URL url, ClassLoader loader) {
+        String path = name.replace('.', '/').concat("/");
+        String sealed = null;
+        String specTitle= null;
+        String specVersion= null;
+        String specVendor= null;
+        String implTitle= null;
+        String implVersion= null;
+        String implVendor= null;
+        URL sealBase= null;
+        Attributes attr = man.getAttributes(path);
+        if (attr != null) {
+            specTitle   = attr.getValue(Name.SPECIFICATION_TITLE);
+            specVersion = attr.getValue(Name.SPECIFICATION_VERSION);
+            specVendor  = attr.getValue(Name.SPECIFICATION_VENDOR);
+            implTitle   = attr.getValue(Name.IMPLEMENTATION_TITLE);
+            implVersion = attr.getValue(Name.IMPLEMENTATION_VERSION);
+            implVendor  = attr.getValue(Name.IMPLEMENTATION_VENDOR);
+            sealed      = attr.getValue(Name.SEALED);
+        }
+        attr = man.getMainAttributes();
+        if (attr != null) {
+            if (specTitle == null) {
+                specTitle = attr.getValue(Name.SPECIFICATION_TITLE);
+            }
+            if (specVersion == null) {
+                specVersion = attr.getValue(Name.SPECIFICATION_VERSION);
+            }
+            if (specVendor == null) {
+                specVendor = attr.getValue(Name.SPECIFICATION_VENDOR);
+            }
+            if (implTitle == null) {
+                implTitle = attr.getValue(Name.IMPLEMENTATION_TITLE);
+            }
+            if (implVersion == null) {
+                implVersion = attr.getValue(Name.IMPLEMENTATION_VERSION);
+            }
+            if (implVendor == null) {
+                implVendor = attr.getValue(Name.IMPLEMENTATION_VENDOR);
+            }
+            if (sealed == null) {
+                sealed = attr.getValue(Name.SEALED);
+            }
+        }
+        if ("true".equalsIgnoreCase(sealed)) {
+            sealBase = url;
+        }
+        pkgName = name;
+        this.specTitle = specTitle;
+        this.specVersion = specVersion;
+        this.specVendor = specVendor;
+        this.implTitle = implTitle;
+        this.implVersion = implVersion;
+        this.implVendor = implVendor;
+        this.sealBase = sealBase;
+        this.loader = loader;
+    }
+
+    /*
+     * Returns the loaded system package for the specified name.
+     * /
+    static Package getSystemPackage(String name) {
+        synchronized (pkgs) {
+            Package pkg = pkgs.get(name);
+            if (pkg == null) {
+                name = name.replace('.', '/').concat("/");
+                String fn = getSystemPackage0(name);
+                if (fn != null) {
+                    pkg = defineSystemPackage(name, fn);
+                }
+            }
+            return pkg;
+        }
+    }
+
+    /*
+     * Return an array of loaded system packages.
+     * /
+    static Package[] getSystemPackages() {
+        // First, update the system package map with new package names
+        String[] names = getSystemPackages0();
+        synchronized (pkgs) {
+            for (int i = 0; i < names.length; i++) {
+                defineSystemPackage(names[i], getSystemPackage0(names[i]));
+            }
+            return pkgs.values().toArray(new Package[pkgs.size()]);
+        }
+    }
+
+    private static Package defineSystemPackage(final String iname,
+                                               final String fn)
+    {
+        return AccessController.doPrivileged(new PrivilegedAction<Package>() {
+            public Package run() {
+                String name = iname;
+                // Get the cached code source url for the file name
+                URL url = urls.get(fn);
+                if (url == null) {
+                    // URL not found, so create one
+                    File file = new File(fn);
+                    try {
+                        url = ParseUtil.fileToEncodedURL(file);
+                    } catch (MalformedURLException e) {
+                    }
+                    if (url != null) {
+                        urls.put(fn, url);
+                        // If loading a JAR file, then also cache the manifest
+                        if (file.isFile()) {
+                            mans.put(fn, loadManifest(fn));
+                        }
+                    }
+                }
+                // Convert to "."-separated package name
+                name = name.substring(0, name.length() - 1).replace('/', '.');
+                Package pkg;
+                Manifest man = mans.get(fn);
+                if (man != null) {
+                    pkg = new Package(name, man, url, null);
+                } else {
+                    pkg = new Package(name, null, null, null,
+                                      null, null, null, null, null);
+                }
+                pkgs.put(name, pkg);
+                return pkg;
+            }
+        });
+    }
+
+    /*
+     * Returns the Manifest for the specified JAR file name.
+     * /
+    private static Manifest loadManifest(String fn) {
+        try (FileInputStream fis = new FileInputStream(fn);
+             JarInputStream jis = new JarInputStream(fis, false))
+        {
+            return jis.getManifest();
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    // The map of loaded system packages
+    private static Map<String, Package> pkgs = new HashMap<>(31);
+
+    // Maps each directory or zip file name to its corresponding url
+    private static Map<String, URL> urls = new HashMap<>(10);
+
+    // Maps each code source url for a jar file to its manifest
+    private static Map<String, Manifest> mans = new HashMap<>(10);
+
+    private static native String getSystemPackage0(String name);
+    private static native String[] getSystemPackages0();
+    */
 
     /*
      * Private storage for the package name and attributes.

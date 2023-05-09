@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -29,7 +29,7 @@ package java.lang;
  * Thrown when an application tries to access a type using a string
  * representing the type's name, but no definition for the type with
  * the specified name can be found.   This exception differs from
- * {@link ClassNotFoundException} in that <tt>ClassNotFoundException</tt> is a
+ * {@link ClassNotFoundException} in that {@code ClassNotFoundException} is a
  * checked exception, whereas this exception is unchecked.
  *
  * <p>Note that this exception may be used when undefined type variables
@@ -44,17 +44,21 @@ package java.lang;
  * @since 1.5
  */
 public class TypeNotPresentException extends RuntimeException {
+    @java.io.Serial
     private static final long serialVersionUID = -5101214195716534496L;
 
+    /**
+     * The type name.
+     */
     private String typeName;
 
     /**
-     * Constructs a <tt>TypeNotPresentException</tt> for the named type
+     * Constructs a {@code TypeNotPresentException} for the named type
      * with the specified cause.
      *
      * @param typeName the fully qualified name of the unavailable type
      * @param cause the exception that was thrown when the system attempted to
-     *    load the named type, or <tt>null</tt> if unavailable or inapplicable
+     *    load the named type, or {@code null} if unavailable or inapplicable
      */
     public TypeNotPresentException(String typeName, Throwable cause) {
         super("Type " + typeName + " not present", cause);

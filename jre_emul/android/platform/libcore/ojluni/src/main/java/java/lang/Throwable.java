@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1994, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,10 +26,15 @@
 
 package java.lang;
 
+/* J2ObjC removed
+import dalvik.annotation.optimization.FastNative;
+import dalvik.annotation.optimization.NeverInline;
+*/
+
 import com.google.j2objc.NSException;
 
-import  java.io.*;
-import  java.util.*;
+import java.io.*;
+import java.util.*;
 
 /*-[
 #include "JavaThrowable.h"
@@ -115,14 +120,14 @@ import  java.util.*;
  *
  * J2ObjC: Throwable extends the Objective-C Foundation class NSException.
  *
- * @author  unascribed
  * @author  Josh Bloch (Added exception chaining and programmatic access to
  *          stack trace in 1.4.)
  * @jls 11.2 Compile-Time Checking of Exceptions
- * @since JDK1.0
+ * @since 1.0
  */
 public class Throwable extends NSException implements Serializable {
     /** use serialVersionUID from JDK 1.0.2 for interoperability */
+    @java.io.Serial
     private static final long serialVersionUID = -3042686055658047285L;
 
     /**
@@ -149,7 +154,7 @@ public class Throwable extends NSException implements Serializable {
          * {@linkplain #setStackTrace(StackTraceElement[]) Setting the
          * stack trace} to a one-element array containing this sentinel
          * value indicates future attempts to set the stack trace will be
-         * ignored.  The sentinal is equal to the result of calling:<br>
+         * ignored.  The sentinel is equal to the result of calling:<br>
          * {@code new StackTraceElement("", "", null, Integer.MIN_VALUE)}
          */
         public static final StackTraceElement STACK_TRACE_ELEMENT_SENTINEL =
@@ -162,6 +167,13 @@ public class Throwable extends NSException implements Serializable {
         public static final StackTraceElement[] STACK_TRACE_SENTINEL =
             new StackTraceElement[] {STACK_TRACE_ELEMENT_SENTINEL};
     }
+
+    // Android-removed: Use libcore.util.EmptyArray for the empty stack trace.
+    // Adding the constant UNASSIGNED_STACK breaks serialization of some subclasses
+    // /**
+    //  * A shared value for an empty stack.
+    //  */
+    // private static final StackTraceElement[] UNASSIGNED_STACK = new StackTraceElement[0];
 
     /*
      * To allow Throwable objects to be made immutable and safely
@@ -209,13 +221,28 @@ public class Throwable extends NSException implements Serializable {
      * The field is initialized to a zero-length array.  A {@code
      * null} value of this field indicates subsequent calls to {@link
      * #setStackTrace(StackTraceElement[])} and {@link
-     * #fillInStackTrace()} will be be no-ops.
+     * #fillInStackTrace()} will be no-ops.
      *
      * @serial
      * @since 1.4
      */
-    // Android changed.
+    // Android-changed: Use libcore.util.EmptyArray for the empty stack trace.
+    // private StackTraceElement[] stackTrace = UNASSIGNED_STACK;
     private StackTraceElement[] stackTrace = libcore.util.EmptyArray.STACK_TRACE_ELEMENT;
+
+    /**
+     * The JVM code sets the depth of the backtrace for later retrieval
+     */
+    // Android-removed: native getStackTrace is used instead.
+    // private transient int depth;
+
+    // Android-removed: Use empty collection in place of SUPPRESSED_SENTINEL.
+    // Adding this constant breaks serialization of some subclasses
+    /*
+    // Setting this static field introduces an acceptable
+    // initialization dependency on a few java.util classes.
+    private static final List<Throwable> SUPPRESSED_SENTINEL = Collections.emptyList();
+    */
 
     /**
      * The list of suppressed exceptions, as returned by {@link
@@ -227,7 +254,10 @@ public class Throwable extends NSException implements Serializable {
      * @serial
      * @since 1.7
      */
-    private List<Throwable> suppressedExceptions = Collections.emptyList();
+     // Android-changed: Use empty collection in place of SUPPRESSED_SENTINEL.
+     // @SuppressWarnings("serial") // Not statically typed as Serializable
+     // private List<Throwable> suppressedExceptions = SUPPRESSED_SENTINEL;
+     private List<Throwable> suppressedExceptions = Collections.emptyList();
 
     /** Message for trying to suppress a null exception. */
     private static final String NULL_CAUSE_MESSAGE = "Cannot suppress a null exception.";
@@ -395,7 +425,7 @@ public class Throwable extends NSException implements Serializable {
      * {@code getMessage()}.
      *
      * @return  The localized description of this throwable.
-     * @since   JDK1.1
+     * @since   1.1
      */
     public String getLocalizedMessage() {
         return getMessage();
@@ -469,6 +499,16 @@ public class Throwable extends NSException implements Serializable {
             throw new IllegalArgumentException("Self-causation not permitted", this);
         this.cause = cause;
         return this;
+    }
+
+    /*
+     * This is called by readObject of a few exceptions such as
+     * ClassNotFoundException and ExceptionInInitializerError to deserialize
+     * a stream output from an older runtime version where the cause may
+     * have set to null.
+     */
+    final void setCause(Throwable t) {
+        this.cause = t;
     }
 
     /**
@@ -611,7 +651,7 @@ public class Throwable extends NSException implements Serializable {
      *          ... 1 more
      * </pre>
      * Note that the "... n more" notation is used on suppressed exceptions
-     * just at it is used on causes. Unlike causes, suppressed exceptions are
+     * just as it is used on causes. Unlike causes, suppressed exceptions are
      * indented beyond their "containing exceptions."
      *
      * <p>An exception can have both a cause and one or more suppressed
@@ -636,7 +676,7 @@ public class Throwable extends NSException implements Serializable {
      *          at Resource2.close(Resource2.java:20)
      *          at Foo4.main(Foo4.java:5)
      *  Caused by: java.lang.Exception: Rats, you caught me
-     *          at Resource2$CloseFailException.<init>(Resource2.java:45)
+     *          at Resource2$CloseFailException.&lt;init&gt;(Resource2.java:45)
      *          ... 2 more
      * </pre>
      */
@@ -656,8 +696,7 @@ public class Throwable extends NSException implements Serializable {
     private void printStackTrace(PrintStreamOrWriter s) {
         // Guard against malicious overrides of Throwable.equals by
         // using a Set with identity equality semantics.
-        Set<Throwable> dejaVu =
-            Collections.newSetFromMap(new IdentityHashMap<Throwable, Boolean>());
+        Set<Throwable> dejaVu = Collections.newSetFromMap(new IdentityHashMap<>());
         dejaVu.add(this);
 
         synchronized (s.lock()) {
@@ -687,8 +726,11 @@ public class Throwable extends NSException implements Serializable {
                                          String caption,
                                          String prefix,
                                          Set<Throwable> dejaVu) {
+        // Android-removed: Use of assert keyword which breaks serialization of some subclasses.
+        // (Using assert adds a static field that determines whether assertions are enabled.)
+        // assert Thread.holdsLock(s.lock());
         if (dejaVu.contains(this)) {
-            s.println("\t[CIRCULAR REFERENCE:" + this + "]");
+            s.println(prefix + caption + "[CIRCULAR REFERENCE: " + this + "]");
         } else {
             dejaVu.add(this);
             // Compute number of frames in common between this and enclosing trace
@@ -724,7 +766,7 @@ public class Throwable extends NSException implements Serializable {
      * print writer.
      *
      * @param s {@code PrintWriter} to use for output
-     * @since   JDK1.1
+     * @since   1.1
      */
     public void printStackTrace(PrintWriter s) {
         printStackTrace(new WrappedPrintWriter(s));
@@ -786,15 +828,28 @@ public class Throwable extends NSException implements Serializable {
      * @return  a reference to this {@code Throwable} instance.
      * @see     java.lang.Throwable#printStackTrace()
      */
+    // Android-changed: Add @NeverInline to keep code size low.
+    /* J2ObjC removed
+    @NeverInline
+    */
     public synchronized Throwable fillInStackTrace() {
         if (stackTrace != null ||
             backtrace != null /* Out of protocol state */ ) {
+            // Android-changed: Use Android-specific nativeFillInStackTrace.
+            // fillInStackTrace(0);
             backtrace = nativeFillInStackTrace();
+            // Android-changed: Use libcore.util.EmptyArray for the empty stack trace.
+            // stackTrace = UNASSIGNED_STACK;
             stackTrace = libcore.util.EmptyArray.STACK_TRACE_ELEMENT;
         }
         return this;
     }
 
+    // Android-changed: Use Android-specific nativeFillInStackTrace.
+    // private native Throwable fillInStackTrace(int dummy);
+    /* J2ObjC removed
+    @FastNative
+    */
     private static native Object nativeFillInStackTrace();
 
     /**
@@ -828,21 +883,23 @@ public class Throwable extends NSException implements Serializable {
     private synchronized StackTraceElement[] getOurStackTrace() {
         // Initialize stack trace field with information from
         // backtrace if this is the first call to this method
-        //
-        // Android changed - test explicitly for equality with
-        // STACK_TRACE_ELEMENT
+        // Android-changed: Use libcore.util.EmptyArray for the empty stack trace.
+        // if (stackTrace == UNASSIGNED_STACK ||
         if (stackTrace == libcore.util.EmptyArray.STACK_TRACE_ELEMENT ||
             (stackTrace == null && backtrace != null) /* Out of protocol state */) {
+            // BEGIN Android-changed: Use Android-specific nativeGetStackTrace.
+            // stackTrace = StackTraceElement.of(this, depth);
             stackTrace = nativeGetStackTrace(backtrace);
             backtrace = null;
-        }
-
-        // Android changed : Return an empty element both when the stack trace
-        // isn't writeable and also when nativeGetStackTrace returns null.
-        if (stackTrace == null) {
+            if (stackTrace == null) {
+                return libcore.util.EmptyArray.STACK_TRACE_ELEMENT;
+            }
+            // END Android-changed: Use Android-specific nativeGetStackTrace.
+        } else if (stackTrace == null) {
+            // Android-changed: Use libcore.util.EmptyArray for the empty stack trace.
+            // return UNASSIGNED_STACK;
             return libcore.util.EmptyArray.STACK_TRACE_ELEMENT;
         }
-
         return stackTrace;
     }
 
@@ -899,8 +956,12 @@ public class Throwable extends NSException implements Serializable {
      * @throws IndexOutOfBoundsException if {@code index < 0 ||
      *         index >= getStackTraceDepth() }
      */
+    // Android-changed: Use Android-specific nativeGetStackTrace.
+    // native StackTraceElement getStackTraceElement(int index);
+    /* J2ObjC removed
+    @FastNative
+    */
     private static native StackTraceElement[] nativeGetStackTrace(Object stackState);
-
 
     /**
      * Reads a {@code Throwable} from a stream, enforcing
@@ -916,7 +977,12 @@ public class Throwable extends NSException implements Serializable {
      * Note that there are no constraints on the value the {@code
      * cause} field can hold; both {@code null} and {@code this} are
      * valid values for the field.
+     *
+     * @param  s the {@code ObjectInputStream} from which data is read
+     * @throws IOException if an I/O error occurs
+     * @throws ClassNotFoundException if a serialized class cannot be loaded
      */
+    @java.io.Serial
     private void readObject(ObjectInputStream s)
         throws IOException, ClassNotFoundException {
         s.defaultReadObject();     // read in all fields
@@ -980,7 +1046,11 @@ public class Throwable extends NSException implements Serializable {
      * A {@code null} stack trace field is represented in the serial
      * form as a one-element array whose element is equal to {@code
      * new StackTraceElement("", "", null, Integer.MIN_VALUE)}.
+     *
+     * @param  s the {@code ObjectOutputStream} to which data is written
+     * @throws IOException if an I/O error occurs
      */
+    @java.io.Serial
     private synchronized void writeObject(ObjectOutputStream s)
         throws IOException {
         // Ensure that the stackTrace field is initialized to a
@@ -1058,18 +1128,21 @@ public class Throwable extends NSException implements Serializable {
         if (exception == this)
             throw new IllegalArgumentException(SELF_SUPPRESSION_MESSAGE, exception);
 
-        if (exception == null)
-            throw new NullPointerException(NULL_CAUSE_MESSAGE);
+        Objects.requireNonNull(exception, NULL_CAUSE_MESSAGE);
 
         if (suppressedExceptions == null) // Suppressed exceptions not recorded
             return;
 
+        // Android-changed: Use empty collection in place of SUPPRESSED_SENTINEL.
+        // if (suppressedExceptions == SUPPRESSED_SENTINEL)
         if (suppressedExceptions.isEmpty())
             suppressedExceptions = new ArrayList<>(1);
 
         suppressedExceptions.add(exception);
     }
 
+    // Android-changed: Lazily initialize EMPTY_THROWABLE_ARRAY.
+    // private static final Throwable[] EMPTY_THROWABLE_ARRAY = new Throwable[0];
     private static Throwable[] EMPTY_THROWABLE_ARRAY;
 
     /**
@@ -1088,10 +1161,14 @@ public class Throwable extends NSException implements Serializable {
      * @since 1.7
      */
     public final synchronized Throwable[] getSuppressed() {
+        // Android-added: Lazily initialize EMPTY_THROWABLE_ARRAY.
         if (EMPTY_THROWABLE_ARRAY == null) {
             EMPTY_THROWABLE_ARRAY = new Throwable[0];
         }
 
+        // Android-changed: Use empty collection in place of SUPPRESSED_SENTINEL.
+        // if (suppressedExceptions == SUPPRESSED_SENTINEL ||
+        //    suppressedExceptions == null)
         if (suppressedExceptions == null || suppressedExceptions.isEmpty())
             return EMPTY_THROWABLE_ARRAY;
         else

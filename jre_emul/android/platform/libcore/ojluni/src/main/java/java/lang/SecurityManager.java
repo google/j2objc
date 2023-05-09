@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1995, 2006, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1995, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -30,8 +30,18 @@ import java.security.*;
 import java.io.FileDescriptor;
 import java.net.InetAddress;
 
+// Android-changed: Stubbed the implementation.  Android doesn't support SecurityManager.
+// SecurityManager can only check access by Java code, so it can be bypassed by using
+// native code.  Applications should rely on Android permissions, process separation,
+// other other methods for security purposes.
 /**
  * Legacy security code; do not use.
+ *
+ * <p>Security managers do <i>not</i> provide a secure environment for
+ * executing untrusted code and are unsupported on Android. Untrusted code
+ * cannot be safely isolated within a single VM on Android. Application
+ * developers can assume that there's no SecurityManager installed,
+ * i.e. {@link java.lang.System#getSecurityManager()} will return null.
  */
 public
 class SecurityManager {
@@ -166,6 +176,10 @@ class SecurityManager {
 
     public void checkPropertyAccess(String key) { }
 
+    /**
+     * @deprecated this method is deprecated.
+     */
+    @Deprecated
     public boolean checkTopLevelWindow(Object window) {
         return true;
     }
@@ -182,6 +196,10 @@ class SecurityManager {
 
     public void checkSetFactory() { }
 
+    /**
+     * @deprecated this method is deprecated.
+     */
+    @Deprecated
     public void checkMemberAccess(Class<?> clazz, int which) { }
 
     public void checkSecurityAccess(String target) { }

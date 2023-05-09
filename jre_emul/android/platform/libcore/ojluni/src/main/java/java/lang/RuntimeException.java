@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1995, 2019, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -38,9 +38,10 @@ package java.lang;
  *
  * @author  Frank Yellin
  * @jls 11.2 Compile-Time Checking of Exceptions
- * @since   JDK1.0
+ * @since   1.0
  */
 public class RuntimeException extends Exception {
+    @java.io.Serial
     static final long serialVersionUID = -7034897190745766939L;
 
     /** Constructs a new runtime exception with {@code null} as its
@@ -71,7 +72,7 @@ public class RuntimeException extends Exception {
      * @param  message the detail message (which is saved for later retrieval
      *         by the {@link #getMessage()} method).
      * @param  cause the cause (which is saved for later retrieval by the
-     *         {@link #getCause()} method).  (A <tt>null</tt> value is
+     *         {@link #getCause()} method).  (A {@code null} value is
      *         permitted, and indicates that the cause is nonexistent or
      *         unknown.)
      * @since  1.4
@@ -81,13 +82,13 @@ public class RuntimeException extends Exception {
     }
 
     /** Constructs a new runtime exception with the specified cause and a
-     * detail message of <tt>(cause==null ? null : cause.toString())</tt>
+     * detail message of {@code (cause==null ? null : cause.toString())}
      * (which typically contains the class and detail message of
-     * <tt>cause</tt>).  This constructor is useful for runtime exceptions
+     * {@code cause}).  This constructor is useful for runtime exceptions
      * that are little more than wrappers for other throwables.
      *
      * @param  cause the cause (which is saved for later retrieval by the
-     *         {@link #getCause()} method).  (A <tt>null</tt> value is
+     *         {@link #getCause()} method).  (A {@code null} value is
      *         permitted, and indicates that the cause is nonexistent or
      *         unknown.)
      * @since  1.4

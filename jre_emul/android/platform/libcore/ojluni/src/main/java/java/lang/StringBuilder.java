@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2003, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -25,6 +25,11 @@
  */
 
 package java.lang;
+
+/* J2ObjC removed
+import jdk.internal.HotSpotIntrinsicCandidate;
+import dalvik.annotation.optimization.NeverInline;
+*/
 
 /*-[
 #include "java/lang/Character.h"
@@ -72,6 +77,14 @@ package java.lang;
  * or method in this class will cause a {@link NullPointerException} to be
  * thrown.
  *
+ * @apiNote
+ * {@code StringBuilder} implements {@code Comparable} but does not override
+ * {@link Object#equals equals}. Thus, the natural ordering of {@code StringBuilder}
+ * is inconsistent with equals. Care should be exercised if {@code StringBuilder}
+ * objects are used as keys in a {@code SortedMap} or elements in a {@code SortedSet}.
+ * See {@link Comparable}, {@link java.util.SortedMap SortedMap}, or
+ * {@link java.util.SortedSet SortedSet} for more information.
+ *
  * @author      Michael McCloskey
  * @see         java.lang.StringBuffer
  * @see         java.lang.String
@@ -85,13 +98,20 @@ public final class StringBuilder
     /** use serialVersionUID for interoperability */
     static final long serialVersionUID = 4383685877147921099L;
 
+    // Android-changed: Add @NeverInline for InstructionSimplifier optimization. See b/19575890.
     /**
      * Constructs a string builder with no characters in it and an
      * initial capacity of 16 characters.
      */
+    /* J2ObjC removed
+    @NeverInline
+    @HotSpotIntrinsicCandidate
+    */
     public StringBuilder() {
+        super(16);
     }
 
+    // Android-changed: Add @NeverInline for InstructionSimplifier optimization. See b/19575890.
     /**
      * Constructs a string builder with no characters in it and an
      * initial capacity specified by the {@code capacity} argument.
@@ -100,10 +120,15 @@ public final class StringBuilder
      * @throws     NegativeArraySizeException  if the {@code capacity}
      *               argument is less than {@code 0}.
      */
+    /* J2ObjC removed
+    @NeverInline
+    @HotSpotIntrinsicCandidate
+    */
     public StringBuilder(int capacity) {
         super(capacity);
     }
 
+    // Android-changed: Add @NeverInline for InstructionSimplifier optimization. See b/19575890.
     /**
      * Constructs a string builder initialized to the contents of the
      * specified string. The initial capacity of the string builder is
@@ -111,11 +136,16 @@ public final class StringBuilder
      *
      * @param   str   the initial contents of the buffer.
      */
+    /* J2ObjC removed
+    @NeverInline
+    @HotSpotIntrinsicCandidate
+    */
     public StringBuilder(String str) {
         super(str.length() + 16);
         append(str);
     }
 
+    // Android-changed: Add @NeverInline for InstructionSimplifier optimization. See b/19575890.
     /**
      * Constructs a string builder that contains the same characters
      * as the specified {@code CharSequence}. The initial capacity of
@@ -124,6 +154,9 @@ public final class StringBuilder
      *
      * @param      seq   the sequence to copy.
      */
+    /* J2ObjC removed
+    @NeverInline
+    */
     public StringBuilder(CharSequence seq) {
         this(seq.length() + 16);
         append(seq);
@@ -133,6 +166,9 @@ public final class StringBuilder
         return append(String.valueOf(obj));
     }
 
+    /* J2ObjC removed
+    @HotSpotIntrinsicCandidate
+    */
     public native StringBuilder append(String str) /*-[
       JreStringBuilder_appendString(&self->delegate_, str);
       return self;
@@ -342,12 +378,37 @@ public final class StringBuilder
         return insert(offset, Double.toString(d));
     }
 
+    /* J2ObjC removed
+    @Override
+    public int indexOf(String str) {
+        return super.indexOf(str);
+    }
+
+    @Override
+    public int indexOf(String str, int fromIndex) {
+        return super.indexOf(str, fromIndex);
+    }
+
+    @Override
+    public int lastIndexOf(String str) {
+        return super.lastIndexOf(str);
+    }
+
+    @Override
+    public int lastIndexOf(String str, int fromIndex) {
+        return super.lastIndexOf(str, fromIndex);
+    }
+    */
+
     public native StringBuilder reverse() /*-[
       JreStringBuilder_reverse(&self->delegate_);
       return self;
     ]-*/;
 
     @Override
+    /* J2ObjC removed
+    @HotSpotIntrinsicCandidate
+    */
     public native String toString() /*-[
       return JreStringBuilder_toString(&self->delegate_);
     ]-*/;

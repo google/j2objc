@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1994, 2021, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,9 +25,23 @@
 
 package java.lang;
 
+/* J2ObjC removed
+import jdk.internal.math.FloatingDecimal;
+import jdk.internal.math.DoubleConsts;
+import jdk.internal.vm.annotation.IntrinsicCandidate;
+*/
+
 import sun.misc.FloatingDecimal;
-import sun.misc.FpUtils;
 import sun.misc.DoubleConsts;
+
+// BEGIN Android-removed: dynamic constants not supported on Android.
+/*
+import java.lang.invoke.MethodHandles;
+import java.lang.constant.Constable;
+import java.lang.constant.ConstantDesc;
+import java.util.Optional;
+*/
+// END Android-removed: dynamic constants not supported on Android.
 
 /**
  * The {@code Double} class wraps a value of the primitive type
@@ -42,12 +55,121 @@ import sun.misc.DoubleConsts;
  * constants and methods useful when dealing with a
  * {@code double}.
  *
+ * <!-- Android-removed: paragraph on ValueBased
+ * <p>This is a <a href="{@docRoot}/java.base/java/lang/doc-files/ValueBased.html">value-based</a>
+ * class; programmers should treat instances that are
+ * {@linkplain #equals(Object) equal} as interchangeable and should not
+ * use instances for synchronization, or unpredictable behavior may
+ * occur. For example, in a future release, synchronization may fail.
+ * -->
+ *
+ * <h2><a id=equivalenceRelation>Floating-point Equality, Equivalence,
+ * and Comparison</a></h2>
+ *
+ * IEEE 754 floating-point values include finite nonzero values,
+ * signed zeros ({@code +0.0} and {@code -0.0}), signed infinities
+ * {@linkplain Double#POSITIVE_INFINITY positive infinity} and
+ * {@linkplain Double#NEGATIVE_INFINITY negative infinity}), and
+ * {@linkplain Double#NaN NaN} (not-a-number).
+ *
+ * <p>An <em>equivalence relation</em> on a set of values is a boolean
+ * relation on pairs of values that is reflexive, symmetric, and
+ * transitive. For more discussion of equivalence relations and object
+ * equality, see the {@link Object#equals Object.equals}
+ * specification. An equivalence relation partitions the values it
+ * operates over into sets called <i>equivalence classes</i>.  All the
+ * members of the equivalence class are equal to each other under the
+ * relation. An equivalence class may contain only a single member. At
+ * least for some purposes, all the members of an equivalence class
+ * are substitutable for each other.  In particular, in a numeric
+ * expression equivalent values can be <em>substituted</em> for one
+ * another without changing the result of the expression, meaning
+ * changing the equivalence class of the result of the expression.
+ *
+ * <p>Notably, the built-in {@code ==} operation on floating-point
+ * values is <em>not</em> an equivalence relation. Despite not
+ * defining an equivalence relation, the semantics of the IEEE 754
+ * {@code ==} operator were deliberately designed to meet other needs
+ * of numerical computation. There are two exceptions where the
+ * properties of an equivalence relation are not satisfied by {@code
+ * ==} on floating-point values:
+ *
+ * <ul>
+ *
+ * <li>If {@code v1} and {@code v2} are both NaN, then {@code v1
+ * == v2} has the value {@code false}. Therefore, for two NaN
+ * arguments the <em>reflexive</em> property of an equivalence
+ * relation is <em>not</em> satisfied by the {@code ==} operator.
+ *
+ * <li>If {@code v1} represents {@code +0.0} while {@code v2}
+ * represents {@code -0.0}, or vice versa, then {@code v1 == v2} has
+ * the value {@code true} even though {@code +0.0} and {@code -0.0}
+ * are distinguishable under various floating-point operations. For
+ * example, {@code 1.0/+0.0} evaluates to positive infinity while
+ * {@code 1.0/-0.0} evaluates to <em>negative</em> infinity and
+ * positive infinity and negative infinity are neither equal to each
+ * other nor equivalent to each other. Thus, while a signed zero input
+ * most commonly determines the sign of a zero result, because of
+ * dividing by zero, {@code +0.0} and {@code -0.0} may not be
+ * substituted for each other in general. The sign of a zero input
+ * also has a non-substitutable effect on the result of some math
+ * library methods.
+ *
+ * </ul>
+ *
+ * <p>For ordered comparisons using the built-in comparison operators
+ * ({@code <}, {@code <=}, etc.), NaN values have another anomalous
+ * situation: a NaN is neither less than, nor greater than, nor equal
+ * to any value, including itself. This means the <i>trichotomy of
+ * comparison</i> does <em>not</em> hold.
+ *
+ * <p>To provide the appropriate semantics for {@code equals} and
+ * {@code compareTo} methods, those methods cannot simply be wrappers
+ * around {@code ==} or ordered comparison operations. Instead, {@link
+ * Double#equals equals} defines NaN arguments to be equal to each
+ * other and defines {@code +0.0} to <em>not</em> be equal to {@code
+ * -0.0}, restoring reflexivity. For comparisons, {@link
+ * Double#compareTo compareTo} defines a total order where {@code
+ * -0.0} is less than {@code +0.0} and where a NaN is equal to itself
+ * and considered greater than positive infinity.
+ *
+ * <p>The operational semantics of {@code equals} and {@code
+ * compareTo} are expressed in terms of {@linkplain #doubleToLongBits
+ * bit-wise converting} the floating-point values to integral values.
+ *
+ * <p>The <em>natural ordering</em> implemented by {@link #compareTo
+ * compareTo} is {@linkplain Comparable consistent with equals}. That
+ * is, two objects are reported as equal by {@code equals} if and only
+ * if {@code compareTo} on those objects returns zero.
+ *
+ * <p>The adjusted behaviors defined for {@code equals} and {@code
+ * compareTo} allow instances of wrapper classes to work properly with
+ * conventional data structures. For example, defining NaN
+ * values to be {@code equals} to one another allows NaN to be used as
+ * an element of a {@link java.util.HashSet HashSet} or as the key of
+ * a {@link java.util.HashMap HashMap}. Similarly, defining {@code
+ * compareTo} as a total ordering, including {@code +0.0}, {@code
+ * -0.0}, and NaN, allows instances of wrapper classes to be used as
+ * elements of a {@link java.util.SortedSet SortedSet} or as keys of a
+ * {@link java.util.SortedMap SortedMap}.
+ *
+ * @jls 4.2.3 Floating-Point Types, Formats, and Values
+ * @jls 4.2.4. Floating-Point Operations
+ * @jls 15.21.1 Numerical Equality Operators == and !=
+ * @jls 15.20.1 Numerical Comparison Operators {@code <}, {@code <=}, {@code >}, and {@code >=}
+ *
  * @author  Lee Boynton
  * @author  Arthur van Hoff
  * @author  Joseph D. Darcy
- * @since JDK1.0
+ * @since 1.0
  */
-public final class Double extends Number implements Comparable<Double> {
+// Android-removed: ValueBased
+// @jdk.internal.ValueBased
+public final class Double extends Number
+        implements Comparable<Double>
+// Android-removed: no Constable support.
+// , Constable, ConstantDesc
+{
     /**
      * A constant holding the positive infinity of type
      * {@code double}. It is equal to the value returned by
@@ -134,7 +256,7 @@ public final class Double extends Number implements Comparable<Double> {
      * The {@code Class} instance representing the primitive type
      * {@code double}.
      *
-     * @since JDK1.1
+     * @since 1.1
      */
     @SuppressWarnings("unchecked")
     public static final Class<Double>   TYPE = (Class<Double>) double[].class.getComponentType();
@@ -256,23 +378,27 @@ public final class Double extends Number implements Comparable<Double> {
      *
      * </ul>
      *
-     * <table border>
+     * <table class="striped">
      * <caption>Examples</caption>
-     * <tr><th>Floating-point Value</th><th>Hexadecimal String</th>
-     * <tr><td>{@code 1.0}</td> <td>{@code 0x1.0p0}</td>
-     * <tr><td>{@code -1.0}</td>        <td>{@code -0x1.0p0}</td>
-     * <tr><td>{@code 2.0}</td> <td>{@code 0x1.0p1}</td>
-     * <tr><td>{@code 3.0}</td> <td>{@code 0x1.8p1}</td>
-     * <tr><td>{@code 0.5}</td> <td>{@code 0x1.0p-1}</td>
-     * <tr><td>{@code 0.25}</td>        <td>{@code 0x1.0p-2}</td>
-     * <tr><td>{@code Double.MAX_VALUE}</td>
+     * <thead>
+     * <tr><th scope="col">Floating-point Value</th><th scope="col">Hexadecimal String</th>
+     * </thead>
+     * <tbody style="text-align:right">
+     * <tr><th scope="row">{@code 1.0}</th> <td>{@code 0x1.0p0}</td>
+     * <tr><th scope="row">{@code -1.0}</th>        <td>{@code -0x1.0p0}</td>
+     * <tr><th scope="row">{@code 2.0}</th> <td>{@code 0x1.0p1}</td>
+     * <tr><th scope="row">{@code 3.0}</th> <td>{@code 0x1.8p1}</td>
+     * <tr><th scope="row">{@code 0.5}</th> <td>{@code 0x1.0p-1}</td>
+     * <tr><th scope="row">{@code 0.25}</th>        <td>{@code 0x1.0p-2}</td>
+     * <tr><th scope="row">{@code Double.MAX_VALUE}</th>
      *     <td>{@code 0x1.fffffffffffffp1023}</td>
-     * <tr><td>{@code Minimum Normal Value}</td>
+     * <tr><th scope="row">{@code Minimum Normal Value}</th>
      *     <td>{@code 0x1.0p-1022}</td>
-     * <tr><td>{@code Maximum Subnormal Value}</td>
+     * <tr><th scope="row">{@code Maximum Subnormal Value}</th>
      *     <td>{@code 0x0.fffffffffffffp-1022}</td>
-     * <tr><td>{@code Double.MIN_VALUE}</td>
+     * <tr><th scope="row">{@code Double.MIN_VALUE}</th>
      *     <td>{@code 0x0.0000000000001p-1022}</td>
+     * </tbody>
      * </table>
      * @param   d   the {@code double} to be converted.
      * @return a hex string representation of the argument.
@@ -302,7 +428,7 @@ public final class Double extends Number implements Comparable<Double> {
             if(d == 0.0) {
                 answer.append("0.0p0");
             } else {
-                boolean subnormal = (d < DoubleConsts.MIN_NORMAL);
+                boolean subnormal = (d < Double.MIN_NORMAL);
 
                 // Isolate significand bits and OR in a high-order bit
                 // so that the string representation has a known
@@ -330,7 +456,7 @@ public final class Double extends Number implements Comparable<Double> {
                 // exponent (the representation of a subnormal uses
                 // E_min -1).
                 answer.append(subnormal ?
-                              DoubleConsts.MIN_EXPONENT:
+                              Double.MIN_EXPONENT:
                               Math.getExponent(d));
             }
             return answer.toString();
@@ -394,7 +520,7 @@ public final class Double extends Number implements Comparable<Double> {
      * <i>HexNumeral</i>, <i>HexDigits</i>, <i>SignedInteger</i> and
      * <i>FloatTypeSuffix</i> are as defined in the lexical structure
      * sections of
-     * <cite>The Java&trade; Language Specification</cite>,
+     * <cite>The Java Language Specification</cite>,
      * except that underscores are not accepted between digits.
      * If {@code s} does not have the form of
      * a <i>FloatValue</i>, then a {@code NumberFormatException}
@@ -516,6 +642,9 @@ public final class Double extends Number implements Comparable<Double> {
      * @return a {@code Double} instance representing {@code d}.
      * @since  1.5
      */
+    /* J2Objc removed
+    @IntrinsicCandidate
+    */
     public static Double valueOf(double d) {
         return new Double(d);
     }
@@ -574,7 +703,7 @@ public final class Double extends Number implements Comparable<Double> {
      * @since 1.8
      */
     public static boolean isFinite(double d) {
-        return Math.abs(d) <= DoubleConsts.MAX_VALUE;
+        return Math.abs(d) <= Double.MAX_VALUE;
     }
 
     /**
@@ -589,7 +718,14 @@ public final class Double extends Number implements Comparable<Double> {
      * represents the primitive {@code double} argument.
      *
      * @param   value   the value to be represented by the {@code Double}.
+     *
+     * @deprecated
+     * It is rarely appropriate to use this constructor. The static factory
+     * {@link #valueOf(double)} is generally a better choice, as it is
+     * likely to yield significantly better space and time performance.
      */
+    // Android-changed: not yet forRemoval on Android.
+    @Deprecated(since="9"/*, forRemoval = true*/)
     public Double(double value) {
         this.value = value;
     }
@@ -601,10 +737,17 @@ public final class Double extends Number implements Comparable<Double> {
      * {@code double} value as if by the {@code valueOf} method.
      *
      * @param  s  a string to be converted to a {@code Double}.
-     * @throws    NumberFormatException  if the string does not contain a
+     * @throws    NumberFormatException if the string does not contain a
      *            parsable number.
-     * @see       java.lang.Double#valueOf(java.lang.String)
+     *
+     * @deprecated
+     * It is rarely appropriate to use this constructor.
+     * Use {@link #parseDouble(String)} to convert a string to a
+     * {@code double} primitive, or use {@link #valueOf(String)}
+     * to convert a string to a {@code Double} object.
      */
+    // Android-changed: not yet forRemoval on Android.
+    @Deprecated(since="9"/*, forRemoval = true */)
     public Double(String s) throws NumberFormatException {
         value = parseDouble(s);
     }
@@ -651,8 +794,8 @@ public final class Double extends Number implements Comparable<Double> {
      *
      * @return  the {@code double} value represented by this object
      *          converted to type {@code byte}
-     * @jls 5.1.3 Narrowing Primitive Conversions
-     * @since JDK1.1
+     * @jls 5.1.3 Narrowing Primitive Conversion
+     * @since 1.1
      */
     public byte byteValue() {
         return (byte)value;
@@ -664,8 +807,8 @@ public final class Double extends Number implements Comparable<Double> {
      *
      * @return  the {@code double} value represented by this object
      *          converted to type {@code short}
-     * @jls 5.1.3 Narrowing Primitive Conversions
-     * @since JDK1.1
+     * @jls 5.1.3 Narrowing Primitive Conversion
+     * @since 1.1
      */
     public short shortValue() {
         return (short)value;
@@ -674,7 +817,7 @@ public final class Double extends Number implements Comparable<Double> {
     /**
      * Returns the value of this {@code Double} as an {@code int}
      * after a narrowing primitive conversion.
-     * @jls 5.1.3 Narrowing Primitive Conversions
+     * @jls 5.1.3 Narrowing Primitive Conversion
      *
      * @return  the {@code double} value represented by this object
      *          converted to type {@code int}
@@ -689,7 +832,7 @@ public final class Double extends Number implements Comparable<Double> {
      *
      * @return  the {@code double} value represented by this object
      *          converted to type {@code long}
-     * @jls 5.1.3 Narrowing Primitive Conversions
+     * @jls 5.1.3 Narrowing Primitive Conversion
      */
     public long longValue() {
         return (long)value;
@@ -701,8 +844,8 @@ public final class Double extends Number implements Comparable<Double> {
      *
      * @return  the {@code double} value represented by this object
      *          converted to type {@code float}
-     * @jls 5.1.3 Narrowing Primitive Conversions
-     * @since JDK1.0
+     * @jls 5.1.3 Narrowing Primitive Conversion
+     * @since 1.0
      */
     public float floatValue() {
         return (float)value;
@@ -713,6 +856,9 @@ public final class Double extends Number implements Comparable<Double> {
      *
      * @return the {@code double} value represented by this object
      */
+    /* J2Objc removed
+    @IntrinsicCandidate
+    */
     public double doubleValue() {
         return value;
     }
@@ -767,33 +913,18 @@ public final class Double extends Number implements Comparable<Double> {
      * #doubleToLongBits(double)} returns the identical
      * {@code long} value when applied to each.
      *
-     * <p>Note that in most cases, for two instances of class
-     * {@code Double}, {@code d1} and {@code d2}, the
-     * value of {@code d1.equals(d2)} is {@code true} if and
-     * only if
+     * @apiNote
+     * This method is defined in terms of {@link
+     * #doubleToLongBits(double)} rather than the {@code ==} operator
+     * on {@code double} values since the {@code ==} operator does
+     * <em>not</em> define an equivalence relation and to satisfy the
+     * {@linkplain Object#equals equals contract} an equivalence
+     * relation must be implemented; see <a
+     * href="#equivalenceRelation">this discussion</a> for details of
+     * floating-point equality and equivalence.
      *
-     * <blockquote>
-     *  {@code d1.doubleValue() == d2.doubleValue()}
-     * </blockquote>
-     *
-     * <p>also has the value {@code true}. However, there are two
-     * exceptions:
-     * <ul>
-     * <li>If {@code d1} and {@code d2} both represent
-     *     {@code Double.NaN}, then the {@code equals} method
-     *     returns {@code true}, even though
-     *     {@code Double.NaN==Double.NaN} has the value
-     *     {@code false}.
-     * <li>If {@code d1} represents {@code +0.0} while
-     *     {@code d2} represents {@code -0.0}, or vice versa,
-     *     the {@code equal} test has the value {@code false},
-     *     even though {@code +0.0==-0.0} has the value {@code true}.
-     * </ul>
-     * This definition allows hash tables to operate properly.
-     * @param   obj   the object to compare with.
-     * @return  {@code true} if the objects are the same;
-     *          {@code false} otherwise.
      * @see java.lang.Double#doubleToLongBits(double)
+     * @jls 15.21.1 Numerical Equality Operators == and !=
      */
     public boolean equals(Object obj) {
         return (obj instanceof Double)
@@ -833,15 +964,14 @@ public final class Double extends Number implements Comparable<Double> {
      * @param   value   a {@code double} precision floating-point number.
      * @return the bits that represent the floating-point number.
      */
+    /* J2Objc removed
+    @IntrinsicCandidate
+    */
     public static long doubleToLongBits(double value) {
-        long result = doubleToRawLongBits(value);
-        // Check for NaN based on values of bit fields, maximum
-        // exponent and nonzero significand.
-        if ( ((result & DoubleConsts.EXP_BIT_MASK) ==
-              DoubleConsts.EXP_BIT_MASK) &&
-             (result & DoubleConsts.SIGNIF_BIT_MASK) != 0L)
-            result = 0x7ff8000000000000L;
-        return result;
+        if (!isNaN(value)) {
+            return doubleToRawLongBits(value);
+        }
+        return 0x7ff8000000000000L;
     }
 
     /**
@@ -880,6 +1010,9 @@ public final class Double extends Number implements Comparable<Double> {
      * @return the bits that represent the floating-point number.
      * @since 1.3
      */
+    /* J2Objc removed
+    @IntrinsicCandidate
+    */
     public static native long doubleToRawLongBits(double value) /*-[
       return *(long long *) &value;
     ]-*/;
@@ -945,28 +1078,39 @@ public final class Double extends Number implements Comparable<Double> {
      * @return  the {@code double} floating-point value with the same
      *          bit pattern.
      */
+    /* J2Objc removed
+    @IntrinsicCandidate
+    */
     public static native double longBitsToDouble(long bits) /*-[
       return *(double *) &bits;
     ]-*/;
 
     /**
-     * Compares two {@code Double} objects numerically.  There
-     * are two ways in which comparisons performed by this method
-     * differ from those performed by the Java language numerical
-     * comparison operators ({@code <, <=, ==, >=, >})
-     * when applied to primitive {@code double} values:
-     * <ul><li>
-     *          {@code Double.NaN} is considered by this method
-     *          to be equal to itself and greater than all other
-     *          {@code double} values (including
-     *          {@code Double.POSITIVE_INFINITY}).
-     * <li>
-     *          {@code 0.0d} is considered by this method to be greater
-     *          than {@code -0.0d}.
+     * Compares two {@code Double} objects numerically.
+     *
+     * This method imposes a total order on {@code Double} objects
+     * with two differences compared to the incomplete order defined by
+     * the Java language numerical comparison operators ({@code <, <=,
+     * ==, >=, >}) on {@code double} values.
+     *
+     * <ul><li> A NaN is <em>unordered</em> with respect to other
+     *          values and unequal to itself under the comparison
+     *          operators.  This method chooses to define {@code
+     *          Double.NaN} to be equal to itself and greater than all
+     *          other {@code double} values (including {@code
+     *          Double.POSITIVE_INFINITY}).
+     *
+     *      <li> Positive zero and negative zero compare equal
+     *      numerically, but are distinct and distinguishable values.
+     *      This method chooses to define positive zero ({@code +0.0d}),
+     *      to be greater than negative zero ({@code -0.0d}).
      * </ul>
-     * This ensures that the <i>natural ordering</i> of
-     * {@code Double} objects imposed by this method is <i>consistent
-     * with equals</i>.
+
+     * This ensures that the <i>natural ordering</i> of {@code Double}
+     * objects imposed by this method is <i>consistent with
+     * equals</i>; see <a href="#equivalenceRelation">this
+     * discussion</a> for details of floating-point comparison and
+     * ordering.
      *
      * @param   anotherDouble   the {@code Double} to be compared.
      * @return  the value {@code 0} if {@code anotherDouble} is
@@ -977,6 +1121,7 @@ public final class Double extends Number implements Comparable<Double> {
      *          {@code Double} is numerically greater than
      *          {@code anotherDouble}.
      *
+     * @jls 15.20.1 Numerical Comparison Operators {@code <}, {@code <=}, {@code >}, and {@code >=}
      * @since   1.2
      */
     public int compareTo(Double anotherDouble) {
@@ -1058,7 +1203,35 @@ public final class Double extends Number implements Comparable<Double> {
         return Math.min(a, b);
     }
 
+    // BEGIN Android-removed: dynamic constants not supported on Android.
+    /**
+     * Returns an {@link Optional} containing the nominal descriptor for this
+     * instance, which is the instance itself.
+     *
+     * @return an {@link Optional} describing the {@linkplain Double} instance
+     * @since 12
+     *
+    @Override
+    public Optional<Double> describeConstable() {
+        return Optional.of(this);
+    }
+
+    /**
+     * Resolves this instance as a {@link ConstantDesc}, the result of which is
+     * the instance itself.
+     *
+     * @param lookup ignored
+     * @return the {@linkplain Double} instance
+     * @since 12
+     *
+    @Override
+    public Double resolveConstantDesc(MethodHandles.Lookup lookup) {
+        return this;
+    }
+    // END Android-removed: dynamic constants not supported on Android.
+
     /** use serialVersionUID from JDK 1.0.2 for interoperability */
+    @java.io.Serial
     private static final long serialVersionUID = -9172774392245257468L;
 
     /*

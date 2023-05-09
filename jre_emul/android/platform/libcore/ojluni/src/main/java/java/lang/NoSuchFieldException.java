@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -28,10 +28,10 @@ package java.lang;
 /**
  * Signals that the class doesn't have a field of a specified name.
  *
- * @author  unascribed
- * @since   JDK1.1
+ * @since   1.1
  */
 public class NoSuchFieldException extends ReflectiveOperationException {
+    @java.io.Serial
     private static final long serialVersionUID = -6143714805279938260L;
 
     /**

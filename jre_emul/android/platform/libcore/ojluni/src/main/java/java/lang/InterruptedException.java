@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1995, 2019, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -44,21 +44,21 @@ package java.lang;
  * @see     java.lang.Thread#sleep(long)
  * @see     java.lang.Thread#interrupt()
  * @see     java.lang.Thread#interrupted()
- * @since   JDK1.0
+ * @since   1.0
  */
-public
-class InterruptedException extends Exception {
+public class InterruptedException extends Exception {
+    @java.io.Serial
     private static final long serialVersionUID = 6700697376100628473L;
 
     /**
-     * Constructs an <code>InterruptedException</code> with no detail  message.
+     * Constructs an {@code InterruptedException} with no detail  message.
      */
     public InterruptedException() {
         super();
     }
 
     /**
-     * Constructs an <code>InterruptedException</code> with the
+     * Constructs an {@code InterruptedException} with the
      * specified detail message.
      *
      * @param   s   the detail message.
