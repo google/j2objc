@@ -720,14 +720,14 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
   return 0;
 }
 
-- (jint)compareToWithId:(JavaLangAbstractStringBuilder *)another {
-  if (self == another) {
+- (jint)compareToWithJavaLangAbstractStringBuilder:(JavaLangAbstractStringBuilder *)other {
+  if (self == other) {
     return 0;
   }
   jchar *buf1 = delegate_.buffer_;
-  jchar *buf2 = another->delegate_.buffer_;
+  jchar *buf2 = other->delegate_.buffer_;
   jint len1 = delegate_.count_;
-  jint len2 = another->delegate_.count_;
+  jint len2 = other->delegate_.count_;
 
   jint limit = JavaLangMath_minWithInt_withInt_(len1, len2);
   for (jint i = 0; i < limit; i++) {

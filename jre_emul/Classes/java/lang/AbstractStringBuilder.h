@@ -91,7 +91,7 @@ typedef struct JreStringBuilder {
 - (jint)offsetByCodePointsWithInt:(jint)index
                           withInt:(jint)codePointOffset;
 
-- (jint)compareToWithId:(JavaLangAbstractStringBuilder *)another;
+- (jint)compareToWithJavaLangAbstractStringBuilder:(JavaLangAbstractStringBuilder *)other;
 
 @end
 
