@@ -25,19 +25,19 @@
 
 package javax.net.ssl;
 
+// Android-changed: Clarified use of HostnameVerifier on Android.
 /**
  * This class is the base interface for hostname verification.
  * <P>
- * During handshaking, if the URL's hostname and
- * the server's identification hostname mismatch, the
+ * During handshaking, the
  * verification mechanism can call back to implementers of this
  * interface to determine if this connection should be allowed.
+ * <p>
+ * For more information of the use of this interface on Android, see
+ * {@link HttpsURLConnection#setDefaultHostnameVerifier(HostnameVerifier)}.
  * <P>
  * The policies can be certificate-based
  * or may depend on other authentication schemes.
- * <P>
- * These callbacks are used when the default rules for URL hostname
- * verification fail.
  *
  * @author Brad R. Wetmore
  * @since 1.4

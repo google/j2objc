@@ -136,7 +136,7 @@ public class TrustManagerFactory {
      *
      * @param algorithm the standard name of the requested trust management
      *          algorithm.  See the <a href=
-     *  "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/jsse/JSSERefGuide.html">
+     *  "{@docRoot}/../technotes/guides/security/jsse/JSSERefGuide.html">
      *          Java Secure Socket Extension Reference Guide </a>
      *          for information about standard algorithm names.
      *
@@ -172,7 +172,7 @@ public class TrustManagerFactory {
      *
      * @param algorithm the standard name of the requested trust management
      *          algorithm.  See the <a href=
-     *  "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/jsse/JSSERefGuide.html">
+     *  "{@docRoot}/../technotes/guides/security/jsse/JSSERefGuide.html">
      *          Java Secure Socket Extension Reference Guide </a>
      *          for information about standard algorithm names.
      *
@@ -213,7 +213,7 @@ public class TrustManagerFactory {
      *
      * @param algorithm the standard name of the requested trust management
      *          algorithm.  See the <a href=
-     *  "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/jsse/JSSERefGuide.html">
+     *  "{@docRoot}/../technotes/guides/security/jsse/JSSERefGuide.html">
      *          Java Secure Socket Extension Reference Guide </a>
      *          for information about standard algorithm names.
      *

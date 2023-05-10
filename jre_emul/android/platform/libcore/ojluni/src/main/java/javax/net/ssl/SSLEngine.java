@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2017, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -27,6 +27,8 @@ package javax.net.ssl;
 
 import java.nio.ByteBuffer;
 import java.nio.ReadOnlyBufferException;
+import java.util.List;
+import java.util.function.BiFunction;
 
 
 /**
@@ -329,6 +331,7 @@ import java.nio.ReadOnlyBufferException;
  * is saved.  All future delegated tasks will be processed using this
  * context:  that is, all access control decisions will be made using the
  * context captured at engine creation.
+ *
  * <HR>
  *
  * <B>Concurrency Notes</B>:
@@ -358,7 +361,7 @@ import java.nio.ReadOnlyBufferException;
  * </OL>
  *
  * <h3>Default configuration for different Android versions</h3>
- * <p>{@code SSLEngine} instances obtained from default {@link SSLContext} are configured as
+ * <p>{@code SSLEngine} instances obtained from the default {@link SSLContext} are configured as
  * follows:
  *
  * <style type="text/css">
@@ -398,6 +401,11 @@ import java.nio.ReadOnlyBufferException;
  *             <td>TLSv1.2</td>
  *             <td>20+</td>
  *             <td>20+</td>
+ *         </tr>
+ *         <tr>
+ *             <td>TLSv1.3</td>
+ *             <td>29+</td>
+ *             <td>29+</td>
  *         </tr>
  *     </tbody>
  * </table>
@@ -506,6 +514,21 @@ import java.nio.ReadOnlyBufferException;
  *       <td>SSL_RSA_WITH_RC4_128_SHA</td>
  *       <td>9-25</td>
  *       <td>9-23</td>
+ *     </tr>
+ *     <tr>
+ *       <td>TLS_AES_128_GCM_SHA256</td>
+ *       <td>29+</td>
+ *       <td>29+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>TLS_AES_256_GCM_SHA384</td>
+ *       <td>29+</td>
+ *       <td>29+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>TLS_CHACHA20_POLY1305_SHA256</td>
+ *       <td>29+</td>
+ *       <td>29+</td>
  *     </tr>
  *     <tr class="deprecated">
  *       <td>TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</td>
@@ -682,9 +705,9 @@ import java.nio.ReadOnlyBufferException;
  *       <td>20+</td>
  *       <td>20+</td>
  *     </tr>
- *     <tr>
+ *     <tr class="deprecated">
  *       <td>TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256</td>
- *       <td>20+</td>
+ *       <td>20-28</td>
  *       <td></td>
  *     </tr>
  *     <tr>
@@ -697,9 +720,9 @@ import java.nio.ReadOnlyBufferException;
  *       <td>20+</td>
  *       <td>20+</td>
  *     </tr>
- *     <tr>
+ *     <tr class="deprecated">
  *       <td>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384</td>
- *       <td>20+</td>
+ *       <td>20-28</td>
  *       <td></td>
  *     </tr>
  *     <tr>
@@ -747,9 +770,9 @@ import java.nio.ReadOnlyBufferException;
  *       <td>20+</td>
  *       <td>20+</td>
  *     </tr>
- *     <tr>
+ *     <tr class="deprecated">
  *       <td>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256</td>
- *       <td>20+</td>
+ *       <td>20-28</td>
  *       <td></td>
  *     </tr>
  *     <tr>
@@ -762,9 +785,9 @@ import java.nio.ReadOnlyBufferException;
  *       <td>20+</td>
  *       <td>20+</td>
  *     </tr>
- *     <tr>
+ *     <tr class="deprecated">
  *       <td>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384</td>
- *       <td>20+</td>
+ *       <td>20-28</td>
  *       <td></td>
  *     </tr>
  *     <tr>
@@ -952,9 +975,9 @@ import java.nio.ReadOnlyBufferException;
  *       <td>9+</td>
  *       <td>9+</td>
  *     </tr>
- *     <tr>
+ *     <tr class="deprecated">
  *       <td>TLS_RSA_WITH_AES_128_CBC_SHA256</td>
- *       <td>20+</td>
+ *       <td>20-28</td>
  *       <td></td>
  *     </tr>
  *     <tr>
@@ -967,9 +990,9 @@ import java.nio.ReadOnlyBufferException;
  *       <td>9+</td>
  *       <td>20+</td>
  *     </tr>
- *     <tr>
+ *     <tr class="deprecated">
  *       <td>TLS_RSA_WITH_AES_256_CBC_SHA256</td>
- *       <td>20+</td>
+ *       <td>20-28</td>
  *       <td></td>
  *     </tr>
  *     <tr>
@@ -1183,7 +1206,7 @@ public abstract class SSLEngine {
      * If this <code>SSLEngine</code> has not yet started its initial
      * handshake, this method will automatically start the handshake.
      * <P>
-     * This method will attempt to produce one SSL/TLS packet, and will
+     * This method will attempt to produce SSL/TLS records, and will
      * consume as much source data as possible, but will never consume
      * more than the sum of the bytes remaining in each buffer.  Each
      * <code>ByteBuffer</code>'s position is updated to reflect the
@@ -1500,12 +1523,22 @@ public abstract class SSLEngine {
     public abstract boolean isOutboundDone();
 
 
+    // Android-changed: Added warnings about misuse
     /**
      * Returns the names of the cipher suites which could be enabled for use
      * on this engine.  Normally, only a subset of these will actually
      * be enabled by default, since this list may include cipher suites which
      * do not meet quality of service requirements for those defaults.  Such
      * cipher suites might be useful in specialized applications.
+     *
+     * <p class="caution">Applications should not blindly enable all supported
+     * cipher suites.  The supported cipher suites can include signaling cipher suite
+     * values that can cause connection problems if enabled inappropriately.
+     *
+     * <p>The proper way to use this method is to either check if a specific cipher
+     * suite is supported via {@code Arrays.asList(getSupportedCipherSuites()).contains(...)}
+     * or to filter a desired list of cipher suites to only the supported ones via
+     * {@code desiredSuiteSet.retainAll(Arrays.asList(getSupportedCipherSuites()))}.
      *
      * @return  an array of cipher suite names
      * @see     #getEnabledCipherSuites()
@@ -1572,6 +1605,7 @@ public abstract class SSLEngine {
     public abstract String [] getEnabledProtocols();
 
 
+    // Android-added: Added paragraph about contiguous protocols.
     /**
      * Set the protocol versions enabled for use on this engine.
      * <P>
@@ -1579,6 +1613,11 @@ public abstract class SSLEngine {
      * as being supported.  Following a successful call to this method,
      * only protocols listed in the <code>protocols</code> parameter
      * are enabled for use.
+     * <p>
+     * Because of the way the protocol version is negotiated, connections
+     * will only be able to use a member of the lowest set of contiguous
+     * enabled protocol versions.  For example, enabling TLSv1.2 and TLSv1
+     * will result in connections only being able to use TLSv1.
      *
      * @param   protocols Names of all the protocols to enable.
      * @throws  IllegalArgumentException when one or more of
@@ -1898,4 +1937,145 @@ public abstract class SSLEngine {
         }
     }
 
+    // BEGIN Android-added: Integrate ALPN-related methods from OpenJDK 9+181
+    // Also removed references to DTLS in documentation; Android doesn't support DTLS.
+    /**
+     * Returns the most recent application protocol value negotiated for this
+     * connection.
+     * <p>
+     * If supported by the underlying SSL/TLS implementation,
+     * application name negotiation mechanisms such as <a
+     * href="http://www.ietf.org/rfc/rfc7301.txt"> RFC 7301 </a>, the
+     * Application-Layer Protocol Negotiation (ALPN), can negotiate
+     * application-level values between peers.
+     * <p>
+     * @implSpec
+     * The implementation in this class throws
+     * {@code UnsupportedOperationException} and performs no other action.
+     *
+     * @return null if it has not yet been determined if application
+     *         protocols might be used for this connection, an empty
+     *         {@code String} if application protocols values will not
+     *         be used, or a non-empty application protocol {@code String}
+     *         if a value was successfully negotiated.
+     * @throws UnsupportedOperationException if the underlying provider
+     *         does not implement the operation.
+     * @since 9
+     */
+    public String getApplicationProtocol() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns the application protocol value negotiated on a SSL/TLS
+     * handshake currently in progress.
+     * <p>
+     * Like {@link #getHandshakeSession()},
+     * a connection may be in the middle of a handshake. The
+     * application protocol may or may not yet be available.
+     * <p>
+     * @implSpec
+     * The implementation in this class throws
+     * {@code UnsupportedOperationException} and performs no other action.
+     *
+     * @return null if it has not yet been determined if application
+     *         protocols might be used for this handshake, an empty
+     *         {@code String} if application protocols values will not
+     *         be used, or a non-empty application protocol {@code String}
+     *         if a value was successfully negotiated.
+     * @throws UnsupportedOperationException if the underlying provider
+     *         does not implement the operation.
+     * @since 9
+     */
+    public String getHandshakeApplicationProtocol() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Registers a callback function that selects an application protocol
+     * value for a SSL/TLS handshake.
+     * The function overrides any values supplied using
+     * {@link SSLParameters#setApplicationProtocols
+     * SSLParameters.setApplicationProtocols} and it supports the following
+     * type parameters:
+     * <blockquote>
+     * <dl>
+     * <dt> {@code SSLEngine}
+     * <dd> The function's first argument allows the current {@code SSLEngine}
+     *      to be inspected, including the handshake session and configuration
+     *      settings.
+     * <dt> {@code List<String>}
+     * <dd> The function's second argument lists the application protocol names
+     *      advertised by the TLS peer.
+     * <dt> {@code String}
+     * <dd> The function's result is an application protocol name, or null to
+     *      indicate that none of the advertised names are acceptable.
+     *      If the return value is an empty {@code String} then application
+     *      protocol indications will not be used.
+     *      If the return value is null (no value chosen) or is a value that
+     *      was not advertised by the peer, the underlying protocol will
+     *      determine what action to take. (For example, ALPN will send a
+     *      "no_application_protocol" alert and terminate the connection.)
+     * </dl>
+     * </blockquote>
+     *
+     * For example, the following call registers a callback function that
+     * examines the TLS handshake parameters and selects an application protocol
+     * name:
+     * <pre>{@code
+     *     serverEngine.setHandshakeApplicationProtocolSelector(
+     *         (serverEngine, clientProtocols) -> {
+     *             SSLSession session = serverEngine.getHandshakeSession();
+     *             return chooseApplicationProtocol(
+     *                 serverEngine,
+     *                 clientProtocols,
+     *                 session.getProtocol(),
+     *                 session.getCipherSuite());
+     *         });
+     * }</pre>
+     *
+     * @apiNote
+     * This method should be called by TLS server applications before the TLS
+     * handshake begins. Also, this {@code SSLEngine} should be configured with
+     * parameters that are compatible with the application protocol selected by
+     * the callback function. For example, enabling a poor choice of cipher
+     * suites could result in no suitable application protocol.
+     * See {@link SSLParameters}.
+     *
+     * @implSpec
+     * The implementation in this class throws
+     * {@code UnsupportedOperationException} and performs no other action.
+     *
+     * @param selector the callback function, or null to disable the callback
+     *         functionality.
+     * @throws UnsupportedOperationException if the underlying provider
+     *         does not implement the operation.
+     * @since 9
+     */
+    public void setHandshakeApplicationProtocolSelector(
+            BiFunction<SSLEngine, List<String>, String> selector) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Retrieves the callback function that selects an application protocol
+     * value during a SSL/TLS handshake.
+     * See {@link #setHandshakeApplicationProtocolSelector
+     * setHandshakeApplicationProtocolSelector}
+     * for the function's type parameters.
+     *
+     * @implSpec
+     * The implementation in this class throws
+     * {@code UnsupportedOperationException} and performs no other action.
+     *
+     * @return the callback function, or null if none has been set.
+     * @throws UnsupportedOperationException if the underlying provider
+     *         does not implement the operation.
+     * @since 9
+     */
+    public BiFunction<SSLEngine, List<String>, String>
+            getHandshakeApplicationProtocolSelector() {
+        throw new UnsupportedOperationException();
+    }
+    // END Android-added: Integrate ALPN-related methods from OpenJDK 9+181
 }

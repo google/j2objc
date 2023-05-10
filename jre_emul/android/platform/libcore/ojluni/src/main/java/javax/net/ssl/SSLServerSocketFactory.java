@@ -45,8 +45,16 @@ import java.security.*;
  */
 public abstract class SSLServerSocketFactory extends ServerSocketFactory
 {
+    // Android-changed: Renamed field.
+    // Some apps rely on changing this field via reflection, so we can't change the name
+    // without introducing app compatibility problems.  See http://b/62248930.
     private static SSLServerSocketFactory defaultServerSocketFactory;
 
+    // Android-changed: Check Security.getVersion() on each update.
+    // If the set of providers or other such things changes, it may change the default
+    // factory, so we track the version returned from Security.getVersion() instead of
+    // only having a flag that says if we've ever initialized the default.
+    // private static boolean propertyChecked;
     private static int lastVersion = -1;
 
     private static void log(String msg) {
@@ -77,10 +85,7 @@ public abstract class SSLServerSocketFactory extends ServerSocketFactory
      * @see SSLContext#getDefault
      */
     public static synchronized ServerSocketFactory getDefault() {
-        // Android-changed: Use security version instead of propertyChecked.
-        //
-        // We use the same lookup logic in SSLSocketFactory.getDefault(). Any changes
-        // made here must be mirrored in that class.
+        // Android-changed: Check Security.getVersion() on each update.
         if (defaultServerSocketFactory != null && lastVersion == Security.getVersion()) {
             return defaultServerSocketFactory;
         }
@@ -90,8 +95,9 @@ public abstract class SSLServerSocketFactory extends ServerSocketFactory
         defaultServerSocketFactory = null;
 
         String clsName = SSLSocketFactory.getSecurityProperty
-                ("ssl.ServerSocketFactory.provider");
+                                    ("ssl.ServerSocketFactory.provider");
         if (clsName != null) {
+            // Android-changed: Check if we already have an instance of the default factory class.
             // The instance for the default socket factory is checked for updates quite
             // often (for instance, every time a security provider is added). Which leads
             // to unnecessary overload and excessive error messages in case of class-loading
@@ -101,10 +107,9 @@ public abstract class SSLServerSocketFactory extends ServerSocketFactory
                 defaultServerSocketFactory = previousDefaultServerSocketFactory;
                 return defaultServerSocketFactory;
             }
-            Class cls = null;
             log("setting up default SSLServerSocketFactory");
             try {
-                log("setting up default SSLServerSocketFactory");
+                Class<?> cls = null;
                 try {
                     cls = Class.forName(clsName);
                 } catch (ClassNotFoundException e) {
@@ -115,37 +120,33 @@ public abstract class SSLServerSocketFactory extends ServerSocketFactory
                     }
 
                     if (cl != null) {
+                        // Android-changed: Use Class.forName() so the class gets initialized.
                         cls = Class.forName(clsName, true, cl);
                     }
                 }
                 log("class " + clsName + " is loaded");
-                SSLServerSocketFactory fac = (SSLServerSocketFactory) cls.newInstance();
+                SSLServerSocketFactory fac = (SSLServerSocketFactory)cls.newInstance();
                 log("instantiated an instance of class " + clsName);
                 defaultServerSocketFactory = fac;
-                if (defaultServerSocketFactory != null) {
-                    return defaultServerSocketFactory;
-                }
+                return fac;
             } catch (Exception e) {
                 log("SSLServerSocketFactory instantiation failed: " + e);
-                // Android-changed: Fallback to the default SSLContext if an exception
-                // is thrown during the initialization of ssl.ServerSocketFactory.provider.
+                // Android-changed: Fallback to the default SSLContext on exception.
             }
         }
 
         try {
+            // Android-changed: Allow for {@code null} SSLContext.getDefault.
             SSLContext context = SSLContext.getDefault();
             if (context != null) {
                 defaultServerSocketFactory = context.getServerSocketFactory();
+            } else {
+                defaultServerSocketFactory = new DefaultSSLServerSocketFactory(new IllegalStateException("No factory found."));
             }
+            return defaultServerSocketFactory;
         } catch (NoSuchAlgorithmException e) {
+            return new DefaultSSLServerSocketFactory(e);
         }
-
-        if (defaultServerSocketFactory == null) {
-            defaultServerSocketFactory = new DefaultSSLServerSocketFactory(
-                    new IllegalStateException("No ServerSocketFactory implementation found"));
-        }
-
-        return defaultServerSocketFactory;
     }
 
     /**
@@ -161,6 +162,7 @@ public abstract class SSLServerSocketFactory extends ServerSocketFactory
     public abstract String [] getDefaultCipherSuites();
 
 
+    // Android-changed: Added warnings about misuse
     /**
      * Returns the names of the cipher suites which could be enabled for use
      * on an SSL connection created by this factory.
@@ -168,6 +170,15 @@ public abstract class SSLServerSocketFactory extends ServerSocketFactory
      * be enabled by default, since this list may include cipher suites which
      * do not meet quality of service requirements for those defaults.  Such
      * cipher suites are useful in specialized applications.
+     *
+     * <p class="caution">Applications should not blindly enable all supported
+     * cipher suites.  The supported cipher suites can include signaling cipher suite
+     * values that can cause connection problems if enabled inappropriately.
+     *
+     * <p>The proper way to use this method is to either check if a specific cipher
+     * suite is supported via {@code Arrays.asList(getSupportedCipherSuites()).contains(...)}
+     * or to filter a desired list of cipher suites to only the supported ones via
+     * {@code desiredSuiteSet.retainAll(Arrays.asList(getSupportedCipherSuites()))}.
      *
      * @return an array of cipher suite names
      * @see #getDefaultCipherSuites()

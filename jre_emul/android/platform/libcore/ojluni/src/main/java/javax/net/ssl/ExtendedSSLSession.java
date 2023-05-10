@@ -45,7 +45,7 @@ public abstract class ExtendedSSLSession implements SSLSession {
      * The signature algorithm name must be a standard Java Security
      * name (such as "SHA1withRSA", "SHA256withECDSA", and so on).
      * See Appendix A in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/crypto/CryptoSpec.html#AppA">
+     * "{@docRoot}/../technotes/guides/security/crypto/CryptoSpec.html#AppA">
      * Java Cryptography Architecture API Specification &amp; Reference </a>
      * for information about standard algorithm names.
      * <p>
@@ -73,7 +73,7 @@ public abstract class ExtendedSSLSession implements SSLSession {
      * The signature algorithm name must be a standard Java Security
      * name (such as "SHA1withRSA", "SHA256withECDSA", and so on).
      * See Appendix A in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/crypto/CryptoSpec.html#AppA">
+     * "{@docRoot}/../technotes/guides/security/crypto/CryptoSpec.html#AppA">
      * Java Cryptography Architecture API Specification &amp; Reference </a>
      * for information about standard algorithm names.
      *

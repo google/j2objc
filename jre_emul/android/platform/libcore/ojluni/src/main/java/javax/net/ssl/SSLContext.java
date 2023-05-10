@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1999, 2011, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1999, 2012, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -39,46 +39,50 @@ import sun.security.jca.GetInstance;
  *
  * <p> Android provides the following <code>SSLContext</code> protocols:
  * <table>
- *     <thead>
- *         <tr>
- *             <th>Name</th>
- *             <th>Supported (API Levels)</th>
- *         </tr>
- *     </thead>
- *     <tbody>
- *         <tr>
- *             <td>Default</td>
- *             <td>10+</td>
- *         </tr>
- *         <tr>
- *             <td>SSL</td>
- *             <td>10+</td>
- *         </tr>
- *         <tr>
- *             <td>SSLv3</td>
- *             <td>10+</td>
- *         </tr>
- *         <tr>
- *             <td>TLS</td>
- *             <td>1+</td>
- *         </tr>
- *         <tr>
- *             <td>TLSv1</td>
- *             <td>10+</td>
- *         </tr>
- *         <tr>
- *             <td>TLSv1.1</td>
- *             <td>16+</td>
- *         </tr>
- *         <tr>
- *             <td>TLSv1.2</td>
- *             <td>16+</td>
- *         </tr>
- *     </tbody>
+ *   <thead>
+ *     <tr>
+ *       <th>Algorithm</th>
+ *       <th>Supported API Levels</th>
+ *     </tr>
+ *   </thead>
+ *   <tbody>
+ *     <tr>
+ *       <td>Default</td>
+ *       <td>10+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>SSL</td>
+ *       <td>10+</td>
+ *     </tr>
+ *     <tr class="deprecated">
+ *       <td>SSLv3</td>
+ *       <td>10-25</td>
+ *     </tr>
+ *     <tr>
+ *       <td>TLS</td>
+ *       <td>1+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>TLSv1</td>
+ *       <td>10+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>TLSv1.1</td>
+ *       <td>16+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>TLSv1.2</td>
+ *       <td>16+</td>
+ *     </tr>
+ *     <tr>
+ *       <td>TLSv1.3</td>
+ *       <td>29+</td>
+ *     </tr>
+ *   </tbody>
  * </table>
  *
  * This protocol is described in the <a href=
- * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#SSLContext">
+ * "{@docRoot}/../technotes/guides/security/StandardNames.html#SSLContext">
  * SSLContext section</a> of the
  * Java Cryptography Architecture Standard Algorithm Name Documentation.
  *
@@ -132,10 +136,16 @@ public class SSLContext {
         return defaultContext;
     }
 
+    // Android-changed: Additional text to strongly discouraged changing the default.
     /**
      * Sets the default SSL context. It will be returned by subsequent calls
      * to {@link #getDefault}. The default context must be immediately usable
      * and not require {@linkplain #init initialization}.
+     * <p>
+     * Developers are <em>strongly</em> discouraged from changing the default {@code SSLContext} as
+     * it is used as the Android default for secure communication by APIs like
+     * {@link SSLSocketFactory#getDefault()}, {@link SSLServerSocketFactory#getDefault()} and
+     * {@link HttpsURLConnection}.
      *
      * @param context the SSLContext
      * @throws  NullPointerException if context is null
@@ -170,7 +180,7 @@ public class SSLContext {
      *
      * @param protocol the standard name of the requested protocol.
      *          See the SSLContext section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#SSLContext">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#SSLContext">
      *          Java Cryptography Architecture Standard Algorithm Name
      *          Documentation</a>
      *          for information about standard protocol names.
@@ -178,7 +188,7 @@ public class SSLContext {
      * @return the new <code>SSLContext</code> object.
      *
      * @exception NoSuchAlgorithmException if no Provider supports a
-     *          TrustManagerFactorySpi implementation for the
+     *          SSLContextSpi implementation for the
      *          specified protocol.
      * @exception NullPointerException if protocol is null.
      *
@@ -206,7 +216,7 @@ public class SSLContext {
      *
      * @param protocol the standard name of the requested protocol.
      *          See the SSLContext section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#SSLContext">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#SSLContext">
      *          Java Cryptography Architecture Standard Algorithm Name
      *          Documentation</a>
      *          for information about standard protocol names.
@@ -246,7 +256,7 @@ public class SSLContext {
      *
      * @param protocol the standard name of the requested protocol.
      *          See the SSLContext section in the <a href=
-     * "{@docRoot}openjdk-redirect.html?v=8&path=/technotes/guides/security/StandardNames.html#SSLContext">
+     * "{@docRoot}/../technotes/guides/security/StandardNames.html#SSLContext">
      *          Java Cryptography Architecture Standard Algorithm Name
      *          Documentation</a>
      *          for information about standard protocol names.
@@ -255,11 +265,11 @@ public class SSLContext {
      *
      * @return the new <code>SSLContext</code> object.
      *
-     * @throws NoSuchAlgorithmException if a KeyManagerFactorySpi
+     * @throws NoSuchAlgorithmException if a SSLContextSpi
      *          implementation for the specified protocol is not available
      *          from the specified Provider object.
      *
-     * @throws IllegalArgumentException if the provider name is null.
+     * @throws IllegalArgumentException if the provider is null.
      * @throws NullPointerException if protocol is null.
      *
      * @see java.security.Provider
