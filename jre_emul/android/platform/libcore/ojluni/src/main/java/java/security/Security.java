@@ -59,31 +59,38 @@ public final class Security {
         Provider provider;
     }
 
+    // j2objc: reworked to allow security.properties to be optional resource.
     static {
+// BEGIN Android-changed: doPrivileged is stubbed on Android.
+// Also, because props is final it must be assigned in the static block, not a method.
+        /*
+        // doPrivileged here because there are multiple
+        // things in initialize that might require privs.
+        // (the FileInputStream call and the File.exists call,
+        // the securityPropFile call, etc)
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+            public Void run() {
+                initialize();
+                return null;
+            }
+        });
+    }
+
+    private static void initialize() {
+        */
+// END Android-changed: doPrivileged is stubbed on Android.
         props = new Properties();
         boolean loadedProps = false;
-        InputStream is = null;
-        try {
-            /*
-             * Android keeps the property file in a jar resource.
-             */
-            InputStream propStream = Security.class.getResourceAsStream("security.properties");
-            if (propStream == null) {
-                System.logE("Could not find 'security.properties'.");
-            } else {
-                is  = new BufferedInputStream(propStream);
+        InputStream propStream = Security.class.getResourceAsStream("security.properties");
+        if (propStream != null) {
+            try (InputStream is = new BufferedInputStream(propStream)) {
                 props.load(is);
                 loadedProps = true;
-            }
-        } catch (IOException ex) {
-            System.logE("Could not load 'security.properties'", ex);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ignored) {}
+            } catch (IOException ex) {
+                System.logE("Failed loading 'security.properties' resource", ex);
             }
         }
+        // END Android-changed: Use a resource file, Android logging, and only one file.
 
         if (!loadedProps) {
             initializeStatic();
