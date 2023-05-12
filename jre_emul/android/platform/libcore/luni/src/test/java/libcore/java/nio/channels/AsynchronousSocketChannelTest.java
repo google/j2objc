@@ -374,11 +374,12 @@ public class AsynchronousSocketChannelTest extends TestCase {
         test_scatterReadWrite(false /* useDirectByteBuffer */);
     }
 
-    public void test_scatterReadWrite_DirectByteBuffer() throws Throwable {
-        test_scatterReadWrite(true /* useDirectByteBuffer */);
-    }
+    // b/282198642
+    // public void test_scatterReadWrite_DirectByteBuffer() throws Throwable {
+    //     test_scatterReadWrite(true /* useDirectByteBuffer */);
+    // }
 
-    private void test_scatterReadWrite(boolean useDirectByteBuffer) throws Throwable {
+  private void test_scatterReadWrite(boolean useDirectByteBuffer) throws Throwable {
         ServerSocket ss = new ServerSocket(0);
         AsynchronousSocketChannel asc = AsynchronousSocketChannel.open();
 

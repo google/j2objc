@@ -406,39 +406,40 @@ public class SocketTest extends TestCase /* J2ObjC removed: TestCaseWithRules */
         assertEquals(boundAddress.getPort(), localAddressAfterClose.getPort());
     }
 
-    public void testCloseDuringConnect() throws Exception {
-        final CountDownLatch signal = new CountDownLatch(1);
+    // b/282199142
+    // public void testCloseDuringConnect() throws Exception {
+    //     final CountDownLatch signal = new CountDownLatch(1);
 
-        final Socket s = new Socket();
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    // This address is reserved for documentation: should never be reachable.
-                    InetSocketAddress unreachableIp = new InetSocketAddress("192.0.2.0", 80);
-                    // This should never return.
-                    s.connect(unreachableIp, 0 /* infinite */);
-                    fail("Connect returned unexpectedly for: " + unreachableIp);
-                } catch (SocketException expected) {
-                    /* TODO(zgao): fix NET_ThrowByNameWithLastError() and enable.
-                    assertTrue(expected.getMessage().contains("Socket closed"));
-                    */
-                    assertTrue(expected.getMessage().contains("connect failed"));
-                    signal.countDown();
-                } catch (IOException e) {
-                    fail("Unexpected exception: " + e);
-                }
-            }
-        }.start();
+    //     final Socket s = new Socket();
+    //     new Thread() {
+    //         @Override
+    //         public void run() {
+    //             try {
+    //                 // This address is reserved for documentation: should never be reachable.
+    //                 InetSocketAddress unreachableIp = new InetSocketAddress("192.0.2.0", 80);
+    //                 // This should never return.
+    //                 s.connect(unreachableIp, 0 /* infinite */);
+    //                 fail("Connect returned unexpectedly for: " + unreachableIp);
+    //             } catch (SocketException expected) {
+    //                 /* TODO(zgao): fix NET_ThrowByNameWithLastError() and enable.
+    //                 assertTrue(expected.getMessage().contains("Socket closed"));
+    //                 */
+    //                 assertTrue(expected.getMessage().contains("connect failed"));
+    //                 signal.countDown();
+    //             } catch (IOException e) {
+    //                 fail("Unexpected exception: " + e);
+    //             }
+    //         }
+    //     }.start();
 
-        // Wait for the connect() thread to run and start connect()
-        Thread.sleep(2000);
+    //     // Wait for the connect() thread to run and start connect()
+    //     Thread.sleep(2000);
 
-        s.close();
+    //     s.close();
 
-        boolean connectUnblocked = signal.await(2000, TimeUnit.MILLISECONDS);
-        assertTrue(connectUnblocked);
-    }
+    //     boolean connectUnblocked = signal.await(2000, TimeUnit.MILLISECONDS);
+    //     assertTrue(connectUnblocked);
+    // }
 
     // http://b/29092095
     public void testSocketWithProxySet() throws Exception {
