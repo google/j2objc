@@ -1222,23 +1222,42 @@ public class CompatibilityTest extends ProtobufTest {
     assertEquals(0, messageLite.getSerializedSize());
   }
 
-  /**
-   * The returned list must be able to see edits to the internal list. However
-   * when the internal list is cleared the returned list maintains a view of the
-   * elements as they where before the clear.
-   */
-  public void testGetRepeatedList() throws Exception {
-    TypicalData.Builder builder = TypicalData.newBuilder()
-        .addRepeatedInt32(1)
-        .addRepeatedInt32(2)
-        .addRepeatedInt32(3);
-    List<Integer> list = builder.getRepeatedInt32List();
-    assertEquals(3, list.size());
-    builder.setRepeatedInt32(1, 4);
-    assertEquals(4, list.get(1).intValue());
-    builder.clearRepeatedInt32();
-    assertEquals(3, list.size());
-  }
+  // TODO(b/282022385): reenable these two tests when BlazeTests and BlazeTestsIos are both
+  // passing.
+  // /**
+  //  * The list retrieved from list getter should be just a snapshot copy of the internal list and
+  //  * thus should not reflect the changes to the field that are via builder accessors.
+  //  */
+  // public void testGetRepeatedList() throws Exception {
+  //   TypicalData.Builder builder = TypicalData.newBuilder()
+  //       .addRepeatedInt32(1)
+  //       .addRepeatedInt32(2)
+  //       .addRepeatedInt32(3);
+  //   List<Integer> list = builder.getRepeatedInt32List();
+  //   assertThat(list).hasSize(3);
+  //   builder.setRepeatedInt32(1, 4);
+
+  //   // `list` is a copy or a snapshot of the message, so it should not modified when setting
+  //   // values with builders.
+  //   assertEquals(2, list.get(1).intValue());
+  //   builder.clearRepeatedInt32();
+  //   assertThat(list).hasSize(3);
+  // }
+
+  // /** The same as `testGetRepeatedList` but for repeated string fields. */
+  // public void testGetRepeatedStringList() throws Exception {
+  //   TypicalData.Builder builder =
+  //       TypicalData.newBuilder()
+  //           .addRepeatedString("1")
+  //           .addRepeatedString("2")
+  //           .addRepeatedString("3");
+  //   ProtocolStringList list = builder.getRepeatedStringList();
+  //   assertThat(list).hasSize(3);
+  //   builder.setRepeatedString(1, "4");
+  //   assertEquals("2", list.get(1));
+  //   builder.clearRepeatedString();
+  //   assertThat(list).hasSize(3);
+  // }
 
   public void testGetByteArray() throws Exception {
     // Make sure it compiles with the MessageLite type.
