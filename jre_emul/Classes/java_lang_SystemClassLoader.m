@@ -75,38 +75,18 @@ JNIEXPORT jclass Java_java_lang_SystemClassLoader_findClass(
   return [IOSClass forName:name];
 }
 
-// Returns a URL for a specified resource in a bundle, or nil if not found.
-static JavaNetURL *getResourceURLFromBundle(NSBundle *bundle, jstring name) {
-  NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
-  if (nativeURL) {
-    return create_JavaNetURL_initWithNSString_([nativeURL description]);
-  }
-  return nil;
-}
-
 JNIEXPORT jobject Java_java_lang_SystemClassLoader_findResource(
       JNIEnv *env, jobject obj, jstring name) {
   if (!name) {
     return nil;
   }
-
-  JavaNetURL *url = getResourceURLFromBundle([NSBundle mainBundle], name);
-  if (url) {
-    return url;
+  NSBundle *bundle = [NSBundle mainBundle];
+  NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
+  if (nativeURL) {
+    return create_JavaNetURL_initWithNSString_([nativeURL description]);
   }
-
   IOSByteArray *data = GetLinkedResource(name);
-  if (data) {
-    return CreateResourceURL(name, data);
-  }
-
-  for (NSBundle *bundle in [NSBundle allFrameworks]) {
-    JavaNetURL *url = getResourceURLFromBundle(bundle, name);
-    if (url) {
-      return url;
-    }
-  }
-  return nil;
+  return data ? CreateResourceURL(name, data) : nil;
 }
 
 JNIEXPORT jobject Java_java_lang_SystemClassLoader_findResources(
@@ -134,38 +114,19 @@ JNIEXPORT jobject Java_java_lang_SystemClassLoader_findResources(
   return JavaUtilCollections_enumerationWithJavaUtilCollection_(urls);
 }
 
-// Returns an input stream for a specified resource in a bundle, or nil if not found.
-static JavaIoBufferedInputStream *getResourceFromBundle(NSBundle *bundle, jstring name) {
-  NSString *path = [bundle pathForResource:name ofType:nil];
-  if (path) {
-    return create_JavaIoBufferedInputStream_initWithJavaIoInputStream_(
-        create_JavaIoFileInputStream_initWithNSString_(path));
-  }
-  return nil;
-}
-
 JNIEXPORT jobject Java_java_lang_SystemClassLoader_getResourceAsStream(
       JNIEnv *env, jobject obj, jstring name) {
   if (!name) {
     return nil;
   }
-  JavaIoBufferedInputStream *stream = getResourceFromBundle([NSBundle mainBundle], name);
-  if (stream) {
-    return stream;
+  NSBundle *bundle = [NSBundle mainBundle];
+  NSString *path = [bundle pathForResource:name ofType:nil];
+  if (path) {
+    return create_JavaIoBufferedInputStream_initWithJavaIoInputStream_(
+        create_JavaIoFileInputStream_initWithNSString_(path));
   }
 
   // No iOS resource available, check for linked resource.
   IOSByteArray *data = GetLinkedResource(name);
-  if (data) {
-    return create_JavaIoByteArrayInputStream_initWithByteArray_(data);
-  }
-  
-  // Check framework bundles for resource.
-  for (NSBundle *bundle in [NSBundle allFrameworks]) {
-    stream = getResourceFromBundle(bundle, name);
-    if (stream) {
-      return stream;
-    }
-  }
-  return nil;
+  return data ? create_JavaIoByteArrayInputStream_initWithByteArray_(data) : nil;
 }
