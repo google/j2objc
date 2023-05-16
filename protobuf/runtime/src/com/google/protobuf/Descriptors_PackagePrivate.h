@@ -132,7 +132,7 @@ typedef struct CGPOneofData {
 @end
 
 @interface ComGoogleProtobufDescriptors_EnumDescriptor () {
- @package
+ @public
   ptrdiff_t valueOffset_;
   IOSObjectArray *values_;
 }
