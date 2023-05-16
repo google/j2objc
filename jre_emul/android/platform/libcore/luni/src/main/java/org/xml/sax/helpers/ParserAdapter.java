@@ -6,7 +6,6 @@
 
 package org.xml.sax.helpers;
 
-import com.google.j2objc.annotations.WeakOuter;
 import org.xml.sax.AttributeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -877,7 +876,6 @@ public class ParserAdapter implements XMLReader, DocumentHandler
      * from SAX1 to SAX2, except that names and types are
      * interned whenever requested.</p>
      */
-    @WeakOuter
     final class AttributeListAdapter implements Attributes
     {
 

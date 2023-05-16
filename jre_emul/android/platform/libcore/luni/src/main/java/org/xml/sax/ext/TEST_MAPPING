@@ -1,0 +1,12 @@
+{
+  "presubmit": [
+    {
+      "name": "CtsLibcoreTestCases",
+      "options": [
+        {
+          "include-filter": "org.apache.harmony.tests.org.xml.sax.ext"
+        }
+      ]
+    }
+  ]
+}

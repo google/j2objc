@@ -7,7 +7,6 @@
 package org.xml.sax.helpers;
 
 import android.compat.annotation.UnsupportedAppUsage;
-import com.google.j2objc.annotations.WeakOuter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EmptyStackException;
@@ -529,25 +528,19 @@ public class NamespaceSupport
     @UnsupportedAppUsage
     private boolean namespaceDeclUris;
 
-
-    ////////////////////////////////////////////////////////////////////
-    // Internal classes.
-    ////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////
+  // Internal classes.
+  ////////////////////////////////////////////////////////////////////
 
-    /**
-     * Internal class for a single Namespace context.
-     *
-     * <p>This module caches and reuses Namespace contexts,
-     * so the number allocated
-     * will be equal to the element depth of the document, not to the total
-     * number of elements (i.e. 5-10 rather than tens of thousands).
-     * Also, data structures used to represent contexts are shared when
-     * possible (child contexts without declarations) to further reduce
-     * the amount of memory that's consumed.
-     * </p>
-     */
-    @WeakOuter
-    final class Context {
+  /**
+   * Internal class for a single Namespace context.
+   *
+   * <p>This module caches and reuses Namespace contexts, so the number allocated will be equal to
+   * the element depth of the document, not to the total number of elements (i.e. 5-10 rather than
+   * tens of thousands). Also, data structures used to represent contexts are shared when possible
+   * (child contexts without declarations) to further reduce the amount of memory that's consumed.
+   */
+  final class Context {
 
     /**
      * Create the root-level Namespace context.
