@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2003, 2014, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,6 +26,10 @@
 package java.util;
 
 import java.security.*;
+
+// Android-removed: not using JavaLangAccess.fastUUID.
+// import jdk.internal.misc.JavaLangAccess;
+// import jdk.internal.misc.SharedSecrets;
 
 /**
  * A class that represents an immutable universally unique identifier (UUID).
@@ -87,6 +91,9 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * @serial
      */
     private final long leastSigBits;
+
+    // Android-removed: not using JavaLangAccess.fastUUID.
+    // private static final JavaLangAccess jla = SharedSecrets.getJavaLangAccess();
 
     /*
      * The random number generator used by this class to create random
@@ -373,6 +380,8 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * @return  A string representation of this {@code UUID}
      */
     public String toString() {
+        // Android-changed: using old implementation.
+        // return jla.fastUUID(leastSigBits, mostSigBits);
         return (digits(mostSigBits >> 32, 8) + "-" +
                 digits(mostSigBits >> 16, 4) + "-" +
                 digits(mostSigBits, 4) + "-" +

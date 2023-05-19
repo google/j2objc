@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2017, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -42,20 +42,21 @@ package java.util;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OptionalDataException;
 import java.io.Serializable;
-/*import java.security.AccessControlContext;
-import java.security.AccessController;
+import java.security.AccessControlContext;
 import java.security.PermissionCollection;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.security.ProtectionDomain;*/
+import java.security.ProtectionDomain;
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
+import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import libcore.icu.ICU;
 import libcore.icu.LocaleData;
+import sun.util.locale.provider.CalendarDataUtility;
 
+// Android-changed: Remove "rg" support in the javadoc. See http://b/228322300.
+// Android-changed: Support the "fw" extension since Android 13.
 /**
  * The <code>Calendar</code> class is an abstract class that provides methods
  * for converting between a specific instant in time and a set of {@link
@@ -63,7 +64,7 @@ import libcore.icu.LocaleData;
  * <code>DAY_OF_MONTH</code>, <code>HOUR</code>, and so on, and for
  * manipulating the calendar fields, such as getting the date of the next
  * week. An instant in time can be represented by a millisecond value that is
- * an offset from the <a name="Epoch"><em>Epoch</em></a>, January 1, 1970
+ * an offset from the <a id="Epoch"><em>Epoch</em></a>, January 1, 1970
  * 00:00:00.000 GMT (Gregorian).
  *
  * <p>The class also provides additional fields and methods for
@@ -120,13 +121,17 @@ import libcore.icu.LocaleData;
  * calculating its time or calendar field values if any out-of-range field
  * value has been set.
  *
- * <h4><a name="first_week">First Week</a></h4>
+ * <h4><a id="first_week">First Week</a></h4>
  *
  * <code>Calendar</code> defines a locale-specific seven day week using two
  * parameters: the first day of the week and the minimal days in first week
- * (from 1 to 7).  These numbers are taken from the locale resource data when a
- * <code>Calendar</code> is constructed.  They may also be specified explicitly
- * through the methods for setting their values.
+ * (from 1 to 7).  These numbers are taken from the locale resource data or the
+ * locale itself when a {@code Calendar} is constructed. If the designated
+ * locale contains "fw" <a href="./Locale.html#def_locale_extension">
+ * Unicode extensions</a>, the first day of the week will be obtained according to
+ * those extensions.
+ * They may also be specified explicitly through the methods for setting their
+ * values.
  *
  * <p>When setting or getting the <code>WEEK_OF_MONTH</code> or
  * <code>WEEK_OF_YEAR</code> fields, <code>Calendar</code> must determine the
@@ -150,13 +155,13 @@ import libcore.icu.LocaleData;
  * calendar field values to determine the date and time in the
  * following way.
  *
- * <p><a name="resolution">If there is any conflict in calendar field values,
+ * <p><a id="resolution">If there is any conflict in calendar field values,
  * <code>Calendar</code> gives priorities to calendar fields that have been set
  * more recently.</a> The following are the default combinations of the
  * calendar fields. The most recent combination, as determined by the
  * most recently set single field, will be used.
  *
- * <p><a name="date_resolution">For the date fields</a>:
+ * <p><a id="date_resolution">For the date fields</a>:
  * <blockquote>
  * <pre>
  * YEAR + MONTH + DAY_OF_MONTH
@@ -166,7 +171,7 @@ import libcore.icu.LocaleData;
  * YEAR + DAY_OF_WEEK + WEEK_OF_YEAR
  * </pre></blockquote>
  *
- * <a name="time_resolution">For the time of day fields</a>:
+ * <a id="time_resolution">For the time of day fields</a>:
  * <blockquote>
  * <pre>
  * HOUR_OF_DAY
@@ -304,7 +309,7 @@ import libcore.icu.LocaleData;
  * @see          TimeZone
  * @see          java.text.DateFormat
  * @author Mark Davis, David Goldsmith, Chen-Lieh Huang, Alan Liu
- * @since JDK1.1
+ * @since 1.1
  */
 public abstract class Calendar implements Serializable, Cloneable, Comparable<Calendar> {
 
@@ -366,13 +371,13 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * @see GregorianCalendar#AD
      * @see GregorianCalendar#BC
      */
-    public final static int ERA = 0;
+    public static final int ERA = 0;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating the
      * year. This is a calendar-specific value; see subclass documentation.
      */
-    public final static int YEAR = 1;
+    public static final int YEAR = 1;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating the
@@ -395,7 +400,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * @see #DECEMBER
      * @see #UNDECIMBER
      */
-    public final static int MONTH = 2;
+    public static final int MONTH = 2;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating the
@@ -408,7 +413,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * @see #getFirstDayOfWeek
      * @see #getMinimalDaysInFirstWeek
      */
-    public final static int WEEK_OF_YEAR = 3;
+    public static final int WEEK_OF_YEAR = 3;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating the
@@ -421,7 +426,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * @see #getFirstDayOfWeek
      * @see #getMinimalDaysInFirstWeek
      */
-    public final static int WEEK_OF_MONTH = 4;
+    public static final int WEEK_OF_MONTH = 4;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating the
@@ -430,7 +435,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      *
      * @see #DAY_OF_MONTH
      */
-    public final static int DATE = 5;
+    public static final int DATE = 5;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating the
@@ -439,13 +444,13 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      *
      * @see #DATE
      */
-    public final static int DAY_OF_MONTH = 5;
+    public static final int DAY_OF_MONTH = 5;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating the day
      * number within the current year.  The first day of the year has value 1.
      */
-    public final static int DAY_OF_YEAR = 6;
+    public static final int DAY_OF_YEAR = 6;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating the day
@@ -461,7 +466,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * @see #FRIDAY
      * @see #SATURDAY
      */
-    public final static int DAY_OF_WEEK = 7;
+    public static final int DAY_OF_WEEK = 7;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating the
@@ -486,7 +491,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * @see #DAY_OF_WEEK
      * @see #WEEK_OF_MONTH
      */
-    public final static int DAY_OF_WEEK_IN_MONTH = 8;
+    public static final int DAY_OF_WEEK_IN_MONTH = 8;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating
@@ -497,7 +502,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * @see #PM
      * @see #HOUR
      */
-    public final static int AM_PM = 9;
+    public static final int AM_PM = 9;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating the
@@ -508,7 +513,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * @see #AM_PM
      * @see #HOUR_OF_DAY
      */
-    public final static int HOUR = 10;
+    public static final int HOUR = 10;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating the
@@ -517,28 +522,28 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      *
      * @see #HOUR
      */
-    public final static int HOUR_OF_DAY = 11;
+    public static final int HOUR_OF_DAY = 11;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating the
      * minute within the hour.
      * E.g., at 10:04:15.250 PM the <code>MINUTE</code> is 4.
      */
-    public final static int MINUTE = 12;
+    public static final int MINUTE = 12;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating the
      * second within the minute.
      * E.g., at 10:04:15.250 PM the <code>SECOND</code> is 15.
      */
-    public final static int SECOND = 13;
+    public static final int SECOND = 13;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating the
      * millisecond within the second.
      * E.g., at 10:04:15.250 PM the <code>MILLISECOND</code> is 250.
      */
-    public final static int MILLISECOND = 14;
+    public static final int MILLISECOND = 14;
 
     /**
      * Field number for <code>get</code> and <code>set</code>
@@ -549,7 +554,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * <code>TimeZone</code> implementation subclass supports
      * historical GMT offset changes.
      */
-    public final static int ZONE_OFFSET = 15;
+    public static final int ZONE_OFFSET = 15;
 
     /**
      * Field number for <code>get</code> and <code>set</code> indicating the
@@ -560,146 +565,146 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * <code>TimeZone</code> implementation subclass supports
      * historical Daylight Saving Time schedule changes.
      */
-    public final static int DST_OFFSET = 16;
+    public static final int DST_OFFSET = 16;
 
     /**
      * The number of distinct fields recognized by <code>get</code> and <code>set</code>.
      * Field numbers range from <code>0..FIELD_COUNT-1</code>.
      */
-    public final static int FIELD_COUNT = 17;
+    public static final int FIELD_COUNT = 17;
 
     /**
      * Value of the {@link #DAY_OF_WEEK} field indicating
      * Sunday.
      */
-    public final static int SUNDAY = 1;
+    public static final int SUNDAY = 1;
 
     /**
      * Value of the {@link #DAY_OF_WEEK} field indicating
      * Monday.
      */
-    public final static int MONDAY = 2;
+    public static final int MONDAY = 2;
 
     /**
      * Value of the {@link #DAY_OF_WEEK} field indicating
      * Tuesday.
      */
-    public final static int TUESDAY = 3;
+    public static final int TUESDAY = 3;
 
     /**
      * Value of the {@link #DAY_OF_WEEK} field indicating
      * Wednesday.
      */
-    public final static int WEDNESDAY = 4;
+    public static final int WEDNESDAY = 4;
 
     /**
      * Value of the {@link #DAY_OF_WEEK} field indicating
      * Thursday.
      */
-    public final static int THURSDAY = 5;
+    public static final int THURSDAY = 5;
 
     /**
      * Value of the {@link #DAY_OF_WEEK} field indicating
      * Friday.
      */
-    public final static int FRIDAY = 6;
+    public static final int FRIDAY = 6;
 
     /**
      * Value of the {@link #DAY_OF_WEEK} field indicating
      * Saturday.
      */
-    public final static int SATURDAY = 7;
+    public static final int SATURDAY = 7;
 
     /**
      * Value of the {@link #MONTH} field indicating the
      * first month of the year in the Gregorian and Julian calendars.
      */
-    public final static int JANUARY = 0;
+    public static final int JANUARY = 0;
 
     /**
      * Value of the {@link #MONTH} field indicating the
      * second month of the year in the Gregorian and Julian calendars.
      */
-    public final static int FEBRUARY = 1;
+    public static final int FEBRUARY = 1;
 
     /**
      * Value of the {@link #MONTH} field indicating the
      * third month of the year in the Gregorian and Julian calendars.
      */
-    public final static int MARCH = 2;
+    public static final int MARCH = 2;
 
     /**
      * Value of the {@link #MONTH} field indicating the
      * fourth month of the year in the Gregorian and Julian calendars.
      */
-    public final static int APRIL = 3;
+    public static final int APRIL = 3;
 
     /**
      * Value of the {@link #MONTH} field indicating the
      * fifth month of the year in the Gregorian and Julian calendars.
      */
-    public final static int MAY = 4;
+    public static final int MAY = 4;
 
     /**
      * Value of the {@link #MONTH} field indicating the
      * sixth month of the year in the Gregorian and Julian calendars.
      */
-    public final static int JUNE = 5;
+    public static final int JUNE = 5;
 
     /**
      * Value of the {@link #MONTH} field indicating the
      * seventh month of the year in the Gregorian and Julian calendars.
      */
-    public final static int JULY = 6;
+    public static final int JULY = 6;
 
     /**
      * Value of the {@link #MONTH} field indicating the
      * eighth month of the year in the Gregorian and Julian calendars.
      */
-    public final static int AUGUST = 7;
+    public static final int AUGUST = 7;
 
     /**
      * Value of the {@link #MONTH} field indicating the
      * ninth month of the year in the Gregorian and Julian calendars.
      */
-    public final static int SEPTEMBER = 8;
+    public static final int SEPTEMBER = 8;
 
     /**
      * Value of the {@link #MONTH} field indicating the
      * tenth month of the year in the Gregorian and Julian calendars.
      */
-    public final static int OCTOBER = 9;
+    public static final int OCTOBER = 9;
 
     /**
      * Value of the {@link #MONTH} field indicating the
      * eleventh month of the year in the Gregorian and Julian calendars.
      */
-    public final static int NOVEMBER = 10;
+    public static final int NOVEMBER = 10;
 
     /**
      * Value of the {@link #MONTH} field indicating the
      * twelfth month of the year in the Gregorian and Julian calendars.
      */
-    public final static int DECEMBER = 11;
+    public static final int DECEMBER = 11;
 
     /**
      * Value of the {@link #MONTH} field indicating the
      * thirteenth month of the year. Although <code>GregorianCalendar</code>
      * does not use this value, lunar calendars do.
      */
-    public final static int UNDECIMBER = 12;
+    public static final int UNDECIMBER = 12;
 
     /**
      * Value of the {@link #AM_PM} field indicating the
      * period of the day from midnight to just before noon.
      */
-    public final static int AM = 0;
+    public static final int AM = 0;
 
     /**
      * Value of the {@link #AM_PM} field indicating the
      * period of the day from noon to just before midnight.
      */
-    public final static int PM = 1;
+    public static final int PM = 1;
 
     /**
      * A style specifier for {@link #getDisplayNames(int, int, Locale)
@@ -852,7 +857,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * are two special values, UNSET and COMPUTED. Values from
      * MINIMUM_USER_SET to Integer.MAX_VALUE are legal user set values.
      */
-    transient private int   stamp[];
+    private transient int   stamp[];
 
     /**
      * The currently set time for this calendar, expressed in milliseconds after
@@ -907,7 +912,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
     /**
      * <code>True</code> if zone references to a shared TimeZone object.
      */
-    transient private boolean sharedZone = false;
+    private transient boolean sharedZone = false;
 
     /**
      * The first day of the week, with possible values <code>SUNDAY</code>,
@@ -990,7 +995,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * and the highest allowable <code>serialVersionOnStream</code>
      * is written.
      * @serial
-     * @since JDK1.1.6
+     * @since 1.1.6
      */
     private int             serialVersionOnStream = currentSerialVersion;
 
@@ -999,24 +1004,24 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
 
     // Mask values for calendar fields
     @SuppressWarnings("PointlessBitwiseExpression")
-    final static int ERA_MASK           = (1 << ERA);
-    final static int YEAR_MASK          = (1 << YEAR);
-    final static int MONTH_MASK         = (1 << MONTH);
-    final static int WEEK_OF_YEAR_MASK  = (1 << WEEK_OF_YEAR);
-    final static int WEEK_OF_MONTH_MASK = (1 << WEEK_OF_MONTH);
-    final static int DAY_OF_MONTH_MASK  = (1 << DAY_OF_MONTH);
-    final static int DATE_MASK          = DAY_OF_MONTH_MASK;
-    final static int DAY_OF_YEAR_MASK   = (1 << DAY_OF_YEAR);
-    final static int DAY_OF_WEEK_MASK   = (1 << DAY_OF_WEEK);
-    final static int DAY_OF_WEEK_IN_MONTH_MASK  = (1 << DAY_OF_WEEK_IN_MONTH);
-    final static int AM_PM_MASK         = (1 << AM_PM);
-    final static int HOUR_MASK          = (1 << HOUR);
-    final static int HOUR_OF_DAY_MASK   = (1 << HOUR_OF_DAY);
-    final static int MINUTE_MASK        = (1 << MINUTE);
-    final static int SECOND_MASK        = (1 << SECOND);
-    final static int MILLISECOND_MASK   = (1 << MILLISECOND);
-    final static int ZONE_OFFSET_MASK   = (1 << ZONE_OFFSET);
-    final static int DST_OFFSET_MASK    = (1 << DST_OFFSET);
+    static final int ERA_MASK           = (1 << ERA);
+    static final int YEAR_MASK          = (1 << YEAR);
+    static final int MONTH_MASK         = (1 << MONTH);
+    static final int WEEK_OF_YEAR_MASK  = (1 << WEEK_OF_YEAR);
+    static final int WEEK_OF_MONTH_MASK = (1 << WEEK_OF_MONTH);
+    static final int DAY_OF_MONTH_MASK  = (1 << DAY_OF_MONTH);
+    static final int DATE_MASK          = DAY_OF_MONTH_MASK;
+    static final int DAY_OF_YEAR_MASK   = (1 << DAY_OF_YEAR);
+    static final int DAY_OF_WEEK_MASK   = (1 << DAY_OF_WEEK);
+    static final int DAY_OF_WEEK_IN_MONTH_MASK  = (1 << DAY_OF_WEEK_IN_MONTH);
+    static final int AM_PM_MASK         = (1 << AM_PM);
+    static final int HOUR_MASK          = (1 << HOUR);
+    static final int HOUR_OF_DAY_MASK   = (1 << HOUR_OF_DAY);
+    static final int MINUTE_MASK        = (1 << MINUTE);
+    static final int SECOND_MASK        = (1 << SECOND);
+    static final int MILLISECOND_MASK   = (1 << MILLISECOND);
+    static final int ZONE_OFFSET_MASK   = (1 << ZONE_OFFSET);
+    static final int DST_OFFSET_MASK    = (1 << DST_OFFSET);
 
     /**
      * {@code Calendar.Builder} is used for creating a {@code Calendar} from
@@ -1295,7 +1300,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
 
         /**
          * Sets the time zone parameter to the given {@code zone}. If no time
-         * zone parameter is given to this {@code Caledar.Builder}, the
+         * zone parameter is given to this {@code Calendar.Builder}, the
          * {@linkplain TimeZone#getDefault() default
          * <code>TimeZone</code>} will be used in the {@link #build() build}
          * method.
@@ -1396,7 +1401,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
         /**
          * Sets the week definition parameters to the values given by
          * {@code firstDayOfWeek} and {@code minimalDaysInFirstWeek} that are
-         * used to determine the <a href="Calendar.html#First_Week">first
+         * used to determine the <a href="Calendar.html#first_week">first
          * week</a> of a year. The parameters given by this method have
          * precedence over the default values given by the
          * {@linkplain #setLocale(Locale) locale}.
@@ -1421,6 +1426,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
             return this;
         }
 
+        // Android-changed: Support the "tz" extension since Android 13.
         /**
          * Returns a {@code Calendar} built from the parameters set by the
          * setter methods. The calendar type given by the {@link #setCalendarType(String)
@@ -1441,6 +1447,11 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
          *
          * <p>The default values are used for locale and time zone if these
          * parameters haven't been given explicitly.
+         * <p>
+         * Since Android 13, if the locale contains the time zone with "tz"
+         * <a href="Locale.html#def_locale_extension">Unicode extension</a>,
+         * and time zone hasn't been given explicitly, time zone in the locale
+         * is used.
          *
          * <p>Any out of range field values are either normalized in lenient
          * mode or detected as an invalid value in non-lenient mode.
@@ -1460,7 +1471,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
                 locale = Locale.getDefault();
             }
             if (zone == null) {
-                zone = TimeZone.getDefault();
+                zone = defaultTimeZone(locale);
             }
             Calendar cal;
             if (type == null) {
@@ -1597,7 +1608,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      */
     protected Calendar(TimeZone zone, Locale aLocale)
     {
-        // BEGIN Android-added: Allow aLocale == null
+        // BEGIN Android-added: Allow aLocale == null.
         // http://b/16938922.
         //
         // TODO: This is for backwards compatibility only. Seems like a better idea to throw
@@ -1605,7 +1616,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
         if (aLocale == null) {
             aLocale = Locale.getDefault();
         }
-        // END Android-added: Allow aLocale == null
+        // END Android-added: Allow aLocale == null.
         fields = new int[FIELD_COUNT];
         isSet = new boolean[FIELD_COUNT];
         stamp = new int[FIELD_COUNT];
@@ -1614,17 +1625,23 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
         setWeekCountData(aLocale);
     }
 
+    // Android-changed: Support the "tz" extension since Android 13.
     /**
      * Gets a calendar using the default time zone and locale. The
      * <code>Calendar</code> returned is based on the current time
      * in the default time zone with the default
      * {@link Locale.Category#FORMAT FORMAT} locale.
+     * <p>
+     * Since Android 13, if the locale contains the time zone with "tz"
+     * <a href="Locale.html#def_locale_extension">Unicode extension</a>,
+     * that time zone is used instead.
      *
      * @return a Calendar.
      */
     public static Calendar getInstance()
     {
-        return createCalendar(TimeZone.getDefault(), Locale.getDefault(Locale.Category.FORMAT));
+        Locale aLocale = Locale.getDefault(Locale.Category.FORMAT);
+        return createCalendar(defaultTimeZone(aLocale), aLocale);
     }
 
     /**
@@ -1641,17 +1658,22 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
         return createCalendar(zone, Locale.getDefault(Locale.Category.FORMAT));
     }
 
+    // Android-changed: Support the "tz" extension since Android 13.
     /**
      * Gets a calendar using the default time zone and specified locale.
      * The <code>Calendar</code> returned is based on the current time
      * in the default time zone with the given locale.
+     * <p>
+     * Since Android 13, if the locale contains the time zone with "tz"
+     * <a href="Locale.html#def_locale_extension">Unicode extension</a>,
+     * that time zone is used instead.
      *
      * @param aLocale the locale for the week data
      * @return a Calendar.
      */
     public static Calendar getInstance(Locale aLocale)
     {
-        return createCalendar(TimeZone.getDefault(), aLocale);
+        return createCalendar(defaultTimeZone(aLocale), aLocale);
     }
 
     /**
@@ -1669,12 +1691,40 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
         return createCalendar(zone, aLocale);
     }
 
+    // BEGIN Android-added: add getJapaneseImperialInstance().
+    /**
+     * Create a Japanese Imperial Calendar.
+     * @hide
+     */
+    /* J2ObjC removed
+    public static Calendar getJapaneseImperialInstance(TimeZone zone, Locale aLocale) {
+        return new JapaneseImperialCalendar(zone, aLocale);
+    }
+    */
+    // END Android-added: add getJapaneseImperialInstance().
+
+    private static TimeZone defaultTimeZone(Locale l) {
+        TimeZone defaultTZ = TimeZone.getDefault();
+        // Android-added: Accept null locale. http://b/16938922
+        if (l == null) {
+            return defaultTZ;
+        }
+        String shortTZID = l.getUnicodeLocaleType("tz");
+        return shortTZID != null ?
+            // Android-changed: Use ICU to convert LDML short ID
+            // TimeZoneNameUtility.convertLDMLShortID(shortTZID)
+            Optional.ofNullable(ICU.convertToTzId(shortTZID))
+                .map(TimeZone::getTimeZone)
+                .orElse(defaultTZ) :
+            defaultTZ;
+    }
+
     private static Calendar createCalendar(TimeZone zone,
                                            Locale aLocale)
     {
-        // BEGIN Android-changed: only support GregorianCalendar here
+        // BEGIN Android-changed: only support GregorianCalendar here.
         return new GregorianCalendar(zone, aLocale);
-        // END Android-changed: only support GregorianCalendar here
+        // END Android-changed: only support GregorianCalendar here.
     }
 
     /**
@@ -1765,11 +1815,11 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
     public void setTimeInMillis(long millis) {
         // If we don't need to recalculate the calendar field values,
         // do nothing.
-// BEGIN Android-changed: Removed ZoneInfo support
+// BEGIN Android-changed: Android doesn't have sun.util.calendar.ZoneInfo.
 //        if (time == millis && isTimeSet && areFieldsSet && areAllFieldsSet
 //            && (zone instanceof ZoneInfo) && !((ZoneInfo)zone).isDirty()) {
         if (time == millis && isTimeSet && areFieldsSet && areAllFieldsSet) {
-// END Android-changed: Removed ZoneInfo support
+// END Android-changed: Android doesn't have sun.util.calendar.ZoneInfo.
 
             return;
         }
@@ -2152,7 +2202,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
         if (strings != null) {
             Map<String,Integer> names = new HashMap<>();
             for (int i = 0; i < strings.length; i++) {
-                if (strings[i].length() == 0) {
+                if (strings[i].isEmpty()) {
                     continue;
                 }
                 names.put(strings[i], i);
@@ -2164,10 +2214,17 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
 
     boolean checkDisplayNameParams(int field, int style, int minStyle, int maxStyle,
                                    Locale locale, int fieldMask) {
+        int baseStyle = getBaseStyle(style); // Ignore the standalone mask
         if (field < 0 || field >= fields.length ||
-            style < minStyle || style > maxStyle) {
+            baseStyle < minStyle || baseStyle > maxStyle || baseStyle == 3) {
             throw new IllegalArgumentException();
         }
+        // BEGIN Android-added: Check for invalid baseStyle == 3.
+        // 3 is not a valid base style (unlike 1, 2 and 4). Throw if used.
+        if (baseStyle == 3) {
+            throw new IllegalArgumentException();
+        }
+        // END Android-added: Check for invalid baseStyle == 3.
         if (locale == null) {
             throw new NullPointerException();
         }
@@ -2175,6 +2232,13 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
     }
 
     private String[] getFieldStrings(int field, int style, DateFormatSymbols symbols) {
+        int baseStyle = getBaseStyle(style); // ignore the standalone mask
+
+        // DateFormatSymbols doesn't support any narrow names.
+        if (baseStyle == NARROW_FORMAT) {
+            return null;
+        }
+
         String[] strings = null;
         switch (field) {
         case ERA:
@@ -2182,11 +2246,11 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
             break;
 
         case MONTH:
-            strings = (style == LONG) ? symbols.getMonths() : symbols.getShortMonths();
+            strings = (baseStyle == LONG) ? symbols.getMonths() : symbols.getShortMonths();
             break;
 
         case DAY_OF_WEEK:
-            strings = (style == LONG) ? symbols.getWeekdays() : symbols.getShortWeekdays();
+            strings = (baseStyle == LONG) ? symbols.getWeekdays() : symbols.getShortWeekdays();
             break;
 
         case AM_PM:
@@ -2516,6 +2580,31 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
         return fieldMask;
     }
 
+    int getBaseStyle(int style) {
+        return style & ~STANDALONE_MASK;
+    }
+
+    // BEGIN Android-changed: Make toStandaloneStyle() public to use in java.text.SimpleDateFormat.
+    /**
+     * @hide
+     */
+    public static int toStandaloneStyle(int style) {
+    // END Android-changed: Make toStandaloneStyle() public to use in java.text.SimpleDateFormat.
+        return style | STANDALONE_MASK;
+    }
+
+    private boolean isStandaloneStyle(int style) {
+        return (style & STANDALONE_MASK) != 0;
+    }
+
+    private boolean isNarrowStyle(int style) {
+        return style == NARROW_FORMAT || style == NARROW_STANDALONE;
+    }
+
+    private boolean isNarrowFormatStyle(int style) {
+        return style == NARROW_FORMAT;
+    }
+
     /**
      * Returns the pseudo-time-stamp for two fields, given their
      * individual pseudo-time-stamps.  If either of the fields
@@ -2720,7 +2809,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * @see #roll(int,int)
      * @see #set(int,int)
      */
-    abstract public void add(int field, int amount);
+    public abstract void add(int field, int amount);
 
     /**
      * Adds or subtracts (up/down) a single unit of time on the given time
@@ -2742,7 +2831,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * @see Calendar#add(int,int)
      * @see Calendar#set(int,int)
      */
-    abstract public void roll(int field, boolean up);
+    public abstract void roll(int field, boolean up);
 
     /**
      * Adds the specified (signed) amount to the specified calendar field
@@ -2958,7 +3047,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
     }
 
     /**
-     * Sets the date of this {@code Calendar} with the the given date
+     * Sets the date of this {@code Calendar} with the given date
      * specifiers - week year, week of year, and day of week.
      *
      * <p>Unlike the {@code set} method, all of the calendar fields
@@ -3029,7 +3118,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * @see #getActualMinimum(int)
      * @see #getActualMaximum(int)
      */
-    abstract public int getMinimum(int field);
+    public abstract int getMinimum(int field);
 
     /**
      * Returns the maximum value for the given calendar field of this
@@ -3046,7 +3135,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * @see #getActualMinimum(int)
      * @see #getActualMaximum(int)
      */
-    abstract public int getMaximum(int field);
+    public abstract int getMaximum(int field);
 
     /**
      * Returns the highest minimum value for the given calendar field
@@ -3064,7 +3153,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * @see #getActualMinimum(int)
      * @see #getActualMaximum(int)
      */
-    abstract public int getGreatestMinimum(int field);
+    public abstract int getGreatestMinimum(int field);
 
     /**
      * Returns the lowest maximum value for the given calendar field
@@ -3086,7 +3175,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * @see #getActualMinimum(int)
      * @see #getActualMaximum(int)
      */
-    abstract public int getLeastMaximum(int field);
+    public abstract int getLeastMaximum(int field);
 
     /**
      * Returns the minimum value that the specified calendar field
@@ -3241,7 +3330,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
      * @param field the calendar field
      * @return the calendar field name
      * @exception IndexOutOfBoundsException if <code>field</code> is negative,
-     * equal to or greater then <code>FIELD_COUNT</code>.
+     * equal to or greater than {@code FIELD_COUNT}.
      */
     static String getFieldName(int field) {
         return FIELD_NAME[field];
@@ -3350,8 +3439,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
 
         for (;;) {
             int min = Integer.MAX_VALUE;
-            for (int i = 0; i < stamp.length; i++) {
-                int v = stamp[i];
+            for (int v : stamp) {
                 if (v >= newStamp && min > v) {
                     min = v;
                 }
@@ -3434,7 +3522,7 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
             catch (IllegalArgumentException e) {}
         }
 
-        // Android-changed: Removed ZoneInfo support/workaround.
+        // Android-changed: Android doesn't have sun.util.calendar.ZoneInfo.
         // Write out the 1.1 FCS object.
         stream.defaultWriteObject();
     }
@@ -3450,7 +3538,10 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
                                                     new ProtectionDomain(null, perms)
                                                 });
         }
-    }*/
+        private CalendarAccessControlContext() {
+        }
+    }
+    */
 
     /**
      * Reconstitutes this object from a stream (i.e., deserialize it).
@@ -3485,7 +3576,36 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
 
         serialVersionOnStream = currentSerialVersion;
 
-        // Android-changed: removed ZoneInfo support.
+        // Android-changed: Android doesn't have sun.util.calendar.ZoneInfo.
+        /*
+        // If there's a ZoneInfo object, use it for zone.
+        ZoneInfo zi = null;
+        try {
+            zi = AccessController.doPrivileged(
+                    new PrivilegedExceptionAction<>() {
+                        @Override
+                        public ZoneInfo run() throws Exception {
+                            return (ZoneInfo) input.readObject();
+                        }
+                    },
+                    CalendarAccessControlContext.INSTANCE);
+        } catch (PrivilegedActionException pae) {
+            Exception e = pae.getException();
+            if (!(e instanceof OptionalDataException)) {
+                if (e instanceof RuntimeException) {
+                    throw (RuntimeException) e;
+                } else if (e instanceof IOException) {
+                    throw (IOException) e;
+                } else if (e instanceof ClassNotFoundException) {
+                    throw (ClassNotFoundException) e;
+                }
+                throw new RuntimeException(e);
+            }
+        }
+        if (zi != null) {
+            zone = zi;
+        }
+        */
 
         // If the deserialized object has a SimpleTimeZone, try to
         // replace it with a ZoneInfo equivalent (as of 1.4) in order
@@ -3499,4 +3619,18 @@ public abstract class Calendar implements Serializable, Cloneable, Comparable<Ca
             }
         }
     }
+
+    /**
+     * Converts this object to an {@link Instant}.
+     * <p>
+     * The conversion creates an {@code Instant} that represents the
+     * same point on the time-line as this {@code Calendar}.
+     *
+     * @return the instant representing the same point on the time-line
+     * @since 1.8
+     */
+    // TODO(b/287571490): Reimplement code with dependencies outside of the core JRE subset
+    // public final Instant toInstant() {
+    //     return Instant.ofEpochMilli(getTimeInMillis());
+    // }
 }
