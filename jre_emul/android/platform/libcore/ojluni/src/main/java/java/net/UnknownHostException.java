@@ -31,7 +31,7 @@ import java.io.IOException;
  * Thrown to indicate that the IP address of a host could not be determined.
  *
  * @author  Jonathan Payne
- * @since   JDK1.0
+ * @since   1.0
  */
 public
 class UnknownHostException extends IOException {
@@ -41,10 +41,10 @@ class UnknownHostException extends IOException {
      * Constructs a new {@code UnknownHostException} with the
      * specified detail message.
      *
-     * @param   host   the detail message.
+     * @param   message   the detail message.
      */
-    public UnknownHostException(String host) {
-        super(host);
+    public UnknownHostException(String message) {
+        super(message);
     }
 
     /**

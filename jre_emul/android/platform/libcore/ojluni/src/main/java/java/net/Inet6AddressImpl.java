@@ -44,6 +44,12 @@ import static libcore.io.OsConstants.EACCES;
 import static libcore.io.OsConstants.ECONNREFUSED;
 import static libcore.io.OsConstants.EPERM;
 import static libcore.io.OsConstants.NI_NAMEREQD;
+/* J2ObjC removed
+import static libcore.io.OsConstants.ICMP6_ECHO_REPLY;
+import static libcore.io.OsConstants.ICMP_ECHOREPLY;
+import static libcore.io.OsConstants.IPPROTO_ICMP;
+import static libcore.io.OsConstants.IPPROTO_ICMPV6;
+*/
 import static libcore.io.OsConstants.SOCK_DGRAM;
 import static libcore.io.OsConstants.SOCK_STREAM;
 
@@ -201,19 +207,19 @@ class Inet6AddressImpl implements InetAddressImpl {
         }
 
         // Android-changed: http://b/36933260 Implement root-less ICMP for isReachable().
-            /*
-            if (addr instanceof Inet6Address)
-                scope = ((Inet6Address) addr).getScopeId();
-            return isReachable0(addr.getAddress(), scope, timeout, ifaddr, ttl, netif_scope);
+        /*
+        if (addr instanceof Inet6Address)
+            scope = ((Inet6Address) addr).getScopeId();
+        return isReachable0(addr.getAddress(), scope, timeout, ifaddr, ttl, netif_scope);
             *
         // Try ICMP first
-            if (icmpEcho(addr, timeout, sourceAddr, ttl)) {
+        if (icmpEcho(addr, timeout, sourceAddr, ttl)) {
             return true;
         }
 
         // No good, let's fall back to TCP
-            return tcpEcho(addr, timeout, sourceAddr, ttl);
-         */
+        return tcpEcho(addr, timeout, sourceAddr, ttl);
+        */
 
         byte[] ifaddr = null;
         int scope = -1;

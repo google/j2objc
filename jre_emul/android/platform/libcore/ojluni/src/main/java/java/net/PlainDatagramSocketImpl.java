@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2007,2011, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,6 +26,32 @@ package java.net;
 
 import java.io.IOException;
 
+/* J2ObjC removed
+import android.system.ErrnoException;
+import android.system.StructGroupReq;
+
+
+import libcore.io.IoBridge;
+import libcore.io.Libcore;
+import libcore.util.EmptyArray;
+
+import jdk.net.*;
+
+import static android.system.OsConstants.AF_INET6;
+import static android.system.OsConstants.AF_UNSPEC;
+import static android.system.OsConstants.IPPROTO_IP;
+import static android.system.OsConstants.IP_MULTICAST_ALL;
+import static android.system.OsConstants.MSG_PEEK;
+import static android.system.OsConstants.POLLERR;
+import static android.system.OsConstants.POLLIN;
+import static android.system.OsConstants.SOCK_DGRAM;
+import static libcore.io.IoBridge.JAVA_IP_MULTICAST_TTL;
+import static libcore.io.IoBridge.JAVA_MCAST_JOIN_GROUP;
+import static libcore.io.IoBridge.JAVA_MCAST_LEAVE_GROUP;
+import static sun.net.ExtendedOptionsImpl.*;
+*/
+
+// Android-changed: Rewritten to use android.system POSIX calls and assume AF_INET6.
 /*
  * On Unix systems we simply delegate to native methods.
  *

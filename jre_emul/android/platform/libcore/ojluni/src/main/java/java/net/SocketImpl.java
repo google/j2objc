@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1995, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1995, 2016, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileDescriptor;
+import java.util.Set;
 
 /**
  * The abstract class {@code SocketImpl} is a common superclass
@@ -41,7 +42,7 @@ import java.io.FileDescriptor;
  * described, without attempting to go through a firewall or proxy.
  *
  * @author  unascribed
- * @since   JDK1.0
+ * @since   1.0
  */
 public abstract class SocketImpl implements SocketOptions {
     /**
@@ -232,7 +233,11 @@ public abstract class SocketImpl implements SocketOptions {
 
     // Android-added: getFD$() for testing.
     /**
+     * Gets socket's underlying {@link FileDescriptor}.
+     *
      * @hide used by java.nio tests
+     *
+     * @return socket's underlying {@link FileDescriptor}.
      */
     public FileDescriptor getFD$() {
         return fd;
@@ -344,7 +349,7 @@ public abstract class SocketImpl implements SocketOptions {
      * latency, and low latency above short connection time, then it could
      * invoke this method with the values {@code (0, 1, 2)}.
      *
-     * By default, this method does nothing, unless it is overridden in a
+     * By default, this method does nothing, unless it is overridden in
      * a sub-class.
      *
      * @param  connectionTime
@@ -368,43 +373,123 @@ public abstract class SocketImpl implements SocketOptions {
         /* Not implemented yet */
     }
 
-    <T> void setOption(SocketOption<T> name, T value) throws IOException {
-        if (name == StandardSocketOptions.SO_KEEPALIVE) {
+    /**
+     * Called to set a socket option.
+     *
+     * @param <T> The type of the socket option value
+     * @param name The socket option
+     *
+     * @param value The value of the socket option. A value of {@code null}
+     *              may be valid for some options.
+     *
+     * @throws UnsupportedOperationException if the SocketImpl does not
+     *         support the option
+     *
+     * @throws IOException if an I/O error occurs, or if the socket is closed.
+     *
+     * @since 9
+     */
+    protected <T> void setOption(SocketOption<T> name, T value) throws IOException {
+        if (name == StandardSocketOptions.SO_KEEPALIVE &&
+                (getSocket() != null)) {
             setOption(SocketOptions.SO_KEEPALIVE, value);
-        } else if (name == StandardSocketOptions.SO_SNDBUF) {
+        } else if (name == StandardSocketOptions.SO_SNDBUF &&
+                (getSocket() != null)) {
             setOption(SocketOptions.SO_SNDBUF, value);
         } else if (name == StandardSocketOptions.SO_RCVBUF) {
             setOption(SocketOptions.SO_RCVBUF, value);
         } else if (name == StandardSocketOptions.SO_REUSEADDR) {
             setOption(SocketOptions.SO_REUSEADDR, value);
-        } else if (name == StandardSocketOptions.SO_LINGER) {
+        } else if (name == StandardSocketOptions.SO_REUSEPORT &&
+            supportedOptions().contains(name)) {
+            setOption(SocketOptions.SO_REUSEPORT, value);
+        } else if (name == StandardSocketOptions.SO_LINGER &&
+                (getSocket() != null)) {
             setOption(SocketOptions.SO_LINGER, value);
         } else if (name == StandardSocketOptions.IP_TOS) {
             setOption(SocketOptions.IP_TOS, value);
-        } else if (name == StandardSocketOptions.TCP_NODELAY) {
+        } else if (name == StandardSocketOptions.TCP_NODELAY &&
+                (getSocket() != null)) {
             setOption(SocketOptions.TCP_NODELAY, value);
         } else {
             throw new UnsupportedOperationException("unsupported option");
         }
     }
 
-    <T> T getOption(SocketOption<T> name) throws IOException {
-        if (name == StandardSocketOptions.SO_KEEPALIVE) {
+    /**
+     * Called to get a socket option.
+     *
+     * @param <T> The type of the socket option value
+     * @param name The socket option
+     *
+     * @return the value of the named option
+     *
+     * @throws UnsupportedOperationException if the SocketImpl does not
+     *         support the option.
+     *
+     * @throws IOException if an I/O error occurs, or if the socket is closed.
+     *
+     * @since 9
+     */
+    @SuppressWarnings("unchecked")
+    protected <T> T getOption(SocketOption<T> name) throws IOException {
+        if (name == StandardSocketOptions.SO_KEEPALIVE &&
+                (getSocket() != null)) {
             return (T)getOption(SocketOptions.SO_KEEPALIVE);
-        } else if (name == StandardSocketOptions.SO_SNDBUF) {
+        } else if (name == StandardSocketOptions.SO_SNDBUF &&
+                (getSocket() != null)) {
             return (T)getOption(SocketOptions.SO_SNDBUF);
         } else if (name == StandardSocketOptions.SO_RCVBUF) {
             return (T)getOption(SocketOptions.SO_RCVBUF);
         } else if (name == StandardSocketOptions.SO_REUSEADDR) {
             return (T)getOption(SocketOptions.SO_REUSEADDR);
-        } else if (name == StandardSocketOptions.SO_LINGER) {
+        } else if (name == StandardSocketOptions.SO_REUSEPORT &&
+            supportedOptions().contains(name)) {
+            return (T)getOption(SocketOptions.SO_REUSEPORT);
+        } else if (name == StandardSocketOptions.SO_LINGER &&
+                (getSocket() != null)) {
             return (T)getOption(SocketOptions.SO_LINGER);
         } else if (name == StandardSocketOptions.IP_TOS) {
             return (T)getOption(SocketOptions.IP_TOS);
-        } else if (name == StandardSocketOptions.TCP_NODELAY) {
+        } else if (name == StandardSocketOptions.TCP_NODELAY &&
+                (getSocket() != null)) {
             return (T)getOption(SocketOptions.TCP_NODELAY);
         } else {
             throw new UnsupportedOperationException("unsupported option");
+        }
+    }
+
+    private static final Set<SocketOption<?>> socketOptions;
+
+    private static final Set<SocketOption<?>> serverSocketOptions;
+
+    static {
+        socketOptions = Set.of(StandardSocketOptions.SO_KEEPALIVE,
+                               StandardSocketOptions.SO_SNDBUF,
+                               StandardSocketOptions.SO_RCVBUF,
+                               StandardSocketOptions.SO_REUSEADDR,
+                               StandardSocketOptions.SO_LINGER,
+                               StandardSocketOptions.IP_TOS,
+                               StandardSocketOptions.TCP_NODELAY);
+
+        serverSocketOptions = Set.of(StandardSocketOptions.SO_RCVBUF,
+                                     StandardSocketOptions.SO_REUSEADDR,
+                                     StandardSocketOptions.IP_TOS);
+    }
+
+    /**
+     * Returns a set of SocketOptions supported by this impl
+     * and by this impl's socket (Socket or ServerSocket)
+     *
+     * @return a Set of SocketOptions
+     *
+     * @since 9
+     */
+    protected Set<SocketOption<?>> supportedOptions() {
+        if (getSocket() != null) {
+            return socketOptions;
+        } else {
+            return serverSocketOptions;
         }
     }
 }

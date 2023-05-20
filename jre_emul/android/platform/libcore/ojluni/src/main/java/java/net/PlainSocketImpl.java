@@ -37,22 +37,26 @@ import java.io.FileDescriptor;
 class PlainSocketImpl extends AbstractPlainSocketImpl
 {
     static {
-      initProto();
+        initProto();
     }
 
     /**
      * Constructs an empty instance.
      */
     PlainSocketImpl() {
-        this(new FileDescriptor());
+        // Android-changed: Let PlainSocketImpl construct its own FileDescriptor.
+        this.fd = new FileDescriptor();
     }
 
     /**
      * Constructs an instance with the given file descriptor.
      */
+    // Android-removed: Let PlainSocketImpl construct its own FileDescriptor.
+    // J2ObjC modified
     PlainSocketImpl(FileDescriptor fd) {
         this.fd = fd;
     }
+
 
     private static native void initProto();
 

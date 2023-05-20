@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1995, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -24,14 +24,20 @@
  */
 
 package java.net;
-
+/* J2ObjC removed
+import sun.security.util.SecurityConstants;
+*/
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.channels.ServerSocketChannel;
 /* J2ObjC removed
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
- */
+*/
+import java.util.Set;
+import java.util.Collections;
 
 /**
  * This class implements server sockets. A server socket waits for
@@ -48,7 +54,7 @@ import java.security.PrivilegedExceptionAction;
  * @see     java.net.SocketImpl
  * @see     java.net.ServerSocket#setSocketFactory(java.net.SocketImplFactory)
  * @see     java.nio.channels.ServerSocketChannel
- * @since   JDK1.0
+ * @since   1.0
  */
 public
 class ServerSocket implements java.io.Closeable {
@@ -73,10 +79,27 @@ class ServerSocket implements java.io.Closeable {
     /**
      * Package-private constructor to create a ServerSocket associated with
      * the given SocketImpl.
+     *
+     * @throws     SecurityException if a security manager is set and
+     *             its {@code checkPermission} method doesn't allow
+     *             {@code NetPermission("setSocketImpl")}.
      */
     ServerSocket(SocketImpl impl) {
+        checkPermission();
         this.impl = impl;
         impl.setServerSocket(this);
+    }
+
+    private static Void checkPermission() {
+        // BEGIN Android-removed: SM is no-op.
+        /*
+        SecurityManager sm = System.getSecurityManager();
+        if (sm != null) {
+            sm.checkPermission(SecurityConstants.SET_SOCKETIMPL_PERMISSION);
+        }
+        */
+        // END Android-removed: SM is no-op.
+        return null;
     }
 
     /**
@@ -159,7 +182,6 @@ class ServerSocket implements java.io.Closeable {
      * or may choose to ignore the parameter altogther. The value provided
      * should be greater than {@code 0}. If it is less than or equal to
      * {@code 0}, then an implementation specific default will be used.
-     * <P>
      *
      * @param      port     the port number, or {@code 0} to use a port
      *                      number that is automatically allocated.
@@ -208,7 +230,7 @@ class ServerSocket implements java.io.Closeable {
      * or may choose to ignore the parameter altogther. The value provided
      * should be greater than {@code 0}. If it is less than or equal to
      * {@code 0}, then an implementation specific default will be used.
-     * <P>
+     *
      * @param port  the port number, or {@code 0} to use a port
      *              number that is automatically allocated.
      * @param backlog requested maximum length of the queue of incoming
@@ -226,7 +248,7 @@ class ServerSocket implements java.io.Closeable {
      * @see SocketOptions
      * @see SocketImpl
      * @see SecurityManager#checkListen
-     * @since   JDK1.1
+     * @since   1.1
      */
     public ServerSocket(int port, int backlog, InetAddress bindAddr) throws IOException {
         setImpl();
@@ -324,7 +346,7 @@ class ServerSocket implements java.io.Closeable {
      * <p>
      * If the address is {@code null}, then the system will pick up
      * an ephemeral port and a valid local address to bind the socket.
-     * <p>
+     *
      * @param   endpoint        The IP address and port number to bind to.
      * @throws  IOException if the bind operation fails, or if the socket
      *                     is already bound.
@@ -535,7 +557,7 @@ class ServerSocket implements java.io.Closeable {
      *         and the channel is in non-blocking mode
      * @throws IOException if an I/O error occurs when waiting
      * for a connection.
-     * @since   JDK1.1
+     * @since   1.1
      * @revised 1.4
      * @spec JSR-51
      */
@@ -552,6 +574,8 @@ class ServerSocket implements java.io.Closeable {
             si.address = new InetAddress();
             si.fd = new FileDescriptor();
             getImpl().accept(si);
+            // Android-removed: SocketCleanable is unsupported
+            // SocketCleanable.register(si.fd);   // raw fd has been set
 
             SecurityManager security = System.getSecurityManager();
             if (security != null) {
@@ -652,13 +676,13 @@ class ServerSocket implements java.io.Closeable {
      * @param timeout the specified timeout, in milliseconds
      * @exception SocketException if there is an error in
      * the underlying protocol, such as a TCP error.
-     * @since   JDK1.1
+     * @since   1.1
      * @see #getSoTimeout()
      */
     public synchronized void setSoTimeout(int timeout) throws SocketException {
         if (isClosed())
             throw new SocketException("Socket is closed");
-        getImpl().setOption(SocketOptions.SO_TIMEOUT, new Integer(timeout));
+        getImpl().setOption(SocketOptions.SO_TIMEOUT, timeout);
     }
 
     /**
@@ -666,7 +690,7 @@ class ServerSocket implements java.io.Closeable {
      * 0 returns implies that the option is disabled (i.e., timeout of infinity).
      * @return the {@link SocketOptions#SO_TIMEOUT SO_TIMEOUT} value
      * @exception IOException if an I/O error occurs
-     * @since   JDK1.1
+     * @since   1.1
      * @see #setSoTimeout(int)
      */
     public synchronized int getSoTimeout() throws IOException {
@@ -855,7 +879,7 @@ class ServerSocket implements java.io.Closeable {
         }
         if (isClosed())
             throw new SocketException("Socket is closed");
-        getImpl().setOption(SocketOptions.SO_RCVBUF, new Integer(size));
+        getImpl().setOption(SocketOptions.SO_RCVBUF, size);
     }
 
     /**
@@ -928,6 +952,123 @@ class ServerSocket implements java.io.Closeable {
     {
         /* Not implemented yet */
     }
+
+    /**
+     * Sets the value of a socket option.
+     *
+     * @param <T> The type of the socket option value
+     * @param name The socket option
+     * @param value The value of the socket option. A value of {@code null}
+     *              may be valid for some options.
+     * @return this ServerSocket
+     *
+     * @throws UnsupportedOperationException if the server socket does not
+     *         support the option.
+     *
+     * @throws IllegalArgumentException if the value is not valid for
+     *         the option.
+     *
+     * @throws IOException if an I/O error occurs, or if the socket is closed.
+     *
+     * @throws NullPointerException if name is {@code null}
+     *
+     * @throws SecurityException if a security manager is set and if the socket
+     *         option requires a security permission and if the caller does
+     *         not have the required permission.
+     *         {@link java.net.StandardSocketOptions StandardSocketOptions}
+     *         do not require any security permission.
+     *
+     * @since 9
+     */
+    public <T> ServerSocket setOption(SocketOption<T> name, T value)
+        throws IOException
+    {
+        getImpl().setOption(name, value);
+        return this;
+    }
+
+    /**
+     * Returns the value of a socket option.
+     *
+     * @param <T> The type of the socket option value
+     * @param name The socket option
+     *
+     * @return The value of the socket option.
+     *
+     * @throws UnsupportedOperationException if the server socket does not
+     *         support the option.
+     *
+     * @throws IOException if an I/O error occurs, or if the socket is closed.
+     *
+     * @throws NullPointerException if name is {@code null}
+     *
+     * @throws SecurityException if a security manager is set and if the socket
+     *         option requires a security permission and if the caller does
+     *         not have the required permission.
+     *         {@link java.net.StandardSocketOptions StandardSocketOptions}
+     *         do not require any security permission.
+     *
+     * @since 9
+     */
+    public <T> T getOption(SocketOption<T> name) throws IOException {
+        return getImpl().getOption(name);
+    }
+
+    private static Set<SocketOption<?>> options;
+    private static boolean optionsSet = false;
+
+    /**
+     * Returns a set of the socket options supported by this server socket.
+     *
+     * This method will continue to return the set of options even after
+     * the socket has been closed.
+     *
+     * @return A set of the socket options supported by this socket. This set
+     *         may be empty if the socket's SocketImpl cannot be created.
+     *
+     * @since 9
+     */
+    public Set<SocketOption<?>> supportedOptions() {
+        synchronized (ServerSocket.class) {
+            if (optionsSet) {
+                return options;
+            }
+            try {
+                SocketImpl impl = getImpl();
+                options = Collections.unmodifiableSet(impl.supportedOptions());
+            } catch (IOException e) {
+                options = Collections.emptySet();
+            }
+            optionsSet = true;
+            return options;
+        }
+    }
+
+    // BEGIN Android-removed: Pruned unused access interfaces.
+    /*
+    static {
+        SharedSecrets.setJavaNetSocketAccess(
+            new JavaNetSocketAccess() {
+                @Override
+                public ServerSocket newServerSocket(SocketImpl impl) {
+                    return new ServerSocket(impl);
+                }
+
+                @Override
+                public SocketImpl newSocketImpl(Class<? extends SocketImpl> implClass) {
+                    try {
+                        Constructor<? extends SocketImpl> ctor =
+                            implClass.getDeclaredConstructor();
+                        return ctor.newInstance();
+                    } catch (NoSuchMethodException | InstantiationException |
+                             IllegalAccessException | InvocationTargetException e) {
+                        throw new AssertionError(e);
+                    }
+                }
+            }
+        );
+    }
+    */
 
     // Android-added: getFileDescriptor$(), for testing / internal use.
     /**

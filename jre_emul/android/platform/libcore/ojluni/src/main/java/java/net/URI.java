@@ -44,6 +44,7 @@ import java.lang.Character;             // for javadoc
 import java.lang.NullPointerException;  // for javadoc
 
 
+// Android-changed: Reformat @see links.
 /**
  * Represents a Uniform Resource Identifier (URI) reference.
  *
@@ -194,7 +195,7 @@ import java.lang.NullPointerException;  // for javadoc
  * Resolving the relative URI
  *
  * <blockquote>
- * {@code ../../../demo/jfc/SwingSet2/src/SwingSet2.java&nbsp;&nbsp;&nbsp;&nbsp;}(2)
+ * {@code ../../../demo/jfc/SwingSet2/src/SwingSet2.java}&nbsp;&nbsp;&nbsp;&nbsp;(2)
  * </blockquote>
  *
  * against this result yields, in turn,
@@ -308,7 +309,7 @@ import java.lang.NullPointerException;  // for javadoc
  *
  *   <li><p><a name="encode"></a> A character is <i>encoded</i> by replacing it
  *   with the sequence of escaped octets that represent that character in the
- *   UTF-8 character set.  The Euro currency symbol ({@code '&#92;u20AC'}),
+ *   UTF-8 character set.  The Euro currency symbol ({@code '\u005Cu20AC'}),
  *   for example, is encoded as {@code "%E2%82%AC"}.  <i>(<b>Deviation from
  *   RFC&nbsp;2396</b>, which does not specify any particular character
  *   set.)</i> </p></li>
@@ -327,7 +328,7 @@ import java.lang.NullPointerException;  // for javadoc
  *   decoding any encoded non-US-ASCII characters.  If a <a
  *   href="../nio/charset/CharsetDecoder.html#ce">decoding error</a> occurs
  *   when decoding the escaped octets then the erroneous octets are replaced by
- *   {@code '&#92;uFFFD'}, the Unicode replacement character.  </p></li>
+ *   {@code '\u005CuFFFD'}, the Unicode replacement character.  </p></li>
  *
  * </ul>
  *
@@ -455,7 +456,7 @@ import java.lang.NullPointerException;  // for javadoc
  * @see <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC&nbsp;2396: Uniform Resource Identifiers (URI): Generic Syntax</a>
  * @see <a href="http://www.ietf.org/rfc/rfc2732.txt">RFC&nbsp;2732: Format for Literal IPv6 Addresses in URLs</a>
  */
-// Android-changed: Reformat @see links.
+
 public final class URI
     implements Comparable<URI>, Serializable
 {
@@ -1065,7 +1066,7 @@ public final class URI
      * Constructs a URL from this URI.
      *
      * <p> This convenience method works as if invoking it were equivalent to
-     * evaluating the expression {@code new&nbsp;URL(this.toString())} after
+     * evaluating the expression {@code new URL(this.toString())} after
      * first checking that this URI is absolute. </p>
      *
      * @return  A URL constructed from this URI
@@ -1483,7 +1484,7 @@ public final class URI
      *
      * <p> The ordering of URIs is defined as follows: </p>
      *
-     * <ul type=disc>
+     * <ul>
      *
      *   <li><p> Two URIs with different schemes are ordered according the
      *   ordering of their schemes, without regard to case. </p></li>
@@ -1501,7 +1502,7 @@ public final class URI
      *   <li><p> Two hierarchical URIs with identical schemes are ordered
      *   according to the ordering of their authority components: </p>
      *
-     *   <ul type=disc>
+     *   <ul>
      *
      *     <li><p> If both authority components are server-based then the URIs
      *     are ordered according to their user-information components; if these
@@ -2020,6 +2021,8 @@ public final class URI
         }
 
         // 5.2 (6c-f)
+        // Android-changed: App compat. Remove leading dots when resolving path. http://b/25897693
+        // String np = normalize(path);
         String np = normalize(path, true);
 
         // 5.2 (6g): If the result is absolute but the path begins with "../",
@@ -2071,8 +2074,10 @@ public final class URI
             ru.userInfo = base.userInfo;
             ru.port = base.port;
 
+            // BEGIN Android-changed: App Compat. Handle null and empty path using RFC 3986 logic
+            // http://b/25897693
             if (child.path == null || child.path.isEmpty()) {
-                // This is an addtional path from RFC 3986 RI, which fixes following RFC 2396
+                // This is an additional path from RFC 3986 RI, which fixes following RFC 2396
                 // "normal" examples:
                 // Base: http://a/b/c/d;p?q
                 //   "?y" = "http://a/b/c/d;p?y"
@@ -2080,12 +2085,15 @@ public final class URI
                 // http://b/25897693
                 ru.path = base.path;
                 ru.query = child.query != null ? child.query : base.query;
+            // END Android-changed: App Compat. Handle null and empty path using RFC 3986 logic
             } else if ((child.path.length() > 0) && (child.path.charAt(0) == '/')) {
                 // 5.2 (5): Child path is absolute
                 //
+                // Android-changed: App Compat. Remove leading dots in path.
                 // There is an additional step from RFC 3986 RI, requiring to remove dots for
                 // absolute path as well.
                 // http://b/25897693
+                // ru.path = child.path;
                 ru.path = normalize(child.path, true);
             } else {
                 // 5.2 (6): Resolve relative path
@@ -2144,12 +2152,13 @@ public final class URI
         String bp = normalize(base.path);
         String cp = normalize(child.path);
         if (!bp.equals(cp)) {
-            // Android-changed: The original OpenJdk implementation would append a trailing slash
-            // to paths like "/a/b" before relativizing them. This would relativize /a/b/c to
-            // "/c" against "/a/b" the android implementation did not do this. It would assume that
-            // "b" wasn't a directory and relativize the path to "/b/c". The spec is pretty vague
-            // about this but this change is being made because we have several tests that expect
-            // this behaviour.
+            // Android-changed: App Compat. Interpret ambiguous base path as a file, not a directory
+            // Upstream would append '/' to bp if not present, interpreting it as a directory; thus,
+            // /a/b/c relative to /a/b would become /c, whereas Android would relativize to /b/c.
+            // The spec is pretty vague about this but the Android behavior is kept because several
+            // tests enforce it.
+            // if (!bp.endsWith("/"))
+            //     bp = bp + "/";
             if (bp.indexOf('/') != -1) {
                 bp = bp.substring(0, bp.lastIndexOf('/') + 1);
             }
@@ -2339,6 +2348,8 @@ public final class URI
     // Remove "." segments from the given path, and remove segment pairs
     // consisting of a non-".." segment followed by a ".." segment.
     //
+    // Android-changed: App compat. Remove leading dots when resolving path. http://b/25897693
+    // private static void removeDots(char[] path, int[] segs) {
     private static void removeDots(char[] path, int[] segs, boolean removeLeading) {
         int ns = segs.length;
         int end = path.length - 1;
@@ -2386,10 +2397,11 @@ public final class URI
                         segs[i] = -1;
                         segs[j] = -1;
                     }
+                // Android-added: App compat. Remove leading dots when resolving path.
+                // This is a leading ".." segment. Per RFC 3986 RI, this should be removed as
+                // well. This fixes RFC 2396 "abnormal" examples.
+                // http://b/25897693
                 } else if (removeLeading) {
-                    // This is a leading ".." segment. Per RFC 3986 RI, this should be removed as
-                    // well. This fixes RFC 2396 "abnormal" examples.
-                    // http://b/25897693
                     segs[i] = -1;
                 }
             }
@@ -2439,11 +2451,13 @@ public final class URI
     // always retain trailing slashes.
     //
     private static String normalize(String ps) {
+        // BEGIN Android-changed: App compat. Remove leading dots when resolving path.
+        // Controlled by the "boolean removeLeading" argument added to normalize().
         return normalize(ps, false);
     }
 
     private static String normalize(String ps, boolean removeLeading) {
-
+        // END Android-changed: App compat. Remove leading dots when resolving path.
         // Does this path need normalization?
         int ns = needsNormalization(ps);        // Number of segments
         if (ns < 0)
@@ -2457,6 +2471,8 @@ public final class URI
         split(path, segs);
 
         // Remove dots
+        // Android-changed: App compat. Remove leading dots when resolving path.
+        // removeDots(path, segs);
         removeDots(path, segs, removeLeading);
 
         // Prevent scheme-name confusion
@@ -2616,9 +2632,11 @@ public final class URI
     private static final long L_DASH = lowMask("-");
     private static final long H_DASH = highMask("-");
 
+    // BEGIN Android-added: Allow underscore in hostname.
     // UNDERSCORE, for use in domainlabel and toplabel
     private static final long L_UNDERSCORE = lowMask("_");
     private static final long H_UNDERSCORE = highMask("_");
+    // END Android-added: Allow underscore in hostname.
 
     // Dot, for use in hostnames
     private static final long L_DOT = lowMask(".");
@@ -2701,6 +2719,7 @@ public final class URI
     // by the given mask pair
     //
     private static String quote(String s, long lowMask, long highMask) {
+        int n = s.length();
         StringBuffer sb = null;
         boolean allowNonASCII = ((lowMask & L_ESCAPED) != 0);
         for (int i = 0; i < s.length(); i++) {
@@ -2826,6 +2845,7 @@ public final class URI
                 continue;
             }
             bb.clear();
+            int ui = i;
             for (;;) {
                 assert (n - i >= 2);
                 bb.put(decode(s.charAt(++i), s.charAt(++i)));
@@ -3379,6 +3399,8 @@ public final class URI
             return p;
         }
 
+        // Android-changed: Allow underscore in hostname.
+        // Added "_" to the grammars for domainLabel and topLabel.
         // hostname      = domainlabel [ "." ] | 1*( domainlabel "." ) toplabel [ "." ]
         // domainlabel   = alphanum | alphanum *( alphanum | "-" | "_" ) alphanum
         // toplabel      = alpha | alpha *( alphanum | "-" | "_" ) alphanum
@@ -3391,20 +3413,23 @@ public final class URI
             int l = -1;                 // Start of last parsed label
 
             do {
-                // domainlabel = alphanum [ *( alphanum | "-" | "_" ) alphanum ]
-                //
-                // The RFCs don't permit underscores in hostnames, but URI has to because a certain
-                // large website doesn't seem to care about standards and specs.
+                // Android-changed: Allow underscore in hostname.
+                // RFC 2396 only allows alphanumeric characters and hyphens, but real,
+                // large Internet hosts in the wild use underscore, so we have to allow it.
                 // http://code.google.com/p/android/issues/detail?id=37577
                 // http://b/17579865
                 // http://b/18016625
                 // http://b/18023709
+
+                // domainlabel = alphanum [ *( alphanum | "-" | "_" ) alphanum ]
                 q = scan(p, n, L_ALPHANUM, H_ALPHANUM);
                 if (q <= p)
                     break;
                 l = p;
                 if (q > p) {
                     p = q;
+                    // Android-changed: Allow underscore in hostname.
+                    // q = scan(p, n, L_ALPHANUM | L_DASH, H_ALPHANUM | H_DASH);
                     q = scan(p, n, L_ALPHANUM | L_DASH | L_UNDERSCORE, H_ALPHANUM | H_DASH | H_UNDERSCORE);
                     if (q > p) {
                         if (charAt(q - 1) == '-')

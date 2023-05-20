@@ -32,6 +32,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileDescriptor;
 
+/* J2ObjC removed
+import dalvik.annotation.optimization.ReachabilitySensitive;
+*/
 import dalvik.system.BlockGuard;
 import dalvik.system.CloseGuard;
 import dalvik.system.SocketTagger;
@@ -50,8 +53,8 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
 {
     /* instance variable for SO_TIMEOUT */
     int timeout;   // timeout in millisec
-    // traffic class
-    int trafficClass;
+    // Android-removed: traffic class is set through socket.
+    // private int trafficClass;
 
     private boolean shut_rd = false;
     private boolean shut_wr = false;
@@ -237,70 +240,78 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
         if (isClosedOrPending()) {
             throw new SocketException("Socket Closed");
         }
+        // BEGIN Android-removed: Logic dealing with value type moved to socketSetOption.
+        /*
         boolean on = true;
         switch (opt) {
             /* check type safety b4 going native.  These should never
              * fail, since only java.Socket* has access to
              * PlainSocketImpl.setOption().
-             */
-            case SO_LINGER:
-                if (val == null || (!(val instanceof Integer) && !(val instanceof Boolean)))
-                    throw new SocketException("Bad parameter for option");
-                if (val instanceof Boolean) {
-                    /* true only if disabling - enabling should be Integer */
-                    on = false;
-                }
-                break;
-            case SO_TIMEOUT:
-                if (val == null || (!(val instanceof Integer)))
-                    throw new SocketException("Bad parameter for SO_TIMEOUT");
-                int tmp = ((Integer) val).intValue();
-                if (tmp < 0)
-                    throw new IllegalArgumentException("timeout < 0");
-                timeout = tmp;
-                break;
-            case IP_TOS:
-                if (val == null || !(val instanceof Integer)) {
-                    throw new SocketException("bad argument for IP_TOS");
-                }
-                trafficClass = ((Integer)val).intValue();
-                break;
-            case SO_BINDADDR:
-                throw new SocketException("Cannot re-bind socket");
-            case TCP_NODELAY:
-                if (val == null || !(val instanceof Boolean))
-                    throw new SocketException("bad parameter for TCP_NODELAY");
-                on = ((Boolean)val).booleanValue();
-                break;
-            case SO_SNDBUF:
-            case SO_RCVBUF:
-                if (val == null || !(val instanceof Integer) ||
-                        !(((Integer)val).intValue() > 0)) {
-                    throw new SocketException("bad parameter for SO_SNDBUF " +
-                            "or SO_RCVBUF");
-                }
-                break;
-            case SO_KEEPALIVE:
-                if (val == null || !(val instanceof Boolean))
-                    throw new SocketException("bad parameter for SO_KEEPALIVE");
-                on = ((Boolean)val).booleanValue();
-                break;
-            case SO_OOBINLINE:
-                if (val == null || !(val instanceof Boolean))
-                    throw new SocketException("bad parameter for SO_OOBINLINE");
-                on = ((Boolean)val).booleanValue();
-                break;
-            case SO_REUSEADDR:
-                if (val == null || !(val instanceof Boolean))
-                    throw new SocketException("bad parameter for SO_REUSEADDR");
-                on = ((Boolean)val).booleanValue();
-                break;
-            default:
-                throw new SocketException("unrecognized TCP option: " + opt);
+             *
+        case SO_LINGER:
+            if (val == null || (!(val instanceof Integer) && !(val instanceof Boolean)))
+                throw new SocketException("Bad parameter for option");
+            if (val instanceof Boolean) {
+                /* true only if disabling - enabling should be Integer *
+                on = false;
+            }
+            break;
+        case SO_TIMEOUT:
+            if (val == null || (!(val instanceof Integer)))
+                throw new SocketException("Bad parameter for SO_TIMEOUT");
+            int tmp = ((Integer) val).intValue();
+            if (tmp < 0)
+                throw new IllegalArgumentException("timeout < 0");
+            timeout = tmp;
+            break;
+        case IP_TOS:
+             if (val == null || !(val instanceof Integer)) {
+                 throw new SocketException("bad argument for IP_TOS");
+             }
+             trafficClass = ((Integer)val).intValue();
+             break;
+        case SO_BINDADDR:
+            throw new SocketException("Cannot re-bind socket");
+        case TCP_NODELAY:
+            if (val == null || !(val instanceof Boolean))
+                throw new SocketException("bad parameter for TCP_NODELAY");
+            on = ((Boolean)val).booleanValue();
+            break;
+        case SO_SNDBUF:
+        case SO_RCVBUF:
+            if (val == null || !(val instanceof Integer) ||
+                !(((Integer)val).intValue() > 0)) {
+                throw new SocketException("bad parameter for SO_SNDBUF " +
+                                          "or SO_RCVBUF");
+            }
+            break;
+        case SO_KEEPALIVE:
+            if (val == null || !(val instanceof Boolean))
+                throw new SocketException("bad parameter for SO_KEEPALIVE");
+            on = ((Boolean)val).booleanValue();
+            break;
+        case SO_OOBINLINE:
+            if (val == null || !(val instanceof Boolean))
+                throw new SocketException("bad parameter for SO_OOBINLINE");
+            on = ((Boolean)val).booleanValue();
+            break;
+        case SO_REUSEADDR:
+            if (val == null || !(val instanceof Boolean))
+                throw new SocketException("bad parameter for SO_REUSEADDR");
+            on = ((Boolean)val).booleanValue();
+            break;
+        default:
+            throw new SocketException("unrecognized TCP option: " + opt);
         }
         socketSetOption(opt, on, val);
+        */
+        // END Android-removed: Logic dealing with value type moved to socketSetOption.
+        // Android-added: Keep track of timeout value not handled by socketSetOption.
+        if (opt == SO_TIMEOUT) {
+            timeout = (Integer) val;
+        }
+        socketSetOption(opt, val);
     }
-
     public Object getOption(int opt) throws SocketException {
         if (isClosedOrPending()) {
             throw new SocketException("Socket Closed");
@@ -308,6 +319,8 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
         if (opt == SO_TIMEOUT) {
             return new Integer(timeout);
         }
+        // BEGIN Android-changed: Logic dealing with value type moved to socketGetOption.
+        /*
         int ret = 0;
         /*
          * The native socketGetOption() knows about 3 options.
@@ -315,43 +328,51 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
          * to what we're asking.  A return of -1 means it understands
          * the option but its turned off.  It will raise a SocketException
          * if "opt" isn't one it understands.
-         */
+         *
 
         switch (opt) {
-            case TCP_NODELAY:
-                ret = socketGetOption(opt, null);
-                return Boolean.valueOf(ret != -1);
-            case SO_OOBINLINE:
-                ret = socketGetOption(opt, null);
-                return Boolean.valueOf(ret != -1);
-            case SO_LINGER:
-                ret = socketGetOption(opt, null);
-                return (ret == -1) ? Boolean.FALSE: (Object)(new Integer(ret));
-            case SO_REUSEADDR:
-                ret = socketGetOption(opt, null);
-                return Boolean.valueOf(ret != -1);
-            case SO_BINDADDR:
-                InetAddressContainer in = new InetAddressContainer();
-                ret = socketGetOption(opt, in);
-                return in.addr;
-            case SO_SNDBUF:
-            case SO_RCVBUF:
-                ret = socketGetOption(opt, null);
-                return new Integer(ret);
-            case IP_TOS:
+        case TCP_NODELAY:
+            ret = socketGetOption(opt, null);
+            return Boolean.valueOf(ret != -1);
+        case SO_OOBINLINE:
+            ret = socketGetOption(opt, null);
+            return Boolean.valueOf(ret != -1);
+        case SO_LINGER:
+            ret = socketGetOption(opt, null);
+            return (ret == -1) ? Boolean.FALSE: (Object)(new Integer(ret));
+        case SO_REUSEADDR:
+            ret = socketGetOption(opt, null);
+            return Boolean.valueOf(ret != -1);
+        case SO_BINDADDR:
+            InetAddressContainer in = new InetAddressContainer();
+            ret = socketGetOption(opt, in);
+            return in.addr;
+        case SO_SNDBUF:
+        case SO_RCVBUF:
+            ret = socketGetOption(opt, null);
+            return new Integer(ret);
+        case IP_TOS:
+            try {
                 ret = socketGetOption(opt, null);
                 if (ret == -1) { // ipv6 tos
-                    return new Integer(trafficClass);
+                    return trafficClass;
                 } else {
-                    return new Integer(ret);
+                    return ret;
                 }
-            case SO_KEEPALIVE:
-                ret = socketGetOption(opt, null);
-                return Boolean.valueOf(ret != -1);
-            // should never get here
-            default:
-                return null;
+            } catch (SocketException se) {
+                // TODO - should make better effort to read TOS or TCLASS
+                return trafficClass; // ipv6 tos
+            }
+        case SO_KEEPALIVE:
+            ret = socketGetOption(opt, null);
+            return Boolean.valueOf(ret != -1);
+        // should never get here
+        default:
+            return null;
         }
+        */
+        return socketGetOption(opt);
+        // END Android-changed: Logic dealing with value type moved to socketGetOption.
     }
 
     /**
@@ -542,12 +563,44 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
                 if (!stream) {
                     ResourceManager.afterUdpClose();
                 }
-                if (closePending) {
-                    return;
+                // Android-changed: Socket should be untagged before the preclose.
+                // After preclose, socket will dup2-ed to marker_fd, therefore, it won't describe
+                // the same file.  If closingPending is true, then the socket has been preclosed.
+                //
+                // Also, close the CloseGuard when the #close is called.
+                if (!closePending) {
+                    closePending = true;
+                    guard.close();
+
+                    if (fdUseCount == 0) {
+                        /*
+                         * We close the FileDescriptor in two-steps - first the
+                         * "pre-close" which closes the socket but doesn't
+                         * release the underlying file descriptor. This operation
+                         * may be lengthy due to untransmitted data and a long
+                         * linger interval. Once the pre-close is done we do the
+                         * actual socket to release the fd.
+                         */
+                        try {
+                            socketPreClose();
+                        } finally {
+                            socketClose();
+                        }
+                        // Android-changed: Closed sockets use an invalid fd, not null. b/26470377
+                        // socketClose invalidates the fd by closing the fd.
+                        // fd = null;
+                        return;
+                    } else {
+                        /*
+                         * If a thread has acquired the fd and a close
+                         * isn't pending then use a deferred close.
+                         * Also decrement fdUseCount to signal the last
+                         * thread that releases the fd to close it.
+                         */
+                        fdUseCount--;
+                        socketPreClose();
+                    }
                 }
-                closePending = true;
-                socketClose();
-                return;
             }
         }
     }
@@ -702,39 +755,44 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
     }
 
     /*
+     * "Pre-close" a socket by dup'ing the file descriptor - this enables
+     * the socket to be closed without releasing the file descriptor.
+     */
+    private void socketPreClose() throws IOException {
+        socketClose0(true);
+    }
+
+    /*
      * Close the socket (and release the file descriptor).
      */
     protected void socketClose() throws IOException {
-        guard.close();
-
-        socketClose0();
+        socketClose0(false);
     }
 
     abstract void socketCreate(boolean isServer) throws IOException;
     abstract void socketConnect(InetAddress address, int port, int timeout)
-            throws IOException;
+        throws IOException;
     abstract void socketBind(InetAddress address, int port)
-            throws IOException;
+        throws IOException;
     abstract void socketListen(int count)
-            throws IOException;
+        throws IOException;
     abstract void socketAccept(SocketImpl s)
-            throws IOException;
+        throws IOException;
     abstract int socketAvailable()
-            throws IOException;
-    abstract void socketClose0()
-            throws IOException;
+        throws IOException;
+    abstract void socketClose0(boolean useDeferredClose)
+        throws IOException;
     abstract void socketShutdown(int howto)
-            throws IOException;
-    abstract void socketSetOption(int cmd, boolean on, Object value)
-            throws SocketException;
-    abstract int socketGetOption(int opt, Object iaContainerObj) throws SocketException;
+        throws IOException;
+
+    // Android-changed: Method signature changes.
+    // socket{Get,Set}Option work directly with Object values.
+    abstract void socketSetOption(int cmd, Object value) throws SocketException;
+    abstract Object socketGetOption(int opt) throws SocketException;
+
     abstract void socketSendUrgentData(int data)
-            throws IOException;
+        throws IOException;
 
     public final static int SHUT_RD = 0;
     public final static int SHUT_WR = 1;
-}
-
-class InetAddressContainer {
-    InetAddress addr;
 }

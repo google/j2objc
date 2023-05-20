@@ -33,7 +33,7 @@ import java.io.IOException;
  * protocol, such as a TCP error.
  *
  * @author  Chris Warth
- * @since   JDK1.0
+ * @since   1.0
  */
 public
 class ProtocolException extends IOException {
@@ -43,10 +43,10 @@ class ProtocolException extends IOException {
      * Constructs a new {@code ProtocolException} with the
      * specified detail message.
      *
-     * @param   host   the detail message.
+     * @param   message   the detail message.
      */
-    public ProtocolException(String host) {
-        super(host);
+    public ProtocolException(String message) {
+        super(message);
     }
 
     /**

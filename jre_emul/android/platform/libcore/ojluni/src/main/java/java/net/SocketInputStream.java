@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1995, 2016, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1995, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -51,7 +51,7 @@ class SocketInputStream extends FileInputStream
     //}
 
     private boolean eof;
-    private final AbstractPlainSocketImpl impl;
+    private AbstractPlainSocketImpl impl = null;
     private byte temp[];
     @Weak
     private Socket socket = null;
@@ -168,8 +168,6 @@ class SocketInputStream extends FileInputStream
                     + " off == " + off + " buffer length == " + b.length);
         }
 
-        boolean gotReset = false;
-
         // acquire file descriptor and do the read
         FileDescriptor fd = impl.acquireFD();
         try {
@@ -180,27 +178,9 @@ class SocketInputStream extends FileInputStream
                 return n;
             }
         } catch (ConnectionResetException rstExc) {
-            gotReset = true;
+            impl.setConnectionReset();
         } finally {
             impl.releaseFD();
-        }
-
-        /*
-         * We receive a "connection reset" but there may be bytes still
-         * buffered on the socket
-         */
-        if (gotReset) {
-            impl.setConnectionResetPending();
-            impl.acquireFD();
-            try {
-                n = socketRead(fd, b, off, length, timeout);
-                if (n > 0) {
-                    return n;
-                }
-            } catch (ConnectionResetException rstExc) {
-            } finally {
-                impl.releaseFD();
-            }
         }
 
         /*
@@ -209,9 +189,6 @@ class SocketInputStream extends FileInputStream
          */
         if (impl.isClosedOrPending()) {
             throw new SocketException("Socket closed");
-        }
-        if (impl.isConnectionResetPending()) {
-            impl.setConnectionReset();
         }
         if (impl.isConnectionReset()) {
             throw new SocketException("Connection reset");
