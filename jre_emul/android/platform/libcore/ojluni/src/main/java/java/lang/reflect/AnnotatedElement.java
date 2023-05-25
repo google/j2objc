@@ -27,12 +27,12 @@
 package java.lang.reflect;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.AnnotationFormatError;
 import java.util.Objects;
 import libcore.reflect.AnnotatedElements;
 
 // Android-changed: Removed some references to bytecode spec below that do not
-// apply and added a note about annotation ordering.
-// J2ObjC-changed: fixed doc-comment warnings.
+// apply to DEX and added a note about annotation ordering.
 /**
  * Represents an annotated element of the program currently running in this
  * VM.  This interface allows annotations to be read reflectively.  All
@@ -100,28 +100,44 @@ import libcore.reflect.AnnotatedElements;
  * <p>The table below summarizes which kind of annotation presence
  * different methods in this interface examine.
  *
- * <table border>
+ * <table class="plain">
  * <caption>Overview of kind of presence detected by different AnnotatedElement methods</caption>
- * <tr><th colspan="2"></th><th colspan="4">Kind of Presence</th>
- * <tr><th colspan="2">Method</th><th>Directly Present</th><th>Indirectly Present</th><th>Present</th><th>Associated</th>
- * <tr><td align="right">{@code T}</td><td>{@link #getAnnotation(Class) getAnnotation(Class&lt;T&gt;)}
- * <td></td><td></td><td>X</td><td></td>
+ * <thead>
+ * <tr><th colspan=2 scope="col">Method</th>
+ *     <th colspan=4 scope="col">Kind of Presence</th>
+ * <tr><th scope="col">Return Type</th>
+ *     <th scope="col">Signature</th>
+ *     <th scope="col">Directly Present</th>
+ *     <th scope="col">Indirectly Present</th>
+ *     <th scope="col">Present</th>
+ *     <th scope="col">Associated</th>
+ * </thead>
+ * <tbody>
+ * <tr><td style="text-align:right">{@code T}</td>
+ * <th scope="row" style="font-weight:normal; text-align:left">{@link #getAnnotation(Class) getAnnotation(Class&lt;T&gt;)}
+ * <td></td><td></td><td style="text-align:center">X</td><td></td>
  * </tr>
- * <tr><td align="right">{@code Annotation[]}</td><td>{@link #getAnnotations getAnnotations()}
- * <td></td><td></td><td>X</td><td></td>
+ * <tr><td style="text-align:right">{@code Annotation[]}</td>
+ * <th scope="row" style="font-weight:normal; text-align:left">{@link #getAnnotations getAnnotations()}
+ * <td></td><td></td><td style="text-align:center">X</td><td></td>
  * </tr>
- * <tr><td align="right">{@code T[]}</td><td>{@link #getAnnotationsByType(Class) getAnnotationsByType(Class&lt;T&gt;)}
- * <td></td><td></td><td></td><td>X</td>
+ * <tr><td style="text-align:right">{@code T[]}</td>
+ * <th scope="row" style="font-weight:normal; text-align:left">{@link #getAnnotationsByType(Class) getAnnotationsByType(Class&lt;T&gt;)}
+ * <td></td><td></td><td></td><td style="text-align:center">X</td>
  * </tr>
- * <tr><td align="right">{@code T}</td><td>{@link #getDeclaredAnnotation(Class) getDeclaredAnnotation(Class&lt;T&gt;)}
- * <td>X</td><td></td><td></td><td></td>
+ * <tr><td style="text-align:right">{@code T}</td>
+ * <th scope="row" style="font-weight:normal; text-align:left">{@link #getDeclaredAnnotation(Class) getDeclaredAnnotation(Class&lt;T&gt;)}
+ * <td style="text-align:center">X</td><td></td><td></td><td></td>
  * </tr>
- * <tr><td align="right">{@code Annotation[]}</td><td>{@link #getDeclaredAnnotations getDeclaredAnnotations()}
- * <td>X</td><td></td><td></td><td></td>
+ * <tr><td style="text-align:right">{@code Annotation[]}</td>
+ * <th scope="row" style="font-weight:normal; text-align:left">{@link #getDeclaredAnnotations getDeclaredAnnotations()}
+ * <td style="text-align:center">X</td><td></td><td></td><td></td>
  * </tr>
- * <tr><td align="right">{@code T[]}</td><td>{@link #getDeclaredAnnotationsByType(Class) getDeclaredAnnotationsByType(Class&lt;T&gt;)}
- * <td>X</td><td>X</td><td></td><td></td>
+ * <tr><td style="text-align:right">{@code T[]}</td>
+ * <th scope="row" style="font-weight:normal; text-align:left">{@link #getDeclaredAnnotationsByType(Class) getDeclaredAnnotationsByType(Class&lt;T&gt;)}
+ * <td style="text-align:center">X</td><td style="text-align:center">X</td><td></td><td></td>
  * </tr>
+ * </tbody>
  * </table>
  *
  * <p>For an invocation of {@code get[Declared]AnnotationsByType( Class <
@@ -406,6 +422,9 @@ public interface AnnotatedElement {
      * @since 1.8
      */
     default <T extends Annotation> T[] getDeclaredAnnotationsByType(Class<T> annotationClass) {
+        // Android-changed: Altered method implementation for getAnnotationsByType(Class).
+        // Android's annotation code is customized because of the use of the DEX format on Android
+        // and code sharing with the runtime.
         return AnnotatedElements.getDirectOrIndirectAnnotationsByType(this, annotationClass);
     }
 

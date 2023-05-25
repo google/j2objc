@@ -32,6 +32,9 @@ FIELD java.util.concurrent.Phaser.QNode.phaser
 FIELD java.util.concurrent.ThreadPoolExecutor.workers
 FIELD java.util.concurrent.ThreadPoolExecutor.workQueue
 
+# False positive triggered by java.lang.reflect.WeakCache
+FIELD java.util.concurrent.ConcurrentHashMap.KeySetView.value java.util.concurrent.ConcurrentHashMap
+
 FIELD java.util.logging.LogManager.LogNode.children
 
 FIELD java.util.stream.AbstractTask.leftChild

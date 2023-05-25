@@ -262,6 +262,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/reflect/InvocationHandler.java \
   java/lang/reflect/InvocationTargetException.java \
   java/lang/reflect/MalformedParameterizedTypeException.java \
+  java/lang/reflect/MalformedParametersException.java \
   java/lang/reflect/Member.java \
   java/lang/reflect/Modifier.java \
   java/lang/reflect/Parameter.java \
@@ -598,6 +599,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/io/SerialCallbackContext.java \
   java/io/UnixFileSystem.java \
   java/lang/JavaLangAccess.java \
+  java/lang/reflect/WeakCache.java \
   java/math/BitSieve.java \
   java/math/MutableBigInteger.java \
   java/math/SignedMutableBigInteger.java \

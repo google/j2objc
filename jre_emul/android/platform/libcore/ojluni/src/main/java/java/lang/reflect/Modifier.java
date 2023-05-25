@@ -26,6 +26,8 @@
 
 package java.lang.reflect;
 
+import java.util.StringJoiner;
+
 /**
  * The Modifier class provides {@code static} methods and
  * constants to decode class and member access modifiers.  The sets of
@@ -41,6 +43,19 @@ package java.lang.reflect;
  * @author Kenneth Russell
  */
 public class Modifier {
+
+    // Android-removed: ReflectionFactory bootstrapping code not used on Android.
+    /*
+    /*
+     * Bootstrapping protocol between java.lang and java.lang.reflect
+     *  packages
+     *
+    static {
+        ReflectionFactory factory = AccessController.doPrivileged(
+                new ReflectionFactory.GetReflectionFactoryAction());
+        factory.setLangReflectAccess(new java.lang.reflect.ReflectAccess());
+    }
+    */
 
     /**
      * Return {@code true} if the integer argument includes the
@@ -126,6 +141,7 @@ public class Modifier {
         return (mod & VOLATILE) != 0;
     }
 
+    // Android-added: isConstructor(int) to support DEX-defined modifier flag.
     /**
      * Returns true if the given modifiers contain {@link Modifier#CONSTRUCTOR}.
      * @hide
@@ -226,27 +242,24 @@ public class Modifier {
      * represented by {@code mod}
      */
     public static String toString(int mod) {
-        StringBuilder sb = new StringBuilder();
-        int len;
+        StringJoiner sj = new StringJoiner(" ");
 
-        if ((mod & PUBLIC) != 0)        sb.append("public ");
-        if ((mod & PROTECTED) != 0)     sb.append("protected ");
-        if ((mod & PRIVATE) != 0)       sb.append("private ");
+        if ((mod & PUBLIC) != 0)        sj.add("public");
+        if ((mod & PROTECTED) != 0)     sj.add("protected");
+        if ((mod & PRIVATE) != 0)       sj.add("private");
 
         /* Canonical order */
-        if ((mod & ABSTRACT) != 0)      sb.append("abstract ");
-        if ((mod & STATIC) != 0)        sb.append("static ");
-        if ((mod & FINAL) != 0)         sb.append("final ");
-        if ((mod & TRANSIENT) != 0)     sb.append("transient ");
-        if ((mod & VOLATILE) != 0)      sb.append("volatile ");
-        if ((mod & SYNCHRONIZED) != 0)  sb.append("synchronized ");
-        if ((mod & NATIVE) != 0)        sb.append("native ");
-        if ((mod & STRICT) != 0)        sb.append("strictfp ");
-        if ((mod & INTERFACE) != 0)     sb.append("interface ");
+        if ((mod & ABSTRACT) != 0)      sj.add("abstract");
+        if ((mod & STATIC) != 0)        sj.add("static");
+        if ((mod & FINAL) != 0)         sj.add("final");
+        if ((mod & TRANSIENT) != 0)     sj.add("transient");
+        if ((mod & VOLATILE) != 0)      sj.add("volatile");
+        if ((mod & SYNCHRONIZED) != 0)  sj.add("synchronized");
+        if ((mod & NATIVE) != 0)        sj.add("native");
+        if ((mod & STRICT) != 0)        sj.add("strictfp");
+        if ((mod & INTERFACE) != 0)     sj.add("interface");
 
-        if ((len = sb.length()) > 0)    /* trim trailing space */
-            return sb.toString().substring(0, len-1);
-        return "";
+        return sj.toString();
     }
 
     /*
@@ -332,6 +345,7 @@ public class Modifier {
     // they are not Java programming language keywords
     static final int BRIDGE    = 0x00000040;
     static final int VARARGS   = 0x00000080;
+    // Android-changed: SYNTHETIC made public for use in tests.
     /**
      * @hide
      */
@@ -357,6 +371,7 @@ public class Modifier {
     // methods return an unchanging values for a given release, but a
     // value that can potentially change over time.
 
+    // Android-added: CONSTRUCTOR to support DEX-defined modifier flag.
     /**
      * Dex addition to mark instance constructors and static class
      * initializer methods.
@@ -364,6 +379,7 @@ public class Modifier {
      */
     public static final int CONSTRUCTOR = 0x10000;
 
+    // Android-added: DEFAULT to support DEX-defined modifier flag.
     /**
      * Default methods are marked with a synthetic access flag
      * to speed up class loading and invocation target lookup.

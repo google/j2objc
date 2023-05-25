@@ -35,6 +35,7 @@ package java.lang.reflect;
  * conversion would occur.
  *
  * @author Nakul Saraiya
+ * @since 1.1
  */
 public final
 class Array {
@@ -55,6 +56,7 @@ class Array {
      * Array.newInstance(componentType, x);
      * </pre>
      * </blockquote>
+     *
      * <p>The number of dimensions of the new array must not
      * exceed 255.
      *
@@ -108,6 +110,7 @@ class Array {
      */
     public static Object newInstance(Class<?> componentType, int... dimensions)
         throws IllegalArgumentException, NegativeArraySizeException {
+        // Android-changed: New implementation of newInstance(Class, int...).
         if (dimensions.length <= 0 || dimensions.length > 255) {
             throw new IllegalArgumentException("Bad number of dimensions: " + dimensions.length);
         }
@@ -128,7 +131,10 @@ class Array {
      * @exception IllegalArgumentException if the object argument is not
      * an array
      */
-    public static int getLength(Object array) {
+    // Android-changed: Non-native implementation of getLength(Object).
+    // Android-changed: Removal of explicit throws IllegalArgumentException from method signature.
+    public static int getLength(Object array)
+        /* throws IllegalArgumentException */ {
         if (array instanceof Object[]) {
             return ((Object[]) array).length;
         } else if (array instanceof boolean[]) {
@@ -167,7 +173,9 @@ class Array {
      * argument is negative, or if it is greater than or equal to the
      * length of the specified array
      */
-    public static Object get(Object array, int index) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of get(Object, int).
+    public static Object get(Object array, int index)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof Object[]) {
             return ((Object[]) array)[index];
         }
@@ -217,7 +225,9 @@ class Array {
      * length of the specified array
      * @see Array#get
      */
-    public static boolean getBoolean(Object array, int index) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of getBoolean(Object, int).
+    public static boolean getBoolean(Object array, int index)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof boolean[]) {
             return ((boolean[]) array)[index];
         }
@@ -240,7 +250,9 @@ class Array {
      * length of the specified array
      * @see Array#get
      */
-    public static byte getByte(Object array, int index) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of getByte(Object, int).
+    public static byte getByte(Object array, int index)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof byte[]) {
             return ((byte[]) array)[index];
         }
@@ -263,7 +275,9 @@ class Array {
      * length of the specified array
      * @see Array#get
      */
-    public static char getChar(Object array, int index) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of getChar(Object, int).
+    public static char getChar(Object array, int index)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof char[]) {
             return ((char[]) array)[index];
         }
@@ -286,7 +300,9 @@ class Array {
      * length of the specified array
      * @see Array#get
      */
-    public static short getShort(Object array, int index) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of getShort(Object, int).
+    public static short getShort(Object array, int index)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof short[]) {
             return ((short[]) array)[index];
         } else if (array instanceof byte[]) {
@@ -311,7 +327,9 @@ class Array {
      * length of the specified array
      * @see Array#get
      */
-    public static int getInt(Object array, int index) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of getInt(Object, int).
+    public static int getInt(Object array, int index)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof int[]) {
             return ((int[]) array)[index];
         } else if (array instanceof byte[]) {
@@ -340,7 +358,9 @@ class Array {
      * length of the specified array
      * @see Array#get
      */
-    public static long getLong(Object array, int index) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of getLong(Object, int).
+    public static long getLong(Object array, int index)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof long[]) {
             return ((long[]) array)[index];
         } else if (array instanceof byte[]) {
@@ -371,7 +391,9 @@ class Array {
      * length of the specified array
      * @see Array#get
      */
-    public static float getFloat(Object array, int index) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of getFloat(Object, int).
+    public static float getFloat(Object array, int index)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof float[]) {
             return ((float[]) array)[index];
         } else if (array instanceof byte[]) {
@@ -404,7 +426,9 @@ class Array {
      * length of the specified array
      * @see Array#get
      */
-    public static double getDouble(Object array, int index) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of getDouble(Object, int).
+    public static double getDouble(Object array, int index)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof double[]) {
             return ((double[]) array)[index];
         } else if (array instanceof byte[]) {
@@ -440,7 +464,9 @@ class Array {
      * argument is negative, or if it is greater than or equal to
      * the length of the specified array
      */
-    public static void set(Object array, int index, Object value) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of set(Object, int, Object).
+    public static void set(Object array, int index, Object value)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (!array.getClass().isArray()) {
             throw notAnArray(array);
         }
@@ -479,7 +505,7 @@ class Array {
      * object to the specified {@code boolean} value.
      * @param array the array
      * @param index the index into the array
-     * @param value the new value of the indexed component
+     * @param z the new value of the indexed component
      * @exception NullPointerException If the specified object argument
      * is null
      * @exception IllegalArgumentException If the specified object argument
@@ -491,10 +517,12 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android-changed param name s/z/value
-    public static void setBoolean(Object array, int index, boolean value) {
+    // Android-changed: Non-native implementation of setBoolean(Object, int, boolean).
+    // Android-changed: Removal of explicit runtime exceptions throws clause.
+    public static void setBoolean(Object array, int index, boolean z)
+        /* throws IllegalArgumentException, ArrayIndexOutOfBoundsException */ {
         if (array instanceof boolean[]) {
-            ((boolean[]) array)[index] = value;
+            ((boolean[]) array)[index] = z;
         } else {
             throw badArray(array);
         }
@@ -505,7 +533,7 @@ class Array {
      * object to the specified {@code byte} value.
      * @param array the array
      * @param index the index into the array
-     * @param value the new value of the indexed component
+     * @param b the new value of the indexed component
      * @exception NullPointerException If the specified object argument
      * is null
      * @exception IllegalArgumentException If the specified object argument
@@ -517,20 +545,21 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android-changed param name s/b/value
-    public static void setByte(Object array, int index, byte value) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of setByte(Object, int, byte).
+    public static void setByte(Object array, int index, byte b)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof byte[]) {
-            ((byte[]) array)[index] = value;
+            ((byte[]) array)[index] = b;
         } else if (array instanceof double[]) {
-            ((double[]) array)[index] = value;
+            ((double[]) array)[index] = b;
         } else if (array instanceof float[]) {
-            ((float[]) array)[index] = value;
+            ((float[]) array)[index] = b;
         } else if (array instanceof int[]) {
-            ((int[]) array)[index] = value;
+            ((int[]) array)[index] = b;
         } else if (array instanceof long[]) {
-            ((long[]) array)[index] = value;
+            ((long[]) array)[index] = b;
         } else if (array instanceof short[]) {
-            ((short[]) array)[index] = value;
+            ((short[]) array)[index] = b;
         } else {
             throw badArray(array);
         }
@@ -541,7 +570,7 @@ class Array {
      * object to the specified {@code char} value.
      * @param array the array
      * @param index the index into the array
-     * @param value the new value of the indexed component
+     * @param c the new value of the indexed component
      * @exception NullPointerException If the specified object argument
      * is null
      * @exception IllegalArgumentException If the specified object argument
@@ -553,18 +582,19 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android-changed param name s/c/value
-    public static void setChar(Object array, int index, char value) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of setChar(Object, int, char).
+    public static void setChar(Object array, int index, char c)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof char[]) {
-            ((char[]) array)[index] = value;
+            ((char[]) array)[index] = c;
         } else if (array instanceof double[]) {
-            ((double[]) array)[index] = value;
+            ((double[]) array)[index] = c;
         } else if (array instanceof float[]) {
-            ((float[]) array)[index] = value;
+            ((float[]) array)[index] = c;
         } else if (array instanceof int[]) {
-            ((int[]) array)[index] = value;
+            ((int[]) array)[index] = c;
         } else if (array instanceof long[]) {
-            ((long[]) array)[index] = value;
+            ((long[]) array)[index] = c;
         } else {
             throw badArray(array);
         }
@@ -575,7 +605,7 @@ class Array {
      * object to the specified {@code short} value.
      * @param array the array
      * @param index the index into the array
-     * @param value the new value of the indexed component
+     * @param s the new value of the indexed component
      * @exception NullPointerException If the specified object argument
      * is null
      * @exception IllegalArgumentException If the specified object argument
@@ -587,18 +617,19 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android-changed param name s/s/value
-    public static void setShort(Object array, int index, short value) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of setShort(Object, int, short).
+    public static void setShort(Object array, int index, short s)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof short[]) {
-            ((short[]) array)[index] = value;
+            ((short[]) array)[index] = s;
         } else if (array instanceof double[]) {
-            ((double[]) array)[index] = value;
+            ((double[]) array)[index] = s;
         } else if (array instanceof float[]) {
-            ((float[]) array)[index] = value;
+            ((float[]) array)[index] = s;
         } else if (array instanceof int[]) {
-            ((int[]) array)[index] = value;
+            ((int[]) array)[index] = s;
         } else if (array instanceof long[]) {
-            ((long[]) array)[index] = value;
+            ((long[]) array)[index] = s;
         } else {
             throw badArray(array);
         }
@@ -609,7 +640,7 @@ class Array {
      * object to the specified {@code int} value.
      * @param array the array
      * @param index the index into the array
-     * @param value the new value of the indexed component
+     * @param i the new value of the indexed component
      * @exception NullPointerException If the specified object argument
      * is null
      * @exception IllegalArgumentException If the specified object argument
@@ -621,16 +652,17 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android-changed param name s/i/value
-    public static void setInt(Object array, int index, int value) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of setInt(Object, int, int).
+    public static void setInt(Object array, int index, int i)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof int[]) {
-            ((int[]) array)[index] = value;
+            ((int[]) array)[index] = i;
         } else if (array instanceof double[]) {
-            ((double[]) array)[index] = value;
+            ((double[]) array)[index] = i;
         } else if (array instanceof float[]) {
-            ((float[]) array)[index] = value;
+            ((float[]) array)[index] = i;
         } else if (array instanceof long[]) {
-            ((long[]) array)[index] = value;
+            ((long[]) array)[index] = i;
         } else {
             throw badArray(array);
         }
@@ -641,7 +673,7 @@ class Array {
      * object to the specified {@code long} value.
      * @param array the array
      * @param index the index into the array
-     * @param value the new value of the indexed component
+     * @param l the new value of the indexed component
      * @exception NullPointerException If the specified object argument
      * is null
      * @exception IllegalArgumentException If the specified object argument
@@ -653,14 +685,15 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android-changed param name s/l/value
-    public static void setLong(Object array, int index, long value) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of setBoolean(Object, int, long).
+    public static void setLong(Object array, int index, long l)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof long[]) {
-            ((long[]) array)[index] = value;
+            ((long[]) array)[index] = l;
         } else if (array instanceof double[]) {
-            ((double[]) array)[index] = value;
+            ((double[]) array)[index] = l;
         } else if (array instanceof float[]) {
-            ((float[]) array)[index] = value;
+            ((float[]) array)[index] = l;
         } else {
             throw badArray(array);
         }
@@ -671,7 +704,7 @@ class Array {
      * object to the specified {@code float} value.
      * @param array the array
      * @param index the index into the array
-     * @param value the new value of the indexed component
+     * @param f the new value of the indexed component
      * @exception NullPointerException If the specified object argument
      * is null
      * @exception IllegalArgumentException If the specified object argument
@@ -683,12 +716,12 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android-changed param name s/f/value
-    public static void setFloat(Object array, int index, float value) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    public static void setFloat(Object array, int index, float f)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof float[]) {
-            ((float[]) array)[index] = value;
+            ((float[]) array)[index] = f;
         } else if (array instanceof double[]) {
-            ((double[]) array)[index] = value;
+            ((double[]) array)[index] = f;
         } else {
             throw badArray(array);
         }
@@ -699,7 +732,7 @@ class Array {
      * object to the specified {@code double} value.
      * @param array the array
      * @param index the index into the array
-     * @param value the new value of the indexed component
+     * @param d the new value of the indexed component
      * @exception NullPointerException If the specified object argument
      * is null
      * @exception IllegalArgumentException If the specified object argument
@@ -711,15 +744,65 @@ class Array {
      * the length of the specified array
      * @see Array#set
      */
-    // Android-changed param name s/d/value
-    public static void setDouble(Object array, int index, double value) throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
+    // Android-changed: Non-native implementation of setDouble(Object, int, double).
+    public static void setDouble(Object array, int index, double d)
+        throws IllegalArgumentException, ArrayIndexOutOfBoundsException {
         if (array instanceof double[]) {
-            ((double[]) array)[index] = value;
+            ((double[]) array)[index] = d;
         } else {
             throw badArray(array);
         }
     }
 
+    /*
+     * Private
+     */
+
+    // Android-added: Added javadocs for newArray(Class, int).
+    /**
+     * Returns a new array of the specified component type and length.
+     * Equivalent to {@code new componentType[size]}.
+     *
+     * @throws NullPointerException
+     *             if the component type is null
+     * @throws NegativeArraySizeException
+     *             if {@code size < 0}
+     */
+    // Android-changed: Non-native implementation of newArray(Class, int).
+    private static Object newArray(Class<?> componentType, int length)
+        throws NegativeArraySizeException {
+        if (!componentType.isPrimitive()) {
+            return createObjectArray(componentType, length);
+        } else if (componentType == char.class) {
+            return new char[length];
+        } else if (componentType == int.class) {
+            return new int[length];
+        } else if (componentType == byte.class) {
+            return new byte[length];
+        } else if (componentType == boolean.class) {
+            return new boolean[length];
+        } else if (componentType == short.class) {
+            return new short[length];
+        } else if (componentType == long.class) {
+            return new long[length];
+        } else if (componentType == float.class) {
+            return new float[length];
+        } else if (componentType == double.class) {
+            return new double[length];
+        } else if (componentType == void.class) {
+            throw new IllegalArgumentException("Can't allocate an array of void");
+        }
+        throw new AssertionError();
+    }
+
+    // Android-removed: multiNewArray(Class, int[]) method. createMultiArray used instead.
+    /*
+    private static native Object multiNewArray(Class<?> componentType,
+        int[] dimensions)
+        throws IllegalArgumentException, NegativeArraySizeException;
+    */
+
+    // Android-added: createMultiArray(Class, int[]) method. Used instead of multiNewArray.
     /*
      * Create a multi-dimensional array of objects with the specified type.
      */
@@ -730,40 +813,7 @@ class Array {
                                             type:componentType];
     ]-*/;
 
-    /**
-     * Returns a new array of the specified component type and length.
-     * Equivalent to {@code new componentType[size]}.
-     *
-     * @throws NullPointerException
-     *             if the component type is null
-     * @throws NegativeArraySizeException
-     *             if {@code size < 0}
-     */
-    private static Object newArray(Class<?> componentType, int size) throws NegativeArraySizeException {
-        if (!componentType.isPrimitive()) {
-            return createObjectArray(componentType, size);
-        } else if (componentType == char.class) {
-            return new char[size];
-        } else if (componentType == int.class) {
-            return new int[size];
-        } else if (componentType == byte.class) {
-            return new byte[size];
-        } else if (componentType == boolean.class) {
-            return new boolean[size];
-        } else if (componentType == short.class) {
-            return new short[size];
-        } else if (componentType == long.class) {
-            return new long[size];
-        } else if (componentType == float.class) {
-            return new float[size];
-        } else if (componentType == double.class) {
-            return new double[size];
-        } else if (componentType == void.class) {
-            throw new IllegalArgumentException("Can't allocate an array of void");
-        }
-        throw new AssertionError();
-    }
-
+    // BEGIN Android-added: Helper methods to support custom method implementations.
     /*
      * Create a one-dimensional array of objects with the specified type.
      */
@@ -789,4 +839,5 @@ class Array {
             throw incompatibleType(array);
         }
     }
+    // END Android-added: Helper methods to support custom method implementations.
 }
