@@ -56,8 +56,12 @@ const char *kOuterClassNameSuffix = "OuterClass";
 // j2objc-descriptor.proto.
 const int kPackagePrefixFieldNumber = 102687446;
 
+// NOLINTBEGIN(runtime/string) - Existing code design requires globals.
+static std::string globalPrefix;
+static std::string globalFileSubExtension(".j2objc.pb");
 static std::map<std::string, std::string> prefixes;
 static std::map<std::string, std::string> wildcardPrefixes;
+// NOLINTEND(error_category)
 
 static bool generateFileDirMapping = false;
 
@@ -139,7 +143,7 @@ std::string GetPackagePrefix(const FileDescriptor *file) {
   const UnknownField *package_prefix_field =
       FindUnknownField(file, kPackagePrefixFieldNumber);
   if (package_prefix_field) {
-    return package_prefix_field->length_delimited();
+    return globalPrefix + package_prefix_field->length_delimited();
   }
 
   // Look for a matching prefix from the prefixes file.
@@ -156,7 +160,7 @@ std::string GetPackagePrefix(const FileDescriptor *file) {
     if (it != wildcardPrefixes.end()) {
       prefixes.insert(
           std::pair<std::string, std::string>(java_package, it->second));
-      return it->second;
+      return globalPrefix + it->second;
     }
     size_t lastDot = sub_package.find_last_of(".");
     if (lastDot == std::string::npos) {
@@ -165,7 +169,7 @@ std::string GetPackagePrefix(const FileDescriptor *file) {
     sub_package.erase(lastDot);
   }
 
-  return CapitalizeJavaPackage(java_package);
+  return globalPrefix + CapitalizeJavaPackage(java_package);
 }
 
 std::string GetJavaClassPrefix(const FileDescriptor *file,
@@ -665,6 +669,14 @@ void ParsePrefixLine(std::string line) {
   }
 }
 
+void SetGlobalPrefix(std::string prefix) {
+  globalPrefix = std::move(prefix);
+}
+
+void SetFileSubExtension(std::string fileSubExtension) {
+  globalFileSubExtension = std::move(fileSubExtension);
+}
+
 void ParsePrefixFile(std::string prefix_file) {
   std::ifstream in(prefix_file.c_str());
   if (in.is_open()) {
@@ -685,7 +697,7 @@ std::string MappedInputName(const FileDescriptor *file) {
 
 std::string StaticOutputFileName(const FileDescriptor *file,
                                  std::string suffix) {
-  return MappedInputName(file) + ".j2objc.pb" + suffix;
+  return MappedInputName(file) + globalFileSubExtension + suffix;
 }
 
 std::string FileDirMappingOutputName(const FileDescriptor *file) {

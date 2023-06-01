@@ -60,6 +60,10 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
   for (int i = 0; i < options.size(); i++) {
     if (options[i].first == "prefixes") {
       ParsePrefixFile(options[i].second);
+    } else if (options[i].first == "global_prefix") {
+      SetGlobalPrefix(options[i].second);
+    } else if (options[i].first == "file_sub_extension") {
+      SetFileSubExtension(options[i].second);
     } else if (options[i].first == "file_dir_mapping") {
       GenerateFileDirMapping();
     } else if (options[i].first == "generate_class_mappings") {
