@@ -21,8 +21,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation that specifies what the Objective-C class, protocol, method,
- * constructor or package declaration should be when translated.
+ * Annotation that specifies what the Objective-C class, protocol, method, constructor or package
+ * declaration should be when translated.
  *
  * <p>For packages add the annotation to the package declaration in a package-info.java file to
  * specify the desired package prefix. Alternatively, package prefixes may be specified using the
@@ -31,6 +31,7 @@ import java.lang.annotation.Target;
  * <p>For classes specify the desired Objective-C class name for the translated type.
  *
  * <p>For methods specify the desired Objective-C selector for the translated method:
+ *
  * <pre>
  * &#64;ObjectiveCName("setDateWithYear:month:day:")
  * public void setDate(int year, int month, int day);</pre>
@@ -38,8 +39,8 @@ import java.lang.annotation.Target;
  * @author Tom Ball
  */
 @Documented
-@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.PACKAGE })
-@Retention(RetentionPolicy.CLASS)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.PACKAGE})
+@Retention(RetentionPolicy.RUNTIME)
 public @interface ObjectiveCName {
 
   /**
