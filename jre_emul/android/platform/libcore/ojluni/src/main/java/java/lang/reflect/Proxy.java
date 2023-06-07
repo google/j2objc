@@ -999,9 +999,9 @@ public class Proxy implements java.io.Serializable {
      *          {@code false} otherwise
      * @throws  NullPointerException if {@code cl} is {@code null}
      */
-    public static boolean isProxyClass(Class<?> cl) {
-        return Proxy.class.isAssignableFrom(cl) && proxyClassCache.containsValue(cl);
-    }
+    public static native boolean isProxyClass(Class<?> cl) /*-[
+      return [nil_chk(cl) isKindOfClass:[IOSProxyClass class]];
+    ]-*/;
 
     /**
      * Returns the invocation handler for the specified proxy instance.
