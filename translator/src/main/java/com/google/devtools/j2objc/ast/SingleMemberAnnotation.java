@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.util.ElementUtil;
+
 /**
  * Node type for an annotation with only a single parameter for the default value.
  */
@@ -51,7 +53,9 @@ public class SingleMemberAnnotation extends Annotation {
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       typeName.accept(visitor);
-      value.accept(visitor);
+      if (needsReflection && ElementUtil.isRuntimeAnnotation(this.getAnnotationMirror())) {
+        value.accept(visitor);
+      }
     }
     visitor.endVisit(this);
   }

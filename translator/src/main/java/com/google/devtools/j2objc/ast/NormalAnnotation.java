@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.List;
 
 /**
@@ -47,7 +48,9 @@ public class NormalAnnotation extends Annotation {
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       typeName.accept(visitor);
-      values.accept(visitor);
+      if (needsReflection && ElementUtil.isRuntimeAnnotation(this.getAnnotationMirror())) {
+        values.accept(visitor);
+      }
     }
     visitor.endVisit(this);
   }

@@ -24,6 +24,7 @@ public abstract class Annotation extends Expression {
 
   private AnnotationMirror annotationMirror = null;
   protected ChildLink<Name> typeName = ChildLink.create(Name.class, this);
+  protected boolean needsReflection = true;
 
   protected Annotation() {}
 
@@ -53,6 +54,10 @@ public abstract class Annotation extends Expression {
 
   public boolean isSingleMemberAnnotation() {
     return false;
+  }
+  
+  public void setNeedsReflection(boolean needsReflection) {
+    this.needsReflection = needsReflection;
   }
 
   @Override

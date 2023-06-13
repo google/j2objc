@@ -49,4 +49,16 @@ public class UnitTreeVisitor extends TreeVisitor {
   public void run() {
     unit.accept(this);
   }
+  
+  @Override
+  public boolean visit(SingleMemberAnnotation node) {
+    node.setNeedsReflection(!this.options.stripReflection());
+    return true;
+  }
+  
+  @Override
+  public boolean visit(NormalAnnotation node) {
+    node.setNeedsReflection(!this.options.stripReflection());
+    return true;
+  }
 }
