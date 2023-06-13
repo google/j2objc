@@ -29,6 +29,8 @@ package java.util;
 import com.google.j2objc.LibraryNotLinkedError;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -40,7 +42,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 
-// Android-changed: Removed dead native2ascii links
+// Android-removed: Dead native2ascii links.
+// These links are also gone in OpenJDK 9.
 /**
  * The {@code Properties} class represents a persistent set of
  * properties. The {@code Properties} can be saved to a stream
@@ -384,9 +387,9 @@ class Properties extends Hashtable<Object,Object> {
                     valueStart = keyLen + 1;
                     hasSep = true;
                     break;
-                }
-                // Android-changed: use of Character.isWhitespace(c) b/25998006
-                else if (Character.isWhitespace(c) && !precedingBackslash) {
+                // Android-changed: Treat all whitespace the same. http://b/25998006
+                // } else if ((c == ' ' || c == '\t' ||  c == '\f') && !precedingBackslash) {
+                } else if (Character.isWhitespace(c) && !precedingBackslash) {
                     valueStart = keyLen + 1;
                     break;
                 }
@@ -399,7 +402,8 @@ class Properties extends Hashtable<Object,Object> {
             }
             while (valueStart < limit) {
                 c = lr.lineBuf[valueStart];
-                // Android-changed: use of Character.isWhitespace(c) b/25998006
+                // Android-changed: Treat all whitespace the same. http://b/25998006
+                // if (c != ' ' && c != '\t' &&  c != '\f') {
                 if (!Character.isWhitespace(c)) {
                     if (!hasSep && (c == '=' ||  c == ':')) {
                         hasSep = true;
@@ -419,8 +423,7 @@ class Properties extends Hashtable<Object,Object> {
         loadLineReader(lr, this::put);
     }
 
-    /**
-     * Read in a "logical line" from an InputStream/Reader, skip all comment
+    /* Read in a "logical line" from an InputStream/Reader, skip all comment
      * and blank lines and filter out those leading whitespace characters
      * (\u0020, \u0009 and \u000c) from the beginning of a "natural line".
      * Method returns the char length of the "logical line" and stores
@@ -485,7 +488,8 @@ class Properties extends Hashtable<Object,Object> {
                     }
                 }
                 if (skipWhiteSpace) {
-                    // Android-changed: use of Character.isWhitespace(c) b/25998006
+                    // Android-changed: Treat all whitespace the same. http://b/25998006
+                    // if (c == ' ' || c == '\t' || c == '\f') {
                     if (Character.isWhitespace(c)) {
                         continue;
                     }
@@ -1242,4 +1246,89 @@ class Properties extends Hashtable<Object,Object> {
     private static final char[] hexDigit = {
         '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
     };
+
+    // Android-removed: Keep OpenJDK7u40's XmlUtils.
+    // XmlSupport's system property based XmlPropertiesProvider
+    // selection does not make sense on Android and has too many
+    // dependencies on classes that are not available on Android.
+    /*
+    /**
+     * Supporting class for loading/storing properties in XML format.
+     *
+     * <p> The {@code load} and {@code store} methods defined here delegate to a
+     * system-wide {@code XmlPropertiesProvider}. On first invocation of either
+     * method then the system-wide provider is located as follows: </p>
+     *
+     * <ol>
+     *   <li> If the system property {@code sun.util.spi.XmlPropertiesProvider}
+     *   is defined then it is taken to be the full-qualified name of a concrete
+     *   provider class. The class is loaded with the system class loader as the
+     *   initiating loader. If it cannot be loaded or instantiated using a zero
+     *   argument constructor then an unspecified error is thrown. </li>
+     *
+     *   <li> If the system property is not defined then the service-provider
+     *   loading facility defined by the {@link ServiceLoader} class is used to
+     *   locate a provider with the system class loader as the initiating
+     *   loader and {@code sun.util.spi.XmlPropertiesProvider} as the service
+     *   type. If this process fails then an unspecified error is thrown. If
+     *   there is more than one service provider installed then it is
+     *   not specified as to which provider will be used. </li>
+     *
+     *   <li> If the provider is not found by the above means then a system
+     *   default provider will be instantiated and used. </li>
+     * </ol>
+     *
+    private static class XmlSupport {
+
+        private static XmlPropertiesProvider loadProviderFromProperty(ClassLoader cl) {
+            String cn = System.getProperty("sun.util.spi.XmlPropertiesProvider");
+            if (cn == null)
+                return null;
+            try {
+                Class<?> c = Class.forName(cn, true, cl);
+                return (XmlPropertiesProvider)c.newInstance();
+            } catch (ClassNotFoundException |
+                     IllegalAccessException |
+                     InstantiationException x) {
+                throw new ServiceConfigurationError(null, x);
+            }
+        }
+
+        private static XmlPropertiesProvider loadProviderAsService(ClassLoader cl) {
+            Iterator<XmlPropertiesProvider> iterator =
+                 ServiceLoader.load(XmlPropertiesProvider.class, cl).iterator();
+            return iterator.hasNext() ? iterator.next() : null;
+        }
+
+        private static XmlPropertiesProvider loadProvider() {
+            return AccessController.doPrivileged(
+                new PrivilegedAction<XmlPropertiesProvider>() {
+                    public XmlPropertiesProvider run() {
+                        ClassLoader cl = ClassLoader.getSystemClassLoader();
+                        XmlPropertiesProvider provider = loadProviderFromProperty(cl);
+                        if (provider != null)
+                            return provider;
+                        provider = loadProviderAsService(cl);
+                        if (provider != null)
+                            return provider;
+                        return new jdk.internal.util.xml.BasicXmlPropertiesProvider();
+                }});
+        }
+
+        private static final XmlPropertiesProvider PROVIDER = loadProvider();
+
+        static void load(Properties props, InputStream in)
+            throws IOException, InvalidPropertiesFormatException
+        {
+            PROVIDER.load(props, in);
+        }
+
+        static void save(Properties props, OutputStream os, String comment,
+                         String encoding)
+            throws IOException
+        {
+            PROVIDER.store(props, os, comment, encoding);
+        }
+    }
+    */
 }

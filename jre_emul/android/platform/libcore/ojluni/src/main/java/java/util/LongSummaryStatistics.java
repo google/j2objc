@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2017, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,6 +26,7 @@ package java.util;
 
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
+import java.util.stream.Collector;
 
 /**
  * A state object for collecting statistics such as count, min, max, sum, and
@@ -41,7 +42,7 @@ import java.util.function.LongConsumer;
  * }</pre>
  *
  * <p>{@code LongSummaryStatistics} can be used as a
- * {@linkplain java.util.stream.Stream#collect(Collector)} reduction}
+ * {@linkplain java.util.stream.Stream#collect(Collector) reduction}
  * target for a {@linkplain java.util.stream.Stream stream}. For example:
  *
  * <pre> {@code
@@ -54,7 +55,7 @@ import java.util.function.LongConsumer;
  *
  * @implNote This implementation is not thread safe. However, it is safe to use
  * {@link java.util.stream.Collectors#summarizingLong(java.util.function.ToLongFunction)
- * Collectors.toLongStatistics()} on a parallel stream, because the parallel
+ * Collectors.summarizingLong()} on a parallel stream, because the parallel
  * implementation of {@link java.util.stream.Stream#collect Stream.collect()}
  * provides the necessary partitioning, isolation, and merging of results for
  * safe and efficient parallel execution.
@@ -69,11 +70,56 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer {
     private long max = Long.MIN_VALUE;
 
     /**
-     * Construct an empty instance with zero count, zero sum,
+     * Constructs an empty instance with zero count, zero sum,
      * {@code Long.MAX_VALUE} min, {@code Long.MIN_VALUE} max and zero
      * average.
      */
     public LongSummaryStatistics() { }
+
+    /**
+     * Constructs a non-empty instance with the specified {@code count},
+     * {@code min}, {@code max}, and {@code sum}.
+     *
+     * <p>If {@code count} is zero then the remaining arguments are ignored and
+     * an empty instance is constructed.
+     *
+     * <p>If the arguments are inconsistent then an {@code IllegalArgumentException}
+     * is thrown.  The necessary consistent argument conditions are:
+     * <ul>
+     *   <li>{@code count >= 0}</li>
+     *   <li>{@code min <= max}</li>
+     * </ul>
+     * @apiNote
+     * The enforcement of argument correctness means that the retrieved set of
+     * recorded values obtained from a {@code LongSummaryStatistics} source
+     * instance may not be a legal set of arguments for this constructor due to
+     * arithmetic overflow of the source's recorded count of values.
+     * The consistent argument conditions are not sufficient to prevent the
+     * creation of an internally inconsistent instance.  An example of such a
+     * state would be an instance with: {@code count} = 2, {@code min} = 1,
+     * {@code max} = 2, and {@code sum} = 0.
+     *
+     * @param count the count of values
+     * @param min the minimum value
+     * @param max the maximum value
+     * @param sum the sum of all values
+     * @throws IllegalArgumentException if the arguments are inconsistent
+     * @since 10
+     */
+    public LongSummaryStatistics(long count, long min, long max, long sum)
+            throws IllegalArgumentException {
+        if (count < 0L) {
+            throw new IllegalArgumentException("Negative count value");
+        } else if (count > 0L) {
+            if (min > max) throw new IllegalArgumentException("Minimum greater than maximum");
+
+            this.count = count;
+            this.sum = sum;
+            this.min = min;
+            this.max = max;
+        }
+        // Use default field values if count == 0
+    }
 
     /**
      * Records a new {@code int} value into the summary information.
@@ -161,14 +207,12 @@ public class LongSummaryStatistics implements LongConsumer, IntConsumer {
         return getCount() > 0 ? (double) getSum() / getCount() : 0.0d;
     }
 
-    @Override
     /**
-     * {@inheritDoc}
-     *
      * Returns a non-empty string representation of this object suitable for
      * debugging. The exact presentation format is unspecified and may vary
      * between implementations and versions.
      */
+    @Override
     public String toString() {
         return String.format(
             "%s{count=%d, sum=%d, min=%d, average=%f, max=%d}",
