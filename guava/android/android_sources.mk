@@ -14,6 +14,7 @@ GUAVA_SOURCES = \
     com/google/common/annotations/Beta.java \
     com/google/common/annotations/GwtCompatible.java \
     com/google/common/annotations/GwtIncompatible.java \
+    com/google/common/annotations/J2ktIncompatible.java \
     com/google/common/annotations/VisibleForTesting.java \
     com/google/common/annotations/package-info.java \
     com/google/common/base/Absent.java \
@@ -513,6 +514,7 @@ GUAVA_SOURCES = \
     com/google/common/reflect/AbstractInvocationHandler.java \
     com/google/common/reflect/ClassPath.java \
     com/google/common/reflect/ElementTypesAreNonnullByDefault.java \
+    com/google/common/reflect/IgnoreJRERequirement.java \
     com/google/common/reflect/ImmutableTypeToInstanceMap.java \
     com/google/common/reflect/Invokable.java \
     com/google/common/reflect/MutableTypeToInstanceMap.java \

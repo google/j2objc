@@ -77,7 +77,7 @@
                 <artifactItem>
                   <groupId>com.google.guava</groupId>
                   <artifactId>guava</artifactId>
-                  <version>31.1-jre</version>
+                  <version>32.0.1-jre</version>
                   <classifier>sources</classifier>
                 </artifactItem>
                 <artifactItem>
@@ -89,7 +89,7 @@
                 <artifactItem>
                   <groupId>com.google.guava</groupId>
                   <artifactId>guava</artifactId>
-                  <version>31.1-android</version>
+                  <version>32.0.1-android</version>
                   <classifier>sources</classifier>
                 </artifactItem>
                 <artifactItem>
@@ -98,7 +98,7 @@
                        and this one conflicts with 31.0.1-jre. -->
                   <groupId>com.google.guava</groupId>
                   <artifactId>guava</artifactId>
-                  <version>31.1-android</version>
+                  <version>32.0.1-android</version>
                 </artifactItem>
                 <artifactItem>
                   <groupId>javax.inject</groupId>
@@ -171,7 +171,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>31.1-jre</version>
+      <version>32.0.1-jre</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
