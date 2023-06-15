@@ -58,7 +58,7 @@ endif
 
 FRAMEWORK_DIR = $(DIST_FRAMEWORK_DIR)/$(FRAMEWORK_NAME).xcframework
 FRAMEWORK_HEADER = $(BUILD_DIR)/$(FRAMEWORK_NAME).h
-MODULE_MAP = $(BUILD_DIR)/module.modulemap
+MODULE_MAP = $(BUILD_DIR)/modulemap-$(FRAMEWORK_NAME)/module.modulemap
 
 FRAMEWORK_RESOURCES_DIR = $(FRAMEWORK_DIR)/Versions/A/Resources
 RESOURCE_FILES = $(FRAMEWORK_RESOURCE_FILES:%=$(FRAMEWORK_RESOURCES_DIR)/%)
@@ -129,6 +129,7 @@ test_warnings: $(FRAMEWORK_HEADER)
 	@rm $(FRAMEWORK_HEADER:%.h=%.o)
 
 $(MODULE_MAP):
+	@mkdir -p $(dir $(MODULE_MAP))
 	@echo "module" $(FRAMEWORK_NAME) "{" > $(MODULE_MAP)
 	@echo "  umbrella header" '"'$(FRAMEWORK_NAME).h'"' >> $(MODULE_MAP)
 	@echo >> $(MODULE_MAP)
