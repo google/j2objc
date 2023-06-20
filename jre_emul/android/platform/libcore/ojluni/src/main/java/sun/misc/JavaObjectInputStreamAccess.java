@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2005, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,46 +23,16 @@
  * questions.
  */
 
-package java.util;
+package sun.misc;
+
+import java.io.InvalidClassException;
+import java.io.ObjectInputStream;
 
 /**
- * Unchecked exception thrown when an unknown conversion is given.
- *
- * <p> Unless otherwise specified, passing a {@code null} argument to
- * any method or constructor in this class will cause a {@link
- * NullPointerException} to be thrown.
- *
- * @since 1.5
+ * Interface to specify methods for accessing {@code ObjectInputStream}.
  */
-public class UnknownFormatConversionException extends IllegalFormatException {
-
-    private static final long serialVersionUID = 19060418L;
-
-    private String s;
-
-    /**
-     * Constructs an instance of this class with the unknown conversion.
-     *
-     * @param  s
-     *         Unknown conversion
-     */
-    public UnknownFormatConversionException(String s) {
-        if (s == null)
-            throw new NullPointerException();
-        this.s = s;
-    }
-
-    /**
-     * Returns the unknown conversion.
-     *
-     * @return  The unknown conversion.
-     */
-    public String getConversion() {
-        return s;
-    }
-
-    // javadoc inherited from Throwable.java
-    public String getMessage() {
-        return String.format("Conversion = '%s'", s);
-    }
+@FunctionalInterface
+public interface JavaObjectInputStreamAccess {
+    void checkArray(ObjectInputStream ois, Class<?> arrayType, int arrayLength)
+        throws InvalidClassException;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2017, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -88,15 +88,16 @@ import java.util.function.UnaryOperator;
  * Such exceptions are marked as "optional" in the specification for this
  * interface.
  *
- * <h2><a id="immutable">Immutable List Static Factory Methods</a></h2>
- * <p>The {@link List#of(Object...) List.of()} static factory methods
- * provide a convenient way to create immutable lists. The {@code List}
+ * <h2><a id="unmodifiable">Unmodifiable Lists</a></h2>
+ * <p>The {@link List#of(Object...) List.of} and
+ * {@link List#copyOf List.copyOf} static factory methods
+ * provide a convenient way to create unmodifiable lists. The {@code List}
  * instances created by these methods have the following characteristics:
  *
  * <ul>
- * <li>They are <em>structurally immutable</em>. Elements cannot be added, removed,
- * or replaced. Calling any mutator method will always cause
- * {@code UnsupportedOperationException} to be thrown.
+ * <li>They are <a href="Collection.html#unmodifiable"><i>unmodifiable</i></a>. Elements cannot
+ * be added, removed, or replaced. Calling any mutator method on the List
+ * will always cause {@code UnsupportedOperationException} to be thrown.
  * However, if the contained elements are themselves mutable,
  * this may cause the List's contents to appear to change.
  * <li>They disallow {@code null} elements. Attempts to create them with

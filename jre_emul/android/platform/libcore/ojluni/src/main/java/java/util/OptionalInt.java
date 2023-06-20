@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -27,18 +27,27 @@ package java.util;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 // Android-changed: removed ValueBased paragraph.
 /**
- * A container object which may or may not contain a {@code int} value.
- * If a value is present, {@code isPresent()} will return {@code true} and
- * {@code getAsInt()} will return the value.
+ * A container object which may or may not contain an {@code int} value.
+ * If a value is present, {@code isPresent()} returns {@code true}. If no
+ * value is present, the object is considered <i>empty</i> and
+ * {@code isPresent()} returns {@code false}.
  *
  * <p>Additional methods that depend on the presence or absence of a contained
  * value are provided, such as {@link #orElse(int) orElse()}
- * (return a default value if value not present) and
- * {@link #ifPresent(java.util.function.IntConsumer) ifPresent()} (execute a block
- * of code if the value is present).
+ * (returns a default value if no value is present) and
+ * {@link #ifPresent(IntConsumer) ifPresent()} (performs an
+ * action if a value is present).
+ *
+ *
+ * @apiNote
+ * {@code OptionalInt} is primarily intended for use as a method return type where
+ * there is a clear need to represent "no result." A variable whose type is
+ * {@code OptionalInt} should never itself be {@code null}; it should always point
+ * to an {@code OptionalInt} instance.
  *
  * @since 1.8
  */
@@ -66,24 +75,25 @@ public final class OptionalInt {
     }
 
     /**
-     * Returns an empty {@code OptionalInt} instance.  No value is present for this
-     * OptionalInt.
+     * Returns an empty {@code OptionalInt} instance.  No value is present for
+     * this {@code OptionalInt}.
      *
-     * @apiNote Though it may be tempting to do so, avoid testing if an object
-     * is empty by comparing with {@code ==} against instances returned by
-     * {@code Option.empty()}. There is no guarantee that it is a singleton.
+     * @apiNote
+     * Though it may be tempting to do so, avoid testing if an object is empty
+     * by comparing with {@code ==} against instances returned by
+     * {@code OptionalInt.empty()}.  There is no guarantee that it is a singleton.
      * Instead, use {@link #isPresent()}.
      *
-     *  @return an empty {@code OptionalInt}
+     * @return an empty {@code OptionalInt}
      */
     public static OptionalInt empty() {
         return EMPTY;
     }
 
     /**
-     * Construct an instance with the value present.
+     * Construct an instance with the described value.
      *
-     * @param value the int value to be present
+     * @param value the int value to describe
      */
     private OptionalInt(int value) {
         this.isPresent = true;
@@ -91,9 +101,9 @@ public final class OptionalInt {
     }
 
     /**
-     * Return an {@code OptionalInt} with the specified value present.
+     * Returns an {@code OptionalInt} describing the given value.
      *
-     * @param value the value to be present
+     * @param value the value to describe
      * @return an {@code OptionalInt} with the value present
      */
     public static OptionalInt of(int value) {
@@ -101,13 +111,14 @@ public final class OptionalInt {
     }
 
     /**
-     * If a value is present in this {@code OptionalInt}, returns the value,
-     * otherwise throws {@code NoSuchElementException}.
+     * If a value is present, returns the value, otherwise throws
+     * {@code NoSuchElementException}.
      *
-     * @return the value held by this {@code OptionalInt}
-     * @throws NoSuchElementException if there is no value present
+     * @apiNote
+     * The preferred alternative to this method is {@link #orElseThrow()}.
      *
-     * @see OptionalInt#isPresent()
+     * @return the value described by this {@code OptionalInt}
+     * @throws NoSuchElementException if no value is present
      */
     public int getAsInt() {
         if (!isPresent) {
@@ -117,31 +128,87 @@ public final class OptionalInt {
     }
 
     /**
-     * Return {@code true} if there is a value present, otherwise {@code false}.
+     * If a value is present, returns {@code true}, otherwise {@code false}.
      *
-     * @return {@code true} if there is a value present, otherwise {@code false}
+     * @return {@code true} if a value is present, otherwise {@code false}
      */
     public boolean isPresent() {
         return isPresent;
     }
 
     /**
-     * Have the specified consumer accept the value if a value is present,
-     * otherwise do nothing.
+     * If a value is not present, returns {@code true}, otherwise
+     * {@code false}.
      *
-     * @param consumer block to be executed if a value is present
-     * @throws NullPointerException if value is present and {@code consumer} is
-     * null
+     * @return  {@code true} if a value is not present, otherwise {@code false}
+     * @since   11
      */
-    public void ifPresent(IntConsumer consumer) {
-        if (isPresent)
-            consumer.accept(value);
+    public boolean isEmpty() {
+        return !isPresent;
     }
 
     /**
-     * Return the value if present, otherwise return {@code other}.
+     * If a value is present, performs the given action with the value,
+     * otherwise does nothing.
      *
-     * @param other the value to be returned if there is no value present
+     * @param action the action to be performed, if a value is present
+     * @throws NullPointerException if value is present and the given action is
+     *         {@code null}
+     */
+    public void ifPresent(IntConsumer action) {
+        if (isPresent) {
+            action.accept(value);
+        }
+    }
+
+    /**
+     * If a value is present, performs the given action with the value,
+     * otherwise performs the given empty-based action.
+     *
+     * @param action the action to be performed, if a value is present
+     * @param emptyAction the empty-based action to be performed, if no value is
+     *        present
+     * @throws NullPointerException if a value is present and the given action
+     *         is {@code null}, or no value is present and the given empty-based
+     *         action is {@code null}.
+     * @since 9
+     */
+    public void ifPresentOrElse(IntConsumer action, Runnable emptyAction) {
+        if (isPresent) {
+            action.accept(value);
+        } else {
+            emptyAction.run();
+        }
+    }
+
+    /**
+     * If a value is present, returns a sequential {@link IntStream} containing
+     * only that value, otherwise returns an empty {@code IntStream}.
+     *
+     * @apiNote
+     * This method can be used to transform a {@code Stream} of optional
+     * integers to an {@code IntStream} of present integers:
+     * <pre>{@code
+     *     Stream<OptionalInt> os = ..
+     *     IntStream s = os.flatMapToInt(OptionalInt::stream)
+     * }</pre>
+     *
+     * @return the optional value as an {@code IntStream}
+     * @since 9
+     */
+    public IntStream stream() {
+        if (isPresent) {
+            return IntStream.of(value);
+        } else {
+            return IntStream.empty();
+        }
+    }
+
+    /**
+     * If a value is present, returns the value, otherwise returns
+     * {@code other}.
+     *
+     * @param other the value to be returned, if no value is present
      * @return the value, if present, otherwise {@code other}
      */
     public int orElse(int other) {
@@ -149,36 +216,52 @@ public final class OptionalInt {
     }
 
     /**
-     * Return the value if present, otherwise invoke {@code other} and return
-     * the result of that invocation.
+     * If a value is present, returns the value, otherwise returns the result
+     * produced by the supplying function.
      *
-     * @param other a {@code IntSupplier} whose result is returned if no value
-     * is present
-     * @return the value if present otherwise the result of {@code other.getAsInt()}
-     * @throws NullPointerException if value is not present and {@code other} is
-     * null
+     * @param supplier the supplying function that produces a value to be returned
+     * @return the value, if present, otherwise the result produced by the
+     *         supplying function
+     * @throws NullPointerException if no value is present and the supplying
+     *         function is {@code null}
      */
-    public int orElseGet(IntSupplier other) {
-        return isPresent ? value : other.getAsInt();
+    public int orElseGet(IntSupplier supplier) {
+        return isPresent ? value : supplier.getAsInt();
     }
 
     /**
-     * Return the contained value, if present, otherwise throw an exception
-     * to be created by the provided supplier.
+     * If a value is present, returns the value, otherwise throws
+     * {@code NoSuchElementException}.
      *
-     * @apiNote A method reference to the exception constructor with an empty
-     * argument list can be used as the supplier. For example,
+     * @return the value described by this {@code OptionalInt}
+     * @throws NoSuchElementException if no value is present
+     * @since 10
+     */
+    public int orElseThrow() {
+        if (!isPresent) {
+            throw new NoSuchElementException("No value present");
+        }
+        return value;
+    }
+
+    /**
+     * If a value is present, returns the value, otherwise throws an exception
+     * produced by the exception supplying function.
+     *
+     * @apiNote
+     * A method reference to the exception constructor with an empty argument
+     * list can be used as the supplier. For example,
      * {@code IllegalStateException::new}
      *
      * @param <X> Type of the exception to be thrown
-     * @param exceptionSupplier The supplier which will return the exception to
-     * be thrown
-     * @return the present value
-     * @throws X if there is no value present
-     * @throws NullPointerException if no value is present and
-     * {@code exceptionSupplier} is null
+     * @param exceptionSupplier the supplying function that produces an
+     *        exception to be thrown
+     * @return the value, if present
+     * @throws X if no value is present
+     * @throws NullPointerException if no value is present and the exception
+     *         supplying function is {@code null}
      */
-    public<X extends Throwable> int orElseThrow(Supplier<X> exceptionSupplier) throws X {
+    public<X extends Throwable> int orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
         if (isPresent) {
             return value;
         } else {
@@ -187,8 +270,8 @@ public final class OptionalInt {
     }
 
     /**
-     * Indicates whether some other object is "equal to" this OptionalInt. The
-     * other object is considered equal if:
+     * Indicates whether some other object is "equal to" this
+     * {@code OptionalInt}.  The other object is considered equal if:
      * <ul>
      * <li>it is also an {@code OptionalInt} and;
      * <li>both instances have no value present or;
@@ -196,8 +279,8 @@ public final class OptionalInt {
      * </ul>
      *
      * @param obj an object to be tested for equality
-     * @return {code true} if the other object is "equal to" this object
-     * otherwise {@code false}
+     * @return {@code true} if the other object is "equal to" this object
+     *         otherwise {@code false}
      */
     @Override
     public boolean equals(Object obj) {
@@ -216,10 +299,11 @@ public final class OptionalInt {
     }
 
     /**
-     * Returns the hash code value of the present value, if any, or 0 (zero) if
-     * no value is present.
+     * Returns the hash code of the value, if present, otherwise {@code 0}
+     * (zero) if no value is present.
      *
-     * @return hash code value of the present value or 0 if no value is present
+     * @return hash code value of the present value or {@code 0} if no value is
+     *         present
      */
     @Override
     public int hashCode() {
@@ -227,14 +311,13 @@ public final class OptionalInt {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns a non-empty string representation of this {@code OptionalInt}
+     * suitable for debugging.  The exact presentation format is unspecified and
+     * may vary between implementations and versions.
      *
-     * Returns a non-empty string representation of this object suitable for
-     * debugging. The exact presentation format is unspecified and may vary
-     * between implementations and versions.
-     *
-     * @implSpec If a value is present the result must include its string
-     * representation in the result. Empty and present instances must be
+     * @implSpec
+     * If a value is present the result must include its string representation
+     * in the result.  Empty and present {@code OptionalInt}s must be
      * unambiguously differentiable.
      *
      * @return the string representation of this instance

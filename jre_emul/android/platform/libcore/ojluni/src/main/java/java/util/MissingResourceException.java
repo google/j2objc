@@ -45,7 +45,7 @@ package java.util;
  * @see java.lang.Exception
  * @see ResourceBundle
  * @author      Mark Davis
- * @since       JDK1.1
+ * @since       1.1
  */
 public
 class MissingResourceException extends RuntimeException {
@@ -64,10 +64,10 @@ class MissingResourceException extends RuntimeException {
     }
 
     /**
-     * Constructs a <code>MissingResourceException</code> with
-     * <code>message</code>, <code>className</code>, <code>key</code>,
-     * and <code>cause</code>. This constructor is package private for
-     * use by <code>ResourceBundle.getBundle</code>.
+     * Constructs a {@code MissingResourceException} with
+     * {@code message}, {@code className}, {@code key},
+     * and {@code cause}. This constructor is package private for
+     * use by {@code ResourceBundle.getBundle}.
      *
      * @param message
      *        the detail message

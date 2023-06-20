@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,23 +26,23 @@
 package java.util;
 
 /**
- * This class provides a skeletal implementation of the <tt>Set</tt>
+ * This class provides a skeletal implementation of the {@code Set}
  * interface to minimize the effort required to implement this
  * interface. <p>
  *
  * The process of implementing a set by extending this class is identical
  * to that of implementing a Collection by extending AbstractCollection,
  * except that all of the methods and constructors in subclasses of this
- * class must obey the additional constraints imposed by the <tt>Set</tt>
+ * class must obey the additional constraints imposed by the {@code Set}
  * interface (for instance, the add method must not permit addition of
  * multiple instances of an object to a set).<p>
  *
  * Note that this class does not override any of the implementations from
- * the <tt>AbstractCollection</tt> class.  It merely adds implementations
- * for <tt>equals</tt> and <tt>hashCode</tt>.<p>
+ * the {@code AbstractCollection} class.  It merely adds implementations
+ * for {@code equals} and {@code hashCode}.<p>
  *
  * This class is a member of the
- * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+ * <a href="{@docRoot}/java.base/java/util/package-summary.html#CollectionsFramework">
  * Java Collections Framework</a>.
  *
  * @param <E> the type of elements maintained by this set
@@ -67,20 +67,20 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
 
     /**
      * Compares the specified object with this set for equality.  Returns
-     * <tt>true</tt> if the given object is also a set, the two sets have
+     * {@code true} if the given object is also a set, the two sets have
      * the same size, and every member of the given set is contained in
-     * this set.  This ensures that the <tt>equals</tt> method works
-     * properly across different implementations of the <tt>Set</tt>
+     * this set.  This ensures that the {@code equals} method works
+     * properly across different implementations of the {@code Set}
      * interface.<p>
      *
      * This implementation first checks if the specified object is this
-     * set; if so it returns <tt>true</tt>.  Then, it checks if the
+     * set; if so it returns {@code true}.  Then, it checks if the
      * specified object is a set whose size is identical to the size of
      * this set; if not, it returns false.  If so, it returns
-     * <tt>containsAll((Collection) o)</tt>.
+     * {@code containsAll((Collection) o)}.
      *
      * @param o object to be compared for equality with this set
-     * @return <tt>true</tt> if the specified object is equal to this set
+     * @return {@code true} if the specified object is equal to this set
      */
     public boolean equals(Object o) {
         if (o == this)
@@ -93,9 +93,7 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
             return false;
         try {
             return containsAll(c);
-        } catch (ClassCastException unused)   {
-            return false;
-        } catch (NullPointerException unused) {
+        } catch (ClassCastException | NullPointerException unused) {
             return false;
         }
     }
@@ -103,14 +101,14 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
     /**
      * Returns the hash code value for this set.  The hash code of a set is
      * defined to be the sum of the hash codes of the elements in the set,
-     * where the hash code of a <tt>null</tt> element is defined to be zero.
-     * This ensures that <tt>s1.equals(s2)</tt> implies that
-     * <tt>s1.hashCode()==s2.hashCode()</tt> for any two sets <tt>s1</tt>
-     * and <tt>s2</tt>, as required by the general contract of
+     * where the hash code of a {@code null} element is defined to be zero.
+     * This ensures that {@code s1.equals(s2)} implies that
+     * {@code s1.hashCode()==s2.hashCode()} for any two sets {@code s1}
+     * and {@code s2}, as required by the general contract of
      * {@link Object#hashCode}.
      *
      * <p>This implementation iterates over the set, calling the
-     * <tt>hashCode</tt> method on each element in the set, and adding up
+     * {@code hashCode} method on each element in the set, and adding up
      * the results.
      *
      * @return the hash code value for this set
@@ -136,24 +134,24 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
      * the two sets.
      *
      * <p>This implementation determines which is the smaller of this set
-     * and the specified collection, by invoking the <tt>size</tt>
+     * and the specified collection, by invoking the {@code size}
      * method on each.  If this set has fewer elements, then the
      * implementation iterates over this set, checking each element
      * returned by the iterator in turn to see if it is contained in
      * the specified collection.  If it is so contained, it is removed
-     * from this set with the iterator's <tt>remove</tt> method.  If
+     * from this set with the iterator's {@code remove} method.  If
      * the specified collection has fewer elements, then the
      * implementation iterates over the specified collection, removing
      * from this set each element returned by the iterator, using this
-     * set's <tt>remove</tt> method.
+     * set's {@code remove} method.
      *
      * <p>Note that this implementation will throw an
-     * <tt>UnsupportedOperationException</tt> if the iterator returned by the
-     * <tt>iterator</tt> method does not implement the <tt>remove</tt> method.
+     * {@code UnsupportedOperationException} if the iterator returned by the
+     * {@code iterator} method does not implement the {@code remove} method.
      *
      * @param  c collection containing elements to be removed from this set
-     * @return <tt>true</tt> if this set changed as a result of the call
-     * @throws UnsupportedOperationException if the <tt>removeAll</tt> operation
+     * @return {@code true} if this set changed as a result of the call
+     * @throws UnsupportedOperationException if the {@code removeAll} operation
      *         is not supported by this set
      * @throws ClassCastException if the class of an element of this set
      *         is incompatible with the specified collection
@@ -170,8 +168,8 @@ public abstract class AbstractSet<E> extends AbstractCollection<E> implements Se
         boolean modified = false;
 
         if (size() > c.size()) {
-            for (Iterator<?> i = c.iterator(); i.hasNext(); )
-                modified |= remove(i.next());
+            for (Object e : c)
+                modified |= remove(e);
         } else {
             for (Iterator<?> i = iterator(); i.hasNext(); ) {
                 if (c.contains(i.next())) {
