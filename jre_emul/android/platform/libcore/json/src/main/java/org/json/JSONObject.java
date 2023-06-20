@@ -117,13 +117,13 @@ public class JSONObject {
     };
 
     @UnsupportedAppUsage
-    private final LinkedHashMap<@NonNull String, Object> nameValuePairs;
+    private final LinkedHashMap<@NonNull String, @Nullable Object> nameValuePairs;
 
     /**
      * Creates a {@code JSONObject} with no name/value mappings.
      */
     public JSONObject() {
-        nameValuePairs = new LinkedHashMap<String, Object>();
+        nameValuePairs = new LinkedHashMap<@NonNull String, @Nullable Object>();
     }
 
     /**
@@ -689,7 +689,7 @@ public class JSONObject {
     @Nullable public JSONArray names() {
         return nameValuePairs.isEmpty()
                 ? null
-                : new JSONArray(new ArrayList<String>(nameValuePairs.keySet()));
+                : new JSONArray(new ArrayList<@Nullable String>(nameValuePairs.keySet()));
     }
 
     /**

@@ -50,13 +50,13 @@ import java.util.List;
 public class JSONArray {
 
     @UnsupportedAppUsage
-    private final List<Object> values;
+    private final List<@Nullable Object> values;
 
     /**
      * Creates a {@code JSONArray} with no values.
      */
     public JSONArray() {
-        values = new ArrayList<Object>();
+        values = new ArrayList<@Nullable Object>();
     }
 
     /**
@@ -118,7 +118,7 @@ public class JSONArray {
             throw new JSONException("Not a primitive array: " + array.getClass());
         }
         final int length = Array.getLength(array);
-        values = new ArrayList<Object>(length);
+        values = new ArrayList<@Nullable Object>(length);
         for (int i = 0; i < length; ++i) {
             put(JSONObject.wrap(Array.get(array, i)));
         }
@@ -292,7 +292,7 @@ public class JSONArray {
             }
             return value;
         } catch (IndexOutOfBoundsException e) {
-            throw new JSONException("Index " + index + " out of range [0.." + values.size() + ")", e);
+      throw new JSONException("Index " + index + " out of range [0.." + values.size() + ")", e);
         }
     }
 

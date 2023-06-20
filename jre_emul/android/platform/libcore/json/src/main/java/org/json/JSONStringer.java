@@ -114,7 +114,8 @@ public class JSONStringer {
      * levels of nesting.
      */
     @UnsupportedAppUsage
-    private final List<Scope> stack = new ArrayList<Scope>();
+    private final List<@Nullable Scope> stack =
+        new ArrayList<@Nullable Scope>();
 
     /**
      * A string containing a full set of spaces for a single level of
