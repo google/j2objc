@@ -108,6 +108,7 @@ public class Options {
   private boolean ignoreJarWarnings = false;
   private boolean linkSourcePathHeaders = false;
   private boolean javacWarnings = true;
+  private boolean stripReflectionErrors = false;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -469,6 +470,23 @@ public class Options {
         stripGwtIncompatible = true;
       } else if (arg.equals("--strip-reflection")) {
         includedMetadata = EnumSet.of(MetadataSupport.ENUM_CONSTANTS);
+      } else if (arg.equals("-Xstrip-reflection-errors:")) {
+        String subArg = arg.substring(arg.indexOf(':') + 1);
+        switch (subArg) {
+          case "true":
+            {
+              setStripReflectionErrors(true);
+              break;
+            }
+          case "false":
+            {
+              break;
+            }
+          default:
+            {
+              usage("invalid -Xstrip-reflection-warnings argument: " + subArg);
+            }
+        }
       } else if (arg.equals("-Xstrip-enum-constants")) {
         includedMetadata.remove(MetadataSupport.ENUM_CONSTANTS);
       } else if (arg.startsWith("-Xjavac-warnings:")) {
@@ -1238,5 +1256,14 @@ public class Options {
 
   public boolean javacWarnings() {
     return javacWarnings;
+  }
+
+  @VisibleForTesting
+  public void setStripReflectionErrors(boolean b) {
+    stripReflectionErrors = b;
+  }
+
+  public boolean stripReflectionErrors() {
+    return stripReflectionErrors;
   }
 }

@@ -52,6 +52,7 @@ import com.google.devtools.j2objc.translate.OperatorRewriter;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.translate.PackageInfoRewriter;
 import com.google.devtools.j2objc.translate.PrivateDeclarationResolver;
+import com.google.devtools.j2objc.translate.ReflectionCodeDetector;
 import com.google.devtools.j2objc.translate.Rewriter;
 import com.google.devtools.j2objc.translate.SerializationStripper;
 import com.google.devtools.j2objc.translate.StaticVarRewriter;
@@ -148,6 +149,12 @@ public class TranslationProcessor extends FileProcessor {
     if (deadCodeMap != null) {
       deadCodeEliminator.run();
       ticker.tick("DeadCodeEliminator");
+    }
+
+    if (unit.getEnv().options().stripReflection()
+        && unit.getEnv().options().stripReflectionErrors()) {
+      new ReflectionCodeDetector(unit).run();
+      ticker.tick("ReflectionCodeDetector");
     }
 
     LogSiteInjector logSiteInjector = new LogSiteInjector(unit);
