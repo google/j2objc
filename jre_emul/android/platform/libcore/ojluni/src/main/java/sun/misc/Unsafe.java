@@ -676,4 +676,28 @@ public final class Unsafe {
      */
     // @HotSpotIntrinsicCandidate
     public native void fullFence();
+
+    /**
+     * Ensures the given class has been initialized. This is often
+     * needed in conjunction with obtaining the static field base of a
+     * class.
+     */
+    public void ensureClassInitialized(Class<?> c) {
+        /* J2ObjC removed
+        if (c == null) {
+            throw new NullPointerException();
+        }
+
+        // Android-changed: Implementation not yet available natively (b/202380950)
+        // ensureClassIni9tialized0(c);
+        try {
+            Class.forName(c.getName(), true, c.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            // The function doesn't specify that it's throwing ClassNotFoundException, so it needs
+            // to be caught here. We could rethrow as NoClassDefFoundError, however that is not
+            // documented for this function and the upstream implementation does not throw an
+            // exception.
+        }
+        */
+    }
 }

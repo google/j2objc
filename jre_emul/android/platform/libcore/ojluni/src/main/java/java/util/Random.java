@@ -110,7 +110,7 @@ class Random implements java.io.Serializable {
         // Different Sizes and Good Lattice Structure", 1999
         for (;;) {
             long current = seedUniquifier.get();
-            long next = current * 181783497276652981L;
+            long next = current * 1181783497276652981L;
             if (seedUniquifier.compareAndSet(current, next))
                 return next;
         }
@@ -165,7 +165,7 @@ class Random implements java.io.Serializable {
      *
      * @param seed the initial seed
      */
-    synchronized public void setSeed(long seed) {
+    public synchronized void setSeed(long seed) {
         this.seed.set(initialScramble(seed));
         haveNextNextGaussian = false;
     }
@@ -187,7 +187,7 @@ class Random implements java.io.Serializable {
      *
      * This is a linear congruential pseudorandom number generator, as
      * defined by D. H. Lehmer and described by Donald E. Knuth in
-     * <i>The Art of Computer Programming,</i> Volume 3:
+     * <i>The Art of Computer Programming,</i> Volume 2:
      * <i>Seminumerical Algorithms</i>, section 3.2.1.
      *
      * @param  bits random bits
@@ -570,7 +570,7 @@ class Random implements java.io.Serializable {
      * }}</pre>
      * This uses the <i>polar method</i> of G. E. P. Box, M. E. Muller, and
      * G. Marsaglia, as described by Donald E. Knuth in <i>The Art of
-     * Computer Programming</i>, Volume 3: <i>Seminumerical Algorithms</i>,
+     * Computer Programming</i>, Volume 2: <i>Seminumerical Algorithms</i>,
      * section 3.4.1, subsection C, algorithm P. Note that it generates two
      * independent values at the cost of only one call to {@code StrictMath.log}
      * and one call to {@code StrictMath.sqrt}.
@@ -580,7 +580,7 @@ class Random implements java.io.Serializable {
      *         standard deviation {@code 1.0} from this random number
      *         generator's sequence
      */
-    synchronized public double nextGaussian() {
+    public synchronized double nextGaussian() {
         // See Knuth, ACP, Section 3.4.1 Algorithm C.
         if (haveNextNextGaussian) {
             haveNextNextGaussian = false;
@@ -1197,7 +1197,7 @@ class Random implements java.io.Serializable {
     /**
      * Save the {@code Random} instance to a stream.
      */
-    synchronized private void writeObject(ObjectOutputStream s)
+    private synchronized void writeObject(ObjectOutputStream s)
         throws IOException {
 
         // set the values of the Serializable fields

@@ -132,7 +132,7 @@ public final class Spliterators {
      * @param array The array, assumed to be unmodified during use
      * @param additionalCharacteristics Additional spliterator characteristics
      *        of this spliterator's source or elements beyond {@code SIZED} and
-     *        {@code SUBSIZED} which are are always reported
+     *        {@code SUBSIZED} which are always reported
      * @return A spliterator for an array
      * @throws NullPointerException if the given array is {@code null}
      * @see Arrays#spliterator(Object[])
@@ -164,7 +164,7 @@ public final class Spliterators {
      * @param toIndex One past the greatest index to cover
      * @param additionalCharacteristics Additional spliterator characteristics
      *        of this spliterator's source or elements beyond {@code SIZED} and
-     *        {@code SUBSIZED} which are are always reported
+     *        {@code SUBSIZED} which are always reported
      * @return A spliterator for an array
      * @throws NullPointerException if the given array is {@code null}
      * @throws ArrayIndexOutOfBoundsException if {@code fromIndex} is negative,
@@ -196,7 +196,7 @@ public final class Spliterators {
      * @param array The array, assumed to be unmodified during use
      * @param additionalCharacteristics Additional spliterator characteristics
      *        of this spliterator's source or elements beyond {@code SIZED} and
-     *        {@code SUBSIZED} which are are always reported
+     *        {@code SUBSIZED} which are always reported
      * @return A spliterator for an array
      * @throws NullPointerException if the given array is {@code null}
      * @see Arrays#spliterator(int[])
@@ -226,7 +226,7 @@ public final class Spliterators {
      * @param toIndex One past the greatest index to cover
      * @param additionalCharacteristics Additional spliterator characteristics
      *        of this spliterator's source or elements beyond {@code SIZED} and
-     *        {@code SUBSIZED} which are are always reported
+     *        {@code SUBSIZED} which are always reported
      * @return A spliterator for an array
      * @throws NullPointerException if the given array is {@code null}
      * @throws ArrayIndexOutOfBoundsException if {@code fromIndex} is negative,
@@ -258,7 +258,7 @@ public final class Spliterators {
      * @param array The array, assumed to be unmodified during use
      * @param additionalCharacteristics Additional spliterator characteristics
      *        of this spliterator's source or elements beyond {@code SIZED} and
-     *        {@code SUBSIZED} which are are always reported
+     *        {@code SUBSIZED} which are always reported
      * @return A spliterator for an array
      * @throws NullPointerException if the given array is {@code null}
      * @see Arrays#spliterator(long[])
@@ -282,7 +282,7 @@ public final class Spliterators {
      * {@code SIZED} and {@code SUBSIZED}.  The caller may provide additional
      * characteristics for the spliterator to report.  (For example, if it is
      * known the array will not be further modified, specify {@code IMMUTABLE};
-     * if the array data is considered to have an an encounter order, specify
+     * if the array data is considered to have an encounter order, specify
      * {@code ORDERED}).  The method {@link Arrays#spliterator(long[], int, int)} can
      * often be used instead, which returns a spliterator that reports
      * {@code SIZED}, {@code SUBSIZED}, {@code IMMUTABLE}, and {@code ORDERED}.
@@ -292,7 +292,7 @@ public final class Spliterators {
      * @param toIndex One past the greatest index to cover
      * @param additionalCharacteristics Additional spliterator characteristics
      *        of this spliterator's source or elements beyond {@code SIZED} and
-     *        {@code SUBSIZED} which are are always reported
+     *        {@code SUBSIZED} which are always reported
      * @return A spliterator for an array
      * @throws NullPointerException if the given array is {@code null}
      * @throws ArrayIndexOutOfBoundsException if {@code fromIndex} is negative,
@@ -324,7 +324,7 @@ public final class Spliterators {
      * @param array The array, assumed to be unmodified during use
      * @param additionalCharacteristics Additional spliterator characteristics
      *        of this spliterator's source or elements beyond {@code SIZED} and
-     *        {@code SUBSIZED} which are are always reported
+     *        {@code SUBSIZED} which are always reported
      * @return A spliterator for an array
      * @throws NullPointerException if the given array is {@code null}
      * @see Arrays#spliterator(double[])
@@ -348,7 +348,7 @@ public final class Spliterators {
      * {@code SIZED} and {@code SUBSIZED}.  The caller may provide additional
      * characteristics for the spliterator to report.  (For example, if it is
      * known the array will not be further modified, specify {@code IMMUTABLE};
-     * if the array data is considered to have an an encounter order, specify
+     * if the array data is considered to have an encounter order, specify
      * {@code ORDERED}).  The method {@link Arrays#spliterator(long[], int, int)} can
      * often be used instead, which returns a spliterator that reports
      * {@code SIZED}, {@code SUBSIZED}, {@code IMMUTABLE}, and {@code ORDERED}.
@@ -358,7 +358,7 @@ public final class Spliterators {
      * @param toIndex One past the greatest index to cover
      * @param additionalCharacteristics Additional spliterator characteristics
      *        of this spliterator's source or elements beyond {@code SIZED} and
-     *        {@code SUBSIZED} which are are always reported
+     *        {@code SUBSIZED} which are always reported
      * @return A spliterator for an array
      * @throws NullPointerException if the given array is {@code null}
      * @throws ArrayIndexOutOfBoundsException if {@code fromIndex} is negative,
@@ -833,7 +833,7 @@ public final class Spliterators {
 
     // Implementations
 
-    private static abstract class EmptySpliterator<T, S extends Spliterator<T>, C> {
+    private abstract static class EmptySpliterator<T, S extends Spliterator<T>, C> {
 
         EmptySpliterator() { }
 
@@ -907,7 +907,7 @@ public final class Spliterators {
          * @param array the array, assumed to be unmodified during use
          * @param additionalCharacteristics Additional spliterator characteristics
          * of this spliterator's source or elements beyond {@code SIZED} and
-         * {@code SUBSIZED} which are are always reported
+         * {@code SUBSIZED} which are always reported
          */
         public ArraySpliterator(Object[] array, int additionalCharacteristics) {
             this(array, 0, array.length, additionalCharacteristics);
@@ -920,7 +920,7 @@ public final class Spliterators {
          * @param fence one past the greatest index to cover
          * @param additionalCharacteristics Additional spliterator characteristics
          * of this spliterator's source or elements beyond {@code SIZED} and
-         * {@code SUBSIZED} which are are always reported
+         * {@code SUBSIZED} which are always reported
          */
         public ArraySpliterator(Object[] array, int origin, int fence, int additionalCharacteristics) {
             this.array = array;
@@ -992,7 +992,7 @@ public final class Spliterators {
          * @param array the array, assumed to be unmodified during use
          * @param additionalCharacteristics Additional spliterator characteristics
          *        of this spliterator's source or elements beyond {@code SIZED} and
-         *        {@code SUBSIZED} which are are always reported
+         *        {@code SUBSIZED} which are always reported
          */
         public IntArraySpliterator(int[] array, int additionalCharacteristics) {
             this(array, 0, array.length, additionalCharacteristics);
@@ -1005,7 +1005,7 @@ public final class Spliterators {
          * @param fence one past the greatest index to cover
          * @param additionalCharacteristics Additional spliterator characteristics
          *        of this spliterator's source or elements beyond {@code SIZED} and
-         *        {@code SUBSIZED} which are are always reported
+         *        {@code SUBSIZED} which are always reported
          */
         public IntArraySpliterator(int[] array, int origin, int fence, int additionalCharacteristics) {
             this.array = array;
@@ -1075,7 +1075,7 @@ public final class Spliterators {
          * @param array the array, assumed to be unmodified during use
          * @param additionalCharacteristics Additional spliterator characteristics
          *        of this spliterator's source or elements beyond {@code SIZED} and
-         *        {@code SUBSIZED} which are are always reported
+         *        {@code SUBSIZED} which are always reported
          */
         public LongArraySpliterator(long[] array, int additionalCharacteristics) {
             this(array, 0, array.length, additionalCharacteristics);
@@ -1088,7 +1088,7 @@ public final class Spliterators {
          * @param fence one past the greatest index to cover
          * @param additionalCharacteristics Additional spliterator characteristics
          *        of this spliterator's source or elements beyond {@code SIZED} and
-         *        {@code SUBSIZED} which are are always reported
+         *        {@code SUBSIZED} which are always reported
          */
         public LongArraySpliterator(long[] array, int origin, int fence, int additionalCharacteristics) {
             this.array = array;
@@ -1158,7 +1158,7 @@ public final class Spliterators {
          * @param array the array, assumed to be unmodified during use
          * @param additionalCharacteristics Additional spliterator characteristics
          *        of this spliterator's source or elements beyond {@code SIZED} and
-         *        {@code SUBSIZED} which are are always reported
+         *        {@code SUBSIZED} which are always reported
          */
         public DoubleArraySpliterator(double[] array, int additionalCharacteristics) {
             this(array, 0, array.length, additionalCharacteristics);
@@ -1171,7 +1171,7 @@ public final class Spliterators {
          * @param fence one past the greatest index to cover
          * @param additionalCharacteristics Additional spliterator characteristics
          *        of this spliterator's source or elements beyond {@code SIZED} and
-         *        {@code SUBSIZED} which are are always reported
+         *        {@code SUBSIZED} which are always reported
          */
         public DoubleArraySpliterator(double[] array, int origin, int fence, int additionalCharacteristics) {
             this.array = array;
@@ -1235,8 +1235,8 @@ public final class Spliterators {
      * <p>An extending class need only
      * implement {@link #tryAdvance(java.util.function.Consumer) tryAdvance}.
      * The extending class should override
-     * {@link #forEachRemaining(java.util.function.Consumer) forEach} if it can
-     * provide a more performant implementation.
+     * {@link #forEachRemaining(java.util.function.Consumer) forEachRemaining}
+     * if it can provide a more performant implementation.
      *
      * @apiNote
      * This class is a useful aid for creating a spliterator when it is not
@@ -1253,7 +1253,7 @@ public final class Spliterators {
      * @see #spliterator(Iterator, long, int)
      * @since 1.8
      */
-    public static abstract class AbstractSpliterator<T> implements Spliterator<T> {
+    public abstract static class AbstractSpliterator<T> implements Spliterator<T> {
         static final int BATCH_UNIT = 1 << 10;  // batch array size increment
         static final int MAX_BATCH = 1 << 25;  // max batch array size;
         private final int characteristics;
@@ -1356,10 +1356,10 @@ public final class Spliterators {
      * permit limited parallelism.
      *
      * <p>To implement a spliterator an extending class need only
-     * implement {@link #tryAdvance(java.util.function.IntConsumer)}
+     * implement {@link #tryAdvance(java.util.function.IntConsumer)
      * tryAdvance}.  The extending class should override
-     * {@link #forEachRemaining(java.util.function.IntConsumer)} forEach} if it
-     * can provide a more performant implementation.
+     * {@link #forEachRemaining(java.util.function.IntConsumer) forEachRemaining}
+     * if it can provide a more performant implementation.
      *
      * @apiNote
      * This class is a useful aid for creating a spliterator when it is not
@@ -1376,7 +1376,7 @@ public final class Spliterators {
      * @see #spliterator(java.util.PrimitiveIterator.OfInt, long, int)
      * @since 1.8
      */
-    public static abstract class AbstractIntSpliterator implements Spliterator.OfInt {
+    public abstract static class AbstractIntSpliterator implements Spliterator.OfInt {
         static final int MAX_BATCH = AbstractSpliterator.MAX_BATCH;
         static final int BATCH_UNIT = AbstractSpliterator.BATCH_UNIT;
         private final int characteristics;
@@ -1466,10 +1466,10 @@ public final class Spliterators {
      * to permit limited parallelism.
      *
      * <p>To implement a spliterator an extending class need only
-     * implement {@link #tryAdvance(java.util.function.LongConsumer)}
+     * implement {@link #tryAdvance(java.util.function.LongConsumer)
      * tryAdvance}.  The extending class should override
-     * {@link #forEachRemaining(java.util.function.LongConsumer)} forEach} if it
-     * can provide a more performant implementation.
+     * {@link #forEachRemaining(java.util.function.LongConsumer) forEachRemaining}
+     * if it can provide a more performant implementation.
      *
      * @apiNote
      * This class is a useful aid for creating a spliterator when it is not
@@ -1486,7 +1486,7 @@ public final class Spliterators {
      * @see #spliterator(java.util.PrimitiveIterator.OfLong, long, int)
      * @since 1.8
      */
-    public static abstract class AbstractLongSpliterator implements Spliterator.OfLong {
+    public abstract static class AbstractLongSpliterator implements Spliterator.OfLong {
         static final int MAX_BATCH = AbstractSpliterator.MAX_BATCH;
         static final int BATCH_UNIT = AbstractSpliterator.BATCH_UNIT;
         private final int characteristics;
@@ -1576,10 +1576,10 @@ public final class Spliterators {
      * {@code trySplit} to permit limited parallelism.
      *
      * <p>To implement a spliterator an extending class need only
-     * implement {@link #tryAdvance(java.util.function.DoubleConsumer)}
+     * implement {@link #tryAdvance(java.util.function.DoubleConsumer)
      * tryAdvance}.  The extending class should override
-     * {@link #forEachRemaining(java.util.function.DoubleConsumer)} forEach} if
-     * it can provide a more performant implementation.
+     * {@link #forEachRemaining(java.util.function.DoubleConsumer) forEachRemaining}
+     * if it can provide a more performant implementation.
      *
      * @apiNote
      * This class is a useful aid for creating a spliterator when it is not
@@ -1596,7 +1596,7 @@ public final class Spliterators {
      * @see #spliterator(java.util.PrimitiveIterator.OfDouble, long, int)
      * @since 1.8
      */
-    public static abstract class AbstractDoubleSpliterator implements Spliterator.OfDouble {
+    public abstract static class AbstractDoubleSpliterator implements Spliterator.OfDouble {
         static final int MAX_BATCH = AbstractSpliterator.MAX_BATCH;
         static final int BATCH_UNIT = AbstractSpliterator.BATCH_UNIT;
         private final int characteristics;
@@ -1698,7 +1698,7 @@ public final class Spliterators {
         private int batch;            // batch size for splits
 
         /**
-         * Creates a spliterator using the given given
+         * Creates a spliterator using the given
          * collection's {@link java.util.Collection#iterator()) for traversal,
          * and reporting its {@link java.util.Collection#size()) as its initial
          * size.

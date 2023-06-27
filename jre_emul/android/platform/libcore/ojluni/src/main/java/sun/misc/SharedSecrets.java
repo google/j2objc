@@ -25,6 +25,8 @@
 
 package sun.misc;
 
+import java.io.ObjectInputStream;
+
 /** A repository of "shared secrets", which are a mechanism for
     calling implementation-private methods in another package without
     using reflection. A package-private class implements a public
@@ -35,9 +37,9 @@ package sun.misc;
     for this purpose, namely the loss of compile-time checking. */
 
 public class SharedSecrets {
+    private static final Unsafe unsafe = Unsafe.getUnsafe();
     // BEGIN Android-removed: Pruned unused access interfaces.
     /*
-    private static final Unsafe unsafe = Unsafe.getUnsafe();
     private static JavaUtilJarAccess javaUtilJarAccess;
     private static JavaLangAccess javaLangAccess;
     private static JavaLangRefAccess javaLangRefAccess;
@@ -55,7 +57,11 @@ public class SharedSecrets {
     private static JavaUtilZipFileAccess javaUtilZipFileAccess;
     private static JavaAWTAccess javaAWTAccess;
     private static JavaOISAccess javaOISAccess;
+    */
+    // END Android-removed: Pruned unused access interfaces.
     private static JavaObjectInputStreamAccess javaObjectInputStreamAccess;
+    // BEGIN Android-removed: Pruned unused access interfaces.
+    /*
 
     public static JavaUtilJarAccess javaUtilJarAccess() {
         if (javaUtilJarAccess == null) {
@@ -209,6 +215,8 @@ public class SharedSecrets {
         }
         return javaAWTAccess;
     }
+    */
+   // END Android-removed: Pruned unused access interfaces.
 
     public static JavaObjectInputStreamAccess getJavaObjectInputStreamAccess() {
         if (javaObjectInputStreamAccess == null) {
@@ -217,6 +225,8 @@ public class SharedSecrets {
         return javaObjectInputStreamAccess;
     }
 
+    // BEGIN Android-removed: Pruned unused access interfaces.
+    /*
     public static void setJavaObjectInputStreamAccess(JavaObjectInputStreamAccess access) {
         javaObjectInputStreamAccess = access;
     }

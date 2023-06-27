@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2019, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -24,7 +24,6 @@
  */
 package java.util;
 
-import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.CountedCompleter;
 
 /**
@@ -36,7 +35,7 @@ import java.util.concurrent.CountedCompleter;
  * Sorter classes based mainly on CilkSort
  * <A href="http://supertech.lcs.mit.edu/cilk/"> Cilk</A>:
  * Basic algorithm:
- * if array size is small, just use a sequential quicksort (via Arrays.sort)
+ * if array size is small, just use a sequential sort (via Arrays.sort)
  *         Otherwise:
  *         1. Break array in half.
  *         2. For each half,
@@ -63,14 +62,10 @@ import java.util.concurrent.CountedCompleter;
  * need to keep track of the arrays, and are never themselves forked,
  * so don't hold any task state.
  *
- * The primitive class versions (FJByte... FJDouble) are
- * identical to each other except for type declarations.
- *
  * The base sequential sorts rely on non-public versions of TimSort,
- * ComparableTimSort, and DualPivotQuicksort sort methods that accept
- * temp workspace array slices that we will have already allocated, so
- * avoids redundant allocation. (Except for DualPivotQuicksort byte[]
- * sort, that does not ever use a workspace array.)
+ * ComparableTimSort sort methods that accept temp workspace array
+ * slices that we will have already allocated, so avoids redundant
+ * allocation.
  */
 /*package*/ class ArraysParallelSortHelpers {
 
@@ -87,6 +82,7 @@ import java.util.concurrent.CountedCompleter;
      * quartile task, that does not need to maintain array state.
      */
     static final class EmptyCompleter extends CountedCompleter<Void> {
+        @java.io.Serial
         static final long serialVersionUID = 2446542900576103244L;
         EmptyCompleter(CountedCompleter<?> p) { super(p); }
         public final void compute() { }
@@ -96,6 +92,7 @@ import java.util.concurrent.CountedCompleter;
      * A trigger for secondary merge of two merges
      */
     static final class Relay extends CountedCompleter<Void> {
+        @java.io.Serial
         static final long serialVersionUID = 2446542900576103244L;
         final CountedCompleter<?> task;
         Relay(CountedCompleter<?> task) {
@@ -111,9 +108,14 @@ import java.util.concurrent.CountedCompleter;
     /** Object + Comparator support class */
     static final class FJObject {
         static final class Sorter<T> extends CountedCompleter<Void> {
+            @java.io.Serial
             static final long serialVersionUID = 2446542900576103244L;
-            final T[] a, w;
+            @SuppressWarnings("serial") // Not statically typed as Serializable
+            final T[] a;
+            @SuppressWarnings("serial") // Not statically typed as Serializable
+            final T[] w;
             final int base, size, wbase, gran;
+            @SuppressWarnings("serial") // Not statically typed as Serializable
             Comparator<? super T> comparator;
             Sorter(CountedCompleter<?> par, T[] a, T[] w, int base, int size,
                    int wbase, int gran,
@@ -130,15 +132,15 @@ import java.util.concurrent.CountedCompleter;
                 int b = this.base, n = this.size, wb = this.wbase, g = this.gran;
                 while (n > g) {
                     int h = n >>> 1, q = h >>> 1, u = h + q; // quartiles
-                    Relay fc = new Relay(new Merger<T>(s, w, a, wb, h,
-                                                       wb+h, n-h, b, g, c));
-                    Relay rc = new Relay(new Merger<T>(fc, a, w, b+h, q,
-                                                       b+u, n-u, wb+h, g, c));
-                    new Sorter<T>(rc, a, w, b+u, n-u, wb+u, g, c).fork();
-                    new Sorter<T>(rc, a, w, b+h, q, wb+h, g, c).fork();;
-                    Relay bc = new Relay(new Merger<T>(fc, a, w, b, q,
-                                                       b+q, h-q, wb, g, c));
-                    new Sorter<T>(bc, a, w, b+q, h-q, wb+q, g, c).fork();
+                    Relay fc = new Relay(new Merger<>(s, w, a, wb, h,
+                                                      wb+h, n-h, b, g, c));
+                    Relay rc = new Relay(new Merger<>(fc, a, w, b+h, q,
+                                                      b+u, n-u, wb+h, g, c));
+                    new Sorter<>(rc, a, w, b+u, n-u, wb+u, g, c).fork();
+                    new Sorter<>(rc, a, w, b+h, q, wb+h, g, c).fork();
+                    Relay bc = new Relay(new Merger<>(fc, a, w, b, q,
+                                                      b+q, h-q, wb, g, c));
+                    new Sorter<>(bc, a, w, b+q, h-q, wb+q, g, c).fork();
                     s = new EmptyCompleter(bc);
                     n = q;
                 }
@@ -148,9 +150,15 @@ import java.util.concurrent.CountedCompleter;
         }
 
         static final class Merger<T> extends CountedCompleter<Void> {
+            @java.io.Serial
             static final long serialVersionUID = 2446542900576103244L;
-            final T[] a, w; // main and workspace arrays
+             // main and workspace arrays
+            @SuppressWarnings("serial") // Not statically typed as Serializable
+            final T[] a;
+            @SuppressWarnings("serial") // Not statically typed as Serializable
+            final T[] w;
             final int lbase, lsize, rbase, rsize, wbase, gran;
+            @SuppressWarnings("serial") // Not statically typed as Serializable
             Comparator<? super T> comparator;
             Merger(CountedCompleter<?> par, T[] a, T[] w,
                    int lbase, int lsize, int rbase,
@@ -199,9 +207,9 @@ import java.util.concurrent.CountedCompleter;
                                 lo = lm + 1;
                         }
                     }
-                    Merger<T> m = new Merger<T>(this, a, w, lb + lh, ln - lh,
-                                                rb + rh, rn - rh,
-                                                k + lh + rh, g, c);
+                    Merger<T> m = new Merger<>(this, a, w, lb + lh, ln - lh,
+                                               rb + rh, rn - rh,
+                                               k + lh + rh, g, c);
                     rn = rh;
                     ln = lh;
                     addToPendingCount(1);
