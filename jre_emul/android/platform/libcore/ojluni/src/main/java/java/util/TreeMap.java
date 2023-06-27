@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1997, 2014, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -100,7 +100,7 @@ import java.util.function.Consumer;
  * associated map using {@code put}.)
  *
  * <p>This class is a member of the
- * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+ * <a href="{@docRoot}/java.base/java/util/package-summary.html#CollectionsFramework">
  * Java Collections Framework</a>.
  *
  * @param <K> the type of keys maintained by this map
@@ -206,8 +206,7 @@ public class TreeMap<K,V>
         comparator = m.comparator();
         try {
             buildFromSorted(m.size(), m.entrySet().iterator(), null, null);
-        } catch (java.io.IOException cannotHappen) {
-        } catch (ClassNotFoundException cannotHappen) {
+        } catch (java.io.IOException | ClassNotFoundException cannotHappen) {
         }
     }
 
@@ -326,8 +325,7 @@ public class TreeMap<K,V>
                 try {
                     buildFromSorted(mapSize, map.entrySet().iterator(),
                                     null, null);
-                } catch (java.io.IOException cannotHappen) {
-                } catch (ClassNotFoundException cannotHappen) {
+                } catch (java.io.IOException | ClassNotFoundException cannotHappen) {
                 }
                 return;
             }
@@ -652,8 +650,7 @@ public class TreeMap<K,V>
         // Initialize clone with our mappings
         try {
             clone.buildFromSorted(size, entrySet().iterator(), null, null);
-        } catch (java.io.IOException cannotHappen) {
-        } catch (ClassNotFoundException cannotHappen) {
+        } catch (java.io.IOException | ClassNotFoundException cannotHappen) {
         }
 
         return clone;
@@ -874,7 +871,7 @@ public class TreeMap<K,V>
      * Returns a {@link Set} view of the mappings contained in this map.
      *
      * <p>The set's iterator returns the entries in ascending key order. The
-     * sets's spliterator is
+     * set's spliterator is
      * <em><a href="Spliterator.html#binding">late-binding</a></em>,
      * <em>fail-fast</em>, and additionally reports {@link Spliterator#SORTED} and
      * {@link Spliterator#ORDERED} with an encounter order that is ascending key
@@ -985,6 +982,27 @@ public class TreeMap<K,V>
     }
 
     @Override
+    public boolean replace(K key, V oldValue, V newValue) {
+        TreeMapEntry<K,V> p = getEntry(key);
+        if (p!=null && Objects.equals(oldValue, p.value)) {
+            p.value = newValue;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public V replace(K key, V value) {
+        TreeMapEntry<K,V> p = getEntry(key);
+        if (p!=null) {
+            V oldValue = p.value;
+            p.value = value;
+            return oldValue;
+        }
+        return null;
+    }
+
+    @Override
     public void forEach(BiConsumer<? super K, ? super V> action) {
         Objects.requireNonNull(action);
         int expectedModCount = modCount;
@@ -1041,7 +1059,7 @@ public class TreeMap<K,V>
         }
 
         public Spliterator<V> spliterator() {
-            return new ValueSpliterator<K,V>(TreeMap.this, null, null, 0, -1, 0);
+            return new ValueSpliterator<>(TreeMap.this, null, null, 0, -1, 0);
         }
 
         /*-[
@@ -1093,7 +1111,7 @@ public class TreeMap<K,V>
         }
 
         public Spliterator<Map.Entry<K,V>> spliterator() {
-            return new EntrySpliterator<K,V>(TreeMap.this, null, null, 0, -1, 0);
+            return new EntrySpliterator<>(TreeMap.this, null, null, 0, -1, 0);
         }
 
         /*-[
@@ -2499,8 +2517,7 @@ public class TreeMap<K,V>
         s.writeInt(size);
 
         // Write out keys and values (alternating)
-        for (Iterator<Map.Entry<K,V>> i = entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry<K,V> e = i.next();
+        for (Map.Entry<K, V> e : entrySet()) {
             s.writeObject(e.getKey());
             s.writeObject(e.getValue());
         }
@@ -2531,8 +2548,7 @@ public class TreeMap<K,V>
     void addAllForTreeSet(SortedSet<? extends K> set, V defaultVal) {
         try {
             buildFromSorted(set.size(), set.iterator(), null, defaultVal);
-        } catch (java.io.IOException cannotHappen) {
-        } catch (ClassNotFoundException cannotHappen) {
+        } catch (java.io.IOException | ClassNotFoundException cannotHappen) {
         }
     }
 
@@ -2657,19 +2673,17 @@ public class TreeMap<K,V>
     }
 
     /**
-     * Find the level down to which to assign all nodes BLACK.  This is the
-     * last `full' level of the complete binary tree produced by
-     * buildTree. The remaining nodes are colored RED. (This makes a `nice'
-     * set of color assignments wrt future insertions.) This level number is
+     * Finds the level down to which to assign all nodes BLACK.  This is the
+     * last `full' level of the complete binary tree produced by buildTree.
+     * The remaining nodes are colored RED. (This makes a `nice' set of
+     * color assignments wrt future insertions.) This level number is
      * computed by finding the number of splits needed to reach the zeroeth
-     * node.  (The answer is ~lg(N), but in any case must be computed by same
-     * quick O(lg(N)) loop.)
+     * node.
+     *
+     * @param size the (non-negative) number of keys in the tree to be built
      */
-    private static int computeRedLevel(int sz) {
-        int level = 0;
-        for (int m = sz - 1; m >= 0; m = m / 2 - 1)
-            level++;
-        return level;
+    private static int computeRedLevel(int size) {
+        return 31 - Integer.numberOfLeadingZeros(size + 1);
     }
 
     /**
@@ -2703,11 +2717,11 @@ public class TreeMap<K,V>
     }
 
     final Spliterator<K> keySpliterator() {
-        return new KeySpliterator<K,V>(this, null, null, 0, -1, 0);
+        return new KeySpliterator<>(this, null, null, 0, -1, 0);
     }
 
     final Spliterator<K> descendingKeySpliterator() {
-        return new DescendingKeySpliterator<K,V>(this, null, null, 0, -2, 0);
+        return new DescendingKeySpliterator<>(this, null, null, 0, -2, 0);
     }
 
     /**
@@ -2719,7 +2733,7 @@ public class TreeMap<K,V>
      * child, also serving as origin for the split-off spliterator.
      * Left-hands are symmetric. Descending versions place the origin
      * at the end and invert ascending split rules.  This base class
-     * is non-commital about directionality, or whether the top-level
+     * is non-committal about directionality, or whether the top-level
      * spliterator covers the whole tree. This means that the actual
      * split mechanics are located in subclasses. Some of the subclass
      * trySplit methods are identical (except for return types), but

@@ -58,6 +58,7 @@ import java.util.function.LongConsumer;
  * @since 1.8
  * @hide Visible for CTS testing only (OpenJDK8 tests).
  */
+// Android-changed: Made public for CTS tests only.
 public interface Node<T> {
 
     /**

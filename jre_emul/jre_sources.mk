@@ -631,6 +631,8 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/util/DualPivotQuicksort.java \
   java/util/Grego.java \
   java/util/JumboEnumSet.java \
+  java/util/KeyValueHolder.java \
+  java/util/ImmutableCollections.java \
   java/util/RegularEnumSet.java \
   java/util/logging/Logging.java \
   java/util/logging/LoggingProxyImpl.java \
@@ -659,6 +661,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/util/stream/StreamSpliterators.java \
   java/util/stream/TerminalOp.java \
   jdk/internal/module/SystemModulesMap.java \
+  jdk/internal/util/Preconditions.java \
   libcore/api/CorePlatformApi.java \
   libcore/api/Hide.java \
   libcore/api/IntraCoreApi.java \
@@ -1183,6 +1186,7 @@ JAVA_PRIVATE_SOURCES_FILE = \
   java/nio/file/FileTreeIterator.java \
   java/nio/file/FileTreeWalker.java \
   sun/misc/JavaIOFileDescriptorAccess.java \
+  sun/misc/JavaObjectInputStreamAccess.java \
   sun/misc/SharedSecrets.java \
   sun/nio/fs/AbstractBasicFileAttributeView.java \
   sun/nio/fs/AbstractFileSystemProvider.java \

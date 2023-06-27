@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2016, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1997, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -62,7 +62,7 @@ import java.util.function.Consumer;
  * collection being implemented admits a more efficient implementation.
  *
  * <p>This class is a member of the
- * <a href="{@docRoot}/../technotes/guides/collections/index.html">
+ * <a href="{@docRoot}/java.base/java/util/package-summary.html#CollectionsFramework">
  * Java Collections Framework</a>.
  *
  * @author  Josh Bloch
@@ -374,7 +374,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
                 return next;
             } catch (IndexOutOfBoundsException e) {
                 checkForComodification();
-                throw new NoSuchElementException();
+                throw new NoSuchElementException(e);
             }
         }
 
@@ -418,7 +418,7 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
                 return previous;
             } catch (IndexOutOfBoundsException e) {
                 checkForComodification();
-                throw new NoSuchElementException();
+                throw new NoSuchElementException(e);
             }
         }
 
