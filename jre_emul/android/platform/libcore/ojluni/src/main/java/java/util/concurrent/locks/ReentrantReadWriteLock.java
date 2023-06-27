@@ -35,6 +35,10 @@
 
 package java.util.concurrent.locks;
 
+/* J2ObjC removed
+import jdk.internal.vm.annotation.ReservedStackAccess;
+*/
+
 import com.google.j2objc.annotations.Weak;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
@@ -53,16 +57,14 @@ import java.util.concurrent.TimeUnit;
  *
  * <dl>
  * <dt><b><i>Non-fair mode (default)</i></b>
- * <dd style="font-family:'DejaVu Sans', Arial, Helvetica, sans-serif">
- * When constructed as non-fair (the default), the order of entry
+ * <dd>When constructed as non-fair (the default), the order of entry
  * to the read and write lock is unspecified, subject to reentrancy
  * constraints.  A nonfair lock that is continuously contended may
  * indefinitely postpone one or more reader or writer threads, but
  * will normally have higher throughput than a fair lock.
  *
  * <dt><b><i>Fair mode</i></b>
- * <dd style="font-family:'DejaVu Sans', Arial, Helvetica, sans-serif">
- * When constructed as fair, threads contend for entry using an
+ * <dd>When constructed as fair, threads contend for entry using an
  * approximately arrival-order policy. When the currently held lock
  * is released, either the longest-waiting single writer thread will
  * be assigned the write lock, or if there is a group of reader threads
@@ -138,7 +140,7 @@ import java.util.concurrent.TimeUnit;
  * <pre> {@code
  * class CachedData {
  *   Object data;
- *   volatile boolean cacheValid;
+ *   boolean cacheValid;
  *   final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
  *
  *   void processCachedData() {
@@ -377,7 +379,9 @@ public class ReentrantReadWriteLock
          * both read and write holds that are all released during a
          * condition wait and re-established in tryAcquire.
          */
-
+        /* J2ObjC removed
+        @ReservedStackAccess
+        */
         protected final boolean tryRelease(int releases) {
             if (!isHeldExclusively())
                 throw new IllegalMonitorStateException();
@@ -389,6 +393,9 @@ public class ReentrantReadWriteLock
             return free;
         }
 
+        /* J2ObjC removed
+        @ReservedStackAccess
+        */
         protected final boolean tryAcquire(int acquires) {
             /*
              * Walkthrough:
@@ -421,6 +428,9 @@ public class ReentrantReadWriteLock
             return true;
         }
 
+        /* J2ObjC removed
+        @ReservedStackAccess
+        */
         protected final boolean tryReleaseShared(int unused) {
             Thread current = Thread.currentThread();
             if (firstReader == current) {
@@ -460,11 +470,14 @@ public class ReentrantReadWriteLock
             }
         }
 
-        private IllegalMonitorStateException unmatchedUnlockException() {
+        private static IllegalMonitorStateException unmatchedUnlockException() {
             return new IllegalMonitorStateException(
                 "attempt to unlock read lock, not locked by current thread");
         }
 
+        /* J2ObjC removed
+        @ReservedStackAccess
+        */
         protected final int tryAcquireShared(int unused) {
             /*
              * Walkthrough:
@@ -497,7 +510,8 @@ public class ReentrantReadWriteLock
                     firstReaderHoldCount++;
                 } else {
                     HoldCounter rh = cachedHoldCounter;
-                    if (rh == null || rh.tid != getThreadId(current))
+                    if (rh == null ||
+                        rh.tid != getThreadId(current))
                         cachedHoldCounter = rh = readHolds.get();
                     else if (rh.count == 0)
                         readHolds.set(rh);
@@ -534,7 +548,8 @@ public class ReentrantReadWriteLock
                     } else {
                         if (rh == null) {
                             rh = cachedHoldCounter;
-                            if (rh == null || rh.tid != getThreadId(current)) {
+                            if (rh == null ||
+                                rh.tid != getThreadId(current)) {
                                 rh = readHolds.get();
                                 if (rh.count == 0)
                                     readHolds.remove();
@@ -555,7 +570,8 @@ public class ReentrantReadWriteLock
                     } else {
                         if (rh == null)
                             rh = cachedHoldCounter;
-                        if (rh == null || rh.tid != getThreadId(current))
+                        if (rh == null ||
+                            rh.tid != getThreadId(current))
                             rh = readHolds.get();
                         else if (rh.count == 0)
                             readHolds.set(rh);
@@ -572,6 +588,9 @@ public class ReentrantReadWriteLock
          * This is identical in effect to tryAcquire except for lack
          * of calls to writerShouldBlock.
          */
+        /* J2ObjC removed
+        @ReservedStackAccess
+        */
         final boolean tryWriteLock() {
             Thread current = Thread.currentThread();
             int c = getState();
@@ -593,6 +612,9 @@ public class ReentrantReadWriteLock
          * This is identical in effect to tryAcquireShared except for
          * lack of calls to readerShouldBlock.
          */
+        /* J2ObjC removed
+        @ReservedStackAccess
+        */
         final boolean tryReadLock() {
             Thread current = Thread.currentThread();
             for (;;) {
@@ -611,7 +633,8 @@ public class ReentrantReadWriteLock
                         firstReaderHoldCount++;
                     } else {
                         HoldCounter rh = cachedHoldCounter;
-                        if (rh == null || rh.tid != getThreadId(current))
+                        if (rh == null ||
+                            rh.tid != getThreadId(current))
                             cachedHoldCounter = rh = readHolds.get();
                         else if (rh.count == 0)
                             readHolds.set(rh);
@@ -806,7 +829,7 @@ public class ReentrantReadWriteLock
          * can be useful in certain circumstances, even though it
          * breaks fairness. If you want to honor the fairness setting
          * for this lock, then use {@link #tryLock(long, TimeUnit)
-         * tryLock(0, TimeUnit.SECONDS) } which is almost equivalent
+         * tryLock(0, TimeUnit.SECONDS)} which is almost equivalent
          * (it also detects interruption).
          *
          * <p>If the write lock is held by another thread then
@@ -1038,7 +1061,7 @@ public class ReentrantReadWriteLock
          * behavior can be useful in certain circumstances, even
          * though it breaks fairness. If you want to honor the
          * fairness setting for this lock, then use {@link
-         * #tryLock(long, TimeUnit) tryLock(0, TimeUnit.SECONDS) }
+         * #tryLock(long, TimeUnit) tryLock(0, TimeUnit.SECONDS)}
          * which is almost equivalent (it also detects interruption).
          *
          * <p>If the current thread already holds this lock then the
@@ -1517,23 +1540,4 @@ public class ReentrantReadWriteLock
     static final long getThreadId(Thread thread) {
       return thread.getId();
     }
-
-    /* J2ObjC modified.
-    static final long getThreadId(Thread thread) {
-        return U.getLongVolatile(thread, TID);
-    }
-
-    // Unsafe mechanics
-    private static final sun.misc.Unsafe U = sun.misc.Unsafe.getUnsafe();
-    private static final long TID;
-    static {
-        try {
-            TID = U.objectFieldOffset
-                (Thread.class.getDeclaredField("tid"));
-        } catch (ReflectiveOperationException e) {
-            throw new Error(e);
-        }
-    }
-    */
-
 }
