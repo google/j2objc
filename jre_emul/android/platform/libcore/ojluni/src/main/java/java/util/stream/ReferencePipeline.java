@@ -55,6 +55,7 @@ import java.util.function.ToLongFunction;
  * @since 1.8
  * @hide Visible for CTS testing only (OpenJDK8 tests).
  */
+// Android-changed: Made public for CTS tests only.
 public abstract class ReferencePipeline<P_IN, P_OUT>
         extends AbstractPipeline<P_IN, P_OUT, Stream<P_OUT>>
         implements Stream<P_OUT>  {
@@ -98,11 +99,13 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
     // Shape-specific methods
 
     @Override
+    // Android-changed: Make public, to match the method it's overriding.
     public final StreamShape getOutputShape() {
         return StreamShape.REFERENCE;
     }
 
     @Override
+    // Android-changed: Make public, to match the method it's overriding.
     public final <P_IN> Node<P_OUT> evaluateToNode(PipelineHelper<P_OUT> helper,
                                         Spliterator<P_IN> spliterator,
                                         boolean flattenTree,
@@ -111,6 +114,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
     }
 
     @Override
+    // Android-changed: Make public, to match the method it's overriding.
     public final <P_IN> Spliterator<P_OUT> wrap(PipelineHelper<P_OUT> ph,
                                      Supplier<Spliterator<P_IN>> supplier,
                                      boolean isParallel) {
@@ -118,16 +122,19 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
     }
 
     @Override
+    // Android-changed: Make public, to match the method it's overriding.
     public final Spliterator<P_OUT> lazySpliterator(Supplier<? extends Spliterator<P_OUT>> supplier) {
         return new StreamSpliterators.DelegatingSpliterator<>(supplier);
     }
 
     @Override
+    // Android-changed: Make public, to match the method it's overriding.
     public final void forEachWithCancel(Spliterator<P_OUT> spliterator, Sink<P_OUT> sink) {
         do { } while (!sink.cancellationRequested() && spliterator.tryAdvance(sink));
     }
 
     @Override
+    // Android-changed: Make public, to match the method it's overriding.
     public final Node.Builder<P_OUT> makeNodeBuilder(long exactSizeIfKnown, IntFunction<P_OUT[]> generator) {
         return Nodes.builder(exactSizeIfKnown, generator);
     }
@@ -151,6 +158,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
             return this;
         return new StatelessOp<P_OUT, P_OUT>(this, StreamShape.REFERENCE, StreamOpFlag.NOT_ORDERED) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<P_OUT> opWrapSink(int flags, Sink<P_OUT> sink) {
                 return sink;
             }
@@ -163,6 +171,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
         return new StatelessOp<P_OUT, P_OUT>(this, StreamShape.REFERENCE,
                                      StreamOpFlag.NOT_SIZED) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<P_OUT> opWrapSink(int flags, Sink<P_OUT> sink) {
                 return new Sink.ChainedReference<P_OUT, P_OUT>(sink) {
                     @Override
@@ -204,6 +213,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
         return new IntPipeline.StatelessOp<P_OUT>(this, StreamShape.REFERENCE,
                                               StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<P_OUT> opWrapSink(int flags, Sink<Integer> sink) {
                 return new Sink.ChainedReference<P_OUT, Integer>(sink) {
                     @Override
@@ -221,6 +231,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
         return new LongPipeline.StatelessOp<P_OUT>(this, StreamShape.REFERENCE,
                                       StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<P_OUT> opWrapSink(int flags, Sink<Long> sink) {
                 return new Sink.ChainedReference<P_OUT, Long>(sink) {
                     @Override
@@ -238,6 +249,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
         return new DoublePipeline.StatelessOp<P_OUT>(this, StreamShape.REFERENCE,
                                         StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<P_OUT> opWrapSink(int flags, Sink<Double> sink) {
                 return new Sink.ChainedReference<P_OUT, Double>(sink) {
                     @Override
@@ -283,6 +295,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
         return new IntPipeline.StatelessOp<P_OUT>(this, StreamShape.REFERENCE,
                                               StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT | StreamOpFlag.NOT_SIZED) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<P_OUT> opWrapSink(int flags, Sink<Integer> sink) {
                 return new Sink.ChainedReference<P_OUT, Integer>(sink) {
                     IntConsumer downstreamAsInt = downstream::accept;
@@ -311,6 +324,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
         return new DoublePipeline.StatelessOp<P_OUT>(this, StreamShape.REFERENCE,
                                                      StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT | StreamOpFlag.NOT_SIZED) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<P_OUT> opWrapSink(int flags, Sink<Double> sink) {
                 return new Sink.ChainedReference<P_OUT, Double>(sink) {
                     DoubleConsumer downstreamAsDouble = downstream::accept;
@@ -339,6 +353,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
         return new LongPipeline.StatelessOp<P_OUT>(this, StreamShape.REFERENCE,
                                                    StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT | StreamOpFlag.NOT_SIZED) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<P_OUT> opWrapSink(int flags, Sink<Long> sink) {
                 return new Sink.ChainedReference<P_OUT, Long>(sink) {
                     LongConsumer downstreamAsLong = downstream::accept;
@@ -366,6 +381,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
         return new StatelessOp<P_OUT, P_OUT>(this, StreamShape.REFERENCE,
                                      0) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<P_OUT> opWrapSink(int flags, Sink<P_OUT> sink) {
                 return new Sink.ChainedReference<P_OUT, P_OUT>(sink) {
                     @Override
@@ -436,7 +452,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
         // super type of U an ArrayStoreException will be thrown.
         @SuppressWarnings("rawtypes")
         IntFunction rawGenerator = (IntFunction) generator;
-        // TODO(b/29399275): Eclipse compiler requires explicit (Node<A[]>) cast below.
+        // Android-changed: Eclipse compiler requires explicit (Node<A[]>) cast (b/29399275).
         return (A[]) Nodes.flatten((Node<A[]>) evaluateToArrayNode(rawGenerator), rawGenerator)
                 .asArray(rawGenerator);
     }
@@ -539,6 +555,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
      * @since 1.8
      * @hide Visible for CTS testing only (OpenJDK8 tests).
      */
+    // Android-changed: Made public for CTS tests only.
     public static class Head<E_IN, E_OUT> extends ReferencePipeline<E_IN, E_OUT> {
         /**
          * Constructor for the source stage of a Stream.
@@ -548,6 +565,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
          * @param sourceFlags the source flags for the stream source, described
          *                    in {@link StreamOpFlag}
          */
+        // Android-changed: Made public for CTS tests only.
         public Head(Supplier<? extends Spliterator<?>> source,
              int sourceFlags, boolean parallel) {
             super(source, sourceFlags, parallel);
@@ -560,17 +578,20 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
          * @param sourceFlags the source flags for the stream source, described
          *                    in {@link StreamOpFlag}
          */
+        // Android-changed: Made public for CTS tests only.
         public Head(Spliterator<?> source,
              int sourceFlags, boolean parallel) {
             super(source, sourceFlags, parallel);
         }
 
         @Override
+        // Android-changed: Make public, to match the method it's overriding.
         public final boolean opIsStateful() {
             throw new UnsupportedOperationException();
         }
 
         @Override
+        // Android-changed: Make public, to match the method it's overriding.
         public final Sink<E_IN> opWrapSink(int flags, Sink<E_OUT> sink) {
             throw new UnsupportedOperationException();
         }
@@ -606,6 +627,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
      * @since 1.8
      * @hide Visible for CTS testing only (OpenJDK8 tests).
      */
+    // Android-changed: Made public for CTS tests only.
     public abstract static class StatelessOp<E_IN, E_OUT>
             extends ReferencePipeline<E_IN, E_OUT> {
         /**
@@ -616,6 +638,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
          * @param inputShape The stream shape for the upstream pipeline stage
          * @param opFlags Operation flags for the new stage
          */
+        // Android-changed: Made public for CTS tests only.
         public StatelessOp(AbstractPipeline<?, E_IN, ?> upstream,
                     StreamShape inputShape,
                     int opFlags) {
@@ -624,6 +647,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
         }
 
         @Override
+        // Android-changed: Make public, to match the method it's overriding.
         public final boolean opIsStateful() {
             return false;
         }
@@ -637,6 +661,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
      * @since 1.8
      * @hide Visible for CTS testing only (OpenJDK8 tests).
      */
+    // Android-changed: Made public for CTS tests only.
     public abstract static class StatefulOp<E_IN, E_OUT>
             extends ReferencePipeline<E_IN, E_OUT> {
         /**
@@ -646,6 +671,7 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
          * @param inputShape The stream shape for the upstream pipeline stage
          * @param opFlags Operation flags for the new stage
          */
+        // Android-changed: Made public for CTS tests only.
         public StatefulOp(AbstractPipeline<?, E_IN, ?> upstream,
                    StreamShape inputShape,
                    int opFlags) {
@@ -654,11 +680,13 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
         }
 
         @Override
+        // Android-changed: Make public, to match the method it's overriding.
         public final boolean opIsStateful() {
             return true;
         }
 
         @Override
+        // Android-changed: Make public, to match the method it's overriding.
         public abstract <P_IN> Node<E_OUT> opEvaluateParallel(PipelineHelper<E_OUT> helper,
                                                        Spliterator<P_IN> spliterator,
                                                        IntFunction<E_OUT[]> generator);

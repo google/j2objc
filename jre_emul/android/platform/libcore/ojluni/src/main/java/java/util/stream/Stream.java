@@ -25,6 +25,8 @@
 package java.util.stream;
 
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -126,7 +128,8 @@ import java.util.function.UnaryOperator;
  *
  * <p>Streams have a {@link #close()} method and implement {@link AutoCloseable},
  * but nearly all stream instances do not actually need to be closed after use.
- * Generally, only streams whose source is an IO channel will require closing.  Most streams
+ * Generally, only streams whose source is an IO channel (such as those returned
+ * by {@link Files#lines(Path, Charset)}) will require closing.  Most streams
  * are backed by collections, arrays, or generating functions, which require no
  * special resource management.  (If a stream does require closing, it can be
  * declared as a resource in a {@code try}-with-resources statement.)

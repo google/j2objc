@@ -52,6 +52,7 @@ import java.util.function.Supplier;
  * @since 1.8
  * @hide Visible for CTS testing only (OpenJDK8 tests).
  */
+// Android-changed: Made public for CTS tests only.
 public abstract class DoublePipeline<E_IN>
         extends AbstractPipeline<E_IN, Double, DoubleStream>
         implements DoubleStream {
@@ -128,11 +129,13 @@ public abstract class DoublePipeline<E_IN>
     // Shape-specific methods
 
     @Override
+    // Android-changed: Make public, to match the method it's overriding.
     public final StreamShape getOutputShape() {
         return StreamShape.DOUBLE_VALUE;
     }
 
     @Override
+    // Android-changed: Make public, to match the method it's overriding.
     public final <P_IN> Node<Double> evaluateToNode(PipelineHelper<Double> helper,
                                              Spliterator<P_IN> spliterator,
                                              boolean flattenTree,
@@ -141,6 +144,7 @@ public abstract class DoublePipeline<E_IN>
     }
 
     @Override
+    // Android-changed: Make public, to match the method it's overriding.
     public final <P_IN> Spliterator<Double> wrap(PipelineHelper<Double> ph,
                                           Supplier<Spliterator<P_IN>> supplier,
                                           boolean isParallel) {
@@ -149,11 +153,13 @@ public abstract class DoublePipeline<E_IN>
 
     @Override
     @SuppressWarnings("unchecked")
+    // Android-changed: Make public, to match the method it's overriding.
     public final Spliterator.OfDouble lazySpliterator(Supplier<? extends Spliterator<Double>> supplier) {
         return new StreamSpliterators.DelegatingSpliterator.OfDouble((Supplier<Spliterator.OfDouble>) supplier);
     }
 
     @Override
+    // Android-changed: Make public, to match the method it's overriding.
     public final void forEachWithCancel(Spliterator<Double> spliterator, Sink<Double> sink) {
         Spliterator.OfDouble spl = adapt(spliterator);
         DoubleConsumer adaptedSink = adapt(sink);
@@ -161,6 +167,7 @@ public abstract class DoublePipeline<E_IN>
     }
 
     @Override
+    // Android-changed: Make public, to match the method it's overriding.
     public final Node.Builder<Double> makeNodeBuilder(long exactSizeIfKnown, IntFunction<Double[]> generator) {
         return Nodes.doubleBuilder(exactSizeIfKnown);
     }
@@ -191,6 +198,7 @@ public abstract class DoublePipeline<E_IN>
         return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE,
                                        StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<Double> opWrapSink(int flags, Sink<Double> sink) {
                 return new Sink.ChainedDouble<Double>(sink) {
                     @Override
@@ -208,6 +216,7 @@ public abstract class DoublePipeline<E_IN>
         return new ReferencePipeline.StatelessOp<Double, U>(this, StreamShape.DOUBLE_VALUE,
                                                             StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<Double> opWrapSink(int flags, Sink<U> sink) {
                 return new Sink.ChainedDouble<U>(sink) {
                     @Override
@@ -225,6 +234,7 @@ public abstract class DoublePipeline<E_IN>
         return new IntPipeline.StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE,
                                                    StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<Double> opWrapSink(int flags, Sink<Integer> sink) {
                 return new Sink.ChainedDouble<Integer>(sink) {
                     @Override
@@ -242,6 +252,7 @@ public abstract class DoublePipeline<E_IN>
         return new LongPipeline.StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE,
                                                     StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<Double> opWrapSink(int flags, Sink<Long> sink) {
                 return new Sink.ChainedDouble<Long>(sink) {
                     @Override
@@ -258,6 +269,7 @@ public abstract class DoublePipeline<E_IN>
         return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE,
                                         StreamOpFlag.NOT_SORTED | StreamOpFlag.NOT_DISTINCT | StreamOpFlag.NOT_SIZED) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<Double> opWrapSink(int flags, Sink<Double> sink) {
                 return new Sink.ChainedDouble<Double>(sink) {
                     @Override
@@ -284,6 +296,7 @@ public abstract class DoublePipeline<E_IN>
             return this;
         return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE, StreamOpFlag.NOT_ORDERED) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<Double> opWrapSink(int flags, Sink<Double> sink) {
                 return sink;
             }
@@ -296,6 +309,7 @@ public abstract class DoublePipeline<E_IN>
         return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE,
                                        StreamOpFlag.NOT_SIZED) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<Double> opWrapSink(int flags, Sink<Double> sink) {
                 return new Sink.ChainedDouble<Double>(sink) {
                     @Override
@@ -319,6 +333,7 @@ public abstract class DoublePipeline<E_IN>
         return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE,
                                        0) {
             @Override
+            // Android-changed: Make public, to match the method it's overriding.
             public Sink<Double> opWrapSink(int flags, Sink<Double> sink) {
                 return new Sink.ChainedDouble<Double>(sink) {
                     @Override
@@ -514,8 +529,9 @@ public abstract class DoublePipeline<E_IN>
      * Source stage of a DoubleStream
      *
      * @param <E_IN> type of elements in the upstream source
-     * @hide Visibility for CTS only (OpenJDK 8 streams tests).
+     * @hide Made public for CTS tests only (OpenJDK 8 streams tests).
      */
+    // Android-changed: Made public for CTS tests only.
     public static class Head<E_IN> extends DoublePipeline<E_IN> {
         /**
          * Constructor for the source stage of a DoubleStream.
@@ -526,6 +542,7 @@ public abstract class DoublePipeline<E_IN>
          *                    in {@link StreamOpFlag}
          * @param parallel {@code true} if the pipeline is parallel
          */
+        // Android-changed: Made public for CTS tests only.
         public Head(Supplier<? extends Spliterator<Double>> source,
              int sourceFlags, boolean parallel) {
             super(source, sourceFlags, parallel);
@@ -539,17 +556,20 @@ public abstract class DoublePipeline<E_IN>
          *                    in {@link StreamOpFlag}
          * @param parallel {@code true} if the pipeline is parallel
          */
+        // Android-changed: Made public for CTS tests only.
         public Head(Spliterator<Double> source,
              int sourceFlags, boolean parallel) {
             super(source, sourceFlags, parallel);
         }
 
         @Override
+        // Android-changed: Made public for CTS tests only.
         public final boolean opIsStateful() {
             throw new UnsupportedOperationException();
         }
 
         @Override
+        // Android-changed: Made public for CTS tests only.
         public final Sink<E_IN> opWrapSink(int flags, Sink<Double> sink) {
             throw new UnsupportedOperationException();
         }
@@ -585,6 +605,7 @@ public abstract class DoublePipeline<E_IN>
      * @since 1.8
      * @hide Visible for CTS testing only (OpenJDK8 tests).
      */
+    // Android-changed: Made public for CTS tests only.
     public abstract static class StatelessOp<E_IN> extends DoublePipeline<E_IN> {
         /**
          * Construct a new DoubleStream by appending a stateless intermediate
@@ -594,6 +615,7 @@ public abstract class DoublePipeline<E_IN>
          * @param inputShape the stream shape for the upstream pipeline stage
          * @param opFlags operation flags for the new stage
          */
+        // Android-changed: Made public for CTS tests only.
         public StatelessOp(AbstractPipeline<?, E_IN, ?> upstream,
                     StreamShape inputShape,
                     int opFlags) {
@@ -602,6 +624,7 @@ public abstract class DoublePipeline<E_IN>
         }
 
         @Override
+        // Android-changed: Make public, to match the method it's overriding.
         public final boolean opIsStateful() {
             return false;
         }
@@ -614,6 +637,7 @@ public abstract class DoublePipeline<E_IN>
      * @since 1.8
      * @hide Visible for CTS testing only (OpenJDK8 tests).
      */
+    // Android-changed: Made public for CTS tests only.
     public abstract static class StatefulOp<E_IN> extends DoublePipeline<E_IN> {
         /**
          * Construct a new DoubleStream by appending a stateful intermediate
@@ -623,6 +647,7 @@ public abstract class DoublePipeline<E_IN>
          * @param inputShape the stream shape for the upstream pipeline stage
          * @param opFlags operation flags for the new stage
          */
+        // Android-changed: Made public for CTS tests only.
         public StatefulOp(AbstractPipeline<?, E_IN, ?> upstream,
                    StreamShape inputShape,
                    int opFlags) {
@@ -631,11 +656,13 @@ public abstract class DoublePipeline<E_IN>
         }
 
         @Override
+        // Android-changed: Make public, to match the method it's overriding.
         public final boolean opIsStateful() {
             return true;
         }
 
         @Override
+        // Android-changed: Make public, to match the method it's overriding.
         public abstract <P_IN> Node<Double> opEvaluateParallel(PipelineHelper<Double> helper,
                                                         Spliterator<P_IN> spliterator,
                                                         IntFunction<Double[]> generator);
