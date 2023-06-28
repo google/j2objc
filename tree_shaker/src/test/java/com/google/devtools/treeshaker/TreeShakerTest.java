@@ -1123,9 +1123,9 @@ public class TreeShakerTest extends TestCase {
     addSourceFile("D.java", "package p; @C({B.class}) class D {}");
     CodeReferenceMap unused = findUnusedCode();
 
-    assertThat(getUnusedClasses(unused)).containsExactly("p.C");
+    assertThat(getUnusedClasses(unused)).containsExactly("p.C", "p.B");
     assertThat(getUnusedMethods(unused))
-        .containsExactly(getMethodName("p.A", "A", "()V"), getMethodName("p.B", "B", "()V"));
+        .containsExactly(getMethodName("p.A", "A", "()V"));
   }
 
   public void testAnnotationsWithInnerClasses() throws IOException {
@@ -1165,6 +1165,31 @@ public class TreeShakerTest extends TestCase {
             getMethodName("p.D", "valueOf", "(Ljava/lang/String;)Lp/D;"));
   }
 
+  public void testUnusedAnnotationsWithInnerEnums() throws IOException {
+    addTreeShakerRootsFile("p.A:\n    main()");
+    addSourceFile(
+        "A.java",
+        "package p; ",
+        // If annotation specifies a non-default value, test fails with no unused classes.
+        "@B(b=B.D.TWO) ",
+        "class A { static void main() { }}");
+    addSourceFile(
+        "B.java",
+        "package p;",
+        "import java.lang.annotation.Retention;",
+        "import java.lang.annotation.RetentionPolicy;",
+        "@Retention(RetentionPolicy.CLASS)",
+        "@interface B { ",
+        "  D b() default D.TWO; ",
+        // The default value of enum D should be ONE.
+        "  enum D { ONE, TWO, THREE; } ",
+        "}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).containsExactly("p.B", "p.B$D");
+    assertThat(getUnusedMethods(unused)).containsExactly(getMethodName("p.A", "A", "()V"));
+  }
+  
   public void testPackageAnnotations() throws IOException {
     addTreeShakerRootsFile("a.A:\n    main()");
     addSourceFile("A.java", "package a; class A { static void main() { new a.B(); }}");

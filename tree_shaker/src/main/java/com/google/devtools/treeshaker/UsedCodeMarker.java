@@ -217,8 +217,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   @Override
-  public void endVisit(MarkerAnnotation node) {
-    visitAnnotation(node);
+  public boolean visit(MarkerAnnotation node) {
+    return visitAnnotation(node);
   }
 
   @Override
@@ -251,8 +251,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   @Override
-  public void endVisit(NormalAnnotation node) {
-    visitAnnotation(node);
+  public boolean visit(NormalAnnotation node) {
+    return visitAnnotation(node);
   }
 
   @Override
@@ -261,15 +261,15 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     if (!node.getAnnotations().isEmpty()) {
       // Package annotations are only allowed in package-info.java files.
       startPackage(node.getPackageElement());
-      node.getAnnotations().forEach(this::visitAnnotation);
+      node.getAnnotations().forEach(this::addPseudoConstructorForAnnotation);
       endPackage();
     }
     return false;
   }
 
   @Override
-  public void endVisit(PropertyAnnotation node) {
-    visitAnnotation(node);
+  public boolean visit(PropertyAnnotation node) {
+    return visitAnnotation(node);
   }
 
   @Override
@@ -279,8 +279,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   }
 
   @Override
-  public void endVisit(SingleMemberAnnotation node) {
-    visitAnnotation(node);
+  public boolean visit(SingleMemberAnnotation node) {
+    return visitAnnotation(node);
   }
 
   @Override
@@ -393,11 +393,32 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     return getMethodName("valueOf", "(Ljava/lang/String;)" + type);
   }
 
-  private void visitAnnotation(Annotation node) {
-    // A reference to an annotation implicitly constructs an instance of that annotation.
-    if (needsReflection && ElementUtil.isRuntimeAnnotation(node.getAnnotationMirror())) {
+  private boolean isUsedAnnotation(Annotation node) {
+    // Returns true if annotation should be kept.
+    // This is only true when the annotation has RUNTIME retention
+    // and the --strip-reflection flag is specified.
+    return needsReflection && ElementUtil.isRuntimeAnnotation(node.getAnnotationMirror());
+  }
+
+  private void addPseudoConstructorForAnnotation(Annotation node) {
+    addPseudoConstructorForAnnotation(node, isUsedAnnotation(node));
+  }
+
+  private void addPseudoConstructorForAnnotation(Annotation node, boolean isUsedAnnotation) {
+    if (isUsedAnnotation) {
       addPseudoConstructorInvocation(node.getTypeMirror());
     }
+  }
+
+  /**
+   * Returns true if the annotation is used and the visitor should visit the expressions within
+   * annotation, otherwise ignores the contained nodes and not mark them as used.
+   */
+  private boolean visitAnnotation(Annotation node) {
+    // A reference to an annotation implicitly constructs an instance of that annotation.
+    boolean isUsedAnnotation = isUsedAnnotation(node);
+    addPseudoConstructorForAnnotation(node, isUsedAnnotation);
+    return isUsedAnnotation;
   }
 
   private Integer getTypeId(String typeName) {
