@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -305,7 +305,7 @@ public final class Instant
      * This method allows an arbitrary number of nanoseconds to be passed in.
      * The factory will alter the values of the second and nanosecond in order
      * to ensure that the stored nanosecond is in the range 0 to 999,999,999.
-     * For example, the following will result in the exactly the same instant:
+     * For example, the following will result in exactly the same instant:
      * <pre>
      *  Instant.ofEpochSecond(3, 1);
      *  Instant.ofEpochSecond(4, -999_999_999);
@@ -336,7 +336,7 @@ public final class Instant
      */
     public static Instant ofEpochMilli(long epochMilli) {
         long secs = Math.floorDiv(epochMilli, 1000);
-        int mos = (int)Math.floorMod(epochMilli, 1000);
+        int mos = Math.floorMod(epochMilli, 1000);
         return create(secs, mos * 1000_000);
     }
 
@@ -555,7 +555,6 @@ public final class Instant
                 case NANO_OF_SECOND: return nanos;
                 case MICRO_OF_SECOND: return nanos / 1000;
                 case MILLI_OF_SECOND: return nanos / 1000_000;
-                case INSTANT_SECONDS: INSTANT_SECONDS.checkValidIntValue(seconds);
             }
             throw new UnsupportedTemporalTypeException("Unsupported field: " + field);
         }
@@ -605,7 +604,7 @@ public final class Instant
      * <p>
      * The epoch second count is a simple incrementing count of seconds where
      * second 0 is 1970-01-01T00:00:00Z.
-     * The nanosecond part of the day is returned by {@code getNanosOfSecond}.
+     * The nanosecond part is returned by {@link #getNano}.
      *
      * @return the seconds from the epoch of 1970-01-01T00:00:00Z
      */
@@ -618,7 +617,7 @@ public final class Instant
      * of the second.
      * <p>
      * The nanosecond-of-second value measures the total number of nanoseconds from
-     * the second returned by {@code getEpochSecond}.
+     * the second returned by {@link #getEpochSecond}.
      *
      * @return the nanoseconds within the second, always positive, never exceeds 999,999,999
      */
@@ -752,7 +751,7 @@ public final class Instant
             throw new UnsupportedTemporalTypeException("Unit must divide into a standard day without remainder");
         }
         long nod = (seconds % LocalTime.SECONDS_PER_DAY) * LocalTime.NANOS_PER_SECOND + nanos;
-        long result = (nod / dur) * dur;
+        long result = Math.floorDiv(nod, dur) * dur;
         return plusNanos(result - nod);
     }
 
@@ -793,33 +792,33 @@ public final class Instant
      * The supported fields behave as follows:
      * <ul>
      * <li>{@code NANOS} -
-     *  Returns a {@code Instant} with the specified number of nanoseconds added.
+     *  Returns an {@code Instant} with the specified number of nanoseconds added.
      *  This is equivalent to {@link #plusNanos(long)}.
      * <li>{@code MICROS} -
-     *  Returns a {@code Instant} with the specified number of microseconds added.
+     *  Returns an {@code Instant} with the specified number of microseconds added.
      *  This is equivalent to {@link #plusNanos(long)} with the amount
      *  multiplied by 1,000.
      * <li>{@code MILLIS} -
-     *  Returns a {@code Instant} with the specified number of milliseconds added.
+     *  Returns an {@code Instant} with the specified number of milliseconds added.
      *  This is equivalent to {@link #plusNanos(long)} with the amount
      *  multiplied by 1,000,000.
      * <li>{@code SECONDS} -
-     *  Returns a {@code Instant} with the specified number of seconds added.
+     *  Returns an {@code Instant} with the specified number of seconds added.
      *  This is equivalent to {@link #plusSeconds(long)}.
      * <li>{@code MINUTES} -
-     *  Returns a {@code Instant} with the specified number of minutes added.
+     *  Returns an {@code Instant} with the specified number of minutes added.
      *  This is equivalent to {@link #plusSeconds(long)} with the amount
      *  multiplied by 60.
      * <li>{@code HOURS} -
-     *  Returns a {@code Instant} with the specified number of hours added.
+     *  Returns an {@code Instant} with the specified number of hours added.
      *  This is equivalent to {@link #plusSeconds(long)} with the amount
      *  multiplied by 3,600.
      * <li>{@code HALF_DAYS} -
-     *  Returns a {@code Instant} with the specified number of half-days added.
+     *  Returns an {@code Instant} with the specified number of half-days added.
      *  This is equivalent to {@link #plusSeconds(long)} with the amount
      *  multiplied by 43,200 (12 hours).
      * <li>{@code DAYS} -
-     *  Returns a {@code Instant} with the specified number of days added.
+     *  Returns an {@code Instant} with the specified number of days added.
      *  This is equivalent to {@link #plusSeconds(long)} with the amount
      *  multiplied by 86,400 (24 hours).
      * </ul>
@@ -952,7 +951,7 @@ public final class Instant
     /**
      * Returns a copy of this instant with the specified amount subtracted.
      * <p>
-     * This returns a {@code Instant}, based on this one, with the amount
+     * This returns an {@code Instant}, based on this one, with the amount
      * in terms of the unit subtracted. If it is not possible to subtract the amount,
      * because the unit is not supported or for some other reason, an exception is thrown.
      * <p>
@@ -1100,7 +1099,7 @@ public final class Instant
      * complete units between the two instants.
      * The {@code Temporal} passed to this method is converted to a
      * {@code Instant} using {@link #from(TemporalAccessor)}.
-     * For example, the amount in days between two dates can be calculated
+     * For example, the amount in seconds between two dates can be calculated
      * using {@code startInstant.until(endInstant, SECONDS)}.
      * <p>
      * There are two equivalent ways of using this method.

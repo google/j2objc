@@ -379,7 +379,7 @@ public enum Month implements TemporalAccessor, TemporalAdjuster {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns the month-of-year that is the specified number of quarters after this one.
+     * Returns the month-of-year that is the specified number of months after this one.
      * <p>
      * The calculation rolls around the end of the year from December to January.
      * The specified period may be negative.

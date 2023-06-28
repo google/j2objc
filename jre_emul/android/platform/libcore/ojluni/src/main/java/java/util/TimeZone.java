@@ -656,6 +656,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
      *         {@code TimeZone}
      * @since 1.8
      */
+    // TODO(b/287571490): Reimplement code with dependencies outside of the core JRE subset
     /* J2ObjC removed.
     public ZoneId toZoneId() {
         // Android-changed: don't support "old mapping"

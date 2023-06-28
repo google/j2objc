@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -61,9 +61,15 @@
  */
 package java.time;
 
+/* J2ObjC removed
+import jdk.internal.misc.VM;
+*/
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import static java.time.LocalTime.NANOS_PER_MINUTE;
 import static java.time.LocalTime.NANOS_PER_SECOND;
-
+import static java.time.LocalTime.NANOS_PER_MILLI;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.TimeZone;
@@ -124,10 +130,13 @@ import java.util.TimeZone;
  * document whether or not they do support serialization.
  *
  * @implNote
- * The clock implementation provided here is based on {@link System#currentTimeMillis()}.
- * That method provides little to no guarantee about the accuracy of the clock.
- * Applications requiring a more accurate clock must implement this abstract class
- * themselves using a different external clock, such as an NTP server.
+ * The clock implementation provided here is based on the same underlying clock
+ * as {@link System#currentTimeMillis()}, but may have a precision finer than
+ * milliseconds if available.
+ * However, little to no guarantee is provided about the accuracy of the
+ * underlying clock. Applications requiring a more accurate clock must implement
+ * this abstract class themselves using a different external clock, such as an
+ * NTP server.
  *
  * @since 1.8
  */
@@ -152,7 +161,7 @@ public abstract class Clock {
      * @return a clock that uses the best available system clock in the UTC zone, not null
      */
     public static Clock systemUTC() {
-        return new SystemClock(ZoneOffset.UTC);
+        return SystemClock.UTC;
     }
 
     /**
@@ -179,7 +188,7 @@ public abstract class Clock {
     }
 
     /**
-     * Obtains a clock that returns the current instant using best available
+     * Obtains a clock that returns the current instant using the best available
      * system clock.
      * <p>
      * This clock is based on the best available system clock.
@@ -195,13 +204,41 @@ public abstract class Clock {
      */
     public static Clock system(ZoneId zone) {
         Objects.requireNonNull(zone, "zone");
+        if (zone == ZoneOffset.UTC) {
+            return SystemClock.UTC;
+        }
         return new SystemClock(zone);
     }
 
     //-------------------------------------------------------------------------
     /**
+     * Obtains a clock that returns the current instant ticking in whole milliseconds
+     * using the best available system clock.
+     * <p>
+     * This clock will always have the nano-of-second field truncated to milliseconds.
+     * This ensures that the visible time ticks in whole milliseconds.
+     * The underlying clock is the best available system clock, equivalent to
+     * using {@link #system(ZoneId)}.
+     * <p>
+     * Implementations may use a caching strategy for performance reasons.
+     * As such, it is possible that the start of the millisecond observed via this
+     * clock will be later than that observed directly via the underlying clock.
+     * <p>
+     * The returned implementation is immutable, thread-safe and {@code Serializable}.
+     * It is equivalent to {@code tick(system(zone), Duration.ofMillis(1))}.
+     *
+     * @param zone  the time-zone to use to convert the instant to date-time, not null
+     * @return a clock that ticks in whole milliseconds using the specified zone, not null
+     * @since 9
+     */
+    public static Clock tickMillis(ZoneId zone) {
+        return new TickClock(system(zone), NANOS_PER_MILLI);
+    }
+
+    //-------------------------------------------------------------------------
+    /**
      * Obtains a clock that returns the current instant ticking in whole seconds
-     * using best available system clock.
+     * using the best available system clock.
      * <p>
      * This clock will always have the nano-of-second field set to zero.
      * This ensures that the visible time ticks in whole seconds.
@@ -224,7 +261,7 @@ public abstract class Clock {
 
     /**
      * Obtains a clock that returns the current instant ticking in whole minutes
-     * using best available system clock.
+     * using the best available system clock.
      * <p>
      * This clock will always have the nano-of-second and second-of-minute fields set to zero.
      * This ensures that the visible time ticks in whole minutes.
@@ -446,10 +483,24 @@ public abstract class Clock {
      */
     static final class SystemClock extends Clock implements Serializable {
         private static final long serialVersionUID = 6740630888130243051L;
+        private static final long OFFSET_SEED =
+                System.currentTimeMillis()/1000 - 1024; // initial offest
+        static final SystemClock UTC = new SystemClock(ZoneOffset.UTC);
+
         private final ZoneId zone;
+        // We don't actually need a volatile here.
+        // We don't care if offset is set or read concurrently by multiple
+        // threads - we just need a value which is 'recent enough' - in other
+        // words something that has been updated at least once in the last
+        // 2^32 secs (~136 years). And even if we by chance see an invalid
+        // offset, the worst that can happen is that we will get a -1 value
+        // from getNanoTimeAdjustment, forcing us to update the offset
+        // once again.
+        private transient long offset;
 
         SystemClock(ZoneId zone) {
             this.zone = zone;
+            this.offset = OFFSET_SEED;
         }
         @Override
         public ZoneId getZone() {
@@ -464,6 +515,12 @@ public abstract class Clock {
         }
         @Override
         public long millis() {
+            // System.currentTimeMillis() and VM.getNanoTimeAdjustment(offset)
+            // use the same time source - System.currentTimeMillis() simply
+            // limits the resolution to milliseconds.
+            // So we take the faster path and call System.currentTimeMillis()
+            // directly - in order to avoid the performance penalty of
+            // VM.getNanoTimeAdjustment(offset) which is less efficient.
             return System.currentTimeMillis();
         }
         @Override
@@ -485,6 +542,12 @@ public abstract class Clock {
         public String toString() {
             return "SystemClock[" + zone + "]";
         }
+        private void readObject(ObjectInputStream is)
+                throws IOException, ClassNotFoundException {
+            // ensure that offset is initialized
+            is.defaultReadObject();
+            offset = OFFSET_SEED;
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -493,7 +556,7 @@ public abstract class Clock {
      * This is typically used for testing.
      */
     static final class FixedClock extends Clock implements Serializable {
-       private static final long serialVersionUID = 7430389292664866958L;
+        private static final long serialVersionUID = 7430389292664866958L;
         private final Instant instant;
         private final ZoneId zone;
 
@@ -543,7 +606,7 @@ public abstract class Clock {
      * Implementation of a clock that adds an offset to an underlying clock.
      */
     static final class OffsetClock extends Clock implements Serializable {
-       private static final long serialVersionUID = 2007484719125426256L;
+        private static final long serialVersionUID = 2007484719125426256L;
         private final Clock baseClock;
         private final Duration offset;
 

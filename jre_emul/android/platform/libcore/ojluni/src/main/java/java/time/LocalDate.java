@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2015, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2018, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -74,6 +74,10 @@ import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.PROLEPTIC_MONTH;
 import static java.time.temporal.ChronoField.YEAR;
 
+/* J2ObjC removed
+import dalvik.annotation.codegen.CovariantReturnType;
+*/
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -82,6 +86,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Era;
+import java.time.chrono.IsoEra;
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -100,6 +105,8 @@ import java.time.temporal.ValueRange;
 import java.time.zone.ZoneOffsetTransition;
 import java.time.zone.ZoneRules;
 import java.util.Objects;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 // Android-changed: removed ValueBased paragraph.
 /**
@@ -141,6 +148,10 @@ public final class LocalDate
      * This could be used by an application as a "far future" date.
      */
     public static final LocalDate MAX = LocalDate.of(Year.MAX_VALUE, 12, 31);
+    /**
+     * The epoch year {@code LocalDate}, '1970-01-01'.
+     */
+    public static final LocalDate EPOCH = LocalDate.of(1970, 1, 1);
 
     /**
      * Serialization version.
@@ -214,12 +225,8 @@ public final class LocalDate
      */
     public static LocalDate now(Clock clock) {
         Objects.requireNonNull(clock, "clock");
-        // inline to avoid creating object and Instant checks
         final Instant now = clock.instant();  // called once
-        ZoneOffset offset = clock.getZone().getRules().getOffset(now);
-        long epochSec = now.getEpochSecond() + offset.getTotalSeconds();  // overflow caught later
-        long epochDay = Math.floorDiv(epochSec, SECONDS_PER_DAY);
-        return LocalDate.ofEpochDay(epochDay);
+        return ofInstant(now, clock.getZone());
     }
 
     //-----------------------------------------------------------------------
@@ -294,6 +301,31 @@ public final class LocalDate
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code LocalDate} from an {@code Instant} and zone ID.
+     * <p>
+     * This creates a local date based on the specified instant.
+     * First, the offset from UTC/Greenwich is obtained using the zone ID and instant,
+     * which is simple as there is only one valid offset for each instant.
+     * Then, the instant and offset are used to calculate the local date.
+     *
+     * @param instant  the instant to create the date from, not null
+     * @param zone  the time-zone, which may be an offset, not null
+     * @return the local date, not null
+     * @throws DateTimeException if the result exceeds the supported range
+     * @since 9
+     */
+    public static LocalDate ofInstant(Instant instant, ZoneId zone) {
+        Objects.requireNonNull(instant, "instant");
+        Objects.requireNonNull(zone, "zone");
+        ZoneRules rules = zone.getRules();
+        ZoneOffset offset = rules.getOffset(instant);
+        long localSecond = instant.getEpochSecond() + offset.getTotalSeconds();
+        long localEpochDay = Math.floorDiv(localSecond, SECONDS_PER_DAY);
+        return ofEpochDay(localEpochDay);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code LocalDate} from the epoch day count.
      * <p>
      * This returns a {@code LocalDate} with the specified epoch-day.
@@ -305,6 +337,7 @@ public final class LocalDate
      * @throws DateTimeException if the epoch day exceeds the supported date range
      */
     public static LocalDate ofEpochDay(long epochDay) {
+        EPOCH_DAY.checkValidValue(epochDay);
         long zeroDay = epochDay + DAYS_0000_TO_1970;
         // find the march-based year
         zeroDay -= 60;  // adjust to 0000-03-01 so leap day is at end of four year cycle
@@ -594,7 +627,7 @@ public final class LocalDate
      * If the field is a {@link ChronoField} then the query is implemented here.
      * The {@link #isSupported(TemporalField) supported fields} will return valid
      * values based on this date, except {@code EPOCH_DAY} and {@code PROLEPTIC_MONTH}
-     * which are too large to fit in an {@code int} and throw a {@code DateTimeException}.
+     * which are too large to fit in an {@code int} and throw an {@code UnsupportedTemporalTypeException}.
      * All other {@code ChronoField} instances will throw an {@code UnsupportedTemporalTypeException}.
      * <p>
      * If the field is not a {@code ChronoField}, then the result of this method
@@ -796,7 +829,7 @@ public final class LocalDate
      * @return the day-of-week, not null
      */
     public DayOfWeek getDayOfWeek() {
-        int dow0 = (int)Math.floorMod(toEpochDay() + 3, 7);
+        int dow0 = Math.floorMod(toEpochDay() + 3, 7);
         return DayOfWeek.of(dow0 + 1);
     }
 
@@ -1299,7 +1332,7 @@ public final class LocalDate
         long monthCount = year * 12L + (month - 1);
         long calcMonths = monthCount + monthsToAdd;  // safe overflow
         int newYear = YEAR.checkValidIntValue(Math.floorDiv(calcMonths, 12));
-        int newMonth = (int)Math.floorMod(calcMonths, 12) + 1;
+        int newMonth = Math.floorMod(calcMonths, 12) + 1;
         return resolvePreviousValid(newYear, newMonth, day);
     }
 
@@ -1341,6 +1374,23 @@ public final class LocalDate
         if (daysToAdd == 0) {
             return this;
         }
+        long dom = day + daysToAdd;
+        if (dom > 0) {
+            if (dom <= 28) {
+                return new LocalDate(year, month, (int) dom);
+            } else if (dom <= 59) { // 59th Jan is 28th Feb, 59th Feb is 31st Mar
+                long monthLen = lengthOfMonth();
+                if (dom <= monthLen) {
+                    return new LocalDate(year, month, (int) dom);
+                } else if (month < 12) {
+                    return new LocalDate(year, month + 1, (int) (dom - monthLen));
+                } else {
+                    YEAR.checkValidValue(year + 1);
+                    return new LocalDate(year + 1, 1, (int) (dom - monthLen));
+                }
+            }
+        }
+
         long mjDay = Math.addExact(toEpochDay(), daysToAdd);
         return LocalDate.ofEpochDay(mjDay);
     }
@@ -1671,6 +1721,89 @@ public final class LocalDate
     }
 
     /**
+     * Returns a sequential ordered stream of dates. The returned stream starts from this date
+     * (inclusive) and goes to {@code endExclusive} (exclusive) by an incremental step of 1 day.
+     * <p>
+     * This method is equivalent to {@code datesUntil(endExclusive, Period.ofDays(1))}.
+     *
+     * @param endExclusive  the end date, exclusive, not null
+     * @return a sequential {@code Stream} for the range of {@code LocalDate} values
+     * @throws IllegalArgumentException if end date is before this date
+     * @since 9
+     */
+    public Stream<LocalDate> datesUntil(LocalDate endExclusive) {
+        long end = endExclusive.toEpochDay();
+        long start = toEpochDay();
+        if (end < start) {
+            throw new IllegalArgumentException(endExclusive + " < " + this);
+        }
+        return LongStream.range(start, end).mapToObj(LocalDate::ofEpochDay);
+    }
+
+    /**
+     * Returns a sequential ordered stream of dates by given incremental step. The returned stream
+     * starts from this date (inclusive) and goes to {@code endExclusive} (exclusive).
+     * <p>
+     * The n-th date which appears in the stream is equal to {@code this.plus(step.multipliedBy(n))}
+     * (but the result of step multiplication never overflows). For example, if this date is
+     * {@code 2015-01-31}, the end date is {@code 2015-05-01} and the step is 1 month, then the
+     * stream contains {@code 2015-01-31}, {@code 2015-02-28}, {@code 2015-03-31}, and
+     * {@code 2015-04-30}.
+     *
+     * @param endExclusive  the end date, exclusive, not null
+     * @param step  the non-zero, non-negative {@code Period} which represents the step.
+     * @return a sequential {@code Stream} for the range of {@code LocalDate} values
+     * @throws IllegalArgumentException if step is zero, or {@code step.getDays()} and
+     *             {@code step.toTotalMonths()} have opposite sign, or end date is before this date
+     *             and step is positive, or end date is after this date and step is negative
+     * @since 9
+     */
+    public Stream<LocalDate> datesUntil(LocalDate endExclusive, Period step) {
+        if (step.isZero()) {
+            throw new IllegalArgumentException("step is zero");
+        }
+        long end = endExclusive.toEpochDay();
+        long start = toEpochDay();
+        long until = end - start;
+        long months = step.toTotalMonths();
+        long days = step.getDays();
+        if ((months < 0 && days > 0) || (months > 0 && days < 0)) {
+            throw new IllegalArgumentException("period months and days are of opposite sign");
+        }
+        if (until == 0) {
+            return Stream.empty();
+        }
+        int sign = months > 0 || days > 0 ? 1 : -1;
+        if (sign < 0 ^ until < 0) {
+            throw new IllegalArgumentException(endExclusive + (sign < 0 ? " > " : " < ") + this);
+        }
+        if (months == 0) {
+            long steps = (until - sign) / days; // non-negative
+            return LongStream.rangeClosed(0, steps).mapToObj(
+                    n -> LocalDate.ofEpochDay(start + n * days));
+        }
+        // 48699/1600 = 365.2425/12, no overflow, non-negative result
+        long steps = until * 1600 / (months * 48699 + days * 1600) + 1;
+        long addMonths = months * steps;
+        long addDays = days * steps;
+        long maxAddMonths = months > 0 ? MAX.getProlepticMonth() - getProlepticMonth()
+                : getProlepticMonth() - MIN.getProlepticMonth();
+        // adjust steps estimation
+        if (addMonths * sign > maxAddMonths
+                || (plusMonths(addMonths).toEpochDay() + addDays) * sign >= end * sign) {
+            steps--;
+            addMonths -= months;
+            addDays -= days;
+            if (addMonths * sign > maxAddMonths
+                    || (plusMonths(addMonths).toEpochDay() + addDays) * sign >= end * sign) {
+                steps--;
+            }
+        }
+        return LongStream.rangeClosed(0, steps).mapToObj(
+                n -> this.plusMonths(months * n).plusDays(days * n));
+    }
+
+    /**
      * Formats this date using the specified formatter.
      * <p>
      * This date will be passed to the formatter to produce a string.
@@ -1838,6 +1971,29 @@ public final class LocalDate
             }
         }
         return total - DAYS_0000_TO_1970;
+    }
+
+    /**
+     * Converts this {@code LocalDate} to the number of seconds since the epoch
+     * of 1970-01-01T00:00:00Z.
+     * <p>
+     * This combines this local date with the specified time and
+     * offset to calculate the epoch-second value, which is the
+     * number of elapsed seconds from 1970-01-01T00:00:00Z.
+     * Instants on the time-line after the epoch are positive, earlier
+     * are negative.
+     *
+     * @param time the local time, not null
+     * @param offset the zone offset, not null
+     * @return the number of seconds since the epoch of 1970-01-01T00:00:00Z, may be negative
+     * @since 9
+     */
+    public long toEpochSecond(LocalTime time, ZoneOffset offset) {
+        Objects.requireNonNull(time, "time");
+        Objects.requireNonNull(offset, "offset");
+        long secs = toEpochDay() * SECONDS_PER_DAY + time.toSecondOfDay();
+        secs -= offset.getTotalSeconds();
+        return secs;
     }
 
     //-----------------------------------------------------------------------
