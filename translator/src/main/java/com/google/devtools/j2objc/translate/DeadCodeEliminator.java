@@ -118,6 +118,15 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
         }
       }
 
+      // Or live annotations.
+      if (decl instanceof AnnotationTypeDeclaration) {
+        AnnotationTypeDeclaration annotationDeclaration = (AnnotationTypeDeclaration) decl;
+        if (!deadCodeMap.containsClass(
+            elementUtil.getBinaryName(annotationDeclaration.getTypeElement()))) {
+          continue;
+        }
+      }
+
       if (decl.getKind() == Kind.FIELD_DECLARATION) {
         FieldDeclaration field = (FieldDeclaration) decl;
         VariableDeclarationFragment fragment = field.getFragment();

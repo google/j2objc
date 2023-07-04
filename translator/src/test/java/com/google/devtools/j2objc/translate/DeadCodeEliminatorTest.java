@@ -616,4 +616,22 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertTranslation(translation, "NSString *A_B_FOO = @\"foo\";");
     assertTranslation(translation, "static NSString *A_B_BAR = @\"bar\";");
   }
+
+  // Verify when an outer type is dead, a live inner type is still generated. b/289536498
+  public void testDeadOuterInterface_liveAnnotation() throws IOException {
+    CodeReferenceMap map =
+        CodeReferenceMap.builder().addClass("Foo").addClass("Foo$Inner2").build();
+    setDeadCodeMap(map);
+    String source = "interface Foo {  public @interface Inner {} public @interface Inner2 {} }";
+    String translation = translateSourceFile(source, "Foo", "Foo.h");
+    assertNotInTranslation(translation, "@protocol Foo < JavaObject >");
+    assertTranslation(translation, "@protocol Foo_Inner < JavaLangAnnotationAnnotation >");
+    assertTranslation(translation, "@interface Foo_Inner : NSObject < Foo_Inner >");
+    assertNotInTranslation(translation, "@protocol Foo_Inner2 < JavaObject >");
+
+    translation = getTranslatedFile("Foo.m");
+    assertNotInTranslation(translation, "J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(Foo)");
+    assertTranslation(translation, "J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(Foo_Inner)");
+    assertNotInTranslation(translation, "J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(Foo_Inner2)");
+  }
 }
