@@ -25,6 +25,7 @@ SOURCEPATH = $(SRC_DIR)
 INCLUDE_DIRS = $(GEN_OBJC_DIR)
 
 ifeq ("$(XCODE_13_3_MINIMUM)", "YES")
+  CC_WARNINGS += -Wno-bitwise-instead-of-logical
   CC_WARNINGS += -Wunused-but-set-variable
 endif
 
