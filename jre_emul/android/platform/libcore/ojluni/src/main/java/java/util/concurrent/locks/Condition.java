@@ -73,7 +73,7 @@ import java.util.concurrent.TimeUnit;
  * available in the buffer. This can be achieved using two
  * {@link Condition} instances.
  * <pre>
- * class BoundedBuffer {
+ * class BoundedBuffer&lt;E&gt; {
  *   <b>final Lock lock = new ReentrantLock();</b>
  *   final Condition notFull  = <b>lock.newCondition(); </b>
  *   final Condition notEmpty = <b>lock.newCondition(); </b>
@@ -81,7 +81,7 @@ import java.util.concurrent.TimeUnit;
  *   final Object[] items = new Object[100];
  *   int putptr, takeptr, count;
  *
- *   public void put(Object x) throws InterruptedException {
+ *   public void put(E x) throws InterruptedException {
  *     <b>lock.lock();
  *     try {</b>
  *       while (count == items.length)
@@ -95,12 +95,12 @@ import java.util.concurrent.TimeUnit;
  *     }</b>
  *   }
  *
- *   public Object take() throws InterruptedException {
+ *   public E take() throws InterruptedException {
  *     <b>lock.lock();
  *     try {</b>
  *       while (count == 0)
  *         <b>notEmpty.await();</b>
- *       Object x = items[takeptr];
+ *       E x = (E) items[takeptr];
  *       if (++takeptr == items.length) takeptr = 0;
  *       --count;
  *       <b>notFull.signal();</b>
@@ -310,16 +310,18 @@ public interface Condition {
      * the following form:
      *
      * <pre> {@code
-     * boolean aMethod(long timeout, TimeUnit unit) {
-     *   long nanos = unit.toNanos(timeout);
+     * boolean aMethod(long timeout, TimeUnit unit)
+     *     throws InterruptedException {
+     *   long nanosRemaining = unit.toNanos(timeout);
      *   lock.lock();
      *   try {
      *     while (!conditionBeingWaitedFor()) {
-     *       if (nanos <= 0L)
+     *       if (nanosRemaining <= 0L)
      *         return false;
-     *       nanos = theCondition.awaitNanos(nanos);
+     *       nanosRemaining = theCondition.awaitNanos(nanosRemaining);
      *     }
      *     // ...
+     *     return true;
      *   } finally {
      *     lock.unlock();
      *   }
@@ -396,7 +398,6 @@ public interface Condition {
      * re-acquire the lock associated with this condition. When the
      * thread returns it is <em>guaranteed</em> to hold this lock.
      *
-     *
      * <p>If the current thread:
      * <ul>
      * <li>has its interrupted status set on entry to this method; or
@@ -408,11 +409,11 @@ public interface Condition {
      * case, whether or not the test for interruption occurs before the lock
      * is released.
      *
-     *
      * <p>The return value indicates whether the deadline has elapsed,
      * which can be used as follows:
      * <pre> {@code
-     * boolean aMethod(Date deadline) {
+     * boolean aMethod(Date deadline)
+     *     throws InterruptedException {
      *   boolean stillWaiting = true;
      *   lock.lock();
      *   try {
@@ -422,6 +423,7 @@ public interface Condition {
      *       stillWaiting = theCondition.awaitUntil(deadline);
      *     }
      *     // ...
+     *     return true;
      *   } finally {
      *     lock.unlock();
      *   }
