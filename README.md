@@ -51,3 +51,25 @@ Google's protocol buffers. See its
 ## Running on GNU/Linux ##
 
 To build and run on GNU/Linux, install [the Darling project](http://www.darlinghq.org/), then following [its Compile and Run a Program example](https://wiki.darlinghq.org/what_to_try#compile_and_run_a_program). Please note that j2objc is only supported on iOS/macOS.
+
+## Artifact Signatures ##
+
+This project publishes some artifacts through Maven Central with a `groupId` of `com.google.j2objc`.
+These artifacts are currently signed with [the following PGP/GPG key]
+(https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xeb1b3de71713c9ec2e87cc26ee92349ad86de446):
+
+```
+pub   rsa2048 2023-01-10 [SC] [expires: 2025-01-09]
+      EB1B3DE71713C9EC2E87CC26EE92349AD86DE446
+uid           [ unknown] Thomas Ball <tball@google.com>
+sub   rsa2048 2023-01-10 [E] [expires: 2025-01-09]
+```
+
+Older artifacts are signed with the following PGP/GPG key:
+
+```
+pub   rsa2048 2015-09-25 [SC]
+      B801E2F8EF035068EC1139CC29579F18FA8FD93B
+uid           [ unknown] Tom Ball <tball724@gmail.com>
+sub   rsa2048 2015-09-25 [E]
+```
