@@ -9,46 +9,43 @@
  */
 package android.icu.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.AccessControlException;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.util.MissingResourceException;
-import java.util.Properties;
 
 /**
  * ICUConfig is a class used for accessing ICU4J runtime configuration.
  * @hide Only a subset of ICU is exposed in Android
  */
 public class ICUConfig {
-    public static final String CONFIG_PROPS_FILE = "/android/icu/ICUConfig.properties";
-    private static final Properties CONFIG_PROPS;
+  /* J2ObjC: use Android defaults for ICU config, config settings can be set in System.properties.
 
-    static {
-        CONFIG_PROPS = new Properties();
-        try {
-            InputStream is = ICUData.getStream(CONFIG_PROPS_FILE);
-            if (is != null) {
-                try {
-                    CONFIG_PROPS.load(is);
-                } finally {
-                    is.close();
-                }
-            }
-        } catch (MissingResourceException mre) {
-            // If it does not exist, ignore.
-        } catch (IOException ioe) {
-            // Any IO errors, ignore
-        }
-    }
+  public static final String CONFIG_PROPS_FILE = "/android/icu/ICUConfig.properties";
+  private static final Properties CONFIG_PROPS;
 
-    /**
-     * Get ICU configuration property value for the given name.
-     * @param name The configuration property name
-     * @return The configuration property value, or null if it does not exist.
-     */
-    public static String get(String name) {
+  static {
+      CONFIG_PROPS = new Properties();
+      try {
+          InputStream is = ICUData.getStream(CONFIG_PROPS_FILE);
+          if (is != null) {
+              try {
+                  CONFIG_PROPS.load(is);
+              } finally {
+                  is.close();
+              }
+          }
+      } catch (MissingResourceException mre) {
+          // If it does not exist, ignore.
+      } catch (IOException ioe) {
+          // Any IO errors, ignore
+      }
+  }
+  */
+
+  /**
+   * Get ICU configuration property value for the given name.
+   *
+   * @param name The configuration property name
+   * @return The configuration property value, or null if it does not exist.
+   */
+  public static String get(String name) {
         return get(name, null);
     }
 
@@ -60,6 +57,10 @@ public class ICUConfig {
      * exist, <code>def</code> is returned.
      */
     public static String get(String name, String def) {
+        /* J2ObjC: always use System.getProperty().*/
+        return System.getProperty(name);
+
+        /*
         String val = null;
         final String fname = name;
         if (System.getSecurityManager() != null) {
@@ -82,5 +83,6 @@ public class ICUConfig {
             val = CONFIG_PROPS.getProperty(name, def);
         }
         return val;
+        */
     }
 }
