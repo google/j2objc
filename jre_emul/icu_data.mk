@@ -12,6 +12,9 @@
 
 # Rules for generating the embedded ICU resources.
 
+ICU_CONFIG_PROPERTIES = android/icu/ICUConfig.properties
+ICU_CONFIG_PROPERTIES_SRC = $(ICU_PROPERTIES_ROOT)/$(ICU_CONFIG_PROPERTIES)
+
 ICU_EXTRACTED_RES_DIR = $(ICU_RES_DIR)/extracted
 ICU_RES_PACKAGE = com/ibm/icu/impl/data/icudt60b
 
@@ -1151,7 +1154,9 @@ $(ICU_EMBEDDED_RES_DIR)/$(NATIVE_JRE_ICU_EMBEDDED_DATA): $(ICU_DATA_ZIP) $(ICU_T
 	@mkdir -p $(ICU_EMBEDDED_RES_DIR)
 	@unzip -qq -o -d $(ICU_EXTRACTED_RES_DIR) $(ICU_DATA_ZIP) $(ICU_DATA_RES)
 	@unzip -qq -o -d $(ICU_EXTRACTED_RES_DIR) $(ICU_TZ_DATA_ZIP) $(ICU_TZ_DATA_RES)
+	@mkdir -p $(ICU_EXTRACTED_RES_DIR)/android/icu
+	@cp $(ICU_CONFIG_PROPERTIES_SRC) $(ICU_EXTRACTED_RES_DIR)/android/icu
 	@$(J2OBJC_ROOT)/scripts/gen_resource_source.py -link_class ICUData \
 	    -o $(ICU_EMBEDDED_RES_DIR)/ICUData.m  -sourcepath $(ICU_EXTRACTED_RES_DIR) \
-	    $(ICU_DATA_RES) $(ICU_TZ_DATA_RES)
+	    $(ICU_DATA_RES) $(ICU_TZ_DATA_RES) $(ICU_CONFIG_PROPERTIES)
 	@rm -rf $(ICU_EXTRACTED_RES_DIR)
