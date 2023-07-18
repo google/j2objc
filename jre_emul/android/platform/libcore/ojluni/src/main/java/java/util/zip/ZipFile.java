@@ -48,6 +48,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import dalvik.system.CloseGuard;
+import dalvik.system.ZipPathValidator;
 
 import static java.util.zip.ZipConstants64.*;
 
@@ -124,6 +125,9 @@ class ZipFile implements ZipConstants, Closeable {
 
     private static final boolean usemmap;
 
+    // Android-added: An instance variable that determines if zip path validation should be enabled.
+    private final boolean isZipPathValidatorEnabled;
+
     static {
         // Android-changed: Always use mmap.
         /*
@@ -136,6 +140,7 @@ class ZipFile implements ZipConstants, Closeable {
         usemmap = true;
     }
 
+    // Android-changed: Additional ZipException throw scenario with ZipPathValidator.
     /**
      * Opens a zip file for reading.
      *
@@ -146,8 +151,14 @@ class ZipFile implements ZipConstants, Closeable {
      * <p>The UTF-8 {@link java.nio.charset.Charset charset} is used to
      * decode the entry names and comments.
      *
+     * <p>If the app targets Android U or above, zip file entry names containing
+     * ".." or starting with "/" passed here will throw a {@link ZipException}.
+     * For more details, see {@link dalvik.system.ZipPathValidator}.
+     *
      * @param name the name of the zip file
-     * @throws ZipException if a ZIP format error has occurred
+     * @throws ZipException if (1) a ZIP format error has occurred or
+     *         (2) <code>targetSdkVersion >= BUILD.VERSION_CODES.UPSIDE_DOWN_CAKE</code>
+     *         and (the <code>name</code> argument contains ".." or starts with "/").
      * @throws IOException if an I/O error has occurred
      * @throws SecurityException if a security manager exists and its
      *         <code>checkRead</code> method doesn't allow read access to the file.
@@ -203,6 +214,7 @@ class ZipFile implements ZipConstants, Closeable {
 
     private ZipCoder zc;
 
+    // Android-changed: Use of the hidden constructor with a new argument for zip path validation.
     /**
      * Opens a new <code>ZipFile</code> to read from the specified
      * <code>File</code> object in the specified mode.  The mode argument
@@ -237,6 +249,22 @@ class ZipFile implements ZipConstants, Closeable {
      */
     public ZipFile(File file, int mode, Charset charset) throws IOException
     {
+        this(file, mode, charset, /* enableZipPathValidator */ true);
+    }
+
+    // Android-added: New hidden constructor with an argument for zip path validation.
+    /** @hide */
+    public ZipFile(File file, int mode, boolean enableZipPathValidator) throws IOException {
+        this(file, mode, StandardCharsets.UTF_8, enableZipPathValidator);
+    }
+
+    // Android-changed: Change existing constructor ZipFile(File file, int mode, Charset charset)
+    // to have a new argument enableZipPathValidator in order to set the isZipPathValidatorEnabled
+    // variable before calling the native method open().
+    /** @hide */
+    public ZipFile(File file, int mode, Charset charset, boolean enableZipPathValidator)
+            throws IOException {
+        isZipPathValidatorEnabled = enableZipPathValidator && !ZipPathValidator.isClear();
         if (((mode & OPEN_READ) == 0) ||
             ((mode & ~(OPEN_READ | OPEN_DELETE)) != 0)) {
             throw new IllegalArgumentException("Illegal mode: 0x"+
@@ -398,7 +426,7 @@ class ZipFile implements ZipConstants, Closeable {
         ZipFileInputStream in = null;
         synchronized (this) {
             ensureOpen();
-            if (!zc.isUTF8() && (entry.flag & EFS) != 0) {
+            if (!zc.isUTF8() && (entry.flag & USE_UTF8) != 0) {
                 // Android-changed: Find entry by name, falling back to name/ if cannot be found.
                 // Needed for ClassPathURLStreamHandler handling of URLs without trailing slashes.
                 // This was added as part of the work to move StrictJarFile from libcore to
@@ -613,6 +641,17 @@ class ZipFile implements ZipConstants, Closeable {
                         Spliterator.IMMUTABLE | Spliterator.NONNULL), false);
     }
 
+    // Android-added: Hook to validate zip entry name by ZipPathValidator.
+    private void onZipEntryAccess(byte[] bname, int flag) throws ZipException {
+        String name;
+        if (!zc.isUTF8() && (flag & USE_UTF8) != 0) {
+            name = zc.toStringUTF8(bname, bname.length);
+        } else {
+            name = zc.toString(bname, bname.length);
+        }
+        ZipPathValidator.getInstance().onZipEntryAccess(name);
+    }
+
     private ZipEntry getZipEntry(String name, long jzentry) {
         ZipEntry e = new ZipEntry();
         e.flag = getEntryFlag(jzentry);  // get the flag first
@@ -620,7 +659,7 @@ class ZipFile implements ZipConstants, Closeable {
             e.name = name;
         } else {
             byte[] bname = getEntryBytes(jzentry, JZENTRY_NAME);
-            if (!zc.isUTF8() && (e.flag & EFS) != 0) {
+            if (!zc.isUTF8() && (e.flag & USE_UTF8) != 0) {
                 e.name = zc.toStringUTF8(bname, bname.length);
             } else {
                 e.name = zc.toString(bname, bname.length);
@@ -631,12 +670,12 @@ class ZipFile implements ZipConstants, Closeable {
         e.size = getEntrySize(jzentry);
         e.csize = getEntryCSize(jzentry);
         e.method = getEntryMethod(jzentry);
-        e.setExtra0(getEntryBytes(jzentry, JZENTRY_EXTRA), false);
+        e.setExtra0(getEntryBytes(jzentry, JZENTRY_EXTRA), false, false);
         byte[] bcomm = getEntryBytes(jzentry, JZENTRY_COMMENT);
         if (bcomm == null) {
             e.comment = null;
         } else {
-            if (!zc.isUTF8() && (e.flag & EFS) != 0) {
+            if (!zc.isUTF8() && (e.flag & USE_UTF8) != 0) {
                 e.comment = zc.toStringUTF8(bcomm, bcomm.length);
             } else {
                 e.comment = zc.toString(bcomm, bcomm.length);
@@ -906,7 +945,8 @@ class ZipFile implements ZipConstants, Closeable {
     private static native int getFileDescriptor(long jzfile);
     // END Android-added: Provide access to underlying file descriptor for testing.
 
-    private static native long open(String name, int mode, long lastModified,
+    // Android-changed: Make it as a non-static method, so it can access charset config.
+    private native long open(String name, int mode, long lastModified,
                                     boolean usemmap) throws IOException;
     private static native int getTotal(long jzfile);
     private static native boolean startsWithLOC(long jzfile);

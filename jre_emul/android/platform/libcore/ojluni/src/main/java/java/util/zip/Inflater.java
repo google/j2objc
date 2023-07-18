@@ -26,8 +26,9 @@
 
 package java.util.zip;
 
-/* J2ObjC removed.
-import dalvik.annotation.optimization.ReachabilitySensitive; */
+/* J2Objc removed
+import dalvik.annotation.optimization.ReachabilitySensitive;
+*/
 import dalvik.system.CloseGuard;
 
 /**

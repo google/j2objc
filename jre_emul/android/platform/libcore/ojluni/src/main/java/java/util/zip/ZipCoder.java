@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2009, 2021, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -28,121 +28,142 @@ package java.util.zip;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
-import java.nio.charset.CoderResult;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-/* J2ObjC: ArrayDecoder and ArrayEncoder are not included.
-import sun.nio.cs.ArrayDecoder;
-import sun.nio.cs.ArrayEncoder;*/
 
 /**
  * Utility class for zipfile name and comment decoding and encoding
  */
+class ZipCoder {
 
-final class ZipCoder {
+    // Android-removed:
+    // private static final jdk.internal.access.JavaLangAccess JLA =
+    //    jdk.internal.access.SharedSecrets.getJavaLangAccess();
 
-    String toString(byte[] ba, int length) {
-        CharsetDecoder cd = decoder().reset();
-        int len = (int)(length * cd.maxCharsPerByte());
-        char[] ca = new char[len];
-        if (len == 0)
-            return new String(ca);
-        // UTF-8 only for now. Other ArrayDeocder only handles
-        // CodingErrorAction.REPLACE mode. ZipCoder uses
-        // REPORT mode.
-        /* J2ObjC: ArrayDecoder and ArrayEncoder are not included.
-        if (isUTF8 && cd instanceof ArrayDecoder) {
-            int clen = ((ArrayDecoder)cd).decode(ba, 0, length, ca);
-            if (clen == -1)    // malformed
-                throw new IllegalArgumentException("MALFORMED");
-            return new String(ca, 0, clen);
-        }*/
-        ByteBuffer bb = ByteBuffer.wrap(ba, 0, length);
-        CharBuffer cb = CharBuffer.wrap(ca);
-        CoderResult cr = cd.decode(bb, cb, true);
-        if (!cr.isUnderflow())
-            throw new IllegalArgumentException(cr.toString());
-        cr = cd.flush(cb);
-        if (!cr.isUnderflow())
-            throw new IllegalArgumentException(cr.toString());
-        return new String(ca, 0, cb.position());
-    }
+    // Encoding/decoding is stateless, so make it singleton.
+    // Android-changed: use StandardCharsets.
+    // static final UTF8ZipCoder UTF8 = new UTF8ZipCoder(UTF_8.INSTANCE);
+    static final UTF8ZipCoder UTF8 = new UTF8ZipCoder(StandardCharsets.UTF_8);
 
-    String toString(byte[] ba) {
-        return toString(ba, ba.length);
-    }
-
-    byte[] getBytes(String s) {
-        CharsetEncoder ce = encoder().reset();
-        char[] ca = s.toCharArray();
-        int len = (int)(ca.length * ce.maxBytesPerChar());
-        byte[] ba = new byte[len];
-        if (len == 0)
-            return ba;
-        // UTF-8 only for now. Other ArrayDeocder only handles
-        // CodingErrorAction.REPLACE mode.
-        /* J2ObjC: ArrayDecoder and ArrayEncoder are not included.
-        if (isUTF8 && ce instanceof ArrayEncoder) {
-            int blen = ((ArrayEncoder)ce).encode(ca, 0, ca.length, ba);
-            if (blen == -1)    // malformed
-                throw new IllegalArgumentException("MALFORMED");
-            return Arrays.copyOf(ba, blen);
-        }*/
-        ByteBuffer bb = ByteBuffer.wrap(ba);
-        CharBuffer cb = CharBuffer.wrap(ca);
-        CoderResult cr = ce.encode(cb, bb, true);
-        if (!cr.isUnderflow())
-            throw new IllegalArgumentException(cr.toString());
-        cr = ce.flush(bb);
-        if (!cr.isUnderflow())
-            throw new IllegalArgumentException(cr.toString());
-        if (bb.position() == ba.length)  // defensive copy?
-            return ba;
-        else
-            return Arrays.copyOf(ba, bb.position());
-    }
-
-    // assume invoked only if "this" is not utf8
-    byte[] getBytesUTF8(String s) {
-        if (isUTF8)
-            return getBytes(s);
-        if (utf8 == null)
-            utf8 = new ZipCoder(StandardCharsets.UTF_8);
-        return utf8.getBytes(s);
-    }
-
-
-    String toStringUTF8(byte[] ba, int len) {
-        if (isUTF8)
-            return toString(ba, len);
-        if (utf8 == null)
-            utf8 = new ZipCoder(StandardCharsets.UTF_8);
-        return utf8.toString(ba, len);
-    }
-
-    boolean isUTF8() {
-        return isUTF8;
-    }
-
-    private Charset cs;
-    private CharsetDecoder dec;
-    private CharsetEncoder enc;
-    private boolean isUTF8;
-    private ZipCoder utf8;
-
-    private ZipCoder(Charset cs) {
-        this.cs = cs;
-        this.isUTF8 = cs.name().equals(StandardCharsets.UTF_8.name());
-    }
-
-    static ZipCoder get(Charset charset) {
+    public static ZipCoder get(Charset charset) {
+        // Android-changed: use equals method, not reference comparison.
+        // if (charset == UTF_8.INSTANCE) {
+        if (StandardCharsets.UTF_8.equals(charset)) {
+            return UTF8;
+        }
         return new ZipCoder(charset);
     }
 
-    private CharsetDecoder decoder() {
+    String toString(byte[] ba, int off, int length) {
+        try {
+            return decoder().decode(ByteBuffer.wrap(ba, off, length)).toString();
+        } catch (CharacterCodingException x) {
+            throw new IllegalArgumentException(x);
+        }
+    }
+
+    String toString(byte[] ba, int length) {
+        return toString(ba, 0, length);
+    }
+
+    String toString(byte[] ba) {
+        return toString(ba, 0, ba.length);
+    }
+
+    byte[] getBytes(String s) {
+        try {
+            ByteBuffer bb = encoder().encode(CharBuffer.wrap(s));
+            int pos = bb.position();
+            int limit = bb.limit();
+            if (bb.hasArray() && pos == 0 && limit == bb.capacity()) {
+                return bb.array();
+            }
+            byte[] bytes = new byte[bb.limit() - bb.position()];
+            bb.get(bytes);
+            return bytes;
+        } catch (CharacterCodingException x) {
+            throw new IllegalArgumentException(x);
+        }
+    }
+
+    // Android-added: this method is from OpenJDK 8, needed while ZipFile
+    // is not updated.
+    // assume invoked only if "this" is not utf8
+    byte[] getBytesUTF8(String s) {
+        if (isUTF8())
+            return getBytes(s);
+        return UTF8.getBytes(s);
+    }
+
+    static String toStringUTF8(byte[] ba, int len) {
+        return UTF8.toString(ba, 0, len);
+    }
+
+    boolean isUTF8() {
+        return false;
+    }
+
+    // Hash code functions for ZipFile entry names. We generate the hash as-if
+    // we first decoded the byte sequence to a String, then appended '/' if no
+    // trailing slash was found, then called String.hashCode(). This
+    // normalization ensures we can simplify and speed up lookups.
+    //
+    // Does encoding error checking and hashing in a single pass for efficiency.
+    // On an error, this function will throw CharacterCodingException while the
+    // UTF8ZipCoder override will throw IllegalArgumentException, so we declare
+    // throws Exception to keep things simple.
+    int checkedHash(byte[] a, int off, int len) throws Exception {
+        if (len == 0) {
+            return 0;
+        }
+
+        int h = 0;
+        // cb will be a newly allocated CharBuffer with pos == 0,
+        // arrayOffset == 0, backed by an array.
+        CharBuffer cb = decoder().decode(ByteBuffer.wrap(a, off, len));
+        int limit = cb.limit();
+        char[] decoded = cb.array();
+        for (int i = 0; i < limit; i++) {
+            h = 31 * h + decoded[i];
+        }
+        if (limit > 0 && decoded[limit - 1] != '/') {
+            h = 31 * h + '/';
+        }
+        return h;
+    }
+
+    // Hash function equivalent of checkedHash for String inputs
+    static int hash(String name) {
+        int hsh = name.hashCode();
+        int len = name.length();
+        if (len > 0 && name.charAt(len - 1) != '/') {
+            hsh = hsh * 31 + '/';
+        }
+        return hsh;
+    }
+
+    // J2ObjC removed 
+    // since it's related to ArraySupport, which is not supported now
+    // boolean hasTrailingSlash(byte[] a, int end) {
+    //     byte[] slashBytes = slashBytes();
+    //     return end >= slashBytes.length &&
+    //         Arrays.mismatch(a, end - slashBytes.length, end, slashBytes, 0, slashBytes.length) == -1;
+    // }
+
+    private byte[] slashBytes;
+    private final Charset cs;
+    protected CharsetDecoder dec;
+    private CharsetEncoder enc;
+
+    private ZipCoder(Charset cs) {
+        this.cs = cs;
+    }
+
+    protected CharsetDecoder decoder() {
         if (dec == null) {
             dec = cs.newDecoder()
               .onMalformedInput(CodingErrorAction.REPORT)
@@ -158,5 +179,87 @@ final class ZipCoder {
               .onUnmappableCharacter(CodingErrorAction.REPORT);
         }
         return enc;
+    }
+
+    // This method produces an array with the bytes that will correspond to a
+    // trailing '/' in the chosen character encoding.
+    //
+    // While in most charsets a trailing slash will be encoded as the byte
+    // value of '/', this does not hold in the general case. E.g., in charsets
+    // such as UTF-16 and UTF-32 it will be represented by a sequence of 2 or 4
+    // bytes, respectively.
+    private byte[] slashBytes() {
+        if (slashBytes == null) {
+            // Take into account charsets that produce a BOM, e.g., UTF-16
+            byte[] slash = "/".getBytes(cs);
+            byte[] doubleSlash = "//".getBytes(cs);
+            slashBytes = Arrays.copyOfRange(doubleSlash, slash.length, doubleSlash.length);
+        }
+        return slashBytes;
+    }
+
+    static final class UTF8ZipCoder extends ZipCoder {
+
+        private UTF8ZipCoder(Charset utf8) {
+            super(utf8);
+        }
+
+        @Override
+        boolean isUTF8() {
+            return true;
+        }
+
+        @Override
+        String toString(byte[] ba, int off, int length) {
+            // Android-changed: JLA is not yet available.
+            // return JLA.newStringUTF8NoRepl(ba, off, length);
+            return new String(ba, off, length, StandardCharsets.UTF_8);
+        }
+
+        @Override
+        byte[] getBytes(String s) {
+            // Android-changed: JLA is not yet available.
+            // return JLA.getBytesUTF8NoRepl(s);
+            return s.getBytes(StandardCharsets.UTF_8);
+        }
+
+        @Override
+        int checkedHash(byte[] a, int off, int len) throws Exception {
+            if (len == 0) {
+                return 0;
+            }
+
+            int end = off + len;
+            int h = 0;
+            while (off < end) {
+                byte b = a[off];
+                if (b >= 0) {
+                    // ASCII, keep going
+                    h = 31 * h + b;
+                    off++;
+                } else {
+                    // Non-ASCII, fall back to decoding a String
+                    // We avoid using decoder() here since the UTF8ZipCoder is
+                    // shared and that decoder is not thread safe.
+                    // We use the JLA.newStringUTF8NoRepl variant to throw
+                    // exceptions eagerly when opening ZipFiles
+                    // Android-changed: JLA is not yet available.
+                    // return hash(JLA.newStringUTF8NoRepl(a, end - len, len));
+                    return hash(new String(a, end - len, len, StandardCharsets.UTF_8));
+                }
+            }
+
+            if (a[end - 1] != '/') {
+                h = 31 * h + '/';
+            }
+            return h;
+        }
+
+        // J2ObjC removed 
+        // since it's related to ArraySupport, which is not supported now
+        // @Override
+        // boolean hasTrailingSlash(byte[] a, int end) {
+        //     return end > 0 && a[end - 1] == '/';
+        // }
     }
 }

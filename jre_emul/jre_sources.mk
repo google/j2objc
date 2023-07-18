@@ -590,6 +590,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   dalvik/system/CloseGuard.java \
   dalvik/system/VersionCodes.java \
   dalvik/system/VMStack.java \
+  dalvik/system/ZipPathValidator.java \
   java/io/Bits.java \
   java/io/DefaultFileSystem.java \
   java/io/DeleteOnExitHook.java \

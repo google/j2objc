@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2021, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -38,9 +38,9 @@ import java.io.EOFException;
  *
  * @see         Inflater
  * @author      David Connelly
+ * @since 1.1
  */
-public
-class InflaterInputStream extends FilterInputStream {
+public class InflaterInputStream extends FilterInputStream {
     /**
      * Decompressor for this stream.
      */
@@ -91,7 +91,7 @@ class InflaterInputStream extends FilterInputStream {
      * @param in the input stream
      * @param inf the decompressor ("inflater")
      * @param size the input buffer size
-     * @exception IllegalArgumentException if {@code size <= 0}
+     * @throws    IllegalArgumentException if {@code size <= 0}
      */
     public InflaterInputStream(InputStream in, Inflater inf, int size) {
         super(in);
@@ -123,7 +123,7 @@ class InflaterInputStream extends FilterInputStream {
      * @param in the input stream
      */
     public InflaterInputStream(InputStream in) {
-        this(in, new Inflater());
+        this(in, in != null ? new Inflater() : null);
         // Android-changed: Unconditionally close external inflaters (b/26462400)
         // usesDefaultInflater = true;
     }
@@ -134,7 +134,7 @@ class InflaterInputStream extends FilterInputStream {
      * Reads a byte of uncompressed data. This method will block until
      * enough input is available for decompression.
      * @return the byte read, or -1 if end of compressed input is reached
-     * @exception IOException if an I/O error has occurred
+     * @throws    IOException if an I/O error has occurred
      */
     public int read() throws IOException {
         ensureOpen();
@@ -142,20 +142,20 @@ class InflaterInputStream extends FilterInputStream {
     }
 
     /**
-     * Reads uncompressed data into an array of bytes. If <code>len</code> is not
+     * Reads uncompressed data into an array of bytes. If {@code len} is not
      * zero, the method will block until some input can be decompressed; otherwise,
-     * no bytes are read and <code>0</code> is returned.
+     * no bytes are read and {@code 0} is returned.
      * @param b the buffer into which the data is read
-     * @param off the start offset in the destination array <code>b</code>
+     * @param off the start offset in the destination array {@code b}
      * @param len the maximum number of bytes read
      * @return the actual number of bytes read, or -1 if the end of the
      *         compressed input is reached or a preset dictionary is needed
-     * @exception  NullPointerException If <code>b</code> is <code>null</code>.
-     * @exception  IndexOutOfBoundsException If <code>off</code> is negative,
-     * <code>len</code> is negative, or <code>len</code> is greater than
-     * <code>b.length - off</code>
-     * @exception ZipException if a ZIP format error has occurred
-     * @exception IOException if an I/O error has occurred
+     * @throws     NullPointerException If {@code b} is {@code null}.
+     * @throws     IndexOutOfBoundsException If {@code off} is negative,
+     * {@code len} is negative, or {@code len} is greater than
+     * {@code b.length - off}
+     * @throws    ZipException if a ZIP format error has occurred
+     * @throws    IOException if an I/O error has occurred
      */
     public int read(byte[] b, int off, int len) throws IOException {
         ensureOpen();
@@ -191,21 +191,17 @@ class InflaterInputStream extends FilterInputStream {
      * of bytes that could be read without blocking.
      *
      * @return     1 before EOF and 0 after EOF.
-     * @exception  IOException  if an I/O error occurs.
+     * @throws     IOException  if an I/O error occurs.
      *
      */
     public int available() throws IOException {
         ensureOpen();
         if (reachEOF) {
             return 0;
-        // BEGIN Android-added: Return more accurate value from available().
-        // Integrates change http://hg.openjdk.java.net/jdk9/jdk9/jdk/rev/dbcf47bfb044 made as part
-        // of https://bugs.openjdk.java.net/browse/JDK-7031075.
         } else if (inf.finished()) {
             // the end of the compressed data stream has been reached
             reachEOF = true;
             return 0;
-        // END Android-added: Return more accurate value from available().
         } else {
             return 1;
         }
@@ -217,8 +213,8 @@ class InflaterInputStream extends FilterInputStream {
      * Skips specified number of bytes of uncompressed data.
      * @param n the number of bytes to skip
      * @return the actual number of bytes skipped.
-     * @exception IOException if an I/O error has occurred
-     * @exception IllegalArgumentException if {@code n < 0}
+     * @throws    IOException if an I/O error has occurred
+     * @throws    IllegalArgumentException if {@code n < 0}
      */
     public long skip(long n) throws IOException {
         if (n < 0) {
@@ -245,7 +241,7 @@ class InflaterInputStream extends FilterInputStream {
     /**
      * Closes this input stream and releases any system resources associated
      * with the stream.
-     * @exception IOException if an I/O error has occurred
+     * @throws    IOException if an I/O error has occurred
      */
     public void close() throws IOException {
         if (!closed) {
@@ -259,7 +255,7 @@ class InflaterInputStream extends FilterInputStream {
 
     /**
      * Fills input buffer with more data to decompress.
-     * @exception IOException if an I/O error has occurred
+     * @throws    IOException if an I/O error has occurred
      */
     protected void fill() throws IOException {
         ensureOpen();
@@ -271,13 +267,13 @@ class InflaterInputStream extends FilterInputStream {
     }
 
     /**
-     * Tests if this input stream supports the <code>mark</code> and
-     * <code>reset</code> methods. The <code>markSupported</code>
-     * method of <code>InflaterInputStream</code> returns
-     * <code>false</code>.
+     * Tests if this input stream supports the {@code mark} and
+     * {@code reset} methods. The {@code markSupported}
+     * method of {@code InflaterInputStream} returns
+     * {@code false}.
      *
-     * @return  a <code>boolean</code> indicating if this stream type supports
-     *          the <code>mark</code> and <code>reset</code> methods.
+     * @return  a {@code boolean} indicating if this stream type supports
+     *          the {@code mark} and {@code reset} methods.
      * @see     java.io.InputStream#mark(int)
      * @see     java.io.InputStream#reset()
      */
@@ -288,7 +284,7 @@ class InflaterInputStream extends FilterInputStream {
     /**
      * Marks the current position in this input stream.
      *
-     * <p> The <code>mark</code> method of <code>InflaterInputStream</code>
+     * <p> The {@code mark} method of {@code InflaterInputStream}
      * does nothing.
      *
      * @param   readlimit   the maximum limit of bytes that can be read before
@@ -300,13 +296,13 @@ class InflaterInputStream extends FilterInputStream {
 
     /**
      * Repositions this stream to the position at the time the
-     * <code>mark</code> method was last called on this input stream.
+     * {@code mark} method was last called on this input stream.
      *
-     * <p> The method <code>reset</code> for class
-     * <code>InflaterInputStream</code> does nothing except throw an
-     * <code>IOException</code>.
+     * <p> The method {@code reset} for class
+     * {@code InflaterInputStream} does nothing except throw an
+     * {@code IOException}.
      *
-     * @exception  IOException  if this method is invoked.
+     * @throws     IOException  if this method is invoked.
      * @see     java.io.InputStream#mark(int)
      * @see     java.io.IOException
      */
