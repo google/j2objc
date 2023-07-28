@@ -30,6 +30,8 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @SuppressWarnings("SystemExitOutsideMain")
 class Options {
@@ -37,6 +39,7 @@ class Options {
   private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
   private static String usageMessage;
   private static String helpMessage;
+  private static Logger logger = Logger.getLogger(TreeShaker.class.getName());
 
   static {
     // Load string resources.
@@ -57,11 +60,14 @@ class Options {
   private String sourcepath;
   private String classpath;
   private String bootclasspath;
+  private String processorpath;
+  private String processorClasses;
   private List<String> sourceFiles = Lists.newArrayList();
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private boolean treatWarningsAsErrors = false;
   private boolean useClassHierarchyAnalyzer = false;
   private boolean stripReflection = false;
+  private boolean logLevelSet = false;
   private File treeShakerRoots;
   private File outputFile = new File("tree-shaker-report.txt");
 
@@ -87,6 +93,22 @@ class Options {
 
   public void setClasspath(String classpath) {
     this.classpath = classpath;
+  }
+
+  public String getProcessorpath() {
+    return processorpath;
+  }
+
+  public void setProcessorpath(String processorpath) {
+    this.processorpath = processorpath;
+  }
+
+  public String getProcessorClasses() {
+    return processorClasses;
+  }
+
+  public void setProcessorClasses(String processorClasses) {
+    this.processorClasses = processorClasses;
   }
 
   public String getBootclasspath() {
@@ -171,6 +193,19 @@ class Options {
     System.exit(0);
   }
 
+  @VisibleForTesting
+  void setLogLevel(Level level) {
+    logger.setLevel(level);
+    logLevelSet = true;
+  }
+
+  public boolean isVerbose() {
+    if (!logLevelSet) {
+      return false;
+    }
+    return logger.getLevel().equals(Level.FINEST);
+  }
+
   public static Options parse(String[] args) throws IOException {
     Options options = new Options();
     processArgs(args, options);
@@ -213,6 +248,16 @@ class Options {
           usage("-classpath requires an argument");
         }
         options.classpath = args[nArg];
+      } else if (arg.equals("-processorpath")) {
+        if (++nArg == args.length) {
+          usage("-processorpath requires an argument");
+        }
+        options.processorpath = args[nArg];
+      } else if (arg.equals("-processor")) {
+        if (++nArg == args.length) {
+          usage("-processor requires an argument");
+        }
+        options.processorClasses = args[nArg];
       } else if (arg.equals("--sourcefilelist") || arg.equals("-s")) {
         if (++nArg == args.length) {
           usage("--sourcefilelist requires an argument");
@@ -259,6 +304,8 @@ class Options {
       } else if (arg.equals("--strip-reflection")) {
         // strips the reflection support
         options.stripReflection = true;
+      } else if (arg.equals("-v") || arg.equals("--verbose")) {
+        options.setLogLevel(Level.FINEST);
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {
@@ -267,6 +314,9 @@ class Options {
         break;
       }
       ++nArg;
+    }
+    if (!options.logLevelSet) {
+      options.setLogLevel(Level.WARNING);
     }
 
     while (nArg < args.length) {

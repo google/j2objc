@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.processing.Processor;
@@ -57,9 +58,14 @@ import javax.tools.ToolProvider;
  *
  * @author Tom Ball
  */
+@SuppressWarnings("ReturnMissingNullable")
 public class JavacParser extends Parser {
 
   private StandardJavaFileManager fileManager;
+  private static final Logger logger = Logger.getLogger("com.google.devtools.j2objc");
+
+  private static final Pattern MODULE_NAME_REGEX =
+      Pattern.compile("module\\s+([a-zA_Z_][\\.\\w]*)");
 
   public JavacParser(Options options) {
     super(options);
@@ -83,6 +89,7 @@ public class JavacParser extends Parser {
   }
 
   @Override
+  @SuppressWarnings("Assertion")
   public CompilationUnit parse(InputFile file) {
     try {
       if (file.getUnitName().endsWith(".java")) {
@@ -180,6 +187,7 @@ public class JavacParser extends Parser {
     }
     if (processAnnotations) {
       javacOptions.add("-proc:only");
+      logger.finest("processing annotations using " + explicitProcessors);
     } else {
       javacOptions.add("-proc:none");
     }
@@ -241,8 +249,7 @@ public class JavacParser extends Parser {
   }
 
   private static String moduleName(String moduleSource) {
-    Pattern p = Pattern.compile("module\\s+([a-zA_Z_][\\.\\w]*)");
-    Matcher matcher = p.matcher(moduleSource);
+    Matcher matcher = MODULE_NAME_REGEX.matcher(moduleSource);
     if (matcher.find()) {
       return matcher.group(1);
     }
@@ -296,19 +303,10 @@ public class JavacParser extends Parser {
     return null;
   }
 
-
-  @Override
-  public ProcessingResult processAnnotations(Iterable<String> fileArgs,
-      List<ProcessingContext> inputs) {
+  private ProcessingResult doAnnotationProcessing(List<File> inputFiles, PathClassLoader loader) {
     final List<ProcessingContext> generatedInputs = Lists.newArrayList();
-    PathClassLoader loader = new PathClassLoader(options.fileUtil().getClassPathEntries());
     loader.addPaths(options.getProcessorPathEntries());
-    Iterator<Processor> serviceIterator = ServiceLoader.load(Processor.class, loader).iterator();
-    if (serviceIterator.hasNext() || options.getProcessors() != null) {
-      List<File> inputFiles = new ArrayList<>();
-      for (ProcessingContext input : inputs) {
-        inputFiles.add(new File(input.getFile().getAbsolutePath()));
-      }
+    if (inputFiles.size() > 0) {
       try {
         JavacEnvironment env = createEnvironment(inputFiles, null, true);
         env.task().parse();
@@ -325,6 +323,37 @@ public class JavacParser extends Parser {
     }
     // No annotation processors on classpath, or processing errors reported.
     return new JavacProcessingResult(generatedInputs, null);
+  }
+
+  @Override
+  public ProcessingResult processAnnotations(List<String> inputFilePaths) {
+    List<File> inputFiles = new ArrayList<>();
+    PathClassLoader loader = new PathClassLoader(options.fileUtil().getClassPathEntries());
+    Iterator<Processor> serviceIterator = ServiceLoader.load(Processor.class, loader).iterator();
+    if (serviceIterator.hasNext()
+        || options.getProcessors() != null
+        || !options.getProcessorPathEntries().isEmpty()) {
+      for (String path : inputFilePaths) {
+        inputFiles.add(new File(path));
+      }
+    }
+    return doAnnotationProcessing(inputFiles, loader);
+  }
+
+  @Override
+  public ProcessingResult processAnnotations(
+      Iterable<String> fileArgs, List<ProcessingContext> inputs) {
+    List<File> inputFiles = new ArrayList<>();
+    PathClassLoader loader = new PathClassLoader(options.fileUtil().getClassPathEntries());
+    Iterator<Processor> serviceIterator = ServiceLoader.load(Processor.class, loader).iterator();
+    if (serviceIterator.hasNext()
+        || options.getProcessors() != null
+        || !options.getProcessorPathEntries().isEmpty()) {
+      for (ProcessingContext input : inputs) {
+        inputFiles.add(new File(input.getFile().getAbsolutePath()));
+      }
+    }
+    return doAnnotationProcessing(inputFiles, loader);
   }
 
   @Override
@@ -347,6 +376,7 @@ public class JavacParser extends Parser {
         collectGeneratedInputs(f, relativeName, inputs);
       } else {
         if (f.getName().endsWith(".java")) {
+          logger.finest("adding " + f.getPath());
           inputs.add(ProcessingContext.fromFile(
               new RegularInputFile(f.getPath(), relativeName), options));
         }

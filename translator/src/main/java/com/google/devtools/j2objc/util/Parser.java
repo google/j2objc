@@ -162,6 +162,13 @@ public abstract class Parser implements Closeable {
       List<ProcessingContext> inputs);
 
   /**
+   * Runs annotation processing on a list of file paths.
+   *
+   * <p>TODO(tball): remove when pipeline has integrated annotation processing.
+   */
+  public abstract ProcessingResult processAnnotations(List<String> inputFiles);
+
+  /**
    * Release any system resources used by this parser instance.
    */
   @Override

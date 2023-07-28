@@ -21,6 +21,7 @@ import com.google.common.io.Files;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.pipeline.GenerationBatch;
+import com.google.devtools.j2objc.pipeline.ProcessingContext;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
@@ -71,6 +72,15 @@ public class TreeShaker {
           "-Xignore-jar-warnings"
         });
     j2objcOptions.setStripReflection(options.stripReflection());
+    j2objcOptions.setVerbose(options.isVerbose());
+    String processorArg = Strings.nullToEmpty(options.getProcessorClasses());
+    if (!processorArg.isEmpty()) {
+      j2objcOptions.setProcessors(processorArg);
+    }
+    String processorPathArg = Strings.nullToEmpty(options.getProcessorpath());
+    if (!processorPathArg.isEmpty()) {
+      j2objcOptions.setProcessorPathEntries(processorPathArg);
+    }
   }
 
   private Parser createParser(Options options) throws IOException {
@@ -183,6 +193,10 @@ public class TreeShaker {
           }
         };
 
+    Parser.ProcessingResult processingResult = parser.processAnnotations(sourceFiles);
+    for (ProcessingContext input : processingResult.getGeneratedSources()) {
+      sourceFiles.add(input.getFile().getAbsolutePath());
+    }
     parser.parseFiles(sourceFiles, handler, options.sourceVersion());
     FileUtil.deleteTempDir(strippedDir);
     parser.close();

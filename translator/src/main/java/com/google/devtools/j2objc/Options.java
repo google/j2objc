@@ -306,6 +306,10 @@ public class Options {
     return logger.getLevel().equals(Level.FINEST);
   }
 
+  public void setVerbose(boolean verbose) {
+    setLogLevel(verbose ? Level.FINEST : Level.WARNING);
+  }
+
   /**
    * Load the options from a command-line, returning the arguments that were
    * not option-related (usually files).  If help is requested or an error is
@@ -823,6 +827,10 @@ public class Options {
 
   public List<String> getProcessorPathEntries() {
     return processorPathEntries;
+  }
+
+  public void setProcessorPathEntries(String entriesPath) {
+    processorPathEntries = getPathArgument(entriesPath, false, false);
   }
 
   public OutputLanguageOption getLanguage() {
