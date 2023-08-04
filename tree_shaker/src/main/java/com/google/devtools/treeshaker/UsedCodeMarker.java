@@ -58,9 +58,12 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.CodeReferenceMap;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.ProGuardUsageParser;
 import com.google.devtools.j2objc.util.TypeUtil;
+import java.io.File;
 import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -494,6 +497,9 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   private void startTypeScope(
       String typeName, String superName, List<String> interfaces, boolean isExported) {
     Integer id = getTypeId(typeName);
+    if (!context.currentTypeInfoScope.isEmpty()) {
+      context.currentTypeInfoScope.peek().addInnerTypes(id);
+    }
     Integer eid = getTypeId(superName);
     ImmutableList<Integer> iids =
         interfaces.stream().map(this::getTypeId).collect(toImmutableList());
@@ -626,6 +632,104 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     context.referencedTypesScope.pop();
   }
 
+  private static ImmutableSet<String> getExportedClasses(CodeReferenceMap rootSet) {
+    return rootSet == null ? ImmutableSet.of() : rootSet.getReferencedClasses();
+  }
+
+  private static ImmutableSet<String> getExportedMethods(CodeReferenceMap rootSet) {
+    Set<String> exportedMethods = new HashSet<>();
+    if (rootSet != null) {
+      rootSet
+          .getReferencedMethods()
+          .cellSet()
+          .forEach(
+              cell ->
+                  cell.getValue()
+                      .forEach(
+                          signature ->
+                              exportedMethods.add(
+                                  getQualifiedMethodName(
+                                      cell.getRowKey(), cell.getColumnKey(), signature))));
+    }
+    return ImmutableSet.copyOf(exportedMethods);
+  }
+
+  private static List<TypeInfo> markClasses(
+      List<TypeInfo> types, List<String> typeMap, Set<String> markedClasses) {
+    if (markedClasses.isEmpty()) {
+      return types;
+    }
+    List<TypeInfo> markedTypes = new ArrayList<>();
+    Set<String> nextMarkedClasses = new HashSet<>();
+    for (TypeInfo type : types) {
+      TypeInfo.Builder typeBuilder = type.toBuilder();
+      if (markedClasses.contains(typeMap.get(type.getTypeId()))) {
+        // Set type as exported.
+        typeBuilder.setExported(true).clearMember();
+        for (MemberInfo member : type.getMemberList()) {
+          // Set each method of the type as exported.
+          typeBuilder.addMember(member.toBuilder().setExported(true).build());
+        }
+        // Add inner types that need to be exported to a list.
+        nextMarkedClasses.addAll(
+            type.getInnerTypesList().stream().map(typeMap::get).collect(toImmutableList()));
+      }
+      // Add type to list of marked types
+      markedTypes.add(typeBuilder.build());
+    }
+    // Recursively call with the list of exported classes as the inner classes that need to be
+    // exported.
+    // This is because we do not know if the inner class has inner classes (alternative, while
+    // loop).
+    return markClasses(markedTypes, typeMap, nextMarkedClasses);
+  }
+
+  private static TypeInfo markMethodsOfType(
+      TypeInfo type, List<String> typeMap, Set<String> markedMethods) {
+    TypeInfo.Builder typeBuilder = type.toBuilder().clearMember();
+    for (MemberInfo member : type.getMemberList()) {
+      MemberInfo.Builder memberBuilder = member.toBuilder();
+      if (markedMethods.contains(
+          getQualifiedMethodName(typeMap.get(type.getTypeId()), member.getName()))) {
+        memberBuilder.setExported(true);
+      }
+      typeBuilder.addMember(memberBuilder.build());
+    }
+    return typeBuilder.build();
+  }
+
+  private static ImmutableList<TypeInfo> markMethods(
+      List<TypeInfo> types, List<String> typeMap, Set<String> markedMethods) {
+    List<TypeInfo> typesWithMarkedMembers = new ArrayList<>();
+    for (TypeInfo type : types) {
+      typesWithMarkedMembers.add(markMethodsOfType(type, typeMap, markedMethods));
+    }
+    return ImmutableList.copyOf(typesWithMarkedMembers);
+  }
+
+  /*
+   * Uses exported classes given to 'mark' summary information as 'live' for TypeGraphAnalyzer.
+   */
+  private static LibraryInfo markEntryClasses(
+      LibraryInfo summary,
+      ImmutableSet<String> exportedClasses,
+      ImmutableSet<String> exportedMethods) {
+    return summary.toBuilder()
+        .clearType()
+        .addAllType(
+            markClasses(
+                markMethods(summary.getTypeList(), summary.getTypeMapList(), exportedMethods),
+                summary.getTypeMapList(),
+                exportedClasses))
+        .build();
+  }
+
+  static LibraryInfo mark(LibraryInfo summary, File roots) {
+    CodeReferenceMap rootSet = ProGuardUsageParser.parseDeadCodeFile(roots);
+    return markEntryClasses(
+        summary, getExportedClasses(rootSet), UsedCodeMarker.getExportedMethods(rootSet));
+  }
+
   static final class Context {
     // Map of type names to unique integer.
     private int typeCount;
@@ -653,20 +757,13 @@ final class UsedCodeMarker extends UnitTreeVisitor {
     private final Deque<Set<Integer>> clinitReferencedTypesScope = new ArrayDeque<>();
 
     Context(CodeReferenceMap rootSet) {
+      exportedMethods = getExportedMethods(rootSet);
+      exportedClasses = getExportedClasses(rootSet);
+    }
+
+    Context() {
       exportedMethods = new HashSet<>();
-      rootSet
-          .getReferencedMethods()
-          .cellSet()
-          .forEach(
-              cell -> {
-                String type = cell.getRowKey();
-                String name = cell.getColumnKey();
-                cell.getValue()
-                    .forEach(
-                        signature ->
-                            exportedMethods.add(getQualifiedMethodName(type, name, signature)));
-              });
-      exportedClasses = rootSet.getReferencedClasses();
+      exportedClasses = ImmutableSet.copyOf(new HashSet<>());
     }
 
     LibraryInfo getLibraryInfo() {

@@ -22,6 +22,7 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
+import com.google.protobuf.ExtensionRegistry;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -64,6 +65,8 @@ class Options {
   private boolean stripReflection = false;
   private File treeShakerRoots;
   private File outputFile = new File("tree-shaker-report.txt");
+  private LibraryInfo summary;
+  private String summaryOutputFile;
 
   // The default source version number if not passed with -source is determined from the system
   // properties of the running java version after parsing the argument list.
@@ -125,6 +128,18 @@ class Options {
     return outputFile;
   }
 
+  public LibraryInfo getSummary() {
+    return summary;
+  }
+
+  public void setSummary(LibraryInfo summary) {
+    this.summary = summary;
+  }
+  
+  public String getSummaryOutputFile() {
+    return summaryOutputFile;
+  }
+
   private void addManifest(String manifestFile) throws IOException {
     BufferedReader in = new BufferedReader(new FileReader(new File(manifestFile)));
     try {
@@ -174,14 +189,6 @@ class Options {
   public static Options parse(String[] args) throws IOException {
     Options options = new Options();
     processArgs(args, options);
-
-    if (options.treeShakerRoots == null) {
-      usage("--tree_shaker_roots not set");
-    }
-    if (options.sourceFiles.isEmpty()) {
-      usage("no source files");
-    }
-
     return options;
   }
 
@@ -213,6 +220,13 @@ class Options {
           usage("-classpath requires an argument");
         }
         options.classpath = args[nArg];
+      } else if (arg.equals("-summary")) {
+        if (++nArg == args.length) {
+          usage("-summary requires an argument");
+        }
+        options.setSummary(
+            LibraryInfo.parseFrom(
+                Files.toByteArray(new File(args[nArg])), ExtensionRegistry.getGeneratedRegistry()));
       } else if (arg.equals("--sourcefilelist") || arg.equals("-s")) {
         if (++nArg == args.length) {
           usage("--sourcefilelist requires an argument");
@@ -228,6 +242,11 @@ class Options {
           usage("--output-file");
         }
         options.outputFile = new File(args[nArg]);
+      } else if (arg.equals("--output-summary")) {
+        if (++nArg == args.length) {
+          usage("--output-summary");
+        }
+        options.summaryOutputFile = args[nArg];
       } else if (arg.startsWith(XBOOTCLASSPATH)) {
         // TODO(malvania): Enable the bootclasspath option when we have a class file AST
         //                 parser that can use class jars.

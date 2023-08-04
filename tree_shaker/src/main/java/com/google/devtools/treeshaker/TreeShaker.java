@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 import org.jspecify.nullness.Nullable;
 
 /** A tool for finding unused code in a Java program. */
+@SuppressWarnings("FloggerRedundantIsEnabled")
 public class TreeShaker {
   private static final GoogleLogger logger = GoogleLogger.forEnclosingClass();
   private final Options options;
@@ -144,9 +145,8 @@ public class TreeShaker {
     return strippedDir;
   }
 
-  @Nullable
   @VisibleForTesting
-  CodeReferenceMap findUnusedCode() throws IOException {
+  @Nullable CodeReferenceMap findUnusedCode() throws IOException {
     TypeGraphBuilder tgb = createTypeGraphBuilder();
     if (tgb == null) {
       return null;
@@ -155,7 +155,7 @@ public class TreeShaker {
       logger.atFine().log("External Types: %s", String.join(", ", tgb.getExternalTypeReferences()));
     }
     Collection<String> unknownMethodReferences = tgb.getUnknownMethodReferences();
-    if (!unknownMethodReferences.isEmpty() && logger.atWarning().isEnabled()) {
+    if (!unknownMethodReferences.isEmpty()) {
       logger.atWarning().log("Unknown Methods: %s", String.join(", ", unknownMethodReferences));
     }
     if (options.useClassHierarchyAnalyzer()) {
@@ -166,9 +166,21 @@ public class TreeShaker {
   }
 
   private TypeGraphBuilder createTypeGraphBuilder() throws IOException {
-    UsedCodeMarker.Context context =
-        new UsedCodeMarker.Context(
-            ProGuardUsageParser.parseDeadCodeFile(options.getTreeShakerRoots()));
+    if (options.getSummary() != null) {
+      LibraryInfo info = options.getSummary();
+      LibraryInfo markedInfo = UsedCodeMarker.mark(info, options.getTreeShakerRoots());
+      return new TypeGraphBuilder(markedInfo);
+    }
+    return new TypeGraphBuilder(createLibraryInfo());
+  }
+
+  @Nullable LibraryInfo createLibraryInfo() throws IOException {
+    UsedCodeMarker.Context context;
+    if (options.getTreeShakerRoots() == null) {
+      context = new UsedCodeMarker.Context();
+    } else {
+      context = new UsedCodeMarker.Context(ProGuardUsageParser.parseDeadCodeFile(options.getTreeShakerRoots()));
+    }
     Parser parser = createParser(options);
     List<String> sourceFiles = getSourceFiles();
     if (ErrorUtil.errorCount() > 0) {
@@ -189,7 +201,7 @@ public class TreeShaker {
     if (ErrorUtil.errorCount() > 0) {
       return null;
     }
-    return new TypeGraphBuilder(context.getLibraryInfo());
+    return context.getLibraryInfo();
   }
 
   private List<String> getSourceFiles() {
