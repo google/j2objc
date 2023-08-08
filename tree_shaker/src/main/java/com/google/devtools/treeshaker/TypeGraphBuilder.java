@@ -16,6 +16,7 @@ package com.google.devtools.treeshaker;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,6 +36,25 @@ class TypeGraphBuilder {
     }
     // Build cross-references between types and members
     buildCrossReferences(libraryInfo, typesByName);
+    types = typesByName.values();
+  }
+
+  TypeGraphBuilder(List<LibraryInfo> libraryInfos) {
+    Map<String, Type> typesByName = new LinkedHashMap<>();
+    externalTypeReferences = new HashSet<>();
+    unknownMethodReferences = new HashSet<>();
+    for (LibraryInfo libraryInfo : libraryInfos) {
+      for (TypeInfo typeInfo : libraryInfo.getTypeList()) {
+        Type type = Type.buildFrom(typeInfo, libraryInfo.getTypeMap(typeInfo.getTypeId()));
+        typesByName.put(type.getName(), type);
+      }
+    }
+
+    // Build cross-references between types and members
+    for (LibraryInfo libraryInfo : libraryInfos) {
+      buildCrossReferences(libraryInfo, typesByName);
+    }
+
     types = typesByName.values();
   }
 
