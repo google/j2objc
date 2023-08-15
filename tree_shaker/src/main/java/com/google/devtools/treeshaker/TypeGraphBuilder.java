@@ -13,6 +13,7 @@
  */
 package com.google.devtools.treeshaker;
 
+import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -25,16 +26,23 @@ class TypeGraphBuilder {
   private final Set<String> externalTypeReferences;
   private final Set<String> unknownMethodReferences;
 
-  TypeGraphBuilder(LibraryInfo libraryInfo) {
+  TypeGraphBuilder(ImmutableList<LibraryInfo> libraryInfos) {
     Map<String, Type> typesByName = new LinkedHashMap<>();
     externalTypeReferences = new HashSet<>();
     unknownMethodReferences = new HashSet<>();
-    for (TypeInfo typeInfo : libraryInfo.getTypeList()) {
-      Type type = Type.buildFrom(typeInfo, libraryInfo.getTypeMap(typeInfo.getTypeId()));
-      typesByName.put(type.getName(), type);
+    for (LibraryInfo libraryInfo : libraryInfos) {
+      for (TypeInfo typeInfo : libraryInfo.getTypeList()) {
+        Type type = Type.buildFrom(typeInfo, libraryInfo.getTypeMap(typeInfo.getTypeId()));
+        typesByName.put(
+            type.getName(), type); // Type names are fully qualified, no risk of overriding.
+      }
     }
+
     // Build cross-references between types and members
-    buildCrossReferences(libraryInfo, typesByName);
+    for (LibraryInfo libraryInfo : libraryInfos) {
+      buildCrossReferences(libraryInfo, typesByName);
+    }
+
     types = typesByName.values();
   }
 

@@ -14,8 +14,11 @@
 
 package com.google.devtools.treeshaker;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.GoogleLogger;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -169,9 +172,16 @@ public class TreeShaker {
     if (options.getSummary() != null) {
       LibraryInfo info = options.getSummary();
       LibraryInfo markedInfo = UsedCodeMarker.mark(info, options.getTreeShakerRoots());
-      return new TypeGraphBuilder(markedInfo);
+      return new TypeGraphBuilder(ImmutableList.of(markedInfo));
+    } else if (!options.getSummaries().isEmpty()) {
+    ImmutableList<LibraryInfo> markedInfo =
+        options.getSummaries().stream()
+            .map(summary -> UsedCodeMarker.mark(summary, options.getTreeShakerRoots()))
+            .collect(toImmutableList());
+    return new TypeGraphBuilder(markedInfo);
+    } else {
+      return new TypeGraphBuilder(ImmutableList.of(createLibraryInfo()));
     }
-    return new TypeGraphBuilder(createLibraryInfo());
   }
 
   @Nullable LibraryInfo createLibraryInfo() throws IOException {

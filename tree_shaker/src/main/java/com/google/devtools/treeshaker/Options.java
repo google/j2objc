@@ -17,6 +17,7 @@ package com.google.devtools.treeshaker;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
@@ -25,8 +26,10 @@ import com.google.devtools.j2objc.util.Version;
 import com.google.protobuf.ExtensionRegistry;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -67,6 +70,7 @@ class Options {
   private File outputFile = new File("tree-shaker-report.txt");
   private LibraryInfo summary;
   private String summaryOutputFile;
+  private List<LibraryInfo> summaries = Lists.newArrayList();
 
   // The default source version number if not passed with -source is determined from the system
   // properties of the running java version after parsing the argument list.
@@ -135,9 +139,25 @@ class Options {
   public void setSummary(LibraryInfo summary) {
     this.summary = summary;
   }
-  
+
+  public List<LibraryInfo> getSummaries() {
+    return summaries;
+  }
+
+  public void setSummaries(List<LibraryInfo> summaries) {
+    this.summaries = summaries;
+  }
+
+  public void addSummary(LibraryInfo summary) {
+    this.summaries.add(summary);
+  }
+
   public String getSummaryOutputFile() {
     return summaryOutputFile;
+  }
+
+  public void setSummaryOutputFile(String summaryOutputFile) {
+    this.summaryOutputFile = summaryOutputFile;
   }
 
   private void addManifest(String manifestFile) throws IOException {
@@ -192,6 +212,16 @@ class Options {
     return options;
   }
 
+  private static List<LibraryInfo> readSummaries(List<String> summaries) throws IOException {
+    List<LibraryInfo> libraryInfos = Lists.newArrayList();
+    for (String summary : summaries) {
+      try (InputStream in = new FileInputStream(summary)) {
+        libraryInfos.add(LibraryInfo.parseFrom(in, ExtensionRegistry.getGeneratedRegistry()));
+      }
+    }
+    return libraryInfos;
+  }
+
   private static void processArgsFile(String filename, Options options) throws IOException {
     if (filename.isEmpty()) {
       usage("no @ file specified");
@@ -220,6 +250,12 @@ class Options {
           usage("-classpath requires an argument");
         }
         options.classpath = args[nArg];
+      } else if (arg.equals("-summaries")) {
+        if (++nArg == args.length) {
+          usage("--summaries requires an argument");
+        }
+
+        options.setSummaries(readSummaries(ImmutableList.copyOf(args[nArg].split(":"))));
       } else if (arg.equals("-summary")) {
         if (++nArg == args.length) {
           usage("-summary requires an argument");
