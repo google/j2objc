@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc;
 
+import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.common.base.Joiner;
@@ -524,7 +525,7 @@ public class GenerationTest extends TestCase {
                 || name.equals(NameTable.DEALLOC_METHOD)) {
               return false;
             }
-            assert result[0] == null;
+            assertThat(result[0]).isNull();
             result[0] = node;
             return false;
           }

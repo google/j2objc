@@ -16,6 +16,8 @@
 
 package com.google.devtools.j2objc.gen;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.util.HeaderMap;
 import java.io.File;
@@ -270,7 +272,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String header = translateCombinedFiles(
         "unit/Foo", ".h",
         "unit/TestDependent.java", "unit/AnotherTest.java", "unit/Test.java");
-    assert header.indexOf("@interface UnitTest") < header.indexOf("@interface UnitAnotherTest");
+    assertThat(header.indexOf("@interface UnitTest")
+        < header.indexOf("@interface UnitAnotherTest")).isTrue();
   }
 
   public void testCombinedJarHeaderMapping() throws IOException {
