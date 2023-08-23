@@ -18,6 +18,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
@@ -32,6 +33,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -75,6 +78,12 @@ class Options {
   // The default source version number if not passed with -source is determined from the system
   // properties of the running java version after parsing the argument list.
   private SourceVersion sourceVersion = null;
+
+  // Flags that are directly forwarded to the javac parser, to allow tree_shaker to
+  // include JRE sources in its analysis. For a description of each flag, run "javac -help".
+  private static final ImmutableSet<String> PLATFORM_MODULE_SYSTEM_OPTIONS =
+      ImmutableSet.of("--patch-module", "--system", "--add-reads");
+  private final List<String> platformModuleSystemOptions = new ArrayList<>();
 
   public List<String> getSourceFiles() {
     return sourceFiles;
@@ -187,6 +196,14 @@ class Options {
   @VisibleForTesting
   void setSourceVersion(SourceVersion sv) {
     sourceVersion = sv;
+  }
+
+  public void addPlatformModuleSystemOptions(String... flags) {
+    Collections.addAll(platformModuleSystemOptions, flags);
+  }
+
+  public List<String> getPlatformModuleSystemOptions() {
+    return platformModuleSystemOptions;
   }
 
   public static void usage(String invalidUseMsg) {
@@ -314,6 +331,12 @@ class Options {
       } else if (arg.equals("--strip-reflection")) {
         // strips the reflection support
         options.stripReflection = true;
+      } else if (PLATFORM_MODULE_SYSTEM_OPTIONS.contains(arg)) {
+        String option = arg;
+        if (++nArg == args.length) {
+          usage(option + " requires an argument");
+        }
+        options.addPlatformModuleSystemOptions(option, args[nArg]);
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {

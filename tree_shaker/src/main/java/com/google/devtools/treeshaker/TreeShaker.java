@@ -33,6 +33,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
@@ -58,22 +60,24 @@ public class TreeShaker {
   TreeShaker(Options options) throws IOException {
     this.options = options;
     j2objcOptions = new com.google.devtools.j2objc.Options();
-    j2objcOptions.load(
-        new String[] {
-          "-sourcepath",
-          Strings.nullToEmpty(options.getSourcepath()),
-          "-classpath",
-          Strings.nullToEmpty(options.getClasspath()),
-          "-encoding",
-          options.fileEncoding(),
-          "-source",
-          options.sourceVersion().flag(),
+    List<String> list =
+        new ArrayList<>(
+            Arrays.asList(
+                "-sourcepath",
+                Strings.nullToEmpty(options.getSourcepath()),
+                "-classpath",
+                Strings.nullToEmpty(options.getClasspath()),
+                "-encoding",
+                options.fileEncoding(),
+                "-source",
+                options.sourceVersion().flag(),
 
-          // Disable all warnings, minimize diagnostic output to save memory.
-          "-Xlint:none",
-          "-Xjavac-warnings:true",
-          "-Xignore-jar-warnings"
-        });
+                // Disable all warnings, minimize diagnostic output to save memory.
+                "-Xlint:none",
+                "-Xjavac-warnings:true",
+                "-Xignore-jar-warnings"));
+    list.addAll(options.getPlatformModuleSystemOptions());
+    j2objcOptions.load(list.toArray(new String[0]));
     j2objcOptions.setStripReflection(options.stripReflection());
   }
 
