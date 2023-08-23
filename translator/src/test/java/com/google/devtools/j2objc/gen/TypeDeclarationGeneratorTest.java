@@ -624,7 +624,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
   }
 
   /*
-   * Temporarily, Guava is annoting usages of type variable's like `E next()` with a
+   * Temporarily, Guava is annotating usages of type variable's like `E next()` with a
    * `@ParametricNullness` annotation. This annotation means "the value may be null for an
    * `Iterator<@Nullable Foo>` but not for an `Iterator<@Nonnull Foo>`." For our purposes, that
    * means "It might be null."
