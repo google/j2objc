@@ -352,8 +352,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
 
   protected String getFunctionSignature(FunctionDeclaration function, boolean isPrototype) {
     StringBuilder sb = new StringBuilder();
-    String returnType = nameTable.getObjCType(function.getReturnType().getTypeMirror());
-    returnType += returnType.endsWith("*") ? "" : " ";
+    TypeMirror returnTypeMirror = function.getReturnType().getTypeMirror();
+    String returnType = paddedType(nameTable.getObjCType(returnTypeMirror));
     sb.append(returnType).append(function.getName()).append('(');
     if (isPrototype && function.getParameters().isEmpty()) {
       sb.append("void");
@@ -361,8 +361,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
            iter.hasNext(); ) {
         VariableElement var = iter.next().getVariableElement();
-        String paramType = nameTable.getObjCType(var.asType());
-        paramType += (paramType.endsWith("*") ? "" : " ");
+        String paramType = paddedType(nameTable.getObjCType(var.asType()));
         sb.append(paramType + nameTable.getVariableShortName(var));
         if (iter.hasNext()) {
           sb.append(", ");
@@ -371,6 +370,19 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     }
     sb.append(')');
     return sb.toString();
+  }
+
+  /**
+   * Returns a String representation of a type with trailing padding, if applicable.
+   *
+   * <p><b>Note:</b>If {@code type} represents a pointer, trailing padding is not added to the
+   * returned String. Otherwise, a new String is returned with a trailing space.
+   *
+   * @param type the string representation of the data type.
+   */
+  protected String paddedType(String type) {
+    String suffix = type.endsWith("*") ? "" : " ";
+    return type + suffix;
   }
 
   protected String generateExpression(Expression expr) {

@@ -467,9 +467,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     VariableElement var = fragment.getVariableElement();
     boolean isVolatile = ElementUtil.isVolatile(var);
     String objcType = nameTable.getObjCTypeDeclaration(var.asType());
-    String objcTypePadded = objcType + (objcType.endsWith("*") ? "" : " ");
-    String declType = getDeclarationType(var);
-    declType += (declType.endsWith("*") ? "" : " ");
+    String objcTypePadded = paddedType(objcType);
+    String declType = paddedType(getDeclarationType(var));
     String name = nameTable.getVariableShortName(var);
     boolean isFinal = ElementUtil.isFinal(var);
     boolean isPrimitive = var.asType().getKind().isPrimitive();
@@ -503,8 +502,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     VariableElement var = fragment.getVariableElement();
     Object value = var.getConstantValue();
     assert value != null;
-    String declType = getDeclarationType(var);
-    declType += (declType.endsWith("*") ? "" : " ");
+    String declType = paddedType(getDeclarationType(var));
     String name = nameTable.getVariableShortName(var);
     if (ElementUtil.isPrimitiveConstant(var)) {
       printf("#define %s_%s %s\n", typeName, name, LiteralGenerator.generate(value));

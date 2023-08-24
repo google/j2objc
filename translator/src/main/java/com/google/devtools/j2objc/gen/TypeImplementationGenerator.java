@@ -176,8 +176,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       VariableElement varElement = fragment.getVariableElement();
       Expression initializer = fragment.getInitializer();
       String name = nameTable.getVariableQualifiedName(varElement);
-      String objcType = getDeclarationType(varElement);
-      objcType += objcType.endsWith("*") ? "" : " ";
+      String objcType = paddedType(getDeclarationType(varElement));
       if (initializer != null) {
         String cast = !varElement.asType().getKind().isPrimitive()
             && ElementUtil.isVolatile(varElement) ? "(void *)" : "";
