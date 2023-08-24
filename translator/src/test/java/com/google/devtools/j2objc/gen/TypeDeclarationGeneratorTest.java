@@ -124,6 +124,17 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "+ (Test *)EOF_;");
   }
 
+  // Verify that accessor methods for enum constants are generated with nonnull
+  // annotations.
+  public void testEnumConstantAccessorMethodsWithNullability() throws IOException {
+    options.setStaticAccessorMethods(true);
+    options.setNullability(true);
+    String source = "enum Test { ONE, TWO }";
+    String translation = translateSourceFile(source, "Test", "Test.h");
+    assertTranslation(translation, "+ (Test * __nonnull)ONE;");
+    assertTranslation(translation, "+ (Test * __nonnull)TWO;");
+  }
+
   // Verify that class properties for enum constants are generated on request.
   public void testEnumConstantClassProperties() throws IOException {
     options.setClassProperties(true);
