@@ -375,7 +375,7 @@ public class MetadataWriter extends UnitTreeVisitor {
     }
 
     /**
-     * Generate a function that returns the 2-dimentional array of annotations for method
+     * Generate a function that returns the 2-dimensional array of annotations for method
      * parameters.
      */
     private String createParamAnnotationsFunction(MethodDeclaration method) {
