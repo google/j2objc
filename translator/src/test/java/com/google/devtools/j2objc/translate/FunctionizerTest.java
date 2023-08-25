@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
-
 import java.io.IOException;
 
 /**
@@ -510,6 +509,37 @@ public class FunctionizerTest extends GenerationTest {
   public void testFunctionizedConstructorsARC() throws IOException {
     options.setMemoryManagementOption(MemoryManagementOption.ARC);
     innerTestFunctionizedConstructors();
+  }
+
+  public void testFunctionizedConstructorWithNullMarked() throws IOException {
+    addSourceFile(
+        "@NullMarkedJ2ObjC @NullMarked package foo.bar;"
+            + "import com.google.j2objc.annotations.NullMarkedJ2ObjC; "
+            + "import org.jspecify.nullness.NullMarked;",
+        "foo/bar/package-info.java");
+    String source =
+        "package foo.bar; import javax.annotation.*;"
+            + "public class Test {"
+            + "  @Nullable private final String nullableStr;"
+            + "  private final String nonNullStr;"
+            + "  Test(@Nullable String nullableStr, String nonNullStr) {"
+            + "    this.nullableStr = nullableStr; this.nonNullStr = nonNullStr;"
+            + "   }"
+            + "}";
+    options.setNullability(true);
+    String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
+    assertTranslation(
+        translation,
+        "FOUNDATION_EXPORT void FooBarTest_initWithNSString_withNSString_(FooBarTest *self,"
+            + " NSString *_Nullable nullableStr, NSString *nonNullStr);");
+    assertTranslation(
+        translation,
+        "FOUNDATION_EXPORT FooBarTest *new_FooBarTest_initWithNSString_withNSString_(NSString"
+            + " *_Nullable nullableStr, NSString *nonNullStr) NS_RETURNS_RETAINED;");
+    assertTranslation(
+        translation,
+        "FOUNDATION_EXPORT FooBarTest *create_FooBarTest_initWithNSString_withNSString_(NSString"
+            + " *_Nullable nullableStr, NSString *nonNullStr);");
   }
 
   public void testNoAllocatingConstructorsForAbstractClass() throws IOException {

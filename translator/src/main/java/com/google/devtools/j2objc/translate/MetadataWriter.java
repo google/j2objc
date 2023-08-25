@@ -116,7 +116,7 @@ public class MetadataWriter extends UnitTreeVisitor {
     Block body = new Block();
     metadataDecl.setBody(body);
 
-    new MetadataGenerator(node, body.getStatements()).generateClassMetadata();
+    new MetadataGenerator(node, body.getStatements()).generateClassMetadata(metadataElement);
 
     node.addBodyDeclaration(metadataDecl);
   }
@@ -141,11 +141,11 @@ public class MetadataWriter extends UnitTreeVisitor {
       this.stmts = stmts;
     }
 
-    private void generateClassMetadata() {
+    private void generateClassMetadata(ExecutableElement element) {
       String fullName = nameTable.getFullName(type);
       int methodMetadataCount = generateMethodsMetadata();
       int fieldMetadataCount = generateFieldsMetadata();
-      String annotationsFunc = createAnnotationsFunction(typeNode);
+      String annotationsFunc = createAnnotationsFunction(typeNode, element);
       String metadata = UnicodeUtils.format(
           "static const J2ObjcClassInfo _%s = { "
           + "%s, %s, %%s, %s, %s, %d, 0x%x, %d, %d, %s, %s, %s, %s, %s };",
@@ -200,7 +200,7 @@ public class MetadataWriter extends UnitTreeVisitor {
             || (ElementUtil.isEnum(type) && ElementUtil.isConstructor(element))) {
           continue;
         }
-        String annotationsFunc = createAnnotationsFunction(decl);
+        String annotationsFunc = createAnnotationsFunction(decl, element);
         String paramAnnotationsFunc = createParamAnnotationsFunction(decl);
         methodMetadata.add(getMethodMetadata(element, annotationsFunc, paramAnnotationsFunc));
         String selector = nameTable.getMethodSelector(element);
@@ -275,13 +275,13 @@ public class MetadataWriter extends UnitTreeVisitor {
       List<String> fieldMetadata = new ArrayList<>();
       if (typeNode instanceof EnumDeclaration) {
         for (EnumConstantDeclaration decl : ((EnumDeclaration) typeNode).getEnumConstants()) {
-          String annotationsFunc = createAnnotationsFunction(decl);
+          String annotationsFunc = createAnnotationsFunction(decl, null);
           fieldMetadata.add(generateFieldMetadata(decl.getVariableElement(), annotationsFunc));
         }
       }
       for (FieldDeclaration decl : TreeUtil.getFieldDeclarations(typeNode)) {
         // Fields that share a declaration can share an annotations function.
-        String annotationsFunc = createAnnotationsFunction(decl);
+        String annotationsFunc = createAnnotationsFunction(decl, null);
         VariableDeclarationFragment f = decl.getFragment();
         String metadata = generateFieldMetadata(f.getVariableElement(), annotationsFunc);
         if (metadata != null) {
@@ -362,16 +362,14 @@ public class MetadataWriter extends UnitTreeVisitor {
       return idx.toString();
     }
 
-    /**
-     * Generate a function that returns the annotations for a BodyDeclarations node.
-     */
-    private String createAnnotationsFunction(BodyDeclaration decl) {
+    /** Generate a function that returns the annotations for a BodyDeclarations node. */
+    private String createAnnotationsFunction(BodyDeclaration decl, ExecutableElement element) {
       List<Annotation> runtimeAnnotations =
           TreeUtil.getRuntimeAnnotationsList(decl.getAnnotations());
       if (runtimeAnnotations.isEmpty()) {
         return null;
       }
-      return addAnnotationsFunction(createAnnotations(runtimeAnnotations));
+      return addAnnotationsFunction(createAnnotations(runtimeAnnotations), element);
     }
 
     /**
@@ -411,12 +409,13 @@ public class MetadataWriter extends UnitTreeVisitor {
       }
 
       return addAnnotationsFunction(
-          translationUtil.createObjectArray(subArrays, annotationArray2D));
+          translationUtil.createObjectArray(subArrays, annotationArray2D),
+          method.getExecutableElement());
     }
 
-    private String addAnnotationsFunction(Expression result) {
+    private String addAnnotationsFunction(Expression result, ExecutableElement element) {
       String name = className + "__Annotations$" + annotationFuncCount++;
-      FunctionDeclaration decl = new FunctionDeclaration(name, result.getTypeMirror());
+      FunctionDeclaration decl = new FunctionDeclaration(name, result.getTypeMirror(), element);
       decl.addModifiers(java.lang.reflect.Modifier.PRIVATE);
       Block body = new Block();
       decl.setBody(body);

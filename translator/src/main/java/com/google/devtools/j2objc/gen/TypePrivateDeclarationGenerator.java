@@ -55,32 +55,36 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
   }
 
   private void generateDeclarationExtension() {
-    printClassExtension();
+    boolean shouldPrintClassExtension = shouldPrintClassExtension();
+    if (shouldPrintClassExtension) {
+      printClassExtension();
+    }
     printCompanionClassDeclaration();
     printFieldSetters();
     printStaticFieldDeclarations();
     printOuterDeclarations();
+    if (shouldPrintClassExtension) {
+      printNonnullAuditedRegion(AuditedRegion.END);
+    }
   }
 
   private void printClassExtension() {
+    newline();
+    printNonnullAuditedRegion(AuditedRegion.BEGIN);
+    printf("@interface %s ()", typeName);
+    printInstanceVariables();
+    Iterable<BodyDeclaration> privateDecls = getInnerDeclarations();
+    printDeclarations(privateDecls);
+    println("\n@end");
+  }
+
+  private boolean shouldPrintClassExtension() {
     if (isInterfaceType()) {
-      return;
+      return false;
     }
     boolean hasPrivateFields = !Iterables.isEmpty(getInstanceFields());
     Iterable<BodyDeclaration> privateDecls = getInnerDeclarations();
-    if (!Iterables.isEmpty(privateDecls) || hasPrivateFields) {
-      newline();
-      if (options.defaultNonnull()) {
-        println("NS_ASSUME_NONNULL_BEGIN");
-      }
-      printf("@interface %s ()", typeName);
-      printInstanceVariables();
-      printDeclarations(privateDecls);
-      println("\n@end");
-      if (options.defaultNonnull()) {
-        println("NS_ASSUME_NONNULL_END");
-      }
-    }
+    return !Iterables.isEmpty(privateDecls) || hasPrivateFields;
   }
 
   @Override

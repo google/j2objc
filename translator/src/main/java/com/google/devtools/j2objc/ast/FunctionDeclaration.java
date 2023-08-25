@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import java.util.List;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -22,6 +23,7 @@ import javax.lang.model.type.TypeMirror;
  */
 public class FunctionDeclaration extends BodyDeclaration {
 
+  private ExecutableElement executableElement = null;
   private String name = null;
   private boolean returnsRetained = false;
   private final ChildLink<Type> returnType = ChildLink.create(Type.class, this);
@@ -34,20 +36,27 @@ public class FunctionDeclaration extends BodyDeclaration {
     super(other);
     name = other.getName();
     returnsRetained = other.returnsRetained();
+    executableElement = other.getExecutableElement();
     returnType.copyFrom(other.getReturnType());
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
     jniSignature = other.jniSignature;
   }
 
-  public FunctionDeclaration(String name, TypeMirror returnType) {
+  public FunctionDeclaration(
+      String name, TypeMirror returnType, ExecutableElement executableElement) {
     this.name = name;
     this.returnType.set(Type.newType(returnType));
+    this.executableElement = executableElement;
   }
 
   @Override
   public Kind getKind() {
     return Kind.FUNCTION_DECLARATION;
+  }
+
+  public ExecutableElement getExecutableElement() {
+    return executableElement;
   }
 
   public String getName() {

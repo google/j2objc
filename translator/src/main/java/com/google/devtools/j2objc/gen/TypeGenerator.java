@@ -67,6 +67,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected final String typeName;
   protected final Options options;
   protected final boolean parametersNonnullByDefault;
+  protected final boolean nullMarked;
 
   private final List<BodyDeclaration> declarations;
 
@@ -84,6 +85,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     options = env.options();
     parametersNonnullByDefault = options.nullability()
         && env.elementUtil().areParametersNonnullByDefault(node.getTypeElement(), options);
+    nullMarked =
+        options.nullability() && env.elementUtil().isNullMarked(node.getTypeElement(), options);
   }
 
   protected boolean shouldPrintDeclaration(BodyDeclaration decl) {
@@ -353,7 +356,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected String getFunctionSignature(FunctionDeclaration function, boolean isPrototype) {
     StringBuilder sb = new StringBuilder();
     TypeMirror returnTypeMirror = function.getReturnType().getTypeMirror();
-    String returnType = paddedType(nameTable.getObjCType(returnTypeMirror));
+    String returnType =
+        paddedType(nameTable.getObjCType(returnTypeMirror), function.getExecutableElement());
     sb.append(returnType).append(function.getName()).append('(');
     if (isPrototype && function.getParameters().isEmpty()) {
       sb.append("void");
@@ -361,7 +365,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
            iter.hasNext(); ) {
         VariableElement var = iter.next().getVariableElement();
-        String paramType = paddedType(nameTable.getObjCType(var.asType()));
+        String paramType = paddedType(nameTable.getObjCType(var.asType()), var);
         sb.append(paramType + nameTable.getVariableShortName(var));
         if (iter.hasNext()) {
           sb.append(", ");
@@ -373,15 +377,23 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   /**
-   * Returns a String representation of a type with trailing padding, if applicable.
+   * Returns a String representation of a type with trailing padding and nullable annotations, if
+   * applicable.
    *
-   * <p><b>Note:</b>If {@code type} represents a pointer, trailing padding is not added to the
-   * returned String. Otherwise, a new String is returned with a trailing space.
+   * <p><b>Note:</b> If {@code type} is not a pointer, a new String is returned with a trailing
+   * space. If {@code type} represents a pointer, {@code element} represents a nullable type, and
+   * NullMarked is enabled, an Objective-C nullability specifier is appended with a trailing space.
+   * Otherwise, trailing padding is not added to the returned String.
    *
    * @param type the string representation of the data type.
+   * @param element represents a program element such as a package, class, or method.
    */
-  protected String paddedType(String type) {
-    String suffix = type.endsWith("*") ? "" : " ";
+  protected String paddedType(String type, Element element) {
+    String suffix = " ";
+    if (type.endsWith("*")) {
+      boolean hasNullableAnnotation = element != null && ElementUtil.hasNullableAnnotation(element);
+      suffix = hasNullableAnnotation && nullMarked ? "_Nullable " : "";
+    }
     return type + suffix;
   }
 

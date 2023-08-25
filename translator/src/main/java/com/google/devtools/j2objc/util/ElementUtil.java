@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
+import com.google.j2objc.annotations.NullMarkedJ2ObjC;
 import com.google.j2objc.annotations.Property;
 import com.google.j2objc.annotations.RetainedWith;
 import com.sun.tools.javac.code.Attribute;
@@ -63,6 +64,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
+import org.jspecify.nullness.NullMarked;
 
 /**
  * Utility methods for working with elements.
@@ -699,7 +701,7 @@ public final class ElementUtil {
         // If --strip-reflection flag is off, CLASS or SOURCE annotations will be removed.
         return !isRuntimeAnnotation(e);
       }
-    } 
+    }
     return false;
   }
 
@@ -857,6 +859,37 @@ public final class ElementUtil {
     }
     String pkgName = pkg.getQualifiedName().toString();
     return options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName);
+  }
+
+  private boolean isNullMarkedJ2ObjC(Element element, Options options) {
+    if (ElementUtil.hasAnnotation(element, NullMarkedJ2ObjC.class)) {
+      return true;
+    }
+    PackageElement pkg = getPackage(element);
+    if (ElementUtil.hasAnnotation(pkg, NullMarkedJ2ObjC.class)) {
+      return true;
+    }
+    String pkgName = pkg.getQualifiedName().toString();
+    return options.getPackageInfoLookup().isNullMarkedJ2ObjC(pkgName);
+  }
+
+  public boolean isNullMarked(Element element, Options options) {
+    // @NullMarked is only supported behind the @NullMarkedJ2ObjC package annotation.
+    // This allows J2ObjC clients to opt-in to use existing @NullMarked annotations
+    // on a package-level.
+    //
+    // if (!isNullMarkedJ2ObjC(element, options)) {
+    //   return false;
+    // }
+    if (ElementUtil.hasAnnotation(element, NullMarked.class)) {
+      return true;
+    }
+    PackageElement pkg = getPackage(element);
+    if (ElementUtil.hasAnnotation(pkg, NullMarked.class)) {
+      return true;
+    }
+    String pkgName = pkg.getQualifiedName().toString();
+    return options.getPackageInfoLookup().isNullMarked(pkgName);
   }
 
   /**

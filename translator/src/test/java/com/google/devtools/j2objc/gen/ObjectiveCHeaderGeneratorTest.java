@@ -509,6 +509,33 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "J2OBJC_ENUM_CONSTANT(Color, BLUE)");
   }
 
+  public void testEnumWithNullMarked() throws IOException {
+    options.setNullability(true);
+    addSourceFile(
+        "@NullMarkedJ2ObjC @NullMarked package foo.bar;import"
+            + "com.google.j2objc.annotations.NullMarkedJ2ObjC;"
+            + "import org.jspecify.nullness.NullMarked;",
+        "foo/bar/package-info.java");
+    String translation =
+        translateSourceFile(
+            "package foo.bar;" + "public enum Color { RED, WHITE, BLUE }",
+            "foo.bar.Color",
+            "foo/bar/Color.h");
+    assertTranslatedLines(
+        translation, "NS_ASSUME_NONNULL_BEGIN", "@interface FooBarColor : JavaLangEnum");
+    assertTranslatedLines(
+        translation,
+        "typedef NS_ENUM(jint, FooBarColor_Enum) {",
+        "  FooBarColor_Enum_RED = 0,",
+        "  FooBarColor_Enum_WHITE = 1,",
+        "  FooBarColor_Enum_BLUE = 2,",
+        "};");
+    assertTranslation(
+        translation, "FOUNDATION_EXPORT FooBarColor *_Nullable FooBarColor_values_[];");
+    assertTranslatedLines(
+        translation, "J2OBJC_TYPE_LITERAL_HEADER(FooBarColor)", "", "NS_ASSUME_NONNULL_END");
+  }
+
   public void testEnumWithParameters() throws IOException {
     String translation = translateSourceFile(
         "public enum Color { RED(0xff0000), WHITE(0xffffff), BLUE(0x0000ff); "
@@ -735,6 +762,55 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o_, id)");
     // Make sure the @Weak and static fields don't generate setters.
     assertOccurrences(translation, "J2OBJC_FIELD_SETTER", 1);
+  }
+
+  public void testFieldSetterGenerationWithNullMarked() throws IOException {
+    options.setNullability(true);
+    addSourceFile(
+        "@NullMarkedJ2ObjC @NullMarked package foo.bar;import"
+            + " com.google.j2objc.annotations.NullMarkedJ2ObjC; import"
+            + " org.jspecify.nullness.NullMarked;",
+        "foo/bar/package-info.java");
+    String translation =
+        translateSourceFile(
+            "package foo.bar;import javax.annotation.*;"
+                + "class Test { @Nullable String a; String b; @Nullable Object c;}",
+            "foo.bar.Test",
+            "foo/bar/Test.h");
+    assertTranslation(translation, "J2OBJC_FIELD_SETTER(FooBarTest, a_, NSString *_Nullable)");
+    assertTranslation(translation, "J2OBJC_FIELD_SETTER(FooBarTest, b_, NSString *)");
+    assertTranslation(translation, "J2OBJC_FIELD_SETTER(FooBarTest, c_, id)");
+  }
+
+  public void testStaticFieldObject() throws IOException {
+    String translation =
+        translateSourceFile(
+            "class Test { public static final String str = \"str\"; }", "Test", "Test.h");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Test, str, NSString *)");
+  }
+
+  public void testStaticFieldObjectWithNullMarked() throws IOException {
+    options.setNullability(true);
+    addSourceFile(
+        "@NullMarkedJ2ObjC @NullMarked package foo.bar;import"
+            + " com.google.j2objc.annotations.NullMarkedJ2ObjC; import"
+            + " org.jspecify.nullness.NullMarked;",
+        "foo/bar/package-info.java");
+    String translation =
+        translateSourceFile(
+            "package foo.bar; import javax.annotation.*;"
+                + "class Test { public static final String a = \"a\";"
+                + "@Nullable public static final String b = null; }",
+            "foo.bar.Test",
+            "foo/bar/Test.h");
+    assertTranslation(translation, "inline NSString *FooBarTest_get_a(void);");
+    assertTranslation(translation, "FOUNDATION_EXPORT NSString *FooBarTest_a;");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(FooBarTest, a, NSString *)");
+
+    assertTranslation(translation, "inline NSString *_Nullable FooBarTest_get_b(void);");
+    assertTranslation(translation, "FOUNDATION_EXPORT NSString *_Nullable FooBarTest_b;");
+    assertTranslation(
+        translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(FooBarTest, b, NSString *_Nullable)");
   }
 
   public void testEnumWithNameAndOrdinalParameters() throws IOException {

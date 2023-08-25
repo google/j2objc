@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import com.google.common.collect.Iterables;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.Block;
@@ -176,8 +177,10 @@ public class AnnotationRewriter extends UnitTreeVisitor {
       AnnotationTypeDeclaration node, Map<ExecutableElement, VariableElement> fieldElements) {
     TypeElement type = node.getTypeElement();
     String typeName = nameTable.getFullName(type);
+    List<ExecutableElement> memberElements = ElementUtil.getSortedAnnotationMembers(type);
+    ExecutableElement element = Iterables.getFirst(memberElements, null);
     FunctionDeclaration constructorDecl =
-        new FunctionDeclaration("create_" + typeName, type.asType());
+        new FunctionDeclaration("create_" + typeName, type.asType(), element);
     Block constructorBody = new Block();
     constructorDecl.setBody(constructorBody);
     List<Statement> stmts = constructorBody.getStatements();
@@ -185,7 +188,7 @@ public class AnnotationRewriter extends UnitTreeVisitor {
     stmts.add(new NativeStatement(UnicodeUtils.format(
         "%s *self = AUTORELEASE([[%s alloc] init]);", typeName, typeName)));
 
-    for (ExecutableElement memberElement : ElementUtil.getSortedAnnotationMembers(type)) {
+    for (ExecutableElement memberElement : memberElements) {
       TypeMirror memberType = memberElement.getReturnType();
       String propName = NameTable.getAnnotationPropertyName(memberElement);
       String fieldName = nameTable.getVariableShortName(fieldElements.get(memberElement));
