@@ -121,6 +121,10 @@ BOOL CGPWireFormatSkipField(CGPCodedInputStream *stream, uint32_t tag) {
         uint32_t value;
         return stream->ReadLittleEndian32(&value);
       }
+    default: {
+      // Invalid wire type.
+      return false;
+    }
   }
 }
 

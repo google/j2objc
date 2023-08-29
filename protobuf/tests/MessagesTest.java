@@ -13,6 +13,7 @@
  */
 
 import com.google.protobuf.ExtensionRegistry;
+import com.google.protobuf.InvalidProtocolBufferException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import protos.GroupFe;
@@ -36,6 +37,20 @@ public class MessagesTest extends ProtobufTest {
     MessageFields.registerAllExtensions(registry);
     MessageData msg = MessageData.parseFrom(ALL_MESSAGES_BYTES, registry);
     checkFields(msg);
+  }
+
+  // b/297559868: verify invalid binary proto throws exception when parsed.
+  // In this case, a Base64-encoded string was mistakenly passed as a proto,
+  // causing a crash instead of a thrown exception.
+  public void testParseFromInvalidByteArray() throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.newInstance();
+    MessageFields.registerAllExtensions(registry);
+    try {
+      MessageData.parseFrom(INVALID_MESSAGES_BYTES, registry);
+      fail("InvalidProtocolBufferException should have been thrown");
+    } catch (InvalidProtocolBufferException e) {
+      // success
+    }
   }
 
   public void testParseReversedMessageSets() throws Exception {
@@ -298,4 +313,8 @@ public class MessagesTest extends ProtobufTest {
     0x04, 0x0A, 0x02, 0x08, 0x35, 0xFA, 0x3F, 0x04, 0x0A, 0x02, 0x08, 0x3F, 0x83, 0x40, 0x08, 0x36,
     0x84, 0x40, 0x83, 0x40, 0x08, 0x40, 0x84, 0x40
   });
+
+  // Invalid "proto" bytes from b/297559868.
+  private static final byte[] INVALID_MESSAGES_BYTES =
+      asBytes(new int[] {0x7b, 0x1b, 0x5e, 0xae, 0x76, 0xa5});
 }
