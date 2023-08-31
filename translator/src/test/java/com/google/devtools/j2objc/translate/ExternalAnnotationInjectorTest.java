@@ -68,8 +68,8 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "  public String baz() { return null; } " // no external annotation.
             + "}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
-    assertTranslation(translation, "- (NSString * __nonnull)foo;");
-    assertTranslation(translation, "- (NSString * __nullable)bar;");
+    assertTranslation(translation, "- (NSString * _Nonnull)foo;");
+    assertTranslation(translation, "- (NSString * _Nullable)bar;");
     assertTranslation(translation, "- (NSString *)baz;");
     assertNotInTranslation(translation, "qux");
   }
@@ -83,8 +83,8 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "  public static String bar() { return null; } "
             + "}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
-    assertTranslation(translation, "+ (NSString * __nonnull)foo;");
-    assertTranslation(translation, "+ (NSString * __nullable)bar;");
+    assertTranslation(translation, "+ (NSString * _Nonnull)foo;");
+    assertTranslation(translation, "+ (NSString * _Nullable)bar;");
   }
 
   public void testInjectNullability_returnType_enumMethod() throws IOException {
@@ -97,8 +97,8 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "    public String bar() { return null; } "
             + "}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
-    assertTranslation(translation, "- (NSString * __nonnull)foo;");
-    assertTranslation(translation, "- (NSString * __nullable)bar;");
+    assertTranslation(translation, "- (NSString * _Nonnull)foo;");
+    assertTranslation(translation, "- (NSString * _Nullable)bar;");
   }
 
   public void testInjectNullability_returnType_interfaceMethod() throws IOException {
@@ -110,8 +110,8 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "    default String bar() { return null; } "
             + "}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
-    assertTranslation(translation, "- (NSString * __nonnull)foo;");
-    assertTranslation(translation, "- (NSString * __nullable)bar;");
+    assertTranslation(translation, "- (NSString * _Nonnull)foo;");
+    assertTranslation(translation, "- (NSString * _Nullable)bar;");
   }
 
   public void testInjectNullability_returnType_nestedClassMethod() throws IOException {
@@ -133,8 +133,8 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "  }"
             + "}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
-    assertTranslation(translation, "- (NSString * __nonnull)foo;");
-    assertTranslation(translation, "- (NSString * __nullable)bar;");
+    assertTranslation(translation, "- (NSString * _Nonnull)foo;");
+    assertTranslation(translation, "- (NSString * _Nullable)bar;");
   }
 
   // Nullability specifiers should not be applied to primitive types.
@@ -164,7 +164,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     addSourceFile("package p; public @interface AnAnnotation {}", "p/AnAnnotation.java");
     String source = "package p; public class Test { public Test() {} }";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
-    assertTranslation(translation, "- (instancetype __nonnull)init;");
+    assertTranslation(translation, "- (instancetype _Nonnull)init;");
     assertTranslation(translation, "FOUNDATION_EXPORT void PTest_init(PTest *self);");
     assertTranslation(
         translation, "FOUNDATION_EXPORT PTest *new_PTest_init(void) NS_RETURNS_RETAINED;");
@@ -276,7 +276,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     // Verify @ObjectiveCName.
     assertTranslation(translation, "@interface XYZTest");
     // Verify @ParametersAreNonnullByDefault.
-    assertTranslation(translation, "- (void)testWithNSString:(NSString * __nonnull)s");
+    assertTranslation(translation, "- (void)testWithNSString:(NSString * _Nonnull)s");
     // Verify @ReflectionSupport.
     translation = getTranslatedFile("p/Test.m");
     assertNotInTranslation(translation, "__metadata");

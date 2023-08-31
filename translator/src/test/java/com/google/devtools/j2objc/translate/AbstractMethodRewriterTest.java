@@ -115,7 +115,7 @@ public class AbstractMethodRewriterTest extends GenerationTest {
         + "String foo(Number arg) { return arg.toString(); } }", "B.java");
     String header = translateSourceFile("B", "B.h");
     // Inherited declaration, copied from superclass because of return type narrowing.
-    assertTranslation(header, "- (NSString * __nullable)barWithId:(id __nullable)arg0;");
+    assertTranslation(header, "- (NSString * _Nullable)barWithId:(id _Nullable)arg0;");
     // Overwritten method, without annotations (annotations aren't inherited).
     assertTranslation(header, "- (NSString *)fooWithId:(NSNumber *)arg;");
   }

@@ -252,7 +252,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
             "Test",
             "Test.h");
     // Verify interface.
-    assertTranslation(hFile, "testWithNSString:(NSString * __nonnull)s;");
+    assertTranslation(hFile, "testWithNSString:(NSString * _Nonnull)s;");
     assertNotInTranslation(hFile, "copyWithZone");
     // Verify implementation.
     String mFile = getTranslatedFile("Test.m");

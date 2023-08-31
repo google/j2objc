@@ -133,6 +133,6 @@ public class ElementUtilTest extends GenerationTest {
   public void testNullableAnnotationOnVoidMethod() throws IOException {
     String translation = translateSourceFile(
         "class Test { @javax.annotation.Nullable void foo() {} }", "Test", "Test.m");
-    assertTranslation(translation, "- (void)foo");  // not (void __nullable)foo
+    assertTranslation(translation, "- (void)foo");  // not (void _Nullable)foo
   }
 }

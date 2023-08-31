@@ -310,11 +310,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           String nullabilitySpecifier = "";
           TypeElement element = typeNode.getTypeElement();
           if (shouldAddNullableAnnotation(element)) {
-            nullabilitySpecifier = " __nullable";
+            nullabilitySpecifier = " _Nullable";
           } else if (options.nullability() && !nullMarked) {
             // Only add a nonnull annotation if null marked is not enabled as it is implied
             // when annotated regions are in use. This code block preserves legacy behavior.
-            nullabilitySpecifier = " __nonnull";
+            nullabilitySpecifier = " _Nonnull";
           }
           printf("\n+ (%s *%s)%s;\n", typeName, nullabilitySpecifier, accessorName);
         }
@@ -801,10 +801,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   protected String nullability(Element element) {
     if (options.nullability()) {
       if (ElementUtil.hasNullableAnnotation(element)) {
-        return " __nullable";
+        return " _Nullable";
       }
       if (ElementUtil.isNonnull(element, parametersNonnullByDefault)) {
-        return " __nonnull";
+        return " _Nonnull";
       }
     }
     return "";

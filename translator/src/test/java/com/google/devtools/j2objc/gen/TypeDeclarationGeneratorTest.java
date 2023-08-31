@@ -178,8 +178,8 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     String source = "enum Test { ONE, TWO }";
     String translation = translateSourceFile(source, "Test", "Test.h");
     assertNotInTranslation(translation, "NS_ASSUME_NONNULL_BEGIN");
-    assertTranslation(translation, "+ (Test * __nonnull)ONE;");
-    assertTranslation(translation, "+ (Test * __nonnull)TWO;");
+    assertTranslation(translation, "+ (Test * _Nonnull)ONE;");
+    assertTranslation(translation, "+ (Test * _Nonnull)TWO;");
     assertNotInTranslation(translation, "NS_ASSUME_NONNULL_END");
   }
 
@@ -197,8 +197,8 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.h");
     assertTranslatedLines(
         translation, "NS_ASSUME_NONNULL_BEGIN", "@interface NullableTest : JavaLangEnum");
-    assertTranslation(translation, "+ (NullableTest * __nullable)ONE;");
-    assertTranslation(translation, "+ (NullableTest * __nullable)TWO;");
+    assertTranslation(translation, "+ (NullableTest * _Nullable)ONE;");
+    assertTranslation(translation, "+ (NullableTest * _Nullable)TWO;");
     assertTranslation(translation, "+ (NonnullTest *)THREE;");
     assertTranslation(translation, "+ (NonnullTest *)FOUR;");
     assertTranslation(translation, "NS_ASSUME_NONNULL_END");
@@ -518,16 +518,17 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.h");
 
     // Verify return type and parameters are all annotated.
-    assertTranslatedLines(translation,
-        "- (NSString * __nullable)testWithNSString:(NSString * __nonnull)msg",
+    assertTranslatedLines(
+        translation,
+        "- (NSString * _Nullable)testWithNSString:(NSString * _Nonnull)msg",
         // var is also nonnull because of the default annotation on the class.
-        "withId:(id __nonnull)var;");
+        "withId:(id _Nonnull)var;");
 
     // Verify return type isn't annotated, as only parameters should be by default.
     assertTranslatedLines(translation, "- (NSString *)test2;");
 
     // Verify return type is annotated.
-    assertTranslation(translation, "- (NSString * __nonnull)test3;");
+    assertTranslation(translation, "- (NSString * _Nonnull)test3;");
   }
 
   // Verify ParametersAreNonnullByDefault sets unspecified parameter as non-null.
@@ -540,11 +541,12 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     options.setNullability(true);
     String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
     // var is also nonnull because of the default annotation on the class.
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         // Verify parameter isn't affected by default.
-        "- (NSString * __nullable)testWithNSString:(NSString * __nullable)msg",
+        "- (NSString * _Nullable)testWithNSString:(NSString * _Nullable)msg",
         // Verify default nonnull is specified.
-        "withId:(id __nonnull)var",
+        "withId:(id _Nonnull)var",
         // Default should not apply to primitive type.
         "withInt:(jint)count;");
   }
@@ -562,11 +564,12 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     options.setNullability(true);
     String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
     // var is also nonnull because of the default annotation on the class.
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         // Verify parameter isn't affected by default.
-        "- (NSString * __nullable)testWithNSString:(NSString * __nullable)msg",
+        "- (NSString * _Nullable)testWithNSString:(NSString * _Nullable)msg",
         // Verify default nonnull is specified.
-        "withId:(id __nonnull)var",
+        "withId:(id _Nonnull)var",
         // Default should not apply to primitive type.
         "withInt:(jint)count;");
   }
@@ -678,7 +681,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "  int i; "
         + "  public Test() { this(0); } "
         + "  private Test(int i) { this.i = i; }}", "Test", "Test.h");
-    assertTranslation(translation, "- (instancetype __nonnull)init;");
+    assertTranslation(translation, "- (instancetype _Nonnull)init;");
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "- (instancetype)initWithInt:(jint)i;");
   }
@@ -700,7 +703,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     options.setNullability(true);
     String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
     assertTranslatedLines(
-        translation, "- (NSString * __nullable)testWithNSString:(NSString * __nonnull)msg");
+        translation, "- (NSString * _Nullable)testWithNSString:(NSString * _Nonnull)msg");
   }
 
   /*
@@ -727,7 +730,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
             + "}";
     options.setNullability(true);
     String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
-    assertTranslatedLines(translation, "- (id __nullable)passthroughWithId:(id __nullable)t;");
+    assertTranslatedLines(translation, "- (id _Nullable)passthroughWithId:(id _Nullable)t;");
   }
 
   public void testNullMarked() throws IOException {
@@ -756,19 +759,19 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTranslatedLines(
         translation, "NS_ASSUME_NONNULL_BEGIN", "@interface FooBarTest : NSObject {");
     assertTranslatedLines(translation, "@public", "NSString *_Nullable identifier_;");
-    assertTranslation(translation, "- (NSString * __nullable)getToken;");
+    assertTranslation(translation, "- (NSString * _Nullable)getToken;");
     assertTranslation(
-        translation, "- (instancetype __nonnull)initWithNSString:(NSString * __nullable)token;");
+        translation, "- (instancetype _Nonnull)initWithNSString:(NSString * _Nullable)token;");
     assertTranslatedLines(
         translation,
-        "- (NSString * __nullable)testNullableInstanceMethodWithNSString:(NSString *"
-            + " __nullable)msg",
+        "- (NSString * _Nullable)testNullableInstanceMethodWithNSString:(NSString *"
+            + " _Nullable)msg",
         "withId:(id)var",
         "withInt:(jint)count;");
     assertTranslatedLines(
         translation,
-        "+ (NSString * __nullable)testNullableStaticMethodWithNSString:(NSString *"
-            + " __nullable)firstArg",
+        "+ (NSString * _Nullable)testNullableStaticMethodWithNSString:(NSString *"
+            + " _Nullable)firstArg",
         "withId:(id)var",
         "withInt:(jint)count;");
     assertTranslatedLines(
@@ -795,10 +798,10 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation, "NS_ASSUME_NONNULL_BEGIN", "@interface Test : NSObject");
     assertTranslatedLines(
         translation,
-        "- (NSString * __nullable)testWithNSString:(NSString *)a",
-        "withNSString:(NSString * __nullable)b;");
+        "- (NSString * _Nullable)testWithNSString:(NSString *)a",
+        "withNSString:(NSString * _Nullable)b;");
     assertTranslation(translation, "- (NSString *)getNonNullStr;");
-    assertTranslation(translation, "- (NSString * __nullable)getNullableStr;");
+    assertTranslation(translation, "- (NSString * _Nullable)getNullableStr;");
     assertTranslation(translation, "NS_ASSUME_NONNULL_END");
   }
 
@@ -827,10 +830,10 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         translation, "NS_ASSUME_NONNULL_BEGIN", "@interface FooBarTest : NSObject");
     assertTranslatedLines(
         translation,
-        "- (NSString * __nullable)testWithNSString:(NSString *)a",
-        "withNSString:(NSString * __nullable)b;");
+        "- (NSString * _Nullable)testWithNSString:(NSString *)a",
+        "withNSString:(NSString * _Nullable)b;");
     assertTranslation(translation, "- (NSString *)getNonNullStr;");
-    assertTranslation(translation, "- (NSString * __nullable)getNullableStr;");
+    assertTranslation(translation, "- (NSString * _Nullable)getNullableStr;");
     assertTranslation(translation, "NS_ASSUME_NONNULL_END");
   }
 
