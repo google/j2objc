@@ -58,6 +58,7 @@ const int kPackagePrefixFieldNumber = 102687446;
 
 // NOLINTBEGIN(runtime/string) - Existing code design requires globals.
 static std::string globalPrefix;
+static std::string globalPostfix;
 static std::string globalFileSubExtension(".j2objc.pb");
 static std::map<std::string, std::string> prefixes;
 static std::map<std::string, std::string> wildcardPrefixes;
@@ -315,13 +316,13 @@ std::string JavaPackageToDir(std::string package_name) {
 }
 
 std::string ClassName(const Descriptor *descriptor) {
-  return GetClassPrefix(descriptor->file(), descriptor->containing_type())
-      + descriptor->name();
+  return GetClassPrefix(descriptor->file(), descriptor->containing_type()) +
+         descriptor->name() + globalPostfix;
 }
 
 std::string ClassName(const EnumDescriptor *descriptor) {
-  return GetClassPrefix(descriptor->file(), descriptor->containing_type())
-      + descriptor->name();
+  return GetClassPrefix(descriptor->file(), descriptor->containing_type()) +
+         descriptor->name() + globalPostfix;
 }
 
 std::string COrdinalEnumName(const EnumDescriptor *descriptor) {
@@ -341,7 +342,8 @@ std::string CValuePreprocessorName(const EnumDescriptor *descriptor) {
 }
 
 std::string ClassName(const FileDescriptor *descriptor) {
-  return GetPackagePrefix(descriptor) + FileClassName(descriptor);
+  return GetPackagePrefix(descriptor) + FileClassName(descriptor) +
+         globalPostfix;
 }
 
 std::string EnumOrdinalName(const EnumValueDescriptor *descriptor) {
@@ -671,6 +673,10 @@ void ParsePrefixLine(std::string line) {
 
 void SetGlobalPrefix(std::string prefix) {
   globalPrefix = std::move(prefix);
+}
+
+void SetGlobalPostfix(std::string postfix) {
+  globalPostfix = std::move(postfix);
 }
 
 void SetFileSubExtension(std::string fileSubExtension) {

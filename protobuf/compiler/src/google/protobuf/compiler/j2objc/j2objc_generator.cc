@@ -62,6 +62,8 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
       ParsePrefixFile(options[i].second);
     } else if (options[i].first == "global_prefix") {
       SetGlobalPrefix(options[i].second);
+    } else if (options[i].first == "global_postfix") {
+      SetGlobalPostfix(options[i].second);
     } else if (options[i].first == "file_sub_extension") {
       SetFileSubExtension(options[i].second);
     } else if (options[i].first == "file_dir_mapping") {
