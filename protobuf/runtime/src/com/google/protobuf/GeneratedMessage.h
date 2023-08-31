@@ -58,6 +58,8 @@ typedef ComGoogleProtobufGeneratedMessage_GeneratedExtension CGPGeneratedExtensi
 + (id)parseFromWithByteString:(ComGoogleProtobufByteString *)byteString;
 + (id)parseFromWithByteString:(ComGoogleProtobufByteString *)byteString
     withComGoogleProtobufExtensionRegistryLite:(ComGoogleProtobufExtensionRegistryLite *)registry;
++ (id)parseFromNSData:(NSData *)data;
++ (id)parseFromNSData:(NSData *)data registry:(ComGoogleProtobufExtensionRegistryLite *)registry;
 
 @end
 
