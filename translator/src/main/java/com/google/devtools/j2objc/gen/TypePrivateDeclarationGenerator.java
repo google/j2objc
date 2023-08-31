@@ -70,16 +70,10 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
     Iterable<BodyDeclaration> privateDecls = getInnerDeclarations();
     if (!Iterables.isEmpty(privateDecls) || hasPrivateFields) {
       newline();
-      if (options.defaultNonnull()) {
-        println("NS_ASSUME_NONNULL_BEGIN");
-      }
       printf("@interface %s ()", typeName);
       printInstanceVariables();
       printDeclarations(privateDecls);
       println("\n@end");
-      if (options.defaultNonnull()) {
-        println("NS_ASSUME_NONNULL_END");
-      }
     }
   }
 
