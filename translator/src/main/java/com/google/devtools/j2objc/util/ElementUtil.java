@@ -63,6 +63,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
+import org.jspecify.nullness.NullMarked;
 
 /**
  * Utility methods for working with elements.
@@ -699,7 +700,7 @@ public final class ElementUtil {
         // If --strip-reflection flag is off, CLASS or SOURCE annotations will be removed.
         return !isRuntimeAnnotation(e);
       }
-    } 
+    }
     return false;
   }
 
@@ -857,6 +858,21 @@ public final class ElementUtil {
     }
     String pkgName = pkg.getQualifiedName().toString();
     return options.getPackageInfoLookup().hasParametersAreNonnullByDefault(pkgName);
+  }
+
+  public boolean isNullMarked(Element element, Options options) {
+    if (!options.nullMarked()) {
+      return false;
+    }
+    if (ElementUtil.hasAnnotation(element, NullMarked.class)) {
+      return true;
+    }
+    PackageElement pkg = getPackage(element);
+    if (ElementUtil.hasAnnotation(pkg, NullMarked.class)) {
+      return true;
+    }
+    String pkgName = pkg.getQualifiedName().toString();
+    return options.getPackageInfoLookup().isNullMarked(pkgName);
   }
 
   /**

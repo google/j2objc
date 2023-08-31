@@ -60,6 +60,10 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
+// TODO: b/287612419 - Update methods to use nullability annotations. Methods are
+//                     not correctly annotated and throw an exceptions rather
+//                     than returning nil in many cases.
+
 /**
  * Modifies enum types for Objective C.
  *
