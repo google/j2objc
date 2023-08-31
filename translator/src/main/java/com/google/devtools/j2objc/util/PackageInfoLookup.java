@@ -193,7 +193,9 @@ public class PackageInfoLookup {
     }
 
     // @NullMarked
-    if (pkgInfo.contains("@NullMarked") || pkgInfo.contains("@org.jspecify.nullness.NullMarked")) {
+    if (pkgInfo.contains("@NullMarked")
+        || pkgInfo.contains("@org.jspecify.nullness.NullMarked")
+        || pkgInfo.contains("@org.jspecify.annotations.NullMarked")) {
       builder.setNullMarked();
     }
 
