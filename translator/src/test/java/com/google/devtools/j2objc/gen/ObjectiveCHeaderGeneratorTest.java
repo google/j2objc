@@ -962,4 +962,26 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(kytheMetadata, "kythe0");
     assertTranslation(kytheMetadata, "{\"type\":\"anchor_anchor\"");
   }
+
+  // Verifies that properly encoded Kythe metadata and associated pragmas are generated when
+  // using the Kythe mapping flag with a source jar.
+  public void testKytheMetadataMappingsWithSourceJar() throws Exception {
+    options.setEmitKytheMappings(true);
+    addJarFile(
+        "some/path/test.jar", "foo/Test.java", "package foo; class Test { public void test() {}}");
+    runPipeline("some/path/test.jar");
+
+    String translation = getTranslatedFile("foo/Test.h");
+    assertTranslation(translation, "#ifdef KYTHE_IS_RUNNING");
+    assertTranslation(
+        translation, "#pragma kythe_inline_metadata" + " \"This file contains Kythe metadata.\"");
+    assertTranslation(translation, "/* This file contains Kythe metadata.");
+
+    // Verify metadata paths don't contain jar URL paths ...
+    String kytheMetadata = extractKytheMetadata(translation);
+    assertNotInTranslation(kytheMetadata, "jar:file:some/path/test.jar");
+
+    // ... just the source file entry in that jar file.
+    assertTranslation(kytheMetadata, "\"path\":\"foo/Test.java\"");
+  }
 }

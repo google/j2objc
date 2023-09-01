@@ -69,7 +69,7 @@ public class GenerationUnit {
 
   @VisibleForTesting
   public GenerationUnit(String sourceName, Options options) {
-    this.sourceName = sourceName;
+    this.sourceName = relativePath(sourceName);
     this.options = options;
   }
 
@@ -256,6 +256,19 @@ public class GenerationUnit {
   @Nullable
   public String getOutputPath() {
     return outputPath;
+  }
+
+  /**
+   * If path is for a jar file entry ("jar:file:jar-file-path!entry-path"), return just the entry's
+   * relative path. Otherwise, return the specified path as is.
+   */
+  private static final String relativePath(String path) {
+    int jarPathOffset = path.indexOf("!");
+    if (jarPathOffset != -1) {
+      return path.substring(jarPathOffset + 1);
+    } else {
+      return path;
+    }
   }
 
   @Override

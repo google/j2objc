@@ -88,18 +88,10 @@ public class J2ObjCTest extends GenerationTest {
     String packageInfoH = getTranslatedFile("com/google/test/package-info.h");
     String packageInfoM = getTranslatedFile("com/google/test/package-info.m");
     // Test the file header comments.
-    assertTranslation(exampleH, "source: jar:file:");
-    assertTranslation(exampleM, "source: jar:file:");
-    assertTranslation(packageInfoH, "source: jar:file:");
-    assertTranslation(packageInfoM, "source: jar:file:");
-    assertTranslation(exampleH, jarPath);
-    assertTranslation(exampleM, jarPath);
-    assertTranslation(packageInfoH, jarPath);
-    assertTranslation(packageInfoM, jarPath);
-    assertTranslation(exampleH, "com/google/test/Example.java");
-    assertTranslation(exampleM, "com/google/test/Example.java");
-    assertTranslation(packageInfoH, "com/google/test/package-info.java");
-    assertTranslation(packageInfoM, "com/google/test/package-info.java");
+    assertTranslation(exampleH, "source: com/google/test/Example.java");
+    assertTranslation(exampleM, "source: com/google/test/Example.java");
+    assertTranslation(packageInfoH, "source: com/google/test/package-info.java");
+    assertTranslation(packageInfoM, "source: com/google/test/package-info.java");
     assertNotInTranslation(packageInfoH, "J2ObjCTempDir");
     assertNotInTranslation(packageInfoM, "J2ObjCTempDir");
     // Test the includes
