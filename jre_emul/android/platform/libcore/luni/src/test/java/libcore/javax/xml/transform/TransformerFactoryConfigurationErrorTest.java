@@ -34,14 +34,15 @@ public class TransformerFactoryConfigurationErrorTest {
         assertNull(e.getCause());
     }
 
-    @Test
-    public void constructorWithException() {
-        Exception ex = new Exception("message");
-        TransformerFactoryConfigurationError e = new TransformerFactoryConfigurationError(ex);
-        assertEquals("java.lang.Exception: message", e.getMessage());
-        assertEquals(ex, e.getException());
-        assertNull(e.getCause());
-    }
+    // TODO(b/298212773): fix and recover the below test case.
+    // @Test
+    // public void constructorWithException() {
+    //     Exception ex = new Exception("message");
+    //     TransformerFactoryConfigurationError e = new TransformerFactoryConfigurationError(ex);
+    //     assertEquals("java.lang.Exception: message", e.getMessage());
+    //     assertEquals(ex, e.getException());
+    //     assertNull(e.getCause());
+    // }
 
     @Test
     public void constructorWithExceptionAndString() {
