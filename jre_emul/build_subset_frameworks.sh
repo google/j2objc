@@ -17,7 +17,7 @@
 # 1. cd to the j2objc/jre_emul directory
 # 2. run "./build_subset_frameworks.sh"
 #
-# To delete these frameworks, run "./build_subset_frameworks clean".
+# To delete these frameworks, run "./build_subset_frameworks.sh clean".
 
 for mk in \
   android_util_framework.mk \

@@ -26,7 +26,11 @@ STATIC_LIBRARY_NAME = jre_util
 STATIC_HEADERS_DIR = $(ARCH_INCLUDE_DIR)
 include ../make/framework.mk
 
+LIBS := $(call emit_library_rules,jre_util,$(UTIL_OBJS_RELATIVE))
+
 dist:
+
+lib: $(LIBS)
 
 clean:
 	@rm -rf $(FRAMEWORK_DIR)

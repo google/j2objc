@@ -26,7 +26,11 @@ STATIC_LIBRARY_NAME = jre_net
 STATIC_HEADERS_DIR = $(ARCH_INCLUDE_DIR)
 include ../make/framework.mk
 
-dist:
+LIBS := $(call emit_library_rules,jre_net,$(NET_OBJS_RELATIVE))
+
+dist: framework
+
+lib: $(LIBS)
 
 clean:
 	@rm -rf $(FRAMEWORK_DIR)
