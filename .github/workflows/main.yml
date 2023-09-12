@@ -17,9 +17,9 @@ jobs:
       MAKE_CMD: "env TRANSLATE_GLOBAL_FLAGS=--swift-friendly ENV_J2OBJC_ARCHS=macosx_iphone64 make -j32"
 
     steps:
-      - name: java_8_env
-        run: echo "JAVA_8_HOME=$(/usr/libexec/java_home -v 1.8)" >> $GITHUB_ENV
-
+      - name: java_11_env
+        run: echo "JAVA_11_HOME=$(/usr/libexec/java_home -v 11)" >> $GITHUB_ENV
+      
       - uses: actions/checkout@v2
 
       # Build everything but protobuf targets, which require that the public
@@ -30,11 +30,3 @@ jobs:
       # Test command-line tools.
       - name: test_tools
         run: $MAKE_CMD JAVA_HOME=$JAVA_8_HOME test_translator test_cycle_finder test_jre_cycles
-        
-      - name: java_11_env
-        run: echo "JAVA_11_HOME=$(/usr/libexec/java_home -v 11)" >> $GITHUB_ENV
-      
-      # Double-check translator tests for Java 11, since its javac is different.
-      - name: test_translator_java_11
-        run: $MAKE_CMD JAVA_HOME=$JAVA_11_HOME test_translator
-         
