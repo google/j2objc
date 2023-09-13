@@ -25,8 +25,8 @@ jobs:
       # Build everything but protobuf targets, which require that the public
       # protobuf distribution be installed.
       - name: build_all
-        run: $MAKE_CMD JAVA_HOME=$JAVA_8_HOME frameworks examples_dist
+        run: $MAKE_CMD JAVA_HOME=$JAVA_11_HOME frameworks examples_dist
       
       # Test command-line tools.
       - name: test_tools
-        run: $MAKE_CMD JAVA_HOME=$JAVA_8_HOME test_translator test_cycle_finder test_jre_cycles
+        run: $MAKE_CMD JAVA_HOME=$JAVA_11_HOME test_translator test_cycle_finder test_jre_cycles
