@@ -20,7 +20,6 @@
 # To delete these frameworks, run "./build_subset_frameworks.sh clean".
 
 for mk in \
-  android_util_framework.mk \
   jre_beans_framework.mk \
   jre_channels_framework.mk \
   jre_concurrent_framework.mk \
