@@ -467,7 +467,7 @@ static void ExceptionClear(JNIEnv *env) {
 static jfieldID GetFieldID(JNIEnv *env, jclass clazz, const char *name, const char *sig) {
   IOSClass *iosClass = (IOSClass *) clazz;
   JavaLangReflectField *field = FindField(iosClass, [NSString stringWithUTF8String:name], false);
-  return (jfieldID) field;
+  return (jfieldID) [field retain];
 }
 
 static jfieldID GetStaticFieldID(JNIEnv *env, jclass clazz, const char *name, const char *sig) {
@@ -484,7 +484,7 @@ static jmethodID GetMethodID(JNIEnv *env, jclass clazz, const char *name, const 
     result = [iosClass getDeclaredMethod:[NSString stringWithUTF8String:name]
                           parameterTypes:methodSig.paramTypes];
   }
-  return (jmethodID) result;
+  return (jmethodID) [result retain];
 }
 
 static jmethodID GetStaticMethodID(JNIEnv *env, jclass clazz, const char *name, const char *sig) {
