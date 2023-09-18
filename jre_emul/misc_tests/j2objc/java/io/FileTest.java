@@ -12,13 +12,15 @@
  * limitations under the License.
  */
 
-package java.io;
+package j2objc.java.io;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.UUID;
 import junit.framework.TestCase;
 
 /**
- * Unit tests for {@link java.io.File}.
+ * Unit tests for {@link j2objc.java.io.File}.
  */
 public class FileTest extends TestCase {
   private File tmpDirectory;

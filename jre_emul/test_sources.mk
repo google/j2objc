@@ -305,7 +305,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # com/google/j2objc/security/IosSecureRandomImplTest.java \
 # com/google/j2objc/util/NativeTimeZoneTest.java \
 # dalvik/system/JniTest.java \
-# java/io/FileTest.java \
 # java/lang/SystemTest.java \
 # java/lang/ref/PhantomReferenceTest.java \
 # java/lang/ref/SoftReferenceTest.java \
@@ -446,6 +445,7 @@ TEST_SOURCES := \
     jsr166/TreeSetTest.java \
     jsr166/TreeSubMapTest.java \
     jsr166/TreeSubSetTest.java \
+    j2objc/java/io/FileTest.java \
     libcore/java/awt/font/TextAttributeTest.java \
     libcore/java/io/CharArrayWriterTest.java \
     libcore/java/io/DataOutputStreamTest.java \
