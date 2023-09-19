@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Build XCFramework framework from set of single-arch static libraries.
+# Build an XCFramework from a set of single-architecture static libraries.
 # xcodebuild -create-xcframework needs all libraries to be included
 # in a single command, so it can build the Info.plist listing them all.
 #
 # Usage:
-#   gen_xcframework.sh <output-directory> library [library ...]
+#   gen_xcframework.sh <output-directory> [static-library-path ...]
 
 if [ $# -lt 2 ]; then
   echo "usage: gen_xcframework.sh <output-directory> library [library ...]"
@@ -27,14 +27,18 @@ fi
 readonly FRAMEWORK_DIR=$1
 shift
 
-# xcodebuild won't override any existing framework files.
-rm -rf ${FRAMEWORK_DIR}/*
+readonly FRAMEWORK_HEADERS_DIR="${FRAMEWORK_DIR}/Headers"
+
+if [ ! -d "${FRAMEWORK_HEADERS_DIR}" ]; then
+  echo "$FRAMEWORK_HEADERS_DIR should exist but doesn't."
+fi
 
 CMD="xcodebuild -create-xcframework -output "${FRAMEWORK_DIR}
 
 while test ${#} -gt 0
 do
   CMD=${CMD}" -library "$1
+  CMD=${CMD}" -headers "$FRAMEWORK_HEADERS_DIR
   shift
 done
 echo $CMD
