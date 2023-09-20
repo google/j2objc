@@ -12,8 +12,10 @@
  * limitations under the License.
  */
 
-package java.util.regex;
+package j2objc.java.util.regex;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
 /**

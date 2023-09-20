@@ -30,10 +30,13 @@
  * limitations under the License.
  */
 
-package java.lang.ref;
+package j2objc.java.lang.ref;
 
 import com.google.j2objc.annotations.AutoreleasePool;
 
+import java.lang.ref.PhantomReference;
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
 import junit.framework.TestCase;
 
 import org.junit.Test;
@@ -41,10 +44,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * iOS-specific unit test for {@link PhantomReference}. The Android and
- * Apache Harmony tests can't be reused because they assume GC behavior.
- * This class uses autorelease pools to manage when references have
- * phantom referents.
+ * iOS-specific unit test for {@link PhantomReference}. The Android and Apache Harmony tests can't
+ * be reused because they assume GC behavior. This class uses autorelease pools to manage when
+ * references have phantom referents.
  *
  * @author Tom Ball
  */

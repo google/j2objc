@@ -30,10 +30,11 @@
  * limitations under the License.
  */
 
-package java.util;
+package j2objc.java.util;
 
 import com.google.j2objc.annotations.AutoreleasePool;
 
+import java.util.WeakHashMap;
 import junit.framework.TestCase;
 
 import org.junit.Before;

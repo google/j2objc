@@ -305,16 +305,7 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # com/google/j2objc/security/IosSecureRandomImplTest.java \
 # com/google/j2objc/util/NativeTimeZoneTest.java \
 # dalvik/system/JniTest.java \
-# java/lang/SystemTest.java \
-# java/lang/ref/PhantomReferenceTest.java \
-# java/lang/ref/SoftReferenceTest.java \
-# java/lang/ref/WeakReferenceTest.java \
-# java/lang/reflect/MethodTest.java \
 # java/nio/file/attribute/FileTimeTest.java \
-# java/util/HashMapTest.java \
-# java/util/TreeMapTest.java \
-# java/util/WeakHashMapTest.java \
-# java/util/regex/MatcherTest.java \
 # libcore/icu/NativeDecimalFormatTest.java \
 # libcore/io/PosixTest.java \
 # libcore/java/io/ObjectOutputStreamTest.java \
@@ -446,6 +437,15 @@ TEST_SOURCES := \
     jsr166/TreeSubMapTest.java \
     jsr166/TreeSubSetTest.java \
     j2objc/java/io/FileTest.java \
+    j2objc/java/lang/SystemTest.java \
+    j2objc/java/lang/ref/PhantomReferenceTest.java \
+    j2objc/java/lang/ref/SoftReferenceTest.java \
+    j2objc/java/lang/ref/WeakReferenceTest.java \
+    j2objc/java/lang/reflect/MethodTest.java \
+    j2objc/java/util/HashMapTest.java \
+    j2objc/java/util/TreeMapTest.java \
+    j2objc/java/util/WeakHashMapTest.java \
+    j2objc/java/util/regex/MatcherTest.java \
     libcore/java/awt/font/TextAttributeTest.java \
     libcore/java/io/CharArrayWriterTest.java \
     libcore/java/io/DataOutputStreamTest.java \

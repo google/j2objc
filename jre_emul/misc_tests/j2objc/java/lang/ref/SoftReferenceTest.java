@@ -30,10 +30,13 @@
  * limitations under the License.
  */
 
-package java.lang.ref;
+package j2objc.java.lang.ref;
 
 import com.google.j2objc.annotations.AutoreleasePool;
 
+import java.lang.ref.Reference;
+import java.lang.ref.ReferenceQueue;
+import java.lang.ref.SoftReference;
 import junit.framework.TestCase;
 
 import org.junit.Test;

@@ -1,4 +1,3 @@
-package java.lang;
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -30,6 +29,8 @@ package java.lang;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package j2objc.java.lang;
 
 import junit.framework.TestCase;
 

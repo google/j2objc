@@ -12,8 +12,10 @@
  * limitations under the License.
  */
 
-package java.util;
+package j2objc.java.util;
 
+import java.util.Map;
+import java.util.TreeMap;
 import junit.framework.TestCase;
 
 /**

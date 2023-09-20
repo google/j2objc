@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-package java.lang.reflect;
+package j2objc.java.lang.reflect;
 
+import java.lang.reflect.Method;
 import junit.framework.TestCase;
 
 import java.util.AbstractList;
@@ -41,7 +42,9 @@ public class MethodTest extends TestCase {
   public void testGenericMethodWithConcreteTypeArgument() throws Exception {
     for (Method m : MyList.class.getDeclaredMethods()) {
       if (m.getName().equals("add") && !isSynthetic(m)) {
-        assertEquals("public boolean java.lang.reflect.MethodTest$MyList.add(java.lang.String)",
+        assertEquals(
+            "public boolean"
+                + " j2objc.java.lang.reflect.MethodTest$MyList.add(java.lang.String)",
             m.toString());
         return;
       }
