@@ -57,8 +57,8 @@ FRAMEWORK_PUBLIC_HEADERS = $(FRAMEWORK_HEADERS)
 endif
 
 FRAMEWORK_DIR = $(DIST_FRAMEWORK_DIR)/$(FRAMEWORK_NAME).xcframework
-FRAMEWORK_HEADER = $(BUILD_DIR)/$(FRAMEWORK_NAME).h
-MODULE_MAP = $(BUILD_DIR)/module.modulemap
+FRAMEWORK_HEADER = $(BUILD_DIR)/$(FRAMEWORK_NAME)/$(FRAMEWORK_NAME).h
+MODULE_MAP = $(BUILD_DIR)/$(FRAMEWORK_NAME)/module.modulemap
 
 FRAMEWORK_RESOURCES_DIR = $(FRAMEWORK_DIR)/Versions/A/Resources
 RESOURCE_FILES = $(FRAMEWORK_RESOURCE_FILES:%=$(FRAMEWORK_RESOURCES_DIR)/%)
@@ -111,6 +111,7 @@ $(FRAMEWORK_DIR): lib $(FRAMEWORK_HEADER) $(MODULE_MAP) | $(DIST_FRAMEWORK_DIR)
 # This header is then test-compiled with all allowed warnings to verify it can be included
 # by other projects.
 $(FRAMEWORK_HEADER):
+	@mkdir -p $$(dirname $@)
 	@echo "//\n// $(FRAMEWORK_NAME).h\n//\n" > $@
 	@for f in $(FRAMEWORK_PUBLIC_HEADERS:$(STATIC_HEADERS_DIR)/%=%); do\
 			echo '#include <'$${f}'>'; done >> $@
@@ -128,6 +129,7 @@ test_warnings: $(FRAMEWORK_HEADER)
 	@rm $(FRAMEWORK_HEADER:%.h=%.o)
 
 $(MODULE_MAP):
+	@mkdir -p $$(dirname $@)
 	@echo "module" $(FRAMEWORK_NAME) "{" > $(MODULE_MAP)
 	@echo "  umbrella header" '"'$(FRAMEWORK_NAME).h'"' >> $(MODULE_MAP)
 	@echo >> $(MODULE_MAP)
