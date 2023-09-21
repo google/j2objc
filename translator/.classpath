@@ -8,8 +8,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/annotations"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/j2objc_junit.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/jsr305.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/guava-25.1-jre.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/javac.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/guava-32.0.1-jre.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/procyon-decompiler.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/scenelib.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/plume-util-1.0.6.jar"/>

@@ -10,10 +10,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" scope="TEST">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../java_deps/build_result/junit-4.13.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../java_deps/build_result/protobuf-java-3.22.3.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -23,7 +23,16 @@
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../java_deps/build_result/protobuf-java-3.17.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../java_deps/build_result/junit-4.13.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../java_deps/build_result/truth-1.1.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

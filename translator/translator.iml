@@ -3,9 +3,8 @@
   <component name="EclipseModuleManager">
     <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/j2objc_junit.jar!/" />
     <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/jsr305.jar!/" />
-    <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/tools.jar!/" />
     <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/procyon-decompiler.jar!/" />
-    <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/guava-31.0.1-jre.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/guava-32.0.1-jre.jar!/" />
     <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/scenelib.jar!/" />
     <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/flogger-0.5.1.jar!/" />
     <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/google-extensions-0.5.1.jar!/" />
@@ -139,11 +138,11 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/guava-31.1-jre.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/guava-32.0.1-jre.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/guava-31.1-jre-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/guava-32.0.1-jre-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
   <component name="EclipseModuleManager">
-    <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/guava-31.0.1-jre.jar!/" />
-    <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/tools.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/guava-32.0.1-jre.jar!/" />
     <src_description expected_position="0">
       <src_folder value="file://$MODULE_DIR$/src/main/java" expected_position="0" />
       <src_folder value="file://$MODULE_DIR$/src/main/resources" expected_position="1" />
@@ -33,18 +32,9 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="guava-31.0.1-jre.jar">
+      <library name="guava-32.0.1-jre.jar">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/guava-31.0.1-jre.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="javac.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/tools.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/guava-32.0.1-jre.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
