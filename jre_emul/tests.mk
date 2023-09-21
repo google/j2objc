@@ -76,10 +76,8 @@ TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 
 TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR):$(JUNIT_DATAPROVIDER_DIST_JAR):$(JSON_JAR) \
     -Werror -sourcepath $(TEST_SRC):$(GEN_JAVA_DIR) \
-    -encoding UTF-8 --prefixes $(MISC_TEST_ROOT)/resources/prefixes.properties
-ifndef JAVA_8
-TRANSLATE_ARGS += --patch-module java.base=$(TEST_SRC):$(GEN_JAVA_DIR)
-endif
+    -encoding UTF-8 --prefixes $(MISC_TEST_ROOT)/resources/prefixes.properties \
+    --patch-module java.base=$(TEST_SRC):$(GEN_JAVA_DIR)
 ifdef J2OBJC_JRE_STRIP_REFLECTION
 TRANSLATE_ARGS += -external-annotation-file lite/ignore_tests.jaif
 endif

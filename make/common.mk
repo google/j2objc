@@ -182,10 +182,7 @@ JAVA_HOME = $(shell /usr/libexec/java_home -v 11)
 endif
 JAVA = $(JAVA_HOME)/bin/java
 JAVAC = $(JAVA_HOME)/bin/javac
-ifneq (,$(findstring build 1.8, $(shell $(JAVA) -version 2>&1)))
-# Flag used to include tools.jar. This jar was removed in JDK 9.
-JAVA_8 = 1
-else ifneq (,$(findstring build 11, $(shell $(JAVA) -version 2>&1)))
+ifneq (,$(findstring build 11, $(shell $(JAVA) -version 2>&1)))
 JAVA_VERSION = 11
 else ifneq (,$(findstring build 12, $(shell $(JAVA) -version 2>&1)))
 JAVA_VERSION = 12
@@ -203,8 +200,12 @@ else ifneq (,$(findstring build 18, $(shell $(JAVA) -version 2>&1)))
 JAVA_VERSION = 18
 else ifneq (,$(findstring build 19, $(shell $(JAVA) -version 2>&1)))
 JAVA_VERSION = 19
+else ifneq (,$(findstring build 20, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 20
+else ifneq (,$(findstring build 21, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 21
 else
-$(error JDK not supported. Please set JAVA_HOME to JDK 1.8, 11 or higher.)
+$(error JDK not supported. Please set JAVA_HOME to 11 or higher.)
 endif
 
 ifndef MEMORY_MODEL_FLAG
@@ -217,9 +218,7 @@ ifeq ("$(strip $(MEMORY_MODEL_FLAG))", "-use-arc")
 endif
 
 TRANSLATOR_BUILD_FLAGS = \
-  -Xlint:unchecked -encoding UTF-8 -nowarn
-ifndef JAVA_8
-TRANSLATOR_BUILD_FLAGS += \
+  -Xlint:unchecked -encoding UTF-8 -nowarn \
   --add-exports java.compiler/javax.lang.model.element=ALL-UNNAMED \
   --add-exports java.compiler/javax.lang.model.type=ALL-UNNAMED \
   --add-exports java.compiler/javax.lang.model.util=ALL-UNNAMED \
@@ -228,7 +227,6 @@ TRANSLATOR_BUILD_FLAGS += \
   --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED \
   --add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
   --add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
-endif
 
 comma=,
 space=$(eval) $(eval)

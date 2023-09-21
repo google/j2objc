@@ -55,7 +55,7 @@ else
   readonly JAVA=`which java`
 fi
 
-SUPPORTED_JAVA_VERSIONS=(1.8 11 12 13 14 15 16 17 18 19)
+SUPPORTED_JAVA_VERSIONS=(1.8 11 12 13 14 15 16 17 18 19 20 21)
 JAVA_VERSION=0
 for version in ${SUPPORTED_JAVA_VERSIONS[@]}; do
   ${JAVA} -version 2>&1 | fgrep -q "build ${version}"

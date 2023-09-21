@@ -33,9 +33,11 @@ TRANSLATOR_CLASS_DIR = $(J2OBJC_ROOT)/translator/$(CLASS_DIR)
 TRANSLATOR_TEST_DIR = $(J2OBJC_ROOT)/translator/$(TEST_CLASS_DIR)
 
 JAVA_SOURCES = \
+    com/google/devtools/treeshaker/ClassHierarchyAnalyzer.java \
     com/google/devtools/treeshaker/Member.java \
     com/google/devtools/treeshaker/Options.java \
     com/google/devtools/treeshaker/RapidTypeAnalyser.java \
+    com/google/devtools/treeshaker/Summarizer.java \
     com/google/devtools/treeshaker/TreeShaker.java \
     com/google/devtools/treeshaker/Type.java \
     com/google/devtools/treeshaker/TypeGraphBuilder.java \
@@ -52,10 +54,7 @@ RESOURCES = \
 
 DIST_DEPS = $(JSR305_JAR) j2objc_annotations.jar protobuf_runtime.jar
 INTERNAL_DEPS = $(GUAVA_JAR) $(PROCYON_JARS) $(SCENELIB_JAR) \
-  $(AUTOVALUE_ANNOTATIONS_JAR) $(FLOGGER_JARS) $(JSPECIFY_JAR)
-ifdef JAVA_8
-INTERNAL_DEPS += $(JAVAC_JAR)
-endif
+  $(AUTOVALUE_ANNOTATIONS_JAR) $(FLOGGER_JARS) $(JSPECIFY_JAR) $(PROTOBUF_JAR)
 JAR_DEPS_DIST = $(DIST_DEPS:%=$(DIST_JAR_DIR)/%) $(INTERNAL_DEPS:%=$(JAVA_DEPS_JAR_DIR)/%)
 JAR_DEPS_PATH = $(subst $(eval) ,:,$(strip $(JAR_DEPS_DIST)))
 JUNIT_JAR_DIST = $(DIST_JAR_DIR)/$(JUNIT_JAR)
@@ -100,7 +99,8 @@ clean:
 	@rm -rf $(BUILD_DIR) $(JAR_DIST) $(DIST_DIR)/tree_shaker
 
 $(JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
-  | $(CLASS_DIR) $(PROTO_JAVA_DIR) java_deps_dist annotations_dist translator
+  | $(CLASS_DIR) $(PROTO_JAVA_DIR) java_deps_dist annotations_dist translator \
+    protobuf_runtime_dist
 	@echo building tree_shaker jar
 	@$(DIST_DIR)/j2objc_protoc --java_out=$(PROTO_JAVA_DIR) $(PROTO_SOURCES)
 	@$(JAVAC) -Xlint:unchecked \

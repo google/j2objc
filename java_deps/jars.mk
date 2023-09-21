@@ -65,8 +65,6 @@ JSR305_SOURCE_JAR = jsr305-3.0.0.jar
 JAVAX_INJECT_JAR = javax.inject-1.jar
 JAVAX_INJECT_SOURCE_JAR = javax.inject-1-sources.jar
 
-JAVAC_JAR = tools.jar
-
 DOCLAVA_JAR = doclava-1.0.6.jar
 JSILVER_JAR = jsilver-1.0.0.jar
 

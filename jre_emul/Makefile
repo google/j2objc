@@ -39,10 +39,8 @@ TRANSLATE_JAVA_RELATIVE = $(JAVA_TO_TRANSLATE)
 TRANSLATE_ARGS = -sourcepath $(JRE_SRC) \
   $(J2OBJC_DEBUGFLAGS) -encoding UTF-8 --doc-comments -Xtranslate-bootclasspath \
   --nullability -external-annotation-file $(ANDROID_ANNOTATIONS) \
-  -external-annotation-file $(J2OBJC_ANNOTATIONS)
-ifndef JAVA_8
-TRANSLATE_ARGS += --patch-module java.base=$(JRE_SRC)
-endif
+  -external-annotation-file $(J2OBJC_ANNOTATIONS) \
+  --patch-module java.base=$(JRE_SRC)
 ifdef J2OBJC_JRE_STRIP_REFLECTION
 TRANSLATE_ARGS += --strip-reflection
 endif
