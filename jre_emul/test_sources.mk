@@ -259,7 +259,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 
 # TODO(b/265202484): packages that are commmented need to be moved for Java 11
 # or fixed because of ICU difference between each xcode version.
-# DateFormatTest.java \
 # LocaleTest.java \
 # MaxFloatingPointTest.java \
 # NoPackageTest.java \
@@ -358,6 +357,7 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # tests/security/spec/EncodedKeySpec2Test.java \
 
 TEST_SOURCES := \
+    DateFormatTest.java \
     android/icu/dev/test/timezone/TimeZoneAliasTest.java \
     android/icu/dev/test/timezone/TimeZoneBoundaryTest.java \
     android/icu/dev/test/timezone/TimeZoneOffsetLocalTest.java \
