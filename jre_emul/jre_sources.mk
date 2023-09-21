@@ -306,6 +306,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/channels/ClosedChannelException.java \
   java/nio/channels/FileChannel.java \
   java/nio/channels/GatheringByteChannel.java \
+  java/nio/channels/InterruptibleChannel.java \
   java/nio/channels/ReadableByteChannel.java \
   java/nio/channels/ScatteringByteChannel.java \
   java/nio/channels/SeekableByteChannel.java \
@@ -325,6 +326,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/charset/UnsupportedCharsetException.java \
   java/nio/charset/spi/CharsetProvider.java \
   java/nio/file/Path.java \
+  java/nio/file/Watchable.java \
   java/nio/file/attribute/FileAttribute.java \
   java/nio/file/attribute/FileTime.java \
   java/security/AccessControlContext.java \
