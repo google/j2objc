@@ -98,10 +98,11 @@ $(FRAMEWORK_DIR): lib $(FRAMEWORK_HEADER) $(MODULE_MAP) | $(DIST_FRAMEWORK_DIR)
 	@echo building $(FRAMEWORK_NAME) framework
 	@rm -rf ${FRAMEWORK_DIR}
 	@mkdir -p $(FRAMEWORK_DIR)/Headers
+	@mkdir -p $(FRAMEWORK_DIR)/Modules
 	@tar cf - -C $(STATIC_HEADERS_DIR) $(FRAMEWORK_HEADERS:$(STATIC_HEADERS_DIR)/%=%) \
 		| tar xfp - -C $(FRAMEWORK_DIR)/Headers
 	@install -m 0644 $(FRAMEWORK_HEADER) $(FRAMEWORK_DIR)/Headers
-	@install -m 0644 $(MODULE_MAP) $(FRAMEWORK_DIR)/Headers/
+	@install -m 0644 $(MODULE_MAP) $(FRAMEWORK_DIR)/Modules
 	@$(J2OBJC_ROOT)/scripts/gen_xcframework.sh $(FRAMEWORK_DIR) \
 		$(shell $(J2OBJC_ROOT)/scripts/list_framework_libraries.sh $(STATIC_LIBRARY_NAME))
 	@rm -rf ${FRAMEWORK_DIR}/Headers
