@@ -259,14 +259,7 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 
 # TODO(b/265202484): packages that are commmented need to be moved for Java 11
 # or fixed because of ICU difference between each xcode version.
-# LocaleTest.java \
-# MaxFloatingPointTest.java \
-# NoPackageTest.java \
-# NSDictionaryMapTest.java \
-# PackagePrefixesTest.java \
-# RetentionTest.java \
 # SerializationTest.java \
-# UTF16EncodingTest.java \
 # android/icu/dev/test/timezone/TimeZoneTest.java \
 # com/google/j2objc/ArrayTest.java \
 # com/google/j2objc/AssertTest.java \
@@ -358,6 +351,13 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 
 TEST_SOURCES := \
     DateFormatTest.java \
+    LocaleTest.java \
+    MaxFloatingPointTest.java \
+    NoPackageTest.java \
+    NSDictionaryMapTest.java \
+    PackagePrefixesTest.java \
+    RetentionTest.java \
+    UTF16EncodingTest.java \
     android/icu/dev/test/timezone/TimeZoneAliasTest.java \
     android/icu/dev/test/timezone/TimeZoneBoundaryTest.java \
     android/icu/dev/test/timezone/TimeZoneOffsetLocalTest.java \
