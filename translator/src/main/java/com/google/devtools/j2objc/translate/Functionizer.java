@@ -356,13 +356,7 @@ public class Functionizer extends UnitTreeVisitor {
         // Enums with ARC need the retaining constructor.
         declarationList.add(makeAllocatingConstructor(node, false));
       }
-      if (isDefaultMethod || (isPrivate && ElementUtil.isInterface(declaringClass))) {
-        // For default methods keep only the declaration. Implementing classes will add a shim.
-        // Private interface methods do not need an implementation because functionized default
-        // methods only use functionized private methods.
-        node.setBody(null);
-        node.addModifiers(Modifier.ABSTRACT);
-      } else if (isInstanceMethod) {
+      if (isInstanceMethod) {
         // We can remove private instance methods if reflection is stripped.
         if (translationUtil.needsReflection(declaringClass) || !isPrivate) {
           setFunctionCaller(node, element);

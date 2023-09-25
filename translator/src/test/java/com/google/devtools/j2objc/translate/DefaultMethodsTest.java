@@ -32,6 +32,7 @@ public class DefaultMethodsTest extends GenerationTest {
     assertTranslation(header, "- (void)f;");
     assertTranslation(header, "- (void)g;");
     assertTranslation(header, "void Foo_g(id<Foo> self);");
+    assertTranslatedLines(impl, "- (void)g {", "Foo_g(self);", "}");
     assertTranslatedLines(impl,
         "void Foo_g(id<Foo> self) {", "Foo_initialize();", "[self f];", "}");
   }
@@ -46,6 +47,7 @@ public class DefaultMethodsTest extends GenerationTest {
     assertTranslation(header, "- (void)f;");
     assertTranslation(header, "- (void)g;");
     assertTranslation(header, "void Foo_g(id<Foo> self);");
+    assertTranslatedLines(impl, "- (void)g {", "Foo_g(self);", "}");
     assertTranslatedLines(impl,
         "void Foo_g(id<Foo> self) {", "Foo_initialize();", "[self f];", "}");
   }
@@ -189,8 +191,6 @@ public class DefaultMethodsTest extends GenerationTest {
     assertTranslation(impl, "void B_f(id<B> self)");
     assertNotInTranslation(impl, "void B_g(id<A> self)");
     assertTranslatedLines(impl, "- (void)f {", "B_f(self);", "}");
-    assertNotInTranslation(impl, "A_g(self);");
-    assertNotInTranslation(impl, "B_g(self);");
   }
 
   public void testUniqueShimImplementation() throws IOException {
@@ -202,8 +202,7 @@ public class DefaultMethodsTest extends GenerationTest {
     String impl = getTranslatedFile("Test.m");
 
     assertOccurrences(header, "- (void)f;", 1); // Declared once by A.
-    assertOccurrences(impl, "A_f(self);", 1); // Called by -[P f].
-    assertOccurrences(impl, "B_g(self);", 1); // Called by -[Q g].
+    assertOccurrences(impl, "B_g(self);", 2); // Called by -[A g], -[Q g].
   }
 
   public void testConcreteMethodPrecedence() throws Exception {
@@ -214,8 +213,6 @@ public class DefaultMethodsTest extends GenerationTest {
     String impl = getTranslatedFile("Test.m");
 
     assertOccurrences(header, "- (void)f;", 2); // Declared once by A and another by P.
-    // f() is inherited from P so the default declaration in A is not used.
-    assertNotInTranslation(impl, "A_f(self);");
   }
 
   public void testAnonymousClass() throws IOException {
@@ -244,8 +241,8 @@ public class DefaultMethodsTest extends GenerationTest {
     String impl = getTranslatedFile("Test.m");
     assertTranslation(header, "void A_P_f(id<A_P> self);");
 
-    // This is called by the shims -[A_B f], -[A_B_C f], and -[A_D f].
-    assertOccurrences(impl, "A_P_f(self);", 3);
+    // This is called by the shims -[A_B f], -[A_P f], -[A_B_C f], and -[A_D f].
+    assertOccurrences(impl, "A_P_f(self);", 4);
   }
 
   public void testFunctionizedMethodRenaming() throws Exception {
@@ -271,7 +268,6 @@ public class DefaultMethodsTest extends GenerationTest {
     String header = translateSourceFile(source, "Test", "Test.h");
     String impl = getTranslatedFile("Test.m");
     assertOccurrences(header, "- (void)f;", 1); // From P, but not A and C
-    assertOccurrences(impl, "P_f(self);", 1); // From -[A f], but not from B or C.
   }
 
   public void testInterfaceTraversalOrder() throws Exception {
@@ -295,8 +291,8 @@ public class DefaultMethodsTest extends GenerationTest {
         + "interface C extends B { default void f() {} }"
         + "class D implements A, C {}";
     String impl = translateSourceFile(source, "Test", "Test.m");
-    assertNotInTranslation(impl, "A_f(self);");
-    assertOccurrences(impl, "C_f(self);", 1); // -[D f]
+    assertTranslation(impl, "A_f(self);");
+    assertOccurrences(impl, "C_f(self);", 2); // -[A f], -[D f]
   }
 
   public void testGenericDefaultMethods() throws Exception {
@@ -465,6 +461,6 @@ public class DefaultMethodsTest extends GenerationTest {
     assertTranslation(translation,
         "NSString *Test_reverseWithNSString_(id<Test> self, NSString *s) {");
     assertOccurrences(translation, "Test_reverseWithNSString_(self, [self name])", 2);
-    assertNotInTranslation(translation, "- (NSString *)reverseWithNSString:(NSString *)s {");
+    assertTranslation(translation, "- (NSString *)reverseWithNSString:(NSString *)s {");
   }
 }
