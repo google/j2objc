@@ -260,41 +260,11 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # TODO(b/265202484): packages that are commmented need to be moved for Java 11
 # or fixed because of ICU difference between each xcode version.
 # SerializationTest.java \
-# com/google/j2objc/ArrayTest.java \
-# com/google/j2objc/AssertTest.java \
-# com/google/j2objc/ClassTest.java \
-# com/google/j2objc/EmbeddedResourceTest.java \
-# com/google/j2objc/EnvironmentUtil.java \
-# com/google/j2objc/FieldTest.java \
-# com/google/j2objc/IterableTest.java \
-# com/google/j2objc/LibraryNotLinkedErrorTest.java \
-# com/google/j2objc/LinkedBlockingQueueTest.java \
-# com/google/j2objc/LinkedListTest.java \
-# com/google/j2objc/MemoryTest.java \
-# com/google/j2objc/MethodTest.java \
 # com/google/j2objc/PackageTest.java \
-# com/google/j2objc/ReflectionTest.java \
-# com/google/j2objc/RetainedWithTest.java \
-# com/google/j2objc/StringTest.java \
-# com/google/j2objc/ThreadTest.java \
-# com/google/j2objc/ThrowableTest.java \
-# com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.java \
 # com/google/j2objc/java8/CreationReferenceTest.java \
-# com/google/j2objc/java8/DefaultMethodsTest.java \
 # com/google/j2objc/java8/ExpressionMethodReferenceTest.java \
 # com/google/j2objc/java8/LambdaTest.java \
 # com/google/j2objc/java8/SuperMethodReferenceTest.java \
-# com/google/j2objc/java8/TypeMethodReferenceTest.java \
-# com/google/j2objc/net/IosHttpURLConnectionTest.java \
-# com/google/j2objc/net/NSErrorExceptionTest.java \
-# com/google/j2objc/nio/charset/CharsetTest.java \
-# com/google/j2objc/reflect/ProxyTest.java \
-# com/google/j2objc/security/IosRSAKeyPairGeneratorTest.java \
-# com/google/j2objc/security/IosRSAKeyTest.java \
-# com/google/j2objc/security/IosRSASignatureTest.java \
-# com/google/j2objc/security/IosSHAMessageDigestTest.java \
-# com/google/j2objc/security/IosSecureRandomImplTest.java \
-# com/google/j2objc/util/NativeTimeZoneTest.java \
 # dalvik/system/JniTest.java \
 # java/nio/file/attribute/FileTimeTest.java \
 # libcore/icu/NativeDecimalFormatTest.java \
@@ -363,6 +333,36 @@ TEST_SOURCES := \
     android/icu/dev/test/timezone/TimeZoneOffsetLocalTest.java \
     android/icu/dev/test/timezone/TimeZoneRegressionTest.java \
     android/icu/dev/test/timezone/TimeZoneRuleTest.java \
+    com/google/j2objc/ArrayTest.java \
+    com/google/j2objc/AssertTest.java \
+    com/google/j2objc/ClassTest.java \
+    com/google/j2objc/EmbeddedResourceTest.java \
+    com/google/j2objc/EnvironmentUtil.java \
+    com/google/j2objc/FieldTest.java \
+    com/google/j2objc/IterableTest.java \
+    com/google/j2objc/LibraryNotLinkedErrorTest.java \
+    com/google/j2objc/LinkedBlockingQueueTest.java \
+    com/google/j2objc/LinkedListTest.java \
+    com/google/j2objc/MemoryTest.java \
+    com/google/j2objc/MethodTest.java \
+    com/google/j2objc/ReflectionTest.java \
+    com/google/j2objc/RetainedWithTest.java \
+    com/google/j2objc/StringTest.java \
+    com/google/j2objc/ThreadTest.java \
+    com/google/j2objc/ThrowableTest.java \
+    com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.java \
+    com/google/j2objc/java8/DefaultMethodsTest.java \
+    com/google/j2objc/java8/TypeMethodReferenceTest.java \
+    com/google/j2objc/net/IosHttpURLConnectionTest.java \
+    com/google/j2objc/net/NSErrorExceptionTest.java \
+    com/google/j2objc/nio/charset/CharsetTest.java \
+    com/google/j2objc/reflect/ProxyTest.java \
+    com/google/j2objc/security/IosRSAKeyPairGeneratorTest.java \
+    com/google/j2objc/security/IosRSAKeyTest.java \
+    com/google/j2objc/security/IosRSASignatureTest.java \
+    com/google/j2objc/security/IosSHAMessageDigestTest.java \
+    com/google/j2objc/security/IosSecureRandomImplTest.java \
+    com/google/j2objc/util/NativeTimeZoneTest.java \
     jsr166/AbstractExecutorServiceTest.java \
     jsr166/AbstractQueueTest.java \
     jsr166/AbstractQueuedLongSynchronizerTest.java \
