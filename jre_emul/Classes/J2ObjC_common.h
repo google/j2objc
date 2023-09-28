@@ -271,12 +271,14 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param TYPE The name of the type to define the accessor for.
  */
 #define J2OBJC_CLASS_TYPE_LITERAL_SOURCE(TYPE) \
-  IOSClass *TYPE##_class_() { \
-    static IOSClass *cls; \
-    static dispatch_once_t token; \
-    TYPE##_initialize(); \
-    dispatch_once(&token, ^{ cls = IOSClass_fromClass([TYPE class]); }); \
-    return cls; \
+  IOSClass *TYPE##_class_(void) {              \
+    static IOSClass *cls;                      \
+    static dispatch_once_t token;              \
+    TYPE##_initialize();                       \
+    dispatch_once(&token, ^{                   \
+      cls = IOSClass_fromClass([TYPE class]);  \
+    });                                        \
+    return cls;                                \
   }
 
 /*!
@@ -286,13 +288,15 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @define J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE
  * @param TYPE The name of the type to define the accessor for.
  */
-#define J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(TYPE) \
-  IOSClass *TYPE##_class_() { \
-    static IOSClass *cls; \
-    static dispatch_once_t token; \
-    TYPE##_initialize(); \
-    dispatch_once(&token, ^{ cls = IOSClass_fromProtocol(@protocol(TYPE)); }); \
-    return cls; \
+#define J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(TYPE)  \
+  IOSClass *TYPE##_class_(void) {                   \
+    static IOSClass *cls;                           \
+    static dispatch_once_t token;                   \
+    TYPE##_initialize();                            \
+    dispatch_once(&token, ^{                        \
+      cls = IOSClass_fromProtocol(@protocol(TYPE)); \
+    });                                             \
+    return cls;                                     \
   }
 
 #ifdef J2OBJC_STRICT_FIELD_ASSIGN
