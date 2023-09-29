@@ -95,14 +95,14 @@ framework:: lib $(FRAMEWORK_DIR) resources
 # Create an xcframework from all appletv, iphone, maccatalyst, macosx, simulator and watchos libs.
 $(FRAMEWORK_DIR): lib $(FRAMEWORK_HEADER) | $(DIST_FRAMEWORK_DIR)
 	@echo building $(FRAMEWORK_NAME) framework
-	@rm -rf ${FRAMEWORK_DIR}
-	@mkdir -p $(FRAMEWORK_DIR)/Headers
+	@rm -rf $@
+	@mkdir -p $@/Headers
 	@tar cf - -C $(STATIC_HEADERS_DIR) $(FRAMEWORK_HEADERS:$(STATIC_HEADERS_DIR)/%=%) \
-		| tar xfp - -C $(FRAMEWORK_DIR)/Headers
-	@install -m 0644 $(FRAMEWORK_HEADER) $(FRAMEWORK_DIR)/Headers
-	@$(J2OBJC_ROOT)/scripts/gen_xcframework.sh $(FRAMEWORK_DIR) \
+		| tar xfp - -C $@/Headers
+	@install -m 0644 $(FRAMEWORK_HEADER) $@/Headers
+	@$(J2OBJC_ROOT)/scripts/gen_xcframework.sh $@ \
 		$(shell $(J2OBJC_ROOT)/scripts/list_framework_libraries.sh $(STATIC_LIBRARY_NAME))
-	@rm -rf ${FRAMEWORK_DIR}/Headers
+	@rm -rf $@/Headers
 	@touch $@
 
 # Creates a framework "master" header file that includes all the framework's header files.
@@ -130,7 +130,7 @@ resources: $(RESOURCE_FILES)
 	@:
 
 $(FRAMEWORK_RESOURCES_DIR):
-	@mkdir -p $(FRAMEWORK_RESOURCES_DIR)
+	@mkdir -p $@
 	@/bin/ln -sfh Versions/Current/Resources $(FRAMEWORK_DIR)/Resources
 
 $(FRAMEWORK_RESOURCES_DIR)/%: % | $(FRAMEWORK_RESOURCES_DIR)
