@@ -266,7 +266,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # com/google/j2objc/java8/LambdaTest.java \
 # com/google/j2objc/java8/SuperMethodReferenceTest.java \
 # java/nio/file/attribute/FileTimeTest.java \
-# libcore/icu/NativeDecimalFormatTest.java \
 # libcore/io/PosixTest.java \
 # libcore/java/io/ObjectOutputStreamTest.java \
 # libcore/java/lang/CharacterTest.java \
@@ -363,6 +362,7 @@ TEST_SOURCES := \
     com/google/j2objc/security/IosSecureRandomImplTest.java \
     com/google/j2objc/util/NativeTimeZoneTest.java \
     dalvik/system/JniTest.java \
+    libcore/icu/NativeDecimalFormatTest.java \
     jsr166/AbstractExecutorServiceTest.java \
     jsr166/AbstractQueueTest.java \
     jsr166/AbstractQueuedLongSynchronizerTest.java \
