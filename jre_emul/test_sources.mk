@@ -267,7 +267,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # com/google/j2objc/java8/SuperMethodReferenceTest.java \
 # java/nio/file/attribute/FileTimeTest.java \
 # libcore/io/PosixTest.java \
-# libcore/java/io/ObjectOutputStreamTest.java \
 # libcore/java/lang/CharacterTest.java \
 # libcore/java/net/URLConnectionTest.java \
 # libcore/java/nio/channels/SocketChannelTest.java \
@@ -446,6 +445,7 @@ TEST_SOURCES := \
     j2objc/java/util/TreeMapTest.java \
     j2objc/java/util/WeakHashMapTest.java \
     j2objc/java/util/regex/MatcherTest.java \
+    libcore/java/io/ObjectOutputStreamTest.java \
     libcore/java/awt/font/TextAttributeTest.java \
     libcore/java/io/CharArrayWriterTest.java \
     libcore/java/io/DataOutputStreamTest.java \
