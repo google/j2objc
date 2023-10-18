@@ -268,10 +268,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # java/nio/file/attribute/FileTimeTest.java \
 # libcore/java/nio/channels/SocketChannelTest.java \
 # libcore/java/security/spec/AlgorithmParametersPSSTest.java \
-# libcore/java/text/ChoiceFormatTest.java \
-# libcore/java/text/DateFormatSymbolsTest.java \
-# libcore/java/text/DecimalFormatTest.java \
-# libcore/java/text/SimpleDateFormatTest.java \
 # libcore/java/util/LocaleTest.java \
 # libcore/javax/xml/datatype/DatatypeFactoryTest.java \
 # libcore/javax/xml/datatype/DurationImpl.java \
@@ -630,6 +626,10 @@ TEST_SOURCES := \
     libcore/java/text/CollatorTest.java \
     libcore/java/text/DecimalFormatSymbolsTest.java \
     libcore/java/text/NormalizerTest.java \
+    libcore/java/text/ChoiceFormatTest.java \
+    libcore/java/text/DateFormatSymbolsTest.java \
+    libcore/java/text/DecimalFormatTest.java \
+    libcore/java/text/SimpleDateFormatTest.java \
     libcore/java/text/NumberFormatTest.java \
     libcore/java/time/DateTimeExceptionTest.java \
     libcore/java/time/DurationTest.java \
