@@ -13,18 +13,17 @@
  */
 
 import com.google.protobuf.ExtensionRegistry;
-
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 import protos.Color;
 import protos.EnumFields;
 import protos.EnumMsg;
 import protos.EnumMsg.InnerMsg.Utensil;
 import protos.EnumMsg.Shape;
 import protos.EnumMsgOrBuilder;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import protos.Foo;
+import protos.SomeEnum;
 
 /**
  * Tests for correct behavior of enum fields.
@@ -99,6 +98,19 @@ public class EnumsTest extends ProtobufTest {
     assertEquals(Shape.TRIANGLE, builder.getEnumR(0));
     assertEquals(Shape.SQUARE, builder.getEnumR(1));
     assertEquals(Shape.CIRCLE, builder.getEnumR(2));
+  }
+
+  public void testMinusOne() throws Exception {
+    assertEquals(0, SomeEnum.UNKNOWN.getNumber());
+    assertEquals(1, SomeEnum.A.getNumber());
+    assertEquals(-1, SomeEnum.UNRECOGNIZED.getNumber());
+
+    assertEquals(SomeEnum.UNKNOWN, SomeEnum.forNumber(0));
+    assertEquals(SomeEnum.A, SomeEnum.forNumber(1));
+    assertEquals(SomeEnum.UNRECOGNIZED, SomeEnum.forNumber(-1));
+
+    Foo foo = Foo.parseFrom(new byte[] {0x08, 0x7f}, ExtensionRegistry.getEmptyRegistry());
+    assertEquals(SomeEnum.UNKNOWN, foo.getE());
   }
 
   private void checkFields(EnumMsgOrBuilder msg) {
