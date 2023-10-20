@@ -126,6 +126,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
     // Print collected includes.
     newline();
+    print("#import <Foundation/Foundation.h>");
+    newline();
+
     for (String header : includeFiles) {
       printf("#include \"%s\"\n", header);
     }

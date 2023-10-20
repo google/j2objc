@@ -41,6 +41,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
   @Override
   protected void generateFileHeader() {
+    println("#import <Foundation/Foundation.h>");
     println("#include \"J2ObjC_header.h\"");
     newline();
     printf("#pragma push_macro(\"INCLUDE_ALL_%s\")\n", varPrefix);
