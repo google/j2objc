@@ -16,6 +16,7 @@ JAVA_TESTS = \
   MessagesTest.java \
   OneofTest.java \
   PrimitivesTest.java \
+  Proto3EnumTest.java \
 	Proto3OptionalTest.java \
 	com/google/protobuf/FieldPresenceTest.java \
   com/google/protobuf/WireFormatTest.java \
@@ -58,6 +59,7 @@ PROTOS = \
   package_prefix.proto \
   prefix_option.proto \
   primitives.proto \
+  proto3_enum.proto \
   single_file.proto \
   size_test.proto \
   string_fields.proto \
