@@ -33,10 +33,11 @@
 //  Sanjay Ghemawat, Jeff Dean, Cyrus Najmabadi, and others.
 
 #include <google/protobuf/compiler/j2objc/j2objc_enum.h>
+#include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
 
 #include <string>
 
-#include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
+#include "google/protobuf/compiler/j2objc/common.h"
 
 namespace google {
 namespace protobuf {
@@ -66,6 +67,7 @@ EnumGenerator::~EnumGenerator() {
 
 void EnumGenerator::CollectSourceImports(std::set<std::string>* imports) const {
   imports->insert("java/lang/IllegalArgumentException.h");
+  imports->insert("java/lang/IllegalStateException.h");
 }
 
 void EnumGenerator::GenerateHeader(io::Printer* printer) {
@@ -84,6 +86,11 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
       printer->Print("$ordinalname$ = $ordinal$,\n", "ordinalname",
                      EnumOrdinalName(canonical_values_[i]), "ordinal",
                      SimpleItoa(i));
+  }
+  if (!descriptor_->is_closed()) {
+      printer->Print("$ordinalname$_UNRECOGNIZED = $count$,\n", "ordinalname",
+                     COrdinalEnumName(descriptor_), "count",
+                     SimpleItoa(canonical_values_.size()));
   }
 
   printer->Outdent();
@@ -113,6 +120,10 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
                      EnumValueName(canonical_values_[i]), "value",
                      SimpleItoa(canonical_values_[i]->number()));
   }
+  if (!descriptor_->is_closed()) {
+      printer->Print("$ordinalname$_UNRECOGNIZED = -1,\n", "ordinalname",
+                     CValueEnumName(descriptor_));
+  }
 
   printer->Outdent();
   printer->Print("};\n\n");
@@ -138,6 +149,13 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
           "classname", ClassName(descriptor_), "name",
           canonical_values_[i]->name(), "value",
           SimpleItoa(canonical_values_[i]->number()), "valuepreprocessorname",
+          CValuePreprocessorName(descriptor_));
+  }
+  if (!descriptor_->is_closed()) {
+      printer->Print(
+          "#define $classname$_UNRECOGNIZED_VALUE "
+          "($valuepreprocessorname$)-1\n",
+          "classname", ClassName(descriptor_), "valuepreprocessorname",
           CValuePreprocessorName(descriptor_));
   }
 
@@ -184,26 +202,32 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
         "classname", ClassName(descriptor_), "name",
         canonical_values_[i]->name());
   }
+  if (!descriptor_->is_closed()) {
+    printer->Print(
+        "FOUNDATION_EXPORT $classname$ *$classname$_get_UNRECOGNIZED(void);\n",
+        "classname", ClassName(descriptor_));
+  }
 }
 
 const int kMaxRowChars = 80;
 
 void EnumGenerator::GenerateSource(io::Printer* printer) {
+  const int canonical_count = canonical_values_.size();
+  const int enum_count = canonical_count + (descriptor_->is_closed() ? 0 : 1);
   printer->Print(
       "\nJ2OBJC_INITIALIZED_DEFN($classname$)\n"
       "\n"
       "$classname$ *$classname$_values_[$count$];\n"
       "\n"
       "ComGoogleProtobufDescriptors_EnumDescriptor"
-          " *$classname$_descriptor_ = nil;\n"
+      " *$classname$_descriptor_ = nil;\n"
       "\n"
       "@implementation $classname$\n"
       "\n"
       "+ (void)initialize {\n"
       "  if (self == [$classname$ class]) {\n"
       "    NSString *names[] = {",
-      "classname", ClassName(descriptor_),
-      "count", SimpleItoa(canonical_values_.size()));
+      "classname", ClassName(descriptor_), "count", SimpleItoa(enum_count));
 
   // Count characters and only add line breaks when the line exceeds the max.
   int row_chars = kMaxRowChars + 1;
@@ -216,6 +240,9 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
     };
     printer->Print(" @\"$name$\",", "name", name);
     row_chars += added_chars;
+  }
+  if (!descriptor_->is_closed()) {
+    printer->Print(" @\"UNRECOGNIZED\",");
   }
   printer->Print("\n"
       "    };\n"
@@ -231,19 +258,22 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
     printer->Print(" $value$,", "value", value);
     row_chars += added_chars;
   }
+  if (!descriptor_->is_closed()) {
+    printer->Print(" -1,");
+  }
 
   printer->Print(
       "\n"
       "    };\n"
       "    $classname$_descriptor_ = "
       "CGPInitializeEnumType(self, $count$, $classname$_values_, names,"
-      " int_values);\n"
+      " int_values, $is_closed$);\n"
       "    J2OBJC_SET_INITIALIZED($classname$)\n"
       "  }\n"
       "}\n"
       "\n"
       "+ (IOSObjectArray *)values {\n"
-      "  return $classname$_values();"
+      "  return $classname$_values();\n"
       "}\n"
       "\n"
       "+ ($classname$ *)valueOfWithNSString:(NSString *)name {\n"
@@ -257,8 +287,26 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "+ ($classname$ *)forNumberWithInt:($valuepreprocessorname$)value {\n"
       "  return $classname$_forNumberWithInt_(value);\n"
       "}\n"
-      "\n"
-      "- ($valuepreprocessorname$)getNumber {\n"
+      "\n",
+      "classname", ClassName(descriptor_), "count", SimpleItoa(enum_count),
+      "valuepreprocessorname", CValuePreprocessorName(descriptor_),
+      "is_closed", SimpleItoa(descriptor_->is_closed()));
+
+  printer->Print(
+      "- ($valuepreprocessorname$)getNumber {\n",
+      "valuepreprocessorname", CValuePreprocessorName(descriptor_));
+  if (!descriptor_->is_closed()) {
+    printer->Print(
+        // "=="" is safe because it's testing a unique enum constant.
+        "  if (self == $classname$_get_UNRECOGNIZED()) {\n"
+        "    @throw "
+        "create_JavaLangIllegalArgumentException_initWithNSString_(\n"
+        "        @\"Can't get the number of an unknown enum value.\");\n"
+        "  }\n",
+        "classname", ClassName(descriptor_));
+  }
+
+  printer->Print(
       "  return value_;\n"
       "}\n"
       "\n"
@@ -267,7 +315,20 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "}\n"
       "\n"
       "- (ComGoogleProtobufDescriptors_EnumValueDescriptor *)"
-      "getValueDescriptor {\n"
+      "getValueDescriptor {\n",
+      "classname", ClassName(descriptor_));
+
+  if (!descriptor_->is_closed()) {
+    printer->Print(
+        "  if (value_ == $classname$_Value_UNRECOGNIZED) {\n"
+        "    @throw create_JavaLangIllegalStateException_initWithNSString_(\n"
+        "        @\"Can't get the descriptor of an unrecognized enum "
+        "value.\");\n"
+        "  }\n",
+        "classname", ClassName(descriptor_));
+  }
+
+  printer->Print(
       "  return $classname$_descriptor_->values_->buffer_[[self ordinal]];\n"
       "}\n"
       "\n"
@@ -276,13 +337,13 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
       "\n"
       "IOSObjectArray *$classname$_values(void) {\n"
-      "  $classname$_initialize();"
+      "  $classname$_initialize();\n"
       "  return [IOSObjectArray arrayWithObjects:$classname$_values_"
       " count:$count$ type:$classname$_class_()];\n"
       "}\n"
       "\n"
       "$classname$ *$classname$_valueOfWithNSString_(NSString *name) {\n"
-      "  $classname$_initialize();"
+      "  $classname$_initialize();\n"
       "  for (jint i = 0; i < $count$; i++) {\n"
       "    $classname$ *e = $classname$_values_[i];\n"
       "    if ([name isEqual:[e name]]) {\n"
@@ -290,7 +351,11 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "    }\n"
       "  }\n"
       "  @throw create_JavaLangIllegalArgumentException_initWithNSString_("
-      "name);\n"
+      "name);\n",
+      "classname", ClassName(descriptor_), "count",
+      SimpleItoa(enum_count));  // Include UNRECOGNIZED constant.
+
+  printer->Print(
       "}\n"
       "\n"
       "$classname$ *$classname$_valueOfWithInt_($valuepreprocessorname$ value) "
@@ -300,7 +365,7 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "$classname$ *$classname$_forNumberWithInt_($valuepreprocessorname$ "
       "value) {\n"
-      "  $classname$_initialize();"
+      "  $classname$_initialize();\n"
       "  for (jint i = 0; i < $count$; i++) {\n"
       "    $classname$ *e = $classname$_values_[i];\n"
       "    if (value == [e getNumber]) {\n"
@@ -309,7 +374,11 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "  }\n"
       "  return nil;\n"
       "}\n"
-      "\n"
+      "\n",
+      "classname", ClassName(descriptor_), "count", SimpleItoa(canonical_count),
+      "valuepreprocessorname", CValuePreprocessorName(descriptor_));
+
+  printer->Print(
       "$classname$ *$classname$_fromOrdinal($ordinalpreprocessorname$ ordinal) "
       "{\n"
       "  $classname$_initialize();\n"
@@ -318,11 +387,8 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "  }\n"
       "  return $classname$_values_[ordinal];\n"
       "}\n",
-      "classname", ClassName(descriptor_), "count",
-      SimpleItoa(canonical_values_.size()), "ordinalpreprocessorname",
-      COrdinalPreprocessorName(descriptor_), "valueenumname",
-      CValueEnumName(descriptor_), "valuepreprocessorname",
-      CValuePreprocessorName(descriptor_));
+      "classname", ClassName(descriptor_), "count", SimpleItoa(enum_count),
+      "ordinalpreprocessorname", COrdinalPreprocessorName(descriptor_));
 
   for (int i = 0; i < canonical_values_.size(); i++) {
     printer->Print(
@@ -332,6 +398,14 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
         "}\n",
         "classname", ClassName(descriptor_),
         "name", canonical_values_[i]->name());
+  }
+  if (!descriptor_->is_closed()) {
+    printer->Print(
+        "\n$classname$ *$classname$_get_$name$(void) {\n"
+        "  $classname$_initialize();\n"
+        "  return $classname$_values_[$classname$_Enum_$name$];\n"
+        "}\n",
+        "classname", ClassName(descriptor_), "name", "UNRECOGNIZED");
   }
 }
 

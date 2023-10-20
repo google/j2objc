@@ -135,9 +135,12 @@ typedef struct CGPOneofData {
  @public
   ptrdiff_t valueOffset_;
   IOSObjectArray *values_;
+  jboolean is_closed_;
 }
 
-- (instancetype)initWithValueOffset:(ptrdiff_t)valueOffset retainedValues:(IOSObjectArray *)values;
+- (instancetype)initWithValueOffset:(ptrdiff_t)valueOffset
+                     retainedValues:(IOSObjectArray *)values
+                          is_closed:(jboolean)is_closed;
 
 @end
 
@@ -194,7 +197,7 @@ IOSObjectArray *CGPGetSerializationOrderFields(CGPDescriptor *descriptor);
 CGPEnumDescriptor *CGPInitializeEnumType(
     Class enumClass, jint valuesCount,
     __strong JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *values[],
-    __strong NSString **names, jint *intValues);
+    __strong NSString **names, jint *intValues, jboolean is_closed);
 
 void CGPInitializeOneofCaseEnum(
     Class enumClass, jint valuesCount,

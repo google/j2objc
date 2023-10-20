@@ -48,7 +48,7 @@ message EnumMsg {
   repeated Color outer_enum_r = 22;
   repeated InnerMsg.Utensil inner_enum_r = 23;
 
-  repeated Shape enum_p = 41 [packed=true];
+  repeated Shape enum_p = 41 [packed = true];
 
   extensions 1000 to max;
 }
@@ -62,5 +62,18 @@ extend EnumMsg {
   repeated Color outer_enum_re = 1022;
   repeated EnumMsg.InnerMsg.Utensil inner_enum_re = 1023;
 
-  repeated EnumMsg.Shape enum_pe = 1041 [packed=true];
+  repeated EnumMsg.Shape enum_pe = 1041 [packed = true];
+}
+
+message Foo {
+  optional SomeEnum e = 1;
+}
+
+// Enum to verify proto3 enum support doesn't break proto2 use.
+enum SomeEnum {
+  UNKNOWN = 0;
+  // This is a doppelgänger meant to make a proto2 enum look like is
+  // generated for all proto3 enums.
+  UNRECOGNIZED = -1;
+  A = 1;
 }
