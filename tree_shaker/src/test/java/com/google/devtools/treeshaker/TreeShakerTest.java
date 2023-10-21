@@ -1789,7 +1789,7 @@ public class TreeShakerTest extends TestCase {
         "package com.google.j2objc.annotations;\n"
             + "import static java.lang.annotation.ElementType.*;\n"
             + "import java.lang.annotation.Target;\n"
-            + "@Target({TYPE, METHOD, CONSTRUCTOR})\n"
+            + "@Target({TYPE, METHOD, CONSTRUCTOR, FIELD})\n"
             + "public @interface UsedByNative {}");
     addSourceFile(
         "A.java",
@@ -1817,6 +1817,65 @@ public class TreeShakerTest extends TestCase {
             + "}\n");
     assertThat(getUnusedClasses(findUnusedCode()))
         .containsExactly("A$WithoutAnnotation", "com.google.j2objc.annotations.UsedByNative");
+    assertThat(getUnusedMethods(findUnusedCode()))
+        .containsExactly(
+            getMethodName("A$ReferencedByField", "unused", "()V"), getMethodName("A", "A", "()V"));
+  }
+
+  public void testUsedByReflectionAnnotation_class() throws IOException {
+    addTreeShakerRootsFile("CoffeeMaker:\n    start()");
+    addSourceFile(
+        "UsedByReflection.java",
+        "package com.google.j2objc.annotations;\n"
+            + "import static java.lang.annotation.ElementType.*;\n"
+            + "import java.lang.annotation.Target;\n"
+            + "@Target({TYPE, METHOD, CONSTRUCTOR, FIELD})\n"
+            + "public @interface UsedByReflection {}");
+    addSourceFile(
+        "CoffeeMaker.java",
+        "import com.google.j2objc.annotations.UsedByReflection;\n"
+            + "class CoffeeMaker {\n"
+            + "  @UsedByReflection\n"
+            + "  private static final class Constants {\n"
+            + "    private static final String NAME = \"CoffeeMaker\";\n"
+            + "  }\n"
+            + "}\n");
+    assertThat(getUnusedClasses(findUnusedCode())).doesNotContain("CoffeeMaker$Constants");
+  }
+
+  public void testUsedByReflectionAnnotation_method() throws IOException {
+    addTreeShakerRootsFile("A:\n    start()");
+    addSourceFile(
+        "UsedByReflection.java",
+        "package com.google.j2objc.annotations;\n"
+            + "import static java.lang.annotation.ElementType.*;\n"
+            + "import java.lang.annotation.Target;\n"
+            + "@Target({TYPE, METHOD, CONSTRUCTOR, FIELD})\n"
+            + "public @interface UsedByReflection {}");
+    addSourceFile(
+        "A.java",
+        "import com.google.j2objc.annotations.UsedByReflection;\n"
+            + "class A {\n"
+            + "  private ReferencedByField referencedByClass = new ReferencedByField();\n"
+            + "  public static native void start();\n"
+            + "  @UsedByReflection\n"
+            + "  private static final class WithAnnotation {\n"
+            + "    private static String getName() {return \"A\";}\n"
+            + "    private static void unused() {}\n"
+            + "  }\n"
+            + "  private static final class WithoutAnnotation {\n"
+            + "    @UsedByReflection\n"
+            + "    private static String getName() {return \"A\";}\n"
+            + "    private static void unused() {}\n"
+            + "  }\n"
+            + "  private static final class ReferencedByField {\n"
+            + "    @UsedByReflection\n"
+            + "    private static String getName() {return \"A\";}\n"
+            + "    private static void unused() {}\n"
+            + "  }\n"
+            + "}\n");
+    assertThat(getUnusedClasses(findUnusedCode()))
+        .containsExactly("A$WithoutAnnotation", "com.google.j2objc.annotations.UsedByReflection");
     assertThat(getUnusedMethods(findUnusedCode()))
         .containsExactly(
             getMethodName("A$ReferencedByField", "unused", "()V"), getMethodName("A", "A", "()V"));

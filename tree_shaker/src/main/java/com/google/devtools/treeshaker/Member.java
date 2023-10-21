@@ -116,7 +116,7 @@ final class Member {
     this.originalMember = originalMember;
   }
 
-  boolean hasUsedByNativeAnnotation() {
-    return annotations.getUsedByNative();
+  boolean hasUsedByNativeOrReflectionAnnotation() {
+    return annotations.getUsedByNativeOrReflection();
   }
 }

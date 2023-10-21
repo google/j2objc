@@ -37,5 +37,5 @@ message MethodInvocation {
 }
 
 message Annotations {
-  bool used_by_native = 1;
+  bool used_by_native_or_reflection = 1;
 }

@@ -184,9 +184,10 @@ final class RapidTypeAnalyser {
     type.getMembers()
         .forEach(
             member -> {
-              // Mark members where the original method is from an external type.
-              // Mark members that have the UsedByNative annotation if the type is used.
-              if (member.getOriginalMember() == null || member.hasUsedByNativeAnnotation()) {
+              // Mark members where the original method is from an external type. Mark members
+              // that have the UsedByNative or UsedByReflection annotations if the type is used.
+              if (member.getOriginalMember() == null
+                  || member.hasUsedByNativeOrReflectionAnnotation()) {
                 markMemberLive(member);
               }
             });

@@ -22,8 +22,8 @@ import static java.lang.annotation.ElementType.TYPE;
 import java.lang.annotation.Target;
 
 /**
- * Annotation used for marking types, methods and fields that are called from native code. Useful
- * for keeping components that would otherwise be removed by tree_shaker.
+ * Annotation used for marking types, methods and fields that are called by reflection. Useful for
+ * keeping components that would otherwise be removed by tree_shaker.
  */
 @Target({TYPE, METHOD, CONSTRUCTOR, FIELD})
-public @interface UsedByNative {}
+public @interface UsedByReflection {}
