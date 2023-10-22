@@ -267,7 +267,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # com/google/j2objc/java8/SuperMethodReferenceTest.java \
 # java/nio/file/attribute/FileTimeTest.java \
 # libcore/java/nio/channels/SocketChannelTest.java \
-# libcore/java/security/spec/AlgorithmParametersPSSTest.java \
 # libcore/java/util/LocaleTest.java \
 # libcore/javax/xml/datatype/DatatypeFactoryTest.java \
 # libcore/javax/xml/datatype/DurationImpl.java \
