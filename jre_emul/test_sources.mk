@@ -277,7 +277,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # libcore/javax/xml/transform/TransformerConfigurationExceptionTest.java \
 # libcore/javax/xml/transform/TransformerExceptionTest.java \
 # libcore/libcore/icu/LocaleDataTest.java \
-# org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.java \
 # org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
 # org/apache/harmony/tests/java/lang/CharacterTest.java \
 # org/apache/harmony/tests/java/nio/channels/SocketChannelTest.java \
@@ -779,6 +778,7 @@ TEST_SOURCES := \
     libcore/libcore/util/SneakyThrowTest.java \
     libcore/sun/util/logging/PlatformLoggerTest.java \
     org/apache/commons/lang3/AnnotationUtilsTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationFormatErrorTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/AnnotationTypeMismatchExceptionTest.java \
     org/apache/harmony/annotation/tests/java/lang/annotation/ElementTypeTest.java \
