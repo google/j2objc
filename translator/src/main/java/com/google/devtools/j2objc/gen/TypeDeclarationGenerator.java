@@ -189,8 +189,14 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       int ordinal = 0;
       for (EnumConstantDeclaration constant : constants) {
         printIndent();
-        printf("%s_%s = %d,\n",
-            nativeName, nameTable.getVariableBaseName(constant.getVariableElement()), ordinal++);
+        String caseName = nameTable.getVariableBaseName(constant.getVariableElement());
+        if (options.swiftEnums()) {
+          printf(
+              "%s_%s NS_SWIFT_NAME(%s) = %d,\n",
+              nativeName, caseName, NameTable.getSwiftEnumName(caseName), ordinal++);
+        } else {
+          printf("%s_%s = %d,\n", nativeName, caseName, ordinal++);
+        }
       }
       unindent();
       print("};\n");
@@ -392,8 +398,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         if (options.nullability()) {
           print(", nonnull");
         }
-        // TODO(antoniocortes): use nameTable.getSwiftName() when it is implemented.
-        printf(") %s *%s NS_SWIFT_NAME(%s);", typeName, accessorName, accessorName);
+        printf(
+            ") %s *%s NS_SWIFT_NAME(%s);",
+            typeName, accessorName, NameTable.getSwiftEnumName(accessorName));
       }
     }
   }

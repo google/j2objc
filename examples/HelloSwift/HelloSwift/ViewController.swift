@@ -15,7 +15,6 @@
 //  HelloSwift
 //
 
-
 import UIKit
 
 class ViewController: UIViewController {
@@ -25,9 +24,9 @@ class ViewController: UIViewController {
     super.viewDidLoad()
     var text = ""
     let hello = OrgJ2objcExample.HELLO_J2OBJC
-    let wednesday = OrgJ2objcExample_Day.WEDNESDAY.getShortName()
+    let wednesday = OrgJ2objcExample_Day.wednesday.getShortName()
     let sb = JavaLangStringBuilder().append(with: "StringBuilder\n").description()
-    text += "Static var: " + hello! +  "\n"
+    text += "Static var: " + hello! + "\n"
     text += "Enum: " + wednesday + "\n"
     text += "No nullability annotation: " + String(describing: type(of: hello)) + "\n"
     text += "NonNull annotation: " + String(describing: type(of: wednesday)) + "\n"
