@@ -523,7 +523,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "  Color_Enum_WHITE = 1,",
         "  Color_Enum_BLUE = 2,",
         "};");
-    assertTranslation(translation, "FOUNDATION_EXPORT Color *_Nullable Color_values_[];");
+    assertTranslation(translation, "FOUNDATION_EXPORT Color *_Nonnull Color_values_[];");
     assertTranslatedLines(
         translation, "J2OBJC_TYPE_LITERAL_HEADER(Color)", "", "NS_ASSUME_NONNULL_END");
   }

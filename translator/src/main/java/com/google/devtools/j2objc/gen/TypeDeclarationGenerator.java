@@ -429,10 +429,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       println("/*! INTERNAL ONLY - Use enum accessors declared below. */");
 
       // If the generated source is annotated with nonnull nullability regions,
-      // ensure this type is explicitly marked as nullable. Failing to do so leads
+      // ensure this type is explicitly marked as nonnull. Failing to do so leads
       // to the following error: `inferring '_Nonnull' for pointer type within array
       // is deprecated [-Werror,-Wnullability-inferred-on-nested-type]`.
-      String arrayTypeNamePrefix = nullMarked ? "_Nullable " : "";
+      String arrayTypeNamePrefix = nullMarked ? "_Nonnull " : "";
       String arrayTypeName = arrayTypeNamePrefix + typeName;
       printf("FOUNDATION_EXPORT %s *%s_values_[];\n", typeName, arrayTypeName);
       for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
