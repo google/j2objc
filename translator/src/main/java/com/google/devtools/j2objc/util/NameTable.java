@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.util;
 
 import static java.util.stream.Collectors.joining;
 
+import com.google.common.base.Ascii;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -297,6 +298,26 @@ public class NameTable {
     StringBuilder sb = new StringBuilder();
     for (String part : fqn.split(Pattern.quote(File.separator))) {
       sb.append(capitalize(part));
+    }
+    return sb.toString();
+  }
+
+  /**
+   * Given a name, return as a camel-cased name using underscores as spaces. Used, for example, in
+   * swift name for enums.
+   */
+  public static String getSwiftEnumName(String fqn) {
+    StringBuilder sb = new StringBuilder();
+    for (String part : Splitter.on('_').split(fqn)) {
+      String caseName = Ascii.toLowerCase(part);
+      if (sb.length() == 0) {
+        sb.append(caseName);
+      } else {
+        sb.append(capitalize(caseName));
+      }
+    }
+    if (isReservedName(sb.toString())) {
+      sb.append("_");
     }
     return sb.toString();
   }

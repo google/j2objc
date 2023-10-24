@@ -330,4 +330,15 @@ public class NameTableTest extends GenerationTest {
         "            withInt:(jint)stdin_",
         "            withInt:(jint)aReservedParamName_;");
   }
+
+  public void testSwiftEnumName() {
+    assertEquals("banana", NameTable.getSwiftEnumName("BANANA"));
+    assertEquals("greenGrape", NameTable.getSwiftEnumName("GREEN_GRAPE"));
+    assertEquals("pearAppleSmoothie", NameTable.getSwiftEnumName("PEAR_APPLE_SMOOTHIE"));
+    assertEquals("pineapple", NameTable.getSwiftEnumName("pineapple"));
+    assertEquals("redGrape", NameTable.getSwiftEnumName("red_grape"));
+    assertEquals("appleGrapeJuice", NameTable.getSwiftEnumName("apple_grape_juice"));
+    assertEquals("false_", NameTable.getSwiftEnumName("FALSE"));
+    assertEquals("true_", NameTable.getSwiftEnumName("true"));
+  }
 }
