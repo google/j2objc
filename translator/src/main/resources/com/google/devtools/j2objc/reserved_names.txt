@@ -18,7 +18,7 @@
 id bool BOOL SEL IMP unichar
 
 # constants
-nil Nil YES NO TRUE FALSE true false
+nil Nil YES NO TRUE FALSE
 
 # J2ObjC types (J2ObjC_types.h)
 jbyte jchar jshort jint jlong jfloat jdouble jboolean volatile_jbyte
