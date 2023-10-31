@@ -18,6 +18,7 @@ package libcore.net.http;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -71,18 +72,24 @@ public final class HttpDate {
 
         /* RI bug 6641315 claims a cookie of this format was once served by www.yahoo.com */
         "EEE MMM d yyyy HH:mm:ss z",
+
+        /* This format is used by gmail.com. */
+        "EEE, dd-MMM-yyyy HH:mm:ss zzz",
       };
 
   /** Returns the date for {@code value}. Returns null if the value couldn't be parsed. */
   public static Date parse(String value) {
-    try {
-      return createStandardDateFormatParser().parse(value);
-    } catch (ParseException ignore) {
+    // j2objc: use ParsePositions instead of ParseExceptions for flow control.
+    ParsePosition pos = new ParsePosition(0);
+    Date result = createStandardDateFormatParser().parse(value, pos);
+    if (pos.getIndex() > 0) {
+      return result;
     }
     for (String formatString : BROWSER_COMPATIBLE_DATE_FORMATS) {
-      try {
-        return new SimpleDateFormat(formatString, Locale.US).parse(value);
-      } catch (ParseException ignore) {
+      pos = new ParsePosition(0);
+      result = new SimpleDateFormat(formatString, Locale.US).parse(value, pos);
+      if (pos.getIndex() > 0) {
+        return result;
       }
     }
     return null;
