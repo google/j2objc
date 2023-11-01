@@ -55,6 +55,9 @@ public final class HttpDate {
   /** If we fail to parse a date in a non-standard format, try each of these formats in sequence. */
   private static final String[] BROWSER_COMPATIBLE_DATE_FORMATS =
       new String[] {
+        /* Google services. */
+        "EEE, dd-MMM-yyyy HH:mm:ss zzz",
+
         /* This list comes from  {@code org.apache.http.impl.cookie.BrowserCompatSpec}. */
         "EEEE, dd-MMM-yy HH:mm:ss zzz", // RFC 1036
         "EEE MMM d HH:mm:ss yyyy", // ANSI C asctime()
@@ -72,9 +75,6 @@ public final class HttpDate {
 
         /* RI bug 6641315 claims a cookie of this format was once served by www.yahoo.com */
         "EEE MMM d yyyy HH:mm:ss z",
-
-        /* This format is used by gmail.com. */
-        "EEE, dd-MMM-yyyy HH:mm:ss zzz",
       };
 
   /** Returns the date for {@code value}. Returns null if the value couldn't be parsed. */
