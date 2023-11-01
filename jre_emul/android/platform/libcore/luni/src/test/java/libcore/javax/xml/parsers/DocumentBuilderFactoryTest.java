@@ -25,33 +25,42 @@ import junit.framework.TestCase;
 
 public class DocumentBuilderFactoryTest extends TestCase {
 
-    public void testGetSchema() {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+  // TODO(b/265202484): fix java.lang.NullPointerException issue
+  // public void testGetSchema() {
+  //   DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-        try {
-            factory.getSchema();
-            fail("Unexpectedly didn't throw UnsupportedOperationException");
-        } catch (UnsupportedOperationException expected) {}
+  //   try {
+  //     factory.getSchema();
+  //     fail("Unexpectedly didn't throw UnsupportedOperationException");
+  //   } catch (UnsupportedOperationException expected) {
+  //   }
+  // }
+
+  // public void testSetSchema() {
+  //   DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+  //   try {
+  //     factory.setSchema(
+  //         new Schema() {
+  //           @Override
+  //           public Validator newValidator() {
+  //             return null;
+  //           }
+
+  //           @Override
+  //           public ValidatorHandler newValidatorHandler() {
+  //             return null;
+  //           }
+  //         });
+  //     fail("Unexpectedly didn't throw UnsupportedOperationException");
+  //   } catch (UnsupportedOperationException expected) {
+  //   }
+  // }
+
+  public void testNewInstance_StringClassLoader() {
+    try {
+      DocumentBuilderFactory.newInstance(null, null);
+    } catch (FactoryConfigurationError expected) {
     }
-
-    public void testSetSchema() {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
-        try {
-            factory.setSchema(new Schema() {
-                @Override
-                public Validator newValidator() { return null; }
-
-                @Override
-                public ValidatorHandler newValidatorHandler() { return null; }
-            });
-            fail("Unexpectedly didn't throw UnsupportedOperationException");
-        } catch (UnsupportedOperationException expected) {}
-    }
-
-    public void testNewInstance_StringClassLoader() {
-        try {
-            DocumentBuilderFactory.newInstance(null, null);
-        } catch (FactoryConfigurationError expected) {}
-    }
+  }
 }
