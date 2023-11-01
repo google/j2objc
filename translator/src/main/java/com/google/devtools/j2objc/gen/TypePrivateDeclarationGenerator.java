@@ -55,22 +55,17 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
   }
 
   private void generateDeclarationExtension() {
-    boolean shouldPrintClassExtension = shouldPrintClassExtension();
-    if (shouldPrintClassExtension) {
+    if (shouldPrintClassExtension()) {
       printClassExtension();
     }
     printCompanionClassDeclaration();
     printFieldSetters();
     printStaticFieldDeclarations();
     printOuterDeclarations();
-    if (shouldPrintClassExtension) {
-      printNonnullAuditedRegion(AuditedRegion.END);
-    }
   }
 
   private void printClassExtension() {
     newline();
-    printNonnullAuditedRegion(AuditedRegion.BEGIN);
     printf("@interface %s ()", typeName);
     printInstanceVariables();
     Iterable<BodyDeclaration> privateDecls = getInnerDeclarations();
