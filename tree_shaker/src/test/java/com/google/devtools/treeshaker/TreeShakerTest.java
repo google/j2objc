@@ -1881,6 +1881,30 @@ public class TreeShakerTest extends TestCase {
             getMethodName("A$ReferencedByField", "unused", "()V"), getMethodName("A", "A", "()V"));
   }
 
+  public void testEntryClassMembers() throws IOException {
+    addTreeShakerRootsFile("EntryClass");
+    addSourceFile(
+        "EntryClass.java",
+        "public class EntryClass {\n"
+            + "  private String field;\n"
+            + "  public void publicMethod() {\n"
+            + "    Runnable anonymousClass = new Runnable() {\n"
+            + "      public void run() {}\n"
+            + "    };\n"
+            + "  }\n"
+            + "  private void privateMethod() {}\n"
+            + "  class InnerClass {}\n"
+            + "  static class StaticInnerClass {}\n"
+            + "  static interface InnerInterface {}\n"
+            + "  static enum InnerEnum { A, B, C; }\n"
+            + "}\n");
+
+    CodeReferenceMap unused = findUnusedCode();
+    assertThat(getUnusedClasses(unused)).isEmpty();
+    String output = writeUnused(findUnusedCode());
+    assertThat(output).isEmpty();
+  }
+
   private static String writeUnused(CodeReferenceMap unused) {
     StringBuilder result = new StringBuilder();
     TreeShaker.writeUnused(unused, result::append);

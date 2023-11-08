@@ -90,11 +90,13 @@ final class UsedCodeMarker extends UnitTreeVisitor {
   private static final String USED_BY_REFLECTION = "UsedByReflection";
 
   private final Context context;
+  private final boolean isEntryClass;
   private boolean needsReflection;
 
   UsedCodeMarker(CompilationUnit unit, Context context) {
     super(unit);
     this.context = context;
+    this.isEntryClass = context.exportedClasses.contains(unit.getMainTypeName());
     this.needsReflection = !options.stripReflection();
   }
 
@@ -482,7 +484,8 @@ final class UsedCodeMarker extends UnitTreeVisitor {
             || (ElementUtil.isRuntimeAnnotation(type) && needsReflection)
             || ElementUtil.hasNamedAnnotation(type, USED_BY_NATIVE)
             || ElementUtil.hasNamedAnnotation(type, USED_BY_REFLECTION)
-            || exportedClassInnerType;
+            || exportedClassInnerType
+            || isEntryClass;
 
     startTypeScope(typeName, superName, interfaces, isExported);
   }
