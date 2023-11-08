@@ -290,12 +290,7 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # org/apache/harmony/tests/javax/xml/parsers/SAXParserTest.java \
 # org/apache/harmony/tests/javax/xml/parsers/SAXParserFactoryTest.java \
 # org/xmlpull/v1/XmlPullParserFactoryTest.java \
-# tck/java/time/TCKZoneId.java \
-# tck/java/time/TCKZonedDateTime.java \
-# tck/java/time/format/TCKDateTimeFormatterBuilder.java \
-# tck/java/time/format/TCKLocalizedFieldParser.java \
 # tck/java/time/format/TCKZoneIdPrinterParser.java \
-# tck/java/time/zone/TCKZoneRulesProvider.java \
 # test/java/time/format/TestDateTimeFormatterBuilder.java \
 # test/java/time/format/TestZoneOffsetParser.java \
 # tests/security/interfaces/DSAKeyTest.java \
@@ -1326,6 +1321,11 @@ TEST_SOURCES := \
     tck/java/time/zone/serial/TCKZoneOffsetTransitionRuleSerialization.java \
     tck/java/time/zone/serial/TCKZoneOffsetTransitionSerialization.java \
     tck/java/time/zone/serial/TCKZoneRulesSerialization.java \
+    tck/java/time/TCKZoneId.java \
+    tck/java/time/TCKZonedDateTime.java \
+    tck/java/time/format/TCKDateTimeFormatterBuilder.java \
+    tck/java/time/format/TCKLocalizedFieldParser.java \
+    tck/java/time/zone/TCKZoneRulesProvider.java \
     test/java/nio/file/attribute/AclEntryEmptySetTest.java \
     test/java/nio/file/attribute/BasicFileAttributeViewTest.java \
     test/java/nio/file/attribute/PosixFileAttributeViewTest.java \
