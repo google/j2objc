@@ -134,6 +134,14 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
 
   @Override
   protected String nullability(Element element) {
+    if (options.nullability() && options.nullMarked()) {
+      if (ElementUtil.hasNullableAnnotation(element)) {
+        return " _Nullable";
+      }
+      if (ElementUtil.isNonnull(element, parametersNonnullByDefault)) {
+        return " _Nonnull";
+      }
+    }
     return "";
   }
 }
