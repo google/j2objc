@@ -289,7 +289,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # org/apache/harmony/tests/javax/xml/parsers/MockSchemaFactoryLoader.java \
 # org/apache/harmony/tests/javax/xml/parsers/SAXParserTest.java \
 # org/apache/harmony/tests/javax/xml/parsers/SAXParserFactoryTest.java \
-# org/xmlpull/v1/XmlPullParserFactoryTest.java \
 # tck/java/time/format/TCKZoneIdPrinterParser.java \
 # test/java/time/format/TestDateTimeFormatterBuilder.java \
 # test/java/time/format/TestZoneOffsetParser.java \
@@ -1241,6 +1240,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/org/xml/sax/helpers/XMLFilterImplTest.java \
     org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderAdapterTest.java \
     org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderFactoryTest.java \
+    org/xmlpull/v1/XmlPullParserFactoryTest.java \
     sun/misc/UnsafeTest.java \
     tck/java/time/TCKClock.java \
     tck/java/time/TCKClock_Fixed.java \
