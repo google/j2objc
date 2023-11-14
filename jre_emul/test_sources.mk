@@ -87,6 +87,8 @@ SUPPORT_SOURCES = \
     libcore/javax/net/ssl/TestSSLContext.java \
     libcore/javax/net/ssl/TestSSLSocketPair.java \
     libcore/javax/net/ssl/TestTrustManager.java \
+    libcore/javax/xml/datatype/DurationImpl.java \
+    libcore/javax/xml/transform/SourceLocatorImpl.java \
     libcore/libcore/util/SerializationTester.java \
     org/apache/harmony/beans/tests/support/MisprintBean.java \
     org/apache/harmony/beans/tests/support/MisprintEvent.java \
@@ -267,15 +269,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # com/google/j2objc/java8/SuperMethodReferenceTest.java \
 # java/nio/file/attribute/FileTimeTest.java \
 # libcore/java/nio/channels/SocketChannelTest.java \
-# libcore/java/util/LocaleTest.java \
-# libcore/javax/xml/datatype/DatatypeFactoryTest.java \
-# libcore/javax/xml/datatype/DurationImpl.java \
-# libcore/javax/xml/datatype/DurationTest.java \
-# libcore/javax/xml/parsers/DocumentBuilderTest.java \
-# libcore/javax/xml/transform/SourceLocatorImpl.java \
-# libcore/javax/xml/transform/TransformerConfigurationExceptionTest.java \
-# libcore/javax/xml/transform/TransformerExceptionTest.java \
-# libcore/libcore/icu/LocaleDataTest.java \
 # org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
 # org/apache/harmony/tests/java/lang/CharacterTest.java \
 # org/apache/harmony/tests/java/nio/channels/SocketChannelTest.java \
@@ -432,6 +425,13 @@ TEST_SOURCES := \
     libcore/java/lang/CharacterTest.java \
     libcore/java/net/URLConnectionTest.java \
     libcore/java/io/ObjectOutputStreamTest.java \
+    libcore/java/util/LocaleTest.java \
+    libcore/javax/xml/datatype/DatatypeFactoryTest.java \
+    libcore/javax/xml/datatype/DurationTest.java \
+    libcore/javax/xml/parsers/DocumentBuilderTest.java \
+    libcore/javax/xml/transform/TransformerConfigurationExceptionTest.java \
+    libcore/javax/xml/transform/TransformerExceptionTest.java \
+    libcore/libcore/icu/LocaleDataTest.java \
     libcore/java/awt/font/TextAttributeTest.java \
     libcore/java/io/CharArrayWriterTest.java \
     libcore/java/io/DataOutputStreamTest.java \

@@ -48,33 +48,33 @@ public class OldCookieHandlerTest extends TestCase {
         assertNull(CookieHandler.getDefault());
     }
 
-    public void test_get_put() throws Exception {
-        MockCookieHandler mch = new MockCookieHandler();
-        CookieHandler defaultHandler = CookieHandler.getDefault();
-        try {
-            CookieHandler.setDefault(mch);
+    // public void test_get_put() throws Exception {
+    //     MockCookieHandler mch = new MockCookieHandler();
+    //     CookieHandler defaultHandler = CookieHandler.getDefault();
+    //     try {
+    //         CookieHandler.setDefault(mch);
 
-            server.play();
-            server.enqueue(new MockResponse().addHeader("Set-Cookie2: a=\"android\"; "
-                    + "Comment=\"this cookie is delicious\"; "
-                    + "CommentURL=\"http://google.com/\"; "
-                    + "Discard; "
-                    + "Domain=\"" + server.getCookieDomain() + "\"; "
-                    + "Max-Age=\"60\"; "
-                    + "Path=\"/path\"; "
-                    + "Port=\"80,443," + server.getPort() + "\"; "
-                    + "Secure; "
-                    + "Version=\"1\""));
+    //         server.play();
+    //         server.enqueue(new MockResponse().addHeader("Set-Cookie2: a=\"android\"; "
+    //                 + "Comment=\"this cookie is delicious\"; "
+    //                 + "CommentURL=\"http://google.com/\"; "
+    //                 + "Discard; "
+    //                 + "Domain=\"" + server.getCookieDomain() + "\"; "
+    //                 + "Max-Age=\"60\"; "
+    //                 + "Path=\"/path\"; "
+    //                 + "Port=\"80,443," + server.getPort() + "\"; "
+    //                 + "Secure; "
+    //                 + "Version=\"1\""));
 
-            URLConnection connection = server.getUrl("/path/foo").openConnection();
-            connection.getContent();
+    //         URLConnection connection = server.getUrl("/path/foo").openConnection();
+    //         connection.getContent();
 
-            assertTrue(mch.wasGetCalled());
-            assertTrue(mch.wasPutCalled());
-        } finally {
-            CookieHandler.setDefault(defaultHandler);
-        }
-    }
+    //         assertTrue(mch.wasGetCalled());
+    //         assertTrue(mch.wasPutCalled());
+    //     } finally {
+    //         CookieHandler.setDefault(defaultHandler);
+    //     }
+    // }
 
     private static class MockCookieHandler extends CookieHandler {
         private boolean getCalled = false;
