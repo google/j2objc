@@ -268,7 +268,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # com/google/j2objc/java8/LambdaTest.java \
 # com/google/j2objc/java8/SuperMethodReferenceTest.java \
 # java/nio/file/attribute/FileTimeTest.java \
-# libcore/java/nio/channels/SocketChannelTest.java \
 # org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
 # org/apache/harmony/tests/java/lang/CharacterTest.java \
 # org/apache/harmony/tests/java/nio/channels/SocketChannelTest.java \
@@ -424,6 +423,7 @@ TEST_SOURCES := \
     libcore/io/PosixTest.java \
     libcore/java/lang/CharacterTest.java \
     libcore/java/net/URLConnectionTest.java \
+    libcore/java/nio/channels/SocketChannelTest.java \
     libcore/java/io/ObjectOutputStreamTest.java \
     libcore/java/util/LocaleTest.java \
     libcore/javax/xml/datatype/DatatypeFactoryTest.java \
