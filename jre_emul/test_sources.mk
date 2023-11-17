@@ -284,11 +284,7 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # tck/java/time/format/TCKZoneIdPrinterParser.java \
 # test/java/time/format/TestDateTimeFormatterBuilder.java \
 # test/java/time/format/TestZoneOffsetParser.java \
-# tests/security/interfaces/DSAKeyTest.java \
-# tests/security/interfaces/DSAPublicKeyTest.java \
 # tests/security/interfaces/RSAPrivateCrtKeyTest.java \
-# tests/security/interfaces/DSAPrivateKeyTest.java \
-# tests/security/spec/EncodedKeySpec2Test.java \
 
 TEST_SOURCES := \
     DateFormatTest.java \
