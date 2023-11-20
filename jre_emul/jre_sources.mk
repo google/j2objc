@@ -1434,6 +1434,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   javax/crypto/spec/RC2ParameterSpec.java \
   javax/crypto/spec/RC5ParameterSpec.java \
   javax/crypto/spec/SecretKeySpec.java \
+  javax/security/auth/AuthPermission.java \
   javax/security/auth/DestroyFailedException.java \
   javax/security/auth/Destroyable.java \
   javax/security/auth/PrivateCredentialPermission.java \

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1999, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1998, 2013, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -25,27 +25,15 @@
 
 package javax.security.auth;
 
-import java.util.*;
-import java.security.Permission;
-import java.security.Principal;
-
 // Android-changed: Stubbed the implementation.  Android doesn't support SecurityManager.
 // See comments in java.lang.SecurityManager for details.
 /**
  * Legacy security code; do not use.
  */
-public final class PrivateCredentialPermission extends Permission {
+public final class AuthPermission extends
+java.security.BasicPermission {
 
-    PrivateCredentialPermission(String credentialClass,
-                                Set<Principal> principals) { super(""); }
+    public AuthPermission(String name) { super(""); }
 
-    public PrivateCredentialPermission(String name, String actions) { super(""); }
-
-    public String getCredentialClass() { return null; }
-
-    public String[][] getPrincipals() { return null; }
-
-    public boolean implies(Permission p) { return true; }
-
-    public String getActions() { return null; }
+    public AuthPermission(String name, String actions) { super("", ""); }
 }
