@@ -244,6 +244,8 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/invoke/MethodHandles.java \
   java/lang/invoke/MethodType.java \
   java/lang/invoke/SerializedLambda.java \
+  java/lang/invoke/Stable.java \
+  java/lang/invoke/VolatileCallSite.java \
   java/lang/ref/PhantomReference.java \
   java/lang/ref/Reference.java \
   java/lang/ref/ReferenceQueue.java \
