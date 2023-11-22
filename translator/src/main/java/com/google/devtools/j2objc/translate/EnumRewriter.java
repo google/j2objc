@@ -369,8 +369,7 @@ public class EnumRewriter extends UnitTreeVisitor {
     } else {
       outerImpl.append(UnicodeUtils.format(
           "  %s_initialize();\n"
-          // Param is unsigned, so don't need to check lower bound.
-          + "  if (ordinal >= %s) {\n"
+          + "  if (ordinal < 0 || ordinal >= %s) {\n"
           + "    return nil;\n"
           + "  }\n"
           + "  return %s_values_[ordinal];\n"
