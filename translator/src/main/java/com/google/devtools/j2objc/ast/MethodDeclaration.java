@@ -34,6 +34,8 @@ public class MethodDeclaration extends BodyDeclaration {
       ChildList.create(SingleVariableDeclaration.class, this);
   private ChildLink<Block> body = ChildLink.create(Block.class, this);
 
+  private boolean isPseudoProperty = false;
+
   public MethodDeclaration() {}
 
   public MethodDeclaration(MethodDeclaration other) {
@@ -124,6 +126,14 @@ public class MethodDeclaration extends BodyDeclaration {
   public MethodDeclaration setBody(Block newBody) {
     body.set(newBody);
     return this;
+  }
+
+  public void setIsPseudoProperty(boolean isPseudoProperty) {
+    this.isPseudoProperty = isPseudoProperty;
+  }
+
+  public boolean isPseudoProperty() {
+    return isPseudoProperty;
   }
 
   @Override

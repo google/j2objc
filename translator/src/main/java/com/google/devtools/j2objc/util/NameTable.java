@@ -279,6 +279,11 @@ public class NameTable {
     return s.length() > 0 ? Character.toUpperCase(s.charAt(0)) + s.substring(1) : s;
   }
 
+  /** Lowercase the first letter of a string. */
+  public static String lowercaseFirst(String s) {
+    return s.length() > 0 ? Character.toLowerCase(s.charAt(0)) + s.substring(1) : s;
+  }
+
   /**
    * Given a period-separated name, return as a camel-cased type name.  For
    * example, java.util.logging.Level is returned as JavaUtilLoggingLevel.
@@ -700,6 +705,10 @@ public class NameTable {
     return fullName;
   }
 
+  public static boolean isReservedName(String name) {
+    return reservedNames.contains(name) || nsObjectMessages.contains(name);
+  }
+
   private String getFullNameImpl(TypeElement element) {
     // Avoid package prefix renaming for package-info types, and use a valid ObjC name that doesn't
     // have a dash character.
@@ -744,9 +753,6 @@ public class NameTable {
     return ElementUtil.getName(element).replace('$', '_');
   }
 
-  private static boolean isReservedName(String name) {
-    return reservedNames.contains(name) || nsObjectMessages.contains(name);
-  }
 
   private String getPrefix(PackageElement packageElement) {
     return prefixMap.getPrefix(packageElement);

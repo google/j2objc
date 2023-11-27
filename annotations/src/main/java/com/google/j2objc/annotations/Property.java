@@ -23,23 +23,28 @@ import java.lang.annotation.Target;
 /**
  * Adds property declarations to generated Objective-C for annotated fields.
  *
- * See <a
+ * <p>See <a
  * href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/EncapsulatingData/EncapsulatingData.html"
  * >Apple's &#64;property documentation</a>.
- * <p>
- * Notes:
+ *
+ * <p>Notes:
+ *
  * <ul>
- *   <li>Invalid attributes are reported as errors.</li>
+ *   <li>Invalid attributes are reported as errors.
  *   <li><b>readwrite</b>, <b>strong</b> (when using ARC), and <b>atomic</b> attributes are removed
- *     since they are defaults.</li>
- *   <li>Strings will include the <b>copy</b> attribute.</li>
+ *       since they are defaults.
+ *   <li>Strings will include the <b>copy</b> attribute.
  * </ul>
+ *
  * Example:
+ *
  * <pre>
  * class Foo {
  *   &#64;Property("copy, nonatomic") protected String bar;
  * }</pre>
+ *
  * generates:
+ *
  * <pre>
  * &#64;property (copy, nonatomic) NSString *bar;</pre>
  *
@@ -47,7 +52,7 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.SOURCE)
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.TYPE})
 public @interface Property {
   String value() default "";
 }

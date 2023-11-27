@@ -715,6 +715,121 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "FooBar_Internal *fieldFoo_;");
   }
 
+  public void testPropertiesOfGetTypes() throws IOException {
+    String sourceContent =
+        "  import com.google.j2objc.annotations.Property;"
+            + "public class FooBar {"
+            + "  private String fieldFoo = \"test\";"
+            + "  "
+            + "  @Property"
+            + "  public String getFooField() {"
+            + "     return fieldFoo;"
+            + "  }"
+            + "}";
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertTranslatedLines(
+        translation, "@property (nonatomic, getter=getFooField, readonly) NSString * fooField;");
+  }
+
+  public void testPropertiesOfGetTypesWithSetters() throws IOException {
+    String sourceContent =
+        "  import com.google.j2objc.annotations.Property;"
+            + "public class FooBar {"
+            + "  private String fieldFoo = \"test\";"
+            + "  "
+            + "  @Property"
+            + "  public String getFooField() {"
+            + "     return fieldFoo;"
+            + "  }"
+            + "  "
+            + "  public void setFooField(String fooField) {"
+            + "     this.fieldFoo = fooField;"
+            + "  }"
+            + "}";
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertTranslatedLines(
+        translation,
+        "@property (nonatomic, getter=getFooField, setter=setFooFieldWithNSString:) NSString *"
+            + " fooField;");
+  }
+
+  public void testPropertiesOfGetTypesDuplicateNames() throws IOException {
+    String sourceContent =
+        "  import com.google.j2objc.annotations.Property;"
+            + "@Property "
+            + "public class FooBar {"
+            + "  @Property"
+            + "  public String fieldFoo = \"test\";"
+            + "  "
+            + "  "
+            + "  public String getFieldFoo() {"
+            + "     return fieldFoo;"
+            + "  }"
+            + "  "
+            + "  public void setFieldFoo(String fooField) {"
+            + "     this.fieldFoo = fooField;"
+            + "  }"
+            + "}";
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertTranslatedLines(
+        translation,
+        "@property (copy, nonatomic, getter=getFieldFoo, setter=setFieldFooWithNSString:) NSString"
+            + " *fieldFoo;");
+  }
+
+  public void testPropertiesOfGetTypesWithSettersNullable() throws IOException {
+    options.setNullMarked(true);
+    options.setNullability(true);
+    addSourceFile(
+        "@NullMarked package foo.bar;" + "import org.jspecify.nullness.NullMarked;",
+        "foo/bar/package-info.java");
+
+    String sourceContent =
+        "package foo.bar; "
+            + "import com.google.j2objc.annotations.Property;"
+            + "import javax.annotation.*;"
+            + "public class FooBar {"
+            + "  private String fieldFoo = \"test\";"
+            + "  "
+            + "  @Property"
+            + "  @Nullable"
+            + "  public String getFooField() {"
+            + "     return fieldFoo;"
+            + "  }"
+            + "  "
+            + "  public void setFooField(@Nullable String fooField) {"
+            + "    this.fieldFoo = fooField;"
+            + "  }"
+            + "}";
+    String translation = translateSourceFile(sourceContent, "foo.bar.FooBar", "foo/bar/FooBar.h");
+    assertTranslatedLines(
+        translation,
+        "@property (nonatomic, getter=getFooField, setter=setFooFieldWithNSString:, nullable)"
+            + " NSString * fooField;");
+  }
+
+  public void testPropertiesOfClassTypes() throws IOException {
+    String sourceContent =
+        "  import com.google.j2objc.annotations.Property;"
+            + "@Property "
+            + "public class FooBar {"
+            + "  private String fieldFoo = \"test\";"
+            + "  "
+            + "  public String getFooField() {"
+            + "     return fieldFoo;"
+            + "  }"
+            + "  "
+            + "  public void setFooField(String fooField) {"
+            + "     this.fieldFoo = fooField;"
+            + "  }"
+            + "}";
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertTranslatedLines(
+        translation,
+        "@property (nonatomic, getter=getFooField, setter=setFooFieldWithNSString:)"
+            + " NSString * fooField;");
+  }
+
   public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()
       throws IOException {
     options.enableDeprecatedDeclarations();

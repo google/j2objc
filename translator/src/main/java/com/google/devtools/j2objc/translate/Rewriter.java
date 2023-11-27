@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CatchClause;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -246,21 +247,45 @@ public class Rewriter extends UnitTreeVisitor {
    */
   @Override
   public void endVisit(PropertyAnnotation node) {
-    FieldDeclaration field = (FieldDeclaration) node.getParent();
-    TypeMirror fieldType = field.getTypeMirror();
+    TreeNode parent = node.getParent();
+
     String getter = node.getGetter();
     String setter = node.getSetter();
+
+    TypeMirror fieldType;
+    if (parent instanceof FieldDeclaration) {
+      FieldDeclaration field = (FieldDeclaration) parent;
+      fieldType = field.getTypeMirror();
+    } else if (parent instanceof MethodDeclaration) {
+      MethodDeclaration field = (MethodDeclaration) parent;
+      fieldType = field.getReturnTypeMirror();
+      field.setIsPseudoProperty(true);
+    } else {
+      AbstractTypeDeclaration type = (AbstractTypeDeclaration) parent;
+      for (BodyDeclaration body : type.getBodyDeclarations()) {
+        if (!(body instanceof MethodDeclaration)) {
+          continue;
+        }
+
+        MethodDeclaration method = (MethodDeclaration) body;
+        if (method.getName().getFullyQualifiedName().startsWith("get")
+            && method.getParameters().isEmpty()) {
+          method.setIsPseudoProperty(true);
+        }
+      }
+      return;
+    }
     // Check that specified accessors exist.
     TypeElement enclosingType = TreeUtil.getEnclosingTypeElement(node);
     if (getter != null) {
       if (ElementUtil.findMethod(enclosingType, getter) == null) {
-        ErrorUtil.error(field, "Non-existent getter specified: " + getter);
+        ErrorUtil.error(parent, "Non-existent getter specified: " + getter);
       }
     }
     if (setter != null) {
       if (ElementUtil.findMethod(
           enclosingType, setter, TypeUtil.getQualifiedName(fieldType)) == null) {
-        ErrorUtil.error(field, "Non-existent setter specified: " + setter);
+        ErrorUtil.error(parent, "Non-existent setter specified: " + setter);
       }
     }
   }
