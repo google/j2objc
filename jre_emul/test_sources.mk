@@ -268,7 +268,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # com/google/j2objc/java8/LambdaTest.java \
 # com/google/j2objc/java8/SuperMethodReferenceTest.java \
 # java/nio/file/attribute/FileTimeTest.java \
-# org/apache/harmony/tests/java/nio/channels/SocketChannelTest.java \
 # org/apache/harmony/tests/java/text/ChoiceFormatTest.java \
 # org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \
 # org/apache/harmony/tests/java/text/SimpleDateFormatTest.java \
@@ -978,6 +977,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/nio/ByteBufferTest.java \
     org/apache/harmony/tests/java/nio/ByteOrderTest.java \
     org/apache/harmony/tests/java/nio/CharBufferTest.java \
+    org/apache/harmony/tests/java/nio/channels/SocketChannelTest.java \
     org/apache/harmony/tests/java/nio/DirectByteBufferTest.java \
     org/apache/harmony/tests/java/nio/DoubleBufferTest.java \
     org/apache/harmony/tests/java/nio/DuplicateDirectByteBufferTest.java \
