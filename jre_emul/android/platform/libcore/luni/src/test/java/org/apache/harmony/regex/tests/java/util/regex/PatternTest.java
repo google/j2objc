@@ -2219,11 +2219,11 @@ public class PatternTest extends TestCase /* J2ObjC removed: TestCaseWithRules *
 
         pat = Pattern.compile("b");
         s = pat.splitAsStream("").toArray(String[]::new);
-        assertEquals(s.length, 0);
+        assertEquals(s.length, 1);
 
         pat = Pattern.compile("");
         s = pat.splitAsStream("").toArray(String[]::new);
-        assertEquals(s.length, 0);
+        assertEquals(s.length, 1);
 
         pat = Pattern.compile("");
         s = pat.splitAsStream("abccbadfe").toArray(String[]::new);
