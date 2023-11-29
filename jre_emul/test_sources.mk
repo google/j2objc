@@ -284,6 +284,8 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # tck/java/time/format/TCKZoneIdPrinterParser.java \
 # test/java/time/format/TestDateTimeFormatterBuilder.java \
 # test/java/time/format/TestZoneOffsetParser.java \
+
+# TODO(b/311402728): RSAPrivateKey generation fails, returning invalid object type.
 # tests/security/interfaces/RSAPrivateCrtKeyTest.java \
 
 TEST_SOURCES := \
