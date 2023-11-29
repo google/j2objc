@@ -33,4 +33,7 @@
       <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/luni/src/test/java/tests/security/cert/PKIXCertPathCheckerTest.java" />
     </excludeFromCompile>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_STRING" value="--add-exports java.compiler/javax.lang.model.element=ALL-UNNAMED --add-exports java.compiler/javax.lang.model.type=ALL-UNNAMED --add-exports java.compiler/javax.lang.model.util=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED --add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED" />
+  </component>
 </project>
