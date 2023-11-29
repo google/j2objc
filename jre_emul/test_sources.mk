@@ -269,7 +269,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # com/google/j2objc/java8/SuperMethodReferenceTest.java \
 # java/nio/file/attribute/FileTimeTest.java \
 # org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
-# org/apache/harmony/tests/java/lang/CharacterTest.java \
 # org/apache/harmony/tests/java/nio/channels/SocketChannelTest.java \
 # org/apache/harmony/tests/java/text/ChoiceFormatTest.java \
 # org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \
@@ -882,6 +881,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/lang/Character_SubsetTest.java \
     org/apache/harmony/tests/java/lang/Character_UnicodeBlockTest.java \
     org/apache/harmony/tests/java/lang/CharacterImplTest.java \
+    org/apache/harmony/tests/java/lang/CharacterTest.java \
     org/apache/harmony/tests/java/lang/ClassCastExceptionTest.java \
     org/apache/harmony/tests/java/lang/ClassCircularityErrorTest.java \
     org/apache/harmony/tests/java/lang/ClassFormatErrorTest.java \
