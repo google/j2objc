@@ -74,6 +74,7 @@ import com.google.devtools.j2objc.translate.PackageInfoRewriterTest;
 import com.google.devtools.j2objc.translate.PrivateDeclarationResolverTest;
 import com.google.devtools.j2objc.translate.ReflectionCodeDetectorTest;
 import com.google.devtools.j2objc.translate.RewriterTest;
+import com.google.devtools.j2objc.translate.SerializationStripperTest;
 import com.google.devtools.j2objc.translate.StaticVarRewriterTest;
 import com.google.devtools.j2objc.translate.SuperMethodInvocationRewriterTest;
 import com.google.devtools.j2objc.translate.SwitchRewriterTest;
@@ -170,6 +171,7 @@ public class SmallTests {
         ProGuardUsageParserTest.class,
         ReflectionCodeDetectorTest.class,
         RewriterTest.class,
+        SerializationStripperTest.class,
         SignatureGeneratorTest.class,
         StatementGeneratorTest.class,
         StaticVarRewriterTest.class,

@@ -16,6 +16,8 @@
 
 package com.google.devtools.j2objc.translate;
 
+import static com.google.devtools.j2objc.util.ElementUtil.getDeclaringClass;
+
 import com.google.common.collect.ImmutableList;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
@@ -24,6 +26,7 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.util.ElementUtil;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
@@ -42,36 +45,37 @@ import javax.lang.model.type.TypeMirror;
  */
 public final class SerializationStripper extends UnitTreeVisitor {
 
+  private final TypeMirror serializableType;
+
   public SerializationStripper(CompilationUnit unit) {
     super(unit);
+    serializableType = typeUtil.resolveJavaType("java.io.Serializable").asType();
   }
 
-  /** Only modify Serializable types when stripping reflection metadata. */
+  /** Don't strip inside a type that needs reflection metadata. */
   @Override
   public boolean visit(TypeDeclaration node) {
-    TypeMirror serializableType = typeUtil.resolveJavaType("java.io.Serializable").asType();
-    TypeMirror nodeType = node.getTypeElement().asType();
-    boolean isSerializable = typeUtil.isAssignable(nodeType, serializableType);
-    boolean stripReflection = !translationUtil.needsReflection(node.getTypeElement());
-    return stripReflection && isSerializable;
+    return !translationUtil.needsReflection(node.getTypeElement());
   }
 
   /** Removes serialVersionUID field. */
   @Override
   public boolean visit(FieldDeclaration node) {
-    if (isSerializationField(node.getFragment().getVariableElement())) {
+    if (isSerializationField(node.getFragment().getVariableElement())
+        && isSerializable(getDeclaringClass(node.getFragment().getVariableElement()))) {
       node.remove();
     }
-    return false;
+    return true;
   }
 
   /** Removes serialization related methods. */
   @Override
   public boolean visit(MethodDeclaration node) {
-    if (isSerializationMethod(node.getExecutableElement())) {
+    if (isSerializationMethod(node.getExecutableElement())
+        && isSerializable(getDeclaringClass(node.getExecutableElement()))) {
       node.remove();
     }
-    return false;
+    return true;
   }
 
   private static boolean isSerializationField(VariableElement field) {
@@ -114,12 +118,15 @@ public final class SerializationStripper extends UnitTreeVisitor {
   private boolean isSerializationMethod(ExecutableElement method) {
     String signature = typeUtil.getReferenceSignature(method);
     boolean isPrivate = ElementUtil.isPrivate(method);
-    return SERIALIZATION_METHODS
-        .stream()
+    return SERIALIZATION_METHODS.stream()
         .anyMatch(
             m ->
                 ElementUtil.isNamed(method, m.name)
                     && m.signature.equals(signature)
                     && (!m.requiresPrivate() || isPrivate));
+  }
+
+  private boolean isSerializable(TypeElement type) {
+    return typeUtil.isAssignable(type.asType(), serializableType);
   }
 }

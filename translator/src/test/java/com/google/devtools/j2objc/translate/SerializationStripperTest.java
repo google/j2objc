@@ -93,4 +93,32 @@ public class SerializationStripperTest extends GenerationTest {
     assertNotInTranslation(translation, "readResolve");
     assertTranslation(translation, "anotherMethod");
   }
+
+  public void testAnonymousSerializableTypeInsideNonSerializableTypeIsStripped()
+      throws IOException {
+    options.setStripReflection(true);
+    String translation =
+        translateSourceFile(
+            "import java.io.IOException;"
+                + "import java.io.ObjectInputStream;"
+                + "import java.io.ObjectOutputStream;"
+                + "import java.io.ObjectStreamException;"
+                + "import java.io.Serializable;"
+                + "public class Test { "
+                + "  void method() {"
+                + "    new Serializable() {"
+                + "      private static final long serialVersionUID = 1053L;"
+                + "      private static final long anotherField = 1122L;"
+                + "      private void writeObject(ObjectOutputStream out) throws IOException {}"
+                + "      private void anotherMethod() {}"
+                + "    };"
+                + "  }"
+                + "}",
+            /* typeName= */ "Test",
+            /* fileName= */ "Test.m");
+    assertNotInTranslation(translation, "serialVersionUID");
+    assertTranslation(translation, "anotherField");
+    assertNotInTranslation(translation, "writeObject");
+    assertTranslation(translation, "anotherMethod");
+  }
 }
