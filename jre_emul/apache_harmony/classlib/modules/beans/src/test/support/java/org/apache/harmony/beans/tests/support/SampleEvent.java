@@ -35,10 +35,6 @@ public class SampleEvent extends EventObject {
         return i;
     }
 
-    public void setI(int j) {
-        j = i;
-    }
-
     public static int getJ() {
         return j;
     }
