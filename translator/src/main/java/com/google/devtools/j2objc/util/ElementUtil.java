@@ -724,7 +724,7 @@ public final class ElementUtil {
   }
 
   public static AnnotationMirror getAnnotation(Element element, Class<?> annotationClass) {
-    return getQualifiedNamedAnnotation(element, annotationClass.getName());
+    return getQualifiedNamedAnnotation(element, annotationClass.getCanonicalName());
   }
 
   public static boolean hasAnnotation(Element element, Class<?> annotationClass) {

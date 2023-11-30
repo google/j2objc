@@ -60,6 +60,7 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
+import com.google.j2objc.annotations.Property;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -268,8 +269,9 @@ public class Rewriter extends UnitTreeVisitor {
         }
 
         MethodDeclaration method = (MethodDeclaration) body;
-        if (method.getName().getFullyQualifiedName().startsWith("get")
-            && method.getParameters().isEmpty()) {
+        if (method.getParameters().isEmpty()
+            && !method.isConstructor()
+            && !ElementUtil.hasAnnotation(method.getExecutableElement(), Property.Suppress.class)) {
           method.setIsPseudoProperty(true);
         }
       }

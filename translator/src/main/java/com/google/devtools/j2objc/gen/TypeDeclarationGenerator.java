@@ -626,7 +626,28 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
   }
 
-  private void printPseudoProperties(MethodDeclaration m) {
+  private boolean canPrintPseudoProperty(MethodDeclaration m) {
+    if (!m.isPseudoProperty()) {
+      return false;
+    }
+
+    ExecutableElement methodElement = m.getExecutableElement();
+    String methodName = nameTable.getMethodSelector(methodElement);
+    String propertyName = NameTable.lowercaseFirst(methodName.replaceFirst("get", ""));
+
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(methodElement);
+    if (NameTable.isReservedName(propertyName)) {
+      return false;
+    }
+    // Check if there is a exisitng property with the same name
+    if (ElementUtil.findField(declaringClass, propertyName) != null) {
+      return false;
+    }
+
+    return true;
+  }
+
+  private void printPseudoProperty(MethodDeclaration m) {
     ExecutableElement methodElement = m.getExecutableElement();
     String methodName = nameTable.getMethodSelector(methodElement);
     String propertyName = NameTable.lowercaseFirst(methodName.replaceFirst("get", ""));
@@ -646,7 +667,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
     newline();
     printf(
-        "@property (nonatomic, %s, %s%s) %s %s;",
+        "@property (%snonatomic, %s, %s%s) %s %s;",
+        ElementUtil.isStatic(methodElement) ? "class, " : "",
         "getter=" + methodName,
         setter != null ? "setter=" + nameTable.getMethodSelector(setter) : "readonly",
         shouldAddNullableAnnotation(methodElement) ? ", nullable" : "",
@@ -662,10 +684,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
    * @param isCompanionClass If true, emit only if m is a static interface method.
    */
   private void printMethodDeclaration(MethodDeclaration m, boolean isCompanionClass) {
-    if (m.isPseudoProperty()) {
-      printPseudoProperties(m);
-    }
-
     ExecutableElement methodElement = m.getExecutableElement();
     TypeElement typeElement = ElementUtil.getDeclaringClass(methodElement);
 
@@ -680,6 +698,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
     newline();
     JavadocGenerator.printDocComment(getBuilder(), m.getJavadoc());
+
+    if (canPrintPseudoProperty(m)) {
+      printPseudoProperty(m);
+      return;
+    }
 
     String methodSignature = getMethodSignature(m, needsGenerateObjectiveCGenerics());
 

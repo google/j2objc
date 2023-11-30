@@ -753,6 +753,47 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + " fooField;");
   }
 
+  public void testPropertyAnnotationSuppression() throws IOException {
+    String sourceContent =
+        "  import com.google.j2objc.annotations.Property;"
+            + "@Property "
+            + "public class FooBar {"
+            + "  "
+            + "  public String getFieldFoo() {"
+            + "     return \"\";"
+            + "  }"
+            + "  "
+            + "  public void setFieldFoo(String fooField) {"
+            + ""
+            + "  }"
+            + " "
+            + "  @Property.Suppress "
+            + "  public String getBar() {"
+            + "     return \"\";"
+            + "  }"
+            + "  "
+            + "}";
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertNotInTranslation(
+        translation, "@property (nonatomic, getter=getBar, readonly) NSString * bar;");
+  }
+
+  public void testPropertiesStaticMethods() throws IOException {
+    String sourceContent =
+        "  import com.google.j2objc.annotations.Property;"
+            + "@Property "
+            + "public class FooBar {"
+            + "  "
+            + "  public static String getFieldFoo() {"
+            + "     return \"\";"
+            + "  }"
+            + "}";
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertTranslatedLines(
+        translation,
+        "@property (class, nonatomic, getter=getFieldFoo, readonly) NSString * fieldFoo;");
+  }
+
   public void testPropertiesOfGetTypesDuplicateNames() throws IOException {
     String sourceContent =
         "  import com.google.j2objc.annotations.Property;"
