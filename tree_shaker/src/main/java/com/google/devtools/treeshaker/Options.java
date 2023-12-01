@@ -233,7 +233,7 @@ class Options {
     List<LibraryInfo> libraryInfos = Lists.newArrayList();
     for (String summary : summaries) {
       try (InputStream in = new FileInputStream(summary)) {
-        libraryInfos.add(LibraryInfo.parseFrom(in, ExtensionRegistry.getGeneratedRegistry()));
+        libraryInfos.add(LibraryInfo.parseFrom(in, ExtensionRegistry.getEmptyRegistry()));
       }
     }
     return libraryInfos;
@@ -279,7 +279,7 @@ class Options {
         }
         options.setSummary(
             LibraryInfo.parseFrom(
-                Files.toByteArray(new File(args[nArg])), ExtensionRegistry.getGeneratedRegistry()));
+                Files.toByteArray(new File(args[nArg])), ExtensionRegistry.getEmptyRegistry()));
       } else if (arg.equals("--sourcefilelist") || arg.equals("-s")) {
         if (++nArg == args.length) {
           usage("--sourcefilelist requires an argument");

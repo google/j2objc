@@ -29,7 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <google/protobuf/compiler/command_line_interface.h>
-#include <google/protobuf/compiler/java/java_generator.h>
+#include <google/protobuf/compiler/java/generator.h>
 #include "j2objc_generator.h"
 
 int main(int argc, const char* const argv[]) {

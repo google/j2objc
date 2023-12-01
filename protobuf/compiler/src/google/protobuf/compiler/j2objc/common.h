@@ -40,14 +40,40 @@
 #ifndef GOOGLE_PROTOBUF_COMPILER_J2OBJC_COMMON_H__
 #define GOOGLE_PROTOBUF_COMPILER_J2OBJC_COMMON_H__
 
-#include <google/protobuf/compiler/code_generator.h>
-#include <google/protobuf/descriptor.h>
-#include <google/protobuf/descriptor.pb.h>
-#include <google/protobuf/io/printer.h>
-#include <google/protobuf/io/zero_copy_stream.h>
-#include <google/protobuf/stubs/common.h>
-#include <google/protobuf/stubs/strutil.h>
+#include "absl/base/macros.h"
+#include "absl/log/absl_check.h"
+#include "absl/strings/ascii.h"
+#include "absl/strings/escaping.h"
+#include "absl/strings/match.h"
+#include "absl/strings/numbers.h"
+#include "absl/strings/str_cat.h"
+#include "absl/strings/str_replace.h"
+#include "absl/strings/string_view.h"
+#include "absl/strings/strip.h"
+
+#include "google/protobuf/compiler/code_generator.h"
+#include "google/protobuf/descriptor.h"
+#include "google/protobuf/descriptor.pb.h"
+#include "google/protobuf/io/printer.h"
+#include "google/protobuf/io/strtod.h"
+#include "google/protobuf/io/zero_copy_stream.h"
+#include "google/protobuf/stubs/common.h"
+
+#define GOOGLE_ARRAYSIZE ABSL_ARRAYSIZE
+#define GOOGLE_LOG ABSL_LOG
+#define GOOGLE_CHECK ABSL_CHECK
+#define GOOGLE_CHECK_EQ ABSL_CHECK_EQ
+#define SimpleDtoa io::SimpleDtoa
+#define SimpleFtoa io::SimpleFtoa
+
+#define GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(TypeName)    \
+  TypeName(const TypeName&);                           \
+  void operator=(const TypeName&)
 
 using namespace google::protobuf::compiler;
+
+#define SimpleItoa absl::StrCat
+#define ToUpper absl::AsciiStrToUpper
+#define UpperString absl::AsciiStrToUpper
 
 #endif  // GOOGLE_PROTOBUF_COMPILER_J2OBJC_COMMON_H__

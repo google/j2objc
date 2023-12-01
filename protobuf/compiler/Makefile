@@ -44,12 +44,21 @@ DESCRIPTOR_PROTO_DIST = $(DESCRIPTOR_PATH_DIST)/$(DESCRIPTOR_PROTO)
 
 $(call check_protobuf_dir)
 
-PROTOBUF_LIB = $(PROTOBUF_LIB_PATH)/libprotobuf.a
-PROTOC_LIB = $(PROTOBUF_LIB_PATH)/libprotoc.a
+PROTOBUF_LIB = -l protobuf
+PROTOC_LIB = -l protoc
+ABSL_LIBS = \
+  -l absl_hash \
+	-l absl_log_internal_check_op \
+	-l absl_log_internal_message \
+	-l absl_raw_hash_set \
+	-l absl_raw_logging_internal \
+	-l absl_spinlock_wait \
+	-l absl_strings
 
-CXXFLAGS = -x c++ -std=c++11 -stdlib=libc++ -Isrc -I$(PROTOBUF_INCLUDE_PATH) \
+CXXFLAGS = -x c++ -std=c++17 -stdlib=libc++ -Isrc -I$(PROTOBUF_INCLUDE_PATH) \
   -Wno-deprecated-declarations
-LDFLAGS = $(PROTOBUF_LIB) $(PROTOC_LIB)
+LDFLAGS = -L $(PROTOBUF_LIB_PATH) $(PROTOBUF_LIB) $(PROTOC_LIB) \
+  $(ABSL_LIBS)
 
 dist: $(PROTOC_EXE_DIST) $(PROTOC_PLUGIN_DIST) $(DESCRIPTOR_PROTO_DIST)
 	@:
