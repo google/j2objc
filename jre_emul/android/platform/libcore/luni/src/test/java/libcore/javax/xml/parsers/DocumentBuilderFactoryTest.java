@@ -25,30 +25,29 @@ import junit.framework.TestCase;
 
 public class DocumentBuilderFactoryTest extends TestCase {
 
-    //TODO(b/309905118): Fix the libcore/javax/xml tests issues
-    // public void testGetSchema() {
-    //     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    public void testGetSchema() {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-    //     try {
-    //         factory.getSchema();
-    //         fail("Unexpectedly didn't throw UnsupportedOperationException");
-    //     } catch (UnsupportedOperationException expected) {}
-    // }
+        try {
+            factory.getSchema();
+            fail("Unexpectedly didn't throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException expected) {}
+    }
 
-    // public void testSetSchema() {
-    //     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    public void testSetSchema() {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-    //     try {
-    //         factory.setSchema(new Schema() {
-    //             @Override
-    //             public Validator newValidator() { return null; }
+        try {
+            factory.setSchema(new Schema() {
+                @Override
+                public Validator newValidator() { return null; }
 
-    //             @Override
-    //             public ValidatorHandler newValidatorHandler() { return null; }
-    //         });
-    //         fail("Unexpectedly didn't throw UnsupportedOperationException");
-    //     } catch (UnsupportedOperationException expected) {}
-    // }
+                @Override
+                public ValidatorHandler newValidatorHandler() { return null; }
+            });
+            fail("Unexpectedly didn't throw UnsupportedOperationException");
+        } catch (UnsupportedOperationException expected) {}
+    }
 
     public void testNewInstance_StringClassLoader() {
         try {
