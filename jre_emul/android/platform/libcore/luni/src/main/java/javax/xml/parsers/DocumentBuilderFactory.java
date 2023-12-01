@@ -458,12 +458,7 @@ public abstract class DocumentBuilderFactory {
      */
     public void setXIncludeAware(final boolean state) {
         throw new UnsupportedOperationException(
-            "This parser does not support specification \""
-            + this.getClass().getPackage().getSpecificationTitle()
-            + "\" version \""
-            + this.getClass().getPackage().getSpecificationVersion()
-            + "\""
-            );
+            "This parser does not support specification \"");
     }
 
     /**
@@ -480,11 +475,6 @@ public abstract class DocumentBuilderFactory {
      */
     public boolean isXIncludeAware() {
         throw new UnsupportedOperationException(
-            "This parser does not support specification \""
-            + this.getClass().getPackage().getSpecificationTitle()
-            + "\" version \""
-            + this.getClass().getPackage().getSpecificationVersion()
-            + "\""
-            );
+            "This parser does not support specification \"");
     }
 }
