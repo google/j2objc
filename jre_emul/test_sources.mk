@@ -179,6 +179,7 @@ SUPPORT_SOURCES = \
     org/apache/harmony/tests/java/text/Support_MessageFormat.java \
     org/apache/harmony/tests/java/text/Support_SimpleDateFormat.java \
     org/apache/harmony/tests/javax/xml/parsers/SAXParserTestSupport.java \
+    org/apache/harmony/tests/javax/xml/parsers/MockSchemaFactoryLoader.java \
     org/apache/harmony/tests/org/xml/sax/support/BrokenInputStream.java \
     org/apache/harmony/tests/org/xml/sax/support/DoNothingParser.java \
     org/apache/harmony/tests/org/xml/sax/support/DoNothingXMLReader.java \
@@ -287,9 +288,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # org/apache/harmony/tests/java/text/SimpleDateFormatTest.java \
 # org/apache/harmony/tests/java/util/DateTest.java \
 # org/apache/harmony/tests/java/util/TimeZoneTest.java \
-# org/apache/harmony/tests/javax/xml/parsers/MockSchemaFactoryLoader.java \
-# org/apache/harmony/tests/javax/xml/parsers/SAXParserTest.java \
-# org/apache/harmony/tests/javax/xml/parsers/SAXParserFactoryTest.java \
 # tck/java/time/format/TCKZoneIdPrinterParser.java \
 # test/java/time/format/TestDateTimeFormatterBuilder.java \
 # test/java/time/format/TestZoneOffsetParser.java \
@@ -1229,9 +1227,10 @@ TEST_SOURCES := \
     org/apache/harmony/tests/javax/security/cert/CertificateTest.java \
     org/apache/harmony/tests/javax/security/cert/X509CertificateTest.java \
     org/apache/harmony/tests/javax/xml/parsers/FactoryConfigurationErrorTest.java \
-    org/apache/harmony/tests/javax/xml/parsers/ParserConfigurationExceptionTest.java \
     org/apache/harmony/tests/javax/xml/parsers/DocumentBuilderFactoryTest.java \
     org/apache/harmony/tests/javax/xml/parsers/DocumentBuilderTest.java \
+    org/apache/harmony/tests/javax/xml/parsers/ParserConfigurationExceptionTest.java \
+    org/apache/harmony/tests/javax/xml/parsers/SAXParserFactoryTest.java \
     org/apache/harmony/tests/org/xml/sax/HandlerBaseTest.java \
     org/apache/harmony/tests/org/xml/sax/InputSourceTest.java \
     org/apache/harmony/tests/org/xml/sax/SAXExceptionTest.java \

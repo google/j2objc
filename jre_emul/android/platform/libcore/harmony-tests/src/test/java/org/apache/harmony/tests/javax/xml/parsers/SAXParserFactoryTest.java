@@ -35,8 +35,6 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import dalvik.annotation.KnownFailure;
-
 public class SAXParserFactoryTest extends TestCase {
 
     SAXParserFactory spf;
@@ -107,44 +105,46 @@ public class SAXParserFactoryTest extends TestCase {
         assertTrue(spf.isValidating());
     }
 
-    public void test_setIsXIncludeAware() {
-        spf.setXIncludeAware(true);
-        assertTrue(spf.isXIncludeAware());
-        spf.setXIncludeAware(false);
-        assertFalse(spf.isXIncludeAware());
-    }
+    // TODO(b/314228778): fix JavaLangUnsupportedOperationException: 
+    // This parser does not support specification
+    // public void test_setIsXIncludeAware() {
+    //     spf.setXIncludeAware(true);
+    //     assertTrue(spf.isXIncludeAware());
+    //     spf.setXIncludeAware(false);
+    //     assertFalse(spf.isXIncludeAware());
+    // }
 
-    @KnownFailure("Dalvik doesn't honor system properties when choosing a SAX implementation")
-    public void test_newInstance() {
-        try {
-            SAXParserFactory dtf = SAXParserFactory.newInstance();
-            assertNotNull("New Instance of DatatypeFactory is null", dtf);
+    // @KnownFailure("Dalvik doesn't honor system properties when choosing a SAX implementation")
+    // public void test_newInstance() {
+    //     try {
+    //         SAXParserFactory dtf = SAXParserFactory.newInstance();
+    //         assertNotNull("New Instance of DatatypeFactory is null", dtf);
 
-            System.setProperty("javax.xml.parsers.SAXParserFactory",
-            "org.apache.harmony.xml.parsers.SAXParserFactoryImpl");
+    //         System.setProperty("javax.xml.parsers.SAXParserFactory",
+    //         "org.apache.harmony.xml.parsers.SAXParserFactoryImpl");
 
-            SAXParserFactory spf1 = SAXParserFactory.newInstance();
-            assertTrue(spf1 instanceof org.apache.harmony.xml.parsers.SAXParserFactoryImpl);
+    //         SAXParserFactory spf1 = SAXParserFactory.newInstance();
+    //         assertTrue(spf1 instanceof org.apache.harmony.xml.parsers.SAXParserFactoryImpl);
 
-            String key = "javax.xml.parsers.SAXParserFactory = org.apache.harmony.xml.parsers.SAXParserFactoryImpl";
+    //         String key = "javax.xml.parsers.SAXParserFactory = org.apache.harmony.xml.parsers.SAXParserFactoryImpl";
 
-            ByteArrayInputStream bis = new ByteArrayInputStream(key.getBytes());
-            Properties prop = System.getProperties();
-            prop.load(bis);
-            SAXParserFactory spf2 = SAXParserFactory.newInstance();
-            assertTrue(spf2 instanceof org.apache.harmony.xml.parsers.SAXParserFactoryImpl);
+    //         ByteArrayInputStream bis = new ByteArrayInputStream(key.getBytes());
+    //         Properties prop = System.getProperties();
+    //         prop.load(bis);
+    //         SAXParserFactory spf2 = SAXParserFactory.newInstance();
+    //         assertTrue(spf2 instanceof org.apache.harmony.xml.parsers.SAXParserFactoryImpl);
 
-            System.setProperty("javax.xml.parsers.SAXParserFactory", "");
-            try {
-                SAXParserFactory.newInstance();
-                fail("Expected FactoryConfigurationError was not thrown");
-            } catch (FactoryConfigurationError e) {
-                // expected
-            }
-        } catch (IOException ioe) {
-            fail("Unexpected exception " + ioe.toString());
-        }
-    }
+    //         System.setProperty("javax.xml.parsers.SAXParserFactory", "");
+    //         try {
+    //             SAXParserFactory.newInstance();
+    //             fail("Expected FactoryConfigurationError was not thrown");
+    //         } catch (FactoryConfigurationError e) {
+    //             // expected
+    //         }
+    //     } catch (IOException ioe) {
+    //         fail("Unexpected exception " + ioe.toString());
+    //     }
+    // }
 
     public void test_newSAXParser() {
         // Ordinary case
@@ -229,19 +229,19 @@ public class SAXParserFactoryTest extends TestCase {
         }
     }
 
-    public void test_setNamespaceAwareZ() throws Exception {
-        MyHandler mh = new MyHandler();
+    // public void test_setNamespaceAwareZ() throws Exception {
+    //     MyHandler mh = new MyHandler();
 
-        spf.setNamespaceAware(true);
-        InputStream is = getClass().getResourceAsStream("/simple_ns.xml");
-        spf.newSAXParser().parse(is, mh);
-        is.close();
+    //     spf.setNamespaceAware(true);
+    //     InputStream is = getClass().getResourceAsStream("/simple_ns.xml");
+    //     spf.newSAXParser().parse(is, mh);
+    //     is.close();
 
-        spf.setNamespaceAware(false);
-        is = getClass().getResourceAsStream("/simple_ns.xml");
-        spf.newSAXParser().parse(is, mh);
-        is.close();
-    }
+    //     spf.setNamespaceAware(false);
+    //     is = getClass().getResourceAsStream("/simple_ns.xml");
+    //     spf.newSAXParser().parse(is, mh);
+    //     is.close();
+    // }
 
     /*   public void test_setSchemaLjavax_xml_validation_Schema() {
         SchemaFactory sf =

@@ -345,12 +345,7 @@ public abstract class SAXParserFactory {
      */
     public void setXIncludeAware(final boolean state) {
         throw new UnsupportedOperationException(
-            "This parser does not support specification \""
-            + this.getClass().getPackage().getSpecificationTitle()
-            + "\" version \""
-            + this.getClass().getPackage().getSpecificationVersion()
-            + "\""
-            );
+            "This parser does not support specification \"");
     }
 
     /**
@@ -366,13 +361,7 @@ public abstract class SAXParserFactory {
      * @since 1.5
      */
     public boolean isXIncludeAware() {
-        throw new UnsupportedOperationException(
-            "This parser does not support specification \""
-            + this.getClass().getPackage().getSpecificationTitle()
-            + "\" version \""
-            + this.getClass().getPackage().getSpecificationVersion()
-            + "\""
-            );
+        throw new UnsupportedOperationException("This parser does not support specification \"");
     }
 }
 
