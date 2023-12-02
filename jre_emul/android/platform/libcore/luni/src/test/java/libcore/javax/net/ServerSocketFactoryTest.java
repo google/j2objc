@@ -46,10 +46,10 @@ public class ServerSocketFactoryTest extends TestCase {
     // detail change. Backporting the following kernel change will fix the behavior.
     // http://b/31960002
     // https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=5ea8ea2cb7f1d0db15762c9b0bb9e7330425a071
-    public void testCreateServerSocketWithPortNoBacklog() throws IOException {
-        ServerSocket serverSocket = ServerSocketFactory.getDefault().createServerSocket(0, 1);
-        testSocket(serverSocket, 1);
-    }
+    // public void testCreateServerSocketWithPortNoBacklog() throws IOException {
+    //     ServerSocket serverSocket = ServerSocketFactory.getDefault().createServerSocket(0, 1);
+    //     testSocket(serverSocket, 1);
+    // }
 
     public void testCreateServerSocketWithPortZeroBacklog() throws IOException {
         ServerSocket serverSocket = ServerSocketFactory.getDefault().createServerSocket(0, 0);

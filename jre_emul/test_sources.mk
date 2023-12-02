@@ -269,20 +269,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # com/google/j2objc/java8/LambdaTest.java \
 # com/google/j2objc/java8/SuperMethodReferenceTest.java \
 # java/nio/file/attribute/FileTimeTest.java \
-# libcore/java/nio/channels/SocketChannelTest.java \
-# libcore/java/util/LocaleTest.java \
-# libcore/javax/xml/datatype/DatatypeFactoryTest.java \
-# libcore/javax/xml/datatype/DurationImpl.java \
-# libcore/javax/xml/datatype/DurationTest.java \
-# libcore/javax/xml/parsers/DocumentBuilderFactoryTest.java \
-# libcore/javax/xml/parsers/DocumentBuilderTest.java \
-# libcore/javax/xml/transform/SourceLocatorImpl.java \
-# libcore/javax/xml/transform/TransformerConfigurationExceptionTest.java \
-# libcore/javax/xml/transform/TransformerExceptionTest.java \
-# libcore/libcore/icu/LocaleDataTest.java \
-# org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
-# org/apache/harmony/tests/java/lang/CharacterTest.java \
-# org/apache/harmony/tests/java/nio/channels/SocketChannelTest.java \
 # org/apache/harmony/tests/java/text/ChoiceFormatTest.java \
 # org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \
 # org/apache/harmony/tests/java/text/SimpleDateFormatTest.java \
@@ -750,6 +736,7 @@ TEST_SOURCES := \
     libcore/javax/xml/datatype/DatatypeConstantsTest.java \
     libcore/javax/xml/datatype/XMLGregorianCalendarTest.java \
     libcore/javax/xml/namespace/QNameTest.java \
+    libcore/javax/xml/parsers/DocumentBuilderFactoryTest.java \
     libcore/javax/xml/transform/TransformerFactoryConfigurationErrorTest.java \
     libcore/javax/xml/transform/TransformerFactoryTest.java \
     libcore/javax/xml/transform/TransformerTest.java \
