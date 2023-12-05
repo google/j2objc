@@ -272,7 +272,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \
 # org/apache/harmony/tests/java/text/SimpleDateFormatTest.java \
 # org/apache/harmony/tests/java/util/DateTest.java \
-# org/apache/harmony/tests/java/util/TimeZoneTest.java \
 # tck/java/time/format/TCKZoneIdPrinterParser.java \
 # test/java/time/format/TestDateTimeFormatterBuilder.java \
 # test/java/time/format/TestZoneOffsetParser.java \
@@ -1157,6 +1156,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/SimpleTimeZoneTest.java \
     org/apache/harmony/tests/java/util/StackTest.java \
     org/apache/harmony/tests/java/util/StringTokenizerTest.java \
+    org/apache/harmony/tests/java/util/TimeZoneTest.java \
     org/apache/harmony/tests/java/util/TimerTaskTest.java \
     org/apache/harmony/tests/java/util/TimerTest.java \
     org/apache/harmony/tests/java/util/TooManyListenersExceptionTest.java \
