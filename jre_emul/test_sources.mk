@@ -269,7 +269,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # com/google/j2objc/java8/LambdaTest.java \
 # com/google/j2objc/java8/SuperMethodReferenceTest.java \
 # java/nio/file/attribute/FileTimeTest.java \
-# org/apache/harmony/tests/java/text/ChoiceFormatTest.java \
 # org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \
 # org/apache/harmony/tests/java/text/SimpleDateFormatTest.java \
 # org/apache/harmony/tests/java/util/DateTest.java \
@@ -1097,6 +1096,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/text/AttributedStringTest.java \
     org/apache/harmony/tests/java/text/BreakIteratorTest.java \
     org/apache/harmony/tests/java/text/CollatorTest.java \
+    org/apache/harmony/tests/java/text/ChoiceFormatTest.java \
     org/apache/harmony/tests/java/text/DateFormatTest.java \
     org/apache/harmony/tests/java/text/DecimalFormatSymbolsTest.java \
     org/apache/harmony/tests/java/text/DecimalFormatTest.java \
