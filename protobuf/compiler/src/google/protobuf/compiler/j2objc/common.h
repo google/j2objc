@@ -66,11 +66,11 @@
 #define SimpleDtoa io::SimpleDtoa
 #define SimpleFtoa io::SimpleFtoa
 
+using namespace google::protobuf::compiler;
+
 #define GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(TypeName)    \
   TypeName(const TypeName&);                           \
   void operator=(const TypeName&)
-
-using namespace google::protobuf::compiler;
 
 #define SimpleItoa absl::StrCat
 #define ToUpper absl::AsciiStrToUpper
