@@ -271,7 +271,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # java/nio/file/attribute/FileTimeTest.java \
 # org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \
 # org/apache/harmony/tests/java/text/SimpleDateFormatTest.java \
-# org/apache/harmony/tests/java/util/DateTest.java \
 # tck/java/time/format/TCKZoneIdPrinterParser.java \
 # test/java/time/format/TestDateTimeFormatterBuilder.java \
 # test/java/time/format/TestZoneOffsetParser.java \
@@ -1121,6 +1120,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/util/CollectionsTest.java \
     org/apache/harmony/tests/java/util/ConcurrentModificationExceptionTest.java \
     org/apache/harmony/tests/java/util/CurrencyTest.java \
+    org/apache/harmony/tests/java/util/DateTest.java \
     org/apache/harmony/tests/java/util/DuplicateFormatFlagsExceptionTest.java \
     org/apache/harmony/tests/java/util/EmptyStackExceptionTest.java \
     org/apache/harmony/tests/java/util/EnumMapTest.java \
