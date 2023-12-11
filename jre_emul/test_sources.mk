@@ -269,7 +269,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # com/google/j2objc/java8/LambdaTest.java \
 # com/google/j2objc/java8/SuperMethodReferenceTest.java \
 # java/nio/file/attribute/FileTimeTest.java \
-# org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \
 # tck/java/time/format/TCKZoneIdPrinterParser.java \
 # test/java/time/format/TestDateTimeFormatterBuilder.java \
 # test/java/time/format/TestZoneOffsetParser.java \
@@ -862,6 +861,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/io/ObjectStreamConstantsTest.java \
     org/apache/harmony/tests/java/io/ObjectStreamFieldTest.java \
     org/apache/harmony/tests/java/io/RandomAccessFileTest.java \
+    org/apache/harmony/tests/java/text/DateFormatSymbolsTest.java \
     org/apache/harmony/tests/java/text/SimpleDateFormatTest.java \
     org/apache/harmony/tests/java/lang/AbstractMethodErrorTest.java \
     org/apache/harmony/tests/java/lang/ArithmeticExceptionTest.java \
