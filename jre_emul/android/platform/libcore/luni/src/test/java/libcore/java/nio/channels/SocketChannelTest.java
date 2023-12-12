@@ -47,10 +47,8 @@ import libcore.junit.util.ResourceLeakageDetector.LeakageDetectorRule;
 
 public class SocketChannelTest extends TestCase {
 
-    /* J2ObjC removed: not supported by Junit 4.11 (https://github.com/google/j2objc/issues/1318).
     @Rule
     public LeakageDetectorRule guardRule = ResourceLeakageDetector.getRule();
-     */
 
     public void test_read_intoReadOnlyByteArrays() throws Exception {
         try (ServerSocket ss = new ServerSocket(0);
@@ -76,33 +74,31 @@ public class SocketChannelTest extends TestCase {
     }
 
     // https://code.google.com/p/android/issues/detail?id=56684
-    // TODO(b/311121150): Fix the NioSocketError.
-    // public void test_56684() throws Exception {
-    //     SocketChannel sc = SocketChannel.open();
-    //     sc.configureBlocking(false);
+    public void test_56684() throws Exception {
+        SocketChannel sc = SocketChannel.open();
+        sc.configureBlocking(false);
 
-    //     Selector selector = Selector.open();
-    //     SelectionKey selectionKey = sc.register(selector, SelectionKey.OP_CONNECT);
+        Selector selector = Selector.open();
+        SelectionKey selectionKey = sc.register(selector, SelectionKey.OP_CONNECT);
 
-    //     try {
-    //         // This test originally mocked the connect syscall to return ENETUNREACH.
-    //         // This is not easily doable in openJdk libcore, but a connect to broadcast
-    //         // address (255.255.255.255) for a TCP connection produces ENETUNREACH
-    //         // Kernel code that does it is at
-    //         // http://lxr.free-electrons.com/source/net/ipv4/tcp_ipv4.c?v=3.18#L182
-    //         sc.connect(new InetSocketAddress(InetAddress.getByAddress(new byte[] {
-    //                 (byte) 255, (byte) 255, (byte) 255, (byte) 255 }), 0));
-    //         fail();
-    //     } catch (ConnectException ex) {
-    //     } catch (BindException ex) {
-    //     }
+        try {
+            // This test originally mocked the connect syscall to return ENETUNREACH.
+            // This is not easily doable in openJdk libcore, but a connect to broadcast
+            // address (255.255.255.255) for a TCP connection produces ENETUNREACH
+            // Kernel code that does it is at
+            // http://lxr.free-electrons.com/source/net/ipv4/tcp_ipv4.c?v=3.18#L182
+            sc.connect(new InetSocketAddress(InetAddress.getByAddress(new byte[] {
+                    (byte) 255, (byte) 255, (byte) 255, (byte) 255 }), 0));
+            fail();
+        } catch (ConnectException ex) {
+        }
 
-    //     try {
-    //         sc.finishConnect();
-    //         fail();
-    //     } catch (ClosedChannelException expected) {
-    //     }
-    // }
+        try {
+            sc.finishConnect();
+            fail();
+        } catch (ClosedChannelException expected) {
+        }
+    }
 
     /** Checks that closing a Socket's output stream also closes the Socket and SocketChannel. */
     public void test_channelSocketOutputStreamClosureState() throws Exception {
