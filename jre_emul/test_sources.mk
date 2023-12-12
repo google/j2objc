@@ -269,7 +269,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # com/google/j2objc/java8/LambdaTest.java \
 # com/google/j2objc/java8/SuperMethodReferenceTest.java \
 # java/nio/file/attribute/FileTimeTest.java \
-# tck/java/time/format/TCKZoneIdPrinterParser.java \
 # test/java/time/format/TestDateTimeFormatterBuilder.java \
 # test/java/time/format/TestZoneOffsetParser.java \
 
@@ -1239,6 +1238,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/org/xml/sax/helpers/XMLReaderFactoryTest.java \
     org/xmlpull/v1/XmlPullParserFactoryTest.java \
     sun/misc/UnsafeTest.java \
+    tck/java/time/format/TCKZoneIdPrinterParser.java \
     tck/java/time/TCKClock.java \
     tck/java/time/TCKClock_Fixed.java \
     tck/java/time/TCKClock_Offset.java \
