@@ -269,7 +269,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 # com/google/j2objc/java8/LambdaTest.java \
 # com/google/j2objc/java8/SuperMethodReferenceTest.java \
 # java/nio/file/attribute/FileTimeTest.java \
-# test/java/time/format/TestDateTimeFormatterBuilder.java \
 # test/java/time/format/TestZoneOffsetParser.java \
 
 # TODO(b/311402728): RSAPrivateKey generation fails, returning invalid object type.
@@ -1350,6 +1349,7 @@ TEST_SOURCES := \
     test/java/time/format/TestCharLiteralParser.java \
     test/java/time/format/TestCharLiteralPrinter.java \
     test/java/time/format/TestDateTimeFormatter.java \
+    test/java/time/format/TestDateTimeFormatterBuilder.java \
     test/java/time/format/TestDateTimeParsing.java \
     test/java/time/format/TestDateTimeTextProvider.java \
     test/java/time/format/TestDecimalStyle.java \

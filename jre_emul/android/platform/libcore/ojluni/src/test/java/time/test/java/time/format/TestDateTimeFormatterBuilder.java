@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -59,34 +59,41 @@
  */
 package test.java.time.format;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
 import static java.time.temporal.ChronoField.DAY_OF_MONTH;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
 import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
 import static java.time.temporal.ChronoField.YEAR;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import android.icu.util.VersionInfo;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
-
 import java.text.ParsePosition;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Period;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.chrono.Chronology;
 import java.time.chrono.IsoChronology;
-/* J2ObjC: only "gregorian" and "julian" calendars are supported.
-import java.time.chrono.JapaneseChronology;
-import java.time.chrono.MinguoChronology; */
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 import java.time.format.FormatStyle;
+import java.time.format.ResolverStyle;
 import java.time.format.SignStyle;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoField;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
+import java.time.temporal.ValueRange;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -491,8 +498,6 @@ public class TestDateTimeFormatterBuilder {
             {"HH:MM:ss"},
             {"HHMMSS"},
             {"HH:MM:SS"},
-            {"+H"},
-            {"+HMM"},
             {"+HHM"},
             {"+A"},
         };
@@ -536,6 +541,363 @@ public class TestDateTimeFormatterBuilder {
         builder.appendZoneText(null);
     }
 
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    //-----------------------------------------------------------------------
+    // BEGIN Android-removed: DateTimeFormatBuilder.appendDayPeriodText is temporarily unsupported.
+    /*
+    @Test
+    public void test_appendDayPeriodText_1arg() throws Exception {
+        builder.appendDayPeriodText(TextStyle.FULL);
+        DateTimeFormatter f = builder.toFormatter();
+        assertEquals(f.toString(), "DayPeriod(FULL)");
+    }
+
+    @Test(expected=NullPointerException.class)
+    public void test_appendDayPeriodText_1arg_nullText() throws Exception {
+        builder.appendDayPeriodText(null);
+    }
+
+    @DataProvider(name="dayPeriodFormat")
+    Object[][] data_dayPeriodFormat() {
+        return new Object[][] {
+            {0, 0, TextStyle.FULL, Locale.US, "midnight"},
+            {0, 1, TextStyle.FULL, Locale.US, "at night"},
+            {6, 0, TextStyle.FULL, Locale.US, "in the morning"},
+            {12, 0, TextStyle.FULL, Locale.US, "noon"},
+            {12, 1, TextStyle.FULL, Locale.US, "in the afternoon"},
+            {18, 0, TextStyle.FULL, Locale.US, "in the evening"},
+            {22, 0, TextStyle.FULL, Locale.US, "at night"},
+
+            {0, 0, TextStyle.FULL, Locale.JAPAN, "\u771f\u591c\u4e2d"},
+            {0, 1, TextStyle.FULL, Locale.JAPAN, "\u591c\u4e2d"},
+            {6, 0, TextStyle.FULL, Locale.JAPAN, "\u671d"},
+            {12, 0, TextStyle.FULL, Locale.JAPAN, "\u6b63\u5348"},
+            {12, 1, TextStyle.FULL, Locale.JAPAN, "\u663c"},
+            {18, 0, TextStyle.FULL, Locale.JAPAN, "\u5915\u65b9"},
+            {19, 0, TextStyle.FULL, Locale.JAPAN, "\u591c"},
+            {23, 0, TextStyle.FULL, Locale.JAPAN, "\u591c\u4e2d"},
+
+            {0, 0, TextStyle.NARROW, Locale.US, "mi"},
+            {0, 1, TextStyle.NARROW, Locale.US, "at night"},
+            {6, 0, TextStyle.NARROW, Locale.US, "in the morning"},
+            {12, 0, TextStyle.NARROW, Locale.US, "n"},
+            {12, 1, TextStyle.NARROW, Locale.US, "in the afternoon"},
+            {18, 0, TextStyle.NARROW, Locale.US, "in the evening"},
+            {22, 0, TextStyle.NARROW, Locale.US, "at night"},
+
+            {0, 0, TextStyle.NARROW, Locale.JAPAN, "\u771f\u591c\u4e2d"},
+            {0, 1, TextStyle.NARROW, Locale.JAPAN, "\u591c\u4e2d"},
+            {6, 0, TextStyle.NARROW, Locale.JAPAN, "\u671d"},
+            {12, 0, TextStyle.NARROW, Locale.JAPAN, "\u6b63\u5348"},
+            {12, 1, TextStyle.NARROW, Locale.JAPAN, "\u663c"},
+            {18, 0, TextStyle.NARROW, Locale.JAPAN, "\u5915\u65b9"},
+            {19, 0, TextStyle.NARROW, Locale.JAPAN, "\u591c"},
+            {23, 0, TextStyle.NARROW, Locale.JAPAN, "\u591c\u4e2d"},
+        };
+    }
+    @Test (dataProvider="dayPeriodFormat")
+    public void test_dayPeriodFormat(int hod, int moh, TextStyle ts, Locale l, String expected) throws Exception {
+        builder.appendDayPeriodText(ts);
+        LocalTime t = LocalTime.of(hod, moh);
+        DateTimeFormatter f = builder.toFormatter().withLocale(l);
+        assertEquals(f.format(t), expected);
+    }
+
+    @DataProvider(name="dayPeriodParse")
+    Object[][] data_dayPeriodParse() {
+        return new Object[][] {
+                {TextStyle.FULL, Locale.US, 0, 0, "midnight"},
+                {TextStyle.FULL, Locale.US, 1, 30, "at night"},
+                {TextStyle.FULL, Locale.US, 6, 0, "AM"},
+                {TextStyle.FULL, Locale.US, 9, 0, "in the morning"},
+                {TextStyle.FULL, Locale.US, 12, 0, "noon"},
+                {TextStyle.FULL, Locale.US, 15, 0, "in the afternoon"},
+                {TextStyle.FULL, Locale.US, 18, 0, "PM"},
+                {TextStyle.FULL, Locale.US, 19, 30, "in the evening"},
+
+                {TextStyle.FULL, Locale.JAPAN, 0, 0, "\u771f\u591c\u4e2d"},
+                {TextStyle.FULL, Locale.JAPAN, 1, 30, "\u591c\u4e2d"},
+                {TextStyle.FULL, Locale.JAPAN, 6, 0, "\u5348\u524d"},
+                {TextStyle.FULL, Locale.JAPAN, 8, 0, "\u671d"},
+                {TextStyle.FULL, Locale.JAPAN, 12, 0, "\u6b63\u5348"},
+                {TextStyle.FULL, Locale.JAPAN, 14, 0, "\u663c"},
+                {TextStyle.FULL, Locale.JAPAN, 17, 30, "\u5915\u65b9"},
+                {TextStyle.FULL, Locale.JAPAN, 18, 0, "\u5348\u5f8c"},
+                {TextStyle.FULL, Locale.JAPAN, 21, 0, "\u591c"},
+
+                {TextStyle.NARROW, Locale.US, 0, 0, "mi"},
+                {TextStyle.NARROW, Locale.US, 1, 30, "at night"},
+                {TextStyle.NARROW, Locale.US, 6, 0, "a"},
+                {TextStyle.NARROW, Locale.US, 9, 0, "in the morning"},
+                {TextStyle.NARROW, Locale.US, 12, 0, "n"},
+                {TextStyle.NARROW, Locale.US, 15, 0, "in the afternoon"},
+                {TextStyle.NARROW, Locale.US, 18, 0, "p"},
+                {TextStyle.NARROW, Locale.US, 19, 30, "in the evening"},
+
+                {TextStyle.NARROW, Locale.JAPAN, 0, 0, "\u771f\u591c\u4e2d"},
+                {TextStyle.NARROW, Locale.JAPAN, 1, 30, "\u591c\u4e2d"},
+                {TextStyle.NARROW, Locale.JAPAN, 6, 0, "\u5348\u524d"},
+                {TextStyle.NARROW, Locale.JAPAN, 8, 0, "\u671d"},
+                {TextStyle.NARROW, Locale.JAPAN, 12, 0, "\u6b63\u5348"},
+                {TextStyle.NARROW, Locale.JAPAN, 14, 0, "\u663c"},
+                {TextStyle.NARROW, Locale.JAPAN, 17, 30, "\u5915\u65b9"},
+                {TextStyle.NARROW, Locale.JAPAN, 18, 0, "\u5348\u5f8c"},
+                {TextStyle.NARROW, Locale.JAPAN, 21, 0, "\u591c"},
+        };
+    }
+    @Test (dataProvider="dayPeriodParse")
+    public void test_dayPeriodParse(TextStyle ts, Locale l, long hod, long moh, String dayPeriod) throws Exception {
+        builder.appendDayPeriodText(ts);
+        DateTimeFormatter f = builder.toFormatter().withLocale(l);
+        var p = f.parse(dayPeriod);
+        assertEquals(p.getLong(HOUR_OF_DAY), hod);
+        assertEquals(p.getLong(MINUTE_OF_HOUR), moh);
+    }
+
+    @DataProvider(name="dayPeriodParsePattern")
+    Object[][] data_dayPeriodParsePattern() {
+        return new Object[][] {
+            {"H B", "23 at night", 23},
+            {"H B", "3 at night", 3},
+            {"K B", "11 at night", 23},
+            {"K B", "3 at night", 3},
+            {"K B", "11 in the morning", 11},
+            {"h B", "11 at night", 23},
+            {"h B", "3 at night", 3},
+            {"h B", "11 in the morning", 11},
+            {"a", "AM", 6},
+            {"a", "PM", 18},
+        };
+    }
+
+    @Test (dataProvider="dayPeriodParsePattern")
+    public void test_dayPeriodParsePattern(String pattern, String hourDayPeriod, long expected) throws Exception {
+        builder.appendPattern(pattern);
+        DateTimeFormatter f = builder.toFormatter().withLocale(Locale.US);
+        var p = f.parse(hourDayPeriod);
+        assertEquals(p.getLong(HOUR_OF_DAY), expected);
+    }
+
+    @DataProvider(name="dayPeriodParseMidnight")
+    Object[][] data_dayPeriodParseMidnight() {
+        return new Object[][] {
+            {"u-M-d H:m B", "2020-11-07 00:00 midnight", 7, 0},
+            {"u-M-d H:m B", "2020-11-07 24:00 midnight", 8, 0},
+        };
+    }
+
+    @Test (dataProvider="dayPeriodParseMidnight")
+    public void test_dayPeriodParseMidnight(String pattern, String dateTime, long expectedDOM, long expectedHOD) throws Exception {
+        builder.appendPattern(pattern);
+        DateTimeFormatter f = builder.toFormatter().withLocale(Locale.US);
+        var p = f.parse(dateTime);
+        assertEquals(p.getLong(DAY_OF_MONTH), expectedDOM);
+        assertEquals(p.getLong(HOUR_OF_DAY), expectedHOD);
+    }
+
+    @DataProvider(name="dayPeriodParseInvalid")
+    Object[][] data_dayPeriodParseInvalid() {
+        return new Object[][] {
+                {TextStyle.FULL, ResolverStyle.SMART, Locale.US, "00:01 midnight", "00:00"},
+                {TextStyle.FULL, ResolverStyle.SMART, Locale.US, "06:01 at night", "21:00-06:00"},
+                {TextStyle.FULL, ResolverStyle.SMART, Locale.US, "05:59 in the morning", "06:00-12:00"},
+                {TextStyle.FULL, ResolverStyle.SMART, Locale.US, "11:59 noon", "12:00"},
+                {TextStyle.FULL, ResolverStyle.SMART, Locale.US, "18:00 in the afternoon", "12:00-18:00"},
+                {TextStyle.FULL, ResolverStyle.SMART, Locale.US, "17:59 in the evening", "18:00-21:00"},
+                {TextStyle.NARROW, ResolverStyle.SMART, Locale.US, "00:01 mi", "00:00"},
+                {TextStyle.NARROW, ResolverStyle.SMART, Locale.US, "06:01 at night", "21:00-06:00"},
+                {TextStyle.NARROW, ResolverStyle.SMART, Locale.US, "05:59 in the morning", "06:00-12:00"},
+                {TextStyle.NARROW, ResolverStyle.SMART, Locale.US, "11:59 n", "12:00"},
+                {TextStyle.NARROW, ResolverStyle.SMART, Locale.US, "18:00 in the afternoon", "12:00-18:00"},
+                {TextStyle.NARROW, ResolverStyle.SMART, Locale.US, "17:59 in the evening", "18:00-21:00"},
+
+                {TextStyle.FULL, ResolverStyle.SMART, Locale.JAPAN, "00:01 \u771f\u591c\u4e2d", "00:00"},
+                {TextStyle.FULL, ResolverStyle.SMART, Locale.JAPAN, "04:00 \u591c\u4e2d", "23:00-04:00"},
+                {TextStyle.FULL, ResolverStyle.SMART, Locale.JAPAN, "03:59 \u671d", "04:00-12:00"},
+                {TextStyle.FULL, ResolverStyle.SMART, Locale.JAPAN, "12:01 \u6b63\u5348", "12:00"},
+                {TextStyle.FULL, ResolverStyle.SMART, Locale.JAPAN, "16:00 \u663c", "12:00-16:00"},
+                {TextStyle.FULL, ResolverStyle.SMART, Locale.JAPAN, "19:01 \u5915\u65b9", "16:00-19:00"},
+                {TextStyle.FULL, ResolverStyle.SMART, Locale.JAPAN, "23:00 \u591c", "19:00-23:00"},
+                {TextStyle.NARROW, ResolverStyle.SMART, Locale.JAPAN, "00:01 \u771f\u591c\u4e2d", "00:00"},
+                {TextStyle.NARROW, ResolverStyle.SMART, Locale.JAPAN, "04:00 \u591c\u4e2d", "23:00-04:00"},
+                {TextStyle.NARROW, ResolverStyle.SMART, Locale.JAPAN, "03:59 \u671d", "04:00-12:00"},
+                {TextStyle.NARROW, ResolverStyle.SMART, Locale.JAPAN, "12:01 \u6b63\u5348", "12:00"},
+                {TextStyle.NARROW, ResolverStyle.SMART, Locale.JAPAN, "16:00 \u663c", "12:00-16:00"},
+                {TextStyle.NARROW, ResolverStyle.SMART, Locale.JAPAN, "19:01 \u5915\u65b9", "16:00-19:00"},
+                {TextStyle.NARROW, ResolverStyle.SMART, Locale.JAPAN, "23:00 \u591c", "19:00-23:00"},
+
+                {TextStyle.FULL, ResolverStyle.LENIENT, Locale.US, "00:01 midnight", "00:00"},
+                {TextStyle.FULL, ResolverStyle.LENIENT, Locale.US, "06:01 at night", "21:00-06:00"},
+                {TextStyle.FULL, ResolverStyle.LENIENT, Locale.US, "05:59 in the morning", "06:00-12:00"},
+                {TextStyle.FULL, ResolverStyle.LENIENT, Locale.US, "11:59 noon", "12:00"},
+                {TextStyle.FULL, ResolverStyle.LENIENT, Locale.US, "18:00 in the afternoon", "12:00-18:00"},
+                {TextStyle.FULL, ResolverStyle.LENIENT, Locale.US, "17:59 in the evening", "18:00-21:00"},
+                {TextStyle.NARROW, ResolverStyle.LENIENT, Locale.US, "00:01 mi", "00:00"},
+                {TextStyle.NARROW, ResolverStyle.LENIENT, Locale.US, "06:01 at night", "21:00-06:00"},
+                {TextStyle.NARROW, ResolverStyle.LENIENT, Locale.US, "05:59 in the morning", "06:00-12:00"},
+                {TextStyle.NARROW, ResolverStyle.LENIENT, Locale.US, "11:59 n", "12:00"},
+                {TextStyle.NARROW, ResolverStyle.LENIENT, Locale.US, "18:00 in the afternoon", "12:00-18:00"},
+                {TextStyle.NARROW, ResolverStyle.LENIENT, Locale.US, "17:59 in the evening", "18:00-21:00"},
+
+                {TextStyle.FULL, ResolverStyle.LENIENT, Locale.JAPAN, "00:01 \u771f\u591c\u4e2d", "00:00"},
+                {TextStyle.FULL, ResolverStyle.LENIENT, Locale.JAPAN, "04:00 \u591c\u4e2d", "23:00-04:00"},
+                {TextStyle.FULL, ResolverStyle.LENIENT, Locale.JAPAN, "03:59 \u671d", "04:00-12:00"},
+                {TextStyle.FULL, ResolverStyle.LENIENT, Locale.JAPAN, "12:01 \u6b63\u5348", "12:00"},
+                {TextStyle.FULL, ResolverStyle.LENIENT, Locale.JAPAN, "16:00 \u663c", "12:00-16:00"},
+                {TextStyle.FULL, ResolverStyle.LENIENT, Locale.JAPAN, "19:01 \u5915\u65b9", "16:00-19:00"},
+                {TextStyle.FULL, ResolverStyle.LENIENT, Locale.JAPAN, "23:00 \u591c", "19:00-23:00"},
+                {TextStyle.NARROW, ResolverStyle.LENIENT, Locale.JAPAN, "00:01 \u771f\u591c\u4e2d", "00:00"},
+                {TextStyle.NARROW, ResolverStyle.LENIENT, Locale.JAPAN, "04:00 \u591c\u4e2d", "23:00-04:00"},
+                {TextStyle.NARROW, ResolverStyle.LENIENT, Locale.JAPAN, "03:59 \u671d", "04:00-12:00"},
+                {TextStyle.NARROW, ResolverStyle.LENIENT, Locale.JAPAN, "12:01 \u6b63\u5348", "12:00"},
+                {TextStyle.NARROW, ResolverStyle.LENIENT, Locale.JAPAN, "16:00 \u663c", "12:00-16:00"},
+                {TextStyle.NARROW, ResolverStyle.LENIENT, Locale.JAPAN, "19:01 \u5915\u65b9", "16:00-19:00"},
+                {TextStyle.NARROW, ResolverStyle.LENIENT, Locale.JAPAN, "23:00 \u591c", "19:00-23:00"},
+        };
+    }
+    @Test (dataProvider="dayPeriodParseInvalid")
+    public void test_dayPeriodParseInvalid(TextStyle ts, ResolverStyle rs, Locale l, String dayPeriod, String periodRange) throws Exception {
+        try {
+            builder.append(ISO_LOCAL_TIME).appendLiteral(' ').appendDayPeriodText(ts)
+                    .toFormatter()
+                    .withLocale(l)
+                    .parse(dayPeriod);
+            if (rs != ResolverStyle.LENIENT) {
+                throw new RuntimeException("DateTimeParseException should be thrown");
+            }
+        } catch (DateTimeParseException e) {
+            assertEquals(e.getCause().getMessage(),
+                    "Conflict found: Resolved time " + dayPeriod.substring(0, 5) + " conflicts with " +
+                    "DayPeriod(" + periodRange + ")");
+        }
+    }
+
+    @DataProvider(name="dayPeriodParsePatternInvalid")
+    Object[][] data_dayPeriodParsePatternInvalid() {
+        return new Object[][] {
+                {"H B", ResolverStyle.SMART, "47 at night", 23, null},
+                {"H B", ResolverStyle.SMART, "51 at night", 3, null},
+                {"H B", ResolverStyle.SMART, "-2 at night", 22, null},
+                {"K B", ResolverStyle.SMART, "59 at night", 23, null},
+                {"K B", ResolverStyle.SMART, "51 at night", 3, null},
+                {"K B", ResolverStyle.SMART, "59 in the morning", 11, null},
+                {"K B", ResolverStyle.SMART, "-2 in the morning", 22, null},
+                {"h B", ResolverStyle.SMART, "59 at night", 23, null},
+                {"h B", ResolverStyle.SMART, "51 at night", 3, null},
+                {"h B", ResolverStyle.SMART, "59 in the morning", 11, null},
+                {"h B", ResolverStyle.SMART, "-2 in the morning", 22, null},
+
+                {"H B", ResolverStyle.LENIENT, "47 at night", 23, Period.ofDays(1)},
+                {"H B", ResolverStyle.LENIENT, "51 at night", 3, Period.ofDays(2)},
+                {"H B", ResolverStyle.LENIENT, "-2 at night", 22, Period.ofDays(-1)},
+                {"K B", ResolverStyle.LENIENT, "59 at night", 23, Period.ofDays(2)},
+                {"K B", ResolverStyle.LENIENT, "51 at night", 3, Period.ofDays(2)},
+                {"K B", ResolverStyle.LENIENT, "59 in the morning", 11, Period.ofDays(2)},
+                {"K B", ResolverStyle.LENIENT, "-2 in the morning", 22, Period.ofDays(-1)},
+                {"h B", ResolverStyle.LENIENT, "59 at night", 23, Period.ofDays(2)},
+                {"h B", ResolverStyle.LENIENT, "51 at night", 3, Period.ofDays(2)},
+                {"h B", ResolverStyle.LENIENT, "59 in the morning", 11, Period.ofDays(2)},
+                {"h B", ResolverStyle.LENIENT, "-2 in the morning", 22, Period.ofDays(-1)},
+        };
+    }
+
+    @Test (dataProvider="dayPeriodParsePatternInvalid")
+    public void test_dayPeriodParsePatternInvalid(String pattern, ResolverStyle rs, String hourDayPeriod, long expected, Period expectedExcessDays) throws Exception {
+        try {
+            builder.appendPattern(pattern);
+            DateTimeFormatter f = builder.toFormatter().withLocale(Locale.US).withResolverStyle(rs);
+            var p = f.parse(hourDayPeriod);
+            if (rs != ResolverStyle.LENIENT) {
+                throw new RuntimeException("DateTimeParseException should be thrown");
+            }
+            assertEquals(p.getLong(HOUR_OF_DAY), expected);
+            assertEquals(p.query(DateTimeFormatter.parsedExcessDays()), expectedExcessDays);
+        } catch (DateTimeParseException e) {
+            // exception successfully thrown
+        }
+    }
+
+    @Test (expected = DateTimeParseException.class)
+    public void test_dayPeriodParseStrictNoTime() {
+        builder.appendPattern("B");
+        DateTimeFormatter f = builder.toFormatter().withLocale(Locale.US).withResolverStyle(ResolverStyle.STRICT);
+        LocalTime.parse("at night", f);
+    }
+
+    @Test
+    public void test_dayPeriodUserFieldResolution() {
+        var dtf = builder
+                .appendValue(new TemporalField() {
+                                 @Override
+                                 public TemporalUnit getBaseUnit() {
+                                     return null;
+                                 }
+
+                                 @Override
+                                 public TemporalUnit getRangeUnit() {
+                                     return null;
+                                 }
+
+                                 @Override
+                                 public ValueRange range() {
+                                     return null;
+                                 }
+
+                                 @Override
+                                 public boolean isDateBased() {
+                                     return false;
+                                 }
+
+                                 @Override
+                                 public boolean isTimeBased() {
+                                     return false;
+                                 }
+
+                                 @Override
+                                 public boolean isSupportedBy(TemporalAccessor temporal) {
+                                     return false;
+                                 }
+
+                                 @Override
+                                 public ValueRange rangeRefinedBy(TemporalAccessor temporal) {
+                                     return null;
+                                 }
+
+                                 @Override
+                                 public long getFrom(TemporalAccessor temporal) {
+                                     return 0;
+                                 }
+
+                                 @Override
+                                 public <R extends Temporal> R adjustInto(R temporal, long newValue) {
+                                     return null;
+                                 }
+
+                                 @Override
+                                 public TemporalAccessor resolve(
+                                         Map<TemporalField, Long> fieldValues,
+                                         TemporalAccessor partialTemporal,
+                                         ResolverStyle resolverStyle) {
+                                     fieldValues.remove(this);
+                                     fieldValues.put(ChronoField.HOUR_OF_DAY, 6L);
+                                     return null;
+                                 }
+                             },
+                        1)
+                .appendPattern(" B")
+                .toFormatter()
+                .withLocale(Locale.US);
+        assertEquals((long)dtf.parse("0 in the morning").getLong(ChronoField.HOUR_OF_DAY), 6L);
+        try {
+            dtf.parse("0 at night");
+            fail("DateTimeParseException should be thrown");
+        } catch (DateTimeParseException e) {
+            // success
+        }
+    }
+    */
+    // END Android-removed: DateTimeFormatBuilder.appendDayPeriodText is temporarily unsupported.
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
     //-----------------------------------------------------------------------
@@ -692,7 +1054,7 @@ public class TestDateTimeFormatterBuilder {
             {"LLLLL", "Text(MonthOfYear,NARROW_STANDALONE)"},
 
             {"D", "Value(DayOfYear)"},
-            {"DD", "Value(DayOfYear,2)"},
+            {"DD", "Value(DayOfYear,2,3,NOT_NEGATIVE)"},
             {"DDD", "Value(DayOfYear,3)"},
 
             {"d", "Value(DayOfMonth)"},
@@ -754,17 +1116,17 @@ public class TestDateTimeFormatterBuilder {
             {"SSS", "Fraction(NanoOfSecond,3,3)"},
             {"SSSSSSSSS", "Fraction(NanoOfSecond,9,9)"},
 
-            {"A", "Value(MilliOfDay)"},
-            {"AA", "Value(MilliOfDay,2)"},
-            {"AAA", "Value(MilliOfDay,3)"},
+            {"A", "Value(MilliOfDay,1,19,NOT_NEGATIVE)"},
+            {"AA", "Value(MilliOfDay,2,19,NOT_NEGATIVE)"},
+            {"AAA", "Value(MilliOfDay,3,19,NOT_NEGATIVE)"},
 
-            {"n", "Value(NanoOfSecond)"},
-            {"nn", "Value(NanoOfSecond,2)"},
-            {"nnn", "Value(NanoOfSecond,3)"},
+            {"n", "Value(NanoOfSecond,1,19,NOT_NEGATIVE)"},
+            {"nn", "Value(NanoOfSecond,2,19,NOT_NEGATIVE)"},
+            {"nnn", "Value(NanoOfSecond,3,19,NOT_NEGATIVE)"},
 
-            {"N", "Value(NanoOfDay)"},
-            {"NN", "Value(NanoOfDay,2)"},
-            {"NNN", "Value(NanoOfDay,3)"},
+            {"N", "Value(NanoOfDay,1,19,NOT_NEGATIVE)"},
+            {"NN", "Value(NanoOfDay,2,19,NOT_NEGATIVE)"},
+            {"NNN", "Value(NanoOfDay,3,19,NOT_NEGATIVE)"},
 
             {"z", "ZoneText(SHORT)"},
             {"zz", "ZoneText(SHORT)"},
@@ -790,7 +1152,7 @@ public class TestDateTimeFormatterBuilder {
             {"xxxxx", "Offset(+HH:MM:ss,'+00:00')"},  // LDML
 
             {"ppH", "Pad(Value(HourOfDay),2)"},
-            {"pppDD", "Pad(Value(DayOfYear,2),3)"},
+            {"pppDD", "Pad(Value(DayOfYear,2,3,NOT_NEGATIVE),3)"},
 
             {"yyyy[-MM[-dd", "Value(YearOfEra,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)['-'Value(DayOfMonth,2)]]"},
             {"yyyy[-MM[-dd]]", "Value(YearOfEra,4,19,EXCEEDS_PAD)['-'Value(MonthOfYear,2)['-'Value(DayOfMonth,2)]]"},
@@ -802,6 +1164,11 @@ public class TestDateTimeFormatterBuilder {
             {"w", "Localized(WeekOfWeekBasedYear,1)"},
             {"ww", "Localized(WeekOfWeekBasedYear,2)"},
             {"W", "Localized(WeekOfMonth,1)"},
+
+            // Android-removed: The symbol 'B' is temporarily unsupported.
+            // {"B", "DayPeriod(SHORT)"},
+            // {"BBBB", "DayPeriod(FULL)"},
+            // {"BBBBB", "DayPeriod(NARROW)"},
         };
     }
 
@@ -878,6 +1245,10 @@ public class TestDateTimeFormatterBuilder {
 
             {"www"},
             {"WW"},
+
+            {"BB"},
+            {"BBB"},
+            {"BBBBBB"},
         };
     }
 
@@ -893,84 +1264,21 @@ public class TestDateTimeFormatterBuilder {
 
     //-----------------------------------------------------------------------
     @DataProvider
-    public static Object[][] data_patternPrint() {
-        return new Object[][] {
-            {"Q", date(2012, 2, 10), "1"},
-            {"QQ", date(2012, 2, 10), "01"},
-            {"QQQ", date(2012, 2, 10), "Q1"},
-            {"QQQQ", date(2012, 2, 10), "1st quarter"},
-            {"QQQQQ", date(2012, 2, 10), "1"},
-        };
-    }
-
-    @Test
-    @UseDataProvider("data_patternPrint")
-    public void test_appendPattern_patternPrint(String input, Temporal temporal, String expected) throws Exception {
-        DateTimeFormatter f = builder.appendPattern(input).toFormatter(Locale.UK);
-        String test = f.format(temporal);
-        assertEquals(test, expected);
-    }
-
-    //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] localizedDateTimePatterns() {
         // Android-changed: Adapt for changes since old CLDR version this tests were written for.
         return new Object[][] {
-            {FormatStyle.FULL, FormatStyle.FULL, IsoChronology.INSTANCE, Locale.US, "EEEE, MMMM d, y 'at' h:mm:ss a zzzz"},
-            {FormatStyle.LONG, FormatStyle.LONG, IsoChronology.INSTANCE, Locale.US, "MMMM d, y 'at' h:mm:ss a z"},
-            {FormatStyle.MEDIUM, FormatStyle.MEDIUM, IsoChronology.INSTANCE, Locale.US, "MMM d, y, h:mm:ss a"},
-            {FormatStyle.SHORT, FormatStyle.SHORT, IsoChronology.INSTANCE, Locale.US, "M/d/yy, h:mm a"},
+            {FormatStyle.FULL, FormatStyle.FULL, IsoChronology.INSTANCE, Locale.US, "EEEE, MMMM d, y 'at' h:mm:ss\u202fa zzzz"},
+            {FormatStyle.LONG, FormatStyle.LONG, IsoChronology.INSTANCE, Locale.US, "MMMM d, y 'at' h:mm:ss\u202fa z"},
+            {FormatStyle.MEDIUM, FormatStyle.MEDIUM, IsoChronology.INSTANCE, Locale.US, "MMM d, y, h:mm:ss\u202fa"},
+            {FormatStyle.SHORT, FormatStyle.SHORT, IsoChronology.INSTANCE, Locale.US, "M/d/yy, h:mm\u202fa"},
             {FormatStyle.FULL, null, IsoChronology.INSTANCE, Locale.US, "EEEE, MMMM d, y"},
             {FormatStyle.LONG, null, IsoChronology.INSTANCE, Locale.US, "MMMM d, y"},
             {FormatStyle.MEDIUM, null, IsoChronology.INSTANCE, Locale.US, "MMM d, y"},
             {FormatStyle.SHORT, null, IsoChronology.INSTANCE, Locale.US, "M/d/yy"},
-            {null, FormatStyle.FULL, IsoChronology.INSTANCE, Locale.US, "h:mm:ss a zzzz"},
-            {null, FormatStyle.LONG, IsoChronology.INSTANCE, Locale.US, "h:mm:ss a z"},
-            {null, FormatStyle.MEDIUM, IsoChronology.INSTANCE, Locale.US, "h:mm:ss a"},
-            {null, FormatStyle.SHORT, IsoChronology.INSTANCE, Locale.US, "h:mm a"},
-
-            // French Locale and ISO Chronology
-            {FormatStyle.FULL, FormatStyle.FULL, IsoChronology.INSTANCE, Locale.FRENCH, "EEEE d MMMM y 'à' HH:mm:ss zzzz"},
-            {FormatStyle.LONG, FormatStyle.LONG, IsoChronology.INSTANCE, Locale.FRENCH, "d MMMM y 'à' HH:mm:ss z"},
-            {FormatStyle.MEDIUM, FormatStyle.MEDIUM, IsoChronology.INSTANCE, Locale.FRENCH, "d MMM y 'à' HH:mm:ss"},
-            {FormatStyle.SHORT, FormatStyle.SHORT, IsoChronology.INSTANCE, Locale.FRENCH, "dd/MM/y HH:mm"},
-            {FormatStyle.FULL, null, IsoChronology.INSTANCE, Locale.FRENCH, "EEEE d MMMM y"},
-            {FormatStyle.LONG, null, IsoChronology.INSTANCE, Locale.FRENCH, "d MMMM y"},
-            {FormatStyle.MEDIUM, null, IsoChronology.INSTANCE, Locale.FRENCH, "d MMM y"},
-            {FormatStyle.SHORT, null, IsoChronology.INSTANCE, Locale.FRENCH, "dd/MM/y"},
-            {null, FormatStyle.FULL, IsoChronology.INSTANCE, Locale.FRENCH, "HH:mm:ss zzzz"},
-            {null, FormatStyle.LONG, IsoChronology.INSTANCE, Locale.FRENCH, "HH:mm:ss z"},
-            {null, FormatStyle.MEDIUM, IsoChronology.INSTANCE, Locale.FRENCH, "HH:mm:ss"},
-            {null, FormatStyle.SHORT, IsoChronology.INSTANCE, Locale.FRENCH, "HH:mm"},
-
-            /* J2ObjC: only "gregorian" and "julian" calendars are supported.
-            // Japanese Locale and JapaneseChronology
-            {FormatStyle.FULL, FormatStyle.FULL, JapaneseChronology.INSTANCE, Locale.JAPANESE, "Gy\u5e74M\u6708d\u65e5EEEE H\u6642mm\u5206ss\u79d2 zzzz"},
-            {FormatStyle.LONG, FormatStyle.LONG, JapaneseChronology.INSTANCE, Locale.JAPANESE, "Gy\u5e74M\u6708d\u65e5 H:mm:ss z"},
-            {FormatStyle.MEDIUM, FormatStyle.MEDIUM, JapaneseChronology.INSTANCE, Locale.JAPANESE, "Gy\u5e74M\u6708d\u65e5 H:mm:ss"},
-            {FormatStyle.SHORT, FormatStyle.SHORT, JapaneseChronology.INSTANCE, Locale.JAPANESE, "GGGGGy/M/d H:mm"},
-            {FormatStyle.FULL, null, JapaneseChronology.INSTANCE, Locale.JAPANESE, "Gy\u5e74M\u6708d\u65e5EEEE"},
-            {FormatStyle.LONG, null, JapaneseChronology.INSTANCE, Locale.JAPANESE, "Gy\u5e74M\u6708d\u65e5"},
-            {FormatStyle.MEDIUM, null, JapaneseChronology.INSTANCE, Locale.JAPANESE, "Gy\u5e74M\u6708d\u65e5"},
-            {FormatStyle.SHORT, null, JapaneseChronology.INSTANCE, Locale.JAPANESE, "GGGGGy/M/d"},
-            {null, FormatStyle.FULL, JapaneseChronology.INSTANCE, Locale.JAPANESE, "H\u6642mm\u5206ss\u79d2 zzzz"},
-            {null, FormatStyle.LONG, JapaneseChronology.INSTANCE, Locale.JAPANESE, "H:mm:ss z"},
-            {null, FormatStyle.MEDIUM, JapaneseChronology.INSTANCE, Locale.JAPANESE, "H:mm:ss"},
-            {null, FormatStyle.SHORT, JapaneseChronology.INSTANCE, Locale.JAPANESE, "H:mm"},
-
-            // Chinese Local and Chronology
-            {FormatStyle.FULL, FormatStyle.FULL, MinguoChronology.INSTANCE, Locale.CHINESE, "Gy\u5e74M\u6708d\u65e5EEEE zzzz ah:mm:ss"},
-            {FormatStyle.LONG, FormatStyle.LONG, MinguoChronology.INSTANCE, Locale.CHINESE, "Gy\u5e74M\u6708d\u65e5 z ah:mm:ss"},
-            {FormatStyle.MEDIUM, FormatStyle.MEDIUM, MinguoChronology.INSTANCE, Locale.CHINESE, "Gy\u5e74M\u6708d\u65e5 ah:mm:ss"},
-            {FormatStyle.SHORT, FormatStyle.SHORT, MinguoChronology.INSTANCE, Locale.CHINESE, "Gyy/M/d ah:mm"},
-            {FormatStyle.FULL, null, MinguoChronology.INSTANCE, Locale.CHINESE, "Gy\u5e74M\u6708d\u65e5EEEE"},
-            {FormatStyle.LONG, null, MinguoChronology.INSTANCE, Locale.CHINESE, "Gy\u5e74M\u6708d\u65e5"},
-            {FormatStyle.MEDIUM, null, MinguoChronology.INSTANCE, Locale.CHINESE, "Gy\u5e74M\u6708d\u65e5"},
-            {FormatStyle.SHORT, null, MinguoChronology.INSTANCE, Locale.CHINESE, "Gyy/M/d"},
-            {null, FormatStyle.FULL, MinguoChronology.INSTANCE, Locale.CHINESE, "zzzz ah:mm:ss"},
-            {null, FormatStyle.LONG, MinguoChronology.INSTANCE, Locale.CHINESE, "z ah:mm:ss"},
-            {null, FormatStyle.MEDIUM, MinguoChronology.INSTANCE, Locale.CHINESE, "ah:mm:ss"},
-            {null, FormatStyle.SHORT, MinguoChronology.INSTANCE, Locale.CHINESE, "ah:mm"}, */
+            {null, FormatStyle.FULL, IsoChronology.INSTANCE, Locale.US, "h:mm:ss\u202fa zzzz"},
+            {null, FormatStyle.LONG, IsoChronology.INSTANCE, Locale.US, "h:mm:ss\u202fa z"},
+            {null, FormatStyle.MEDIUM, IsoChronology.INSTANCE, Locale.US, "h:mm:ss\u202fa"},
+            {null, FormatStyle.SHORT, IsoChronology.INSTANCE, Locale.US, "h:mm\u202fa"},
         };
     }
 
@@ -978,6 +1286,10 @@ public class TestDateTimeFormatterBuilder {
     @UseDataProvider("localizedDateTimePatterns")
     public void test_getLocalizedDateTimePattern(FormatStyle dateStyle, FormatStyle timeStyle,
             Chronology chrono, Locale locale, String expected) {
+        // Android-changed: Require ICU 72 to pass the test due to CLDR data change
+        if (VersionInfo.ICU_VERSION.getMajor() < 72) {
+            return;
+        }
         String actual = DateTimeFormatterBuilder.getLocalizedDateTimePattern(dateStyle, timeStyle, chrono, locale);
         assertEquals("Pattern " + convertNonAscii(actual), actual, expected);
     }
