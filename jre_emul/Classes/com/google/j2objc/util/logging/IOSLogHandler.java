@@ -122,11 +122,7 @@ public class IOSLogHandler extends Handler {
   private Object nativeLog;
 
   public IOSLogHandler() {
-    this(new IOSLogFormatter());
-  }
-
-  public IOSLogHandler(Formatter customFormatter) {
-    setFormatter(customFormatter);
+    setFormatter(new IOSLogFormatter());
   }
 
   @Override
