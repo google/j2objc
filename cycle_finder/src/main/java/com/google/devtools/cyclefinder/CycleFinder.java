@@ -156,6 +156,7 @@ public class CycleFinder {
     parser.parseFiles(sourceFiles, handler, options.sourceVersion());
 
     FileUtil.deleteTempDir(strippedDir);
+    parser.close();
 
     if (ErrorUtil.errorCount() > 0) {
       return;

@@ -26,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -209,7 +210,9 @@ public class FileUtil {
   }
 
   public String readFile(InputFile file) throws IOException {
-    return CharStreams.toString(file.openReader(charset));
+    try (Reader reader = file.openReader(charset)) {
+      return CharStreams.toString(reader);
+    }
   }
 
   private static InputStream streamForFile(String filename) throws IOException {
