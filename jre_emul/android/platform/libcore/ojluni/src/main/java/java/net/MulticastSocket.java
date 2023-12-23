@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995, 2014, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1995, 2016, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -26,7 +26,9 @@
 package java.net;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Set;
 
 // Android-changed: Updated example code to handle non-ASCII characters
 /**
@@ -79,7 +81,7 @@ import java.util.Enumeration;
  * Currently applets are not allowed to use multicast sockets.
  *
  * @author Pavani Diwanji
- * @since  JDK1.1
+ * @since  1.1
  */
 public
 class MulticastSocket extends DatagramSocket {
@@ -93,21 +95,22 @@ class MulticastSocket extends DatagramSocket {
     /**
      * Create a multicast socket.
      *
-     * <p>If there is a security manager,
-     * its {@code checkListen} method is first called
-     * with 0 as its argument to ensure the operation is allowed.
-     * This could result in a SecurityException.
+     * <p>
+     * If there is a security manager, its {@code checkListen} method is first
+     * called with 0 as its argument to ensure the operation is allowed. This
+     * could result in a SecurityException.
      * <p>
      * When the socket is created the
-     * {@link DatagramSocket#setReuseAddress(boolean)} method is
-     * called to enable the SO_REUSEADDR socket option.
+     * {@link DatagramSocket#setReuseAddress(boolean)} method is called to
+     * enable the SO_REUSEADDR socket option.
      *
-     * @exception IOException if an I/O exception occurs
-     * while creating the MulticastSocket
-     * @exception  SecurityException  if a security manager exists and its
-     *             {@code checkListen} method doesn't allow the operation.
+     * @exception IOException if an I/O exception occurs while creating the
+     * MulticastSocket
+     * @exception SecurityException if a security manager exists and its
+     * {@code checkListen} method doesn't allow the operation.
      * @see SecurityManager#checkListen
      * @see java.net.DatagramSocket#setReuseAddress(boolean)
+     * @see java.net.DatagramSocketImpl#setOption(SocketOption, Object)
      */
     public MulticastSocket() throws IOException {
         this(new InetSocketAddress(0));
@@ -173,8 +176,9 @@ class MulticastSocket extends DatagramSocket {
             try {
                 bind(bindaddr);
             } finally {
-                if (!isBound())
+                if (!isBound()) {
                     close();
+                }
             }
         }
     }
@@ -290,8 +294,9 @@ class MulticastSocket extends DatagramSocket {
      *
      * @param mcastaddr is the multicast address to join
      *
-     * @exception IOException if there is an error joining
-     * or when the address is not a multicast address.
+     * @exception IOException if there is an error joining, or when the address
+     *            is not a multicast address, or the platform does not support
+     *            multicasting
      * @exception  SecurityException  if a security manager exists and its
      * {@code checkMulticast} method doesn't allow the join.
      *
@@ -374,8 +379,9 @@ class MulticastSocket extends DatagramSocket {
      *       {@link MulticastSocket#setInterface(InetAddress)} or
      *       {@link MulticastSocket#setNetworkInterface(NetworkInterface)}
      *
-     * @exception IOException if there is an error joining
-     * or when the address is not a multicast address.
+     * @exception IOException if there is an error joining, or when the address
+     *            is not a multicast address, or the platform does not support
+     *            multicasting
      * @exception  SecurityException  if a security manager exists and its
      * {@code checkMulticast} method doesn't allow the join.
      * @throws  IllegalArgumentException if mcastaddr is null or is a
@@ -709,4 +715,24 @@ class MulticastSocket extends DatagramSocket {
                 } // synch p
             }  //synch ttl
     } //method
+
+    private static Set<SocketOption<?>> options;
+    private static boolean optionsSet = false;
+
+    @Override
+    public Set<SocketOption<?>> supportedOptions() {
+        synchronized (MulticastSocket.class) {
+            if (optionsSet) {
+                return options;
+            }
+            try {
+                DatagramSocketImpl impl = getImpl();
+                options = Collections.unmodifiableSet(impl.supportedOptions());
+            } catch (SocketException ex) {
+                options = Collections.emptySet();
+            }
+            optionsSet = true;
+            return options;
+        }
+    }
 }

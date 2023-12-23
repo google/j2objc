@@ -79,8 +79,8 @@ public class InMemoryCookieStore implements CookieStore {
      * The default ctor
      */
     public InMemoryCookieStore() {
-        /* J2ObjC modified: use hard-coded Android version number for Android 10. */
-        this(/*VMRuntime.getRuntime().getTargetSdkVersion()*/ 29);
+        /* J2ObjC modified: use hard-coded Android version number for Android 13. */
+        this(/*VMRuntime.getRuntime().getTargetSdkVersion()*/ 33);
     }
 
     public InMemoryCookieStore(int targetSdkVersion) {
@@ -178,7 +178,7 @@ public class InMemoryCookieStore implements CookieStore {
     public List<URI> getURIs() {
         // BEGIN Android-changed: App compat. Return URI with no cookies. http://b/65538736
         /*
-        List<URI> uris = new ArrayList<URI>();
+        List<URI> uris = new ArrayList<>();
 
         lock.lock();
         try {
@@ -408,7 +408,7 @@ public class InMemoryCookieStore implements CookieStore {
 
             cookies.add(cookie);
         } else {
-            cookies = new ArrayList<HttpCookie>();
+            cookies = new ArrayList<>();
             cookies.add(cookie);
             indexStore.put(index, cookies);
         }

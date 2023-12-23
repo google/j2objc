@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -38,17 +38,17 @@ import static libcore.io.OsConstants.*;
  * and <a href="http://www.ietf.org/rfc/rfc2365.txt"><i>RFC&nbsp;2365:
  * Administratively Scoped IP Multicast</i></a>
  *
- * <h3> <A NAME="format">Textual representation of IP addresses</a> </h3>
+ * <h3> <a id="format">Textual representation of IP addresses</a> </h3>
  *
  * Textual representation of IPv4 address used as input to methods
  * takes one of the following forms:
  *
- * <blockquote><table cellpadding=0 cellspacing=0 summary="layout">
- * <tr><td>{@code d.d.d.d}</td></tr>
- * <tr><td>{@code d.d.d}</td></tr>
- * <tr><td>{@code d.d}</td></tr>
- * <tr><td>{@code d}</td></tr>
- * </table></blockquote>
+ * <blockquote><ul style="list-style-type:none">
+ * <li>{@code d.d.d.d}</li>
+ * <li>{@code d.d.d}</li>
+ * <li>{@code d.d}</li>
+ * <li>{@code d}</li>
+ * </ul></blockquote>
  *
  * <p> When four parts are specified, each is interpreted as a byte of
  * data and assigned, from left to right, to the four bytes of an IPv4
@@ -86,7 +86,7 @@ import static libcore.io.OsConstants.*;
 
 public final
 class Inet4Address extends InetAddress {
-    final static int INADDRSZ = 4;
+    static final int INADDRSZ = 4;
 
     /** use serialVersionUID from InetAddress, but Inet4Address instance
      *  is always replaced by an InetAddress instance before being
@@ -94,14 +94,27 @@ class Inet4Address extends InetAddress {
     private static final long serialVersionUID = 3286316764910316507L;
 
     // BEGIN Android-added: Define special-purpose IPv4 address.
-    /** @hide */
+    /**
+     * Reserved address for {@code INADDR_ANY}, to specify any IPv4 address at all.
+     *
+     * @hide
+     */
     public static final InetAddress ANY = new Inet4Address(null, new byte[] { 0, 0, 0, 0 });
 
-    /** @hide */
+    /**
+     * Broadcast address to transmit to all devices on network.
+     *
+     * @hide
+     */
     public static final InetAddress ALL =
             new Inet4Address(null, new byte[] { (byte) 255, (byte) 255,
                   (byte) 255, (byte) 255 });
-    /** @hide */
+
+    /**
+     * Loopback address to the local host.
+     *
+     * @hide
+     */
     public static final InetAddress LOOPBACK =
             new Inet4Address("localhost", new byte[] { 127, 0, 0, 1 });
     // END Android-added: Define special-purpose IPv4 address.
@@ -175,17 +188,15 @@ class Inet4Address extends InetAddress {
      * address i.e first four bits of the address are 1110.
      * @return a {@code boolean} indicating if the InetAddress is
      * an IP multicast address
-     * @since   JDK1.1
      */
     public boolean isMulticastAddress() {
         return ((holder().getAddress() & 0xf0000000) == 0xe0000000);
     }
 
     /**
-     * Utility routine to check if the InetAddress in a wildcard address.
+     * Utility routine to check if the InetAddress is a wildcard address.
      * @return a {@code boolean} indicating if the Inetaddress is
      *         a wildcard address.
-     * @since 1.4
      */
     public boolean isAnyLocalAddress() {
         return holder().getAddress() == 0;
@@ -196,7 +207,6 @@ class Inet4Address extends InetAddress {
      *
      * @return a {@code boolean} indicating if the InetAddress is
      * a loopback address; or false otherwise.
-     * @since 1.4
      */
     public boolean isLoopbackAddress() {
         /* 127.x.x.x */
@@ -209,7 +219,6 @@ class Inet4Address extends InetAddress {
      *
      * @return a {@code boolean} indicating if the InetAddress is
      * a link local address; or false if address is not a link local unicast address.
-     * @since 1.4
      */
     public boolean isLinkLocalAddress() {
         // link-local unicast in IPv4 (169.254.0.0/16)
@@ -226,7 +235,6 @@ class Inet4Address extends InetAddress {
      *
      * @return a {@code boolean} indicating if the InetAddress is
      * a site local address; or false if address is not a site local unicast address.
-     * @since 1.4
      */
     public boolean isSiteLocalAddress() {
         // refer to RFC 1918
@@ -247,7 +255,6 @@ class Inet4Address extends InetAddress {
      * @return a {@code boolean} indicating if the address has
      *         is a multicast address of global scope, false if it is not
      *         of global scope or it is not a multicast address
-     * @since 1.4
      */
     public boolean isMCGlobal() {
         // 224.0.1.0 to 238.255.255.255
@@ -263,7 +270,6 @@ class Inet4Address extends InetAddress {
      * @return a {@code boolean} indicating if the address has
      *         is a multicast address of node-local scope, false if it is not
      *         of node-local scope or it is not a multicast address
-     * @since 1.4
      */
     public boolean isMCNodeLocal() {
         // unless ttl == 0
@@ -276,7 +282,6 @@ class Inet4Address extends InetAddress {
      * @return a {@code boolean} indicating if the address has
      *         is a multicast address of link-local scope, false if it is not
      *         of link-local scope or it is not a multicast address
-     * @since 1.4
      */
     public boolean isMCLinkLocal() {
         // 224.0.0/24 prefix and ttl == 1
@@ -292,7 +297,6 @@ class Inet4Address extends InetAddress {
      * @return a {@code boolean} indicating if the address has
      *         is a multicast address of site-local scope, false if it is not
      *         of site-local scope or it is not a multicast address
-     * @since 1.4
      */
     public boolean isMCSiteLocal() {
         // 239.255/16 prefix or ttl < 32
@@ -308,7 +312,6 @@ class Inet4Address extends InetAddress {
      *         is a multicast address of organization-local scope,
      *         false if it is not of organization-local scope
      *         or it is not a multicast address
-     * @since 1.4
      */
     public boolean isMCOrgLocal() {
         // 239.192 - 239.195
@@ -340,7 +343,6 @@ class Inet4Address extends InetAddress {
      * Returns the IP address string in textual presentation form.
      *
      * @return  the raw IP address in a string format.
-     * @since   JDK1.0.2
      */
     public String getHostAddress() {
         return numericToTextFormat(getAddress());
@@ -377,15 +379,13 @@ class Inet4Address extends InetAddress {
     }
 
     // Utilities
-    /*
+
+    /**
      * Converts IPv4 binary address into a string suitable for presentation.
      *
      * @param src a byte array representing an IPv4 numeric address
      * @return a String representing the IPv4 address in
-     *         textual representation format
-     * @since 1.4
      */
-
     static String numericToTextFormat(byte[] src)
     {
         return (src[0] & 0xff) + "." + (src[1] & 0xff) + "." + (src[2] & 0xff) + "." + (src[3] & 0xff);

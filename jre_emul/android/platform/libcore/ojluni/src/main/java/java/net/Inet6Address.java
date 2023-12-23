@@ -26,17 +26,17 @@
 
 package java.net;
 
+import static libcore.io.OsConstants.*;
+
 import com.google.j2objc.annotations.Weak;
 import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
-import java.util.Enumeration;
 import java.util.Arrays;
-import libcore.io.Libcore;
+import java.util.Enumeration;
 import libcore.io.NetworkOs;
-import static libcore.io.OsConstants.*;
 
 /*-[
 #include "JreRetainedWith.h"
@@ -184,22 +184,31 @@ public final
 class Inet6Address extends InetAddress {
     final static int INADDRSZ = 16;
 
-    // BEGIN Android-removed: Remove special handling for link-local addresses.
-    /*
-    * cached scope_id - for link-local address use only.
-    *
-    private transient int cached_scope_id;  // 0
-    */
-    // END Android-removed: Remove special handling for link-local addresses.
+  // BEGIN Android-removed: Remove special handling for link-local addresses.
+  /*
+  * cached scope_id - for link-local address use only.
+  *
+  private transient int cached_scope_id;  // 0
+  */
+  // END Android-removed: Remove special handling for link-local addresses.
 
-    // BEGIN Android-added: Define special-purpose IPv6 address.
-    /** @hide */
-    public static final InetAddress ANY =
-            new Inet6Address("::", new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 0);
+  // BEGIN Android-added: Define special-purpose IPv6 address.
+  /**
+   * Reserved address for {@code INADDR_ANY}, to specify any IPv6 address at all.
+   *
+   * @hide
+   */
+  public static final InetAddress ANY =
+      new Inet6Address("::", new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, 0);
 
-    /** @hide */
-    public static final InetAddress LOOPBACK = new Inet6Address("ip6-localhost",
-            new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 0);
+  /**
+   * Loopback address to the local host.
+   *
+   * @hide
+   */
+  public static final InetAddress LOOPBACK =
+      new Inet6Address(
+          "ip6-localhost", new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}, 0);
     // END Android-added: Define special-purpose IPv6 address.
 
     /* J2ObjC removed: private */ class Inet6AddressHolder {

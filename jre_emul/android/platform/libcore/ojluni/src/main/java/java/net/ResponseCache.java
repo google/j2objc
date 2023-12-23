@@ -82,7 +82,7 @@ public abstract class ResponseCache {
      * @return the system-wide {@code ResponseCache}
      * @since 1.5
      */
-    public synchronized  static ResponseCache getDefault() {
+    public static synchronized ResponseCache getDefault() {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             /* J2ObjC removed.
@@ -107,7 +107,7 @@ public abstract class ResponseCache {
      * @see #getDefault()
      * @since 1.5
      */
-    public synchronized static void setDefault(ResponseCache responseCache) {
+    public static synchronized void setDefault(ResponseCache responseCache) {
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             /* J2ObjC removed.

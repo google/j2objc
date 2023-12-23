@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2014 The Android Open Source Project
- * Copyright (c) 1995, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1995, 2015, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -37,6 +37,8 @@ import java.nio.channels.DatagramChannel;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
  */
+import java.util.Set;
+import java.util.Collections;
 import libcore.io.Libcore;
 
 /**
@@ -127,7 +129,7 @@ class DatagramSocket implements java.io.Closeable {
     /**
      * Connects this socket to a remote socket address (IP address + port number).
      * Binds socket if not already bound.
-     * <p>
+     *
      * @param   address The remote address.
      * @param   port    The remote port
      * @throws  SocketException if binding the socket fails.
@@ -315,7 +317,7 @@ class DatagramSocket implements java.io.Closeable {
      *             {@code checkListen} method doesn't allow the operation.
      *
      * @see SecurityManager#checkListen
-     * @since   JDK1.1
+     * @since   1.1
      */
     public DatagramSocket(int port, InetAddress laddr) throws SocketException {
         this(new InetSocketAddress(laddr, port));
@@ -329,7 +331,7 @@ class DatagramSocket implements java.io.Closeable {
         try {
             /* J2ObjC removed.
             AccessController.doPrivileged(
-                new PrivilegedExceptionAction<Void>() {
+                new PrivilegedExceptionAction<>() {
                     public Void run() throws NoSuchMethodException {
              */
                         Class<?>[] cl = new Class<?>[1];
@@ -386,7 +388,7 @@ class DatagramSocket implements java.io.Closeable {
      * <p>
      * If the address is {@code null}, then the system will pick up
      * an ephemeral port and a valid local address to bind the socket.
-     *<p>
+     *
      * @param   addr The address and port to bind to.
      * @throws  SocketException if any error happens during the bind, or if the
      *          socket is already bound.
@@ -496,7 +498,7 @@ class DatagramSocket implements java.io.Closeable {
      *
      * <p> If given an {@link InetSocketAddress InetSocketAddress}, this method
      * behaves as if invoking {@link #connect(InetAddress,int) connect(InetAddress,int)}
-     * with the the given socket addresses IP address and port number.
+     * with the given socket addresses IP address and port number.
      *
      * @param   addr    The remote address.
      *
@@ -935,13 +937,13 @@ class DatagramSocket implements java.io.Closeable {
      *
      * @param timeout the specified timeout in milliseconds.
      * @throws SocketException if there is an error in the underlying protocol, such as an UDP error.
-     * @since   JDK1.1
+     * @since   1.1
      * @see #getSoTimeout()
      */
     public synchronized void setSoTimeout(int timeout) throws SocketException {
         if (isClosed())
             throw new SocketException("Socket is closed");
-        getImpl().setOption(SocketOptions.SO_TIMEOUT, new Integer(timeout));
+        getImpl().setOption(SocketOptions.SO_TIMEOUT, timeout);
     }
 
     /**
@@ -950,7 +952,7 @@ class DatagramSocket implements java.io.Closeable {
      *
      * @return the setting for SO_TIMEOUT
      * @throws SocketException if there is an error in the underlying protocol, such as an UDP error.
-     * @since   JDK1.1
+     * @since   1.1
      * @see #setSoTimeout(int)
      */
     public synchronized int getSoTimeout() throws SocketException {
@@ -1003,7 +1005,7 @@ class DatagramSocket implements java.io.Closeable {
         }
         if (isClosed())
             throw new SocketException("Socket is closed");
-        getImpl().setOption(SocketOptions.SO_SNDBUF, new Integer(size));
+        getImpl().setOption(SocketOptions.SO_SNDBUF, size);
     }
 
     /**
@@ -1028,7 +1030,7 @@ class DatagramSocket implements java.io.Closeable {
 
     /**
      * Sets the SO_RCVBUF option to the specified value for this
-     * {@code DatagramSocket}. The SO_RCVBUF option is used by the
+     * {@code DatagramSocket}. The SO_RCVBUF option is used by
      * the network implementation as a hint to size the underlying
      * network I/O buffers. The SO_RCVBUF setting may also be used
      * by the network implementation to determine the maximum size
@@ -1061,7 +1063,7 @@ class DatagramSocket implements java.io.Closeable {
         }
         if (isClosed())
             throw new SocketException("Socket is closed");
-        getImpl().setOption(SocketOptions.SO_RCVBUF, new Integer(size));
+        getImpl().setOption(SocketOptions.SO_RCVBUF, size);
     }
 
     /**
@@ -1123,7 +1125,7 @@ class DatagramSocket implements java.io.Closeable {
             throw new SocketException("Socket is closed");
         // Integer instead of Boolean for compatibility with older DatagramSocketImpl
         if (oldImpl)
-            getImpl().setOption(SocketOptions.SO_REUSEADDR, new Integer(on?-1:0));
+            getImpl().setOption(SocketOptions.SO_REUSEADDR, on?-1:0);
         else
             getImpl().setOption(SocketOptions.SO_REUSEADDR, Boolean.valueOf(on));
     }
@@ -1333,10 +1335,8 @@ class DatagramSocket implements java.io.Closeable {
      *              datagram socket factory.
      * @exception  SocketException  if the factory is already defined.
      * @exception  SecurityException  if a security manager exists and its
-     *             {@code checkSetFactory} method doesn't allow the
-     operation.
-     * @see
-     java.net.DatagramSocketImplFactory#createDatagramSocketImpl()
+     *             {@code checkSetFactory} method doesn't allow the operation.
+     * @see       java.net.DatagramSocketImplFactory#createDatagramSocketImpl()
      * @see       SecurityManager#checkSetFactory
      * @since 1.3
      */
@@ -1354,12 +1354,107 @@ class DatagramSocket implements java.io.Closeable {
         factory = fac;
     }
 
+    /**
+     * Sets the value of a socket option.
+     *
+     * @param <T> The type of the socket option value
+     * @param name The socket option
+     * @param value The value of the socket option. A value of {@code null}
+     *              may be valid for some options.
+     *
+     * @return this DatagramSocket
+     *
+     * @throws UnsupportedOperationException if the datagram socket
+     *         does not support the option.
+     *
+     * @throws IllegalArgumentException if the value is not valid for
+     *         the option.
+     *
+     * @throws IOException if an I/O error occurs, or if the socket is closed.
+     *
+     * @throws SecurityException if a security manager is set and if the socket
+     *         option requires a security permission and if the caller does
+     *         not have the required permission.
+     *         {@link java.net.StandardSocketOptions StandardSocketOptions}
+     *         do not require any security permission.
+     *
+     * @throws NullPointerException if name is {@code null}
+     *
+     * @since 9
+     */
+    public <T> DatagramSocket setOption(SocketOption<T> name, T value)
+        throws IOException
+    {
+        getImpl().setOption(name, value);
+        return this;
+    }
+
+    /**
+     * Returns the value of a socket option.
+     *
+     * @param <T> The type of the socket option value
+     * @param name The socket option
+     *
+     * @return The value of the socket option.
+     *
+     * @throws UnsupportedOperationException if the datagram socket
+     *         does not support the option.
+     *
+     * @throws IOException if an I/O error occurs, or if the socket is closed.
+     *
+     * @throws NullPointerException if name is {@code null}
+     *
+     * @throws SecurityException if a security manager is set and if the socket
+     *         option requires a security permission and if the caller does
+     *         not have the required permission.
+     *         {@link java.net.StandardSocketOptions StandardSocketOptions}
+     *         do not require any security permission.
+     *
+     * @since 9
+     */
+    public <T> T getOption(SocketOption<T> name) throws IOException {
+        return getImpl().getOption(name);
+    }
+
+    private static Set<SocketOption<?>> options;
+    private static boolean optionsSet = false;
+
+    /**
+     * Returns a set of the socket options supported by this socket.
+     *
+     * This method will continue to return the set of options even after
+     * the socket has been closed.
+     *
+     * @return A set of the socket options supported by this socket. This set
+     *        may be empty if the socket's DatagramSocketImpl cannot be created.
+     *
+     * @since 9
+     */
+    public Set<SocketOption<?>> supportedOptions() {
+        synchronized(DatagramSocket.class) {
+            if (optionsSet) {
+                return options;
+            }
+            try {
+                DatagramSocketImpl impl = getImpl();
+                options = Collections.unmodifiableSet(impl.supportedOptions());
+            } catch (IOException e) {
+                options = Collections.emptySet();
+            }
+            optionsSet = true;
+            return options;
+        }
+    }
+
     // Android-added: for testing and internal use.
     /**
+     * Gets socket's underlying {@link FileDescriptor}.
+     *
      * @hide internal use only
+     *
+     * @return socket's underlying {@link FileDescriptor}.
      */
     public FileDescriptor getFileDescriptor$() {
         return impl.fd;
     }
-
 }

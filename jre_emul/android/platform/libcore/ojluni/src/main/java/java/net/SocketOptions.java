@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1996, 2016, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -38,8 +38,9 @@ import java.lang.annotation.Native;
  * DatagramSocketImpl, <B>you won't use these directly.</B> There are
  * type-safe methods to get/set each of these options in Socket, ServerSocket,
  * DatagramSocket and MulticastSocket.
- * <P>
+ *
  * @author David Brown
+ * @since 1.1
  */
 
 
@@ -61,21 +62,21 @@ public interface SocketOptions {
      * If the requested option is binary, it can be set using this method by
      * a java.lang.Boolean:
      * <BR><PRE>
-     * s.setOption(TCP_NODELAY, new Boolean(true));
+     * s.setOption(TCP_NODELAY, Boolean.TRUE);
      *    // OK - enables TCP_NODELAY, a binary option
      * </PRE>
      * <BR>
-     * Any option can be disabled using this method with a Boolean(false):
+     * Any option can be disabled using this method with a Boolean.FALSE:
      * <BR><PRE>
-     * s.setOption(TCP_NODELAY, new Boolean(false));
+     * s.setOption(TCP_NODELAY, Boolean.FALSE);
      *    // OK - disables TCP_NODELAY
-     * s.setOption(SO_LINGER, new Boolean(false));
+     * s.setOption(SO_LINGER, Boolean.FALSE);
      *    // OK - disables SO_LINGER
      * </PRE>
      * <BR>
      * For an option that has a notion of on and off, and requires
      * a non-boolean parameter, setting its value to anything other than
-     * <I>Boolean(false)</I> implicitly enables it.
+     * <I>Boolean.FALSE</I> implicitly enables it.
      * <BR>
      * Throws SocketException if the option is unrecognized,
      * the socket is closed, or some low-level error occurred
@@ -91,8 +92,8 @@ public interface SocketOptions {
 
     /**
      * Fetch the value of an option.
-     * Binary options will return java.lang.Boolean(true)
-     * if enabled, java.lang.Boolean(false) if disabled, e.g.:
+     * Binary options will return java.lang.Boolean.TRUE
+     * if enabled, java.lang.Boolean.FALSE if disabled, e.g.:
      * <BR><PRE>
      * SocketImpl s;
      * ...
@@ -105,13 +106,13 @@ public interface SocketOptions {
      * <P>
      * For options that take a particular type as a parameter,
      * getOption(int) will return the parameter's value, else
-     * it will return java.lang.Boolean(false):
+     * it will return java.lang.Boolean.FALSE:
      * <PRE>
      * Object o = s.getOption(SO_LINGER);
      * if (o instanceof Integer) {
      *     System.out.print("Linger time is " + ((Integer)o).intValue());
      * } else {
-     *   // the true type of o is java.lang.Boolean(false);
+     *   // the true type of o is java.lang.Boolean.FALSE;
      * }
      * </PRE>
      *
@@ -139,7 +140,7 @@ public interface SocketOptions {
      * @see Socket#getTcpNoDelay
      */
 
-    @Native public final static int TCP_NODELAY = 0x0001;
+    @Native public static final int TCP_NODELAY = 0x0001;
 
     /**
      * Fetch the local address binding of a socket (this option cannot
@@ -160,7 +161,7 @@ public interface SocketOptions {
      * @see DatagramSocket#getLocalAddress
      */
 
-    @Native public final static int SO_BINDADDR = 0x000F;
+    @Native public static final int SO_BINDADDR = 0x000F;
 
     /** Sets SO_REUSEADDR for a socket.  This is used only for MulticastSockets
      * in java, and it is set by default for MulticastSockets.
@@ -168,7 +169,18 @@ public interface SocketOptions {
      * Valid for: DatagramSocketImpl
      */
 
-    @Native public final static int SO_REUSEADDR = 0x04;
+    @Native public static final int SO_REUSEADDR = 0x04;
+
+    /** Sets SO_REUSEPORT for a socket. This option enables and disables
+     *  the ability to have multiple sockets listen to the same address
+     *  and port.
+     * <P>
+     * Valid for: SocketImpl, DatagramSocketImpl
+     *
+     * @since 9
+     * @see StandardSocketOptions#SO_REUSEPORT
+     */
+    @Native public static final int SO_REUSEPORT = 0x0E;
 
     /**
      * Sets SO_BROADCAST for a socket. This option enables and disables
@@ -179,7 +191,7 @@ public interface SocketOptions {
      * @since 1.4
      */
 
-    @Native public final static int SO_BROADCAST = 0x0020;
+    @Native public static final int SO_BROADCAST = 0x0020;
 
     /** Set which outgoing interface on which to send multicast packets.
      * Useful on hosts with multiple network interfaces, where applications
@@ -191,7 +203,7 @@ public interface SocketOptions {
      * @see MulticastSocket#getInterface()
      */
 
-    @Native public final static int IP_MULTICAST_IF = 0x10;
+    @Native public static final int IP_MULTICAST_IF = 0x10;
 
     /** Same as above. This option is introduced so that the behaviour
      *  with IP_MULTICAST_IF will be kept the same as before, while
@@ -203,7 +215,7 @@ public interface SocketOptions {
      * @see MulticastSocket#getNetworkInterface()
      * @since 1.4
      */
-    @Native public final static int IP_MULTICAST_IF2 = 0x1f;
+    @Native public static final int IP_MULTICAST_IF2 = 0x1f;
 
     /**
      * This option enables or disables local loopback of multicast datagrams.
@@ -211,7 +223,7 @@ public interface SocketOptions {
      * @since 1.4
      */
 
-    @Native public final static int IP_MULTICAST_LOOP = 0x12;
+    @Native public static final int IP_MULTICAST_LOOP = 0x12;
 
     /**
      * This option sets the type-of-service or traffic class field
@@ -219,7 +231,7 @@ public interface SocketOptions {
      * @since 1.4
      */
 
-    @Native public final static int IP_TOS = 0x3;
+    @Native public static final int IP_TOS = 0x3;
 
     /**
      * Specify a linger-on-close timeout.  This option disables/enables
@@ -237,7 +249,7 @@ public interface SocketOptions {
      * @see Socket#setSoLinger
      * @see Socket#getSoLinger
      */
-    @Native public final static int SO_LINGER = 0x0080;
+    @Native public static final int SO_LINGER = 0x0080;
 
     /** Set a timeout on blocking Socket operations:
      * <PRE>
@@ -258,7 +270,7 @@ public interface SocketOptions {
      * @see ServerSocket#setSoTimeout
      * @see DatagramSocket#setSoTimeout
      */
-    @Native public final static int SO_TIMEOUT = 0x1006;
+    @Native public static final int SO_TIMEOUT = 0x1006;
 
     /**
      * Set a hint the size of the underlying buffers used by the
@@ -275,7 +287,7 @@ public interface SocketOptions {
      * @see DatagramSocket#setSendBufferSize
      * @see DatagramSocket#getSendBufferSize
      */
-    @Native public final static int SO_SNDBUF = 0x1001;
+    @Native public static final int SO_SNDBUF = 0x1001;
 
     /**
      * Set a hint the size of the underlying buffers used by the
@@ -293,7 +305,7 @@ public interface SocketOptions {
      * @see DatagramSocket#setReceiveBufferSize
      * @see DatagramSocket#getReceiveBufferSize
      */
-    @Native public final static int SO_RCVBUF = 0x1002;
+    @Native public static final int SO_RCVBUF = 0x1002;
 
     /**
      * When the keepalive option is set for a TCP socket and no data
@@ -316,7 +328,7 @@ public interface SocketOptions {
      * @see Socket#setKeepAlive
      * @see Socket#getKeepAlive
      */
-    @Native public final static int SO_KEEPALIVE = 0x0008;
+    @Native public static final int SO_KEEPALIVE = 0x0008;
 
     /**
      * When the OOBINLINE option is set, any TCP urgent data received on
@@ -327,5 +339,5 @@ public interface SocketOptions {
      * @see Socket#setOOBInline
      * @see Socket#getOOBInline
      */
-    @Native public final static int SO_OOBINLINE = 0x1003;
+    @Native public static final int SO_OOBINLINE = 0x1003;
 }

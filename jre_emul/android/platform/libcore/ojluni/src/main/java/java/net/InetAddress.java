@@ -1050,7 +1050,7 @@ class InetAddress implements java.io.Serializable {
 
     // Android-added: Called by native code in Libcore.io.
     // Do not delete. Called from native code.
-    public static InetAddress getByAddress(String host, byte[] addr, int scopeId)
+    private static InetAddress getByAddress(String host, byte[] addr, int scopeId)
         throws UnknownHostException {
         if (host != null && host.length() > 0 && host.charAt(0) == '[') {
             if (host.charAt(host.length()-1) == ']') {
@@ -1678,7 +1678,7 @@ class InetAddress implements java.io.Serializable {
      * @param netId the network to use for host resolution.
      * @return the {@code InetAddress} instance representing the host.
      * @throws UnknownHostException if the address lookup fails.
-     * @hide internal use only
+     * @hide
      */
     public static InetAddress getByNameOnNet(String host, int netId) throws UnknownHostException {
         return impl.lookupAllHostAddr(host, netId)[0];
@@ -1692,7 +1692,7 @@ class InetAddress implements java.io.Serializable {
      * @param netId the network to use for host resolution.
      * @return the array of addresses associated with the specified host.
      * @throws UnknownHostException if the address lookup fails.
-     * @hide internal use only
+     * @hide
      */
     public static InetAddress[] getAllByNameOnNet(String host, int netId) throws UnknownHostException {
         return impl.lookupAllHostAddr(host, netId).clone();
