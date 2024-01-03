@@ -104,10 +104,7 @@ public class ArrayGenericsTest extends GenerationTest {
     String testSource = translateSourceFile("Test", "Test.m");
 
     assertTranslation(
-        testHeader,
-        "(IOSArray<JavaLangInteger *>"
-            + " *)testIntegerArrayGenericsWithIntArray:(IOSArray<JavaLangInteger *>"
-            + " *)ints");
+        testHeader, "(IOSIntArray *)testIntegerArrayGenericsWithIntArray:(IOSIntArray *)ints");
 
     assertTranslation(
         testSource, "(IOSIntArray *)testIntegerArrayGenericsWithIntArray:(IOSIntArray *)ints");
@@ -127,9 +124,8 @@ public class ArrayGenericsTest extends GenerationTest {
 
     assertTranslation(
         testHeader,
-        "(IOSObjectArray<IOSArray<JavaLangInteger *> *>"
-            + " *)testObjectArrayGenericsWithIntArray2:(IOSObjectArray<IOSArray<JavaLangInteger *>"
-            + " *> *)a_array");
+        "(IOSObjectArray<IOSIntArray *>"
+            + " *)testObjectArrayGenericsWithIntArray2:(IOSObjectArray<IOSIntArray *> *)a_array");
     assertTranslation(
         testSource,
         "(IOSObjectArray *)testObjectArrayGenericsWithIntArray2:(IOSObjectArray *)a_array");

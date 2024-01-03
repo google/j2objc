@@ -16,12 +16,14 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.types.AbstractTypeMirror;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedArrayType;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
+import com.google.j2objc.annotations.GenerateObjectiveCGenerics;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -207,6 +209,14 @@ public final class TypeUtil {
 
   public static boolean isTypeVariable(TypeMirror t) {
     return t.getKind() == TypeKind.TYPEVAR;
+  }
+
+  public static boolean hasGenerateObjectiveCGenerics(TypeElement t) {
+    return ElementUtil.hasAnnotation(t, GenerateObjectiveCGenerics.class);
+  }
+
+  public static boolean hasGenerateObjectiveCGenerics(TypeMirror t) {
+    return asTypeElement(t) != null && hasGenerateObjectiveCGenerics(asTypeElement(t));
   }
 
   public static TypeElement asTypeElement(TypeMirror t) {
@@ -697,6 +707,29 @@ public final class TypeUtil {
       return false;
     }
     return true;
+  }
+
+  public boolean isProtoClass(TypeMirror type) {
+    ImmutableSet<String> protoClassNames =
+        ImmutableSet.of(
+            "com.google.protobuf.GeneratedMessage",
+            "com.google.protobuf.GeneratedMessageLite",
+            "com.google.protobuf.MessageOrBuilder",
+            "com.google.protobuf.MessageLiteOrBuilder",
+            "com.google.protobuf.Extension",
+            "com.google.protobuf.ExtensionLite");
+
+    TypeElement element = asTypeElement(type);
+    if (element != null && protoClassNames.contains(element.getQualifiedName().toString())) {
+      return true;
+    }
+    for (TypeMirror t : directSupertypes(type)) {
+      boolean result = isProtoClass(t);
+      if (result) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public boolean isObjcSubtype(TypeElement type, TypeElement targetSupertype) {

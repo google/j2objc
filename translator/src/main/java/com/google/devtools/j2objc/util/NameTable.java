@@ -16,7 +16,6 @@
 
 package com.google.devtools.j2objc.util;
 
-import static java.util.stream.Collectors.joining;
 
 import com.google.common.base.Ascii;
 import com.google.common.base.CharMatcher;
@@ -45,13 +44,17 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 
 /**
  * Singleton service for type/method/variable name support.
@@ -166,7 +169,6 @@ public class NameTable {
 
   private final ImmutableMap<String, String> classMappings;
   private final ImmutableMap<String, String> methodMappings;
-  private final boolean generifyTypeDecls;
 
   public NameTable(TypeUtil typeUtil, CaptureInfo captureInfo, Options options) {
     this.typeUtil = typeUtil;
@@ -175,7 +177,6 @@ public class NameTable {
     prefixMap = options.getPackagePrefixes();
     classMappings = options.getMappings().getClassMappings();
     methodMappings = options.getMappings().getMethodMappings();
-    generifyTypeDecls = options.asObjCGenericDecl();
   }
 
   public void setVariableName(VariableElement var, String name) {
@@ -585,29 +586,83 @@ public class NameTable {
    * bounds.
    */
   public String getObjCType(TypeMirror type) {
-    return getObjcTypeInner(type, null, false, false);
+    return getObjcTypeInner(type, null, false, false, null);
   }
 
   public String getObjCType(VariableElement var) {
-    return getObjcTypeInner(var.asType(), ElementUtil.getTypeQualifiers(var), false, false);
+    return getObjcTypeInner(
+        var.asType(), ElementUtil.getTypeQualifiers(var), false, false, null);
   }
 
   public String getObjCTypeDeclaration(TypeMirror type) {
-    return getObjCTypeDeclaration(type, generifyTypeDecls);
+    return getObjcTypeInner(type, null, false, false, null);
   }
 
-  public String getObjCTypeDeclaration(TypeMirror type, boolean generify) {
-    return generify ? getObjCGenericType(type) : getObjCType(type);
+  public String getObjCTypeDeclaration(
+      TypeMirror type,
+      boolean enableGenerics,
+      TypeElement genericUsageTypeElement) {
+    return getObjcTypeInner(
+        type, null, false, enableGenerics, genericUsageTypeElement);
   }
 
-  private String getObjCGenericType(TypeMirror type) {
-    return getObjcTypeInner(type, null, true, false);
+  /**
+   * Given a Java class type, returns the generics that would apply to the class declaration as a
+   * list of string names.
+   */
+  public List<String> getClassObjCGenericTypeNames(TypeMirror type) {
+    TypeElement typeElement = TypeUtil.asTypeElement(type);
+    if (typeElement == null || !TypeUtil.isClass(type)) {
+      return new ArrayList<>();
+    }
+    // Java protos have the <MessageType, BuilderType> generics, but these are not useful
+    // in ObjC interfacing with the Java, so filter them off.
+    if (typeUtil.isProtoClass(type)) {
+      return new ArrayList<>();
+    }
+    ArrayList<String> typeNames = new ArrayList<>();
+    for (TypeParameterElement paramElement : typeElement.getTypeParameters()) {
+      typeNames.add(paramElement.getSimpleName().toString());
+    }
+    return typeNames;
+  }
+
+  private boolean isTranslatableTypeVariable(
+      TypeVariable t, TypeElement parameterUsageContextTypeElement) {
+    TypeParameterElement typeParamElement = TypeUtil.asTypeParameterElement(t);
+    if (typeParamElement == null) {
+      return false;
+    }
+
+    Element enclosingElement = typeParamElement.getEnclosingElement();
+    // Skip method type parameters.
+    if (enclosingElement.getKind() != ElementKind.CLASS) {
+      return false;
+    }
+
+    // If there is a usage context class is the parameter type also there?
+    // This avoids cases we don't yet handle, notably inner classes using the parameters
+    // of their parent class.
+    if (parameterUsageContextTypeElement != null) {
+      if (!TypeUtil.isClass(parameterUsageContextTypeElement.asType())) {
+        return false;
+      }
+      if (!parameterUsageContextTypeElement.getTypeParameters().contains(typeParamElement)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   // isArrayComponent: this flag is used to generate the primitive types if they are the most inner
   /// component in arrays.
   private String getObjcTypeInner(
-      TypeMirror type, String qualifiers, boolean asObjCGenericDecl, boolean isArrayComponent) {
+      TypeMirror type,
+      String qualifiers,
+      boolean isArrayComponent,
+      boolean enableGenerics,
+      TypeElement genericUsageTypeElement) {
     String objcType;
     type = TypeUtil.unannotatedType(type);
     if (type instanceof NativeType) {
@@ -623,36 +678,75 @@ public class NameTable {
       }
       objcType =
           getObjcTypeInner(
-              ((PointerType) type).getPointeeType(), pointeeQualifiers, asObjCGenericDecl, false);
+              ((PointerType) type).getPointeeType(),
+              pointeeQualifiers,
+              false,
+              enableGenerics,
+              genericUsageTypeElement);
       objcType = objcType.endsWith("*") ? objcType + "*" : objcType + " *";
     } else if (TypeUtil.isPrimitiveOrVoid(type)) {
       objcType =
           isArrayComponent ? getPrimitiveObjCTypeArrayComponent(type) : getPrimitiveObjCType(type);
-    } else if (type instanceof ArrayType && asObjCGenericDecl) {
+    } else if (type instanceof ArrayType && enableGenerics) {
       TypeMirror componentType = TypeUtil.unannotatedType(((ArrayType) type).getComponentType());
-      String arrayClass =
-          TypeUtil.isPrimitiveOrVoid(componentType) ? "IOSArray<" : "IOSObjectArray<";
-      String innerType = getObjcTypeInner(componentType, qualifiers, asObjCGenericDecl, true);
-      objcType = arrayClass + innerType;
-      objcType += componentType instanceof ArrayType ? " *>" : ">";
-      objcType += isArrayComponent ? "" : " *";
-    } else if (TypeUtil.isTypeVariable(type) && asObjCGenericDecl) {
-      objcType = type.toString();
+      // For arrays of primitive types we prefer the IOSPrimitiveArray.h IOSArray subclasses
+      // directly instead of IOSArray with generics. The IOSArray type-specific subclasses offer
+      // more useful methods for accessing the primitive types the array contains with appropriate
+      // Obj-C method signatures and type encodings. For example, -[IOSBooleanArray booleanAtIndex:]
+      // can't be implemented as  -[IOSArray getElementAtIndex:] due to ObjC selector signature
+      // requirements.
+      if (TypeUtil.isPrimitiveOrVoid(componentType)) {
+        TypeElement arrayTypeElement = typeUtil.getIosArray(componentType);
+        objcType = getFullName(arrayTypeElement);
+        objcType += isArrayComponent ? "" : " *";
+      } else {
+        String innerType =
+            getObjcTypeInner(
+                componentType,
+                qualifiers,
+                true,
+                enableGenerics,
+                genericUsageTypeElement);
+        objcType = "IOSObjectArray<" + innerType;
+        objcType += componentType instanceof ArrayType ? " *>" : ">";
+        objcType += isArrayComponent ? "" : " *";
+      }
+    } else if (enableGenerics
+        && ((genericUsageTypeElement != null) && !genericUsageTypeElement.getKind().isInterface())
+        && TypeUtil.isTypeVariable(type)
+        && isTranslatableTypeVariable((TypeVariable) type, genericUsageTypeElement)) {
+      objcType = ((TypeVariable) type).asElement().getSimpleName().toString();
     } else if (TypeUtil.isDeclaredType(type)
-        && asObjCGenericDecl
+        && enableGenerics
         && !((DeclaredType) type).getTypeArguments().isEmpty()
-        && !TypeUtil.isInterface(type)) {
+        && !TypeUtil.isInterface(type)
+        && !typeUtil.isClassType(TypeUtil.asTypeElement(type))) {
       final String finalQualifiers = qualifiers;
-      objcType =
-          String.format(
-              "%s<%s> *",
-              getFullName(typeUtil.getObjcClass(type)),
-              ((DeclaredType) type)
-                  .getTypeArguments().stream()
-                      .map(
-                          input ->
-                              getObjcTypeInner(input, finalQualifiers, asObjCGenericDecl, false))
-                      .collect(joining(", ")));
+      // Avoid creating generics that merely state <id,id,...>. Obj-C generics only support 'id'
+      // type anyway, but in practice a type with just "id" parameters cannot be assigned to a more
+      // specific type where Java would sometimes allow such conversions.
+      List<String> argTypes = new ArrayList<>();
+      boolean hasSpecficType = false;
+      for (TypeMirror argTypeMirror : ((DeclaredType) type).getTypeArguments()) {
+        String argType =
+            getObjcTypeInner(
+                argTypeMirror,
+                finalQualifiers,
+                false,
+                enableGenerics,
+                genericUsageTypeElement);
+        argTypes.add(argType);
+        if (!argType.equals(ID_TYPE)) {
+          hasSpecficType = true;
+        }
+      }
+      if (hasSpecficType) {
+        objcType =
+            String.format(
+                "%s<%s> *", getFullName(typeUtil.getObjcClass(type)), String.join(", ", argTypes));
+      } else {
+        objcType = String.format("%s *", getFullName(typeUtil.getObjcClass(type)));
+      }
     } else {
       objcType = constructObjcTypeFromBounds(type);
     }

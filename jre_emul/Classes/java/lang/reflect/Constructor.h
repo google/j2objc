@@ -31,7 +31,7 @@
 // A native implementation of java.lang.reflect.Constructor.  Its methods are
 // limited to those that can be derived from an Objective-C Method instance,
 // so instances can be created and released as needed.
-@interface JavaLangReflectConstructor : JavaLangReflectExecutable
+@interface JavaLangReflectConstructor<T> : JavaLangReflectExecutable
 
 + (instancetype)constructorWithDeclaringClass:(IOSClass *)aClass
                                      metadata:(const J2ObjcMethodInfo *)metadata;

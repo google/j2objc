@@ -20,7 +20,6 @@ import com.google.common.io.Files;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -135,7 +134,7 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
   protected void printForwardDeclarations(Set<Import> forwardDecls) {
     Set<String> forwardStmts = new TreeSet<>();
     for (Import imp : forwardDecls) {
-      forwardStmts.add(createForwardDeclaration(imp.getTypeName(), imp.isInterface()));
+      forwardStmts.add(createForwardDeclaration(imp));
     }
     if (!forwardStmts.isEmpty()) {
       newline();
@@ -145,8 +144,18 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
     }
   }
 
-  private String createForwardDeclaration(String typeName, boolean isInterface) {
-    return UnicodeUtils.format("@%s %s;", isInterface ? "protocol" : "class", typeName);
+  private String createForwardDeclaration(Import imp) {
+    if (imp.isInterface()) {
+      // Obj-C protocols do not support parameters.
+      return UnicodeUtils.format("@protocol %s;", imp.getTypeName());
+    } else {
+      String params = "";
+      if ((unit.options().asObjCGenericDecl() || imp.hasGenerateObjectiveCGenerics())
+          && !imp.getParameterNamesForObjectiveCGenerics().isEmpty()) {
+        params = "<" + String.join(", ", imp.getParameterNamesForObjectiveCGenerics()) + ">";
+      }
+      return UnicodeUtils.format("@class %s%s;", imp.getTypeName(), params);
+    }
   }
 
   private static List<GeneratedType> getOrderedGeneratedTypes(GenerationUnit generationUnit) {

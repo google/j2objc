@@ -31,11 +31,13 @@ import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.util.TranslationUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -75,6 +77,8 @@ public class HeaderImportCollector extends UnitTreeVisitor {
   private Set<Import> superTypes = new LinkedHashSet<>();
   // Declared types seen by this collector.
   private Set<Import> declaredTypes = new HashSet<>();
+  // The current type declarations is annotated for ObjC generics.
+  private boolean wantsGenerateObjectiveCGenerics = false;
 
   public HeaderImportCollector(CompilationUnit unit, Filter filter) {
     super(unit);
@@ -125,12 +129,39 @@ public class HeaderImportCollector extends UnitTreeVisitor {
     return false;
   }
 
+  private Set<TypeMirror> objCForwardDeclaredGenericParameters(TypeMirror type) {
+    // Parameters only needed with ObjC generics are on.
+    if (!unit.getEnv().options().asObjCGenericDecl() && !wantsGenerateObjectiveCGenerics) {
+      return new HashSet<>();
+    }
+
+    HashSet<TypeMirror> vistedTypes = new HashSet<>();
+    vistedTypes.add(type);
+    for (TypeElement bound : unit.getEnv().typeUtil().getObjcUpperBounds(type)) {
+      vistedTypes.add(bound.asType());
+    }
+    if (TypeUtil.isDeclaredType(type)) {
+      for (TypeMirror argType : ((DeclaredType) type).getTypeArguments()) {
+        vistedTypes.addAll(objCForwardDeclaredGenericParameters(argType));
+      }
+    }
+    return vistedTypes;
+  }
+
   @Override
   public boolean visit(FunctionDeclaration node) {
     if (filter.include(node)) {
       addForwardDecl(node.getReturnType());
+      for (TypeMirror returnGeneric :
+          objCForwardDeclaredGenericParameters(node.getReturnType().getTypeMirror())) {
+        addForwardDecl(returnGeneric);
+      }
       for (SingleVariableDeclaration param : node.getParameters()) {
         addForwardDecl(param.getVariableElement().asType());
+        for (TypeMirror paramGeneric :
+            objCForwardDeclaredGenericParameters(param.getVariableElement().asType())) {
+          addForwardDecl(paramGeneric);
+        }
       }
     }
     return false;
@@ -140,8 +171,15 @@ public class HeaderImportCollector extends UnitTreeVisitor {
   public boolean visit(MethodDeclaration node) {
     if (filter.include(node)) {
       addForwardDecl(node.getReturnTypeMirror());
+      for (TypeMirror returnGeneric :
+          objCForwardDeclaredGenericParameters(node.getReturnTypeMirror())) {
+        addForwardDecl(returnGeneric);
+      }
       for (VariableElement param : node.getExecutableElement().getParameters()) {
         addForwardDecl(param.asType());
+        for (TypeMirror paramGeneric : objCForwardDeclaredGenericParameters(param.asType())) {
+          addForwardDecl(paramGeneric);
+        }
       }
     }
     return false;
@@ -160,7 +198,14 @@ public class HeaderImportCollector extends UnitTreeVisitor {
 
   @Override
   public boolean visit(TypeDeclaration node) {
+    wantsGenerateObjectiveCGenerics =
+        TypeUtil.hasGenerateObjectiveCGenerics(node.getTypeElement().asType());
     return visitTypeDeclaration(node);
+  }
+
+  @Override
+  public void endVisit(TypeDeclaration node) {
+    wantsGenerateObjectiveCGenerics = false;
   }
 
   @Override

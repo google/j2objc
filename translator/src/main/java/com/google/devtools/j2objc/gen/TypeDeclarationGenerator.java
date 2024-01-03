@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.gen;
 
-import static java.util.stream.Collectors.joining;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -247,20 +245,19 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     return names;
   }
 
-  private void printInterfaceType() {
-    printf("@interface %s", typeName);
-    if (needsGenerateObjectiveCGenerics() && !typeElement.getTypeParameters().isEmpty()) {
-      printf(
-          "<%s>",
-          typeElement.getTypeParameters().stream()
-              .map(Element::getSimpleName)
-              .collect(joining(", ")));
+  protected void printInterfaceGenerics() {
+    if (generateObjectiveCGenerics(typeElement.asType())) {
+      List<String> genericNames = nameTable.getClassObjCGenericTypeNames(typeElement.asType());
+      if (!genericNames.isEmpty()) {
+        printf("<%s>", String.join(", ", genericNames));
+      }
     }
-    printf(" : %s", getSuperTypeName());
   }
 
-  private boolean needsGenerateObjectiveCGenerics() {
-    return options.asObjCGenericDecl() || hasGenerateObjectiveCGenerics(typeElement.asType());
+  private void printInterfaceType() {
+    printf("@interface %s", typeName);
+    printInterfaceGenerics();
+    printf(" : %s", getSuperTypeName());
   }
 
   private void printImplementedProtocols() {
@@ -672,7 +669,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         "getter=" + methodName,
         setter != null ? "setter=" + nameTable.getMethodSelector(setter) : "readonly",
         shouldAddNullableAnnotation(methodElement) ? ", nullable" : "",
-        getReturnType(m, needsGenerateObjectiveCGenerics()),
+        getReturnType(m, true), // Generics allowed in headers.
         propertyName);
     newline();
   }
@@ -704,7 +701,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       return;
     }
 
-    String methodSignature = getMethodSignature(m, needsGenerateObjectiveCGenerics());
+    // Method declarations allow generics.
+    String methodSignature = getMethodSignature(m, true);
 
     // In order to properly map the method name from the entire signature, we must isolate it from
     // associated type and parameter declarations.  The method name is guaranteed to be between the

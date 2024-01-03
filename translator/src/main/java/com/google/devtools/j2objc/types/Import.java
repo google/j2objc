@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
@@ -40,6 +41,8 @@ public class Import implements Comparable<Import> {
   private final String importFileName;
   private final String javaQualifiedName;
   private final boolean isInterface;
+  private final boolean hasGenerateObjectiveCGenerics;
+  private final List<String> parameterNamesForObjectiveCGenerics;
 
   private Import(TypeElement type, NameTable nameTable, Options options) {
     this.typeName = nameTable.getFullName(type);
@@ -51,6 +54,9 @@ public class Import implements Comparable<Import> {
     this.javaQualifiedName =
         ElementUtil.isIosType(mainType) ? null : ElementUtil.getQualifiedName(mainType);
     this.isInterface = type.getKind().isInterface();
+    this.hasGenerateObjectiveCGenerics = TypeUtil.hasGenerateObjectiveCGenerics(type);
+    this.parameterNamesForObjectiveCGenerics =
+        nameTable.getClassObjCGenericTypeNames(type.asType());
   }
 
   /**
@@ -58,6 +64,15 @@ public class Import implements Comparable<Import> {
    */
   public String getTypeName() {
     return typeName;
+  }
+
+  public boolean hasGenerateObjectiveCGenerics() {
+    return hasGenerateObjectiveCGenerics;
+  }
+
+  /** Gets the Objective-C name of type's generic parameters. */
+  public List<String> getParameterNamesForObjectiveCGenerics() {
+    return parameterNamesForObjectiveCGenerics;
   }
 
   /**

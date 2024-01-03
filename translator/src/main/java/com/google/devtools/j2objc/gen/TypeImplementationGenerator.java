@@ -298,6 +298,8 @@ public class TypeImplementationGenerator extends TypeGenerator {
       println("J2OBJC_IGNORE_DESIGNATED_BEGIN");
     }
     syncLineNumbers(m);  // avoid doc-comment
+    // Implementations should not contain generics as this allows us to avoid type errors
+    // when translating to ObjC's more limited system of generics.
     print(getMethodSignature(m, false) + " ");
     print(reindent(generateStatement(m.getBody())) + "\n");
     if (isDesignatedInitializer) {
