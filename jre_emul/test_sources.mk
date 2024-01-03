@@ -26,7 +26,6 @@
 # com/google/j2objc/mappedpkg/TestClass.java \
 # com/google/j2objc/mappedpkg/package-info.java \
 # com/google/j2objc/package-info.java \
-# com/test/Hello.java \
 # dalvik/system/CloseGuardMonitor.java \
 
 SUPPORT_SOURCES = \
@@ -34,6 +33,7 @@ SUPPORT_SOURCES = \
     android/icu/dev/test/TestFmwk.java \
     android/icu/dev/test/TestLog.java \
     android/icu/dev/test/TestUtil.java \
+    com/test/Hello.java \
     foo/Fourth.java \
     foo/bar/First.java \
     foo/mumble/Second.java \
@@ -262,8 +262,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 
 # TODO(b/265202484): packages that are commmented need to be moved for Java 11
 # or fixed because of ICU difference between each xcode version.
-# SerializationTest.java \
-# com/google/j2objc/PackageTest.java \
 # com/google/j2objc/java8/CreationReferenceTest.java \
 # com/google/j2objc/java8/ExpressionMethodReferenceTest.java \
 # com/google/j2objc/java8/LambdaTest.java \
@@ -282,6 +280,7 @@ TEST_SOURCES := \
     NSDictionaryMapTest.java \
     PackagePrefixesTest.java \
     RetentionTest.java \
+    SerializationTest.java \
     UTF16EncodingTest.java \
     android/icu/dev/test/timezone/TimeZoneTest.java \
     android/icu/dev/test/timezone/TimeZoneAliasTest.java \
