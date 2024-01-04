@@ -21,10 +21,8 @@
 # bar/Third.java \
 # com/google/j2objc/NativeUtil.java \
 # com/google/j2objc/ObjectTest.java \
-# com/google/j2objc/TestAnnotation.java \
 # com/google/j2objc/mappedpkg/TestClass.java \
 # com/google/j2objc/mappedpkg/package-info.java \
-# com/google/j2objc/package-info.java \
 # dalvik/system/CloseGuardMonitor.java \
 
 SUPPORT_SOURCES = \
@@ -32,6 +30,8 @@ SUPPORT_SOURCES = \
     android/icu/dev/test/TestFmwk.java \
     android/icu/dev/test/TestLog.java \
     android/icu/dev/test/TestUtil.java \
+    com/google/j2objc/TestAnnotation.java \
+    com/google/j2objc/package-info.java \
     com/test/Hello.java \
     com/google/j2objc/java8/Lambdas.java \
     foo/Fourth.java \
@@ -296,6 +296,7 @@ TEST_SOURCES := \
     com/google/j2objc/LinkedListTest.java \
     com/google/j2objc/MemoryTest.java \
     com/google/j2objc/MethodTest.java \
+    com/google/j2objc/PackageTest.java \
     com/google/j2objc/ReflectionTest.java \
     com/google/j2objc/RetainedWithTest.java \
     com/google/j2objc/StringTest.java \
