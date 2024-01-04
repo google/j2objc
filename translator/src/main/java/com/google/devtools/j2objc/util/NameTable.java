@@ -720,6 +720,7 @@ public class NameTable {
         && enableGenerics
         && !((DeclaredType) type).getTypeArguments().isEmpty()
         && !TypeUtil.isInterface(type)
+        && !typeUtil.isProtoClass(type)
         && !typeUtil.isClassType(TypeUtil.asTypeElement(type))) {
       final String finalQualifiers = qualifiers;
       // Avoid creating generics that merely state <id,id,...>. Obj-C generics only support 'id'
