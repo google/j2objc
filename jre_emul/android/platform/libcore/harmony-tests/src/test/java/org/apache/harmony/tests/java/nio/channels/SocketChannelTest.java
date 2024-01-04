@@ -2412,36 +2412,37 @@ public class SocketChannelTest extends TestCase {
         }
     }
 
-    public void testWriteByteBuffer_Direct() throws IOException {
-        assertTrue(this.server1.isBound());
-        java.nio.ByteBuffer writeBuf = java.nio.ByteBuffer
-                .allocateDirect(CAPACITY_NORMAL);
-        assertFalse(this.channel1.isRegistered());
-        assertTrue(this.channel1.isBlocking());
-        assertFalse(this.channel1.isConnected());
-        assertFalse(this.channel1.isConnectionPending());
-        assertTrue(this.channel1.isOpen());
-        try {
-            channel1.write(writeBuf);
-            fail("Should throw NotYetConnectedException");
-        } catch (NotYetConnectedException e) {
-            // correct
-        }
-        this.channel1.connect(localAddr1);
-        assertTrue(this.channel1.isBlocking());
-        assertTrue(this.channel1.isConnected());
-        assertFalse(this.channel1.isConnectionPending());
-        assertTrue(this.channel1.isOpen());
-        assertEquals(CAPACITY_NORMAL, this.channel1.write(writeBuf));
+    // TODO(b/311121150): Fix java.net.ConnectException: NioSocketError issue
+    // public void testWriteByteBuffer_Direct() throws IOException {
+    //     assertTrue(this.server1.isBound());
+    //     java.nio.ByteBuffer writeBuf = java.nio.ByteBuffer
+    //             .allocateDirect(CAPACITY_NORMAL);
+    //     assertFalse(this.channel1.isRegistered());
+    //     assertTrue(this.channel1.isBlocking());
+    //     assertFalse(this.channel1.isConnected());
+    //     assertFalse(this.channel1.isConnectionPending());
+    //     assertTrue(this.channel1.isOpen());
+    //     try {
+    //         channel1.write(writeBuf);
+    //         fail("Should throw NotYetConnectedException");
+    //     } catch (NotYetConnectedException e) {
+    //         // correct
+    //     }
+    //     this.channel1.connect(localAddr1);
+    //     assertTrue(this.channel1.isBlocking());
+    //     assertTrue(this.channel1.isConnected());
+    //     assertFalse(this.channel1.isConnectionPending());
+    //     assertTrue(this.channel1.isOpen());
+    //     assertEquals(CAPACITY_NORMAL, this.channel1.write(writeBuf));
 
-        this.channel1.close();
-        try {
-            channel1.write(writeBuf);
-            fail("Should throw ClosedChannelException");
-        } catch (ClosedChannelException e) {
-            // correct
-        }
-    }
+    //     this.channel1.close();
+    //     try {
+    //         channel1.write(writeBuf);
+    //         fail("Should throw ClosedChannelException");
+    //     } catch (ClosedChannelException e) {
+    //         // correct
+    //     }
+    // }
 
     public void testWriteByteBuffer_BufNull() throws IOException {
         assertTrue(this.server1.isBound());

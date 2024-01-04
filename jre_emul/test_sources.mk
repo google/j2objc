@@ -22,7 +22,6 @@
 # com/google/j2objc/NativeUtil.java \
 # com/google/j2objc/ObjectTest.java \
 # com/google/j2objc/TestAnnotation.java \
-# com/google/j2objc/java8/Lambdas.java \
 # com/google/j2objc/mappedpkg/TestClass.java \
 # com/google/j2objc/mappedpkg/package-info.java \
 # com/google/j2objc/package-info.java \
@@ -34,6 +33,7 @@ SUPPORT_SOURCES = \
     android/icu/dev/test/TestLog.java \
     android/icu/dev/test/TestUtil.java \
     com/test/Hello.java \
+    com/google/j2objc/java8/Lambdas.java \
     foo/Fourth.java \
     foo/bar/First.java \
     foo/mumble/Second.java \
@@ -262,10 +262,6 @@ NATIVE_SOURCES = dalvik_system_JniTest.cpp
 
 # TODO(b/265202484): packages that are commmented need to be moved for Java 11
 # or fixed because of ICU difference between each xcode version.
-# com/google/j2objc/java8/CreationReferenceTest.java \
-# com/google/j2objc/java8/ExpressionMethodReferenceTest.java \
-# com/google/j2objc/java8/LambdaTest.java \
-# com/google/j2objc/java8/SuperMethodReferenceTest.java \
 # java/nio/file/attribute/FileTimeTest.java \
 # test/java/time/format/TestZoneOffsetParser.java \
 
@@ -306,7 +302,11 @@ TEST_SOURCES := \
     com/google/j2objc/ThreadTest.java \
     com/google/j2objc/ThrowableTest.java \
     com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.java \
+    com/google/j2objc/java8/CreationReferenceTest.java \
     com/google/j2objc/java8/DefaultMethodsTest.java \
+    com/google/j2objc/java8/ExpressionMethodReferenceTest.java \
+    com/google/j2objc/java8/LambdaTest.java \
+    com/google/j2objc/java8/SuperMethodReferenceTest.java \
     com/google/j2objc/java8/TypeMethodReferenceTest.java \
     com/google/j2objc/net/IosHttpURLConnectionTest.java \
     com/google/j2objc/net/NSErrorExceptionTest.java \
