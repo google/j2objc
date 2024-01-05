@@ -260,11 +260,6 @@ MOCKWEBSERVER_SOURCES = \
 
 NATIVE_SOURCES = dalvik_system_JniTest.cpp
 
-# TODO(b/265202484): packages that are commmented need to be moved for Java 11
-# or fixed because of ICU difference between each xcode version.
-# java/nio/file/attribute/FileTimeTest.java \
-# test/java/time/format/TestZoneOffsetParser.java \
-
 # TODO(b/311402728): RSAPrivateKey generation fails, returning invalid object type.
 # tests/security/interfaces/RSAPrivateCrtKeyTest.java \
 
@@ -320,7 +315,7 @@ TEST_SOURCES := \
     com/google/j2objc/security/IosSecureRandomImplTest.java \
     com/google/j2objc/util/NativeTimeZoneTest.java \
     dalvik/system/JniTest.java \
-    libcore/icu/NativeDecimalFormatTest.java \
+    java/nio/file/attribute/FileTimeTest.java \
     jsr166/AbstractExecutorServiceTest.java \
     jsr166/AbstractQueueTest.java \
     jsr166/AbstractQueuedLongSynchronizerTest.java \
@@ -404,6 +399,7 @@ TEST_SOURCES := \
     j2objc/java/util/TreeMapTest.java \
     j2objc/java/util/WeakHashMapTest.java \
     j2objc/java/util/regex/MatcherTest.java \
+    libcore/icu/NativeDecimalFormatTest.java \
     libcore/io/PosixTest.java \
     libcore/java/lang/CharacterTest.java \
     libcore/java/net/URLConnectionTest.java \
@@ -1375,6 +1371,7 @@ TEST_SOURCES := \
     tests/api/java/lang/reflect/ProxyTest.java \
     tests/java/security/AlgorithmParameterGeneratorSpiTest.java \
     tests/java/security/SecureClassLoaderTest.java \
+    test/java/time/format/TestZoneOffsetParser.java \
     tests/security/cert/CRLExceptionTest.java \
     tests/security/cert/CRLTest.java \
     tests/security/cert/CertPathBuilderExceptionTest.java \
