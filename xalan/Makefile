@@ -24,10 +24,7 @@ OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 SOURCEPATH = $(SRC_DIR)
 INCLUDE_DIRS = $(GEN_OBJC_DIR)
 
-ifeq ("$(XCODE_13_3_MINIMUM)", "YES")
-  CC_WARNINGS += -Wno-bitwise-instead-of-logical
-  CC_WARNINGS += -Wunused-but-set-variable
-endif
+CC_WARNINGS += -Wno-bitwise-instead-of-logical -Wno-unused-but-set-variable
 
 J2OBJCC := $(ARCH_BIN_DIR)/j2objcc -c $(INCLUDE_DIRS:%=-I%) $(CC_WARNINGS)
 
