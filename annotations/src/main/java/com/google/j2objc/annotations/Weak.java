@@ -24,14 +24,17 @@ import static java.lang.annotation.RetentionPolicy.CLASS;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-
 /**
  * Annotation that indicates a variable has a weak relationship to its owner. The variable will be
- * declared with the __unsafe_unretained annotation.
+ * declared with the __weak annotation if compiled with either ARC ("-fobjc-arc" clang flag) or the
+ * "-fobjc-weak" clang flag (set by j2objc script).
+ *
+ * <p>If compiled with neither clang flag, the variable will be declared with the
+ * __unsafe_unretained annotation. However, it's recommended that either ARC compilation or using
+ * the "-fobjc-weak" flag be used.
  *
  * @author Tom Ball
  */
 @Target({FIELD, LOCAL_VARIABLE, PARAMETER})
 @Retention(CLASS)
-public @interface Weak {
-}
+public @interface Weak {}
