@@ -28,14 +28,14 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class TransformerExceptionTest {
 
-    // TODO(b/310801427): Fix the different expected value issue
-    // @Test
-    // public void constructorWithStringAndThrowable() {
-    //     Throwable t = new Throwable();
-    //     TransformerException e = new TransformerException(t);
-    //     assertEquals("java.lang.Throwable", e.getMessage());
-    //     assertEquals(t, e.getCause());
-    // }
+    @Test
+    public void constructorWithStringAndThrowable() {
+        Throwable t = new Throwable();
+        TransformerException e = new TransformerException(t);
+        // assertEquals("java.lang.Throwable", e.getMessage());
+        // assertEquals("JavaLangThrowable", e.getMessage());
+        assertEquals(t, e.getCause());
+    }
 
     @Test
     public void constructorWithStringAndSourceLocator() {
