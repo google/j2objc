@@ -101,6 +101,11 @@
                   <version>32.0.1-android</version>
                 </artifactItem>
                 <artifactItem>
+                  <groupId>com.google.protobuf</groupId>
+                  <artifactId>protobuf-java</artifactId>
+                  <classifier>sources</classifier>
+                </artifactItem>
+                <artifactItem>
                   <groupId>javax.inject</groupId>
                   <artifactId>javax.inject</artifactId>
                   <classifier>sources</classifier>
@@ -228,7 +233,7 @@
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
-      <version>3.25.1</version>
+      <version>3.25.2</version>
     </dependency>
     <dependency>
       <groupId>org.bitbucket.mstrobel</groupId>

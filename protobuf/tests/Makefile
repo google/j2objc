@@ -102,7 +102,7 @@ CLASSPATH = $(subst $(eval) ,:,$(strip $(CLASSPATH_LIST)))
 
 TEST_J2OBJCC = $(DIST_DIR)/j2objcc -g
 C_FLAGS = -Werror -Wno-objc-redundant-literal-use -Wno-format -Wno-parentheses \
-  -fobjc-abi-version=2 -fobjc-legacy-dispatch -stdlib=libc++
+  -fobjc-abi-version=2 -fobjc-legacy-dispatch
 
 INCLUDE_DIRS = . $(GEN_OBJC_DIR) $(DIST_INCLUDE_DIR)/guava
 
@@ -207,9 +207,9 @@ $(OBJS_DIR)/my_malloc.o: my_malloc.m | jre_emul_dist
 	$(TEST_J2OBJCC) -c -o $@ $<
 
 $(BIN): $(OBJS) $(LIB_DEPS)
-	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -lguava -ljsr305 -ljunit \
+	$(TEST_J2OBJCC) -ObjC -Werror -ljre_emul -lguava -ljsr305 -ljunit \
       -ltruth -lprotobuf_runtime -o $@ $(OBJS)
 
 $(BIN_ARC): $(OBJS_ARC) $(LIB_DEPS)
-	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -lguava -ljsr305 -ljunit \
+	$(TEST_J2OBJCC) -ObjC -Werror -ljre_emul -lguava -ljsr305 -ljunit \
       -ltruth -lprotobuf_runtime -fobjc-arc -fobjc-arc-exceptions -o $@ $(OBJS_ARC)
