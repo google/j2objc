@@ -1324,12 +1324,12 @@ public class TreeShakerTest extends TestCase {
 
     assertThat(output)
         .isEqualTo(
-            "CoffeeMaker:\n"
+            "Boiler:\n"
+                + "    Boiler()\n"
+                + "CoffeeMaker:\n"
                 + "    CoffeeMaker()\n"
                 + "CoffeeMaker:\n"
-                + "    instanceMethod()\n"
-                + "Boiler:\n"
-                + "    Boiler()\n");
+                + "    instanceMethod()\n");
   }
 
   // Regression test for b/224994241
@@ -1506,9 +1506,9 @@ public class TreeShakerTest extends TestCase {
     assertThat(output)
         .isEqualTo(
             "Grinder$Setting:\n"
-                + "    Grinder$Setting[] values()\n"
+                + "    Grinder$Setting valueOf(java.lang.String)\n"
                 + "Grinder$Setting:\n"
-                + "    Grinder$Setting valueOf(java.lang.String)\n");
+                + "    Grinder$Setting[] values()\n");
   }
 
   // Regression test for b/224970952
@@ -1644,10 +1644,10 @@ public class TreeShakerTest extends TestCase {
         .isEqualTo(
             String.join(
                 "\n",
-                "OverheatException:",
-                "    OverheatException()",
                 "OutOfCoffeeException:",
-                "    OutOfCoffeeException()\n"));
+                "    OutOfCoffeeException()",
+                "OverheatException:",
+                "    OverheatException()\n"));
   }
 
   // Regression test for b/229773937

@@ -19,6 +19,9 @@ import static com.google.common.collect.ImmutableList.toImmutableList;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSortedSet;
+import com.google.common.collect.Table.Cell;
 import com.google.common.flogger.GoogleLogger;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -245,12 +248,24 @@ public class TreeShaker {
 
   @VisibleForTesting
   static void writeUnused(CodeReferenceMap unused, Consumer<String> writer) {
-    for (String clazz : unused.getReferencedClasses()) {
+    ImmutableSortedSet<String> referencedClasses =
+        ImmutableSortedSet.copyOf(unused.getReferencedClasses());
+    for (String clazz : referencedClasses) {
       writer.accept(clazz + "\n");
     }
-    unused
-        .getReferencedMethods()
-        .cellSet()
+    ImmutableSortedSet.Builder<Cell<String, String, ImmutableSet<String>>>
+        referencedMethodsCellSetBuilder =
+            ImmutableSortedSet.orderedBy(
+                (c1, c2) -> {
+                  if (c1.getRowKey().equals(c2.getRowKey())) {
+                    return c1.getColumnKey().compareTo(c2.getColumnKey());
+                  } else {
+                    return c1.getRowKey().compareTo(c2.getRowKey());
+                  }
+                });
+    referencedMethodsCellSetBuilder
+        .addAll(unused.getReferencedMethods().cellSet())
+        .build()
         .forEach(
             cell -> {
               String type = cell.getRowKey();
