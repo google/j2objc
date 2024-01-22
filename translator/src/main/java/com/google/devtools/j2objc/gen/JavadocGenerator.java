@@ -266,9 +266,9 @@ public class JavadocGenerator extends AbstractSourceGenerator {
       if (preStart > 0) {
         sb.append('\n');
       }
-      sb.append("@code\n");
+      // sb.append("@code\n");
       sb.append(text.substring(preStart + "<pre>".length(), preEnd));
-      sb.append("\n@endcode");
+      // sb.append("\n@endcode");
       sb.append(text.substring(preEnd + "</pre>".length()));
     } else if (preStart > -1) {
       // The text has <pre> but not the </pre> should be in a following Javadoc tag.
@@ -276,12 +276,12 @@ public class JavadocGenerator extends AbstractSourceGenerator {
       if (preStart > 0) {
         sb.append('\n');
       }
-      sb.append("@code\n");
+      // sb.append("@code\n");
       sb.append(text.substring(preStart + "<pre>".length()));
       spanningPreTag = true;
     } else {
       // The text just has a </pre>.
-      sb.append("\n@endcode");
+      // sb.append("\n@endcode");
       sb.append(text.substring(preEnd + "</pre>".length()));
       spanningPreTag = false;
     }
