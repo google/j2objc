@@ -186,6 +186,7 @@ static void doWait(id obj, long long timeout) {
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
+  #pragma clang diagnostic ignored "-Wundeclared-selector"
   methods[0].selector = @selector(init);
   methods[1].selector = @selector(java_getClass);
   methods[2].selector = @selector(hash);

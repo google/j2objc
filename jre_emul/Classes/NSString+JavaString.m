@@ -28,6 +28,7 @@
 #import "java/lang/AssertionError.h"
 #import "java/lang/Character.h"
 #import "java/lang/ClassCastException.h"
+#import "java/lang/Deprecated.h"
 #import "java/lang/Double.h"
 #import "java/lang/Float.h"
 #import "java/lang/Integer.h"
@@ -37,6 +38,7 @@
 #import "java/lang/StringBuffer.h"
 #import "java/lang/StringBuilder.h"
 #import "java/lang/StringIndexOutOfBoundsException.h"
+#import "java/lang/annotation/Annotation.h"
 #import "java/nio/ByteBuffer.h"
 #import "java/nio/CharBuffer.h"
 #import "java/nio/charset/Charset.h"
@@ -56,6 +58,10 @@
 #import "java/util/stream/IntStream.h"
 
 #define NSString_serialVersionUID -6849794470754667710LL
+
+__attribute__((unused)) static IOSObjectArray *NSString__Annotations$0(void);
+__attribute__((unused)) static IOSObjectArray *NSString__Annotations$1(void);
+__attribute__((unused)) static IOSObjectArray *NSString__Annotations$2(void);
 
 @implementation NSString (JavaString)
 
@@ -871,86 +877,90 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, 0, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 1, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 2, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 1, -1, -1, 2, -1 },
     { NULL, NULL, 0x1, -1, 3, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 4, 5, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 6, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 7, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 8, 5, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 4, -1, -1, 5, -1 },
+    { NULL, NULL, 0x1, -1, 6, 7, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 8, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, 9, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 10, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 10, 7, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, 11, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, 12, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, 13, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, 14, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 15, 9, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 15, 10, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x89, 16, 17, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x89, 16, 18, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 19, 20, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 19, 21, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 19, 9, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 19, 10, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 19, 22, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 19, 23, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 19, 24, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 19, 25, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 19, 26, -1, -1, -1, -1 },
-    { NULL, "C", 0x1, 27, 24, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 28, 24, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 29, 24, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 30, 31, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 32, 12, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 33, 12, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 34, 12, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 35, 36, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 37, 12, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 38, 12, -1, -1, -1, -1 },
-    { NULL, "[B", 0x1, 39, -1, -1, -1, -1, -1 },
-    { NULL, "[B", 0x1, 39, 40, -1, -1, -1, -1 },
-    { NULL, "[B", 0x1, 39, 12, 5, -1, -1, -1 },
-    { NULL, "V", 0x1, 39, 41, -1, -1, -1, -1 },
-    { NULL, "V", 0x1, 42, 43, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 44, 24, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 44, 31, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 44, 12, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 44, 45, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 46, -1, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 47, -1, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 48, 24, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 48, 31, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 48, 12, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 48, 45, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 49, -1, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 50, 12, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 51, 31, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 52, 53, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 52, 54, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 55, 56, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 55, 57, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 15, -1, -1, -1, -1 },
+    { NULL, NULL, 0x1, -1, 16, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 17, 11, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 17, 12, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x89, 18, 19, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x89, 18, 20, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 21, 22, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 21, 23, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 21, 11, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 21, 12, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 21, 24, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 21, 25, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 21, 26, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 21, 27, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 21, 28, -1, -1, -1, -1 },
+    { NULL, "C", 0x1, 29, 26, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 30, 26, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 31, 26, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 32, 33, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 34, 14, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 35, 14, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 36, 14, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 37, 38, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 39, 14, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 40, 14, -1, -1, -1, -1 },
+    { NULL, "[B", 0x1, 41, -1, -1, -1, -1, -1 },
+    { NULL, "[B", 0x1, 41, 42, -1, -1, -1, -1 },
+    { NULL, "[B", 0x1, 41, 14, 7, -1, -1, -1 },
+    { NULL, "V", 0x1, 41, 43, -1, -1, 44, -1 },
+    { NULL, "V", 0x1, 45, 46, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 47, 26, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 47, 33, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 47, 14, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 47, 48, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 49, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 50, -1, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 51, 26, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 51, 33, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 51, 14, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 51, 48, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 52, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 53, 14, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 54, 33, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 55, 56, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 55, 57, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x1, 58, 59, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 60, 59, -1, -1, -1, -1 },
-    { NULL, "[LNSString;", 0x1, 61, 12, -1, -1, -1, -1 },
-    { NULL, "[LNSString;", 0x1, 61, 45, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 62, 12, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 62, 45, -1, -1, -1, -1 },
-    { NULL, "LJavaLangCharSequence;", 0x1, 63, 31, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 64, 24, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 64, 31, -1, -1, -1, -1 },
-    { NULL, "[C", 0x1, 65, -1, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 66, -1, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 66, 67, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 68, -1, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 68, 67, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 58, 60, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 61, 62, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 63, 62, -1, -1, -1, -1 },
+    { NULL, "[LNSString;", 0x1, 64, 14, -1, -1, -1, -1 },
+    { NULL, "[LNSString;", 0x1, 64, 48, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 65, 14, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 65, 48, -1, -1, -1, -1 },
+    { NULL, "LJavaLangCharSequence;", 0x1, 66, 33, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 67, 26, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 67, 33, -1, -1, -1, -1 },
+    { NULL, "[C", 0x1, 68, -1, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x1, 69, -1, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 70, 36, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 70, 13, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x89, 71, 72, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 71, 73, -1, 74, -1, -1 },
+    { NULL, "LNSString;", 0x1, 69, 70, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 71, -1, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 71, 70, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 72, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 73, 38, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 73, 15, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x89, 74, 75, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x9, 74, 76, -1, 77, -1, -1 },
+    { NULL, "Z", 0x1, 78, 28, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 79, -1, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 80, -1, -1, -1, -1, -1 },
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
+  #pragma clang diagnostic ignored "-Wundeclared-selector"
   methods[0].selector = @selector(string);
   methods[1].selector = @selector(java_stringWithBytes:);
   methods[2].selector = @selector(java_stringWithBytes:hibyte:);
@@ -1030,36 +1040,42 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
   methods[76].selector = @selector(java_contentEqualsStringBuffer:);
   methods[77].selector = @selector(java_joinWithJavaLangCharSequence:withJavaLangCharSequenceArray:);
   methods[78].selector = @selector(java_joinWithJavaLangCharSequence:withJavaLangIterable:);
+  methods[79].selector = @selector(isEqual:);
+  methods[80].selector = @selector(hash);
+  methods[81].selector = @selector(description);
   #pragma clang diagnostic pop
   static const J2ObjcFieldInfo fields[] = {
-    { "CASE_INSENSITIVE_ORDER", "LJavaUtilComparator;", .constantValue.asLong = 0, 0x19, -1, 75, 76,
+    { "CASE_INSENSITIVE_ORDER", "LJavaUtilComparator;", .constantValue.asLong = 0, 0x19, -1, 81, 82,
       -1 },
     { "serialVersionUID", "J", .constantValue.asLong = NSString_serialVersionUID, 0x1a, -1, -1, -1,
       -1 },
     { "serialPersistentFields", "[LJavaIoObjectStreamField;", .constantValue.asLong = 0, 0x1a, -1,
-      77, -1, -1 },
+      83, -1, -1 },
   };
   static const void *ptrTable[] = {
-    "[B", "[BI", "[BII", "[BIII", "[BIILNSString;", "LJavaIoUnsupportedEncodingException;",
+    "[B", "[BI", (void *)&NSString__Annotations$0, "[BII", "[BIII",
+    (void *)&NSString__Annotations$1, "[BIILNSString;", "LJavaIoUnsupportedEncodingException;",
     "[BIILJavaNioCharsetCharset;", "[BLJavaNioCharsetCharset;", "[BLNSString;", "[C", "[CII",
     "[III", "LNSString;", "LJavaLangStringBuffer;", "LJavaLangStringBuilder;", "copyValueOf",
     "format", "LJavaUtilLocale;LNSString;[LNSObject;", "LNSString;[LNSObject;", "valueOf", "Z", "C",
     "D", "F", "I", "J", "LNSObject;", "charAt", "codePointAt", "codePointBefore", "codePointCount",
     "II", "compareTo", "compareToIgnoreCase", "concat", "contains", "LJavaLangCharSequence;",
-    "endsWith", "equalsIgnoreCase", "getBytes", "LJavaNioCharsetCharset;", "II[BI", "getChars",
-    "II[CI", "indexOf", "LNSString;I", "intern", "isEmpty", "lastIndexOf", "length", "matches",
-    "offsetByCodePoints", "regionMatches", "ZILNSString;II", "ILNSString;II", "replace", "CC",
+    "endsWith", "equalsIgnoreCase", "getBytes", "LJavaNioCharsetCharset;", "II[BI",
+    (void *)&NSString__Annotations$2, "getChars", "II[CI", "indexOf", "LNSString;I", "intern",
+    "isEmpty", "lastIndexOf", "length", "matches", "offsetByCodePoints", "regionMatches",
+    "ZILNSString;II", "ILNSString;II", "replace", "CC",
     "LJavaLangCharSequence;LJavaLangCharSequence;", "replaceAll", "LNSString;LNSString;",
     "replaceFirst", "split", "startsWith", "subSequence", "substring", "toCharArray", "toLowerCase",
     "LJavaUtilLocale;", "toUpperCase", "trim", "contentEquals", "join",
     "LJavaLangCharSequence;[LJavaLangCharSequence;", "LJavaLangCharSequence;LJavaLangIterable;",
     "(Ljava/lang/CharSequence;Ljava/lang/Iterable<+Ljava/lang/CharSequence;>;)Ljava/lang/String;",
-    &NSString_CASE_INSENSITIVE_ORDER, "Ljava/util/Comparator<Ljava/lang/String;>;",
-    &NSString_serialPersistentFields, "LNSString_CaseInsensitiveComparator;",
-    "Ljava/lang/Object;Ljava/lang/CharSequence;Ljava/lang/Comparable<Ljava/lang/String;>;"
-    "Ljava/io/Serializable;" };
+    "equals", "hashCode", "toString", &NSString_CASE_INSENSITIVE_ORDER,
+    "Ljava/util/Comparator<Ljava/lang/String;>;", &NSString_serialPersistentFields,
+    "LNSString_CaseInsensitiveComparator;",
+    "Ljava/lang/Object;Ljava/io/Serializable;Ljava/lang/Comparable<Ljava/lang/String;>;"
+    "Ljava/lang/CharSequence;" };
   static const J2ObjcClassInfo _NSString = {
-    "String", "java.lang", ptrTable, methods, fields, 7, 0x1, 79, 3, -1, 78, -1, 79, -1 };
+    "String", "java.lang", ptrTable, methods, fields, 7, 0x11, 82, 3, -1, 84, -1, 85, -1 };
   return &_NSString;
 }
 
@@ -1152,6 +1168,7 @@ NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
+  #pragma clang diagnostic ignored "-Wundeclared-selector"
   methods[0].selector = @selector(init);
   methods[1].selector = @selector(compareWithId:withId:);
   #pragma clang diagnostic pop
@@ -1189,6 +1206,24 @@ IOSObjectArray *NSString_serialPersistentFields;
 }
 
 @end
+
+IOSObjectArray *NSString__Annotations$0() {
+  return [IOSObjectArray arrayWithObjects:(id[]){create_JavaLangDeprecated(false, @"")}
+                                    count:1
+                                     type:JavaLangAnnotationAnnotation_class_()];
+}
+
+IOSObjectArray *NSString__Annotations$1() {
+  return [IOSObjectArray arrayWithObjects:(id[]){create_JavaLangDeprecated(false, @"")}
+                                    count:1
+                                     type:JavaLangAnnotationAnnotation_class_()];
+}
+
+IOSObjectArray *NSString__Annotations$2() {
+  return [IOSObjectArray arrayWithObjects:(id[]){create_JavaLangDeprecated(false, @"")}
+                                    count:1
+                                     type:JavaLangAnnotationAnnotation_class_()];
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSString)
 

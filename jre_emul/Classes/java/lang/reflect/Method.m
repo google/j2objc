@@ -257,10 +257,10 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
 
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
-    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, NULL, 0x2, -1, -1, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, "LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LIOSClass;", 0x1, -1, -1, -1, 0, -1, -1 },
     { NULL, "LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LIOSClass;", 0x1, -1, -1, -1, 0, -1, -1 },
     { NULL, "[LIOSClass;", 0x1, -1, -1, -1, 1, -1, -1 },
@@ -268,19 +268,25 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
     { NULL, "LNSObject;", 0x81, 2, 3, 4, -1, -1, -1 },
     { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 5, 6, -1, 7, -1, -1 },
     { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LJavaLangReflectAnnotatedType;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "[[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "[LJavaLangReflectTypeVariable;", 0x1, -1, -1, -1, 8, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, "[LIOSClass;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LIOSClass;", 0x1, -1, -1, -1, 1, -1, -1 },
     { NULL, "[LJavaLangReflectType;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LNSObject;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 9, 10, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 11, -1, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 12, -1, -1, -1, -1, -1 },
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
+  #pragma clang diagnostic ignored "-Wundeclared-selector"
   methods[0].selector = @selector(init);
   methods[1].selector = @selector(getName);
   methods[2].selector = @selector(getModifiers);
@@ -292,25 +298,31 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
   methods[8].selector = @selector(invokeWithId:withNSObjectArray:);
   methods[9].selector = @selector(getAnnotationWithIOSClass:);
   methods[10].selector = @selector(getDeclaredAnnotations);
-  methods[11].selector = @selector(getParameterAnnotations);
-  methods[12].selector = @selector(getTypeParameters);
-  methods[13].selector = @selector(isSynthetic);
-  methods[14].selector = @selector(getExceptionTypes);
-  methods[15].selector = @selector(getGenericExceptionTypes);
-  methods[16].selector = @selector(toGenericString);
-  methods[17].selector = @selector(isVarArgs);
-  methods[18].selector = @selector(getDefaultValue);
-  methods[19].selector = @selector(isBridge);
-  methods[20].selector = @selector(isDefault);
+  methods[11].selector = @selector(getAnnotatedReturnType);
+  methods[12].selector = @selector(getParameterAnnotations);
+  methods[13].selector = @selector(getTypeParameters);
+  methods[14].selector = @selector(isSynthetic);
+  methods[15].selector = @selector(getExceptionTypes);
+  methods[16].selector = @selector(getGenericExceptionTypes);
+  methods[17].selector = @selector(toGenericString);
+  methods[18].selector = @selector(isVarArgs);
+  methods[19].selector = @selector(getDefaultValue);
+  methods[20].selector = @selector(isBridge);
+  methods[21].selector = @selector(isDefault);
+  methods[22].selector = @selector(isEqual:);
+  methods[23].selector = @selector(getParameterCount);
+  methods[24].selector = @selector(hash);
+  methods[25].selector = @selector(description);
   #pragma clang diagnostic pop
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<*>;", "()[Ljava/lang/Class<*>;", "invoke", "LNSObject;[LNSObject;",
     "LJavaLangIllegalAccessException;LJavaLangIllegalArgumentException;"
     "LJavaLangReflectInvocationTargetException;", "getAnnotation", "LIOSClass;",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;",
-    "()[Ljava/lang/reflect/TypeVariable<Ljava/lang/reflect/Method;>;" };
+    "()[Ljava/lang/reflect/TypeVariable<Ljava/lang/reflect/Method;>;", "equals", "LNSObject;",
+    "hashCode", "toString" };
   static const J2ObjcClassInfo _JavaLangReflectMethod = {
-    "Method", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 21, 0, -1, -1, -1, -1, -1 };
+    "Method", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x11, 26, 0, -1, -1, -1, -1, -1 };
   return &_JavaLangReflectMethod;
 }
 

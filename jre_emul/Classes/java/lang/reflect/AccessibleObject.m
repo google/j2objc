@@ -110,17 +110,21 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
 
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
-    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, NULL, 0x4, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, "V", 0x1, 0, 1, -1, -1, -1, -1 },
-    { NULL, "V", 0x9, 0, 2, -1, -1, -1, -1 },
-    { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 3, 4, -1, 5, -1, -1 },
-    { NULL, "Z", 0x1, 6, 4, -1, 7, -1, -1 },
+    { NULL, "V", 0x1, 0, 1, 2, -1, -1, -1 },
+    { NULL, "V", 0x9, 0, 3, 2, -1, -1, -1 },
+    { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 4, 5, -1, 6, -1, -1 },
+    { NULL, "Z", 0x1, 7, 5, -1, 8, -1, -1 },
     { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 9, 5, -1, 6, -1, -1 },
+    { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, 10, 5, -1, 11, -1, -1 },
+    { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, 12, 5, -1, 11, -1, -1 },
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
+  #pragma clang diagnostic ignored "-Wundeclared-selector"
   methods[0].selector = @selector(init);
   methods[1].selector = @selector(isAccessible);
   methods[2].selector = @selector(setAccessibleWithBoolean:);
@@ -129,13 +133,19 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
   methods[5].selector = @selector(isAnnotationPresentWithIOSClass:);
   methods[6].selector = @selector(getAnnotations);
   methods[7].selector = @selector(getDeclaredAnnotations);
+  methods[8].selector = @selector(getDeclaredAnnotationWithIOSClass:);
+  methods[9].selector = @selector(getAnnotationsByTypeWithIOSClass:);
+  methods[10].selector = @selector(getDeclaredAnnotationsByTypeWithIOSClass:);
   #pragma clang diagnostic pop
   static const void *ptrTable[] = {
-    "setAccessible", "Z", "[LJavaLangReflectAccessibleObject;Z", "getAnnotation", "LIOSClass;",
+    "setAccessible", "Z", "LJavaLangSecurityException;", "[LJavaLangReflectAccessibleObject;Z",
+    "getAnnotation", "LIOSClass;",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;", "isAnnotationPresent",
-    "(Ljava/lang/Class<+Ljava/lang/annotation/Annotation;>;)Z" };
+    "(Ljava/lang/Class<+Ljava/lang/annotation/Annotation;>;)Z", "getDeclaredAnnotation",
+    "getAnnotationsByType", "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)[TT;",
+    "getDeclaredAnnotationsByType" };
   static const J2ObjcClassInfo _JavaLangReflectAccessibleObject = {
-    "AccessibleObject", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 8, 0, -1, -1, -1, -1,
+    "AccessibleObject", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 11, 0, -1, -1, -1, -1,
     -1 };
   return &_JavaLangReflectAccessibleObject;
 }

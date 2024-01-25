@@ -366,7 +366,7 @@ static void SetWithRawValue(
 
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
-    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, NULL, 0x2, -1, -1, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "I", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LIOSClass;", 0x1, -1, -1, -1, 0, -1, -1 },
@@ -392,12 +392,18 @@ static void SetWithRawValue(
     { NULL, "V", 0x1, 28, 29, 3, -1, -1, -1 },
     { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 30, 31, -1, 32, -1, -1 },
     { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, 33, 31, -1, 34, -1, -1 },
+    { NULL, "Z", 0x1, 35, 31, -1, 36, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "Z", 0x1, 37, 2, -1, -1, -1, -1 },
+    { NULL, "I", 0x1, 38, -1, -1, -1, -1, -1 },
+    { NULL, "LNSString;", 0x1, 39, -1, -1, -1, -1, -1 },
   };
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
+  #pragma clang diagnostic ignored "-Wundeclared-selector"
   methods[0].selector = @selector(init);
   methods[1].selector = @selector(getName);
   methods[2].selector = @selector(getModifiers);
@@ -424,9 +430,14 @@ static void SetWithRawValue(
   methods[23].selector = @selector(setShortWithId:withShort:);
   methods[24].selector = @selector(getAnnotationWithIOSClass:);
   methods[25].selector = @selector(getDeclaredAnnotations);
-  methods[26].selector = @selector(isSynthetic);
-  methods[27].selector = @selector(isEnumConstant);
-  methods[28].selector = @selector(toGenericString);
+  methods[26].selector = @selector(getAnnotationsByTypeWithIOSClass:);
+  methods[27].selector = @selector(isAnnotationPresentWithIOSClass:);
+  methods[28].selector = @selector(isSynthetic);
+  methods[29].selector = @selector(isEnumConstant);
+  methods[30].selector = @selector(toGenericString);
+  methods[31].selector = @selector(isEqual:);
+  methods[32].selector = @selector(hash);
+  methods[33].selector = @selector(description);
   #pragma clang diagnostic pop
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<*>;", "get", "LNSObject;",
@@ -435,9 +446,11 @@ static void SetWithRawValue(
     "LNSObject;LNSObject;", "setBoolean", "LNSObject;Z", "setByte", "LNSObject;B", "setChar",
     "LNSObject;C", "setDouble", "LNSObject;D", "setFloat", "LNSObject;F", "setInt", "LNSObject;I",
     "setLong", "LNSObject;J", "setShort", "LNSObject;S", "getAnnotation", "LIOSClass;",
-    "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
+    "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;", "getAnnotationsByType",
+    "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)[TT;", "isAnnotationPresent",
+    "(Ljava/lang/Class<+Ljava/lang/annotation/Annotation;>;)Z", "equals", "hashCode", "toString" };
   static const J2ObjcClassInfo _JavaLangReflectField = {
-    "Field", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x1, 29, 0, -1, -1, -1, -1, -1 };
+    "Field", "java.lang.reflect", ptrTable, methods, NULL, 7, 0x11, 34, 0, -1, -1, -1, -1, -1 };
   return &_JavaLangReflectField;
 }
 

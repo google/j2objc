@@ -813,8 +813,15 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
   methods[25].selector = @selector(appendWithJavaLangCharSequence:withInt:withInt:);
   methods[26].selector = @selector(compareToWithJavaLangAbstractStringBuilder:);
   #pragma clang diagnostic pop
-  static const void *ptrTable[] = { "I", "length", "ensureCapacity", "setLength", "charAt", "codePointAt", "codePointBefore", "codePointCount", "II", "offsetByCodePoints", "getChars", "II[CI", "setCharAt", "IC", "substring", "subSequence", "indexOf", "LNSString;", "LNSString;I", "lastIndexOf", "toString", "append", "C", "LJavaLangCharSequence;", "LJavaLangCharSequence;II", "compareTo", "LJavaLangAbstractStringBuilder;" };
-  static const J2ObjcClassInfo _JavaLangAbstractStringBuilder = { "AbstractStringBuilder", "java.lang", ptrTable, methods, NULL, 7, 0x400, 27, 0, -1, -1, -1, -1, -1 };
+  static const void *ptrTable[] = {
+    "I", "length", "ensureCapacity", "setLength", "charAt", "codePointAt", "codePointBefore",
+    "codePointCount", "II", "offsetByCodePoints", "getChars", "II[CI", "setCharAt", "IC",
+    "substring", "subSequence", "indexOf", "LNSString;", "LNSString;I", "lastIndexOf", "toString",
+    "append", "C", "LJavaLangCharSequence;", "LJavaLangCharSequence;II", "compareTo",
+    "LJavaLangAbstractStringBuilder;" };
+  static const J2ObjcClassInfo _JavaLangAbstractStringBuilder = {
+    "AbstractStringBuilder", "java.lang", ptrTable, methods, NULL, 7, 0x400, 27, 0, -1, -1, -1, -1,
+    -1 };
   return &_JavaLangAbstractStringBuilder;
 }
 

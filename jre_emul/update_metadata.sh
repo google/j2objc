@@ -20,7 +20,9 @@ TEMP_DIR=metadata_temp
 REPLACE_SCRIPT=../scripts/replace_metadata.py
 J2OBJC=../dist/j2objc
 STUBS_DIR=stub_classes/java
-TRANSLATION_FLAGS="-Xtranslate-bootclasspath"
+TRANSLATION_FLAGS="-Xtranslate-bootclasspath "
+TRANSLATION_FLAGS+="--patch-module java.base=. "
+TRANSLATION_FLAGS+="--add-reads java.base=ALL-UNNAMED"
 
 function update_file {
   objc_source=$1
@@ -44,7 +46,6 @@ update_file Classes/NSNumber+JavaNumber.m java/lang/Number.java
 update_file Classes/NSObject+JavaObject.m java/lang/Object.java
 update_file Classes/NSString+JavaString.m java/lang/String.java
 update_file Classes/java/lang/AbstractStringBuilder.m java/lang/AbstractStringBuilder.java
-update_file Classes/java/lang/Iterable.m java/lang/Iterable.java
 update_file Classes/java/lang/reflect/AccessibleObject.m java/lang/reflect/AccessibleObject.java
 update_file Classes/java/lang/reflect/Constructor.m java/lang/reflect/Constructor.java
 update_file Classes/java/lang/reflect/Executable.m java/lang/reflect/Executable.java
