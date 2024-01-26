@@ -53,20 +53,10 @@ static void unalignedPointer(void *ptr) {
   CHECK_ADDR(TYPE, ptr) \
   __c11_atomic_store((volatile_##TYPE *)ptr, newValue, __ATOMIC_##MEM_ORDER);
 
-#define GET_OBJECT_IMPL() \
-  uintptr_t ptr = PTR(obj, offset); \
-  CHECK_ADDR(id, ptr) \
-  return *((id *)ptr);
-
 #define GET_OBJECT_VOLATILE_IMPL() \
   uintptr_t ptr = PTR(obj, offset); \
   CHECK_ADDR(id, ptr) \
   return JreLoadVolatileId((volatile_id *)ptr);
-
-#define PUT_OBJECT_IMPL() \
-  uintptr_t ptr = PTR(obj, offset); \
-  CHECK_ADDR(id, ptr) \
-  JreStrongAssign((id *)ptr, newValue);
 
 #define PUT_OBJECT_VOLATILE_IMPL() \
   uintptr_t ptr = PTR(obj, offset); \
@@ -635,7 +625,7 @@ void Java_sun_misc_Unsafe_putLongVolatile(
  * Signature: (Ljava/lang/Object;J)Ljava/lang/Object;
  */
 jobject Java_sun_misc_Unsafe_getObject(JNIEnv *env, jobject self, jobject obj, jlong offset) {
-  GET_OBJECT_IMPL()
+  GET_OBJECT_VOLATILE_IMPL()
 }
 
 /*
@@ -653,7 +643,7 @@ jobject Java_sun_misc_Unsafe_getObjectVolatile(
  */
 void Java_sun_misc_Unsafe_putObject(
     JNIEnv *env, jobject self, jobject obj, jlong offset, jobject newValue) {
-  PUT_OBJECT_IMPL()
+  PUT_OBJECT_VOLATILE_IMPL()
 }
 
 /*
