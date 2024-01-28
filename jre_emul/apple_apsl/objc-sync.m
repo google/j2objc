@@ -161,6 +161,7 @@ static SyncCache *fetch_cache(BOOL create)
 }
 
 
+__attribute__((disable_sanitizer_instrumentation))
 static SyncCacheItem* id2SyncCacheItem(id object, enum usage why)
 {
     J2OBJC_FAST_LOCK_TYPE *lockp = &LOCK_FOR_OBJ(object);
