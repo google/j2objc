@@ -30,17 +30,15 @@
 
 - (void)testAddedProtocols {
   XCTAssertTrue([NSString conformsToProtocol:@protocol(JavaLangCharSequence)],
-               @"NSString does not include JavaString category", nil);
+                @"NSString does not include JavaString category", nil);
   XCTAssertTrue([NSString conformsToProtocol:@protocol(JavaLangComparable)],
-               @"NSString does not include JavaString category", nil);
+                @"NSString does not include JavaString category", nil);
 }
 
 - (void)testCharSequenceLength {
   id<JavaLangCharSequence> cs = @"12345";
   jint len = [cs java_length];
-  XCTAssertEqual(len, 5,
-                 @"char sequence length should be 5, but was %d",
-                 len);
+  XCTAssertEqual(len, 5, @"char sequence length should be 5, but was %d", len);
 }
 
 - (void)testSplit {
@@ -69,10 +67,8 @@
   // Space regular expression.
   parts = [@"what up" java_split:@"\\s+"];
   XCTAssertEqual(2, [parts length], @"Wrong number of parts.");
-  XCTAssertEqualObjects(@"what", [parts objectAtIndex:0],
-                       @"First part is wrong.");
-  XCTAssertEqualObjects(@"up", [parts objectAtIndex:1],
-                       @"Second part is wrong.");
+  XCTAssertEqualObjects(@"what", [parts objectAtIndex:0], @"First part is wrong.");
+  XCTAssertEqualObjects(@"up", [parts objectAtIndex:1], @"Second part is wrong.");
 
   // Regular expression occurs at beginning and end.
   parts = [@"   what  up " java_split:@"\\s+"];
@@ -89,27 +85,23 @@
   // No matches, not regex.
   parts = [@"a" java_split:@"b"];
   XCTAssertEqual(1, [parts length], @"Wrong number of parts.");
-  XCTAssertEqualObjects(@"a", [parts objectAtIndex:0],
-                       @"First part is wrong.");
+  XCTAssertEqualObjects(@"a", [parts objectAtIndex:0], @"First part is wrong.");
 
   // No matches with regex.
   parts = [@"a" java_split:@"\\s+"];
   XCTAssertEqual(1, [parts length], @"Wrong number of parts.");
-  XCTAssertEqualObjects(@"a", [parts objectAtIndex:0],
-                       @"First part is wrong.");
+  XCTAssertEqualObjects(@"a", [parts objectAtIndex:0], @"First part is wrong.");
 }
 
 - (void)testReplaceFirst {
   NSString *s = @"red-yellow-green-yellow";
   NSString *replacement = [s java_replaceFirst:@"yellow" withReplacement:@"blue"];
   // Regular string replacement.
-  XCTAssertTrue([@"red-blue-green-yellow" isEqualToString:replacement],
-               @"Incorrect replacement");
+  XCTAssertTrue([@"red-blue-green-yellow" isEqualToString:replacement], @"Incorrect replacement");
 
   replacement = [s java_replaceFirst:@"y[a-z]+w" withReplacement:@"blue"];
   // Regex string replacement.
-  XCTAssertTrue([@"red-blue-green-yellow" isEqualToString:replacement],
-               @"Incorrect replacement");
+  XCTAssertTrue([@"red-blue-green-yellow" isEqualToString:replacement], @"Incorrect replacement");
 }
 
 - (void)testReplaceAll {
@@ -117,13 +109,11 @@
   NSString *replacement = [s java_replaceAll:@"yellow" withReplacement:@"blue"];
 
   // Regular string replacement.
-  XCTAssertTrue([@"red-blue-green-blue" isEqualToString:replacement],
-               @"Incorrect replacement");
+  XCTAssertTrue([@"red-blue-green-blue" isEqualToString:replacement], @"Incorrect replacement");
 
   replacement = [s java_replaceAll:@"y[a-z]+w" withReplacement:@"blue"];
   // Regex string replacement.
-  XCTAssertTrue([@"red-blue-green-blue" isEqualToString:replacement],
-               @"Incorrect replacement");
+  XCTAssertTrue([@"red-blue-green-blue" isEqualToString:replacement], @"Incorrect replacement");
 }
 
 - (void)testIndexOfCharacters {
@@ -152,6 +142,34 @@
 
   // Finds last occurrence properly.
   XCTAssertEqual(2, [@"aba" java_lastIndexOf:'a'], @"Wrong index.");
+}
+
+- (void)testRepeat {
+  NSString *s = @"red-yellow";
+  XCTAssertTrue([@"red-yellow" isEqualToString:[s java_repeat:1]], @"Incorrect repitition.");
+  XCTAssertTrue([@"red-yellowred-yellow" isEqualToString:[s java_repeat:2]], @"Incorrect repitition.");
+}
+
+- (void)testStrip {
+  NSString *s = @"  red yellow  ";
+  XCTAssertTrue([@"red yellow" isEqualToString:[s java_strip]], @"Incorrect stripping.");
+}
+
+- (void)testStripLeading {
+  NSString *s = @"  red yellow  ";
+  XCTAssertTrue([@"red yellow  " isEqualToString:[s java_stripLeading]], @"Incorrect stripping.");
+}
+
+- (void)testStripTrailing {
+  NSString *s = @"  red yellow  ";
+  XCTAssertTrue([@"  red yellow" isEqualToString:[s java_stripTrailing]], @"Incorrect stripping.");
+}
+
+- (void)testIsBlank {
+  NSString *s1 = @"";
+  NSString *s2 = @"red";
+  XCTAssertTrue([s1 java_isBlank], @"String is blank.");
+  XCTAssertFalse([s2 java_isBlank], @"String is not blank.");
 }
 
 // Empty test to workaround an Xcode race condition parsing the test

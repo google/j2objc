@@ -600,6 +600,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/io/SerialCallbackContext.java \
   java/io/UnixFileSystem.java \
   java/lang/JavaLangAccess.java \
+  java/lang/StringUTF16.java \
   java/lang/reflect/WeakCache.java \
   java/math/BitSieve.java \
   java/math/MutableBigInteger.java \

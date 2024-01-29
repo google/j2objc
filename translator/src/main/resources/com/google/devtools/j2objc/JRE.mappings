@@ -194,6 +194,11 @@ java.lang.String.valueOf([C)Ljava/lang/String; = java_valueOfChars:
 java.lang.String.valueOf([CII)Ljava/lang/String; = java_valueOfChars:offset:count:
 java.lang.String.copyValueOf([C)Ljava/lang/String; = java_valueOfChars:
 java.lang.String.copyValueOf([CII)Ljava/lang/String; = java_valueOfChars:offset:count:
+java.lang.String.repeat(I)Ljava/lang/String; = java_repeat:
+java.lang.String.strip()Ljava/lang/String; = java_strip
+java.lang.String.stripLeading()Ljava/lang/String; = java_stripLeading
+java.lang.String.stripTrailing()Ljava/lang/String; = java_stripTrailing
+java.lang.String.isBlank()Z = java_isBlank
 
 java.lang.CharSequence.length()I = java_length
 java.lang.CharSequence.subSequence(II)Ljava/lang/CharSequence; = subSequenceFrom:to:

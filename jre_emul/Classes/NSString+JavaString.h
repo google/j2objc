@@ -289,6 +289,21 @@
 + (nonnull NSString *)java_joinWithJavaLangCharSequence:(id<JavaLangCharSequence>)delimiter
                                    withJavaLangIterable:(id<JavaLangIterable>)elements;
 
+// String.repeat(int)
+- (nonnull NSString *)java_repeat:(jint)count;
+
+// String.strip()
+- (nonnull NSString *)java_strip;
+
+// String.stripLeading()
+- (nonnull NSString *)java_stripLeading;
+
+// String.stripTrailing()
+- (nonnull NSString *)java_stripTrailing;
+
+// String.isBlank()
+- (jboolean)java_isBlank;
+
 @end
 
 // String.format(Locale, String, Object...)

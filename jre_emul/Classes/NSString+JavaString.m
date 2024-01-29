@@ -35,9 +35,11 @@
 #import "java/lang/Iterable.h"
 #import "java/lang/Long.h"
 #import "java/lang/NullPointerException.h"
+#import "java/lang/OutOfMemoryError.h"
 #import "java/lang/StringBuffer.h"
 #import "java/lang/StringBuilder.h"
 #import "java/lang/StringIndexOutOfBoundsException.h"
+#import "java/lang/StringUTF16.h"
 #import "java/lang/annotation/Annotation.h"
 #import "java/nio/ByteBuffer.h"
 #import "java/nio/CharBuffer.h"
@@ -62,12 +64,13 @@
 __attribute__((unused)) static IOSObjectArray *NSString__Annotations$0(void);
 __attribute__((unused)) static IOSObjectArray *NSString__Annotations$1(void);
 __attribute__((unused)) static IOSObjectArray *NSString__Annotations$2(void);
+__attribute__((unused)) static IOSObjectArray *NSString__Annotations$3(void);
 
 @implementation NSString (JavaString)
 
 id makeException(Class exceptionClass) {
   id exception = [[exceptionClass alloc] init];
-#if ! __has_feature(objc_arc)
+#if !__has_feature(objc_arc)
   [exception autorelease];
 #endif
   return exception;
@@ -85,17 +88,13 @@ static void checkBounds(jint length, jint offset, jint count) {
   return NSString_java_valueOf_((id)obj);
 }
 
-NSString *NSString_java_valueOf_(id obj) {
-  return obj ? [obj description] : @"null";
-}
+NSString *NSString_java_valueOf_(id obj) { return obj ? [obj description] : @"null"; }
 
 + (NSString *)java_valueOfBool:(jboolean)value {
   return NSString_java_valueOfBool_(value);
 }
 
-NSString *NSString_java_valueOfBool_(jboolean value) {
-  return value ? @"true" : @"false";
-}
+NSString *NSString_java_valueOfBool_(jboolean value) { return value ? @"true" : @"false"; }
 
 + (NSString *)java_valueOfChar:(jchar)value {
   return NSString_java_valueOfChar_(value);
@@ -120,9 +119,7 @@ NSString *NSString_java_valueOfChars_offset_count_(IOSCharArray *data, jint offs
   return [NSString stringWithCharacters:data->buffer_ + offset length:count];
 }
 
-+ (NSString *)java_valueOfChars:(IOSCharArray *)data
-                         offset:(jint)offset
-                          count:(jint)count {
++ (NSString *)java_valueOfChars:(IOSCharArray *)data offset:(jint)offset count:(jint)count {
   return NSString_java_valueOfChars_offset_count_(data, offset, count);
 }
 
@@ -146,17 +143,13 @@ NSString *NSString_java_valueOfFloat_(jfloat value) {
   return NSString_java_valueOfInt_(value);
 }
 
-NSString *NSString_java_valueOfInt_(jint value) {
-  return JavaLangInteger_toStringWithInt_(value);
-}
+NSString *NSString_java_valueOfInt_(jint value) { return JavaLangInteger_toStringWithInt_(value); }
 
 + (NSString *)java_valueOfLong:(jlong)value {
   return NSString_java_valueOfLong_(value);
 }
 
-NSString *NSString_java_valueOfLong_(jlong value) {
-  return JavaLangLong_toStringWithLong_(value);
-}
+NSString *NSString_java_valueOfLong_(jlong value) { return JavaLangLong_toStringWithLong_(value); }
 
 - (void)java_getChars:(jint)sourceBegin
             sourceEnd:(jint)sourceEnd
@@ -165,7 +158,7 @@ NSString *NSString_java_valueOfLong_(jlong value) {
   if (sourceBegin < 0) {
     @throw create_JavaLangStringIndexOutOfBoundsException_initWithInt_(sourceBegin);
   }
-  if (sourceEnd > (jint) [self length]) {
+  if (sourceEnd > (jint)[self length]) {
     @throw create_JavaLangStringIndexOutOfBoundsException_initWithInt_(sourceEnd);
   }
   if (sourceBegin > sourceEnd) {
@@ -176,7 +169,7 @@ NSString *NSString_java_valueOfLong_(jlong value) {
   jint destinationLength = destination->size_;
   if (destinationBegin + (jint)range.length > destinationLength) {
     @throw create_JavaLangStringIndexOutOfBoundsException_initWithInt_(
-        (jint) (destinationBegin + range.length));
+        (jint)(destinationBegin + range.length));
   }
 
   [self getCharacters:destination->buffer_ + destinationBegin range:range];
@@ -187,8 +180,7 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
   if (count == 0) {
     return [NSString string];
   }
-  NSString *result = [NSString stringWithCharacters:value->buffer_ + offset
-                                             length:count];
+  NSString *result = [NSString stringWithCharacters:value->buffer_ + offset length:count];
   return result;
 }
 
@@ -223,7 +215,7 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
   if (![another isKindOfClass:[NSString class]]) {
     @throw makeException([JavaLangClassCastException class]);
   }
-  return (jint)[self compare:(NSString *) another options:NSLiteralSearch];
+  return (jint)[self compare:(NSString *)another options:NSLiteralSearch];
 }
 
 - (jint)java_compareToIgnoreCase:(NSString *)another {
@@ -234,21 +226,20 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
 }
 
 - (NSString *)java_substring:(jint)beginIndex {
-  if (beginIndex < 0 || beginIndex > (jint) [self length]) {
+  if (beginIndex < 0 || beginIndex > (jint)[self length]) {
     @throw create_JavaLangStringIndexOutOfBoundsException_initWithInt_(beginIndex);
   }
-  return [self substringFromIndex:(NSUInteger) beginIndex];
+  return [self substringFromIndex:(NSUInteger)beginIndex];
 }
 
-- (NSString *)java_substring:(jint)beginIndex
-                    endIndex:(jint)endIndex {
+- (NSString *)java_substring:(jint)beginIndex endIndex:(jint)endIndex {
   if (beginIndex < 0) {
     @throw create_JavaLangStringIndexOutOfBoundsException_initWithInt_(beginIndex);
   }
   if (endIndex < beginIndex) {
     @throw create_JavaLangStringIndexOutOfBoundsException_initWithInt_(endIndex - beginIndex);
   }
-  if (endIndex > (jint) [self length]) {
+  if (endIndex > (jint)[self length]) {
     @throw create_JavaLangStringIndexOutOfBoundsException_initWithInt_(endIndex);
   }
   NSRange range = NSMakeRange(beginIndex, endIndex - beginIndex);
@@ -260,7 +251,7 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
 }
 
 - (jint)java_indexOf:(jint)ch fromIndex:(jint)index {
-  unichar c = (unichar) ch;
+  unichar c = (unichar)ch;
   NSString *s = [NSString stringWithCharacters:&c length:1];
   return [self java_indexOfString:s fromIndex:(jint)index];
 }
@@ -273,7 +264,7 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
     return 0;
   }
   NSRange range = [self rangeOfString:s];
-  return range.location == NSNotFound ? -1 : (jint) range.location;
+  return range.location == NSNotFound ? -1 : (jint)range.location;
 }
 
 - (jint)java_indexOfString:(NSString *)s fromIndex:(jint)index {
@@ -284,18 +275,15 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
     return 0;
   }
   NSUInteger max = [self length];
-  if ((NSUInteger) index >= max) {
+  if ((NSUInteger)index >= max) {
     return -1;
   }
   if (index < 0) {
     index = 0;
   }
-  NSRange searchRange = NSMakeRange((NSUInteger) index,
-                                    max - (NSUInteger) index);
-  NSRange range = [self rangeOfString:s
-                              options:NSLiteralSearch
-                                range:searchRange];
-  return range.location == NSNotFound ? -1 : (jint) range.location;
+  NSRange searchRange = NSMakeRange((NSUInteger)index, max - (NSUInteger)index);
+  NSRange range = [self rangeOfString:s options:NSLiteralSearch range:searchRange];
+  return range.location == NSNotFound ? -1 : (jint)range.location;
 }
 
 - (jboolean)java_isEmpty {
@@ -303,13 +291,13 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
 }
 
 - (jint)java_lastIndexOf:(jint)ch {
-  unichar c = (unichar) ch;
+  unichar c = (unichar)ch;
   NSString *s = [NSString stringWithCharacters:&c length:1];
   return [self java_lastIndexOfString:s];
 }
 
 - (jint)java_lastIndexOf:(jint)ch fromIndex:(jint)index {
-  unichar c = (unichar) ch;
+  unichar c = (unichar)ch;
   NSString *s = [NSString stringWithCharacters:&c length:1];
   return [self java_lastIndexOfString:s fromIndex:(jint)index];
 }
@@ -319,24 +307,24 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
     @throw makeException([JavaLangNullPointerException class]);
   }
   if ([s length] == 0) {
-    return (jint) [self length];
+    return (jint)[self length];
   }
   NSRange range = [self rangeOfString:s options:NSBackwardsSearch];
-  return range.location == NSNotFound ? -1 : (jint) range.location;
+  return range.location == NSNotFound ? -1 : (jint)range.location;
 }
 
 - (jint)java_lastIndexOfString:(NSString *)s fromIndex:(jint)index {
   if (!s) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  int max = (jint) [self length];
+  int max = (jint)[self length];
   if (index < 0) {
     return -1;
   }
   if (max == 0) {
     return max;
   }
-  int sLen = (jint) [s length];
+  int sLen = (jint)[s length];
   if (sLen == 0) {
     return index;
   }
@@ -344,15 +332,13 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
   if (bound > max) {
     bound = max;
   }
-  NSRange searchRange = NSMakeRange((NSUInteger) 0, (NSUInteger) bound);
-  NSRange range = [self rangeOfString:s
-                              options:NSBackwardsSearch
-                                range:searchRange];
-  return range.location == NSNotFound ? -1 : (jint) range.location;
+  NSRange searchRange = NSMakeRange((NSUInteger)0, (NSUInteger)bound);
+  NSRange range = [self rangeOfString:s options:NSBackwardsSearch range:searchRange];
+  return range.location == NSNotFound ? -1 : (jint)range.location;
 }
 
 - (jint)java_length {
-  return (jint) [self length];
+  return (jint)[self length];
 }
 
 - (IOSCharArray *)java_toCharArray {
@@ -360,14 +346,13 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
 }
 
 - (jchar)charAtWithInt:(jint)index {
-  if (index < 0 || index >= (jint) [self length]) {
+  if (index < 0 || index >= (jint)[self length]) {
     @throw create_JavaLangStringIndexOutOfBoundsException_initWithInt_(index);
   }
   return [self characterAtIndex:(NSUInteger)index];
 }
 
-- (id<JavaLangCharSequence>)subSequenceFrom:(jint)start
-                                         to:(jint)end {
+- (id<JavaLangCharSequence>)subSequenceFrom:(jint)start to:(jint)end {
   return [self java_substring:start endIndex:end];
 }
 
@@ -375,7 +360,7 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
   CFStringRef this = (__bridge CFStringRef)self;
   CFIndex length = CFStringGetLength(this);
   unichar *chars = malloc(length * sizeof(unichar));
-  CFRange range = { 0, length };
+  CFRange range = {0, length};
   CFStringGetCharacters(this, range, chars);
   BOOL modified = NO;
   for (CFIndex i = 0; i < length; i++) {
@@ -393,12 +378,10 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
               withSequence:(id<JavaLangCharSequence>)newSequence {
   NSString *oldString = [oldSequence description];
   NSString *newString = [newSequence description];
-  return [self stringByReplacingOccurrencesOfString:oldString
-                                         withString:newString];
+  return [self stringByReplacingOccurrencesOfString:oldString withString:newString];
 }
 
-- (NSString *)java_replaceAll:(NSString *)regex
-              withReplacement:(NSString *)replacement {
+- (NSString *)java_replaceAll:(NSString *)regex withReplacement:(NSString *)replacement {
   NSString *result;
   @autoreleasepool {
     JavaUtilRegexMatcher *matcher =
@@ -408,9 +391,7 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
   return AUTORELEASE(result);
 }
 
-
-- (NSString *)java_replaceFirst:(NSString *)regex
-                withReplacement:(NSString *)replacement {
+- (NSString *)java_replaceFirst:(NSString *)regex withReplacement:(NSString *)replacement {
   NSString *result;
   @autoreleasepool {
     JavaUtilRegexMatcher *matcher =
@@ -420,7 +401,6 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
   return AUTORELEASE(result);
 }
 
-
 + (NSString *)java_stringWithBytes:(IOSByteArray *)value {
   return [self java_stringWithBytes:value
                              offset:0
@@ -428,34 +408,19 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
                             charset:JavaNioCharsetCharset_defaultCharset()];
 }
 
-+ (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                       charsetName:(NSString *)charsetName {
-  return [self java_stringWithBytes:value
-                             offset:0
-                             length:value->size_
-                        charsetName:charsetName];
++ (NSString *)java_stringWithBytes:(IOSByteArray *)value charsetName:(NSString *)charsetName {
+  return [self java_stringWithBytes:value offset:0 length:value->size_ charsetName:charsetName];
 }
 
-+ (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                           charset:(JavaNioCharsetCharset *)charset {
-  return [self java_stringWithBytes:value
-                             offset:0
-                             length:value->size_
-                            charset:charset];
++ (NSString *)java_stringWithBytes:(IOSByteArray *)value charset:(JavaNioCharsetCharset *)charset {
+  return [self java_stringWithBytes:value offset:0 length:value->size_ charset:charset];
 }
 
-+ (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                            hibyte:(jint)hibyte {
-  return [NSString java_stringWithBytes:value
-                                 hibyte:hibyte
-                                 offset:0
-                                 length:value->size_];
++ (NSString *)java_stringWithBytes:(IOSByteArray *)value hibyte:(jint)hibyte {
+  return [NSString java_stringWithBytes:value hibyte:hibyte offset:0 length:value->size_];
 }
 
-
-+ (NSString *)java_stringWithBytes:(IOSByteArray *)value
-                            offset:(jint)offset
-                            length:(jint)count {
++ (NSString *)java_stringWithBytes:(IOSByteArray *)value offset:(jint)offset length:(jint)count {
   return [NSString java_stringWithBytes:value
                                  offset:offset
                                  length:count
@@ -480,7 +445,7 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
   checkBounds(value->size_, offset, count);
   if ([charset isKindOfClass:[ComGoogleJ2objcNioCharsetIOSCharset class]]) {
     CFStringEncoding encoding =
-        (CFStringEncoding) [(ComGoogleJ2objcNioCharsetIOSCharset *)charset cfEncoding];
+        (CFStringEncoding)[(ComGoogleJ2objcNioCharsetIOSCharset *)charset cfEncoding];
     NSString *result = (NSString *)CFStringCreateWithBytes(
         NULL, (const UInt8 *)value->buffer_ + offset, count, encoding, true);
     // CFString can return nil if there are invalid bytes in the input.
@@ -488,8 +453,9 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
       return AUTORELEASE(result);
     }
   }
-  JavaNioCharBuffer *cb = [charset decodeWithJavaNioByteBuffer:
-      JavaNioByteBuffer_wrapWithByteArray_withInt_withInt_(value, offset, count)];
+  JavaNioCharBuffer *cb =
+      [charset decodeWithJavaNioByteBuffer:JavaNioByteBuffer_wrapWithByteArray_withInt_withInt_(
+                                               value, offset, count)];
   const unichar *chars = ((IOSCharArray *)[cb array])->buffer_ + [cb position];
   return [NSString stringWithCharacters:chars length:[cb remaining]];
 }
@@ -510,28 +476,26 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
   return s;
 }
 
-+ (NSString *)java_stringWithInts:(IOSIntArray *)codePoints
-                           offset:(jint)offset
-                           length:(jint)count {
++ (NSString *)java_stringWithInts:(IOSIntArray *)codePoints offset:(jint)offset length:(jint)count {
   if (!codePoints) {
     @throw create_JavaLangNullPointerException_initWithNSString_(@"codePoints == null");
   }
   jint ncps = codePoints->size_;
   if ((offset | count) < 0 || count > ncps - offset) {
-    @throw create_JavaLangStringIndexOutOfBoundsException_initWithInt_withInt_withInt_(
-        ncps, offset, count);
+    @throw create_JavaLangStringIndexOutOfBoundsException_initWithInt_withInt_withInt_(ncps, offset,
+                                                                                       count);
   }
   IOSCharArray *value = [IOSCharArray arrayWithLength:count * 2];
   jint end = offset + count;
   jint length = 0;
   for (jint i = offset; i < end; i++) {
-    length += JavaLangCharacter_toCharsWithInt_withCharArray_withInt_(
-        codePoints->buffer_[i], value, length);
+    length += JavaLangCharacter_toCharsWithInt_withCharArray_withInt_(codePoints->buffer_[i], value,
+                                                                      length);
   }
   return [NSString stringWithCharacters:value->buffer_ length:length];
 }
 
-- (IOSByteArray *)java_getBytes  {
+- (IOSByteArray *)java_getBytes {
   return [self java_getBytesWithCharset:JavaNioCharsetCharset_defaultCharset()];
 }
 
@@ -560,8 +524,8 @@ static IOSByteArray *GetBytesWithEncoding(NSString *self, CFStringEncoding encod
   }
   CFRange range = CFRangeMake(0, strLength);
   CFIndex used_length;
-  CFIndex numConverted = CFStringGetBytes(
-      cfStr, range, encoding, 0, false, p, max_length, &used_length);
+  CFIndex numConverted =
+      CFStringGetBytes(cfStr, range, encoding, 0, false, p, max_length, &used_length);
   if (includeBOM) {
     used_length += 2;
   }
@@ -580,14 +544,15 @@ static IOSByteArray *GetBytesWithEncoding(NSString *self, CFStringEncoding encod
   IOSByteArray *result;
   if ([charset isKindOfClass:[ComGoogleJ2objcNioCharsetIOSCharset class]]) {
     CFStringEncoding encoding =
-        (CFStringEncoding) [(ComGoogleJ2objcNioCharsetIOSCharset *)charset cfEncoding];
+        (CFStringEncoding)[(ComGoogleJ2objcNioCharsetIOSCharset *)charset cfEncoding];
     result = GetBytesWithEncoding(self, encoding);
     if (result) {
       return result;
     }
   }
-  JavaNioByteBuffer *bb = [charset encodeWithJavaNioCharBuffer:
-      JavaNioCharBuffer_wrapWithCharArray_([IOSCharArray arrayWithNSString:self])];
+  JavaNioByteBuffer *bb =
+      [charset encodeWithJavaNioCharBuffer:JavaNioCharBuffer_wrapWithCharArray_(
+                                               [IOSCharArray arrayWithNSString:self])];
   result = [IOSByteArray arrayWithLength:[bb remaining]];
   [bb getWithByteArray:result];
   return result;
@@ -603,9 +568,9 @@ static IOSByteArray *GetBytesWithEncoding(NSString *self, CFStringEncoding encod
     badParamMsg = @"srcBegin < 0";
   } else if (srcBegin > srcEnd) {
     badParamMsg = @"srcBegin > srcEnd";
-  } else if (srcEnd > (jint) [self length]) {
+  } else if (srcEnd > (jint)[self length]) {
     badParamMsg = @"srcEnd > string length";
-  } else if (copyLength > (jint) [self length]) {
+  } else if (copyLength > (jint)[self length]) {
     badParamMsg = @"dstBegin+(srcEnd-srcBegin) > dst.length";
   }
   if (badParamMsg) {
@@ -617,12 +582,12 @@ static IOSByteArray *GetBytesWithEncoding(NSString *self, CFStringEncoding encod
   NSUInteger bytesUsed;
   NSRange range = NSMakeRange(srcBegin, srcEnd - srcBegin);
   [self getBytes:bytes
-       maxLength:maxBytes
-      usedLength:&bytesUsed
-        encoding:NSUTF8StringEncoding
-         options:0
-           range:range
-  remainingRange:NULL];
+           maxLength:maxBytes
+          usedLength:&bytesUsed
+            encoding:NSUTF8StringEncoding
+             options:0
+               range:range
+      remainingRange:NULL];
 
   // Double-check there won't be a buffer overflow, since the encoded length
   // of the copied substring is now known.
@@ -635,8 +600,8 @@ static IOSByteArray *GetBytesWithEncoding(NSString *self, CFStringEncoding encod
   free(bytes);
 }
 
-NSString *
-NSString_java_formatWithNSString_withNSObjectArray_(NSString *format, IOSObjectArray *args) {
+NSString *NSString_java_formatWithNSString_withNSObjectArray_(NSString *format,
+                                                              IOSObjectArray *args) {
   JavaUtilFormatter *formatter = [[JavaUtilFormatter alloc] init];
   NSString *result = [[formatter formatWithNSString:format withNSObjectArray:args] description];
   RELEASE_(formatter);
@@ -657,8 +622,8 @@ NSString *NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_
 + (NSString *)java_formatWithJavaUtilLocale:(JavaUtilLocale *)locale
                                withNSString:(NSString *)format
                           withNSObjectArray:(IOSObjectArray *)args {
-  return
-      NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(locale, format, args);
+  return NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(locale, format,
+                                                                                args);
 }
 
 static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
@@ -712,8 +677,7 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
 }
 
 - (jboolean)java_equalsIgnoreCase:(NSString *)aString {
-  NSComparisonResult result =
-      [self compare:aString options:NSCaseInsensitiveSearch];
+  NSComparisonResult result = [self compare:aString options:NSCaseInsensitiveSearch];
   return result == NSOrderedSame;
 }
 
@@ -721,17 +685,16 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
   if (!javaLocale) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  NSLocale* locale =
-      [[NSLocale alloc] initWithLocaleIdentifier:[javaLocale description]];
-#if ! __has_feature(objc_arc)
+  NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:[javaLocale description]];
+#if !__has_feature(objc_arc)
   [locale autorelease];
 #endif
   CFMutableStringRef tempCFMString =
       CFStringCreateMutableCopy(NULL, 0, (ARCBRIDGE CFStringRef)self);
   CFStringLowercase(tempCFMString, (ARCBRIDGE CFLocaleRef)locale);
-  NSString *result = [(ARCBRIDGE NSString*)tempCFMString copy];
+  NSString *result = [(ARCBRIDGE NSString *)tempCFMString copy];
   CFRelease(tempCFMString);
-#if ! __has_feature(objc_arc)
+#if !__has_feature(objc_arc)
   [result autorelease];
 #endif
   return result;
@@ -741,17 +704,16 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
   if (!javaLocale) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  NSLocale* locale =
-      [[NSLocale alloc] initWithLocaleIdentifier:[javaLocale description]];
-#if ! __has_feature(objc_arc)
+  NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:[javaLocale description]];
+#if !__has_feature(objc_arc)
   [locale autorelease];
 #endif
   CFMutableStringRef tempCFMString =
       CFStringCreateMutableCopy(NULL, 0, (ARCBRIDGE CFStringRef)self);
   CFStringUppercase(tempCFMString, (ARCBRIDGE CFLocaleRef)locale);
-  NSString *result = [(ARCBRIDGE NSString*)tempCFMString copy];
+  NSString *result = [(ARCBRIDGE NSString *)tempCFMString copy];
   CFRelease(tempCFMString);
-#if ! __has_feature(objc_arc)
+#if !__has_feature(objc_arc)
   [result autorelease];
 #endif
   return result;
@@ -773,25 +735,26 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
                        aString:(NSString *)aString
                    otherOffset:(jint)otherOffset
                          count:(jint)count {
-  if (thisOffset < 0 || count > (jint) [self length] - thisOffset) {
+  if (thisOffset < 0 || count > (jint)[self length] - thisOffset) {
     return false;
   }
-  if (otherOffset < 0 || count > (jint) [aString length] - otherOffset) {
+  if (otherOffset < 0 || count > (jint)[aString length] - otherOffset) {
     return false;
   }
   if (!aString) {
     @throw makeException([JavaLangNullPointerException class]);
   }
-  NSString *this_ = (thisOffset == 0 && count == (jint) [self length])
-      ? self : [self substringWithRange:NSMakeRange(thisOffset, count)];
-  NSString *other = (otherOffset == 0 && count == (jint) [aString length])
-      ? aString : [aString substringWithRange:NSMakeRange(otherOffset, count)];
+  NSString *this_ = (thisOffset == 0 && count == (jint)[self length])
+                        ? self
+                        : [self substringWithRange:NSMakeRange(thisOffset, count)];
+  NSString *other = (otherOffset == 0 && count == (jint)[aString length])
+                        ? aString
+                        : [aString substringWithRange:NSMakeRange(otherOffset, count)];
   NSUInteger options = NSLiteralSearch;
   if (caseInsensitive) {
     options |= NSCaseInsensitiveSearch;
   }
-  return [this_ compare:other
-                options:options] == NSOrderedSame;
+  return [this_ compare:other options:options] == NSOrderedSame;
 }
 
 - (NSString *)java_intern {
@@ -828,13 +791,13 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
 }
 
 - (jint)java_codePointCount:(jint)beginIndex endIndex:(jint)endIndex {
-  return JavaLangCharacter_codePointCountWithJavaLangCharSequence_withInt_withInt_(
-      self, beginIndex, endIndex);
+  return JavaLangCharacter_codePointCountWithJavaLangCharSequence_withInt_withInt_(self, beginIndex,
+                                                                                   endIndex);
 }
 
 - (jint)java_offsetByCodePoints:(jint)index codePointOffset:(jint)offset {
-  return JavaLangCharacter_offsetByCodePointsWithJavaLangCharSequence_withInt_withInt_(
-      self, index, offset);
+  return JavaLangCharacter_offsetByCodePointsWithJavaLangCharSequence_withInt_withInt_(self, index,
+                                                                                       offset);
 }
 
 - (jboolean)java_matches:(NSString *)regex {
@@ -842,7 +805,7 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
 }
 
 - (jboolean)java_contentEqualsCharSequence:(id<JavaLangCharSequence>)seq {
-  return [self isEqualToString:[(id) seq description]];
+  return [self isEqualToString:[(id)seq description]];
 }
 
 - (jboolean)java_contentEqualsStringBuffer:(JavaLangStringBuffer *)sb {
@@ -855,13 +818,66 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
 
 + (NSString *)java_joinWithJavaLangCharSequence:(id<JavaLangCharSequence>)delimiter
                   withJavaLangCharSequenceArray:(IOSObjectArray *)elements {
-  return NSString_java_joinWithJavaLangCharSequence_withJavaLangCharSequenceArray_(
-      delimiter, elements);
+  return NSString_java_joinWithJavaLangCharSequence_withJavaLangCharSequenceArray_(delimiter,
+                                                                                   elements);
 }
 
 + (NSString *)java_joinWithJavaLangCharSequence:(id<JavaLangCharSequence>)delimiter
                            withJavaLangIterable:(id<JavaLangIterable>)elements {
   return NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(delimiter, elements);
+}
+
+- (NSString *)java_repeat:(jint)count {
+  if (count < 0) {
+    @throw create_JavaLangIllegalArgumentException_initWithNSString_(
+        JreStrcat("$I", @"count is negative: ", count));
+  }
+  if (count == 1) {
+    return self;
+  }
+  jint len = [((NSString *)nil_chk(self)) java_length];
+  if (len == 0 || count == 0) {
+    return @"";
+  }
+  if (JreIntDiv(JavaLangInteger_MAX_VALUE, count) < len) {
+    @throw create_JavaLangOutOfMemoryError_initWithNSString_(
+        JreStrcat("$I$I$", @"Repeating ", len, @" bytes String ", count,
+                  @" times will produce a String exceeding maximum size."));
+  }
+
+  NSMutableString *result = [NSMutableString stringWithCapacity:self.length * count];
+  for (NSUInteger i = 0; i < count; i++) {
+    [result appendString:self];
+  }
+  return result;
+}
+
+- (NSString *)java_strip {
+  NSString *ret = JavaLangStringUTF16_stripWithNSString_(self);
+  return ret == nil ? self : ret;
+}
+
+- (NSString *)java_stripLeading {
+  NSString *ret = JavaLangStringUTF16_stripLeadingWithNSString_(self);
+  return ret == nil ? self : ret;
+}
+
+- (NSString *)java_stripTrailing {
+  NSString *ret = JavaLangStringUTF16_stripTrailingWithNSString_(self);
+  return ret == nil ? self : ret;
+}
+
+- (jboolean)java_isBlank {
+  NSUInteger length = [self length];
+  jint left = 0;
+  while (left < length) {
+    jint codepoint = JavaLangCharacter_codePointAtWithJavaLangCharSequence_withInt_(self, left);
+    if (codepoint != ' ' && codepoint != 0x0009 &&
+        !JavaLangCharacter_isWhitespaceWithInt_(codepoint)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 // Java 8 default methods from CharSequence.
@@ -875,207 +891,292 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
 
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
-    { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 0, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 1, -1, -1, 2, -1 },
-    { NULL, NULL, 0x1, -1, 3, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 4, -1, -1, 5, -1 },
-    { NULL, NULL, 0x1, -1, 6, 7, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 8, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 9, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 10, 7, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 11, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 12, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 13, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 14, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 15, -1, -1, -1, -1 },
-    { NULL, NULL, 0x1, -1, 16, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 17, 11, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 17, 12, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x89, 18, 19, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x89, 18, 20, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 21, 22, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 21, 23, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 21, 11, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 21, 12, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 21, 24, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 21, 25, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 21, 26, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 21, 27, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 21, 28, -1, -1, -1, -1 },
-    { NULL, "C", 0x1, 29, 26, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 30, 26, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 31, 26, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 32, 33, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 34, 14, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 35, 14, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 36, 14, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 37, 38, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 39, 14, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 40, 14, -1, -1, -1, -1 },
-    { NULL, "[B", 0x1, 41, -1, -1, -1, -1, -1 },
-    { NULL, "[B", 0x1, 41, 42, -1, -1, -1, -1 },
-    { NULL, "[B", 0x1, 41, 14, 7, -1, -1, -1 },
-    { NULL, "V", 0x1, 41, 43, -1, -1, 44, -1 },
-    { NULL, "V", 0x1, 45, 46, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 47, 26, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 47, 33, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 47, 14, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 47, 48, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 49, -1, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 50, -1, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 51, 26, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 51, 33, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 51, 14, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 51, 48, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 52, -1, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 53, 14, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 54, 33, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 55, 56, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 55, 57, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 58, 59, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 58, 60, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 61, 62, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 63, 62, -1, -1, -1, -1 },
-    { NULL, "[LNSString;", 0x1, 64, 14, -1, -1, -1, -1 },
-    { NULL, "[LNSString;", 0x1, 64, 48, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 65, 14, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 65, 48, -1, -1, -1, -1 },
-    { NULL, "LJavaLangCharSequence;", 0x1, 66, 33, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 67, 26, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 67, 33, -1, -1, -1, -1 },
-    { NULL, "[C", 0x1, 68, -1, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 69, -1, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 69, 70, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 71, -1, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 71, 70, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 72, -1, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 73, 38, -1, -1, -1, -1 },
-    { NULL, "Z", 0x1, 73, 15, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x89, 74, 75, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x9, 74, 76, -1, 77, -1, -1 },
-    { NULL, "Z", 0x1, 78, 28, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 79, -1, -1, -1, -1, -1 },
-    { NULL, "LNSString;", 0x1, 80, -1, -1, -1, -1, -1 },
+      {NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1},
+      {NULL, NULL, 0x1, -1, 0, -1, -1, -1, -1},
+      {NULL, NULL, 0x1, -1, 1, -1, -1, -1, -1},
+      {NULL, NULL, 0x1, -1, 2, -1, -1, -1, -1},
+      {NULL, NULL, 0x1, -1, 3, -1, -1, -1, -1},
+      {NULL, NULL, 0x1, -1, 4, -1, -1, 5, -1},
+      {NULL, NULL, 0x1, -1, 6, -1, -1, 7, -1},
+      {NULL, NULL, 0x1, -1, 8, 9, -1, -1, -1},
+      {NULL, NULL, 0x1, -1, 10, -1, -1, -1, -1},
+      {NULL, NULL, 0x1, -1, 11, 9, -1, -1, -1},
+      {NULL, NULL, 0x1, -1, 12, -1, -1, -1, -1},
+      {NULL, NULL, 0x1, -1, 13, -1, -1, -1, -1},
+      {NULL, NULL, 0x1, -1, 14, -1, -1, -1, -1},
+      {NULL, NULL, 0x1, -1, 15, -1, -1, -1, -1},
+      {NULL, NULL, 0x1, -1, 16, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 17, -1, -1, -1, -1, -1},
+      {NULL, "Z", 0x1, 18, -1, -1, -1, -1, -1},
+      {NULL, "C", 0x1, 19, 20, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 21, 20, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 22, 20, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 23, 24, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 25, 24, -1, -1, -1, -1},
+      {NULL, "V", 0x1, 26, 27, -1, -1, -1, -1},
+      {NULL, "V", 0x1, 28, 29, -1, -1, 30, -1},
+      {NULL, "[B", 0x1, 28, 0, 9, -1, -1, -1},
+      {NULL, "[B", 0x1, 28, 31, -1, -1, -1, -1},
+      {NULL, "[B", 0x1, 28, -1, -1, -1, -1, -1},
+      {NULL, "Z", 0x1, 32, 33, -1, -1, -1, -1},
+      {NULL, "Z", 0x1, 34, 15, -1, -1, -1, -1},
+      {NULL, "Z", 0x1, 34, 35, -1, -1, -1, -1},
+      {NULL, "Z", 0x1, 36, 0, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 37, 0, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 38, 0, -1, -1, -1, -1},
+      {NULL, "Z", 0x1, 39, 40, -1, -1, -1, -1},
+      {NULL, "Z", 0x1, 39, 41, -1, -1, -1, -1},
+      {NULL, "Z", 0x1, 42, 43, -1, -1, -1, -1},
+      {NULL, "Z", 0x1, 42, 0, -1, -1, -1, -1},
+      {NULL, "Z", 0x1, 44, 0, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 45, -1, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 46, 20, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 46, 24, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 47, 20, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 47, 24, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 46, 0, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 46, 43, -1, -1, -1, -1},
+      {NULL, "I", 0x8, 46, 48, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 47, 0, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 47, 43, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 49, 20, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 49, 24, -1, -1, -1, -1},
+      {NULL, "LJavaLangCharSequence;", 0x1, 50, 24, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 51, 0, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 52, 53, -1, -1, -1, -1},
+      {NULL, "Z", 0x1, 54, 0, -1, -1, -1, -1},
+      {NULL, "Z", 0x1, 55, 35, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 56, 57, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 58, 57, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 52, 59, -1, -1, -1, -1},
+      {NULL, "[LNSString;", 0x1, 60, 43, -1, -1, -1, -1},
+      {NULL, "[LNSString;", 0x1, 60, 0, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x89, 61, 62, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x9, 61, 63, -1, 64, -1, -1},
+      {NULL, "LNSString;", 0x1, 65, 66, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 65, -1, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 67, 66, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 67, -1, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 68, -1, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 69, -1, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 70, -1, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 71, -1, -1, -1, -1, -1},
+      {NULL, "Z", 0x1, 72, -1, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 73, -1, -1, -1, -1, -1},
+      {NULL, "[C", 0x1, 74, -1, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x89, 75, 76, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x89, 75, 77, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x9, 78, 33, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x9, 78, 1, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x9, 78, 2, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x9, 79, 2, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x9, 79, 1, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x9, 78, 80, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x9, 78, 81, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x9, 78, 20, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x9, 78, 82, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x9, 78, 83, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x9, 78, 84, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 85, -1, -1, -1, -1, -1},
+      {NULL, "LNSString;", 0x1, 86, 20, -1, -1, -1, -1},
   };
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
-  #pragma clang diagnostic ignored "-Wundeclared-selector"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
+#pragma clang diagnostic ignored "-Wundeclared-selector"
   methods[0].selector = @selector(string);
-  methods[1].selector = @selector(java_stringWithBytes:);
-  methods[2].selector = @selector(java_stringWithBytes:hibyte:);
-  methods[3].selector = @selector(java_stringWithBytes:offset:length:);
-  methods[4].selector = @selector(java_stringWithBytes:hibyte:offset:length:);
-  methods[5].selector = @selector(java_stringWithBytes:offset:length:charsetName:);
-  methods[6].selector = @selector(java_stringWithBytes:offset:length:charset:);
-  methods[7].selector = @selector(java_stringWithBytes:charset:);
-  methods[8].selector = @selector(java_stringWithBytes:charsetName:);
-  methods[9].selector = @selector(java_stringWithCharacters:);
-  methods[10].selector = @selector(java_stringWithCharacters:offset:length:);
-  methods[11].selector = @selector(java_stringWithInts:offset:length:);
-  methods[12].selector = @selector(stringWithString:);
+  methods[1].selector = @selector(stringWithString:);
+  methods[2].selector = @selector(java_stringWithCharacters:);
+  methods[3].selector = @selector(java_stringWithCharacters:offset:length:);
+  methods[4].selector = @selector(java_stringWithInts:offset:length:);
+  methods[5].selector = @selector(java_stringWithBytes:hibyte:offset:length:);
+  methods[6].selector = @selector(java_stringWithBytes:hibyte:);
+  methods[7].selector = @selector(java_stringWithBytes:offset:length:charsetName:);
+  methods[8].selector = @selector(java_stringWithBytes:offset:length:charset:);
+  methods[9].selector = @selector(java_stringWithBytes:charsetName:);
+  methods[10].selector = @selector(java_stringWithBytes:charset:);
+  methods[11].selector = @selector(java_stringWithBytes:offset:length:);
+  methods[12].selector = @selector(java_stringWithBytes:);
   methods[13].selector = @selector(java_stringWithJavaLangStringBuffer:);
   methods[14].selector = @selector(java_stringWithJavaLangStringBuilder:);
-  methods[15].selector = @selector(java_valueOfChars:);
-  methods[16].selector = @selector(java_valueOfChars:offset:count:);
-  methods[17].selector = @selector(java_formatWithJavaUtilLocale:withNSString:withNSObjectArray:);
-  methods[18].selector = @selector(java_formatWithNSString:withNSObjectArray:);
-  methods[19].selector = @selector(java_valueOfBool:);
-  methods[20].selector = @selector(java_valueOfChar:);
-  methods[21].selector = @selector(java_valueOfChars:);
-  methods[22].selector = @selector(java_valueOfChars:offset:count:);
-  methods[23].selector = @selector(java_valueOfDouble:);
-  methods[24].selector = @selector(java_valueOfFloat:);
-  methods[25].selector = @selector(java_valueOfInt:);
-  methods[26].selector = @selector(java_valueOfLong:);
-  methods[27].selector = @selector(java_valueOf:);
-  methods[28].selector = @selector(charAtWithInt:);
-  methods[29].selector = @selector(java_codePointAt:);
-  methods[30].selector = @selector(java_codePointBefore:);
-  methods[31].selector = @selector(java_codePointCount:endIndex:);
-  methods[32].selector = @selector(compareToWithId:);
-  methods[33].selector = @selector(java_compareToIgnoreCase:);
-  methods[34].selector = @selector(java_concat:);
-  methods[35].selector = @selector(java_contains:);
-  methods[36].selector = @selector(java_hasSuffix:);
-  methods[37].selector = @selector(java_equalsIgnoreCase:);
-  methods[38].selector = @selector(java_getBytes);
-  methods[39].selector = @selector(java_getBytesWithCharset:);
-  methods[40].selector = @selector(java_getBytesWithCharsetName:);
-  methods[41].selector = @selector(java_getBytesWithSrcBegin:withSrcEnd:withDst:withDstBegin:);
-  methods[42].selector = @selector(java_getChars:sourceEnd:destination:destinationBegin:);
-  methods[43].selector = @selector(java_indexOf:);
-  methods[44].selector = @selector(java_indexOf:fromIndex:);
-  methods[45].selector = @selector(java_indexOfString:);
-  methods[46].selector = @selector(java_indexOfString:fromIndex:);
-  methods[47].selector = @selector(java_intern);
-  methods[48].selector = @selector(java_isEmpty);
-  methods[49].selector = @selector(java_lastIndexOf:);
-  methods[50].selector = @selector(java_lastIndexOf:fromIndex:);
-  methods[51].selector = @selector(java_lastIndexOfString:);
-  methods[52].selector = @selector(java_lastIndexOfString:fromIndex:);
-  methods[53].selector = @selector(java_length);
-  methods[54].selector = @selector(java_matches:);
-  methods[55].selector = @selector(java_offsetByCodePoints:codePointOffset:);
-  methods[56].selector = @selector(java_regionMatches:thisOffset:aString:otherOffset:count:);
-  methods[57].selector = @selector(java_regionMatches:aString:otherOffset:count:);
-  methods[58].selector = @selector(java_replace:withChar:);
-  methods[59].selector = @selector(java_replace:withSequence:);
-  methods[60].selector = @selector(java_replaceAll:withReplacement:);
-  methods[61].selector = @selector(java_replaceFirst:withReplacement:);
-  methods[62].selector = @selector(java_split:);
-  methods[63].selector = @selector(java_split:limit:);
-  methods[64].selector = @selector(java_hasPrefix:);
-  methods[65].selector = @selector(java_hasPrefix:offset:);
-  methods[66].selector = @selector(subSequenceFrom:to:);
-  methods[67].selector = @selector(java_substring:);
-  methods[68].selector = @selector(java_substring:endIndex:);
-  methods[69].selector = @selector(java_toCharArray);
-  methods[70].selector = @selector(lowercaseString);
-  methods[71].selector = @selector(java_lowercaseStringWithJRELocale:);
-  methods[72].selector = @selector(uppercaseString);
-  methods[73].selector = @selector(java_uppercaseStringWithJRELocale:);
-  methods[74].selector = @selector(java_trim);
-  methods[75].selector = @selector(java_contentEqualsCharSequence:);
-  methods[76].selector = @selector(java_contentEqualsStringBuffer:);
-  methods[77].selector = @selector(java_joinWithJavaLangCharSequence:withJavaLangCharSequenceArray:);
-  methods[78].selector = @selector(java_joinWithJavaLangCharSequence:withJavaLangIterable:);
-  methods[79].selector = @selector(isEqual:);
-  methods[80].selector = @selector(hash);
-  methods[81].selector = @selector(description);
-  #pragma clang diagnostic pop
+  methods[15].selector = @selector(java_length);
+  methods[16].selector = @selector(java_isEmpty);
+  methods[17].selector = @selector(charAtWithInt:);
+  methods[18].selector = @selector(java_codePointAt:);
+  methods[19].selector = @selector(java_codePointBefore:);
+  methods[20].selector = @selector(java_codePointCount:endIndex:);
+  methods[21].selector = @selector(java_offsetByCodePoints:codePointOffset:);
+  methods[22].selector = @selector(java_getChars:sourceEnd:destination:destinationBegin:);
+  methods[23].selector = @selector(java_getBytesWithSrcBegin:withSrcEnd:withDst:withDstBegin:);
+  methods[24].selector = @selector(java_getBytesWithCharsetName:);
+  methods[25].selector = @selector(java_getBytesWithCharset:);
+  methods[26].selector = @selector(java_getBytes);
+  methods[27].selector = @selector(isEqual:);
+  methods[28].selector = @selector(java_contentEqualsStringBuffer:);
+  methods[29].selector = @selector(java_contentEqualsCharSequence:);
+  methods[30].selector = @selector(java_equalsIgnoreCase:);
+  methods[31].selector = @selector(compareToWithId:);
+  methods[32].selector = @selector(java_compareToIgnoreCase:);
+  methods[33].selector = @selector(java_regionMatches:aString:otherOffset:count:);
+  methods[34].selector = @selector(java_regionMatches:thisOffset:aString:otherOffset:count:);
+  methods[35].selector = @selector(java_hasPrefix:offset:);
+  methods[36].selector = @selector(java_hasPrefix:);
+  methods[37].selector = @selector(java_hasSuffix:);
+  methods[38].selector = @selector(hash);
+  methods[39].selector = @selector(java_indexOf:);
+  methods[40].selector = @selector(java_indexOf:fromIndex:);
+  methods[41].selector = @selector(java_lastIndexOf:);
+  methods[42].selector = @selector(java_lastIndexOf:fromIndex:);
+  methods[43].selector = @selector(java_indexOfString:);
+  methods[44].selector = @selector(java_indexOfString:fromIndex:);
+  methods[45].selector = @selector(indexOfWithByteArray:withByte:withInt:withNSString:withInt:);
+  methods[46].selector = @selector(java_lastIndexOfString:);
+  methods[47].selector = @selector(java_lastIndexOfString:fromIndex:);
+  methods[48].selector = @selector(java_substring:);
+  methods[49].selector = @selector(java_substring:endIndex:);
+  methods[50].selector = @selector(subSequenceFrom:to:);
+  methods[51].selector = @selector(java_concat:);
+  methods[52].selector = @selector(java_replace:withChar:);
+  methods[53].selector = @selector(java_matches:);
+  methods[54].selector = @selector(java_contains:);
+  methods[55].selector = @selector(java_replaceFirst:withReplacement:);
+  methods[56].selector = @selector(java_replaceAll:withReplacement:);
+  methods[57].selector = @selector(java_replace:withSequence:);
+  methods[58].selector = @selector(java_split:limit:);
+  methods[59].selector = @selector(java_split:);
+  methods[60].selector = @selector(java_joinWithJavaLangCharSequence:
+                                       withJavaLangCharSequenceArray:);
+  methods[61].selector = @selector(java_joinWithJavaLangCharSequence:withJavaLangIterable:);
+  methods[62].selector = @selector(java_lowercaseStringWithJRELocale:);
+  methods[63].selector = @selector(lowercaseString);
+  methods[64].selector = @selector(java_uppercaseStringWithJRELocale:);
+  methods[65].selector = @selector(uppercaseString);
+  methods[66].selector = @selector(java_trim);
+  methods[67].selector = @selector(java_strip);
+  methods[68].selector = @selector(java_stripLeading);
+  methods[69].selector = @selector(java_stripTrailing);
+  methods[70].selector = @selector(java_isBlank);
+  methods[71].selector = @selector(description);
+  methods[72].selector = @selector(java_toCharArray);
+  methods[73].selector = @selector(java_formatWithNSString:withNSObjectArray:);
+  methods[74].selector = @selector(java_formatWithJavaUtilLocale:withNSString:withNSObjectArray:);
+  methods[75].selector = @selector(java_valueOf:);
+  methods[76].selector = @selector(java_valueOfChars:);
+  methods[77].selector = @selector(java_valueOfChars:offset:count:);
+  methods[78].selector = @selector(java_valueOfChars:offset:count:);
+  methods[79].selector = @selector(java_valueOfChars:);
+  methods[80].selector = @selector(java_valueOfBool:);
+  methods[81].selector = @selector(java_valueOfChar:);
+  methods[82].selector = @selector(java_valueOfInt:);
+  methods[83].selector = @selector(java_valueOfLong:);
+  methods[84].selector = @selector(java_valueOfFloat:);
+  methods[85].selector = @selector(java_valueOfDouble:);
+  methods[86].selector = @selector(java_intern);
+  methods[87].selector = @selector(java_repeat:);
+#pragma clang diagnostic pop
   static const J2ObjcFieldInfo fields[] = {
-    { "CASE_INSENSITIVE_ORDER", "LJavaUtilComparator;", .constantValue.asLong = 0, 0x19, -1, 81, 82,
-      -1 },
-    { "serialVersionUID", "J", .constantValue.asLong = NSString_serialVersionUID, 0x1a, -1, -1, -1,
-      -1 },
-    { "serialPersistentFields", "[LJavaIoObjectStreamField;", .constantValue.asLong = 0, 0x1a, -1,
-      83, -1, -1 },
+      {"serialVersionUID", "J", .constantValue.asLong = NSString_serialVersionUID, 0x1a, -1, -1, -1,
+       -1},
+      {"serialPersistentFields", "[LJavaIoObjectStreamField;", .constantValue.asLong = 0, 0x1a, -1,
+       87, -1, -1},
+      {"CASE_INSENSITIVE_ORDER", "LJavaUtilComparator;", .constantValue.asLong = 0, 0x19, -1, 88,
+       89, -1},
   };
   static const void *ptrTable[] = {
-    "[B", "[BI", (void *)&NSString__Annotations$0, "[BII", "[BIII",
-    (void *)&NSString__Annotations$1, "[BIILNSString;", "LJavaIoUnsupportedEncodingException;",
-    "[BIILJavaNioCharsetCharset;", "[BLJavaNioCharsetCharset;", "[BLNSString;", "[C", "[CII",
-    "[III", "LNSString;", "LJavaLangStringBuffer;", "LJavaLangStringBuilder;", "copyValueOf",
-    "format", "LJavaUtilLocale;LNSString;[LNSObject;", "LNSString;[LNSObject;", "valueOf", "Z", "C",
-    "D", "F", "I", "J", "LNSObject;", "charAt", "codePointAt", "codePointBefore", "codePointCount",
-    "II", "compareTo", "compareToIgnoreCase", "concat", "contains", "LJavaLangCharSequence;",
-    "endsWith", "equalsIgnoreCase", "getBytes", "LJavaNioCharsetCharset;", "II[BI",
-    (void *)&NSString__Annotations$2, "getChars", "II[CI", "indexOf", "LNSString;I", "intern",
-    "isEmpty", "lastIndexOf", "length", "matches", "offsetByCodePoints", "regionMatches",
-    "ZILNSString;II", "ILNSString;II", "replace", "CC",
-    "LJavaLangCharSequence;LJavaLangCharSequence;", "replaceAll", "LNSString;LNSString;",
-    "replaceFirst", "split", "startsWith", "subSequence", "substring", "toCharArray", "toLowerCase",
-    "LJavaUtilLocale;", "toUpperCase", "trim", "contentEquals", "join",
-    "LJavaLangCharSequence;[LJavaLangCharSequence;", "LJavaLangCharSequence;LJavaLangIterable;",
-    "(Ljava/lang/CharSequence;Ljava/lang/Iterable<+Ljava/lang/CharSequence;>;)Ljava/lang/String;",
-    "equals", "hashCode", "toString", &NSString_CASE_INSENSITIVE_ORDER,
-    "Ljava/util/Comparator<Ljava/lang/String;>;", &NSString_serialPersistentFields,
-    "LNSString_CaseInsensitiveComparator;",
-    "Ljava/lang/Object;Ljava/io/Serializable;Ljava/lang/Comparable<Ljava/lang/String;>;"
-    "Ljava/lang/CharSequence;" };
+      "LNSString;",
+      "[C",
+      "[CII",
+      "[III",
+      "[BIII",
+      (void *)&NSString__Annotations$0,
+      "[BI",
+      (void *)&NSString__Annotations$1,
+      "[BIILNSString;",
+      "LJavaIoUnsupportedEncodingException;",
+      "[BIILJavaNioCharsetCharset;",
+      "[BLNSString;",
+      "[BLJavaNioCharsetCharset;",
+      "[BII",
+      "[B",
+      "LJavaLangStringBuffer;",
+      "LJavaLangStringBuilder;",
+      "length",
+      "isEmpty",
+      "charAt",
+      "I",
+      "codePointAt",
+      "codePointBefore",
+      "codePointCount",
+      "II",
+      "offsetByCodePoints",
+      "getChars",
+      "II[CI",
+      "getBytes",
+      "II[BI",
+      (void *)&NSString__Annotations$2,
+      "LJavaNioCharsetCharset;",
+      "equals",
+      "LNSObject;",
+      "contentEquals",
+      "LJavaLangCharSequence;",
+      "equalsIgnoreCase",
+      "compareTo",
+      "compareToIgnoreCase",
+      "regionMatches",
+      "ILNSString;II",
+      "ZILNSString;II",
+      "startsWith",
+      "LNSString;I",
+      "endsWith",
+      "hashCode",
+      "indexOf",
+      "lastIndexOf",
+      "[BBILNSString;I",
+      "substring",
+      "subSequence",
+      "concat",
+      "replace",
+      "CC",
+      "matches",
+      "contains",
+      "replaceFirst",
+      "LNSString;LNSString;",
+      "replaceAll",
+      "LJavaLangCharSequence;LJavaLangCharSequence;",
+      "split",
+      "join",
+      "LJavaLangCharSequence;[LJavaLangCharSequence;",
+      "LJavaLangCharSequence;LJavaLangIterable;",
+      "(Ljava/lang/CharSequence;Ljava/lang/Iterable<+Ljava/lang/CharSequence;>;)Ljava/lang/String;",
+      "toLowerCase",
+      "LJavaUtilLocale;",
+      "toUpperCase",
+      "trim",
+      "strip",
+      "stripLeading",
+      "stripTrailing",
+      "isBlank",
+      "toString",
+      "toCharArray",
+      "format",
+      "LNSString;[LNSObject;",
+      "LJavaUtilLocale;LNSString;[LNSObject;",
+      "valueOf",
+      "copyValueOf",
+      "Z",
+      "C",
+      "J",
+      "F",
+      "D",
+      "intern",
+      "repeat",
+      &NSString_serialPersistentFields,
+      &NSString_CASE_INSENSITIVE_ORDER,
+      "Ljava/util/Comparator<Ljava/lang/String;>;",
+      "LNSString_CaseInsensitiveComparator;",
+      "Ljava/lang/Object;Ljava/io/Serializable;Ljava/lang/Comparable<Ljava/lang/String;>;"
+      "Ljava/lang/CharSequence;"};
   static const J2ObjcClassInfo _NSString = {
-    "String", "java.lang", ptrTable, methods, fields, 7, 0x11, 82, 3, -1, 84, -1, 85, -1 };
+      "String", "java.lang", ptrTable, methods, fields, 7, 0x11, 88, 3, -1, 90, -1, 91, -1};
   return &_NSString;
 }
 
@@ -1112,14 +1213,12 @@ NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
 
 #define NSString_CaseInsensitiveComparator_serialVersionUID 8575799808933029326LL
 
-@interface NSString_CaseInsensitiveComparator : NSObject
-    < JavaUtilComparator, JavaIoSerializable >
+@interface NSString_CaseInsensitiveComparator : NSObject <JavaUtilComparator, JavaIoSerializable>
 @end
 
 @implementation NSString_CaseInsensitiveComparator
 
-- (jint)compareWithId:(NSString *)o1
-               withId:(NSString *)o2 {
+- (jint)compareWithId:(NSString *)o1 withId:(NSString *)o2 {
   if (!o1) {
     @throw makeException([JavaLangNullPointerException class]);
   }
@@ -1141,7 +1240,8 @@ NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
 }
 
 - (id<JavaUtilComparator>)thenComparingWithJavaUtilFunctionFunction:
-    (id<JavaUtilFunctionFunction>)arg0 withJavaUtilComparator:(id<JavaUtilComparator>)arg1 {
+                              (id<JavaUtilFunctionFunction>)arg0
+                                             withJavaUtilComparator:(id<JavaUtilComparator>)arg1 {
   return JavaUtilComparator_thenComparingWithJavaUtilFunctionFunction_withJavaUtilComparator_(
       self, arg0, arg1);
 }
@@ -1163,26 +1263,37 @@ NSString *NSString_java_joinWithJavaLangCharSequence_withJavaLangIterable_(
 
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
-    { NULL, NULL, 0x2, -1, -1, -1, -1, -1, -1 },
-    { NULL, "I", 0x1, 0, 1, -1, -1, -1, -1 },
+      {NULL, NULL, 0x2, -1, -1, -1, -1, -1, -1},
+      {NULL, "I", 0x1, 0, 1, -1, -1, -1, -1},
   };
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
-  #pragma clang diagnostic ignored "-Wundeclared-selector"
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
+#pragma clang diagnostic ignored "-Wundeclared-selector"
   methods[0].selector = @selector(init);
   methods[1].selector = @selector(compareWithId:withId:);
-  #pragma clang diagnostic pop
+#pragma clang diagnostic pop
   static const J2ObjcFieldInfo fields[] = {
-    { "serialVersionUID", "J",
-      .constantValue.asLong = NSString_CaseInsensitiveComparator_serialVersionUID, 0x1a, -1, -1, -1,
-      -1 },
+      {"serialVersionUID", "J",
+       .constantValue.asLong = NSString_CaseInsensitiveComparator_serialVersionUID, 0x1a, -1, -1,
+       -1, -1},
   };
   static const void *ptrTable[] = {
-    "compare", "LNSString;LNSString;", "LNSString;",
-    "Ljava/lang/Object;Ljava/util/Comparator<Ljava/lang/String;>;Ljava/io/Serializable;" };
-  static const J2ObjcClassInfo _NSString_CaseInsensitiveComparator = {
-    "CaseInsensitiveComparator", "java.lang", ptrTable, methods, fields, 7, 0xa, 2, 1, 2, -1, -1, 3,
-    -1 };
+      "compare", "LNSString;LNSString;", "LNSString;",
+      "Ljava/lang/Object;Ljava/util/Comparator<Ljava/lang/String;>;Ljava/io/Serializable;"};
+  static const J2ObjcClassInfo _NSString_CaseInsensitiveComparator = {"CaseInsensitiveComparator",
+                                                                      "java.lang",
+                                                                      ptrTable,
+                                                                      methods,
+                                                                      fields,
+                                                                      7,
+                                                                      0xa,
+                                                                      2,
+                                                                      1,
+                                                                      2,
+                                                                      -1,
+                                                                      -1,
+                                                                      3,
+                                                                      -1};
   return &_NSString_CaseInsensitiveComparator;
 }
 
@@ -1198,9 +1309,10 @@ IOSObjectArray *NSString_serialPersistentFields;
 + (void)initialize {
   if (self == [JreStringCategoryDummy class]) {
     JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER,
-        [[NSString_CaseInsensitiveComparator alloc] init]);
+                              [[NSString_CaseInsensitiveComparator alloc] init]);
     JreStrongAssignAndConsume(&NSString_serialPersistentFields,
-        [IOSObjectArray newArrayWithLength:0 type:JavaIoObjectStreamField_class_()]);
+                              [IOSObjectArray newArrayWithLength:0
+                                                            type:JavaIoObjectStreamField_class_()]);
     J2OBJC_SET_INITIALIZED(NSString)
   }
 }
@@ -1220,6 +1332,12 @@ IOSObjectArray *NSString__Annotations$1() {
 }
 
 IOSObjectArray *NSString__Annotations$2() {
+  return [IOSObjectArray arrayWithObjects:(id[]){create_JavaLangDeprecated(false, @"")}
+                                    count:1
+                                     type:JavaLangAnnotationAnnotation_class_()];
+}
+
+IOSObjectArray *NSString__Annotations$3() {
   return [IOSObjectArray arrayWithObjects:(id[]){create_JavaLangDeprecated(false, @"")}
                                     count:1
                                      type:JavaLangAnnotationAnnotation_class_()];
