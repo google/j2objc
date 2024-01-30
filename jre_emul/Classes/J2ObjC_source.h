@@ -21,6 +21,7 @@
 #import "IOSPrimitiveArray.h"
 #import "J2ObjC_common.h"
 #import "JavaObject.h"
+#import "JavaNSObject.h"
 #import "NSCopying+JavaCloneable.h"
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"

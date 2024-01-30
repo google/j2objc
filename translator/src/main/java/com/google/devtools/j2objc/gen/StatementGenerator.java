@@ -770,10 +770,16 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(SynchronizedStatement node) {
-    buffer.append("@synchronized(");
+    buffer.append("@try {\n");
+    buffer.append("  [");
     node.getExpression().accept(this);
-    buffer.append(") ");
+    buffer.append(" java_lock];\n");
     node.getBody().accept(this);
+    buffer.append("} @finally {\n");
+    buffer.append("  [");
+    node.getExpression().accept(this);
+    buffer.append(" java_unlock];\n");
+    buffer.append("}\n");
     return false;
   }
 

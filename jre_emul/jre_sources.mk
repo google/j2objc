@@ -68,7 +68,6 @@ NATIVE_JRE_SOURCES_CORE = \
   jvm.m \
   libcore_icu_ICU.m \
   libcore_io_Memory.m \
-  objc-sync.m \
   sun_misc_Unsafe.m
 
 # Java sources to be translated normally and included in the core library.

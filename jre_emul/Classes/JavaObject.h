@@ -35,13 +35,22 @@
 // Returns the IOSClass of the receiver.
 - (IOSClass *)java_getClass;
 
-// Wakes up a waiting thread (if any).
+// Returns YES if the current thread holds the lock in this object's monitor, NO otherwise.
+- (BOOL)java_currentThreadHoldsLock;
+
+// Obtains the lock from this object's monitor.
+- (void)java_lock;
+
+// Releases the lock from this object's monitor.
+- (void)java_unlock;
+
+// Wakes up a waiting thread (if any) blocked on this object's monitor.
 - (void)java_notify;
 
-// Wakes up all waiting threads (if any).
+// Wakes up all waiting threads (if any) blocked on this object's monitor.
 - (void)java_notifyAll;
 
-// Waits until another thread wakes it, or times out.
+// Waits on this object's monitor until another thread wakes it, or times out.
 - (void)java_wait;
 - (void)java_waitWithLong:(long long)timeout;
 - (void)java_waitWithLong:(long long)timeout withInt:(int)nanos;

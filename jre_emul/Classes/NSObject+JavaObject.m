@@ -31,7 +31,7 @@
 #import "java/lang/InterruptedException.h"
 #import "java/lang/NullPointerException.h"
 #import "java/lang/Thread.h"
-#import "objc-sync.h"
+#import "java/lang/UnsupportedOperationException.h"
 
 // A category that adds Java Object-compatible methods to NSObject.
 @implementation NSObject (JavaObject)
@@ -91,76 +91,36 @@
   return 0;
 }
 
+- (BOOL)java_currentThreadHoldsLock {
+  @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc] init]);
+}
+
+- (void)java_lock {
+  @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc] init]);
+}
+
+- (void)java_unlock {
+  @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc] init]);
+}
+
 - (void)java_notify {
-  int result = objc_sync_notify(self);
-  if (result == OBJC_SYNC_SUCCESS) {  // Test most likely outcome first.
-    return;
-  }
-  if (result == OBJC_SYNC_NOT_OWNING_THREAD_ERROR) {
-    @throw AUTORELEASE([[JavaLangIllegalMonitorStateException alloc] init]);
-  } else {
-    NSString *msg = [NSString stringWithFormat:@"system error %d", result];
-    @throw AUTORELEASE([[JavaLangInternalError alloc] initWithNSString:msg]);
-  }
+  @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc] init]);
 }
 
 - (void)java_notifyAll {
-  int result = objc_sync_notifyAll(self);
-  if (result == OBJC_SYNC_SUCCESS) {  // Test most likely outcome first.
-    return;
-  }
-  if (result == OBJC_SYNC_NOT_OWNING_THREAD_ERROR) {
-    @throw AUTORELEASE([[JavaLangIllegalMonitorStateException alloc] init]);
-  } else {
-    NSString *msg = [NSString stringWithFormat:@"system error %d", result];
-    @throw AUTORELEASE([[JavaLangInternalError alloc] initWithNSString:msg]);
-  }
-}
-
-static void doWait(id obj, long long timeout) {
-  if (timeout < 0) {
-    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
-  }
-  JavaLangThread *javaThread = JavaLangThread_currentThread();
-  int result = OBJC_SYNC_SUCCESS;
-  if (!javaThread->interrupted_) {
-    assert(javaThread->blocker_ == nil);
-    javaThread->blocker_ = obj;
-    result = objc_sync_wait(obj, timeout);
-    javaThread->blocker_ = nil;
-  }
-  jboolean wasInterrupted = javaThread->interrupted_;
-  javaThread->interrupted_ = false;
-  if (wasInterrupted) {
-    @throw AUTORELEASE([[JavaLangInterruptedException alloc] init]);
-  }
-  if (result == OBJC_SYNC_SUCCESS) {
-    return;  // success
-  }
-  if (result == OBJC_SYNC_TIMED_OUT) {
-    return;
-  }
-  if (result == OBJC_SYNC_NOT_OWNING_THREAD_ERROR) {
-    @throw AUTORELEASE([[JavaLangIllegalMonitorStateException alloc] init]);
-  } else {
-    NSString *msg = [NSString stringWithFormat:@"system error %d", result];
-    @throw AUTORELEASE([[JavaLangInternalError alloc] initWithNSString:msg]);
-  }
+  @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc] init]);
 }
 
 - (void)java_wait {
-  doWait(self, 0LL);
+  @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc] init]);
 }
 
 - (void)java_waitWithLong:(long long)timeout {
-  doWait(self, timeout);
+  @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc] init]);
 }
 
 - (void)java_waitWithLong:(long long)timeout withInt:(int)nanos {
-  if (nanos < 0) {
-    @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
-  }
-  doWait(self, timeout + (nanos == 0 ? 0 : 1));
+  @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc] init]);
 }
 
 - (void)java_finalize {

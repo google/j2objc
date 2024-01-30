@@ -17,6 +17,7 @@
 
 #import "IOSObjectArray.h"
 #import "J2ObjC_common.h"
+#import "JavaNSObject.h"
 #import "JavaObject.h"
 #import "NSObject+JavaObject.h"
 

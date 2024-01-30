@@ -18,7 +18,6 @@
 package java.lang;
 
 import com.google.j2objc.annotations.Weak;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +29,7 @@ import sun.nio.ch.Interruptible;
 /*-[
 #import "java/lang/AssertionError.h"
 #import "java_lang_Thread.h"
-#import "objc-sync.h"
+#import "J2ObjC_source.h"
 #import <pthread.h>
 ]-*/
 
@@ -841,15 +840,13 @@ public class Thread implements Runnable {
   }
 
   /**
-   * Indicates whether the current Thread has a monitor lock on the specified
-   * object.
+   * Indicates whether the current Thread has a monitor lock on the specified object.
    *
    * @param object the object to test for the monitor lock
-   * @return true if the current thread has a monitor lock on the specified
-   *         object; false otherwise
+   * @return true if the current thread has a monitor lock on the specified object; false otherwise
    */
   public static native boolean holdsLock(Object object) /*-[
-    return j2objc_sync_holds_lock(object);
+    return [object java_currentThreadHoldsLock];
   ]-*/;
 
   /**
