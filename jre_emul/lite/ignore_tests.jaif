@@ -129,6 +129,11 @@ class ReentrantReadWriteLockTest:
     @ObjectiveCName("ignoreSerialization")
   method testSerialization_fair()V:
     @ObjectiveCName("ignoreSerialization_fair")
+class SemaphoreTest:
+  method testSerialization()V:
+    @ObjectiveCName("ignoreSerialization")
+  method testSerialization_fair()V:
+    @ObjectiveCName("ignoreSerialization_fair")
 class SynchronousQueueTest:
   method testSerialization()V:
     @ObjectiveCName("ignoreSerialization")

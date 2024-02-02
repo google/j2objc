@@ -41,8 +41,8 @@ SUPPORT_SOURCES = \
     java/lang/test/package-info.java \
     jsr166/BlockingQueueTest.java \
     jsr166/Collection8Test.java \
-    jsr166/CollectionTest.java \
     jsr166/CollectionImplementation.java \
+    jsr166/CollectionTest.java \
     jsr166/JSR166TestCase.java \
     libcore/java/io/NullPrintStream.java \
     libcore/java/lang/reflect/annotations/AnnotatedElementTestSupport.java \
@@ -377,6 +377,7 @@ TEST_SOURCES := \
     jsr166/ReentrantReadWriteLockTest.java \
     jsr166/ScheduledExecutorSubclassTest.java \
     jsr166/ScheduledExecutorTest.java \
+    jsr166/SemaphoreTest.java \
     jsr166/SynchronousQueueTest.java \
     jsr166/SystemTest.java \
     jsr166/ThreadLocalRandom8Test.java \
