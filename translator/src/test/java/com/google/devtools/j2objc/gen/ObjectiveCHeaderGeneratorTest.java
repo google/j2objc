@@ -488,7 +488,31 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public enum Color { RED, WHITE, BLUE }",
       "Color", "Color.h");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
+        "typedef NS_ENUM(jint, Color_Enum) {",
+        "  Color_Enum_RED NS_SWIFT_NAME(red) = 0,",
+        "  Color_Enum_WHITE NS_SWIFT_NAME(white) = 1,",
+        "  Color_Enum_BLUE NS_SWIFT_NAME(blue) = 2,",
+        "};");
+    assertTranslation(translation, "@interface Color : JavaLangEnum");
+    assertTranslation(translation, "+ (IOSObjectArray *)values;");
+    assertTranslation(translation, "+ (Color *)valueOfWithNSString:(NSString *)name;");
+    assertTranslation(translation, "FOUNDATION_EXPORT Color *Color_values_[];");
+    assertTranslatedLines(
+        translation, "inline Color *Color_get_RED(void);", "J2OBJC_ENUM_CONSTANT(Color, RED)");
+    assertTranslatedLines(
+        translation, "inline Color *Color_get_WHITE(void);", "J2OBJC_ENUM_CONSTANT(Color, WHITE)");
+    assertTranslatedLines(
+        translation, "inline Color *Color_get_BLUE(void);", "J2OBJC_ENUM_CONSTANT(Color, BLUE)");
+  }
+
+  public void testEnumNoSwiftEnums() throws IOException {
+    options.setSwiftEnums(false);
+    String translation =
+        translateSourceFile("public enum Color { RED, WHITE, BLUE }", "Color", "Color.h");
+    assertTranslatedLines(
+        translation,
         "typedef NS_ENUM(jint, Color_Enum) {",
         "  Color_Enum_RED = 0,",
         "  Color_Enum_WHITE = 1,",
@@ -519,9 +543,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         "typedef NS_ENUM(jint, Color_Enum) {",
-        "  Color_Enum_RED = 0,",
-        "  Color_Enum_WHITE = 1,",
-        "  Color_Enum_BLUE = 2,",
+        "  Color_Enum_RED NS_SWIFT_NAME(red) = 0,",
+        "  Color_Enum_WHITE NS_SWIFT_NAME(white) = 1,",
+        "  Color_Enum_BLUE NS_SWIFT_NAME(blue) = 2,",
         "};");
     assertTranslation(translation, "FOUNDATION_EXPORT Color *_Nonnull Color_values_[];");
     assertTranslatedLines(

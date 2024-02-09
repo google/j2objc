@@ -208,6 +208,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
   public void testEnumConstantClassProperties() throws IOException {
     options.setClassProperties(true);
     options.setNullability(true);
+    options.setSwiftEnums(false);
     String source = "enum Test { ONE, TWO, EOF }"; // EOF is a reserved name.
     String translation = translateSourceFile(source, "Test", "Test.h");
     assertTranslation(

@@ -90,7 +90,7 @@ public class Options {
   private String processors = null;
   private boolean disallowInheritedConstructors = true;
   private boolean nullability = false;
-  private boolean swiftEnums = false;
+  private boolean swiftEnums = true;
   private boolean nullMarked = false;
   private TimingLevel timingLevel = TimingLevel.NONE;
   private boolean dumpAST = false;
