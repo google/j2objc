@@ -26,8 +26,6 @@
 package sun.nio.ch;
 
 import java.nio.channels.spi.AsynchronousChannelProvider;
-import java.security.AccessController;
-import sun.security.action.GetPropertyAction;
 
 /**
  * Creates this platform's default asynchronous channel provider
@@ -40,41 +38,40 @@ public class DefaultAsynchronousChannelProvider {
      */
     private DefaultAsynchronousChannelProvider() { }
 
-    @SuppressWarnings("unchecked")
-    private static AsynchronousChannelProvider createProvider(String cn) {
-        Class<AsynchronousChannelProvider> c;
-        try {
-            c = (Class<AsynchronousChannelProvider>)Class.forName(cn);
-        } catch (ClassNotFoundException x) {
-            throw new AssertionError(x);
-        }
-        try {
-            return c.newInstance();
-        } catch (IllegalAccessException | InstantiationException x) {
-            throw new AssertionError(x);
-        }
+  // J2ObjC-changed: unused
+  // @SuppressWarnings("unchecked")
+  // private static AsynchronousChannelProvider createProvider(String cn) {
+  //     Class<AsynchronousChannelProvider> c;
+  //     try {
+  //         c = (Class<AsynchronousChannelProvider>)Class.forName(cn);
+  //     } catch (ClassNotFoundException x) {
+  //         throw new AssertionError(x);
+  //     }
+  //     try {
+  //         return c.newInstance();
+  //     } catch (IllegalAccessException | InstantiationException x) {
+  //         throw new AssertionError(x);
+  //     }
 
-    }
+  // }
 
-    /**
-     * Returns the default AsynchronousChannelProvider.
-     */
-    public static AsynchronousChannelProvider create() {
-        // BEGIN J2ObjC-changed: Hardcode AsynchronousChannelProvider provider.
-        /*
-        String osname = AccessController
-            .doPrivileged(new GetPropertyAction("os.name"));
-        if (osname.equals("SunOS"))
-            return createProvider("sun.nio.ch.SolarisAsynchronousChannelProvider");
-        if (osname.equals("Linux"))
-            return createProvider("sun.nio.ch.LinuxAsynchronousChannelProvider");
-        if (osname.contains("OS X"))
-            return createProvider("sun.nio.ch.BsdAsynchronousChannelProvider");
-        if (osname.equals("AIX"))
-            return createProvider("sun.nio.ch.AixAsynchronousChannelProvider");
-        throw new InternalError("platform not recognized");
-        */
+  /** Returns the default AsynchronousChannelProvider. */
+  public static AsynchronousChannelProvider create() {
+    // BEGIN J2ObjC-changed: Hardcode AsynchronousChannelProvider provider.
+    /*
+    String osname = AccessController
+        .doPrivileged(new GetPropertyAction("os.name"));
+    if (osname.equals("SunOS"))
+        return createProvider("sun.nio.ch.SolarisAsynchronousChannelProvider");
+    if (osname.equals("Linux"))
+        return createProvider("sun.nio.ch.LinuxAsynchronousChannelProvider");
+    if (osname.contains("OS X"))
         return createProvider("sun.nio.ch.BsdAsynchronousChannelProvider");
+    if (osname.equals("AIX"))
+        return createProvider("sun.nio.ch.AixAsynchronousChannelProvider");
+    throw new InternalError("platform not recognized");
+    */
+    return new sun.nio.ch.BsdAsynchronousChannelProvider();
         // END Android-changed: Hardcode AsynchronousChannelProvider provider.
     }
 }

@@ -25,27 +25,13 @@
 
 package java.net;
 
-import android.system.ErrnoException;
+import static libcore.io.OsConstants.*;
 
-import java.io.FileDescriptor;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
-
-import libcore.io.IoUtils;
-import libcore.io.Libcore;
-/* J2ObjC removed.
-import android.system.StructIfaddrs;
-import sun.security.action.*;
-import java.security.AccessController;
- */
-
-import static libcore.io.OsConstants.*;
 
 // Android-note: NetworkInterface has been rewritten to avoid native code.
 // Fix upstream bug not returning link-down interfaces. http://b/26238832

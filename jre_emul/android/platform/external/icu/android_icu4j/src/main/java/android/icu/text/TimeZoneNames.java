@@ -9,7 +9,6 @@
  */
 package android.icu.text;
 
-import android.icu.impl.ICUConfig;
 import android.icu.impl.SoftCache;
 import android.icu.impl.TZDBTimeZoneNames;
 import android.icu.impl.TimeZoneNamesImpl;
@@ -117,35 +116,41 @@ public abstract class TimeZoneNames implements Serializable {
 
     private static Cache TZNAMES_CACHE = new Cache();
 
-    private static final Factory TZNAMES_FACTORY;
-    private static final String FACTORY_NAME_PROP = "android.icu.text.TimeZoneNames.Factory.impl";
-    private static final String DEFAULT_FACTORY_CLASS = "android.icu.impl.TimeZoneNamesFactoryImpl";
+  // J2ObjC: always use default factory.
+  //     private static final Factory TZNAMES_FACTORY =
+  // android.icu.impl.TimeZoneNamesFactoryImpl.class;
+  //     private static final Factory TZNAMES_FACTORY;
+  //     private static final String FACTORY_NAME_PROP =
+  // "android.icu.text.TimeZoneNames.Factory.impl";
+  //     private static final String DEFAULT_FACTORY_CLASS =
+  // "android.icu.impl.TimeZoneNamesFactoryImpl";
 
-  static {
-        Factory factory = null;
-        String classname = ICUConfig.get(FACTORY_NAME_PROP, DEFAULT_FACTORY_CLASS);
-        while (true) {
-            try {
-                factory = (Factory) Class.forName(classname).newInstance();
-                break;
-            } catch (ClassNotFoundException cnfe) {
-                // fall through
-            } catch (IllegalAccessException iae) {
-                // fall through
-            } catch (InstantiationException ie) {
-                // fall through
-            }
-            if (classname.equals(DEFAULT_FACTORY_CLASS)) {
-                break;
-            }
-            classname = DEFAULT_FACTORY_CLASS;
-        }
+  //   static {
+  //         Factory factory = null;
+  //         String classname = ICUConfig.get(FACTORY_NAME_PROP, DEFAULT_FACTORY_CLASS);
+  //         while (true) {
+  //             try {
+  //                 factory = (Factory) Class.forName(classname).newInstance();
+  //                 break;
+  //             } catch (ClassNotFoundException cnfe) {
+  //                 // fall through
+  //             } catch (IllegalAccessException iae) {
+  //                 // fall through
+  //             } catch (InstantiationException ie) {
+  //                 // fall through
+  //             }
+  //             if (classname.equals(DEFAULT_FACTORY_CLASS)) {
+  //                 break;
+  //             }
+  //             classname = DEFAULT_FACTORY_CLASS;
+  //         }
 
-        if (factory == null) {
-            factory = new DefaultTimeZoneNames.FactoryImpl();
-        }
-    TZNAMES_FACTORY = factory;
-    }
+  //         if (factory == null) {
+  //             factory = new DefaultTimeZoneNames.FactoryImpl();
+  //         }
+  //     TZNAMES_FACTORY = factory;
+  //     }
+  private static final Factory TZNAMES_FACTORY = new android.icu.impl.TimeZoneNamesFactoryImpl();
 
   /**
    * Returns an instance of <code>TimeZoneNames</code> for the specified locale.

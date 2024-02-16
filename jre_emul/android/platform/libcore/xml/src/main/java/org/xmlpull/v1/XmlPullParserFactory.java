@@ -29,20 +29,19 @@ public class XmlPullParserFactory {
     // TODO: This can't be made final because it's a public API.
     protected HashMap<String, Boolean> features = new HashMap<String, Boolean>();
 
-    /**
-     * Protected constructor to be called by factory implementations.
-     */
-    protected XmlPullParserFactory() {
-        parserClasses = new ArrayList<String>();
-        serializerClasses = new ArrayList<String>();
+  /** Protected constructor to be called by factory implementations. */
+  protected XmlPullParserFactory() {
+    // J2ObjC: always use default classes.
+    // parserClasses = new ArrayList<String>();
+    // serializerClasses = new ArrayList<String>();
 
-        try {
-            parserClasses.add(Class.forName("org.kxml2.io.KXmlParser"));
-            serializerClasses.add(Class.forName("org.kxml2.io.KXmlSerializer"));
-        } catch (ClassNotFoundException e) {
-            throw new AssertionError();
-        }
-    }
+    // try {
+    //     parserClasses.add(Class.forName("org.kxml2.io.KXmlParser"));
+    //     serializerClasses.add(Class.forName("org.kxml2.io.KXmlSerializer"));
+    // } catch (ClassNotFoundException e) {
+    //     throw new AssertionError();
+    // }
+  }
 
     /**
      * Set the features to be set when XML Pull Parser is created by this factory.
@@ -137,51 +136,55 @@ public class XmlPullParserFactory {
     }
 
     private XmlPullParser getParserInstance() throws XmlPullParserException {
-        ArrayList<Exception> exceptions = null;
+    // J2ObjC: always use default class.
+    // ArrayList<Exception> exceptions = null;
 
-        if (parserClasses != null && !parserClasses.isEmpty()) {
-            exceptions = new ArrayList<Exception>();
-            for (Object o : parserClasses) {
-                try {
-                    if (o != null) {
-                        Class<?> parserClass = (Class<?>) o;
-                        return (XmlPullParser) parserClass.newInstance();
-                    }
-                } catch (InstantiationException e) {
-                    exceptions.add(e);
-                } catch (IllegalAccessException e) {
-                    exceptions.add(e);
-                } catch (ClassCastException e) {
-                    exceptions.add(e);
-                }
-            }
-        }
+    // if (parserClasses != null && !parserClasses.isEmpty()) {
+    //     exceptions = new ArrayList<Exception>();
+    //     for (Object o : parserClasses) {
+    //         try {
+    //             if (o != null) {
+    //                 Class<?> parserClass = (Class<?>) o;
+    //                 return (XmlPullParser) parserClass.newInstance();
+    //             }
+    //         } catch (InstantiationException e) {
+    //             exceptions.add(e);
+    //         } catch (IllegalAccessException e) {
+    //             exceptions.add(e);
+    //         } catch (ClassCastException e) {
+    //             exceptions.add(e);
+    //         }
+    //     }
+    // }
 
-        throw newInstantiationException("Invalid parser class list", exceptions);
+    // throw newInstantiationException("Invalid parser class list", exceptions);
+    return new org.kxml2.io.KXmlParser();
     }
 
     private XmlSerializer getSerializerInstance() throws XmlPullParserException {
-        ArrayList<Exception> exceptions = null;
+    // J2ObjC: always use default class.
+    // ArrayList<Exception> exceptions = null;
 
-        if (serializerClasses != null && !serializerClasses.isEmpty()) {
-            exceptions = new ArrayList<Exception>();
-            for (Object o : serializerClasses) {
-                try {
-                    if (o != null) {
-                        Class<?> serializerClass = (Class<?>) o;
-                        return (XmlSerializer) serializerClass.newInstance();
-                    }
-                } catch (InstantiationException e) {
-                    exceptions.add(e);
-                } catch (IllegalAccessException e) {
-                    exceptions.add(e);
-                } catch (ClassCastException e) {
-                    exceptions.add(e);
-                }
-            }
-        }
+    // if (serializerClasses != null && !serializerClasses.isEmpty()) {
+    //     exceptions = new ArrayList<Exception>();
+    //     for (Object o : serializerClasses) {
+    //         try {
+    //             if (o != null) {
+    //                 Class<?> serializerClass = (Class<?>) o;
+    //                 return (XmlSerializer) serializerClass.newInstance();
+    //             }
+    //         } catch (InstantiationException e) {
+    //             exceptions.add(e);
+    //         } catch (IllegalAccessException e) {
+    //             exceptions.add(e);
+    //         } catch (ClassCastException e) {
+    //             exceptions.add(e);
+    //         }
+    //     }
+    // }
 
-        throw newInstantiationException("Invalid serializer class list", exceptions);
+    // throw newInstantiationException("Invalid serializer class list", exceptions);
+    return new org.kxml2.io.KXmlSerializer();
     }
 
     private static XmlPullParserException newInstantiationException(String message,

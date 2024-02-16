@@ -26,9 +26,8 @@
 
 package javax.net.ssl;
 
-import java.net.URL;
-import com.google.j2objc.net.IosHttpsHandler;
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.Principal;
 import java.security.cert.X509Certificate;
 import javax.security.auth.x500.X500Principal;
@@ -458,9 +457,5 @@ class HttpsURLConnection extends HttpURLConnection
      */
     public SSLSocketFactory getSSLSocketFactory() {
         return sslSocketFactory;
-    }
-
-    // Create a compile-time link on the https stream handler, which is loaded dynamically by
-    // URL.java.
-    private static final Class<?> unused = IosHttpsHandler.class;
+  }
 }
