@@ -650,18 +650,18 @@ public class CompatibilityTest extends ProtobufTest {
     }
 
     TypicalData.Builder dataBuilder = TypicalData.newBuilder();
-    dataBuilder.setField(fields[1], new Integer(42));
+    dataBuilder.setField(fields[1], Integer.valueOf(42));
     dataBuilder.setField(fields[2], ByteString.copyFromUtf8("foo"));
     dataBuilder.setField(fields[3], TypicalData.EnumType.VALUE9.getValueDescriptor());
     dataBuilder.setField(fields[11], TypicalDataMessage.newBuilder().build());
     dataBuilder.setField(fields[12], Boolean.TRUE);
-    dataBuilder.setField(fields[13], new Float(43.8));
-    dataBuilder.setField(fields[14], new Double(44.5));
+    dataBuilder.setField(fields[13], Float.valueOf((float) 43.8));
+    dataBuilder.setField(fields[14], Double.valueOf(44.5));
     dataBuilder.setField(fields[15], "bar");
-    dataBuilder.setField(fields[16], new Integer(24));
-    dataBuilder.setField(fields[17], new Long(4422));
-    dataBuilder.setField(fields[18], new Long(2244));
-    dataBuilder.addRepeatedField(fields[4], new Integer(72));
+    dataBuilder.setField(fields[16], Integer.valueOf(24));
+    dataBuilder.setField(fields[17], Long.valueOf(4422));
+    dataBuilder.setField(fields[18], Long.valueOf(2244));
+    dataBuilder.addRepeatedField(fields[4], Integer.valueOf(72));
     dataBuilder.addRepeatedField(fields[8], "aaa");
     dataBuilder.addRepeatedField(fields[8], "bbb");
     dataBuilder.setRepeatedField(fields[8], 1, "ccc");
@@ -679,8 +679,8 @@ public class CompatibilityTest extends ProtobufTest {
     assertEquals("foo", new String(data.getMyBytes().toByteArray()));
     assertEquals(TypicalData.EnumType.VALUE9, data.getMyEnumType());
     assertTrue(data.getMyBool());
-    assertEquals(new Float(43.8), data.getMyFloat());
-    assertEquals(new Double(44.5), data.getMyDouble());
+    assertEquals(Float.valueOf((float) 43.8), data.getMyFloat());
+    assertEquals(Double.valueOf(44.5), data.getMyDouble());
     assertEquals("bar", data.getMyString());
     assertEquals(24, data.getMyUint());
     assertEquals(4422, data.getMyLong());
