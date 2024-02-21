@@ -91,6 +91,7 @@ public class Options {
   private boolean disallowInheritedConstructors = true;
   private boolean nullability = false;
   private boolean swiftEnums = true;
+  private boolean swiftNaming = false;
   private boolean nullMarked = false;
   private TimingLevel timingLevel = TimingLevel.NONE;
   private boolean dumpAST = false;
@@ -565,6 +566,8 @@ public class Options {
         setSwiftEnums(true);
       } else if (arg.equals("--no-swift-enums")) {
         setSwiftEnums(false);
+      } else if (arg.equals("--swift-naming")) {
+        setSwiftNaming(true);
       } else if (arg.equals("-processor")) {
         processors = getArgValue(args, arg);
       } else if (arg.equals("--allow-inherited-constructors")) {
@@ -1157,6 +1160,15 @@ public class Options {
   @VisibleForTesting
   public void setSwiftEnums(boolean b) {
     swiftEnums = b;
+  }
+
+  public boolean swiftNaming() {
+    return swiftNaming;
+  }
+
+  @VisibleForTesting
+  public void setSwiftNaming(boolean b) {
+    swiftNaming = b;
   }
 
   public boolean nullMarked() {

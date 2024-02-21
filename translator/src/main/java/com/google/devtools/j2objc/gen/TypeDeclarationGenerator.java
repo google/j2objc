@@ -129,11 +129,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
     printTypeDocumentation();
     printNonnullAuditedRegion(AuditedRegion.BEGIN);
-    if (typeElement.getKind().isInterface()) {
-      printf("@protocol %s", typeName);
-    } else {
-      printInterfaceType();
-    }
+
+    printInterfaceType();
     printImplementedProtocols();
     if (!typeElement.getKind().isInterface()) {
       printInstanceVariables();
@@ -197,7 +194,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         }
       }
       unindent();
-      print("};\n");
+      print("}");
+      String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement);
+      if (swiftName != null) {
+        printf(" NS_SWIFT_NAME(%s)", swiftName);
+      }
+      print(";\n");
       // Use different types for transpiled Java ordinals (which expects ordinals to be jint) and
       // native code using the enum (where stricter ordinal types help clang warnings).
       printf(
@@ -215,9 +217,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   private void printTypeDocumentation() {
     newline();
     JavadocGenerator.printDocComment(getBuilder(), typeNode.getJavadoc());
-    if (needsDeprecatedAttribute(typeNode.getAnnotations())) {
-      println(DEPRECATED_ATTRIBUTE);
-    }
   }
 
   private String getSuperTypeName() {
@@ -255,9 +254,20 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printInterfaceType() {
-    printf("@interface %s", typeName);
-    printInterfaceGenerics();
-    printf(" : %s", getSuperTypeName());
+    if (!typeNode.hasPrivateDeclaration()) {
+      // Swift Names only need to be on public types because private declarations are private
+      printSwiftName();
+    }
+    if (needsDeprecatedAttribute(typeNode.getAnnotations())) {
+      println(DEPRECATED_ATTRIBUTE);
+    }
+    if (typeElement.getKind().isInterface()) {
+      printf("@protocol %s", typeName);
+    } else {
+      printf("@interface %s", typeName);
+      printInterfaceGenerics();
+      printf(" : %s", getSuperTypeName());
+    }
   }
 
   private void printImplementedProtocols() {
@@ -273,6 +283,17 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         print(name);
       }
       print(" >");
+    }
+  }
+
+  private void printSwiftName() {
+    String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement);
+
+    if (swiftName != null) {
+      if ((typeNode instanceof EnumDeclaration)) {
+        swiftName = swiftName + "." + swiftName + "Class";
+      }
+      printf(" NS_SWIFT_NAME(%s)\n", swiftName);
     }
   }
 
@@ -636,7 +657,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (NameTable.isReservedName(propertyName)) {
       return false;
     }
-    // Check if there is a exisitng property with the same name
+    // Check if there is a existing property with the same name
     if (ElementUtil.findField(declaringClass, propertyName) != null) {
       return false;
     }
@@ -653,7 +674,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (NameTable.isReservedName(propertyName)) {
       return;
     }
-    // Check if there is a exisitng property with the same name
+    // Check if there is a existing property with the same name
     if (ElementUtil.findField(declaringClass, propertyName) != null) {
       return;
     }
@@ -729,6 +750,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       // Sections 5.1 (Explicit method family control)
       // and 5.2.2 (Related result types)
       print(" OBJC_METHOD_FAMILY_NONE");
+    }
+
+    String swiftName = nameTable.getSwiftMethodNameFromAnnotation(methodElement);
+    if (swiftName != null) {
+      print(" NS_SWIFT_NAME(" + swiftName + ")");
     }
 
     if (needsDeprecatedAttribute(m.getAnnotations())) {
