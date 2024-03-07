@@ -3,5 +3,5 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="lib" path="build_result/j2objc_annotations.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="output" path="build_result/eclipse"/>
+	<classpathentry kind="output" path="build_result/eclipse"/>
 </classpath>
