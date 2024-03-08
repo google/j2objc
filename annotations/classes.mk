@@ -10,6 +10,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ANNOTATION_MODULE_INFO = \
+    module-info.java
+
 ANNOTATION_SOURCE_JAVA = \
     com/google/j2objc/annotations/AutoreleasePool.java \
     com/google/j2objc/annotations/GenerateObjectiveCGenerics.java \

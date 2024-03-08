@@ -25,17 +25,26 @@ DIST_JAR = $(DIST_JAR_DIR)/$(JAR_NAME)
 
 CLASSES_DIR = $(BUILD_DIR)/classes
 JAVA_SOURCE_DIR = src/main/java
+JAVA9_CLASSES_DIR = $(BUILD_DIR)/classes-java9
+JPMS_CLASS = $(JAVA9_CLASSES_DIR)/module-info.class
 
 SOURCE_JAVA_FULL = $(ANNOTATION_SOURCE_JAVA:%=$(JAVA_SOURCE_DIR)/%)
+SOURCE_JAVA9_MODULE = $(ANNOTATION_MODULE_INFO:%=$(JAVA_SOURCE_DIR)/%)
 
-$(BUILD_DIR) $(CLASSES_DIR) $(DIST_JAR_DIR):
+$(BUILD_DIR) $(CLASSES_DIR) $(JAVA9_CLASSES_DIR) $(DIST_JAR_DIR):
 	@mkdir -p $@
 
-$(JAR): $(SOURCE_JAVA_FULL) | $(BUILD_DIR) $(CLASSES_DIR)
+$(JPMS_CLASS):
+	@echo Building j2objc annotations JPMS module
+	@$(JAVAC) -sourcepath $(JAVA_SOURCE_DIR) -encoding UTF-8 --release 9 -d $(JAVA9_CLASSES_DIR) \
+		-nowarn $(SOURCE_JAVA9_MODULE)
+	@rm -fr $(JAVA9_CLASSES_DIR)/com
+
+$(JAR): $(SOURCE_JAVA_FULL) | $(BUILD_DIR) $(CLASSES_DIR) $(JAVA9_CLASSES_DIR) $(JPMS_CLASS)
 	@echo Building j2objc annotations
 	@$(JAVAC) -encoding UTF-8 -d $(CLASSES_DIR) -source 1.8 -target 1.8 \
 	    -nowarn $^
-	@jar cf $(JAR) -C $(CLASSES_DIR) .
+	@jar cf $(JAR) -C $(CLASSES_DIR) . --release 9 -C $(JAVA9_CLASSES_DIR) .
 
 $(DIST_JAR): $(JAR) | $(DIST_JAR_DIR)
 	@install -m 0644 $< $@
