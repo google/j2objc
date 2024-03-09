@@ -43,6 +43,22 @@
     </license>
   </licenses>
 
+  <scm>
+    <url>http://github.com/google/j2objc</url>
+    <connection>scm:git:git://github.com/google/j2objc.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/google/j2objc.git</developerConnection>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>tomball</id>
+      <name>Tom Ball</name>
+      <email>tball@google.com</email>
+      <organization>Google</organization>
+      <organizationUrl>https://www.google.com</organizationUrl>
+    </developer>
+  </developers>
+
   <distributionManagement>
     <snapshotRepository>
       <id>sonatype-nexus-snapshots</id>
