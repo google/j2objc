@@ -35,7 +35,7 @@ package java.lang;
 #import "java/lang/NullPointerException.h"
 #import "java/util/Collections.h"
 #import "jvm.h"
-#include "mach/mach_time.h"
+#include "time.h"
 #include "TargetConditionals.h"
 
 #if !TARGET_OS_IPHONE && !TARGET_OS_SIMULATOR
@@ -76,24 +76,12 @@ public class System {
   public static PrintStream out;
   public static PrintStream err;
 
-  /*-[
-    static mach_timebase_info_data_t machTimeInfo_;
-  ]-*/
-
   static {
     // Set up standard in, out, and err.
     err = new PrintStream(new FileOutputStream(FileDescriptor.err));
     out = new PrintStream(new FileOutputStream(FileDescriptor.out));
     in = new BufferedInputStream(new FileInputStream(FileDescriptor.in));
-
-    // Set up statics for time unit conversion.
-    setTimeInfoConsts();
   }
-
-  private static native void setTimeInfoConsts() /*-[
-    // Get the timebase info
-    mach_timebase_info(&machTimeInfo_);
-  ]-*/;
 
   public static native void setIn(InputStream newIn) /*-[
 #if __has_feature(objc_arc)
@@ -154,10 +142,7 @@ public class System {
   ]-*/;
 
   public static native long nanoTime() /*-[
-    uint64_t time = mach_absolute_time();
-
-    // Convert to nanoseconds and return,
-    return (time * machTimeInfo_.numer) / machTimeInfo_.denom;
+    return (jlong)clock_gettime_nsec_np(CLOCK_MONOTONIC);
   ]-*/;
 
   public static native void exit(int status) /*-[
