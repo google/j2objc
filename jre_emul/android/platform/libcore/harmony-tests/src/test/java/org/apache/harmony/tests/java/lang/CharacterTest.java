@@ -4,9 +4,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,13 +16,12 @@
 
 package org.apache.harmony.tests.java.lang;
 
+import android.icu.util.VersionInfo;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 public class CharacterTest extends TestCase {
-
-    // TODO(tball): uncomment tests of greater than 64k code points when iOS supports them.
 
     public void test_isValidCodePointI() {
         assertFalse(Character.isValidCodePoint(-1));
@@ -664,18 +663,13 @@ public class CharacterTest extends TestCase {
      * java.lang.Character#getNumericValue(char)
      */
     public void test_getNumericValueC() {
-        assertEquals("Returned incorrect numeric value 1", 1, Character
-                .getNumericValue('1'));
-        assertEquals("Returned incorrect numeric value 2", 15, Character
-                .getNumericValue('F'));
-        assertEquals("Returned incorrect numeric value 3", -1, Character
-                .getNumericValue('\u221e'));
-//        assertEquals("Returned incorrect numeric value 4", -2, Character
-//                .getNumericValue('\u00be'));
-//        assertEquals("Returned incorrect numeric value 5", 10000, Character
-//                .getNumericValue('\u2182'));
-//        assertEquals("Returned incorrect numeric value 6", 2, Character
-//                .getNumericValue('\uff12'));
+        assertEquals("Returned incorrect numeric value 1", 1, Character.getNumericValue('1'));
+        assertEquals("Returned incorrect numeric value 2", 15, Character.getNumericValue('F'));
+        assertEquals("Returned incorrect numeric value 3", -1, Character.getNumericValue('\u221e'));
+        assertEquals("Returned incorrect numeric value 4", -2, Character.getNumericValue('\u00be'));
+        assertEquals("Returned incorrect numeric value 5", 10000,
+                Character.getNumericValue('\u2182'));
+        assertEquals("Returned incorrect numeric value 6", 2, Character.getNumericValue('\uff12'));
     }
 
     /**
@@ -685,27 +679,26 @@ public class CharacterTest extends TestCase {
         assertEquals(1, Character.getNumericValue((int) '1'));
         assertEquals(15, Character.getNumericValue((int) 'F'));
         assertEquals(-1, Character.getNumericValue((int) '\u221e'));
-//        assertEquals(-2, Character.getNumericValue((int) '\u00be'));
-//        assertEquals(10000, Character.getNumericValue((int) '\u2182'));
-//        assertEquals(2, Character.getNumericValue((int) '\uff12'));
+        assertEquals(-2, Character.getNumericValue((int) '\u00be'));
+        assertEquals(10000, Character.getNumericValue((int) '\u2182'));
+        assertEquals(2, Character.getNumericValue((int) '\uff12'));
+        assertEquals(-1, Character.getNumericValue(0xFFFF));
 
         assertEquals(-1, Character.getNumericValue(0xFFFF));
-//        assertEquals(0, Character.getNumericValue(0x1D7CE));
-//        assertEquals(0, Character.getNumericValue(0x1D7D8));
-//        assertEquals(-1, Character.getNumericValue(0x2F800));
-//        assertEquals(-1, Character.getNumericValue(0x10FFFD));
-//        assertEquals(-1, Character.getNumericValue(0x110000));
+        assertEquals(0, Character.getNumericValue(0x1D7CE));
+        assertEquals(0, Character.getNumericValue(0x1D7D8));
+        assertEquals(-1, Character.getNumericValue(0x2F800));
+        assertEquals(-1, Character.getNumericValue(0x10FFFD));
+        assertEquals(-1, Character.getNumericValue(0x110000));
 
-//        assertEquals(50, Character.getNumericValue(0x216C));
+        assertEquals(50, Character.getNumericValue(0x216C));
 
         assertEquals(10, Character.getNumericValue(0x0041));
         assertEquals(35, Character.getNumericValue(0x005A));
         assertEquals(10, Character.getNumericValue(0x0061));
         assertEquals(35, Character.getNumericValue(0x007A));
         assertEquals(10, Character.getNumericValue(0xFF21));
-
-        //FIXME depends on ICU4J
-        //assertEquals(35, Character.getNumericValue(0xFF3A));
+        assertEquals(35, Character.getNumericValue(0xFF3A));
 
         assertEquals(10, Character.getNumericValue(0xFF41));
         assertEquals(35, Character.getNumericValue(0xFF5A));
@@ -743,111 +736,114 @@ public class CharacterTest extends TestCase {
     /**
      * java.lang.Character#getType(int)
      */
-    //TODO（b/313786602): Fix the assertion error
-    // public void test_getType_I() {
-    //     assertTrue(Character.getType((int) '\n') == Character.CONTROL);
-    //     assertTrue(Character.getType((int) '1') == Character.DECIMAL_DIGIT_NUMBER);
-    //     assertTrue(Character.getType((int) ' ') == Character.SPACE_SEPARATOR);
-    //     assertTrue(Character.getType((int) 'a') == Character.LOWERCASE_LETTER);
-    //     assertTrue(Character.getType((int) 'A') == Character.UPPERCASE_LETTER);
-    //     assertTrue(Character.getType((int) '<') == Character.MATH_SYMBOL);
-    //     assertTrue(Character.getType((int) ';') == Character.OTHER_PUNCTUATION);
-    //     assertTrue(Character.getType((int) '_') == Character.CONNECTOR_PUNCTUATION);
-    //     assertTrue(Character.getType((int) '$') == Character.CURRENCY_SYMBOL);
-    //     assertTrue(Character.getType((int) '\u2029') == Character.PARAGRAPH_SEPARATOR);
+    public void test_getType_I() {
+        assertTrue(Character.getType((int) '\n') == Character.CONTROL);
+        assertTrue(Character.getType((int) '1') == Character.DECIMAL_DIGIT_NUMBER);
+        assertTrue(Character.getType((int) ' ') == Character.SPACE_SEPARATOR);
+        assertTrue(Character.getType((int) 'a') == Character.LOWERCASE_LETTER);
+        assertTrue(Character.getType((int) 'A') == Character.UPPERCASE_LETTER);
+        assertTrue(Character.getType((int) '<') == Character.MATH_SYMBOL);
+        assertTrue(Character.getType((int) ';') == Character.OTHER_PUNCTUATION);
+        assertTrue(Character.getType((int) '_') == Character.CONNECTOR_PUNCTUATION);
+        assertTrue(Character.getType((int) '$') == Character.CURRENCY_SYMBOL);
+        assertTrue(Character.getType((int) '\u2029') == Character.PARAGRAPH_SEPARATOR);
 
-    //     assertTrue(Character.getType(0x9FFF) == Character.UNASSIGNED);
-    //     // j2objc: u+30000 is defined in Unicode 13, supported in iOS 12.2.
-    //     int charType = Character.getType(0x30000);
-    //     assertTrue(charType == Character.OTHER_LETTER
-    //         || charType == Character.UNASSIGNED);
-    //     assertTrue(Character.getType(0x110000) == Character.UNASSIGNED);
+        // Unicode 13 defines a new range 0x30000–0x3134A
+        assertTrue(Character.getType(0x30000) == Character.DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR);
+        assertTrue(Character.getType(0x3134A) == Character.DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR);
+        assertTrue(Character.getType(0x2FFFF) == Character.UNASSIGNED);
+        assertTrue(Character.getType(0x3134B) == Character.UNASSIGNED);
 
-    //     assertTrue(Character.getType(0x0041) == Character.UPPERCASE_LETTER);
-    //     assertTrue(Character.getType(0x10400) == Character.UPPERCASE_LETTER);
+        byte charType9FFF = VersionInfo.ICU_VERSION.getMajor() >= 70 ? Character.OTHER_LETTER
+            : Character.UNASSIGNED;
+        assertTrue(Character.getType(0x9FFF) == charType9FFF);
+        assertTrue(Character.getType(0x110000) == Character.UNASSIGNED);
 
-    //     assertTrue(Character.getType(0x0061) == Character.LOWERCASE_LETTER);
-    //     assertTrue(Character.getType(0x10428) == Character.LOWERCASE_LETTER);
+        assertTrue(Character.getType(0x0041) == Character.UPPERCASE_LETTER);
+        assertTrue(Character.getType(0x10400) == Character.UPPERCASE_LETTER);
 
-    //     assertTrue(Character.getType(0x01C5) == Character.TITLECASE_LETTER);
-    //     assertTrue(Character.getType(0x1FFC) == Character.TITLECASE_LETTER);
+        assertTrue(Character.getType(0x0061) == Character.LOWERCASE_LETTER);
+        assertTrue(Character.getType(0x10428) == Character.LOWERCASE_LETTER);
 
-    //     assertTrue(Character.getType(0x02B0) == Character.MODIFIER_LETTER);
-    //     assertTrue(Character.getType(0xFF9F) == Character.MODIFIER_LETTER);
+        assertTrue(Character.getType(0x01C5) == Character.TITLECASE_LETTER);
+        assertTrue(Character.getType(0x1FFC) == Character.TITLECASE_LETTER);
 
-    //     assertTrue(Character.getType(0x01BB) == Character.OTHER_LETTER);
-    //     assertTrue(Character.getType(0x2F888) == Character.OTHER_LETTER);
+        assertTrue(Character.getType(0x02B0) == Character.MODIFIER_LETTER);
+        assertTrue(Character.getType(0xFF9F) == Character.MODIFIER_LETTER);
 
-    //     assertTrue(Character.getType(0x0F82) == Character.NON_SPACING_MARK);
-    //     assertTrue(Character.getType(0x1D180) == Character.NON_SPACING_MARK);
+        assertTrue(Character.getType(0x01BB) == Character.OTHER_LETTER);
+        assertTrue(Character.getType(0x2F888) == Character.OTHER_LETTER);
 
-    //     assertTrue(Character.getType(0x0488) == Character.ENCLOSING_MARK);
-    //     assertTrue(Character.getType(0x20DE) == Character.ENCLOSING_MARK);
+        assertTrue(Character.getType(0x0F82) == Character.NON_SPACING_MARK);
+        assertTrue(Character.getType(0x1D180) == Character.NON_SPACING_MARK);
 
-    //     assertTrue(Character.getType(0x1938) == Character.COMBINING_SPACING_MARK);
-    //     assertTrue(Character.getType(0x1D165) == Character.COMBINING_SPACING_MARK);
+        assertTrue(Character.getType(0x0488) == Character.ENCLOSING_MARK);
+        assertTrue(Character.getType(0x20DE) == Character.ENCLOSING_MARK);
 
-    //     assertTrue(Character.getType(0x194D) == Character.DECIMAL_DIGIT_NUMBER);
-    //     assertTrue(Character.getType(0x1D7CE) == Character.DECIMAL_DIGIT_NUMBER);
+        assertTrue(Character.getType(0x1938) == Character.COMBINING_SPACING_MARK);
+        assertTrue(Character.getType(0x1D165) == Character.COMBINING_SPACING_MARK);
 
-    //     assertTrue(Character.getType(0x2160) == Character.LETTER_NUMBER);
-    //     assertTrue(Character.getType(0x1034A) == Character.LETTER_NUMBER);
+        assertTrue(Character.getType(0x194D) == Character.DECIMAL_DIGIT_NUMBER);
+        assertTrue(Character.getType(0x1D7CE) == Character.DECIMAL_DIGIT_NUMBER);
 
-    //     assertTrue(Character.getType(0x00B2) == Character.OTHER_NUMBER);
-    //     assertTrue(Character.getType(0x10120) == Character.OTHER_NUMBER);
+        assertTrue(Character.getType(0x2160) == Character.LETTER_NUMBER);
+        assertTrue(Character.getType(0x1034A) == Character.LETTER_NUMBER);
 
-    //     assertTrue(Character.getType(0x0020) == Character.SPACE_SEPARATOR);
-    //     assertTrue(Character.getType(0x3000) == Character.SPACE_SEPARATOR);
+        assertTrue(Character.getType(0x00B2) == Character.OTHER_NUMBER);
+        assertTrue(Character.getType(0x10120) == Character.OTHER_NUMBER);
 
-    //     assertTrue(Character.getType(0x2028) == Character.LINE_SEPARATOR);
+        assertTrue(Character.getType(0x0020) == Character.SPACE_SEPARATOR);
+        assertTrue(Character.getType(0x3000) == Character.SPACE_SEPARATOR);
 
-    //     assertTrue(Character.getType(0x2029) == Character.PARAGRAPH_SEPARATOR);
+        assertTrue(Character.getType(0x2028) == Character.LINE_SEPARATOR);
 
-    //     assertTrue(Character.getType(0x0000) == Character.CONTROL);
-    //     assertTrue(Character.getType(0x009F) == Character.CONTROL);
+        assertTrue(Character.getType(0x2029) == Character.PARAGRAPH_SEPARATOR);
 
-    //     assertTrue(Character.getType(0x00AD) == Character.FORMAT);
-    //     assertTrue(Character.getType(0xE007F) == Character.FORMAT);
+        assertTrue(Character.getType(0x0000) == Character.CONTROL);
+        assertTrue(Character.getType(0x009F) == Character.CONTROL);
 
-    //     assertTrue(Character.getType(0xE000) == Character.PRIVATE_USE);
-    //     assertTrue(Character.getType(0x10FFFD) == Character.PRIVATE_USE);
+        assertTrue(Character.getType(0x00AD) == Character.FORMAT);
+        assertTrue(Character.getType(0xE007F) == Character.FORMAT);
 
-    //     assertTrue(Character.getType(0xD800) == Character.SURROGATE);
-    //     assertTrue(Character.getType(0xDFFF) == Character.SURROGATE);
+        assertTrue(Character.getType(0xE000) == Character.PRIVATE_USE);
+        assertTrue(Character.getType(0x10FFFD) == Character.PRIVATE_USE);
 
-    //     assertTrue(Character.getType(0xFE31) == Character.DASH_PUNCTUATION);
-    //     assertTrue(Character.getType(0xFF0D) == Character.DASH_PUNCTUATION);
+        assertTrue(Character.getType(0xD800) == Character.SURROGATE);
+        assertTrue(Character.getType(0xDFFF) == Character.SURROGATE);
 
-    //     assertTrue(Character.getType(0x0028) == Character.START_PUNCTUATION);
-    //     assertTrue(Character.getType(0xFF62) == Character.START_PUNCTUATION);
+        assertTrue(Character.getType(0xFE31) == Character.DASH_PUNCTUATION);
+        assertTrue(Character.getType(0xFF0D) == Character.DASH_PUNCTUATION);
 
-    //     assertTrue(Character.getType(0x0029) == Character.END_PUNCTUATION);
-    //     assertTrue(Character.getType(0xFF63) == Character.END_PUNCTUATION);
+        assertTrue(Character.getType(0x0028) == Character.START_PUNCTUATION);
+        assertTrue(Character.getType(0xFF62) == Character.START_PUNCTUATION);
 
-    //     assertTrue(Character.getType(0x005F) == Character.CONNECTOR_PUNCTUATION);
-    //     assertTrue(Character.getType(0xFF3F) == Character.CONNECTOR_PUNCTUATION);
+        assertTrue(Character.getType(0x0029) == Character.END_PUNCTUATION);
+        assertTrue(Character.getType(0xFF63) == Character.END_PUNCTUATION);
 
-    //     assertTrue(Character.getType(0x2034) == Character.OTHER_PUNCTUATION);
-    //     assertTrue(Character.getType(0x1039F) == Character.OTHER_PUNCTUATION);
+        assertTrue(Character.getType(0x005F) == Character.CONNECTOR_PUNCTUATION);
+        assertTrue(Character.getType(0xFF3F) == Character.CONNECTOR_PUNCTUATION);
 
-    //     assertTrue(Character.getType(0x002B) == Character.MATH_SYMBOL);
-    //     assertTrue(Character.getType(0x1D6C1) == Character.MATH_SYMBOL);
+        assertTrue(Character.getType(0x2034) == Character.OTHER_PUNCTUATION);
+        assertTrue(Character.getType(0x1039F) == Character.OTHER_PUNCTUATION);
 
-    //     assertTrue(Character.getType(0x0024) == Character.CURRENCY_SYMBOL);
-    //     assertTrue(Character.getType(0xFFE6) == Character.CURRENCY_SYMBOL);
+        assertTrue(Character.getType(0x002B) == Character.MATH_SYMBOL);
+        assertTrue(Character.getType(0x1D6C1) == Character.MATH_SYMBOL);
 
-    //     assertTrue(Character.getType(0x005E) == Character.MODIFIER_SYMBOL);
-    //     assertTrue(Character.getType(0xFFE3) == Character.MODIFIER_SYMBOL);
+        assertTrue(Character.getType(0x0024) == Character.CURRENCY_SYMBOL);
+        assertTrue(Character.getType(0xFFE6) == Character.CURRENCY_SYMBOL);
 
-    //     assertTrue(Character.getType(0x00A6) == Character.OTHER_SYMBOL);
-    //     assertTrue(Character.getType(0x1D356) == Character.OTHER_SYMBOL);
+        assertTrue(Character.getType(0x005E) == Character.MODIFIER_SYMBOL);
+        assertTrue(Character.getType(0xFFE3) == Character.MODIFIER_SYMBOL);
 
-    //     assertTrue(Character.getType(0x00AB) == Character.INITIAL_QUOTE_PUNCTUATION);
-    //     assertTrue(Character.getType(0x2039) == Character.INITIAL_QUOTE_PUNCTUATION);
+        assertTrue(Character.getType(0x00A6) == Character.OTHER_SYMBOL);
+        assertTrue(Character.getType(0x1D356) == Character.OTHER_SYMBOL);
 
-    //     assertTrue(Character.getType(0x00BB) == Character.FINAL_QUOTE_PUNCTUATION);
-    //     assertTrue(Character.getType(0x203A) == Character.FINAL_QUOTE_PUNCTUATION);
-    // }
+        assertTrue(Character.getType(0x00AB) == Character.INITIAL_QUOTE_PUNCTUATION);
+        assertTrue(Character.getType(0x2039) == Character.INITIAL_QUOTE_PUNCTUATION);
+
+        assertTrue(Character.getType(0x00BB) == Character.FINAL_QUOTE_PUNCTUATION);
+        assertTrue(Character.getType(0x203A) == Character.FINAL_QUOTE_PUNCTUATION);
+    }
 
     /**
      * java.lang.Character#hashCode()
@@ -872,10 +868,14 @@ public class CharacterTest extends TestCase {
         assertTrue(Character.isDefined((int) '\u6039'));
         assertTrue(Character.isDefined(0x10300));
 
-        // j2objc: u+30000 is defined in Unicode 13, supported in iOS 12.2.
-        // assertFalse(Character.isDefined(0x30000));
         assertFalse(Character.isDefined(0x3FFFF));
         assertFalse(Character.isDefined(0x110000));
+
+        // Unicode 13 adds a new range 0x30000–0x3134A
+        assertTrue(Character.isDefined(0x30000));
+        assertTrue(Character.isDefined(0x3134A));
+        assertFalse(Character.isDefined(0x2FFFF));
+        assertFalse(Character.isDefined(0x3134B));
     }
 
     /**
@@ -1114,16 +1114,16 @@ public class CharacterTest extends TestCase {
         assertTrue(Character.isJavaIdentifierStart(0x01BB));
         assertTrue(Character.isJavaIdentifierStart(0x2F888));
 
-        assertTrue(Character.isJavaIdentifierPart(0x0024));
-        assertTrue(Character.isJavaIdentifierPart(0xFFE6));
+        assertTrue(Character.isJavaIdentifierStart(0x0024));
+        assertTrue(Character.isJavaIdentifierStart(0xFFE6));
 
-        assertTrue(Character.isJavaIdentifierPart(0x005F));
-        assertTrue(Character.isJavaIdentifierPart(0xFF3F));
+        assertTrue(Character.isJavaIdentifierStart(0x005F));
+        assertTrue(Character.isJavaIdentifierStart(0xFF3F));
 
-        assertTrue(Character.isJavaIdentifierPart(0x2160));
-        assertTrue(Character.isJavaIdentifierPart(0x1034A));
+        assertTrue(Character.isJavaIdentifierStart(0x2160));
+        assertTrue(Character.isJavaIdentifierStart(0x1034A));
 
-        assertFalse(Character.isJavaIdentifierPart(0x110000));
+        assertFalse(Character.isJavaIdentifierStart(0x110000));
     }
 
     /**
@@ -1223,8 +1223,8 @@ public class CharacterTest extends TestCase {
         assertTrue(Character.isLowerCase((int) 'a'));
         assertFalse(Character.isLowerCase((int) 'T'));
 
-//        assertTrue(Character.isLowerCase(0x10428));
-//        assertTrue(Character.isLowerCase(0x1D4EA));
+        assertTrue(Character.isLowerCase(0x10428));
+        assertTrue(Character.isLowerCase(0x1D4EA));
 
         assertFalse(Character.isLowerCase(0x1D504));
         assertFalse(Character.isLowerCase(0x30000));
@@ -1465,8 +1465,7 @@ public class CharacterTest extends TestCase {
 
         assertFalse(Character.isWhitespace(0xFEFF));
 
-        //FIXME depend on ICU4J
-        //assertFalse(Character.isWhitespace(0x2007));
+        assertFalse(Character.isWhitespace(0x2007));
 
     }
 
@@ -1571,12 +1570,14 @@ public class CharacterTest extends TestCase {
      */
     public void test_isDirectionaliy_I() {
         assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character.getDirectionality(0xFFFE));
-        // j2objc: u+30000 is defined in Unicode 13, supported in iOS 12.2.
-        byte directionality = Character.getDirectionality(0x30000);
-        assertTrue(directionality == Character.DIRECTIONALITY_LEFT_TO_RIGHT
-            || directionality == Character.DIRECTIONALITY_UNDEFINED);
         assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character.getDirectionality(0x110000));
         assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character.getDirectionality(-1));
+
+        // Unicode 13 adds a new range 0x30000–0x3134A
+        assertEquals(Character.DIRECTIONALITY_LEFT_TO_RIGHT, Character.getDirectionality(0x30000));
+        assertEquals(Character.DIRECTIONALITY_LEFT_TO_RIGHT, Character.getDirectionality(0x3134A));
+        assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character.getDirectionality(0x2FFFF));
+        assertEquals(Character.DIRECTIONALITY_UNDEFINED, Character.getDirectionality(0x3134B));
 
         assertEquals(Character.DIRECTIONALITY_LEFT_TO_RIGHT, Character.getDirectionality(0x0041));
         assertEquals(Character.DIRECTIONALITY_LEFT_TO_RIGHT, Character.getDirectionality(0x10000));
