@@ -26,10 +26,12 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.ObjectiveCName;
+import com.google.j2objc.annotations.SwiftName;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
@@ -63,6 +65,15 @@ public class PackageInfoRewriter {
     List<Annotation> runtimeAnnotations = TreeUtil.getRuntimeAnnotationsList(annotations);
     String prefix = getPackagePrefix(pkg);
     boolean needsReflection = translationUtil.needsReflection(pkg);
+
+    Annotation swiftAnnotation = TreeUtil.getAnnotation(SwiftName.class, pkg.getAnnotations());
+    if (swiftAnnotation != null) {
+      String swiftName =
+          ElementUtil.getAnnotationValue(swiftAnnotation.getAnnotationMirror(), "value").toString();
+      if (swiftName != null) {
+        ErrorUtil.warning("@SwiftName(" + swiftName + "): Package provided a Swift name value.");
+      }
+    }
 
     // Remove compile time annotations.
     annotations.retainAll(runtimeAnnotations);
