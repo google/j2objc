@@ -66,7 +66,7 @@ public class JavaToIOSMethodTranslator extends UnitTreeVisitor {
     ExecutableElement method = node.getExecutableElement();
 
     // Check if @ObjectiveCName is used but is mismatched with an overridden method.
-    String name = NameTable.getMethodNameFromAnnotation(method);
+    String name = nameTable.getMethodNameFromAnnotation(method);
     if (name != null) {
       String selector = nameTable.selectorForMethodName(method, name);
       String actualSelector = nameTable.getMethodSelector(method);

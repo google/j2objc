@@ -374,7 +374,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     TypeMirror returnTypeMirror = function.getReturnType().getTypeMirror();
     String returnType =
         paddedType(nameTable.getObjCType(returnTypeMirror), function.getExecutableElement());
-    sb.append(returnType).append(function.getName()).append('(');
+    String functionName = function.getName();
+    sb.append(returnType).append(functionName).append('(');
     if (isPrototype && function.getParameters().isEmpty()) {
       sb.append("void");
     } else {
@@ -389,6 +390,12 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       }
     }
     sb.append(')');
+
+    String swiftName = nameTable.getSwiftFunctionNameFromAnnotation(function);
+    if (swiftName != null) {
+      sb.append(swiftName);
+    }
+
     return sb.toString();
   }
 

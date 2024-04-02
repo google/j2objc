@@ -328,9 +328,12 @@ public class EnumRewriter extends UnitTreeVisitor {
 
   private void addExtraNativeDecls(EnumDeclaration node) {
     String typeName = nameTable.getFullName(node.getTypeElement());
+    String enumName = node.getTypeElement().getSimpleName().toString();
     String nativeName = NameTable.getNativeEnumName(typeName);
     String ordinalName = NameTable.getNativeOrdinalPreprocessorName(typeName);
     int numConstants = node.getEnumConstants().size();
+
+    String ordinalArgType = (numConstants > 0) ? ordinalName : "jint";
 
     // The native type is not declared for an empty enum.
     if (numConstants > 0) {
@@ -342,19 +345,35 @@ public class EnumRewriter extends UnitTreeVisitor {
                   "- (%s)toNSEnum {\n" + "  return (%s)[self ordinal];\n" + "}\n\n",
                   nativeName, nativeName)));
 
+      node.addBodyDeclaration(
+          NativeDeclaration.newInnerDeclaration(
+              UnicodeUtils.format("@property(readonly) %s enumValue;", nativeName),
+              UnicodeUtils.format(
+                  "- (%s)enumValue {\n" + "  return (%s)[self ordinal];\n" + "}\n\n",
+                  nativeName, nativeName)));
+
       // Redeclare ordinal with the appropriate type.
       node.addBodyDeclaration(
           NativeDeclaration.newInnerDeclaration(
-              UnicodeUtils.format("- (%s)ordinal;\n", ordinalName),
+              UnicodeUtils.format(
+                  "- (%s)ordinal NS_SWIFT_UNAVAILABLE(\"Use .enumValue\");\n", ordinalName),
               UnicodeUtils.format(
                   "- (%s)ordinal {\n" + "  return (%s)[super ordinal];\n" + "}\n\n",
                   ordinalName, ordinalName)));
+
+      String initMethod =
+          String.format("- (nullable instancetype)initWith%s:(%s)value", enumName, nativeName);
+      node.addBodyDeclaration(
+          NativeDeclaration.newInnerDeclaration(
+              UnicodeUtils.format("%s;\n", initMethod),
+              UnicodeUtils.format(
+                  "%s {\n" + "  return RETAIN_(%s_fromOrdinal((%s)value));\n" + "}\n\n",
+                  initMethod, typeName, ordinalArgType)));
     }
 
     StringBuilder outerHeader = new StringBuilder();
     StringBuilder outerImpl = new StringBuilder();
 
-    String ordinalArgType = (numConstants > 0) ? ordinalName : "jint";
     outerHeader.append(
         UnicodeUtils.format(
             "FOUNDATION_EXPORT %s *%s_fromOrdinal(%s ordinal);\n",

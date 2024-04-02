@@ -39,4 +39,14 @@ public class PackageInfoRewriterTest extends GenerationTest {
     assertNotInTranslation(translation, "@interface");
     assertNotInTranslation(translation, "@implementation");
   }
+
+  public void testSwiftNameWithValue() throws IOException {
+    addSourceFile(
+        "@SwiftName(\"Bar\")\n"
+            + "package foo;\n"
+            + "import com.google.j2objc.annotations.SwiftName;",
+        "foo/package-info.java");
+    var unused = translateSourceFile("foo.package-info", "foo/package-info.m");
+    assertWarning("@SwiftName(Bar): Package provided a Swift name value.");
+  }
 }

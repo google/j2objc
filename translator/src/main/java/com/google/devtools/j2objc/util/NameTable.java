@@ -25,9 +25,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
 import com.google.j2objc.annotations.ObjectiveCName;
+import com.google.j2objc.annotations.SwiftName;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,6 +49,7 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
@@ -55,6 +58,7 @@ import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+import org.jspecify.nullness.Nullable;
 
 /**
  * Singleton service for type/method/variable name support.
@@ -66,6 +70,7 @@ public class NameTable {
   private final TypeUtil typeUtil;
   private final ElementUtil elementUtil;
   private final CaptureInfo captureInfo;
+  private final Options options;
   private final Map<VariableElement, String> variableNames = new HashMap<>();
   private final Map<ExecutableElement, String> methodSelectorCache = new HashMap<>();
   private final Map<TypeElement, String> fullNameCache = new HashMap<>();
@@ -174,6 +179,7 @@ public class NameTable {
     this.typeUtil = typeUtil;
     this.elementUtil = typeUtil.elementUtil();
     this.captureInfo = captureInfo;
+    this.options = options;
     prefixMap = options.getPackagePrefixes();
     classMappings = options.getMappings().getClassMappings();
     methodMappings = options.getMappings().getMethodMappings();
@@ -396,8 +402,8 @@ public class NameTable {
   }
 
   private boolean appendParamKeyword(
-      StringBuilder sb, TypeMirror paramType, char delim, boolean first) {
-    String keyword = parameterKeyword(paramType);
+      StringBuilder sb, VariableElement variable, char delim, boolean first) {
+    String keyword = parameterKeyword(variable.asType());
     if (first) {
       keyword = capitalize(keyword);
     }
@@ -411,18 +417,40 @@ public class NameTable {
     TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
     if (ElementUtil.isConstructor(method)) {
       for (VariableElement param : captureInfo.getImplicitPrefixParams(declaringClass)) {
-        first = appendParamKeyword(sb, param.asType(), delim, first);
+        first = appendParamKeyword(sb, param, delim, first);
       }
     }
     for (VariableElement param : method.getParameters()) {
-      first = appendParamKeyword(sb, param.asType(), delim, first);
+      first = appendParamKeyword(sb, param, delim, first);
     }
     if (ElementUtil.isConstructor(method)) {
       for (VariableElement param : captureInfo.getImplicitPostfixParams(declaringClass)) {
-        first = appendParamKeyword(sb, param.asType(), delim, first);
+        first = appendParamKeyword(sb, param, delim, first);
       }
     }
     return sb.toString();
+  }
+
+  private static String nameWithoutFirstParam(ExecutableElement method, String name) {
+    if (method.getParameters().isEmpty()) {
+      return name;
+    }
+
+    // Change methods from `builderWithExpectedSizeWithInt` into `builderWithInt`
+    VariableElement firstParam = method.getParameters().get(0);
+    String paramName = firstParam.getSimpleName().toString();
+    if (Ascii.toLowerCase(name).contains(Ascii.toLowerCase(paramName))) {
+      return name.replaceFirst(capitalize(paramName), "").replaceFirst("With", "");
+    }
+    return name;
+  }
+
+  private static String addSwiftParamNames(ExecutableElement method, String name, char delim) {
+    StringBuilder sb = new StringBuilder(nameWithoutFirstParam(method, name)).append("(");
+    for (VariableElement param : method.getParameters()) {
+      sb.append(param.getSimpleName()).append(delim);
+    }
+    return sb.append(")").toString();
   }
 
   public String getMethodSelector(ExecutableElement method) {
@@ -510,7 +538,7 @@ public class NameTable {
     }
   }
 
-  public static String getMethodNameFromAnnotation(ExecutableElement method) {
+  public String getMethodNameFromAnnotation(ExecutableElement method) {
     AnnotationMirror annotation = ElementUtil.getAnnotation(method, ObjectiveCName.class);
     if (annotation != null) {
       String value = (String) ElementUtil.getAnnotationValue(annotation, "value");
@@ -518,6 +546,131 @@ public class NameTable {
       return value;
     }
     return null;
+  }
+
+  public @Nullable String getSwiftMethodNameFromAnnotation(ExecutableElement method) {
+    // Check if the method has the annotation
+    String annotationName = swiftNameFromAnnotation(method);
+    if (annotationName != null) {
+      return annotationName;
+    }
+
+    if (method.getParameters().isEmpty()) {
+      return null;
+    }
+
+    // Check if the class or package has the annotation
+    TypeElement clazz = ElementUtil.getDeclaringClass(method);
+    if (!packageHasSwiftNameAnnotation(clazz) && !elementHasSwiftNameAnnotation(clazz)) {
+      return null;
+    }
+    // If the annotation is still null after checking the names then it doesn't exist
+
+    String methodName = method.getSimpleName().toString();
+
+    // Constructors are `<init>`
+    methodName = methodName.replace("<", "").replace(">", "");
+
+    return NameTable.addSwiftParamNames(method, methodName, ':');
+  }
+
+  public @Nullable String getSwiftClassNameFromAnnotation(TypeElement clazz) {
+    String annotationName = swiftNameFromAnnotation(clazz);
+    if (annotationName != null) {
+      return annotationName;
+    }
+
+    if (!packageHasSwiftNameAnnotation(clazz) && !elementHasSwiftNameAnnotation(clazz)) {
+      return null;
+    }
+
+    NestingKind nesting = clazz.getNestingKind();
+    if (nesting == NestingKind.MEMBER) {
+      Element parent = clazz.getEnclosingElement();
+      if (parent instanceof TypeElement) {
+        String parentName = getSwiftClassNameFromAnnotation((TypeElement) parent);
+        if (parentName != null) {
+          return parentName + "." + clazz.getSimpleName();
+        }
+      }
+    }
+    return clazz.getSimpleName().toString();
+  }
+
+  public @Nullable String getSwiftFunctionNameFromAnnotation(FunctionDeclaration function) {
+    if (options.emitWrapperMethods()) {
+      // When wrapper methods is enable we don't need to do this because they are already `init`
+      // methods.
+      return null;
+    }
+
+    String functionName = function.getName();
+
+    ExecutableElement method = function.getExecutableElement();
+    if (method == null) {
+      return null;
+    }
+
+    TypeElement owner = ElementUtil.getDeclaringClass(method);
+    if (owner == null) {
+      return null;
+    }
+
+    if (!packageHasSwiftNameAnnotation(owner)
+        && !elementHasSwiftNameAnnotation(owner)
+        && !elementHasSwiftNameAnnotation(method)) {
+      return null;
+    }
+
+    String className = getSwiftClassNameFromAnnotation(owner);
+    if (className == null) {
+      // There isn't nice naming so fallback to the normal ObjC class name
+      className = getObjCType(owner.asType()).replace(" *", "");
+    }
+
+    StringBuilder sb = new StringBuilder();
+    String annotationName = getSwiftMethodNameFromAnnotation(function.getExecutableElement());
+    if (!functionName.contains("_init") && annotationName != null) {
+      sb.append(" NS_SWIFT_NAME(");
+      sb.append(className).append(".").append(annotationName);
+      sb.append(")");
+    } else if (functionName.contains("new_")) {
+      sb.append(" NS_SWIFT_NAME(");
+
+      if (annotationName != null) {
+        sb.append(className).append(".").append(annotationName);
+      } else {
+        sb.append(
+            NameTable.addSwiftParamNames(
+                function.getExecutableElement(), className + ".init", ':'));
+      }
+      sb.append(")");
+    }
+
+    return sb.toString();
+  }
+
+  public static @Nullable String swiftNameFromAnnotation(Element elelement) {
+    AnnotationMirror annotation = ElementUtil.getAnnotation(elelement, SwiftName.class);
+    if (annotation != null) {
+      return (String) ElementUtil.getAnnotationValue(annotation, "value");
+    }
+    return null;
+  }
+
+  public Boolean packageHasSwiftNameAnnotation(TypeElement classType) {
+    if (options.swiftNaming()) {
+      return true;
+    }
+    PackageElement packageElement = ElementUtil.getPackage(classType);
+    return ElementUtil.getAnnotation(packageElement, SwiftName.class) != null;
+  }
+
+  public Boolean elementHasSwiftNameAnnotation(Element element) {
+    if (options.swiftNaming()) {
+      return true;
+    }
+    return ElementUtil.getAnnotation(element, SwiftName.class) != null;
   }
 
   /**
