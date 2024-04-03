@@ -24,6 +24,7 @@ ANNOTATION_SOURCE_JAVA = \
     com/google/j2objc/annotations/ReflectionSupport.java \
     com/google/j2objc/annotations/RetainedLocalRef.java \
     com/google/j2objc/annotations/RetainedWith.java \
+    com/google/j2objc/annotations/SwiftName.java \
     com/google/j2objc/annotations/UsedByNative.java \
     com/google/j2objc/annotations/UsedByReflection.java \
     com/google/j2objc/annotations/Weak.java \
