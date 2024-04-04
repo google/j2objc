@@ -203,8 +203,20 @@ else ifneq (,$(findstring build 18, $(shell $(JAVA) -version 2>&1)))
 JAVA_VERSION = 18
 else ifneq (,$(findstring build 19, $(shell $(JAVA) -version 2>&1)))
 JAVA_VERSION = 19
+else ifneq (,$(findstring build 20, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 20
+else ifneq (,$(findstring build 21, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 21
+else ifneq (,$(findstring build 22, $(shell $(JAVA) -version 2>&1)))
+JAVA_VERSION = 22
 else
 $(error JDK not supported. Please set JAVA_HOME to JDK 1.8, 11 or higher.)
+endif
+
+# Used to build JRE module.
+ifndef JAVA_PLATFORM
+JAVA_PLATFORM = \
+  $(shell jmod describe $(JAVA_HOME)/jmods/java.base.jmod |grep -i '^platform'|cut -d' ' -f2)
 endif
 
 ifndef MEMORY_MODEL_FLAG

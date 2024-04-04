@@ -72,7 +72,7 @@ $(EMULATION_JAR): $(ALL_JAVA_SOURCES)
 
 $(EMULATION_MODULE): $(EMULATION_JAR)
 	@echo "building jre_emul_module"
-	@rm -rf $(EMULATION_MODULE)
+	@rm -rf $(EMULATION_MODULE) $(BUILD_DIR)/jre_emul $(BUILD_DIR)/jmod
 	@mkdir $(BUILD_DIR)/jre_emul
 	@cd $(BUILD_DIR)/jre_emul; jar xf $(EMULATION_JAR)
 	@../scripts/gen_module_info.py --name java.base --root $(BUILD_DIR)/jre_emul \
@@ -81,7 +81,7 @@ $(EMULATION_MODULE): $(EMULATION_JAR)
 	  -d $(BUILD_DIR)/jre_emul $(BUILD_DIR)/module-info.java
 	@mkdir $(BUILD_DIR)/jmod
 	@$(JAVA_HOME)/bin/jmod create --module-version $(JAVA_VERSION) \
-	  --target-platform osx --class-path $(BUILD_DIR)/jre_emul \
+	  --target-platform $(JAVA_PLATFORM) --class-path $(BUILD_DIR)/jre_emul \
 	  $(BUILD_DIR)/jmod/jre_emul.jmod
 	@$(JAVA_HOME)/bin/jlink --module-path $(BUILD_DIR)/jmod \
 	  --add-modules java.base  --output $(EMULATION_MODULE)

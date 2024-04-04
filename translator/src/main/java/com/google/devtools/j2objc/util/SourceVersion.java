@@ -22,6 +22,13 @@ import java.util.Objects;
 
 /** Java source versions, used by the -source and -target flags. */
 public final class SourceVersion {
+  public static final SourceVersion JAVA_22 = new SourceVersion(22, "22");
+  public static final SourceVersion JAVA_21 = new SourceVersion(21, "21");
+  public static final SourceVersion JAVA_20 = new SourceVersion(20, "20");
+  public static final SourceVersion JAVA_19 = new SourceVersion(19, "19");
+  public static final SourceVersion JAVA_18 = new SourceVersion(18, "18");
+  public static final SourceVersion JAVA_17 = new SourceVersion(17, "17");
+  public static final SourceVersion JAVA_16 = new SourceVersion(16, "16");
   public static final SourceVersion JAVA_15 = new SourceVersion(15, "15");
   public static final SourceVersion JAVA_14 = new SourceVersion(14, "14");
   public static final SourceVersion JAVA_13 = new SourceVersion(13, "13");
@@ -35,8 +42,7 @@ public final class SourceVersion {
   public static final SourceVersion JAVA_5 = new SourceVersion(5, "1.5");
 
   // Max version supported by translator and runtime.
-  private static SourceVersion maxSupportedVersion = JAVA_15;
-
+  private static SourceVersion maxSupportedVersion = JAVA_22;
 
   private final int version;
   private final String flag;

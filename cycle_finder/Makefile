@@ -48,7 +48,7 @@ RESOURCES = \
     com/google/devtools/j2objc/reserved_names.txt
 
 DIST_DEPS = $(JSR305_JAR) j2objc_annotations.jar
-INTERNAL_DEPS = $(GUAVA_JAR) $(PROCYON_JARS) $(SCENELIB_JAR) $(PLUME_UTIL_JAR)
+INTERNAL_DEPS = $(GUAVA_JAR) $(PROCYON_JARS) $(SCENELIB_JAR) $(PLUME_UTIL_JAR) $(JSPECIFY_JAR)
 ifdef JAVA_8
 INTERNAL_DEPS += $(JAVAC_JAR)
 endif

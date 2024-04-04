@@ -57,7 +57,8 @@ def Main():
         if not f.endswith("package-info.class")):
       package = subdir[len(root) + 1:]  # "+ 1" to remove the "/"
       package = package.replace("/", ".")
-      module_info.write("  exports {};\n".format(package))
+      if package:
+        module_info.write("  exports {};\n".format(package))
   module_info.write("}\n")
   module_info.close()
 

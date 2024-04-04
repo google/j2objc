@@ -55,7 +55,7 @@ else
   readonly JAVA=`which java`
 fi
 
-SUPPORTED_JAVA_VERSIONS=(1.8 11 12 13 14 15 16 17 18 19)
+SUPPORTED_JAVA_VERSIONS=(1.8 11 12 13 14 15 16 17 18 19 20 21 22)
 JAVA_VERSION=0
 for version in ${SUPPORTED_JAVA_VERSIONS[@]}; do
   ${JAVA} -version 2>&1 | fgrep -q "build ${version}"
@@ -64,7 +64,7 @@ for version in ${SUPPORTED_JAVA_VERSIONS[@]}; do
   fi
 done
 if [ "${JAVA_VERSION}" = "0" ]; then
-  echo "JDK not supported. Please set JAVA_HOME to JDK 1.8, 11 or higher."
+  echo "JDK not supported. Please set JAVA_HOME to JDK 11 or higher."
   exit 1
 fi
 
