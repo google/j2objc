@@ -127,7 +127,7 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
     if (!Modifier.isNative(function.getModifiers())) {
       print("__attribute__((unused)) static ");
     }
-    print(getFunctionSignature(function, true));
+    print(getFunctionSignature(function, true, true));
     if (function.returnsRetained()) {
       print(" NS_RETURNS_RETAINED");
     }

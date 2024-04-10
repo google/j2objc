@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.ast.DebugASTPrinter;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
@@ -52,6 +53,7 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
   private final List<TypeParameterElement> typeParameters = Lists.newArrayList();
   private final TypeMirror returnType;
   private final boolean varargs;
+  private ExecutableElement originalElement;
 
   private GeneratedExecutableElement(
       String name, String selector, ElementKind kind, TypeMirror returnType,
@@ -206,6 +208,16 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
   @Override
   public AnnotationValue getDefaultValue() {
     throw new AssertionError("not implemented");
+  }
+
+  public ExecutableElement getOriginalElement() {
+    return originalElement;
+  }
+
+  @CanIgnoreReturnValue
+  public GeneratedExecutableElement setOriginalElement(ExecutableElement element) {
+    originalElement = element;
+    return this;
   }
 
   /** The associated ExecutableType. */

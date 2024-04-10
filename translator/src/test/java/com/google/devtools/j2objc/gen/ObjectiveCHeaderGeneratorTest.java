@@ -1139,6 +1139,96 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation, "NS_SWIFT_NAME(FooBar.NestedBar)");
   }
 
+  public void testSwiftNamePackageAnnotationEnumSubtype() throws IOException {
+    addSourceFile(
+        "@SwiftName "
+            + "package com.foo.bar;"
+            + ""
+            + "import com.google.j2objc.annotations.SwiftName;",
+        "com/foo/bar/package-info.java");
+
+    String sourceContent =
+        "  package com.foo.bar;"
+            + ""
+            + "public abstract class FooBar {"
+            + "  public enum MyEnum { ONE, TWO, THREE } "
+            + "  public void setFooField(String fooField) {"
+            + " "
+            + "  }"
+            + "}";
+    String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
+    assertTranslatedLines(translation, "NS_SWIFT_NAME(FooBar.MyEnumClass)");
+    assertTranslatedLines(translation, "NS_SWIFT_NAME(FooBar.MyEnum)");
+  }
+
+  public void testSwiftNameInheritedInterface() throws IOException {
+    options.setStripReflection(true);
+    options.setEmitWrapperMethods(false);
+    options.setAsObjCGenericDecl(true);
+    addSourceFile(
+        "@SwiftName " + "package foo;" + "" + "import com.google.j2objc.annotations.SwiftName;",
+        "foo/package-info.java");
+
+    addSourceFile(
+        "@SwiftName " + "package bar;" + "" + "import com.google.j2objc.annotations.SwiftName;",
+        "bar/package-info.java");
+
+    addSourceFile(
+        "  package foo;"
+            + ""
+            + "public interface FooBar<E> {"
+            + "  public E getElementByIndex(int index); "
+            + "}",
+        "foo/FooBar.java");
+
+    addSourceFile(
+        "  package bar;"
+            + "import foo.FooBar; "
+            + ""
+            + "public interface BarFoo extends FooBar<String> {"
+            + " "
+            + "}",
+        "bar/BarFoo.java");
+
+    String fooHeader = translateCombinedFiles("com/Foo", ".h", "foo/FooBar.java");
+    String barHeader = translateCombinedFiles("com/Bar", ".h", "bar/BarFoo.java");
+    assertTranslatedLines(
+        barHeader,
+        "- (NSString *)getElementByIndexWithInt:(jint)index"
+            + " NS_SWIFT_NAME(getElementByInt(index:));");
+    assertTranslatedLines(
+        fooHeader,
+        "- (id)getElementByIndexWithInt:(jint)index NS_SWIFT_NAME(getElementBy(index:));");
+  }
+
+  public void testSwiftNameAbnormalArgumentNames() throws IOException {
+    addSourceFile(
+        "@SwiftName " + "package foo;" + "" + "import com.google.j2objc.annotations.SwiftName;",
+        "foo/package-info.java");
+
+    addSourceFile(
+        "  package foo;"
+            + ""
+            + "public interface FooBar {"
+            + "  public String fooBar(String fooBar);"
+            + "  public String setSomeValue(String value);"
+            + "  public String setSomeArgument(String arg0);"
+            + "}",
+        "foo/FooBar.java");
+
+    String fooHeader = translateCombinedFiles("com/Foo", ".h", "foo/FooBar.java");
+    assertTranslatedLines(
+        fooHeader,
+        "- (NSString *)fooBarWithNSString:(NSString *)fooBar NS_SWIFT_NAME(fooBar(_:));");
+    assertTranslatedLines(
+        fooHeader,
+        "- (NSString *)setSomeValueWithNSString:(NSString *)value NS_SWIFT_NAME(setSome(_:));");
+    assertTranslatedLines(
+        fooHeader,
+        "- (NSString *)setSomeArgumentWithNSString:(NSString *)arg0"
+            + " NS_SWIFT_NAME(setSomeArgument(_:));");
+  }
+
   public void testSwiftNameAnnotationWithStaticFunctions() throws IOException {
     options.setEmitWrapperMethods(false);
 
@@ -1159,12 +1249,12 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + " "
             + "  }"
             + "  public static String builderWithExpectedSize(int expectedSize){ return \"\"; }"
-            + "  public static String builderWithName(String value){ return \"\"; }"
+            + "  public static String builderWithName(String name){ return \"\"; }"
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
     assertTranslatedLines(translation, "NS_SWIFT_NAME(FooBar.init())");
     assertTranslatedLines(translation, "NS_SWIFT_NAME(FooBar.builder(expectedSize:))");
-    assertTranslatedLines(translation, "NS_SWIFT_NAME(FooBar.builderWithName(value:))");
+    assertTranslatedLines(translation, "NS_SWIFT_NAME(FooBar.builder(name:))");
   }
 
   public void testSwiftNameAnnotationWithStaticFunctionsWithWapperMethods() throws IOException {
@@ -1220,7 +1310,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "  public static void builderWithExpectedSize(int expectedSize){}"
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
-    assertTranslatedLines(translation, "NS_SWIFT_NAME(ComFooBarFooBar.init(size:))");
+    assertTranslatedLines(translation, "NS_SWIFT_NAME(ComFooBarFooBar.init(expectedSize:))");
   }
 
   public void testSwiftNameEnumAnnotation() throws IOException {
@@ -1234,7 +1324,29 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "public enum Color { RED, WHITE, BLUE }";
     String translation = translateSourceFile(sourceContent, "Color", "com/foo/bar/Color.h");
     assertTranslatedLines(translation, "NS_SWIFT_NAME(Color)");
-    assertTranslatedLines(translation, "NS_SWIFT_NAME(Color.ColorClass)");
+    assertTranslatedLines(translation, "NS_SWIFT_NAME(ColorClass)");
+  }
+
+  public void testSwiftNameInterfaceSubtype() throws IOException {
+    addSourceFile(
+        "@SwiftName "
+            + "package com.foo.bar;"
+            + ""
+            + "import com.google.j2objc.annotations.SwiftName;",
+        "com/foo/bar/package-info.java");
+
+    String sourceContent =
+        "  package com.foo.bar;"
+            + ""
+            + "public interface FooBar {"
+            + "  public enum MyEnum { ONE, TWO, THREE } "
+            + "  public void setFooField(String fooField);"
+            + "  public final class NestedBar {}"
+            + "}";
+    String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
+    assertTranslatedLines(translation, "NS_SWIFT_NAME(MyEnumClass)");
+    assertTranslatedLines(translation, "NS_SWIFT_NAME(MyEnum)");
+    assertTranslatedLines(translation, "NS_SWIFT_NAME(NestedBar)");
   }
 
   public void testMethodSorting() throws IOException {

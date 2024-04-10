@@ -315,7 +315,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       printJniFunctionAndWrapper(function);
     } else {
       String functionBody = generateStatement(function.getBody());
-      println(getFunctionSignature(function, false) + " " + reindent(functionBody));
+      println(getFunctionSignature(function, false, true) + " " + reindent(functionBody));
     }
   }
 
@@ -351,7 +351,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     println(";\n");
 
     // Generate a wrapper function that calls the matching JNI function.
-    print(getFunctionSignature(function, false));
+    print(getFunctionSignature(function, false, true));
     println(" {");
     print("  ");
     TypeMirror returnType = function.getReturnType().getTypeMirror();

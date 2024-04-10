@@ -166,20 +166,28 @@ public class AbstractMethodRewriter extends UnitTreeVisitor {
 
   private MethodDeclaration newReturnTypeNarrowingDeclaration(
       String selector, ExecutablePair method, TypeElement declaringClass) {
-    GeneratedExecutableElement element = GeneratedExecutableElement.newMethodWithSelector(
-        selector, method.type().getReturnType(), declaringClass)
-        // Preserve visibility of the original method.
-        .addModifiers(ElementUtil.getVisibilityModifiers(method.element()))
-        .addModifiers(Modifier.ABSTRACT);
+    GeneratedExecutableElement element =
+        GeneratedExecutableElement.newMethodWithSelector(
+                selector, method.type().getReturnType(), declaringClass)
+            .setOriginalElement(method.element())
+            // Preserve visibility of the original method.
+            .addModifiers(ElementUtil.getVisibilityModifiers(method.element()))
+            .addModifiers(Modifier.ABSTRACT);
     element.addAnnotationMirrors(method.element().getAnnotationMirrors());
+
     MethodDeclaration decl = new MethodDeclaration(element);
     if (!declaringClass.getKind().isInterface()) {
       unit.setHasIncompleteImplementation();
     }
     int argCount = 0;
     for (VariableElement param : method.element().getParameters()) {
-      GeneratedVariableElement newParam = GeneratedVariableElement.newParameter(
-          "arg" + argCount++, param.asType(), element);
+      String name = param.getSimpleName().toString();
+      if (name == null || name.equals("arg")) {
+        name = "arg" + argCount;
+      }
+      argCount++;
+      GeneratedVariableElement newParam =
+          GeneratedVariableElement.newParameter(name, param.asType(), element);
       newParam.addAnnotationMirrors(param.getAnnotationMirrors());
       element.addParameter(newParam);
       decl.addParameter(new SingleVariableDeclaration(newParam));

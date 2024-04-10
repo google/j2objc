@@ -369,7 +369,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   /** Returns an Objective-C nullability attribute string if needed. */
   protected abstract String nullability(Element element);
 
-  protected String getFunctionSignature(FunctionDeclaration function, boolean isPrototype) {
+  protected String getFunctionSignature(
+      FunctionDeclaration function, boolean isPrototype, boolean isPrivate) {
     StringBuilder sb = new StringBuilder();
     TypeMirror returnTypeMirror = function.getReturnType().getTypeMirror();
     String returnType =
@@ -391,9 +392,11 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     }
     sb.append(')');
 
-    String swiftName = nameTable.getSwiftFunctionNameFromAnnotation(function);
-    if (swiftName != null) {
-      sb.append(swiftName);
+    if (!isPrivate) {
+      String swiftName = nameTable.getSwiftFunctionNameFromAnnotation(function);
+      if (swiftName != null) {
+        sb.append(swiftName);
+      }
     }
 
     return sb.toString();

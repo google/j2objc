@@ -191,18 +191,20 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
 
     private void addShimWithInvocation(
         String selector, ExecutablePair method, Expression invocation, List<Expression> args) {
-      GeneratedExecutableElement element = GeneratedExecutableElement.newMethodWithSelector(
-              selector, method.type().getReturnType(), typeElem)
-          .addModifiers(method.element().getModifiers())
-          .removeModifiers(Modifier.ABSTRACT, Modifier.DEFAULT);
+      GeneratedExecutableElement element =
+          GeneratedExecutableElement.newMethodWithSelector(
+                  selector, method.type().getReturnType(), typeElem)
+              .addModifiers(method.element().getModifiers())
+              .removeModifiers(Modifier.ABSTRACT, Modifier.DEFAULT)
+              .setOriginalElement(method.element());
 
       MethodDeclaration methodDecl = new MethodDeclaration(element);
       methodDecl.setHasDeclaration(false);
 
       int i = 0;
       for (TypeMirror paramType : method.type().getParameterTypes()) {
-        GeneratedVariableElement newParam = GeneratedVariableElement.newParameter(
-            "arg" + i++, paramType, element);
+        GeneratedVariableElement newParam =
+            GeneratedVariableElement.newParameter("arg" + i++, paramType, element);
         element.addParameter(newParam);
         methodDecl.addParameter(new SingleVariableDeclaration(newParam));
         args.add(new SimpleName(newParam));
