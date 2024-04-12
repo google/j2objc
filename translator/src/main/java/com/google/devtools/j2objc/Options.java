@@ -542,6 +542,8 @@ public class Options {
         }
       } else if (arg.equals("--no-wrapper-methods")) {
         emitWrapperMethods = false;
+      } else if (arg.equals("--wrapper-methods")) {
+        emitWrapperMethods = true;
       } else if (arg.equals("--no-segmented-headers")) {
         segmentedHeaders = false;
       } else if (arg.equals("--build-closure")) {
