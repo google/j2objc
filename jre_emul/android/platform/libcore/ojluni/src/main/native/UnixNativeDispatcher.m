@@ -546,7 +546,9 @@ Java_sun_nio_fs_UnixNativeDispatcher_fstatat0(JNIEnv* env, jclass this, jint dfd
         JNU_ThrowInternalError(env, "should not reach here");
         return;
     }
-    RESTARTABLE((*my_fstatat64_func)((int)dfd, path, &buf, (int)flag), err);
+    // j2objc: make explicit call to support privacy manifest scanning.
+    // RESTARTABLE((*my_fstatat64_func)((int)dfd, path, &buf, (int)flag), err);
+    err = fstatat((int)dfd, path, &buf, (int)flag);
     if (err == -1) {
         throwUnixException(env, errno);
     } else {
