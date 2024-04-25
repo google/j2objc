@@ -30,11 +30,13 @@ import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -116,6 +118,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       printStaticAccessors();
       printInnerDeclarations();
       printInitializeMethod();
+      printLinkProtocolsMethod();
       println("\n@end");
     }
 
@@ -263,6 +266,24 @@ public class TypeImplementationGenerator extends TypeGenerator {
       newline();
       printf("J2OBJC_%s_TYPE_LITERAL_SOURCE(%s)\n",
           isInterfaceType() ? "INTERFACE" : "CLASS", typeName);
+    }
+  }
+
+  private void printLinkProtocolsMethod() {
+    if (!options.linkProtocols() || options.stripReflection()) {
+      return;
+    }
+    List<String> interfaceNames = new ArrayList<>();
+    for (TypeElement intrface : TranslationUtil.getInterfaceTypes(typeNode)) {
+      interfaceNames.add(nameTable.getFullName(intrface));
+    }
+    if (!interfaceNames.isEmpty()) {
+      newline();
+      printf("+ (void)__linkProtocols {\n");
+      for (String name : interfaceNames) {
+        printf("  %s_class_();\n", NameTable.camelCaseQualifiedName(name));
+      }
+      printf("}\n");
     }
   }
 

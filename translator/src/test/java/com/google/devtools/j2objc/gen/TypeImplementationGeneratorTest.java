@@ -222,4 +222,15 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@synthesize foo = foo_;");
     assertNotInTranslation(translation, "@synthesize bar");
   }
+
+  public void testLinkProtocolsFunctions() throws IOException {
+    options.setLinkProtocols(true);
+    String source =
+        "import java.io.Serializable;\n"
+            + "class Test implements Runnable, Serializable { public void run() {} }";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslation(translation, "+ (void)__linkProtocols {");
+    assertTranslation(translation, "JavaIoSerializable_class_();");
+    assertTranslation(translation, "JavaLangRunnable_class_();");
+  }
 }

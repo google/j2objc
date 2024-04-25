@@ -111,6 +111,7 @@ public class Options {
   private boolean linkSourcePathHeaders = false;
   private boolean javacWarnings = true;
   private boolean stripReflectionErrors = false;
+  private boolean linkProtocols = false;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -417,6 +418,8 @@ public class Options {
         headerMap.setIncludeGeneratedSources();
       } else if (arg.equals("-Xpublic-hdrs")) {
         fileUtil.setHeaderOutputDirectory(new File(getArgValue(args, arg)));
+      } else if (arg.equals("-Xlink-protocols")) {
+        linkProtocols = true;
       } else if (arg.equals("-use-arc")) {
         checkMemoryManagementOption(MemoryManagementOption.ARC);
       } else if (arg.equals("-Xstrict-field-assign")) {
@@ -1293,5 +1296,14 @@ public class Options {
 
   public boolean stripReflectionErrors() {
     return stripReflectionErrors;
+  }
+
+  public boolean linkProtocols() {
+    return linkProtocols;
+  }
+
+  @VisibleForTesting
+  public void setLinkProtocols(boolean b) {
+    linkProtocols = b;
   }
 }
