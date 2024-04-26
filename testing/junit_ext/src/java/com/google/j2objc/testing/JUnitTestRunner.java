@@ -107,7 +107,7 @@ public class JUnitTestRunner {
     this.out = out;
   }
 
-  public static int main(String[] args) {
+  public static int run(String[] args) {
     // Create JUnit test runner.
     PrintStream nsLogOut = new PrintStream(new NSLogOutputStream(), true);
     JUnitTestRunner runner = new JUnitTestRunner(nsLogOut);
