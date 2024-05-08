@@ -174,10 +174,18 @@ public class OcniExtractor extends UnitTreeVisitor {
     if (typeUtil.findSupertype(type.asType(), "java.lang.Iterable") != null
         && !methodsPrinted.contains("countByEnumeratingWithState:objects:count:")
         && (deadCodeMap == null || !deadCodeMap.containsClass(type, elementUtil))) {
-      bodyDeclarations.add(NativeDeclaration.newInnerDeclaration(null,
-          "- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state "
-          + "objects:(__unsafe_unretained id *)stackbuf count:(NSUInteger)len {\n"
-          + "  return JreDefaultFastEnumeration(self, state, stackbuf);\n}\n"));
+      String declaration =
+          options.addTextSegmentAttribute()
+              ? "- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state "
+                  + "objects:(__unsafe_unretained id *)stackbuf count:(NSUInteger)len "
+                  + "J2OBJC_TEXT_SEGMENT;"
+              : null;
+      bodyDeclarations.add(
+          NativeDeclaration.newInnerDeclaration(
+              declaration,
+              "- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state "
+                  + "objects:(__unsafe_unretained id *)stackbuf count:(NSUInteger)len {\n"
+                  + "  return JreDefaultFastEnumeration(self, state, stackbuf);\n}\n"));
     }
   }
 

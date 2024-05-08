@@ -334,20 +334,21 @@ public class EnumRewriter extends UnitTreeVisitor {
     int numConstants = node.getEnumConstants().size();
 
     String ordinalArgType = (numConstants > 0) ? ordinalName : "jint";
+    String segmentName = options.addTextSegmentAttribute() ? " J2OBJC_TEXT_SEGMENT" : "";
 
     // The native type is not declared for an empty enum.
     if (numConstants > 0) {
       // Native toNSEnum always uses C type.
       node.addBodyDeclaration(
           NativeDeclaration.newInnerDeclaration(
-              UnicodeUtils.format("- (%s)toNSEnum;\n", nativeName),
+              UnicodeUtils.format("- (%s)toNSEnum%s;\n", nativeName, segmentName),
               UnicodeUtils.format(
                   "- (%s)toNSEnum {\n" + "  return (%s)[self ordinal];\n" + "}\n\n",
                   nativeName, nativeName)));
 
       node.addBodyDeclaration(
           NativeDeclaration.newInnerDeclaration(
-              UnicodeUtils.format("@property(readonly) %s enumValue;", nativeName),
+              UnicodeUtils.format("@property(readonly) %s enumValue%s;", nativeName, segmentName),
               UnicodeUtils.format(
                   "- (%s)enumValue {\n" + "  return (%s)[self ordinal];\n" + "}\n\n",
                   nativeName, nativeName)));
@@ -356,7 +357,8 @@ public class EnumRewriter extends UnitTreeVisitor {
       node.addBodyDeclaration(
           NativeDeclaration.newInnerDeclaration(
               UnicodeUtils.format(
-                  "- (%s)ordinal NS_SWIFT_UNAVAILABLE(\"Use .enumValue\");\n", ordinalName),
+                  "- (%s)ordinal NS_SWIFT_UNAVAILABLE(\"Use .enumValue\")%s;\n",
+                  ordinalName, segmentName),
               UnicodeUtils.format(
                   "- (%s)ordinal {\n" + "  return (%s)[super ordinal];\n" + "}\n\n",
                   ordinalName, ordinalName)));
@@ -365,7 +367,7 @@ public class EnumRewriter extends UnitTreeVisitor {
           String.format("- (nullable instancetype)initWith%s:(%s)value", enumName, nativeName);
       node.addBodyDeclaration(
           NativeDeclaration.newInnerDeclaration(
-              UnicodeUtils.format("%s;\n", initMethod),
+              UnicodeUtils.format("%s%s;\n", initMethod, segmentName),
               UnicodeUtils.format(
                   "%s {\n" + "  return RETAIN_(%s_fromOrdinal((%s)value));\n" + "}\n\n",
                   initMethod, typeName, ordinalArgType)));

@@ -763,6 +763,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (m.isUnavailable()) {
       print(" NS_UNAVAILABLE");
     }
+    if (options.addTextSegmentAttribute()) {
+      print(" J2OBJC_TEXT_SEGMENT");
+    }
     println(";");
   }
 
@@ -802,6 +805,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     print("\nFOUNDATION_EXPORT " + getFunctionSignature(function, true, false));
     if (function.returnsRetained()) {
       print(" NS_RETURNS_RETAINED");
+    }
+    if (options.addTextSegmentAttribute()) {
+      print(" J2OBJC_TEXT_SEGMENT");
     }
     println(";");
   }

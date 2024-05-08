@@ -132,10 +132,13 @@ public class AnnotationRewriter extends UnitTreeVisitor {
       ExecutableElement memberElement = member.getExecutableElement();
       String propName = NameTable.getAnnotationPropertyName(memberElement);
       String memberTypeStr = nameTable.getObjCType(memberElement.getReturnType());
+      String segmentName = options.addTextSegmentAttribute() ? " J2OBJC_TEXT_SEGMENT" : "";
 
       String fieldName = nameTable.getVariableShortName(fieldElements.get(memberElement));
-      propertyDecls.append(UnicodeUtils.format("@property (readonly) %s%s%s;\n",
-          memberTypeStr, memberTypeStr.endsWith("*") ? "" : " ", propName));
+      propertyDecls.append(
+          UnicodeUtils.format(
+              "@property (readonly) %s%s%s%s;\n",
+              memberTypeStr, memberTypeStr.endsWith("*") ? "" : " ", propName, segmentName));
       if (NameTable.needsObjcMethodFamilyNoneAttribute(propName)) {
         propertyDecls.append(UnicodeUtils.format(
             "- (%s)%s OBJC_METHOD_FAMILY_NONE;\n", memberTypeStr, propName));

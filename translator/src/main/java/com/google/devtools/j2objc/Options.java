@@ -112,6 +112,7 @@ public class Options {
   private boolean javacWarnings = true;
   private boolean stripReflectionErrors = false;
   private boolean linkProtocols = false;
+  private boolean addTextSegmentAttribute = false;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -616,6 +617,8 @@ public class Options {
       } else if (arg.equals("-XDallVersions")) {
         // For internal use only when adding new version support.
         allVersions = true;
+      } else if (arg.equals("-Xj2objc-text-segment")) {
+        addTextSegmentAttribute = true;
       } else if (arg.equals("-source")) {
         String s = getArgValue(args, arg);
         // Handle aliasing of version numbers as supported by javac.
@@ -1305,5 +1308,14 @@ public class Options {
   @VisibleForTesting
   public void setLinkProtocols(boolean b) {
     linkProtocols = b;
+  }
+
+  public boolean addTextSegmentAttribute() {
+    return addTextSegmentAttribute;
+  }
+
+  @VisibleForTesting
+  public void setAddTextSegmentAttribute(boolean b) {
+    addTextSegmentAttribute = b;
   }
 }

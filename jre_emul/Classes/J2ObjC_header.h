@@ -335,4 +335,9 @@ CF_EXTERN_C_END
     BOXED_COMPOUND_ASSIGN( \
         CNAME, VALUE_METHOD, TYPE, BOXED_TYPE, jlong, URShift, RSHIFT_64_OP, uint64_t)
 
+// This macro defines a custom-named text segmment attribute. Its main purpose is to
+// separate j2objc-translpiled code from the rest of the app code, so that developers
+// can measure how much of the app's size is due to transpiled Java code.
+#define J2OBJC_TEXT_SEGMENT __attribute__((section("__TEXT,__j2objc_text")))
+
 #endif  // _J2OBJC_HEADER_H_

@@ -1016,4 +1016,34 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "inline jint State_get_initialize_(void);");
     assertTranslation(translation, "State_initialize_");
   }
+
+  public void testAddTextSegmentAttribute() throws IOException {
+    options.setAddTextSegmentAttribute(true);
+    String source =
+        "class Test { \n"
+            + "  void methodTest() { \n"
+            + "    System.out.println(\"test\"); \n"
+            + "  } \n"
+            + "  native void nativeTest() /*-[ \n"
+            + "     printf(\"hello\\n\");"
+            + "  ]-*/;"
+            + "  static enum TestEnum { FOO, BAR }"
+            + "  static @interface TestAnnotation {}"
+            + "}";
+    String translation = translateSourceFile(source, "Test", "Test.h");
+    assertTranslatedLines(translation, "- (void)methodTest J2OBJC_TEXT_SEGMENT;");
+    assertTranslatedLines(translation, "- (void)nativeTest J2OBJC_TEXT_SEGMENT;");
+    assertTranslatedLines(translation, "- (instancetype)init J2OBJC_TEXT_SEGMENT;");
+
+    // Automatically generatedn enum methods.
+    assertTranslatedLines(
+        translation,
+        "+ (Test_TestEnum *)valueOfWithNSString:(NSString *)name J2OBJC_TEXT_SEGMENT;");
+    assertTranslatedLines(translation, "+ (IOSObjectArray *)values J2OBJC_TEXT_SEGMENT;");
+    assertTranslatedLines(translation, "- (Test_TestEnum_Enum)toNSEnum J2OBJC_TEXT_SEGMENT;");
+
+    // Automatically generated annotation methods.
+    assertTranslatedLines(translation, "- (jboolean)isEqual:(id)obj J2OBJC_TEXT_SEGMENT;");
+    assertTranslatedLines(translation, "- (NSUInteger)hash J2OBJC_TEXT_SEGMENT;");
+  }
 }
