@@ -216,7 +216,7 @@ endif
 # Used to build JRE module.
 ifndef JAVA_PLATFORM
 JAVA_PLATFORM = \
-  $(shell jmod describe $(JAVA_HOME)/jmods/java.base.jmod |grep -i '^platform'|cut -d' ' -f2)
+  $(shell $(JAVA_HOME)/bin/jmod describe $(JAVA_HOME)/jmods/java.base.jmod |grep -i '^platform'|cut -d' ' -f2)
 endif
 
 ifndef MEMORY_MODEL_FLAG
