@@ -476,6 +476,10 @@ public class Options {
         stripGwtIncompatible = true;
       } else if (arg.equals("--strip-reflection")) {
         includedMetadata = EnumSet.of(MetadataSupport.ENUM_CONSTANTS);
+      } else if (arg.equals("--no-strip-reflection")) {
+        includedMetadata =
+            EnumSet.of(
+                MetadataSupport.FULL, MetadataSupport.ENUM_CONSTANTS, MetadataSupport.NAME_MAPPING);
       } else if (arg.equals("-Xstrip-reflection-errors:")) {
         String subArg = arg.substring(arg.indexOf(':') + 1);
         switch (subArg) {
