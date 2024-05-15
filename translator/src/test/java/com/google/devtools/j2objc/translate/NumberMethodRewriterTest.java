@@ -92,4 +92,44 @@ public class NumberMethodRewriterTest extends GenerationTest {
         "return create_A_initWithLongLong_(value);",
         "}");
   }
+
+  public void testLongSuperConstructor() throws IOException {
+    String translation =
+        translateSourceFile(
+            "import java.math.*;"
+                + "class A extends BigDecimal { "
+                + "  public A(long value) { super(value); }"
+                + "  public A(long value, MathContext context) { super(value, context); }"
+                + "}",
+            "A",
+            "A.m");
+
+    // Verify that long constructor uses longlong type.
+    assertTranslatedLines(
+        translation,
+        "- (instancetype)initWithLongLong:(jlong)value {",
+        "  A_initWithLongLong_(self, value);",
+        "  return self;",
+        "}");
+    assertTranslatedLines(
+        translation,
+        "void A_initWithLongLong_(A *self, jlong value) {",
+        "  JavaMathBigDecimal_initWithLongLong_(self, value);",
+        "}");
+
+    // Verify that the other constructor is not affected (long used instead of longlong).
+    assertTranslatedLines(
+        translation,
+        "- (instancetype)initWithLong:(jlong)value",
+        "    withJavaMathMathContext:(JavaMathMathContext *)context {",
+        "  A_initWithLong_withJavaMathMathContext_(self, value, context);",
+        "  return self;",
+        "}");
+    assertTranslatedLines(
+        translation,
+        "void A_initWithLong_withJavaMathMathContext_(A *self, jlong value, JavaMathMathContext"
+            + " *context) {",
+        "  JavaMathBigDecimal_initWithLong_withJavaMathMathContext_(self, value, context);",
+        "}");
+  }
 }
