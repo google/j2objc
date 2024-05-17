@@ -38,8 +38,7 @@ OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(EXTRACTED_JAVA:$(JAVA_SRC_DIR)/%=%)
-TRANSLATE_ARGS = -sourcepath $(JAVA_SRC_DIR) -source 1.7 \
-  -external-annotation-file junit.jaif
+TRANSLATE_ARGS = -sourcepath $(JAVA_SRC_DIR) -external-annotation-file junit.jaif
 include ../make/translate.mk
 
 FAT_LIB_NAME = junit
@@ -59,7 +58,8 @@ fat_lib_dependencies: jre_emul_dist
 java: $(JUNIT_DIST_JAR)
 	@:
 
-$(BUILD_DIR)/.extracted: $(JUNIT_SRC_JAR) $(JUNIT_DATAPROVIDER_SRC_JAR) $(HAMCREST_SRC_JAR)
+$(BUILD_DIR)/.extracted: java_deps_dist $(JUNIT_SRC_JAR) \
+        $(JUNIT_DATAPROVIDER_SRC_JAR) $(HAMCREST_SRC_JAR)
 	@echo extracting sources
 	@mkdir -p $(JAVA_SRC_DIR)
 	@unzip -q -o -d $(JAVA_SRC_DIR) $(JUNIT_SRC_JAR) $(JUNIT_SOURCES)
@@ -68,6 +68,7 @@ $(BUILD_DIR)/.extracted: $(JUNIT_SRC_JAR) $(JUNIT_DATAPROVIDER_SRC_JAR) $(HAMCRE
 	@sed -i '' -e '/import edu.umd.cs.findbugs.annotations.SuppressWarnings;/d' \
 		$(JAVA_SRC_DIR)/com/tngtech/java/junit/dataprovider/internal/placeholder/ParameterPlaceholder.java
 	@unzip -q -o -d $(JAVA_SRC_DIR) $(HAMCREST_SRC_JAR) $(HAMCREST_SOURCES)
+	@(cd $(JAVA_SRC_DIR) && patch -p1) < hamcrest-1.3.patch
 	@touch $(EXTRACTED_JAVA)
 	@touch $@
 
@@ -115,7 +116,7 @@ lib: $(FAT_LIBS) $(FAT_LIBS_DIST) $(ARCH_HEADERS) $(JUNIT_LICENSE_DIST)
 # This is currently broken. The hamcrest source can't compile with 1.8 and the included JRE sources
 # can't compile with < 1.8.
 find_cycles: $(JAVA_SOURCES_MANIFEST) | cycle_finder_dist jre_emul_java_manifest
-	$(DIST_DIR)/cycle_finder -sourcepath $(JAVA_SRC_DIR) -source 1.7 \
+	$(DIST_DIR)/cycle_finder -sourcepath $(JAVA_SRC_DIR) \
       -cp $(CLASSPATH) --suppress-list cycle_suppress_list.txt \
 			--suppress-list ../jre_emul/cycle_suppress_list.txt \
       -s ../jre_emul/$(BUILD_DIR_NAME)/java_sources.mf -s $(JAVA_SOURCES_MANIFEST)

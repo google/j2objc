@@ -240,6 +240,17 @@ TRANSLATOR_BUILD_FLAGS += \
   --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED \
   --add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
   --add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
+
+# Java flags needed to execute j2objc translator.
+J2OBJC_JAVA_FLAGS += \
+  --add-exports java.compiler/javax.lang.model.element=ALL-UNNAMED \
+  --add-exports java.compiler/javax.lang.model.type=ALL-UNNAMED \
+  --add-exports java.compiler/javax.lang.model.util=ALL-UNNAMED \
+  --add-exports jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
+  --add-exports jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED \
+  --add-exports jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED \
+  --add-exports jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
+  --add-exports jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED
 endif
 
 comma=,

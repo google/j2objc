@@ -1,0 +1,27 @@
+This patch fixes type inference errors building hamcrest-1.3. Previously
+its build required a "-source 7" javac flag, which Java 22 no longer supports.
+
+diff -ruN a/org/hamcrest/core/AllOf.java b/org/hamcrest/core/AllOf.java
+--- a/org/hamcrest/core/AllOf.java	2024-05-15 15:08:47
++++ b/org/hamcrest/core/AllOf.java	2024-05-15 15:09:44
+@@ -57,7 +57,7 @@
+      */
+     @Factory
+     public static <T> Matcher<T> allOf(Matcher<? super T>... matchers) {
+-        return allOf(Arrays.asList(matchers));
++        return AllOf.<T>allOf(Arrays.asList(matchers));
+     }
+ 
+     /**
+diff -ruN a/org/hamcrest/core/AnyOf.java b/org/hamcrest/core/AnyOf.java
+--- a/org/hamcrest/core/AnyOf.java	2024-05-15 15:08:47
++++ b/org/hamcrest/core/AnyOf.java	2024-05-15 15:09:44
+@@ -47,7 +47,7 @@
+      */
+     @Factory
+     public static <T> AnyOf<T> anyOf(Matcher<? super T>... matchers) {
+-        return anyOf(Arrays.asList(matchers));
++        return AnyOf.<T>anyOf(Arrays.asList(matchers));
+     }
+ 
+     /**

@@ -390,6 +390,7 @@ clean:
 	@rm -rf $(BUILD_DIR) $(J2OBJC_JAR_DIST) $(J2OBJC_SH_DIST)
 
 COMMON_TEST_FLAGS = \
+  $(J2OBJC_JAVA_FLAGS) \
   -classpath $(TEST_CLASSPATH):$(TEST_BOOT_CLASSPATH) \
   -Xss4m -XX:+UseParallelGC \
   -ea junit.textui.TestRunner

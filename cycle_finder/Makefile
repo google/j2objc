@@ -168,8 +168,8 @@ dist: $(JAR_DIST) $(DIST_DIR)/cycle_finder
 	@:
 
 test: compile-tests
-	$(JAVA) -classpath $(TEST_CLASSPATH) junit.textui.TestRunner \
-	    com.google.devtools.cyclefinder.CycleFinderTest
+	$(JAVA) -classpath $(TEST_CLASSPATH) $(J2OBJC_JAVA_FLAGS) \
+        junit.textui.TestRunner com.google.devtools.cyclefinder.CycleFinderTest
 
 compile-tests: $(JAR) | $(TEST_CLASS_DIR)
 	$(JAVAC) -encoding UTF-8 -sourcepath src/test/java \

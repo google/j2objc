@@ -31,6 +31,7 @@ SUPPORT_SOURCES = \
     android/icu/dev/test/TestLog.java \
     android/icu/dev/test/TestUtil.java \
     com/google/j2objc/TestAnnotation.java \
+    com/google/j2objc/TestUtil.java \
     com/google/j2objc/package-info.java \
     com/test/Hello.java \
     com/google/j2objc/java8/Lambdas.java \

@@ -77,12 +77,23 @@ fi
 ${JAVA} -version 2>&1 | fgrep -q "build 1.8"
 if [ $? -ne 0 ]; then
   J2OBJC_ARGS+=("--system" "${LIB_DIR}/jre_emul_module")
+  JAVA_ARGS=(\
+  "--add-exports" "java.compiler/javax.lang.model.element=ALL-UNNAMED" \
+  "--add-exports" "java.compiler/javax.lang.model.type=ALL-UNNAMED" \
+  "--add-exports" "java.compiler/javax.lang.model.util=ALL-UNNAMED" \
+  "--add-exports" "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED" \
+  "--add-exports" "jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED" \
+  "--add-exports" "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED" \
+  "--add-exports" "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED" \
+  "--add-exports" "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED" \
+  )
+else
+  JAVA_ARGS=()
 fi
 
 J2OBJC_ARGS+=(-Xannotations-jar "${LIB_DIR}/j2objc_annotations.jar")
 
 PARSING_JAVA_ARGS=0
-JAVA_ARGS=()
 
 while [ $# -gt 0 ]; do
   case $1 in

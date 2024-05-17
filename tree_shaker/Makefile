@@ -145,8 +145,8 @@ dist: $(JAR_DIST) $(DIST_DIR)/tree_shaker
 	@:
 
 test: compile-tests
-	$(JAVA) -classpath $(TEST_CLASSPATH) junit.textui.TestRunner \
-	    com.google.devtools.treeshaker.TreeShakerTest
+	$(JAVA) -classpath $(TEST_CLASSPATH) $(J2OBJC_JAVA_FLAGS) \
+	    junit.textui.TestRunner com.google.devtools.treeshaker.TreeShakerTest
 
 compile-tests: $(JAR) | $(TEST_CLASS_DIR)
 	$(JAVAC) -encoding UTF-8 -sourcepath src/test/java \
