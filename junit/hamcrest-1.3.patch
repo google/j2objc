@@ -1,9 +1,6 @@
-This patch fixes type inference errors building hamcrest-1.3. Previously
-its build required a "-source 7" javac flag, which Java 22 no longer supports.
-
-diff -ruN a/org/hamcrest/core/AllOf.java b/org/hamcrest/core/AllOf.java
---- a/org/hamcrest/core/AllOf.java	2024-05-15 15:08:47
-+++ b/org/hamcrest/core/AllOf.java	2024-05-15 15:09:44
+diff -ru --strip-trailing-cr a/build_result/java/org/hamcrest/core/AllOf.java b/build_result/java/org/hamcrest/core/AllOf.java
+--- a/build_result/java/org/hamcrest/core/AllOf.java	2024-05-18 10:32:55
++++ b/build_result/java/org/hamcrest/core/AllOf.java	2024-05-18 10:34:29
 @@ -57,7 +57,7 @@
       */
      @Factory
@@ -13,9 +10,9 @@ diff -ruN a/org/hamcrest/core/AllOf.java b/org/hamcrest/core/AllOf.java
      }
  
      /**
-diff -ruN a/org/hamcrest/core/AnyOf.java b/org/hamcrest/core/AnyOf.java
---- a/org/hamcrest/core/AnyOf.java	2024-05-15 15:08:47
-+++ b/org/hamcrest/core/AnyOf.java	2024-05-15 15:09:44
+diff -ru --strip-trailing-cr a/build_result/java/org/hamcrest/core/AnyOf.java b/build_result/java/org/hamcrest/core/AnyOf.java
+--- a/build_result/java/org/hamcrest/core/AnyOf.java	2024-05-18 10:32:55
++++ b/build_result/java/org/hamcrest/core/AnyOf.java	2024-05-18 10:35:04
 @@ -47,7 +47,7 @@
       */
      @Factory

@@ -68,7 +68,7 @@ $(BUILD_DIR)/.extracted: java_deps_dist $(JUNIT_SRC_JAR) \
 	@sed -i '' -e '/import edu.umd.cs.findbugs.annotations.SuppressWarnings;/d' \
 		$(JAVA_SRC_DIR)/com/tngtech/java/junit/dataprovider/internal/placeholder/ParameterPlaceholder.java
 	@unzip -q -o -d $(JAVA_SRC_DIR) $(HAMCREST_SRC_JAR) $(HAMCREST_SOURCES)
-	@(cd $(JAVA_SRC_DIR) && patch -p1) < hamcrest-1.3.patch
+	@patch -p1 -lf < hamcrest-1.3.patch
 	@touch $(EXTRACTED_JAVA)
 	@touch $@
 
