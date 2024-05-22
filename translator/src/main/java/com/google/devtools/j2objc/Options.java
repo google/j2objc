@@ -125,11 +125,11 @@ public class Options {
 
   private File proGuardUsageFile = null;
 
-  private static String fileHeader;
+  private static final String FILE_HEADER;
   private static final String FILE_HEADER_KEY = "file-header";
-  private static String usageMessage;
-  private static String helpMessage;
-  private static String xhelpMessage;
+  private static final String USAGE_MESSAGE;
+  private static final String HELP_MESSAGE;
+  private static final String XHELP_MESSAGE;
   private static final String USAGE_MSG_KEY = "usage-message";
   private static final String HELP_MSG_KEY = "help-message";
   private static final String X_HELP_MSG_KEY = "x-help-message";
@@ -274,14 +274,14 @@ public class Options {
       System.err.println("unable to access tool properties: " + e);
       System.exit(1);
     }
-    fileHeader = properties.getProperty(FILE_HEADER_KEY);
-    Preconditions.checkNotNull(fileHeader);
-    usageMessage = properties.getProperty(USAGE_MSG_KEY);
-    Preconditions.checkNotNull(usageMessage);
-    helpMessage = properties.getProperty(HELP_MSG_KEY);
-    Preconditions.checkNotNull(helpMessage);
-    xhelpMessage = properties.getProperty(X_HELP_MSG_KEY);
-    Preconditions.checkNotNull(xhelpMessage);
+    FILE_HEADER = properties.getProperty(FILE_HEADER_KEY);
+    Preconditions.checkNotNull(FILE_HEADER);
+    USAGE_MESSAGE = properties.getProperty(USAGE_MSG_KEY);
+    Preconditions.checkNotNull(USAGE_MESSAGE);
+    HELP_MESSAGE = properties.getProperty(HELP_MSG_KEY);
+    Preconditions.checkNotNull(HELP_MESSAGE);
+    XHELP_MESSAGE = properties.getProperty(X_HELP_MSG_KEY);
+    Preconditions.checkNotNull(XHELP_MESSAGE);
 
     Logger rootLogger = Logger.getLogger("");
     for (Handler handler : rootLogger.getHandlers()) {
@@ -311,10 +311,9 @@ public class Options {
   }
 
   /**
-   * Load the options from a command-line, returning the arguments that were
-   * not option-related (usually files).  If help is requested or an error is
-   * detected, the appropriate status method is invoked and the app terminates.
-   * @throws IOException
+   * Load the options from a command-line, returning the arguments that were not option-related
+   * (usually files). If help is requested or an error is detected, the appropriate status method is
+   * invoked and the app terminates.
    */
   public List<String> load(String[] args) throws IOException {
     mappings.addJreMappings();
@@ -562,6 +561,8 @@ public class Options {
         extractUnsequencedModifications = false;
       } else if (arg.equals("--doc-comments")) {
         docCommentsEnabled = true;
+      } else if (arg.equals("--no-doc-comments")) {
+        docCommentsEnabled = false;
       } else if (arg.equals("--doc-comment-warnings")) {
         reportJavadocWarnings = true;
       } else if (arg.equals("--static-accessor-methods")) {
@@ -776,18 +777,18 @@ public class Options {
 
   public static void usage(String invalidUseMsg) {
     System.err.println("j2objc: " + invalidUseMsg);
-    System.err.println(usageMessage);
+    System.err.println(USAGE_MESSAGE);
     System.exit(1);
   }
 
   public static void help(boolean errorExit) {
-    System.err.println(helpMessage);
+    System.err.println(HELP_MESSAGE);
     // javac exits with 2, but any non-zero value works.
     System.exit(errorExit ? 2 : 0);
   }
 
   public static void xhelp() {
-    System.err.println(xhelpMessage);
+    System.err.println(XHELP_MESSAGE);
     System.exit(0);
   }
 
@@ -955,15 +956,15 @@ public class Options {
   }
 
   public static String getUsageMessage() {
-    return usageMessage;
+    return USAGE_MESSAGE;
   }
 
   public static String getHelpMessage() {
-    return helpMessage;
+    return HELP_MESSAGE;
   }
 
   public static String getFileHeader() {
-    return fileHeader;
+    return FILE_HEADER;
   }
 
   public void setProGuardUsageFile(File newProGuardUsageFile) {

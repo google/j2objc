@@ -102,6 +102,10 @@ Add a method mapping file.
 .TP
 .BI \-\-no\-class\-properties
 Do not generate class properties for static variables and enum constants.
+.TP
+.BI \-\-no\-doc\-comments
+Do not translate Javadoc comments into Xcode-compatible comments.
+.TP
 .BI \-\-no\-extract\-unsequenced
 Don't rewrite expressions that would produce unsequenced modification errors.
 .TP
@@ -110,8 +114,11 @@ Do not generate Objective-C nullability annotations.
 .BI \-\-no\-package\-directories
 Generate output files to specified directory, without creating package sub-directories.
 .TP
-\fB\-\-no\-segmented\-headers\fR
+.BI \-\-no\-segmented\-headers
 Do not generate headers with guards around each declared type.
+.TP
+.BI \-\-no\-strip\-reflection
+Generate metadata needed for Java reflection.
 .TP
 .BI \-\-no\-wrapper\-methods
 Do not generate Objective-C wrapper methods for constructors and static methods.
