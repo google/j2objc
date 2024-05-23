@@ -13,10 +13,13 @@
  */
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.ExtensionRegistry;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import protos.StringFields;
 import protos.StringMsg;
 import protos.StringMsgOrBuilder;
@@ -87,17 +90,23 @@ public class StringsTest extends ProtobufTest {
   }
 
   public void testIncompleteSurrogatePairs() throws Exception {
-    StringMsg msg = StringMsg.newBuilder()
-        .setNonAsciiF("Hello\uDFFFWorld\uD800")
-        .build();
+    // Suppress ill-formed UTF-16 warning, which is expected.
+    Logger logger = Logger.getLogger(CodedOutputStream.class.getName());
+    Level oldLevel = logger.getLevel();
+    logger.setLevel(Level.SEVERE);
+    try {
+      StringMsg msg = StringMsg.newBuilder().setNonAsciiF("Hello\uDFFFWorld\uD800").build();
 
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
-    msg.writeTo(out);
-    byte[] bytes = out.toByteArray();
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      msg.writeTo(out);
+      byte[] bytes = out.toByteArray();
 
-    ByteArrayInputStream in = new ByteArrayInputStream(bytes);
-    StringMsg msg2 = StringMsg.parseFrom(in);
-    assertEquals("Hello?World?", msg2.getNonAsciiF());
+      ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+      StringMsg msg2 = StringMsg.parseFrom(in);
+      assertEquals("Hello?World?", msg2.getNonAsciiF());
+    } finally {
+      logger.setLevel(oldLevel);
+    }
   }
 
 
