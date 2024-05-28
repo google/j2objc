@@ -79,6 +79,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   android/system/Int64Ref.java \
   com/google/j2objc/util/AutoreleasePool.java \
   com/google/j2objc/util/CurrencyNumericCodes.java \
+  com/google/j2objc/util/XmlLoader.java \
   com/google/j2objc/util/logging/IOSLogHandler.java \
   java/io/BufferedInputStream.java \
   java/io/BufferedOutputStream.java \

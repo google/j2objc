@@ -27,6 +27,7 @@
 package java.util;
 
 import com.google.j2objc.LibraryNotLinkedError;
+import com.google.j2objc.util.XmlLoader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -909,22 +910,12 @@ class Properties extends Hashtable<Object,Object> {
      */
     public synchronized void loadFromXML(InputStream in)
         throws IOException, InvalidPropertiesFormatException {
-      XmlLoader loader = XmlLoader.INSTANCE;
+      XmlLoader loader = getXmlLoader();
       if (loader == null) {
         throw new LibraryNotLinkedError(
             "XML support", "jre_xml", "ComGoogleJ2objcUtilPropertiesXmlLoader");
       }
       loader.load(this, in);
-    }
-
-    /**
-     * Creates a dynamic dependency on XML support so that XML support can be excluded from the
-     * application binary without incurring link errors.
-     */
-    public static interface XmlLoader {
-      void load(Properties p, InputStream in) throws IOException, InvalidPropertiesFormatException;
-
-      static final XmlLoader INSTANCE = getXmlLoader();
     }
 
     private static XmlLoader getXmlLoader() {

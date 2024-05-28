@@ -33,7 +33,7 @@ import java.util.Properties;
  * Dynamically loaded implementation for Properties.loadFromXML(). Public so that users can add an
  * explicit dependency to force load this class.
  */
-public class PropertiesXmlLoader implements Properties.XmlLoader {
+public class PropertiesXmlLoader implements XmlLoader {
 
     public void load(final Properties p, InputStream in) throws IOException,
             InvalidPropertiesFormatException {
