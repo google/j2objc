@@ -383,3 +383,10 @@ $(TESTS_DIR)/core_plus_sql:
 $(TESTS_DIR)/core_plus_beans:
 	@mkdir -p $(@D)
 	$(J2OBJCC) -ljre_beans -ljre_util -o $@ -ObjC $(COVERAGE_FLAGS)
+
+no_opt_app: $(TESTS_DIR)/no_opt_app
+
+$(TESTS_DIR)/no_opt_app:
+	@mkdir -p $(@D)
+	$(TRANSLATE_EXE) -d $(@D) $(MISC_TEST_ROOT)/NoOpt.java
+	$(J2OBJCC) -ljre_emul -o $@ -I$(@D) $(@D)/NoOpt.m
