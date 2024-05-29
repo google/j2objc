@@ -79,7 +79,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/protobuf-java-3.25.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/jspecify-0.2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -88,7 +88,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/jspecify-0.2.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/protobuf-java-3.25.2.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
