@@ -16,8 +16,8 @@ package com.google.j2objc.util.logging;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.logging.Formatter;
 import java.util.logging.Handler;
-import java.util.logging.SimpleFormatter;
 import java.util.logging.LogRecord;
 
 /*-[
@@ -99,7 +99,7 @@ import java.util.logging.LogRecord;
  */
 public class IOSLogHandler extends Handler {
 
-  static class IOSLogFormatter extends SimpleFormatter {
+  static class IOSLogFormatter extends Formatter {
 
     /**
      * Very simple formatter, since asl_log adds its own text.

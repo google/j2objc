@@ -883,7 +883,7 @@ public class LogManager {
                 public Void run() {
              */
                     if (logger != owner.rootLogger) {
-        boolean useParent = owner.getBooleanProperty(name + ".useParentHandlers", true);
+                        boolean useParent = owner.getBooleanProperty(name + ".useParentHandlers", true);
                         if (!useParent) {
                             logger.setUseParentHandlers(false);
                         }
@@ -1935,7 +1935,4 @@ public class LogManager {
             }
         }
     }
-
-    // j2objc: ensure dynamically loaded class support class is linked.
-    private static final Class<?> unused = LoggingProxyImpl.class;
 }
