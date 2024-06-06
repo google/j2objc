@@ -18,7 +18,12 @@ ANNOTATION_SOURCE_JAVA = \
     com/google/j2objc/annotations/GenerateObjectiveCGenerics.java \
     com/google/j2objc/annotations/J2ObjCIncompatible.java \
     com/google/j2objc/annotations/LoopTranslation.java \
+    com/google/j2objc/annotations/ObjectiveCAdapterMethod.java \
+    com/google/j2objc/annotations/ObjectiveCAdapterProtocol.java \
     com/google/j2objc/annotations/ObjectiveCName.java \
+    com/google/j2objc/annotations/ObjectiveCNativeEnumName.java \
+    com/google/j2objc/annotations/ObjectiveCNativeProtocol.java \
+    com/google/j2objc/annotations/ObjectiveCNativeProtocols.java \
     com/google/j2objc/annotations/OnDealloc.java \
     com/google/j2objc/annotations/Property.java \
     com/google/j2objc/annotations/ReflectionSupport.java \
