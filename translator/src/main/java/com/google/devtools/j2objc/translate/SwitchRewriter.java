@@ -35,7 +35,6 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionElement;
-import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.List;
 import javax.lang.model.element.ElementKind;
@@ -83,9 +82,7 @@ public class SwitchRewriter extends UnitTreeVisitor {
     }
     TypeMirror type = var.asType();
     if (TypeUtil.isEnum(type)) {
-      String enumValue =
-          NameTable.getNativeEnumName(nameTable.getFullName(TypeUtil.asTypeElement(type))) + "_"
-          + nameTable.getVariableBaseName(var);
+      String enumValue = nameTable.getNativeEnumConstantName(TypeUtil.asTypeElement(type), var);
       node.setExpression(new NativeExpression(enumValue, typeUtil.getInt()));
     } else if (type.getKind().isPrimitive() && var.getKind() == ElementKind.LOCAL_VARIABLE) {
       Object value = var.getConstantValue();

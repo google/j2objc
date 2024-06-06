@@ -33,6 +33,8 @@ NATIVE_JRE_SOURCES_CORE = \
   J2ObjC_common.m \
   J2ObjC_icu.m \
   JavaThrowable.m \
+  JreCollectionAdapters.m \
+  JreExceptionAdapters.m \
   JreRetainedLocalValue.m \
   JreRetainedWith.m \
   MappedByteBuffer.m \

@@ -170,7 +170,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
 
     List<EnumConstantDeclaration> constants = ((EnumDeclaration) typeNode).getEnumConstants();
-    String nativeName = NameTable.getNativeEnumName(typeName);
+    String nativeName = nameTable.getNativeEnumName(typeElement);
     String ordinalName = NameTable.getNativeOrdinalPreprocessorName(typeName);
 
     // C doesn't allow empty enum declarations.  Java does, so we skip the
@@ -184,13 +184,13 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       int ordinal = 0;
       for (EnumConstantDeclaration constant : constants) {
         printIndent();
-        String caseName = nameTable.getVariableBaseName(constant.getVariableElement());
+        String nativeConstantName = nameTable.getNativeEnumConstantName(typeElement, constant);
         if (options.swiftEnums()) {
           printf(
-              "%s_%s NS_SWIFT_NAME(%s) = %d,\n",
-              nativeName, caseName, NameTable.getSwiftEnumName(caseName), ordinal++);
+              "%s NS_SWIFT_NAME(%s) = %d,\n",
+              nativeConstantName, nameTable.getNativeEnumSwiftConstantName(constant), ordinal++);
         } else {
-          printf("%s_%s = %d,\n", nativeName, caseName, ordinal++);
+          printf("%s = %d,\n", nativeConstantName, ordinal++);
         }
       }
       unindent();
@@ -200,6 +200,19 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         printf(" NS_SWIFT_NAME(%s)", swiftName);
       }
       print(";\n");
+
+      // For compatibility with JreEnum(), J2OBJC_ENUM_CONSTANT() and similar macros, for each
+      // native renamed enum constant provide an alias if needed.
+      for (EnumConstantDeclaration constant : constants) {
+        String nativeConstantName = nameTable.getNativeEnumConstantName(typeElement, constant);
+        String caseName = nameTable.getVariableBaseName(constant.getVariableElement());
+        String compatibilityConstantName = UnicodeUtils.format("%s_Enum_%s", typeName, caseName);
+        if (!nativeConstantName.equals(compatibilityConstantName)) {
+          printf("#define %s %s\n", compatibilityConstantName, nativeConstantName);
+        }
+      }
+      print("\n");
+
       // Use different types for transpiled Java ordinals (which expects ordinals to be jint) and
       // native code using the enum (where stricter ordinal types help clang warnings).
       printf(
@@ -418,7 +431,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         }
         String swiftName = accessorName;
         if (options.swiftEnums()) {
-          swiftName = NameTable.getSwiftEnumName(accessorName);
+          swiftName = NameTable.camelCaseName(accessorName, false);
         }
         printf(
             ") %s *%s NS_SWIFT_NAME(%s);",

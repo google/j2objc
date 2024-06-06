@@ -121,8 +121,8 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     Set<Import> forwardDeclarations = Sets.newHashSet(type.getHeaderForwardDeclarations());
 
     for (Import imp : type.getHeaderIncludes()) {
-      // Verify this import isn't declared in this source file.
-      if (isLocalType(imp.getTypeName())) {
+      // Verify this import isn't declared in this source file or has no header.
+      if (isLocalType(imp.getTypeName()) || imp.getImportFileName().isEmpty()) {
         continue;
       }
       newline();

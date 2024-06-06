@@ -329,7 +329,7 @@ public class EnumRewriter extends UnitTreeVisitor {
   private void addExtraNativeDecls(EnumDeclaration node) {
     String typeName = nameTable.getFullName(node.getTypeElement());
     String enumName = node.getTypeElement().getSimpleName().toString();
-    String nativeName = NameTable.getNativeEnumName(typeName);
+    String nativeName = nameTable.getNativeEnumName(node.getTypeElement());
     String ordinalName = NameTable.getNativeOrdinalPreprocessorName(typeName);
     int numConstants = node.getEnumConstants().size();
 
@@ -352,6 +352,19 @@ public class EnumRewriter extends UnitTreeVisitor {
               UnicodeUtils.format(
                   "- (%s)enumValue {\n" + "  return (%s)[self ordinal];\n" + "}\n\n",
                   nativeName, nativeName)));
+
+      node.addBodyDeclaration(
+          NativeDeclaration.newInnerDeclaration(
+              UnicodeUtils.format("+ (%s *)fromNSEnum:(%s)value;\n", typeName, nativeName),
+              UnicodeUtils.format(
+                  "+ (%s *)fromNSEnum:(%s)nativeValue {\n"
+                      + "  %s *javaEnum = %s_fromOrdinal(nativeValue);\n"
+                      + "  if (!javaEnum) "
+                      + "@throw create_JavaLangIllegalArgumentException_initWithNSString_("
+                      + "@\"NSEnum %s out of range.\"); \n"
+                      + "  return javaEnum;\n"
+                      + "}\n\n",
+                  typeName, nativeName, typeName, typeName, nativeName)));
 
       // Redeclare ordinal with the appropriate type.
       node.addBodyDeclaration(

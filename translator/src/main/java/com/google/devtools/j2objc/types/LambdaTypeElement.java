@@ -32,8 +32,16 @@ public class LambdaTypeElement extends GeneratedTypeElement {
 
   public LambdaTypeElement(
       String name, Element enclosingElement, TypeMirror superclass, boolean isWeakOuter) {
-    super(name, ElementKind.CLASS, enclosingElement, superclass, NestingKind.ANONYMOUS, null,
-          false, false);
+    super(
+        name,
+        ElementKind.CLASS,
+        enclosingElement,
+        superclass,
+        NestingKind.ANONYMOUS,
+        null,
+        null,
+        false,
+        false);
     this.isWeakOuter = isWeakOuter;
     addModifiers(Modifier.PRIVATE);
   }

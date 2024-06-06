@@ -47,19 +47,29 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
 
   private final TypeMirror superclass;
   private List<TypeMirror> interfaces = new ArrayList<>();
+  private final List<TypeMirror> typeArguments = new ArrayList<>();
   private final NestingKind nestingKind;
   private final Name qualifiedName;
   private final String header;
+  private final String forwardDeclaration;
   private final boolean isIosType;
 
   protected GeneratedTypeElement(
-      String name, ElementKind kind, Element enclosingElement, TypeMirror superclass,
-      NestingKind nestingKind, String header, boolean isIosType, boolean synthetic) {
+      String name,
+      ElementKind kind,
+      Element enclosingElement,
+      TypeMirror superclass,
+      NestingKind nestingKind,
+      String header,
+      String forwardDeclaration,
+      boolean isIosType,
+      boolean synthetic) {
     super(Preconditions.checkNotNull(name), checkElementKind(kind), enclosingElement, synthetic);
     this.superclass = superclass;
     this.nestingKind = nestingKind;
     qualifiedName = new NameImpl(getQualifiedPrefix(enclosingElement) + name);
     this.header = header;
+    this.forwardDeclaration = forwardDeclaration;
     this.isIosType = isIosType;
   }
 
@@ -72,6 +82,7 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
             element.getSuperclass(),
             element.getNestingKind(),
             ElementUtil.getHeader(element),
+            ElementUtil.getForwardDeclaration(element),
             ElementUtil.isIosType(element),
             ElementUtil.isSynthetic(element));
     generatedTypeElement.addModifiers(element.getModifiers());
@@ -85,8 +96,15 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
     String packageName = idx < 0 ? "" : qualifiedName.substring(0, idx);
     PackageElement packageElement = new GeneratedPackageElement(packageName);
     return new GeneratedTypeElement(
-        qualifiedName.substring(idx + 1), kind, packageElement, superclass, NestingKind.TOP_LEVEL,
-        null, false, false);
+        qualifiedName.substring(idx + 1),
+        kind,
+        packageElement,
+        superclass,
+        NestingKind.TOP_LEVEL,
+        null,
+        null,
+        false,
+        false);
   }
 
   public static GeneratedTypeElement newEmulatedClass(String qualifiedName, TypeMirror superclass) {
@@ -98,27 +116,48 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
   }
 
   public static GeneratedTypeElement newIosType(
-      String name, ElementKind kind, TypeElement superclass, String header) {
+      String name,
+      ElementKind kind,
+      TypeElement superclass,
+      String header,
+      String forwardDeclaration) {
     return new GeneratedTypeElement(
-        name, kind, null, superclass != null ? superclass.asType() : null, NestingKind.TOP_LEVEL,
-        header, true, false);
+        name,
+        kind,
+        null,
+        superclass != null ? superclass.asType() : null,
+        NestingKind.TOP_LEVEL,
+        header,
+        forwardDeclaration,
+        true,
+        false);
   }
 
   public static GeneratedTypeElement newIosClass(
       String name, TypeElement superclass, String header) {
-    return newIosType(name, ElementKind.CLASS, superclass, header);
+    return newIosType(
+        name, ElementKind.CLASS, superclass, header, String.format("@class %s", name));
   }
 
   public static GeneratedTypeElement newIosInterface(String name, String header) {
-    return newIosType(name, ElementKind.INTERFACE, null, header);
+    return newIosType(
+        name, ElementKind.INTERFACE, null, header, String.format("@protocol %s", name));
   }
 
   public static GeneratedTypeElement newPackageInfoClass(
       PackageElement pkgElem, TypeUtil typeUtil) {
-    return (GeneratedTypeElement) new GeneratedTypeElement(
-        NameTable.PACKAGE_INFO_CLASS_NAME, ElementKind.CLASS, pkgElem,
-        typeUtil.getJavaObject().asType(), NestingKind.TOP_LEVEL, null, false, false)
-        .addModifiers(Modifier.PRIVATE);
+    return (GeneratedTypeElement)
+        new GeneratedTypeElement(
+                NameTable.PACKAGE_INFO_CLASS_NAME,
+                ElementKind.CLASS,
+                pkgElem,
+                typeUtil.getJavaObject().asType(),
+                NestingKind.TOP_LEVEL,
+                null,
+                null,
+                false,
+                false)
+            .addModifiers(Modifier.PRIVATE);
   }
 
   private static ElementKind checkElementKind(ElementKind kind) {
@@ -151,6 +190,10 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
 
   public String getHeader() {
     return header;
+  }
+
+  public String getForwardDeclaration() {
+    return forwardDeclaration;
   }
 
   public boolean isIosType() {
@@ -198,6 +241,11 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
     return v.visitType(this, p);
   }
 
+  public void setTypeArguments(Collection<? extends TypeMirror> types) {
+    typeArguments.clear();
+    typeArguments.addAll(types);
+  }
+
   /** The associated TypeMirror. */
   public class Mirror extends AbstractTypeMirror implements DeclaredType {
 
@@ -219,7 +267,7 @@ public class GeneratedTypeElement extends GeneratedElement implements TypeElemen
 
     @Override
     public List<? extends TypeMirror> getTypeArguments() {
-      return Collections.emptyList();
+      return GeneratedTypeElement.this.typeArguments;
     }
 
     @Override

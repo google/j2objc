@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.types;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.DebugASTPrinter;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -24,6 +25,7 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -91,6 +93,30 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
     return new GeneratedExecutableElement(
         selector, selector, ElementKind.METHOD, returnType, method.getEnclosingElement(),
         method.isVarArgs(), ElementUtil.isSynthetic(method));
+  }
+
+  public static GeneratedExecutableElement newAdapterMethod(
+      String selector,
+      TypeMirror adapterReturnType,
+      List<VariableElement> adapterParameters,
+      ExecutableElement method) {
+    GeneratedExecutableElement generatedMethod =
+        new GeneratedExecutableElement(
+            selector,
+            selector,
+            method.getKind(),
+            adapterReturnType,
+            method.getEnclosingElement(),
+            method.isVarArgs(),
+            ElementUtil.isSynthetic(method));
+    generatedMethod.addAnnotationMirrors(method.getAnnotationMirrors());
+    Set<Modifier> modifiers = Sets.newHashSet(method.getModifiers());
+    modifiers.remove(Modifier.ABSTRACT); // Adapter methods are always concrete.
+    generatedMethod.addModifiers(modifiers);
+    generatedMethod.parameters.addAll(adapterParameters);
+    generatedMethod.thrownTypes.addAll(method.getThrownTypes());
+    generatedMethod.typeParameters.addAll(method.getTypeParameters());
+    return generatedMethod;
   }
 
   public static GeneratedExecutableElement mutableCopy(String selector, ExecutableElement method) {

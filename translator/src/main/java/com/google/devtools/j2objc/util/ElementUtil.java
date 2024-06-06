@@ -63,6 +63,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
+import org.jspecify.nullness.Nullable;
 
 /**
  * Utility methods for working with elements.
@@ -216,8 +217,9 @@ public final class ElementUtil {
     return (TypeElement) element;
   }
 
-  public static TypeElement getSuperclass(TypeElement element) {
-    return TypeUtil.asTypeElement(element.getSuperclass());
+  public static @Nullable TypeElement getSuperclass(TypeElement element) {
+    TypeMirror superClass = element.getSuperclass();
+    return superClass != null ? TypeUtil.asTypeElement(element.getSuperclass()) : null;
   }
 
   public static List<TypeElement> getInterfaces(TypeElement element) {
@@ -298,6 +300,12 @@ public final class ElementUtil {
 
   public static String getHeader(TypeElement e) {
     return e instanceof GeneratedTypeElement ? ((GeneratedTypeElement) e).getHeader() : null;
+  }
+
+  public static @Nullable String getForwardDeclaration(TypeElement e) {
+    return e instanceof GeneratedTypeElement
+        ? ((GeneratedTypeElement) e).getForwardDeclaration()
+        : null;
   }
 
   public static boolean isIosType(TypeElement e) {

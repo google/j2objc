@@ -145,7 +145,15 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
   }
 
   private String createForwardDeclaration(Import imp) {
-    if (imp.isInterface()) {
+    // Type-specific forward declaration.
+    if (imp.getForwardDeclaration() != null) {
+      // Empty forward declaration can be ignored.
+      if (imp.getForwardDeclaration().isEmpty()) {
+        return "";
+      } else {
+        return UnicodeUtils.format("%s;", imp.getForwardDeclaration());
+      }
+    } else if (imp.isInterface()) {
       // Obj-C protocols do not support parameters.
       return UnicodeUtils.format("@protocol %s;", imp.getTypeName());
     } else {

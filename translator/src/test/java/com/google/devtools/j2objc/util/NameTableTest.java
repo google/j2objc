@@ -332,14 +332,22 @@ public class NameTableTest extends GenerationTest {
         "            withInt:(jint)aReservedParamName_;");
   }
 
-  public void testSwiftEnumName() {
-    assertEquals("banana", NameTable.getSwiftEnumName("BANANA"));
-    assertEquals("greenGrape", NameTable.getSwiftEnumName("GREEN_GRAPE"));
-    assertEquals("pearAppleSmoothie", NameTable.getSwiftEnumName("PEAR_APPLE_SMOOTHIE"));
-    assertEquals("pineapple", NameTable.getSwiftEnumName("pineapple"));
-    assertEquals("redGrape", NameTable.getSwiftEnumName("red_grape"));
-    assertEquals("appleGrapeJuice", NameTable.getSwiftEnumName("apple_grape_juice"));
-    assertEquals("false_", NameTable.getSwiftEnumName("FALSE"));
-    assertEquals("true_", NameTable.getSwiftEnumName("true"));
+  public void testNativeCamelCaseName() {
+    assertEquals("banana", NameTable.camelCaseName("BANANA", false));
+    assertEquals("Banana", NameTable.camelCaseName("BANANA", true));
+    assertEquals("greenGrape", NameTable.camelCaseName("GREEN_GRAPE", false));
+    assertEquals("GreenGrape", NameTable.camelCaseName("GREEN_GRAPE", true));
+    assertEquals("pearAppleSmoothie", NameTable.camelCaseName("PEAR_APPLE_SMOOTHIE", false));
+    assertEquals("PearAppleSmoothie", NameTable.camelCaseName("PEAR_APPLE_SMOOTHIE", true));
+    assertEquals("pineapple", NameTable.camelCaseName("pineapple", false));
+    assertEquals("Pineapple", NameTable.camelCaseName("pineapple", true));
+    assertEquals("redGrape", NameTable.camelCaseName("red_grape", false));
+    assertEquals("RedGrape", NameTable.camelCaseName("red_grape", true));
+    assertEquals("appleGrapeJuice", NameTable.camelCaseName("apple_grape_juice", false));
+    assertEquals("AppleGrapeJuice", NameTable.camelCaseName("apple_grape_juice", true));
+    assertEquals("false_", NameTable.camelCaseName("FALSE", false));
+    assertEquals("False", NameTable.camelCaseName("FALSE", true)); // Not reserved name
+    assertEquals("true_", NameTable.camelCaseName("true", false));
+    assertEquals("True", NameTable.camelCaseName("true", true)); // Not reserved name
   }
 }

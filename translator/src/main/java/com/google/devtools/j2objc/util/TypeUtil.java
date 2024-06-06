@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.types.AbstractTypeMirror;
@@ -59,6 +60,7 @@ import javax.lang.model.util.Types;
  */
 public final class TypeUtil {
 
+  public static final TypeMirror BOOL_TYPE = new NativeType("BOOL");
   public static final TypeMirror ID_TYPE = new NativeType("id");
   public static final TypeMirror ID_PTR_TYPE = new PointerType(ID_TYPE);
   public static final TypeElement NS_OBJECT =
@@ -211,6 +213,10 @@ public final class TypeUtil {
     return t.getKind() == TypeKind.TYPEVAR;
   }
 
+  public static boolean isNativeType(TypeMirror t) {
+    return t instanceof NativeType;
+  }
+
   public static boolean hasGenerateObjectiveCGenerics(TypeElement t) {
     return ElementUtil.hasAnnotation(t, GenerateObjectiveCGenerics.class);
   }
@@ -229,6 +235,16 @@ public final class TypeUtil {
       return asTypeElement(((IntersectionType) t).getBounds().iterator().next());
     }
     return null;
+  }
+
+  public static List<? extends TypeMirror> getTypeArguments(TypeMirror t) {
+    if (isDeclaredType(t)) {
+      return ((DeclaredType) t).getTypeArguments();
+    } else if (isNativeType(t)) {
+      return ((NativeType) t).getTypeArguments();
+    } else {
+      return ImmutableList.of();
+    }
   }
 
   public static boolean isJavaObject(TypeMirror t) {
@@ -603,7 +619,7 @@ public final class TypeUtil {
   }
 
   public static boolean isId(TypeMirror t) {
-    return t instanceof NativeType && ((NativeType) t).getName().equals("id");
+    return isNativeType(t) && ((NativeType) t).getName().equals("id");
   }
 
   public PrimitiveType getPrimitiveType(TypeKind kind) {

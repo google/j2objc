@@ -50,6 +50,15 @@ public class EnumRewriterTest extends GenerationTest {
         "- (Test_Enum)toNSEnum {",
         "  return (Test_Enum)[self ordinal];",
         "}");
+    assertTranslatedLines(
+        translation,
+        "+ (Test *)fromNSEnum:(Test_Enum)nativeValue {",
+        "  Test *javaEnum = Test_fromOrdinal(nativeValue);",
+        "  if (!javaEnum) @throw"
+            + " create_JavaLangIllegalArgumentException_initWithNSString_(@\"NSEnum Test_Enum out"
+            + " of range.\");",
+        "  return javaEnum;",
+        "}");
   }
 
   public void testEmptyEnum() throws Exception {

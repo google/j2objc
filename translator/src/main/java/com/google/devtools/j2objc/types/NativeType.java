@@ -14,7 +14,12 @@
 
 package com.google.devtools.j2objc.types;
 
+import com.google.devtools.j2objc.ast.Expression;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVisitor;
 
 /**
@@ -25,13 +30,44 @@ import javax.lang.model.type.TypeVisitor;
 public class NativeType extends AbstractTypeMirror {
 
   private final String name;
+  private final List<TypeMirror> typeArguments = new ArrayList<>();
+  private final List<TypeMirror> referencedTypes = new ArrayList<>();
+  private String header = ""; // No native import by default
 
   public NativeType(String name) {
     this.name = name;
   }
 
+  public NativeType(String name, String header) {
+    this.name = name;
+    if (header != null) {
+      this.header = header;
+    }
+  }
+
+  public NativeType(
+      String name,
+      String header,
+      List<? extends TypeMirror> typeArguments,
+      List<? extends TypeMirror> referencedTypes) {
+    this.name = name;
+    if (header != null) {
+      this.header = header;
+    }
+    if (typeArguments != null) {
+      this.typeArguments.addAll(typeArguments);
+    }
+    if (referencedTypes != null) {
+      this.referencedTypes.addAll(referencedTypes);
+    }
+  }
+
   public String getName() {
     return name;
+  }
+
+  public String getNameWithTypeArgumentNames(List<String> typeArgumentNames) {
+    return name; // Base class doesn't support type argument naming.
   }
 
   @Override
@@ -51,11 +87,49 @@ public class NativeType extends AbstractTypeMirror {
 
   @Override
   public boolean equals(Object other) {
-    return other instanceof NativeType && ((NativeType) other).getName().equals(name);
+    if (!(other instanceof NativeType)) {
+      return false;
+    }
+    NativeType otherNative = (NativeType) other;
+    return otherNative.getName().equals(name)
+        && otherNative.getHeader().equals(header)
+        && otherNative.getReferencedTypes().equals(referencedTypes)
+        && otherNative.getTypeArguments().equals(typeArguments)
+        && otherNative.getHeader().equals(getHeader())
+        && otherNative.getForwardDeclaration().equals(getForwardDeclaration());
   }
 
   @Override
   public int hashCode() {
     return name.hashCode();
+  }
+
+  public List<? extends TypeMirror> getTypeArguments() {
+    return typeArguments;
+  }
+
+  public void setTypeArguments(Collection<? extends TypeMirror> types) {
+    typeArguments.clear();
+    typeArguments.addAll(types);
+  }
+
+  public List<TypeMirror> getReferencedTypes() {
+    return referencedTypes;
+  }
+
+  public String getHeader() {
+    return header;
+  }
+
+  public String getForwardDeclaration() {
+    return ""; // No forward declaration
+  }
+
+  /**
+   * If available, return an expression for the type's "default" value, usually the value that would
+   * be obtained by messaging nil for this type.
+   */
+  public Expression getDefaultValueExpression() {
+    return null;
   }
 }

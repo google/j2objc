@@ -25,12 +25,15 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
+import com.google.j2objc.annotations.ObjectiveCAdapterMethod;
 import com.google.j2objc.annotations.ObjectiveCName;
+import com.google.j2objc.annotations.ObjectiveCNativeEnumName;
 import com.google.j2objc.annotations.SwiftName;
 import java.io.BufferedReader;
 import java.io.File;
@@ -57,7 +60,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import org.jspecify.nullness.Nullable;
@@ -318,13 +320,14 @@ public class NameTable {
 
   /**
    * Given a name, return as a camel-cased name using underscores as spaces. Used, for example, in
-   * swift name for enums.
+   * swift name for enums. If leadingCapital is true the string will begin with a capital (i.e.
+   * CamelCase), otherwise it will be lowercase (i.e. camelCase).
    */
-  public static String getSwiftEnumName(String fqn) {
+  public static String camelCaseName(String fqn, boolean leadingCapital) {
     StringBuilder sb = new StringBuilder();
     for (String part : Splitter.on('_').split(fqn)) {
       String caseName = Ascii.toLowerCase(part);
-      if (sb.length() == 0) {
+      if (!leadingCapital && sb.length() == 0) {
         sb.append(caseName);
       } else {
         sb.append(capitalize(caseName));
@@ -379,7 +382,7 @@ public class NameTable {
 
   private static final Pattern SELECTOR_VALIDATOR = Pattern.compile("\\w+|(\\w+:)+");
 
-  private static void validateMethodSelector(String selector) {
+  public static void validateMethodSelector(String selector) {
     if (!SELECTOR_VALIDATOR.matcher(selector).matches()) {
       ErrorUtil.error("Invalid method selector: " + selector);
     }
@@ -513,7 +516,14 @@ public class NameTable {
     if (name.contains(":")) {
       return name;
     }
-    return addParamNames(method, name, ':');
+    String selector = addParamNames(method, name, ':');
+    AnnotationMirror annotation = ElementUtil.getAnnotation(method, ObjectiveCAdapterMethod.class);
+    if (annotation != null) {
+      // Methods with adapter methods should be renamed to make it clear they are no longer
+      // the expected interface (and will be hidden in KMP).
+      selector = String.format("_%s", selector);
+    }
+    return selector;
   }
 
   /**
@@ -862,9 +872,7 @@ public class NameTable {
       TypeElement genericUsageTypeElement) {
     String objcType;
     type = TypeUtil.unannotatedType(type);
-    if (type instanceof NativeType) {
-      objcType = ((NativeType) type).getName();
-    } else if (type instanceof PointerType) {
+    if (type instanceof PointerType) {
       String pointeeQualifiers = null;
       if (qualifiers != null) {
         int idx = qualifiers.indexOf('*');
@@ -913,9 +921,9 @@ public class NameTable {
         && TypeUtil.isTypeVariable(type)
         && isTranslatableTypeVariable((TypeVariable) type, genericUsageTypeElement)) {
       objcType = ((TypeVariable) type).asElement().getSimpleName().toString();
-    } else if (TypeUtil.isDeclaredType(type)
-        && enableGenerics
-        && !((DeclaredType) type).getTypeArguments().isEmpty()
+    } else if (enableGenerics
+        && (TypeUtil.isDeclaredType(type) || TypeUtil.isNativeType(type))
+        && !TypeUtil.getTypeArguments(type).isEmpty()
         && !TypeUtil.isInterface(type)
         && !typeUtil.isProtoClass(type)
         && !typeUtil.isClassType(TypeUtil.asTypeElement(type))) {
@@ -925,7 +933,7 @@ public class NameTable {
       // specific type where Java would sometimes allow such conversions.
       List<String> argTypes = new ArrayList<>();
       boolean hasSpecficType = false;
-      for (TypeMirror argTypeMirror : ((DeclaredType) type).getTypeArguments()) {
+      for (TypeMirror argTypeMirror : TypeUtil.getTypeArguments(type)) {
         String argType =
             getObjcTypeInner(
                 argTypeMirror,
@@ -938,13 +946,24 @@ public class NameTable {
           hasSpecficType = true;
         }
       }
-      if (hasSpecficType) {
-        objcType =
-            String.format(
-                "%s<%s> *", getFullName(typeUtil.getObjcClass(type)), String.join(", ", argTypes));
+      if (TypeUtil.isNativeType(type)) {
+        if (hasSpecficType) {
+          objcType = ((NativeType) type).getNameWithTypeArgumentNames(argTypes);
+        } else {
+          objcType = ((NativeType) type).getName();
+        }
       } else {
-        objcType = String.format("%s *", getFullName(typeUtil.getObjcClass(type)));
+        if (hasSpecficType) {
+          objcType =
+              String.format(
+                  "%s<%s> *",
+                  getFullName(typeUtil.getObjcClass(type)), String.join(", ", argTypes));
+        } else {
+          objcType = String.format("%s *", getFullName(typeUtil.getObjcClass(type)));
+        }
       }
+    } else if (TypeUtil.isNativeType(type)) {
+      objcType = ((NativeType) type).getName();
     } else {
       objcType = constructObjcTypeFromBounds(type);
     }
@@ -972,8 +991,42 @@ public class NameTable {
     return classType == null ? ID_TYPE + protocols : classType + protocols + " *";
   }
 
-  public static String getNativeEnumName(String typeName) {
-    return typeName + "_Enum";
+  public String getNativeEnumName(TypeElement typeElement) {
+    AnnotationMirror annotation =
+        ElementUtil.getAnnotation(typeElement, ObjectiveCNativeEnumName.class);
+    if (annotation != null) {
+      String nativeName = (String) ElementUtil.getAnnotationValue(annotation, "value");
+      if (nativeName.isEmpty()) {
+        ErrorUtil.error("ObjectiveCNativeEnumName must specify a name.");
+      } else {
+        return nativeName;
+      }
+    }
+    return getFullName(typeElement) + "_Enum";
+  }
+
+  public String getNativeEnumConstantName(
+      TypeElement enumTypeElement, EnumConstantDeclaration constantDeclaration) {
+    return getNativeEnumConstantName(enumTypeElement, constantDeclaration.getVariableElement());
+  }
+
+  public String getNativeEnumConstantName(
+      TypeElement enumTypeElement, VariableElement constantVariableElement) {
+    String enumBaseName = getFullName(enumTypeElement) + "_Enum";
+    String constantSuffix = getVariableBaseName(constantVariableElement);
+    AnnotationMirror annotation =
+        ElementUtil.getAnnotation(enumTypeElement, ObjectiveCNativeEnumName.class);
+    if (annotation != null) {
+      enumBaseName = (String) ElementUtil.getAnnotationValue(annotation, "value");
+      constantSuffix = camelCaseName(constantSuffix, true);
+      return enumBaseName + constantSuffix;
+    } else {
+      return enumBaseName + "_" + constantSuffix;
+    }
+  }
+
+  public String getNativeEnumSwiftConstantName(EnumConstantDeclaration constantDeclaration) {
+    return camelCaseName(getVariableBaseName(constantDeclaration.getVariableElement()), false);
   }
 
   public static String getNativeOrdinalPreprocessorName(String typeName) {

@@ -47,6 +47,8 @@ import com.google.devtools.j2objc.translate.LogSiteInjector;
 import com.google.devtools.j2objc.translate.MetadataWriter;
 import com.google.devtools.j2objc.translate.NilCheckResolver;
 import com.google.devtools.j2objc.translate.NumberMethodRewriter;
+import com.google.devtools.j2objc.translate.ObjectiveCAdapterMethodAnnotation;
+import com.google.devtools.j2objc.translate.ObjectiveCNativeProtocolAnnotation;
 import com.google.devtools.j2objc.translate.OcniExtractor;
 import com.google.devtools.j2objc.translate.OperatorRewriter;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
@@ -322,6 +324,17 @@ public class TranslationProcessor extends FileProcessor {
     //   top-level and functionizing to have occurred.
     new PrivateDeclarationResolver(unit).run();
     ticker.tick("PrivateDeclarationResolver");
+
+    // Add native protocols after all prior translation. Occurs before
+    // adapter methods that may reference those protocols.
+    new ObjectiveCNativeProtocolAnnotation(unit).run();
+    ticker.tick("ObjectiveCNativeProtocolAnnotation");
+
+    // After all methods are resolved and functionized, add adapter methods to
+    // use their native types as annotated. Done last as the generated methods
+    // do not need other processing above.
+    new ObjectiveCAdapterMethodAnnotation(unit).run();
+    ticker.tick("ObjectiveCAdapterMethodAnnotation");
 
     if (deadCodeMap != null) {
       deadCodeEliminator.removeDeadClasses();

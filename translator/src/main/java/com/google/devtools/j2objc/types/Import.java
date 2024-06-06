@@ -16,6 +16,7 @@
 
 package com.google.devtools.j2objc.types;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -39,24 +40,50 @@ public class Import implements Comparable<Import> {
 
   private final String typeName;
   private final String importFileName;
+  private final String forwardDeclaration;
   private final String javaQualifiedName;
   private final boolean isInterface;
   private final boolean hasGenerateObjectiveCGenerics;
   private final List<String> parameterNamesForObjectiveCGenerics;
 
-  private Import(TypeElement type, NameTable nameTable, Options options) {
-    this.typeName = nameTable.getFullName(type);
+  private Import(
+      String typeName,
+      String importFileName,
+      String forwardDeclaration,
+      String javaQualifiedName,
+      boolean isInterface,
+      boolean hasGenerateObjectiveCGenerics,
+      List<String> parameterNamesForObjectiveCGenerics) {
+    this.typeName = typeName;
+    this.importFileName = importFileName;
+    this.forwardDeclaration = forwardDeclaration;
+    this.javaQualifiedName = javaQualifiedName;
+    this.isInterface = isInterface;
+    this.hasGenerateObjectiveCGenerics = hasGenerateObjectiveCGenerics;
+    this.parameterNamesForObjectiveCGenerics = parameterNamesForObjectiveCGenerics;
+  }
+
+  public static Import newImport(TypeElement type, NameTable nameTable, Options options) {
     TypeElement mainType = type;
     while (!ElementUtil.isTopLevel(mainType)) {
       mainType = ElementUtil.getDeclaringClass(mainType);
     }
-    this.importFileName = options.getHeaderMap().get(mainType);
-    this.javaQualifiedName =
-        ElementUtil.isIosType(mainType) ? null : ElementUtil.getQualifiedName(mainType);
-    this.isInterface = type.getKind().isInterface();
-    this.hasGenerateObjectiveCGenerics = TypeUtil.hasGenerateObjectiveCGenerics(type);
-    this.parameterNamesForObjectiveCGenerics =
-        nameTable.getClassObjCGenericTypeNames(type.asType());
+
+    return new Import(
+        nameTable.getFullName(type),
+        options.getHeaderMap().get(mainType),
+        ElementUtil.getForwardDeclaration(mainType),
+        ElementUtil.isIosType(mainType) ? null : ElementUtil.getQualifiedName(mainType),
+        type.getKind().isInterface(),
+        TypeUtil.hasGenerateObjectiveCGenerics(type),
+        nameTable.getClassObjCGenericTypeNames(type.asType()));
+  }
+
+  public static Import newNativeImport(
+      String typeName, String importFileName, String forwardDeclaration) {
+    // For a native type that is an interface use GeneratedTypeElement.
+    return new Import(
+        typeName, importFileName, forwardDeclaration, null, false, false, ImmutableList.of());
   }
 
   /**
@@ -76,10 +103,20 @@ public class Import implements Comparable<Import> {
   }
 
   /**
-   * Gets the header file to import for this type.
+   * Gets the header file to import for this type. An empty import file indicates a Foundation type
+   * that doesn't require an import.
    */
   public String getImportFileName() {
     return importFileName;
+  }
+
+  /**
+   * Gets the custom forward declaration for this type if not imported by file. An empty forward
+   * declaration indicates a type that doesn't require a forward declaration. Note, the declaration
+   * does not include a trailing semicolon.
+   */
+  public String getForwardDeclaration() {
+    return forwardDeclaration;
   }
 
   /**
@@ -132,16 +169,26 @@ public class Import implements Comparable<Import> {
       addImports(((PointerType) type).getPointeeType(), imports, env);
     }
     for (TypeElement objcClass : env.typeUtil().getObjcUpperBounds(type)) {
-      Import newImport = new Import(objcClass, env.nameTable(), env.options());
-      // An empty header indicates a Foundation type that doesn't require an import or forward
-      // declaration.
-      if (!newImport.getImportFileName().isEmpty()) {
-        imports.add(newImport);
-      }
+      Import newImport = newImport(objcClass, env.nameTable(), env.options());
+      imports.add(newImport);
     }
     if (TypeUtil.isArray(type) && env.options().asObjCGenericDecl()) {
       // Recursion provides support for multi-dimensional arrays.
       addImports(((ArrayType) type).getComponentType(), imports, env);
+    }
+    if (type instanceof NativeType) {
+      NativeType nativeType = (NativeType) type;
+      Import nativeImport =
+          newNativeImport(
+              nativeType.getName(), nativeType.getHeader(), nativeType.getForwardDeclaration());
+      imports.add(nativeImport);
+
+      for (TypeMirror referencedType : nativeType.getReferencedTypes()) {
+        addImports(referencedType, imports, env);
+      }
+      for (TypeMirror typeArgument : nativeType.getTypeArguments()) {
+        addImports(typeArgument, imports, env);
+      }
     }
   }
 }
