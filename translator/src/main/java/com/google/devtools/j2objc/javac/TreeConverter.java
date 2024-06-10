@@ -1474,18 +1474,20 @@ public class TreeConverter {
     }
     com.sun.tools.javac.parser.Tokens.Comment javacComment = docComments.getComment((JCTree) node);
     Comment comment;
-    switch (javacComment.getStyle()) {
-      case BLOCK:
+    switch (javacComment.getStyle().name()) {
+      case "BLOCK":
         comment = new BlockComment();
         break;
-      case JAVADOC:
+      case "JAVADOC":
+      case "JAVADOC_BLOCK":
         comment = convertJavadocComment(path);
         break;
-      case LINE:
+      case "LINE":
+      case "JAVADOC_LINE":
         comment = new LineComment();
         break;
       default:
-        throw new AssertionError("unknown comment type");
+        throw new AssertionError("unknown comment type: " + javacComment.getStyle().name());
     }
     int startPos = javacComment.getSourcePos(0);
     int endPos = startPos + javacComment.getText().length();
