@@ -483,7 +483,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("Example.m");
     assertTranslation(translation, "Example *this$0_;");
   }
-  
+
   public void testEnum() throws IOException {
     String translation = translateSourceFile(
       "public enum Color { RED, WHITE, BLUE }",
@@ -964,7 +964,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             "foo/bar/Test.h");
     assertTranslation(translation, "J2OBJC_FIELD_SETTER(FooBarTest, a_, NSString *_Nullable)");
     assertTranslation(translation, "J2OBJC_FIELD_SETTER(FooBarTest, b_, NSString *)");
-    assertTranslation(translation, "J2OBJC_FIELD_SETTER(FooBarTest, c_, id)");
+    assertTranslation(translation, "J2OBJC_FIELD_SETTER(FooBarTest, c_, id _Nullable)");
   }
 
   public void testStaticFieldObject() throws IOException {

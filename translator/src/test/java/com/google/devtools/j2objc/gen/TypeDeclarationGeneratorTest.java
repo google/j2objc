@@ -776,8 +776,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         translation, "NS_ASSUME_NONNULL_BEGIN", "@interface FooBarTest : NSObject {");
     assertTranslatedLines(translation, "@public", "NSString *_Nullable identifier_;");
     assertTranslation(translation, "- (NSString * _Nullable)getToken;");
-    assertTranslation(
-        translation, "- (instancetype _Nonnull)initWithNSString:(NSString * _Nullable)token;");
+    assertTranslation(translation, "- (instancetype)initWithNSString:(NSString * _Nullable)token;");
     assertTranslatedLines(
         translation,
         "- (NSString * _Nullable)testNullableInstanceMethodWithNSString:(NSString *"
@@ -812,6 +811,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     options.setNullability(true);
     String translation = translateSourceFile(source, "Test", "Test.h");
     assertTranslatedLines(translation, "NS_ASSUME_NONNULL_BEGIN", "@interface Test : NSObject");
+    assertTranslation(translation, "- (instancetype)init;");
     assertTranslatedLines(
         translation,
         "- (NSString * _Nullable)testWithNSString:(NSString *)a",
@@ -828,8 +828,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     String source =
         "package foo.bar;"
             + "import javax.annotation.*;"
-            + "import org.jspecify.nullness.NullMarked;"
-            + "@NullMarked public class Test {"
+            + "public class Test {"
             + "  private @Nullable String nullableStr;"
             + "  private String nonNullStr;"
             + "  public @Nullable String test(String a,"
@@ -844,12 +843,59 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
     assertTranslatedLines(
         translation, "NS_ASSUME_NONNULL_BEGIN", "@interface FooBarTest : NSObject");
+    assertTranslation(translation, "- (instancetype)init;");
     assertTranslatedLines(
         translation,
         "- (NSString * _Nullable)testWithNSString:(NSString *)a",
         "withNSString:(NSString * _Nullable)b;");
     assertTranslation(translation, "- (NSString *)getNonNullStr;");
     assertTranslation(translation, "- (NSString * _Nullable)getNullableStr;");
+    assertTranslation(translation, "NS_ASSUME_NONNULL_END");
+  }
+
+  public void testNullMarkedWithoutGenerics() throws IOException {
+    addSourceFile(
+        "@NullMarked package foo.bar;" + "import org.jspecify.nullness.NullMarked;",
+        "foo/bar/package-info.java");
+    String source =
+        "package foo.bar;"
+            + "import javax.annotation.*;"
+            + "import org.jspecify.nullness.Nullable;"
+            + "public class Test <T extends @Nullable String> {"
+            + "  public T getNullableStr() { return null; }"
+            + "  public void setNullableStr(T thing) { return; }"
+            + "}";
+    options.setNullMarked(true);
+    options.setNullability(true);
+    String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
+    assertTranslatedLines(
+        translation, "NS_ASSUME_NONNULL_BEGIN", "@interface FooBarTest : NSObject");
+    assertTranslation(translation, "- (NSString * _Nullable)getNullableStr;");
+    assertTranslation(
+        translation, "- (void)setNullableStrWithNSString:(NSString * _Nullable)thing;");
+    assertTranslation(translation, "NS_ASSUME_NONNULL_END");
+  }
+
+  public void testNullMarkedWithGenerics() throws IOException {
+    addSourceFile(
+        "@NullMarked package foo.bar;" + "import org.jspecify.nullness.NullMarked;",
+        "foo/bar/package-info.java");
+    String source =
+        "package foo.bar;"
+            + "import javax.annotation.*;"
+            + "import org.jspecify.nullness.Nullable;"
+            + "public class Test <@Nullable T> {"
+            + "  public T getNullableStr() { return null; }"
+            + "  public void setNullableStr(T thing) { return; }"
+            + "}";
+    options.setNullMarked(true);
+    options.setNullability(true);
+    options.setAsObjCGenericDecl(true);
+    String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
+    assertTranslatedLines(
+        translation, "NS_ASSUME_NONNULL_BEGIN", "@interface FooBarTest<T> : NSObject");
+    assertTranslation(translation, "- (T _Nullable)getNullableStr;");
+    assertTranslation(translation, "- (void)setNullableStrWithId:(T _Nullable)thing;");
     assertTranslation(translation, "NS_ASSUME_NONNULL_END");
   }
 

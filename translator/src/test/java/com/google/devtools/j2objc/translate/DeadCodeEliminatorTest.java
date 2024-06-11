@@ -643,7 +643,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertTranslation(translation, "FOUNDATION_EXPORT NSString *_Nullable FooBarA_B_FOO;");
 
     translation = getTranslatedFile("foo/bar/A.m");
-    assertTranslation(translation, "NSString *_Nullable FooBarA_B_FOO = @\"foo\";");
+    assertTranslation(translation, "NSString *FooBarA_B_FOO = @\"foo\";");
     assertTranslation(translation, "static NSString *FooBarA_B_BAR = @\"bar\";");
   }
 

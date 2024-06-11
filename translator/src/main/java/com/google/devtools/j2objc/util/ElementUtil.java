@@ -61,6 +61,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
 import org.jspecify.nullness.Nullable;
@@ -804,18 +805,20 @@ public final class ElementUtil {
         return false;
       }
     }
-    if (isVariable(element) && element.asType().getKind().isPrimitive()) {
+    TypeMirror elementType = element.asType();
+    if (isVariable(element) && elementType.getKind().isPrimitive()) {
       return false;
     }
-    // The two if statements cover type annotations.
+    // The if statements cover type annotations.
     if (isMethod(element)
         && hasNamedAnnotation(((ExecutableElement) element).getReturnType(), pattern)) {
       return true;
     }
     if (isVariable(element)) {
-      if (hasNamedAnnotation(element.asType(), pattern)) {
+      if (hasNamedAnnotation(elementType, pattern)) {
         return true;
       }
+
       // Annotation may be saved as a type attribute in the javac symbol.
       if (element instanceof VarSymbol) {
         SymbolMetadata metadata = ((VarSymbol) element).getMetadata();
@@ -829,6 +832,17 @@ public final class ElementUtil {
         }
       }
     }
+    if (TypeUtil.isTypeVariable(elementType)) {
+      // Generics may be annotated as nullable and both the type variable and the bound
+      // may be annotated.
+      if (hasNamedAnnotation(((TypeVariable) elementType).asElement(), pattern)) {
+        return true;
+      }
+      if (hasNamedAnnotation(((TypeVariable) elementType).getUpperBound(), pattern)) {
+        return true;
+      }
+    }
+
     // This covers declaration annotations.
     return hasNamedAnnotation(element, pattern);
   }

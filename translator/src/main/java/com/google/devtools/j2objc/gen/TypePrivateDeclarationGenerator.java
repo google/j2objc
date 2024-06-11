@@ -135,6 +135,12 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
   }
 
   @Override
+  protected void printNonnullAuditedRegion(AuditedRegion state) {
+    // Private declarations do not include nullability for the same reasons
+    // implementation files do not.
+  }
+
+  @Override
   protected String nullability(Element element) {
     return "";
   }

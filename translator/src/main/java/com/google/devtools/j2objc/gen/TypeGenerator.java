@@ -47,6 +47,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 
 /**
  * The base class for TypeDeclarationGenerator and TypeImplementationGenerator,
@@ -332,7 +333,19 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       // Explicitly test hashCode() because of NSObject's hash return value.
       returnType = "NSUInteger";
     }
-    sb.append(UnicodeUtils.format("%c (%s%s)", prefix, returnType, nullability(element)));
+
+    String returnTypeNullability = "";
+    TypeMirror returnTypeMirror = m.getReturnTypeMirror();
+    if (TypeUtil.isTypeVariable(returnTypeMirror)) {
+      returnTypeNullability = nullability(((TypeVariable) returnTypeMirror).asElement());
+    }
+    String methodReturnNullability = nullability(element);
+    String returnNullability =
+        returnTypeNullability.isEmpty() ? methodReturnNullability : returnTypeNullability;
+    sb.append(
+        UnicodeUtils.format(
+            "%c (%s%s%s)",
+            prefix, returnType, returnNullability.isEmpty() ? "" : " ", returnNullability));
 
     List<SingleVariableDeclaration> params = m.getParameters();
     String[] selParts = selector.split(":");
@@ -356,18 +369,38 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
                     && (generateObjectiveCGenerics(var.asType())
                         || generateObjectiveCGenerics(typeElement.asType())),
                 typeElement);
+        String varNullability = nullability(var);
         sb.append(
             UnicodeUtils.format(
-                "%s:(%s%s)%s",
-                selParts[i], typeName, nullability(var), nameTable.getVariableShortName(var)));
+                "%s:(%s%s%s)%s",
+                selParts[i],
+                typeName,
+                varNullability.isEmpty() ? "" : " ",
+                varNullability,
+                nameTable.getVariableShortName(var)));
       }
     }
 
     return sb.toString();
   }
 
-  /** Returns an Objective-C nullability attribute string if needed. */
-  protected abstract String nullability(Element element);
+  /**
+   * Returns an Objective-C nullability attribute string without padding if there is a matching
+   * JSR305 annotation, or an empty string.
+   */
+  protected String nullability(Element element) {
+    if (element != null) {
+      if (options.nullability()) {
+        if (ElementUtil.hasNullableAnnotation(element)) {
+          return "_Nullable";
+        }
+        if (ElementUtil.isNonnull(element, parametersNonnullByDefault) && !nullMarked) {
+          return "_Nonnull";
+        }
+      }
+    }
+    return "";
+  }
 
   protected String getFunctionSignature(
       FunctionDeclaration function, boolean isPrototype, boolean isPrivate) {
@@ -417,7 +450,18 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected String paddedType(String type, Element element) {
     String suffix = " ";
     if (type.endsWith("*")) {
-      suffix = shouldAddNullableAnnotation(element) ? "_Nullable " : "";
+      // shouldAddNullableAnnotation() is partially redundant to checks inside nullability()
+      String nullabilitySuffix = shouldAddNullableAnnotation(element) ? nullability(element) : "";
+      if (nullabilitySuffix.isEmpty()) {
+        suffix = "";
+      } else {
+        suffix = nullabilitySuffix + " ";
+      }
+    } else if (type.contentEquals("id") || type.startsWith("id<")) {
+      // shouldAddNullableAnnotation() is partially redundant to checks inside nullability()
+      if (shouldAddNullableAnnotation(element)) {
+        suffix = " " + nullability(element) + " ";
+      }
     }
     return type + suffix;
   }

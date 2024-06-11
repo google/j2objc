@@ -42,7 +42,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -901,23 +900,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       printDeclarations(methods);
       printDeclarations(declarations);
     }
-  }
-
-  /**
-   * Returns an Objective-C nullability attribute string if there is a matching JSR305 annotation,
-   * or an empty string.
-   */
-  @Override
-  protected String nullability(Element element) {
-    if (options.nullability()) {
-      if (ElementUtil.hasNullableAnnotation(element)) {
-        return " _Nullable";
-      }
-      if (ElementUtil.isNonnull(element, parametersNonnullByDefault)) {
-        return " _Nonnull";
-      }
-    }
-    return "";
   }
 
   /**
