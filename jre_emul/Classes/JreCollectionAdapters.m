@@ -90,11 +90,12 @@
 }
 
 - (id)objectAtIndex:(NSUInteger)index {
+  // _size previously constrained to jint/int32_t range implicitly in initializer.
   if (index >= _size) {
     [NSException raise:NSRangeException format:@"%@ index %lu beyond bounds.", [self class], index];
     return nil;  // Won't get here.
   }
-  return [_list getWithInt:index];
+  return [_list getWithInt:(jint)index];
 }
 
 - (NSEnumerator<id> *)objectEnumerator {
