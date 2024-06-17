@@ -90,19 +90,8 @@ std::string GetStorageType(const FieldDescriptor* descriptor) {
 }
 
 std::string GetNonNullType(const FieldDescriptor* descriptor) {
-  switch (GetJavaType(descriptor)) {
-    case JAVATYPE_INT:
-    case JAVATYPE_LONG:
-    case JAVATYPE_FLOAT:
-    case JAVATYPE_DOUBLE:
-    case JAVATYPE_BOOLEAN:
-      return GetStorageType(descriptor);
-    case JAVATYPE_STRING:
-    case JAVATYPE_BYTES:
-    case JAVATYPE_ENUM:
-    case JAVATYPE_MESSAGE:
-      return GetStorageType(descriptor) + " _Nonnull";
-  }
+  const std::string typeString = GetStorageType(descriptor);
+  return typeString.ends_with("*") ? typeString + " _Nonnull" : typeString;
 }
 
 std::string GetFieldName(const FieldDescriptor* descriptor) {
