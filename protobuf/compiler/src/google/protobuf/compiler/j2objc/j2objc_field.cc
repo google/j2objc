@@ -289,19 +289,17 @@ SingleFieldGenerator::SingleFieldGenerator(
 }
 
 void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
-    // clang-format off
     const {
   printer->Print(variables_, "\n"
       "- (nonnull $classname$_Builder *)set$capitalized_name$With$parameter_type$:\n"
-      "    ($nonnull_type$)value;\n"
+      "    ($storage_type$)value;\n"
       "- (nonnull $classname$_Builder *)clear$capitalized_name$;\n");
   if (GetJavaType(descriptor_) == JAVATYPE_MESSAGE) {
     printer->Print(variables_,
         "- (nonnull $classname$_Builder*)\n"
         "    set$capitalized_name$With$parameter_type$_Builder:\n"
-        "    (nonnull $parameter_type$_Builder *)value;\n");
+        "    ($parameter_type$_Builder *)value;\n");
   }
-  // clang-format on
 }
 
 void SingleFieldGenerator::GenerateMessageOrBuilderProtocol(io::Printer* printer)
@@ -338,13 +336,12 @@ void RepeatedFieldGenerator::CollectMessageOrBuilderImports(
 }
 
 void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
-    // clang-format off
     const {
   printer->Print(variables_, "\n"
       "- (nonnull $classname$_Builder *)set$capitalized_name$WithInt:(int)index\n"
-      "    with$parameter_type$:($nonnull_type$)value;\n"
+      "    with$parameter_type$:($storage_type$)value;\n"
       "- (nonnull $classname$_Builder *)add$capitalized_name$With$parameter_type$:\n"
-      "    ($nonnull_type$)value;\n"
+      "    ($storage_type$)value;\n"
       "- (nonnull $classname$_Builder *)addAll$capitalized_name$WithJavaLangIterable:\n"
       "    (id<JavaLangIterable>)values;\n"
       "- (nonnull $classname$_Builder *)clear$capitalized_name$;\n"
@@ -353,11 +350,10 @@ void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
     printer->Print(variables_,
         "- (nonnull $classname$_Builder*)\n"
         "    add$capitalized_name$With$parameter_type$_Builder:\n"
-        "    (nonnull $parameter_type$_Builder *)value;\n"
+        "    ($parameter_type$_Builder *)value;\n"
         "- (nonnull $classname$_Builder *)remove$capitalized_name$WithInt:(int)index;\n"
     );
   }
-// clang-format off
 }
 
 void RepeatedFieldGenerator::GenerateMessageOrBuilderProtocol(
@@ -387,6 +383,7 @@ MapFieldGenerator::MapFieldGenerator(
   variables_["key_storage_type"] = GetStorageType(key_field_);
   variables_["key_parameter_type"] = GetParameterType(key_field_);
   variables_["key_descriptor_type"] = GetFieldTypeEnumValue(key_field_);
+  variables_["value_storage_type"] = GetStorageType(value_field_);
   variables_["value_nonnull_type"] = GetNonNullType(value_field_);
   variables_["value_parameter_type"] = GetParameterType(value_field_);
   variables_["value_descriptor_type"] = GetFieldTypeEnumValue(value_field_);
@@ -419,12 +416,11 @@ void MapFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer) const {
                  "- (nonnull $classname$_Builder "
                  "*)put$capitalized_name$With$key_parameter_type$:"
                  "($key_storage_type$)key with$value_parameter_type$:"
-                 "($value_nonnull_type$)value;\n");
+                 "($value_storage_type$)value;\n");
 }
 
 void MapFieldGenerator::GenerateMessageOrBuilderProtocol(
     io::Printer* printer) const {
-  // clang-format off
   printer->Print(
       variables_,
       "\n"
@@ -434,10 +430,9 @@ void MapFieldGenerator::GenerateMessageOrBuilderProtocol(
       "- (nonnull id<JavaUtilMap>)get$capitalized_name$Map;\n"
       "- ($value_nonnull_type$)get$capitalized_name$OrDefaultWith"
       "$key_parameter_type$:($key_storage_type$)key "
-      "with$value_parameter_type$:($value_nonnull_type$)defaultValue;\n"
+      "with$value_parameter_type$:($value_storage_type$)defaultValue;\n"
       "- ($value_nonnull_type$)get$capitalized_name$OrThrowWith"
       "$key_parameter_type$:($key_storage_type$)key;\n");
-  // clang-format on
 }
 
 void MapFieldGenerator::GenerateDeclaration(io::Printer* printer) const {

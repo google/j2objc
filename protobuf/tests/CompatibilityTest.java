@@ -802,115 +802,100 @@ public class CompatibilityTest extends ProtobufTest {
     }
   }
 
-  // TODO: b/346997541 - Consider moving this test so that it no longer is
-  //                     invoked in a J2ObjC context. Proto builder nullability
-  //                     improvements associated with b/330337638 result in
-  //                     compiler errors if nil values are passed as arguments
-  //                     to proto builder methods in generated Objective-C.
   public void testAddingNullValues() throws Exception {
-    @SuppressWarnings("ModifiedButNotUsed")
     TypicalData.Builder dataBuilder = TypicalData.newBuilder();
-
-    // `nullObject` is used in the below tests along with type casting to ensure
-    // generated Objective-C will successfully compile. Passing in `null`
-    // directly results in the following error: `null passed to a callee that
-    // requires a non-null argument [-Werror,-Wnonnull]`. This error is expected
-    // since proto builders require `nonnull` method arguments. This test is
-    // used in Java and J2ObjC libraries: `test_j2objc_lib` and `test_java_lib`,
-    // these changes ensure it can still run in both contexts.
-    Object nullObject = null;
     try {
-      dataBuilder.setMyMessage((TypicalDataMessage) nullObject);
+      dataBuilder.setMyMessage((TypicalDataMessage) null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
     }
     try {
-      dataBuilder.setMyMessage((TypicalDataMessage.Builder) nullObject);
+      dataBuilder.setMyMessage((TypicalDataMessage.Builder) null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
     }
     try {
-      dataBuilder.setMyString((String) nullObject);
+      dataBuilder.setMyString(null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
     }
     try {
-      dataBuilder.setMyBytes((ByteString) nullObject);
+      dataBuilder.setMyBytes(null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
     }
     try {
-      dataBuilder.setMyEnumType((TypicalData.EnumType) nullObject);
+      dataBuilder.setMyEnumType(null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
     }
     try {
-      dataBuilder.addRepeatedMessage((TypicalDataMessage) nullObject);
+      dataBuilder.addRepeatedMessage((TypicalDataMessage) null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
     }
     try {
-      dataBuilder.addRepeatedMessage((TypicalDataMessage.Builder) nullObject);
+      dataBuilder.addRepeatedMessage((TypicalDataMessage.Builder) null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
     }
     try {
-      dataBuilder.setRepeatedMessage(0, (TypicalDataMessage) nullObject);
+      dataBuilder.setRepeatedMessage(0, (TypicalDataMessage) null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
     }
     try {
-      dataBuilder.addRepeatedString((String) nullObject);
+      dataBuilder.addRepeatedString(null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
     }
     try {
-      dataBuilder.setRepeatedString(0, (String) nullObject);
+      dataBuilder.setRepeatedString(0, null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
     }
     try {
-      dataBuilder.addRepeatedBytes((ByteString) nullObject);
+      dataBuilder.addRepeatedBytes(null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
     }
     try {
-      dataBuilder.setRepeatedBytes(0, (ByteString) nullObject);
+      dataBuilder.setRepeatedBytes(0, null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
     }
     try {
-      dataBuilder.addRepeatedEnum((TypicalData.EnumType) nullObject);
+      dataBuilder.addRepeatedEnum(null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
     }
     try {
-      dataBuilder.setRepeatedEnum(0, (TypicalData.EnumType) nullObject);
+      dataBuilder.setRepeatedEnum(0, null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
     }
     try {
-      dataBuilder.setExtension(Typical.myExtension, (TypicalDataMessage) nullObject);
+      dataBuilder.setExtension(Typical.myExtension, null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
     }
     try {
-      dataBuilder.addExtension(Typical.myRepeatedExtension, (TypicalDataMessage) nullObject);
+      dataBuilder.addExtension(Typical.myRepeatedExtension, null);
       fail("Expected NullPointerException");
     } catch (NullPointerException e) {
       // Expected.
