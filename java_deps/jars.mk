@@ -88,5 +88,5 @@ AUTOVALUE_ANNOTATIONS_JAR = auto-value-annotations-1.7.4.jar
 TRUTH_JAR = truth-1.1.2.jar
 TRUTH_SOURCE_JAR = truth-1.1.2-sources.jar
 
-JSPECIFY_JAR = jspecify-0.2.0.jar
-JSPECIFY_SOURCE_JAR = jspecify-0.2.0-sources.jar
+JSPECIFY_JAR = jspecify-0.3.0.jar
+JSPECIFY_SOURCE_JAR = jspecify-0.3.0-sources.jar
