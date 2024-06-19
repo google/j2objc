@@ -86,7 +86,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
   // is annotated with @NullMarked.
   public void testStaticFieldAccessorMethodWithNullMarkedClass() throws IOException {
     String source =
-        "import javax.annotation.*; import org.jspecify.nullness.NullMarked;"
+        "import javax.annotation.*; import org.jspecify.annotations.NullMarked;"
             + "@NullMarked public class Test {"
             + "  @Nullable public static String nullableStr;"
             + "  public static String nonNullStr;"
@@ -107,7 +107,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
   // is annotated with @NullMarked.
   public void testStaticFieldAccessorMethodWithNullMarkedPackage() throws IOException {
     addSourceFile(
-        "@NullMarked package foo.bar; import org.jspecify.nullness.NullMarked;",
+        "@NullMarked package foo.bar; import org.jspecify.annotations.NullMarked;",
         "foo/bar/package-info.java");
     String source =
         "package foo.bar; "
@@ -751,7 +751,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
 
   public void testNullMarked() throws IOException {
     addSourceFile(
-        "@NullMarked package foo.bar; import org.jspecify.nullness.NullMarked;",
+        "@NullMarked package foo.bar; import org.jspecify.annotations.NullMarked;",
         "foo/bar/package-info.java");
     String source =
         "package foo.bar; import javax.annotation.*; "
@@ -796,7 +796,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
   public void testNullMarkedTypeAnnotation() throws IOException {
     String source =
         "import javax.annotation.*;"
-            + "import org.jspecify.nullness.NullMarked;"
+            + "import org.jspecify.annotations.NullMarked;"
             + "@NullMarked public class Test {"
             + "  private @Nullable String nullableStr;"
             + "  private String nonNullStr;"
@@ -823,7 +823,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
 
   public void testNullMarkedPackageAnnotation() throws IOException {
     addSourceFile(
-        "@NullMarked package foo.bar;" + "import org.jspecify.nullness.NullMarked;",
+        "@NullMarked package foo.bar;" + "import org.jspecify.annotations.NullMarked;",
         "foo/bar/package-info.java");
     String source =
         "package foo.bar;"
@@ -855,12 +855,12 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
 
   public void testNullMarkedWithoutGenerics() throws IOException {
     addSourceFile(
-        "@NullMarked package foo.bar;" + "import org.jspecify.nullness.NullMarked;",
+        "@NullMarked package foo.bar;" + "import org.jspecify.annotations.NullMarked;",
         "foo/bar/package-info.java");
     String source =
         "package foo.bar;"
             + "import javax.annotation.*;"
-            + "import org.jspecify.nullness.Nullable;"
+            + "import org.jspecify.annotations.Nullable;"
             + "public class Test <T extends @Nullable String> {"
             + "  public T getNullableStr() { return null; }"
             + "  public void setNullableStr(T thing) { return; }"
@@ -878,12 +878,12 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
 
   public void testNullMarkedWithGenerics() throws IOException {
     addSourceFile(
-        "@NullMarked package foo.bar;" + "import org.jspecify.nullness.NullMarked;",
+        "@NullMarked package foo.bar;" + "import org.jspecify.annotations.NullMarked;",
         "foo/bar/package-info.java");
     String source =
         "package foo.bar;"
             + "import javax.annotation.*;"
-            + "import org.jspecify.nullness.Nullable;"
+            + "import org.jspecify.annotations.Nullable;"
             + "public class Test <@Nullable T> {"
             + "  public T getNullableStr() { return null; }"
             + "  public void setNullableStr(T thing) { return; }"

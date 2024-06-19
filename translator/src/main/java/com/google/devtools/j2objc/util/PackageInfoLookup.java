@@ -231,7 +231,8 @@ public class PackageInfoLookup {
         }
       } else if (signature.equals("Ljavax/annotation/ParametersAreNonnullByDefault;")) {
         builder.setParametersAreNonnullByDefault();
-      } else if (signature.equals("Lorg/jspecify/nullness/NullMarked;")) {
+      } else if (signature.equals("Lorg/jspecify/nullness/NullMarked;")
+          || signature.equals("Lorg/jspecify/annotations/NullMarked;")) {
         builder.setNullMarked();
       } else if (signature.equals("Lcom/google/j2objc/annotations/ReflectionSupport;")) {
         for (Expression expr : annotation.getArguments()) {

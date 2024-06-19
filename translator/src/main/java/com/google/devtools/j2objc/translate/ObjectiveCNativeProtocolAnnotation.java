@@ -33,7 +33,7 @@ import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
-import org.jspecify.nullness.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /** Implements the ObjectiveCNativeProtocol annotation. */
 public class ObjectiveCNativeProtocolAnnotation extends UnitTreeVisitor {

@@ -513,7 +513,7 @@ public class FunctionizerTest extends GenerationTest {
 
   public void testFunctionizedConstructorWithNullMarked() throws IOException {
     addSourceFile(
-        "@NullMarked" + "package foo.bar;" + "import org.jspecify.nullness.NullMarked;",
+        "@NullMarked" + "package foo.bar;" + "import org.jspecify.annotations.NullMarked;",
         "foo/bar/package-info.java");
     String source =
         "package foo.bar; import javax.annotation.*;"

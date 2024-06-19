@@ -860,7 +860,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     options.setNullMarked(true);
     options.setNullability(true);
     addSourceFile(
-        "@NullMarked package foo.bar;" + "import org.jspecify.nullness.NullMarked;",
+        "@NullMarked package foo.bar;" + "import org.jspecify.annotations.NullMarked;",
         "foo/bar/package-info.java");
 
     String sourceContent =
@@ -954,7 +954,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     options.setNullMarked(true);
     options.setNullability(true);
     addSourceFile(
-        "@NullMarked package foo.bar;" + "import org.jspecify.nullness.NullMarked;",
+        "@NullMarked package foo.bar;" + "import org.jspecify.annotations.NullMarked;",
         "foo/bar/package-info.java");
     String translation =
         translateSourceFile(
@@ -978,7 +978,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     options.setNullMarked(true);
     options.setNullability(true);
     addSourceFile(
-        "@NullMarked package foo.bar;" + "import org.jspecify.nullness.NullMarked;",
+        "@NullMarked package foo.bar;" + "import org.jspecify.annotations.NullMarked;",
         "foo/bar/package-info.java");
     String translation =
         translateSourceFile(

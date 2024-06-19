@@ -619,7 +619,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
   public void testDeadClass_stringConstants_nullMarked() throws IOException {
     addSourceFile(
-        "@NullMarked" + "package foo.bar;" + "import org.jspecify.nullness.NullMarked;",
+        "@NullMarked" + "package foo.bar;" + "import org.jspecify.annotations.NullMarked;",
         "foo/bar/package-info.java");
     String source =
         "package foo.bar;"

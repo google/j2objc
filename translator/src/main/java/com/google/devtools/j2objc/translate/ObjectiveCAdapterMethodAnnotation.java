@@ -59,7 +59,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
-import org.jspecify.nullness.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /** Implements the ObjectiveCAdapterMethod annotation. */
 public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {

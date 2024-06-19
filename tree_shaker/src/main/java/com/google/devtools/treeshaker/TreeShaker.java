@@ -42,7 +42,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import org.jspecify.nullness.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /** A tool for finding unused code in a Java program. */
 @SuppressWarnings("FloggerRedundantIsEnabled")
