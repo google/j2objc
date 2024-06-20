@@ -111,15 +111,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/jspecify-0.2.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/../java_deps/build_result/procyon-compilertools-0.6.0.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -172,6 +163,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../java_deps/build_result/error_prone_annotations-2.11.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/jspecify-0.3.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

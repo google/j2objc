@@ -32,18 +32,18 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="junit4">
+      <library name="scenelib.jar">
         <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/lib/junit-4.12.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/scenelib.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library name="scenelib.jar">
+    <orderEntry type="module-library" scope="TEST">
+      <library name ="junit4">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/scenelib.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/junit-4.13.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
