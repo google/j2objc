@@ -583,9 +583,9 @@ void MessageGenerator::GenerateBuilderHeader(io::Printer* printer) {
       "\n"
       "- (nonnull $classname$ *)getDefaultInstanceForType;\n"
       "- (nonnull $classname$_Builder *)mergeFromWith$classname$:"
-      "($classname$ *)message;\n"
+      "(nonnull $classname$ *)message;\n"
       "- (nonnull $classname$_Builder *)mergeFromWithComGoogleProtobufMessage:"
-      "(id<ComGoogleProtobufMessage>)message;\n"
+      "(nonnull id<ComGoogleProtobufMessage>)message;\n"
       "- (nonnull $classname$ *)build;\n"
       "- (nonnull $classname$ *)buildPartial;\n"
       "+ (nonnull ComGoogleProtobufDescriptors_Descriptor *)getDescriptor;\n",
