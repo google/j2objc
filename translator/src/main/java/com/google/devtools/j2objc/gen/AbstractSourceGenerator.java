@@ -85,4 +85,9 @@ public abstract class AbstractSourceGenerator {
   protected String reindent(String code) {
     return builder.reindent(code);
   }
+
+  @Override
+  public String toString() {
+    return builder.toString();
+  }
 }

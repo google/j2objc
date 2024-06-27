@@ -91,11 +91,14 @@ public class GeneratedType {
     }
 
     HeaderImportCollector headerCollector =
-        new HeaderImportCollector(unit, HeaderImportCollector.Filter.PUBLIC_ONLY);
-    typeNode.accept(headerCollector);
+        new HeaderImportCollector(
+            unit,
+            HeaderImportCollector.Filter.PUBLIC_ONLY,
+            !unit.getEnv().options().generateSeparateHeaders());
+    headerCollector.collectImports(typeNode);
 
     HeaderImportCollector privateDeclarationCollector =
-        new HeaderImportCollector(unit, HeaderImportCollector.Filter.PRIVATE_ONLY);
+        new HeaderImportCollector(unit, HeaderImportCollector.Filter.PRIVATE_ONLY, true);
     typeNode.accept(privateDeclarationCollector);
 
     ImplementationImportCollector importCollector = new ImplementationImportCollector(unit);

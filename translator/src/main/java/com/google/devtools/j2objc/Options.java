@@ -77,6 +77,7 @@ public class Options {
   private HeaderMap headerMap = new HeaderMap();
   private boolean stripGwtIncompatible = false;
   private boolean segmentedHeaders = true;
+  private boolean separateHeaders = false;
   private boolean jsniWarnings = true;
   private boolean buildClosure = false;
   private EnumSet<MetadataSupport> includedMetadata =
@@ -605,6 +606,8 @@ public class Options {
         emitSourceHeaders = false;
       } else if (arg.equals("-Xprint-args")) {
         printArgs = true;
+      } else if (arg.equals("-Xseparate-headers")) {
+        separateHeaders = true;
       } else if (arg.equals("-external-annotation-file")) {
         addExternalAnnotationFile(getArgValue(args, arg));
       } else if (arg.equals("--reserved-names")) {
@@ -1020,6 +1023,16 @@ public class Options {
   @VisibleForTesting
   public void setSegmentedHeaders(boolean b) {
     segmentedHeaders = b;
+  }
+
+  public boolean generateSeparateHeaders() {
+    return separateHeaders;
+  }
+
+  @VisibleForTesting
+  public void setSeparateHeaders(boolean b) {
+    separateHeaders = b;
+    segmentedHeaders = false; // unnecessary with separate headers.
   }
 
   public boolean jsniWarnings() {

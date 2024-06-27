@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.ast.DebugASTDump;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
+import com.google.devtools.j2objc.gen.ObjectiveCMultiHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGenerator;
 import com.google.devtools.j2objc.translate.AbstractMethodRewriter;
 import com.google.devtools.j2objc.translate.AnnotationRewriter;
@@ -359,8 +360,10 @@ public class TranslationProcessor extends FileProcessor {
         + unit.options().fileUtil().getHeaderOutputDirectory().getAbsolutePath());
     ticker.push();
 
-    // write header
-    if (unit.options().generateSegmentedHeaders()) {
+    // write header(s)
+    if (unit.options().generateSeparateHeaders()) {
+      ObjectiveCMultiHeaderGenerator.generate(unit);
+    } else if (unit.options().generateSegmentedHeaders()) {
       ObjectiveCSegmentedHeaderGenerator.generate(unit);
     } else {
       ObjectiveCHeaderGenerator.generate(unit);

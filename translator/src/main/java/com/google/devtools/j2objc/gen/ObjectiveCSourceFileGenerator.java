@@ -173,8 +173,9 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
     for (GeneratedType generatedType : generatedTypes) {
       String name = generatedType.getTypeName();
       if (name != null) {
-        Object dupe = typeMap.put(name, generatedType);
-        assert dupe == null : "Duplicate type name: " + name;
+        if (typeMap.put(name, generatedType) != null) {
+          throw new AssertionError("Duplicate type name: " + name);
+        }
       }
     }
 
@@ -205,5 +206,35 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
     }
     typeHierarchy.remove(generatedType.getTypeName());
     orderedTypes.add(generatedType);
+  }
+
+  /**
+   * Returns the output path for the given type, minus its suffix. Normally, the output path is the
+   * same for an outer and its inner types. However, when separate headers are enabled, the inner
+   * types are given their own header files. For example, if the outer type is "Foo.h" with an inner
+   * type "Foo.Bar", the header file for the inner type would be "<header_directory>/Foo_Bar.h"
+   * (when generating inner type names for Objective-C, inner types are separated by an underscore).
+   */
+  protected String getHeaderPath(GeneratedType generatedType, String outputPath) {
+    if (!unit.options().generateSeparateHeaders()) {
+      return outputPath;
+    }
+
+    // Extract outer type name from output path.
+    String relativeOuterHeader = outputPath.substring(outputPath.lastIndexOf('/') + 1);
+    int relativeOuterHeaderLength =
+        relativeOuterHeader.endsWith(".h")
+            ? relativeOuterHeader.length() - 2
+            : relativeOuterHeader.length();
+    String simpleOuterTypeName = relativeOuterHeader.substring(0, relativeOuterHeaderLength);
+
+    // Extract inner type's suffix and return
+    String innerTypeName = generatedType.getTypeName();
+    int outerPathOffset = innerTypeName.lastIndexOf(simpleOuterTypeName);
+    if (outerPathOffset == -1) {
+      return outputPath;
+    }
+    String relativeInnerHeader = innerTypeName.substring(outerPathOffset);
+    return outputPath.substring(0, outputPath.lastIndexOf('/') + 1) + relativeInnerHeader;
   }
 }

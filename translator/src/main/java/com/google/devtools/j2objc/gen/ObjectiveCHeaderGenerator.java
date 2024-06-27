@@ -40,7 +40,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   // The prefix to use for preprocessor variable names. Derived from the path of
   // the generated file. For example if "my/pkg/Foo.h" is being generated the
   // prefix would be "MyPkgFoo".
-  protected final String varPrefix;
+  protected String varPrefix;
 
   /**
    * Generate an Objective-C header file for each type declared in the given {@link GenerationUnit}.
@@ -195,6 +195,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     println("#endif");
   }
 
+  @SuppressWarnings("ParameterComment")
   private void generateTypeMappings() {
     KytheIndexingMetadata metadata = new KytheIndexingMetadata();
 

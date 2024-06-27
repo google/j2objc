@@ -182,6 +182,7 @@ JAVA_SOURCES = \
 	gen/LiteralGenerator.java \
 	gen/ObjectiveCHeaderGenerator.java \
 	gen/ObjectiveCImplementationGenerator.java \
+	gen/ObjectiveCMultiHeaderGenerator.java \
 	gen/ObjectiveCSegmentedHeaderGenerator.java \
 	gen/ObjectiveCSourceFileGenerator.java \
 	gen/PropertyGenerator.java \

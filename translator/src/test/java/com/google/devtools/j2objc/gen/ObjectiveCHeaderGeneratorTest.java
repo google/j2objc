@@ -1476,4 +1476,111 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     // ... just the source file entry in that jar file.
     assertTranslation(kytheMetadata, "\"path\":\"foo/Test.java\"");
   }
+
+  public void testSeparateHeaderGeneration() throws IOException {
+    options.setSeparateHeaders(true);
+    String source =
+        String.join(
+            "\n",
+            "package foo;",
+            "public class Test implements Runnable {",
+            "  private int n;",
+            "  public void run() {}",
+            "  static class Bar implements AutoCloseable {",
+            "    public void close() throws Exception {}",
+            "  }",
+            "  static enum Mumble { A, B, C; }",
+            "  class Inner {",
+            "    int answerToEverything() { return n; }",
+            "  }",
+            "}");
+    String mainHeader = translateSourceFile(source, "Test", "foo/Test.h");
+    assertTranslation(mainHeader, "#import \"java/lang/Runnable.h\"");
+    assertTranslation(mainHeader, "- (instancetype)init;");
+    assertNotInTranslation(mainHeader, "Bar");
+    assertNotInTranslation(mainHeader, "Mumble");
+    assertNotInTranslation(mainHeader, "Inner");
+
+    String barHeader = getTranslatedFile("foo/Test_Bar.h");
+    assertTranslation(barHeader, "#import \"java/lang/AutoCloseable.h\"");
+    assertTranslation(barHeader, "- (void)close;");
+    assertNotInTranslation(barHeader, "Mumble");
+    assertNotInTranslation(barHeader, "Inner");
+
+    String mumbleHeader = getTranslatedFile("foo/Test_Mumble.h");
+    assertTranslation(mumbleHeader, "#import \"java/lang/Enum.h\"");
+    assertTranslation(mumbleHeader, "J2OBJC_ENUM_CONSTANT(FooTest_Mumble, A)");
+    assertNotInTranslation(mumbleHeader, "Bar");
+    assertNotInTranslation(mumbleHeader, "Inner");
+
+    String innerHeader = getTranslatedFile("foo/Test_Inner.h");
+    assertTranslation(innerHeader, "@class FooTest;");
+    assertTranslation(innerHeader, "- (jint)answerToEverything;");
+    assertNotInTranslation(innerHeader, "Bar");
+    assertNotInTranslation(innerHeader, "Mumble");
+
+    String implFile = getTranslatedFile("foo/Test.m");
+    assertTranslation(implFile, "#import \"foo/Test_Bar.h\"");
+    assertTranslation(implFile, "#import \"foo/Test_Mumble.h\"");
+    assertTranslation(implFile, "#import \"foo/Test_Inner.h\"");
+  }
+
+  // Verify circular includes example at j2objc.org translates correctly.
+  public void testCircularIncludes() throws IOException {
+    options.setSeparateHeaders(true);
+    addSourceFile("class Foo extends Bar {}", "Foo.java");
+    addSourceFile("class Bar {\n"
+            + "  static class Baz extends Foo {}\n"
+            + "}", "Bar.java");
+    runPipeline("Foo.java", "Bar.java");
+    String translation = getTranslatedFile("Foo.h");
+    assertTranslation(translation, "#import \"Bar.h\"");
+    assertTranslation(translation, "@interface Foo : Bar");
+    assertNotInTranslation(translation, "Bar_Baz.h");
+
+    translation = getTranslatedFile("Bar.h");
+    assertTranslation(translation, "@interface Bar : NSObject");
+    assertNotInTranslation(translation, "Foo");
+    assertNotInTranslation(translation, "Bar_Baz");
+
+    translation = getTranslatedFile("Bar_Baz.h");
+    assertTranslation(translation, "#import \"Foo.h\"");
+    assertTranslation(translation, "@interface Bar_Baz : Foo");
+
+    translation = getTranslatedFile("Foo.m");
+    assertTranslation(translation, "#import \"Bar.h\"");
+    assertTranslation(translation, "#import \"Foo.h\"");
+
+    translation = getTranslatedFile("Bar.m");
+    assertTranslation(translation, "#import \"Bar.h\"");
+    assertTranslation(translation, "#import \"Bar_Baz.h\"");
+    assertTranslation(translation, "#import \"Foo.h\"");
+  }
+
+  public void testSeparateHeaderGenerationOfAnnotationTypeWithInnerTypes() throws IOException {
+    options.setSeparateHeaders(true);
+    String source =
+        String.join(
+            "\n",
+            "package foo;",
+            "import java.lang.annotation.*;",
+            "@Retention(RetentionPolicy.CLASS)",
+            "public @interface ObjectiveCAdapterMethod {",
+            "    public enum Adaptation {",
+            "        EXCEPTIONS_AS_ERRORS, RETURN_NATIVE_BOOLS; }",
+            "    Adaptation[] adaptations() default {};",
+            "}");
+    String mainHeader =
+        translateSourceFile(source, "ObjectiveCAdapterMethod", "foo/ObjectiveCAdapterMethod.h");
+    assertTranslation(
+        mainHeader, "@protocol FooObjectiveCAdapterMethod < JavaLangAnnotationAnnotation >");
+    assertTranslation(
+        mainHeader,
+        "@interface FooObjectiveCAdapterMethod : NSObject < FooObjectiveCAdapterMethod >");
+    String enumHeader = getTranslatedFile("foo/ObjectiveCAdapterMethod_Adaptation.h");
+    assertTranslation(
+        enumHeader, "@interface FooObjectiveCAdapterMethod_Adaptation : JavaLangEnum");
+    String implFile = getTranslatedFile("foo/ObjectiveCAdapterMethod.m");
+    assertTranslation(implFile, "ObjectiveCAdapterMethod_Adaptation_Enum");
+  }
 }
