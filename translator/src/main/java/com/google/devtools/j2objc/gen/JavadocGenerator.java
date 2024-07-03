@@ -86,13 +86,14 @@ public class JavadocGenerator extends AbstractSourceGenerator {
       for (TagElement tag : tags) {
         if (tag.getTagKind() == TagKind.DESCRIPTION) {
           String description = printTagFragments(tag.getFragments());
+          boolean printAsIs = description.startsWith("@code");
 
           // Extract first sentence from description.
           BreakIterator iterator = BreakIterator.getSentenceInstance(Locale.US);
           iterator.setText(description.toString());
           int start = iterator.first();
           int end = iterator.next();
-          if (end != BreakIterator.DONE) {
+          if (end != BreakIterator.DONE && !printAsIs) {
             // Print brief tag first, since Quick Help shows it first. This makes the
             // generated source easier to review.
             printDocLine(String.format("@brief %s", description.substring(start, end)).trim());

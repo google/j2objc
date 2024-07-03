@@ -245,4 +245,22 @@ public class JavadocGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@brief Class javadoc for Test.");
     assertNotInTranslation(translation, "11.2 Some JLS reference.");
   }
+
+  // Verify that a preformatted comment is printed with @code and without a @brief description.
+  // This avoids a clang -Wdocumentation warning.
+  public void testPreformattedComment() throws IOException {
+    String translation =
+        translateSourceFile(
+            "/**\n"
+                + " * <pre>\n"
+                + " * class Foo {\n"
+                + " *   Foo bar;\n"
+                + " * }</pre>\n"
+                + " */\n"
+                + "class Test {}",
+            "Test",
+            "Test.h");
+    assertTranslatedLines(translation, "/*!", "@code");
+    assertNotInTranslation(translation, "@brief");
+  }
 }
