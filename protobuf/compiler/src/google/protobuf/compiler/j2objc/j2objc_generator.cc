@@ -58,15 +58,17 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
   bool enforce_lite = false;
 
   for (int i = 0; i < options.size(); i++) {
-    if (options[i].first == "prefixes") {
-      ParsePrefixFile(options[i].second);
-    } else if (options[i].first == "global_prefix") {
-      SetGlobalPrefix(options[i].second);
-    } else if (options[i].first == "global_postfix") {
-      SetGlobalPostfix(options[i].second);
-    } else if (options[i].first == "file_sub_extension") {
-      SetFileSubExtension(options[i].second);
-    } else if (options[i].first == "file_dir_mapping") {
+    // if (options[i].first == "prefixes") {
+    //   ParsePrefixFile(options[i].second);
+    // } else if (options[i].first == "global_prefix") {
+    //   SetGlobalPrefix(options[i].second);
+    // } else if (options[i].first == "global_postfix") {
+    //   SetGlobalPostfix(options[i].second);
+    // }
+    // else if (options[i].first == "file_sub_extension") {
+    //   SetFileSubExtension(options[i].second);
+    // } else
+    if (options[i].first == "file_dir_mapping") {
       GenerateFileDirMapping();
     } else if (options[i].first == "generate_class_mappings") {
       generate_class_mappings = true;
@@ -92,8 +94,8 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
   // Generate main source and header files.
   file_generator.Generate(context);
 
-  // Generate sibling files.
-  file_generator.GenerateSiblings(context);
+  // // Generate sibling files.
+  // file_generator.GenerateSiblings(context);
 
   if (IsGenerateFileDirMapping()) {
     file_generator.GenerateHeaderMappings(context);
@@ -103,10 +105,11 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
     file_generator.GenerateClassMappings(context);
   }
 
-  if (enforce_lite) {
-    // If true, we should build .meta files and emit @Generated annotations into
-    // generated code.
-  }
+  // if (enforce_lite) {
+  //   // If true, we should build .meta files and emit @Generated annotations
+  //   into
+  //   // generated code.
+  // }
 
   return true;
 }
