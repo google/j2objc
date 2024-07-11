@@ -17,6 +17,7 @@
 
 package java.net;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.security.SecureClassLoader;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ import java.util.Enumeration;
  * loading classes from bundles other than the main app bundle. No code was
  * shared, just its public API.
  */
-public class URLClassLoader extends SecureClassLoader {
+public class URLClassLoader extends SecureClassLoader implements Closeable {
 
     ArrayList<URL> urls;
 
