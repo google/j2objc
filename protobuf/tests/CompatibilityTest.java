@@ -30,6 +30,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.ProtocolMessageEnum;
+import com.google.protobuf.ProtocolStringList;
 import foo.bar.baz.PrefixDummy2;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -1411,5 +1412,15 @@ public class CompatibilityTest extends ProtobufTest {
   public void testDescriptorGetFullName() throws Exception {
     Descriptor descriptor = TypicalData.Builder.getDescriptor();
     assertTrue(descriptor.getFullName().endsWith("protos.TypicalData"));
+  }
+
+  public void testProtocolStringListType() throws Exception {
+    TypicalData data = TypicalData.newBuilder().addRepeatedString("foobar").build();
+    ProtocolStringList list = data.getRepeatedStringList();
+    assertEquals(1, list.size());
+    assertTrue(list instanceof ProtocolStringList);
+    assertEquals("foobar", list.get(0));
+    List<ByteString> bsList = list.asByteStringList();
+    assertEquals("foobar", new String(bsList.get(0).toByteArray()));
   }
 }
