@@ -106,7 +106,7 @@ std::string GetNonNullType(const FieldDescriptor* descriptor) {
 }
 
 std::string GetFieldName(const FieldDescriptor* descriptor) {
-  if (descriptor->type() == FieldDescriptor::TYPE_GROUP) {
+  if (proto2::internal::cpp::IsGroupLike(*descriptor)) {
     return descriptor->message_type()->name();
   } else {
     return descriptor->name();

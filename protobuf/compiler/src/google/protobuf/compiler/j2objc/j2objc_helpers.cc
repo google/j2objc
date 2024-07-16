@@ -66,6 +66,10 @@ static std::map<std::string, std::string> wildcardPrefixes;
 
 static bool generateFileDirMapping = false;
 
+// When enabled, this flag will strip out pieces of gencode that's
+// "non-functional" and likely to change in an edition bump.
+static bool stripNonfunctionalCodegen = false;
+
 const char* const kKeywordList[] = {
   "TYPE_BOOL",
   "TRUE",
@@ -90,7 +94,7 @@ const std::string &FieldName(const FieldDescriptor *field) {
   // Groups are hacky:  The name of the field is just the lower-cased name
   // of the group type.  In Java, though, we would like to retain the original
   // capitalization of the type name.
-  if (field->type() == FieldDescriptor::TYPE_GROUP) {
+  if (proto2::internal::cpp::IsGroupLike(*field)) {
     return field->message_type()->name();
   } else {
     return field->name();
@@ -644,6 +648,8 @@ std::string GetDefaultValueTypeName(const FieldDescriptor *descriptor) {
 }
 
 std::string GetFieldOptionsData(const FieldDescriptor *descriptor) {
+  if (stripNonfunctionalCodegen) return "NULL";
+
   std::string field_options = descriptor->options().SerializeAsString();
   // Must convert to a standard byte order for packing length into
   // a cstring.
@@ -682,6 +688,8 @@ void SetGlobalPostfix(std::string postfix) {
 void SetFileSubExtension(std::string fileSubExtension) {
   globalFileSubExtension = std::move(fileSubExtension);
 }
+
+void SetStripNonfunctionalCodegen() { stripNonfunctionalCodegen = true; }
 
 void ParsePrefixFile(std::string prefix_file) {
   std::ifstream in(prefix_file.c_str());

@@ -163,11 +163,12 @@ void FileGenerator::GenerateHeader(GeneratorContext* context) {
 
   if (!GenerateMultipleFiles()) {
     for (int i = 0; i < file_->message_type_count(); i++) {
-      MessageGenerator* generator;
+      std::unique_ptr<MessageGenerator> generator;
       if (enforce_lite_) {
-        generator = new MessageLiteGenerator(file_->message_type(i));
+        generator =
+            std::make_unique<MessageLiteGenerator>(file_->message_type(i));
       } else {
-        generator = new MessageGenerator(file_->message_type(i));
+        generator = std::make_unique<MessageGenerator>(file_->message_type(i));
       }
       generator->CollectMessageOrBuilderImports(&headers);
       generator->CollectHeaderImports(&headers);
@@ -245,11 +246,12 @@ void FileGenerator::GenerateHeader(GeneratorContext* context) {
     }
 
     for (int i = 0; i < file_->message_type_count(); i++) {
-      MessageGenerator* generator;
+      std::unique_ptr<MessageGenerator> generator;
       if (enforce_lite_) {
-        generator = new MessageLiteGenerator(file_->message_type(i));
+        generator =
+            std::make_unique<MessageLiteGenerator>(file_->message_type(i));
       } else {
-        generator = new MessageGenerator(file_->message_type(i));
+        generator = std::make_unique<MessageGenerator>(file_->message_type(i));
       }
       generator->GenerateMessageOrBuilder(&printer);
       generator->GenerateHeader(&printer);
@@ -505,11 +507,11 @@ void FileGenerator::GenerateMessageOrBuilder(
   io::Printer printer(output.get(), '$');
 
   GenerateBoilerplate(&printer);
-  MessageGenerator* generator;
+  std::unique_ptr<MessageGenerator> generator;
   if (enforce_lite_) {
-    generator = new MessageLiteGenerator(descriptor);
+    generator = std::make_unique<MessageLiteGenerator>(descriptor);
   } else {
-    generator = new MessageGenerator(descriptor);
+    generator = std::make_unique<MessageGenerator>(descriptor);
   }
 
   std::set<std::string> headers;

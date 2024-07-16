@@ -137,6 +137,7 @@ std::string GetFieldOptionsData(const FieldDescriptor *descriptor);
 void SetGlobalPrefix(std::string prefix);
 void SetGlobalPostfix(std::string postfix);
 void SetFileSubExtension(std::string fileSubExtension);
+void SetStripNonfunctionalCodegen();
 void ParsePrefixFile(std::string prefix_file);
 
 std::string MappedInputName(const FileDescriptor *file);

@@ -372,11 +372,11 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
 
   printer->Indent();
   for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
-    OneofGenerator(descriptor_->oneof_decl(i))
+    OneofGenerator(descriptor_->real_oneof_decl(i))
         .GenerateStorageDeclaration(printer);
   }
-  for (int i = 0; i < descriptor_->oneof_decl_count(); i++) {
-    const OneofDescriptor* oneof = descriptor_->oneof_decl(i);
+  for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
+    const OneofDescriptor* oneof = descriptor_->real_oneof_decl(i);
     if (oneof->field_count() == 1) {
       field_generators_.get(oneof->field(0)).GenerateDeclaration(printer);
     } else {
@@ -391,7 +391,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   }
   for (int i = 0; i < descriptor_->field_count(); i++) {
     const FieldDescriptor* field = descriptor_->field(i);
-    if (field->containing_oneof() == nullptr) {
+    if (field->real_containing_oneof() == nullptr) {
       field_generators_.get(field).GenerateDeclaration(printer);
     }
   }

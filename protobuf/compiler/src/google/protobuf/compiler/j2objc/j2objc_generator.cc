@@ -75,7 +75,7 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
       // break existing API in order to boost performance / reduce code size.
       enforce_lite = true;
     } else if (options[i].first == "experimental_strip_nonfunctional_codegen") {
-      continue;
+      SetStripNonfunctionalCodegen();
     } else {
       *error = "Unknown generator option: " + options[i].first;
       return false;
