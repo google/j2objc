@@ -10,7 +10,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto2";
+edition = "2023";
 
 package protos;
 
@@ -19,59 +19,78 @@ option java_multiple_files = true;
 
 message MessageSet {
   option message_set_wire_format = true;
+
   extensions 4 to max;
 }
 
 message MessageData {
-
   message SubMsg {
     message InnerMsg {
-      optional int32 int_f = 1;
+      int32 int_f = 1;
     }
 
-    optional int32 int_f = 1;
-    optional uint32 uint_f = 2;
+    int32 int_f = 1;
+    uint32 uint_f = 2;
   }
 
   extend MessageSet {
-    optional SubMsg msg_ext = 1000;
+    SubMsg msg_ext = 1000;
   }
 
-  optional SubMsg msg_f = 1;
-  optional SubMsg.InnerMsg inner_msg_f = 2;
-  optional MessageData recursive_msg_f = 3;
-  optional group GroupF = 4 {
-    optional int32 int_f = 1;
-    optional uint32 uint_f = 2;
-  }
-  optional MessageSet msg_set_f = 5;
+  SubMsg msg_f = 1;
+  SubMsg.InnerMsg inner_msg_f = 2;
+  MessageData recursive_msg_f = 3;
 
+  message GroupF {
+    int32 int_f = 1;
+    uint32 uint_f = 2;
+  }
+
+  GroupF groupf = 4 [
+    features.message_encoding = DELIMITED
+  ];
+
+  MessageSet msg_set_f = 5;
   repeated SubMsg msg_r = 21;
   repeated SubMsg.InnerMsg inner_msg_r = 22;
   repeated MessageData recursive_msg_r = 23;
-  repeated group GroupR = 24 {
-    optional int32 int_f = 1;
-    optional uint32 uint_f = 2;
+
+  message GroupR {
+    int32 int_f = 1;
+    uint32 uint_f = 2;
   }
+
+  repeated GroupR groupr = 24 [
+    features.message_encoding = DELIMITED
+  ];
+
   repeated MessageSet msg_set_r = 25;
 
   extensions 1000 to max;
 }
 
 extend MessageData {
-  optional MessageData.SubMsg msg_fe = 1001;
-  optional MessageData.SubMsg.InnerMsg inner_msg_fe = 1002;
-  optional MessageData recursive_msg_fe = 1003;
-  optional group GroupFe = 1004 {
-    optional int32 int_f = 1;
-    optional uint32 uint_f = 2;
-  }
+  MessageData.SubMsg msg_fe = 1001;
+  MessageData.SubMsg.InnerMsg inner_msg_fe = 1002;
+  MessageData recursive_msg_fe = 1003;
+  GroupFe groupfe = 1004 [
+    features.message_encoding = DELIMITED
+  ];
 
   repeated MessageData.SubMsg msg_re = 1021;
   repeated MessageData.SubMsg.InnerMsg inner_msg_re = 1022;
   repeated MessageData recursive_msg_re = 1023;
-  repeated group GroupRe = 1024 {
-    optional int32 int_f = 1;
-    optional uint32 uint_f = 2;
-  }
+  repeated GroupRe groupre = 1024 [
+    features.message_encoding = DELIMITED
+  ];
+}
+
+message GroupFe {
+  int32 int_f = 1;
+  uint32 uint_f = 2;
+}
+
+message GroupRe {
+  int32 int_f = 1;
+  uint32 uint_f = 2;
 }

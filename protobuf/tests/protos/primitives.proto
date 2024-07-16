@@ -10,7 +10,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto2";
+edition = "2023";
 
 package protos;
 
@@ -19,114 +19,172 @@ option java_multiple_files = true;
 
 message PrimitiveFields {
   // Optional primitive fields.
-  optional int32 int32_f = 1;
-  optional uint32 uint32_f = 2;
-  optional sint32 sint32_f = 3;
-  optional fixed32 fixed32_f = 4;
-  optional sfixed32 sfixed32_f = 5;
-
-  optional int64 int64_f = 6;
-  optional uint64 uint64_f = 7;
-  optional sint64 sint64_f = 8;
-  optional fixed64 fixed64_f = 9;
-  optional sfixed64 sfixed64_f = 10;
-
-  optional bool bool_f = 11;
-
-  optional float float_f = 12;
-  optional double double_f = 13;
+  int32 int32_f = 1;
+  uint32 uint32_f = 2;
+  sint32 sint32_f = 3;
+  fixed32 fixed32_f = 4;
+  sfixed32 sfixed32_f = 5;
+  int64 int64_f = 6;
+  uint64 uint64_f = 7;
+  sint64 sint64_f = 8;
+  fixed64 fixed64_f = 9;
+  sfixed64 sfixed64_f = 10;
+  bool bool_f = 11;
+  float float_f = 12;
+  double double_f = 13;
 
   // Repeated primitive fields.
-  repeated int32 int32_r = 21;
-  repeated uint32 uint32_r = 22;
-  repeated sint32 sint32_r = 23;
-  repeated fixed32 fixed32_r = 24;
-  repeated sfixed32 sfixed32_r = 25;
+  repeated int32 int32_r = 21 [
+    features.repeated_field_encoding = EXPANDED
+  ];
 
-  repeated int64 int64_r = 26;
-  repeated uint64 uint64_r = 27;
-  repeated sint64 sint64_r = 28;
-  repeated fixed64 fixed64_r = 29;
-  repeated sfixed64 sfixed64_r = 30;
+  repeated uint32 uint32_r = 22 [
+    features.repeated_field_encoding = EXPANDED
+  ];
 
-  repeated bool bool_r = 31;
+  repeated sint32 sint32_r = 23 [
+    features.repeated_field_encoding = EXPANDED
+  ];
 
-  repeated float float_r = 32;
-  repeated double double_r = 33;
+  repeated fixed32 fixed32_r = 24 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated sfixed32 sfixed32_r = 25 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated int64 int64_r = 26 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated uint64 uint64_r = 27 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated sint64 sint64_r = 28 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated fixed64 fixed64_r = 29 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated sfixed64 sfixed64_r = 30 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated bool bool_r = 31 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated float float_r = 32 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated double double_r = 33 [
+    features.repeated_field_encoding = EXPANDED
+  ];
 
   // Repeated packed primitive fields.
-  repeated int32 int32_p = 41 [packed=true];
-  repeated uint32 uint32_p = 42 [packed=true];
-  repeated sint32 sint32_p = 43 [packed=true];
-  repeated fixed32 fixed32_p = 44 [packed=true];
-  repeated sfixed32 sfixed32_p = 45 [packed=true];
-
-  repeated int64 int64_p = 46 [packed=true];
-  repeated uint64 uint64_p = 47 [packed=true];
-  repeated sint64 sint64_p = 48 [packed=true];
-  repeated fixed64 fixed64_p = 49 [packed=true];
-  repeated sfixed64 sfixed64_p = 50 [packed=true];
-
-  repeated bool bool_p = 51 [packed=true];
-
-  repeated float float_p = 52 [packed=true];
-  repeated double double_p = 53 [packed=true];
+  repeated int32 int32_p = 41;
+  repeated uint32 uint32_p = 42;
+  repeated sint32 sint32_p = 43;
+  repeated fixed32 fixed32_p = 44;
+  repeated sfixed32 sfixed32_p = 45;
+  repeated int64 int64_p = 46;
+  repeated uint64 uint64_p = 47;
+  repeated sint64 sint64_p = 48;
+  repeated fixed64 fixed64_p = 49;
+  repeated sfixed64 sfixed64_p = 50;
+  repeated bool bool_p = 51;
+  repeated float float_p = 52;
+  repeated double double_p = 53;
 
   extensions 1000 to max;
 }
 
 extend PrimitiveFields {
   // Optional primitive fields.
-  optional int32 int32_fe = 1001;
-  optional uint32 uint32_fe = 1002;
-  optional sint32 sint32_fe = 1003;
-  optional fixed32 fixed32_fe = 1004;
-  optional sfixed32 sfixed32_fe = 1005;
-
-  optional int64 int64_fe = 1006;
-  optional uint64 uint64_fe = 1007;
-  optional sint64 sint64_fe = 1008;
-  optional fixed64 fixed64_fe = 1009;
-  optional sfixed64 sfixed64_fe = 1010;
-
-  optional bool bool_fe = 1011;
-
-  optional float float_fe = 1012;
-  optional double double_fe = 1013;
+  int32 int32_fe = 1001;
+  uint32 uint32_fe = 1002;
+  sint32 sint32_fe = 1003;
+  fixed32 fixed32_fe = 1004;
+  sfixed32 sfixed32_fe = 1005;
+  int64 int64_fe = 1006;
+  uint64 uint64_fe = 1007;
+  sint64 sint64_fe = 1008;
+  fixed64 fixed64_fe = 1009;
+  sfixed64 sfixed64_fe = 1010;
+  bool bool_fe = 1011;
+  float float_fe = 1012;
+  double double_fe = 1013;
 
   // Repeated primitive fields.
-  repeated int32 int32_re = 1021;
-  repeated uint32 uint32_re = 1022;
-  repeated sint32 sint32_re = 1023;
-  repeated fixed32 fixed32_re = 1024;
-  repeated sfixed32 sfixed32_re = 1025;
+  repeated int32 int32_re = 1021 [
+    features.repeated_field_encoding = EXPANDED
+  ];
 
-  repeated int64 int64_re = 1026;
-  repeated uint64 uint64_re = 1027;
-  repeated sint64 sint64_re = 1028;
-  repeated fixed64 fixed64_re = 1029;
-  repeated sfixed64 sfixed64_re = 1030;
+  repeated uint32 uint32_re = 1022 [
+    features.repeated_field_encoding = EXPANDED
+  ];
 
-  repeated bool bool_re = 1031;
+  repeated sint32 sint32_re = 1023 [
+    features.repeated_field_encoding = EXPANDED
+  ];
 
-  repeated float float_re = 1032;
-  repeated double double_re = 1033;
+  repeated fixed32 fixed32_re = 1024 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated sfixed32 sfixed32_re = 1025 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated int64 int64_re = 1026 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated uint64 uint64_re = 1027 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated sint64 sint64_re = 1028 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated fixed64 fixed64_re = 1029 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated sfixed64 sfixed64_re = 1030 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated bool bool_re = 1031 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated float float_re = 1032 [
+    features.repeated_field_encoding = EXPANDED
+  ];
+
+  repeated double double_re = 1033 [
+    features.repeated_field_encoding = EXPANDED
+  ];
 
   // Repeated packed primitive fields.
-  repeated int32 int32_pe = 1041 [packed=true];
-  repeated uint32 uint32_pe = 1042 [packed=true];
-  repeated sint32 sint32_pe = 1043 [packed=true];
-  repeated fixed32 fixed32_pe = 1044 [packed=true];
-  repeated sfixed32 sfixed32_pe = 1045 [packed=true];
-
-  repeated int64 int64_pe = 1046 [packed=true];
-  repeated uint64 uint64_pe = 1047 [packed=true];
-  repeated sint64 sint64_pe = 1048 [packed=true];
-  repeated fixed64 fixed64_pe = 1049 [packed=true];
-  repeated sfixed64 sfixed64_pe = 1050 [packed=true];
-
-  repeated bool bool_pe = 1051 [packed=true];
-
-  repeated float float_pe = 1052 [packed=true];
-  repeated double double_pe = 1053 [packed=true];
+  repeated int32 int32_pe = 1041;
+  repeated uint32 uint32_pe = 1042;
+  repeated sint32 sint32_pe = 1043;
+  repeated fixed32 fixed32_pe = 1044;
+  repeated sfixed32 sfixed32_pe = 1045;
+  repeated int64 int64_pe = 1046;
+  repeated uint64 uint64_pe = 1047;
+  repeated sint64 sint64_pe = 1048;
+  repeated fixed64 fixed64_pe = 1049;
+  repeated sfixed64 sfixed64_pe = 1050;
+  repeated bool bool_pe = 1051;
+  repeated float float_pe = 1052;
+  repeated double double_pe = 1053;
 }

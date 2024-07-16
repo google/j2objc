@@ -56,7 +56,12 @@ class J2ObjCGenerator : public CodeGenerator {
   bool Generate(const FileDescriptor* file, const std::string& parameter,
                 GeneratorContext* context, std::string* error) const;
 
-  uint64_t GetSupportedFeatures() const;
+  uint64_t GetSupportedFeatures() const {
+    return FEATURE_PROTO3_OPTIONAL | FEATURE_SUPPORTS_EDITIONS;
+  }
+
+  Edition GetMinimumEdition() const override { return Edition::EDITION_PROTO2; }
+  Edition GetMaximumEdition() const override { return Edition::EDITION_2023; }
 
  private:
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(J2ObjCGenerator);

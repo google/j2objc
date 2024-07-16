@@ -10,26 +10,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto2";
+edition = "2023";
 
 package protos;
 
+option features.repeated_field_encoding = EXPANDED;
+option features.utf8_validation = NONE;
 option java_package = "protos";
 option java_multiple_files = true;
 
 message TypicalData {
-  optional int32 my_int = 1;
-  optional bytes my_bytes = 2;
+  int32 my_int = 1;
+  bytes my_bytes = 2;
 
   enum EnumType {
+    option features.enum_type = CLOSED;
+
     VALUE1 = 1;
     VALUE2 = 2;
     VALUE3 = 3;
     VALUE4 = 4;
     VALUE9 = 9;
   }
-  optional EnumType my_enum_type = 3;
 
+  EnumType my_enum_type = 3;
   repeated int32 repeated_int32 = 4;
   repeated bool repeated_bool = 5;
   repeated float repeated_float = 6;
@@ -37,21 +41,17 @@ message TypicalData {
   repeated string repeated_string = 8;
   repeated bytes repeated_bytes = 9;
   repeated EnumType repeated_enum = 10;
-
-  optional TypicalDataMessage my_message = 11;
-
-  optional bool my_bool = 12;
-  optional float my_float = 13;
-  optional double my_double = 14;
-  optional string my_string = 15;
-  optional uint32 my_uint = 16;
-  optional int64 my_long = 17;
-  optional uint64 my_ulong = 18;
-
+  TypicalDataMessage my_message = 11;
+  bool my_bool = 12;
+  float my_float = 13;
+  double my_double = 14;
+  string my_string = 15;
+  uint32 my_uint = 16;
+  int64 my_long = 17;
+  uint64 my_ulong = 18;
   repeated int64 repeated_int64 = 19;
   repeated uint32 repeated_uint32 = 20;
   repeated uint64 repeated_uint64 = 21;
-
   repeated TypicalDataMessage repeated_message = 22;
 
   extensions 1000 to max;
@@ -62,40 +62,53 @@ message TypicalDataSet {
 }
 
 message TypicalDataMessage {
-  optional int32 my_message_int = 1;
+  int32 my_message_int = 1;
 }
 
 extend TypicalData {
-  optional TypicalDataMessage my_extension = 1000;
-  optional int32 my_primitive_extension = 1001;
+  TypicalDataMessage my_extension = 1000;
+  int32 my_primitive_extension = 1001;
   repeated int32 my_repeated_primitive_extension = 1002;
   repeated TypicalDataMessage my_repeated_extension = 1003;
-  optional TypicalData.EnumType my_enum_extension = 1004;
-  optional bytes my_bytes_extension = 1005;
-  optional bool my_bool_extension = 1006;
-  optional MsgWithDefaults my_extension_with_defaults = 1007;
+  TypicalData.EnumType my_enum_extension = 1004;
+  bytes my_bytes_extension = 1005;
+  bool my_bool_extension = 1006;
+  MsgWithDefaults my_extension_with_defaults = 1007;
 }
 
 message MsgWithDefaults {
-  optional int32 my_int32 = 1 [default = 13];
-  optional bool my_bool = 2 [default = true];
-  optional string my_string = 3 [default = "foo"];
-  optional TypicalData.EnumType my_enum = 4 [default = VALUE4];
+  int32 my_int32 = 1 [
+    default = 13
+  ];
+
+  bool my_bool = 2 [
+    default = true
+  ];
+
+  string my_string = 3 [
+    default = "foo"
+  ];
+
+  TypicalData.EnumType my_enum = 4 [
+    default = VALUE4
+  ];
 }
 
 message MsgWithRequiredFields {
-  required int32 required_int32 = 1;
+  int32 required_int32 = 1 [
+    features.field_presence = LEGACY_REQUIRED
+  ];
 }
 
 message MsgWithSpecialFieldNames {
-  optional int32 id = 1;
-  optional double and_eq = 2;
-  optional string zone = 3;
+  int32 id = 1;
+  double and_eq = 2;
+  string zone = 3;
   repeated int32 self = 4;
 }
 
 message MsgWithNestedExtensions {
   extend TypicalData {
-    optional int32 int_ext = 2000;
+    int32 int_ext = 2000;
   }
 }

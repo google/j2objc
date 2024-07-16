@@ -10,10 +10,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto3";
+edition = "2023";
 
 package protos;
 
+option features.field_presence = IMPLICIT;
 option java_package = "protos";
 option java_multiple_files = true;
 
@@ -31,6 +32,7 @@ message FruitBox {
 enum Greetings {
   ENUM_TYPE_NAME_UNKNOWN = 0;
   HELLO = 1;
+
   // Use an enum value that's the same as the UNRECOGNIZED value, to test
   // that they are differentiated by the runtime.
   GOODBYE = -1;

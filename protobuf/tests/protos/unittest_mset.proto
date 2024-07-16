@@ -37,40 +37,45 @@
 
 // LINT: ALLOW_GROUPS
 
-syntax = "proto2";
-
-import public "unittest_mset_wire_format.proto";
+edition = "2023";
 
 package protobuf_unittest;
 
-option cc_enable_arenas = true;
+import public
+// "unittest_mset_wire_format.proto";
+
+option features.utf8_validation = NONE;
 option optimize_for = SPEED;
 option java_package = "protobuf_unittest";
 
 message TestMessageSetContainer {
-  optional proto2_wireformat_unittest.TestMessageSet message_set = 1;
+  proto2_wireformat_unittest.TestMessageSet message_set = 1;
 }
 
 message TestMessageSetExtension1 {
   extend proto2_wireformat_unittest.TestMessageSet {
-    optional TestMessageSetExtension1 message_set_extension = 1545008;
+    TestMessageSetExtension1 message_set_extension = 1545008;
   }
-  optional int32 i = 15;
-  optional proto2_wireformat_unittest.TestMessageSet recursive = 16;
-  optional string test_aliasing = 17 [ctype = STRING_PIECE];
+
+  int32 i = 15;
+  proto2_wireformat_unittest.TestMessageSet recursive = 16;
+  string test_aliasing = 17 [ctype = STRING_PIECE];
 }
 
 message TestMessageSetExtension2 {
   extend proto2_wireformat_unittest.TestMessageSet {
-    optional TestMessageSetExtension2 message_set_extension = 1547769;
+    TestMessageSetExtension2 message_set_extension = 1547769;
   }
-  optional string str = 25;
+
+  string str = 25;
 }
 
 // MessageSet wire format is equivalent to this.
 message RawMessageSet {
-  repeated group Item = 1 {
-    optional int32 type_id = 2;
-    optional bytes message = 3;
+  message Item {
+    int32 type_id = 2;
+    bytes message = 3;
   }
+
+  repeated Item item = 1 [features.message_encoding = DELIMITED];
 }

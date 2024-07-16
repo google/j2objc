@@ -28,7 +28,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-syntax = "proto3";
+edition = "2023";
 
 package field_presence_test;
 
@@ -43,6 +43,7 @@ message TestAllTypes {
     BAR = 1;
     BAZ = 2;
   }
+
   message NestedMessage {
     int32 value = 1;
   }
@@ -53,7 +54,9 @@ message TestAllTypes {
   NestedEnum optional_nested_enum = 4;
   NestedMessage optional_nested_message = 5;
   protobuf_unittest.TestRequired optional_proto2_message = 6;
-  NestedMessage optional_lazy_message = 7 [lazy = true];
+  NestedMessage optional_lazy_message = 7 [
+    lazy = true
+  ];
 
   oneof oneof_field {
     int32 oneof_int32 = 11;
@@ -71,7 +74,7 @@ message TestAllTypes {
   repeated NestedEnum repeated_nested_enum = 24;
   repeated NestedMessage repeated_nested_message = 25;
   repeated protobuf_unittest.TestRequired repeated_proto2_message = 26;
-  repeated NestedEnum packed_nested_enum = 27 [packed = true];
+  repeated NestedEnum packed_nested_enum = 27;
 }
 
 message TestOptionalFieldsOnly {
@@ -81,7 +84,9 @@ message TestOptionalFieldsOnly {
   TestAllTypes.NestedEnum optional_nested_enum = 4;
   TestAllTypes.NestedMessage optional_nested_message = 5;
   protobuf_unittest.TestRequired optional_proto2_message = 6;
-  TestAllTypes.NestedMessage optional_lazy_message = 7 [lazy = true];
+  TestAllTypes.NestedMessage optional_lazy_message = 7 [
+    lazy = true
+  ];
 }
 
 message TestRepeatedFieldsOnly {

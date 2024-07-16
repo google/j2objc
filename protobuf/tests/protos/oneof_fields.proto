@@ -10,18 +10,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto2";
+edition = "2023";
 
 package protos;
 
+option features.utf8_validation = NONE;
 option java_package = "protos";
 option java_multiple_files = true;
 
 message OneofMsg {
   // Field numbers are intentionally rearranged to test serialization order.
-  optional string regular_string = 3;
-  optional int32 regular_int = 2;
-  optional OneofFoo regular_message = 5;
+  string regular_string = 3;
+  int32 regular_int = 2;
+  OneofFoo regular_message = 5;
 
   oneof oneof_group {
     string oneof_string = 6;
@@ -31,5 +32,5 @@ message OneofMsg {
 }
 
 message OneofFoo {
-  optional string foo = 1;
+  string foo = 1;
 }

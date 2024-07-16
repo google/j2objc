@@ -10,10 +10,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto2";
+edition = "2023";
 
 package protos;
 
+option features.enum_type = CLOSED;
+option features.repeated_field_encoding = EXPANDED;
 option java_package = "protos";
 option java_multiple_files = true;
 
@@ -40,38 +42,39 @@ message EnumMsg {
     }
   }
 
-  optional Shape enum_f = 1;
-  optional Color outer_enum_f = 2;
-  optional InnerMsg.Utensil inner_enum_f = 3;
-
+  Shape enum_f = 1;
+  Color outer_enum_f = 2;
+  InnerMsg.Utensil inner_enum_f = 3;
   repeated Shape enum_r = 21;
   repeated Color outer_enum_r = 22;
   repeated InnerMsg.Utensil inner_enum_r = 23;
-
-  repeated Shape enum_p = 41 [packed = true];
+  repeated Shape enum_p = 41 [
+    features.repeated_field_encoding = PACKED
+  ];
 
   extensions 1000 to max;
 }
 
 extend EnumMsg {
-  optional EnumMsg.Shape enum_fe = 1001;
-  optional Color outer_enum_fe = 1002;
-  optional EnumMsg.InnerMsg.Utensil inner_enum_fe = 1003;
-
+  EnumMsg.Shape enum_fe = 1001;
+  Color outer_enum_fe = 1002;
+  EnumMsg.InnerMsg.Utensil inner_enum_fe = 1003;
   repeated EnumMsg.Shape enum_re = 1021;
   repeated Color outer_enum_re = 1022;
   repeated EnumMsg.InnerMsg.Utensil inner_enum_re = 1023;
-
-  repeated EnumMsg.Shape enum_pe = 1041 [packed = true];
+  repeated EnumMsg.Shape enum_pe = 1041 [
+    features.repeated_field_encoding = PACKED
+  ];
 }
 
 message Foo {
-  optional SomeEnum e = 1;
+  SomeEnum e = 1;
 }
 
 // Enum to verify proto3 enum support doesn't break proto2 use.
 enum SomeEnum {
   UNKNOWN = 0;
+
   // This is a doppelgänger meant to make a proto2 enum look like is
   // generated for all proto3 enums.
   UNRECOGNIZED = -1;

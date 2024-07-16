@@ -10,20 +10,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto2";
+edition = "2023";
 
 package protos;
 
+option features.utf8_validation = NONE;
 option java_package = "protos";
 option java_multiple_files = true;
 
 message StringMsg {
-  optional string empty_f = 1;
-  optional string ascii_f = 2;
-  optional string non_ascii_f = 3;
-  optional bytes bytes_f = 4;
-  optional string default_string_f = 5 [default = "abc"];
-  optional bytes default_bytes_f = 6 [default = "def"];
+  string empty_f = 1;
+  string ascii_f = 2;
+  string non_ascii_f = 3;
+  bytes bytes_f = 4;
+  string default_string_f = 5 [
+    default = "abc"
+  ];
+
+  bytes default_bytes_f = 6 [
+    default = "def"
+  ];
 
   repeated string empty_r = 21;
   repeated string ascii_r = 22;
@@ -34,12 +40,17 @@ message StringMsg {
 }
 
 extend StringMsg {
-  optional string empty_fe = 1001;
-  optional string ascii_fe = 1002;
-  optional string non_ascii_fe = 1003;
-  optional bytes bytes_fe = 1004;
-  optional string default_string_fe = 1005 [default = "ghi"];
-  optional bytes default_bytes_fe = 1006 [default = "jkl"];
+  string empty_fe = 1001;
+  string ascii_fe = 1002;
+  string non_ascii_fe = 1003;
+  bytes bytes_fe = 1004;
+  string default_string_fe = 1005 [
+    default = "ghi"
+  ];
+
+  bytes default_bytes_fe = 1006 [
+    default = "jkl"
+  ];
 
   repeated string empty_re = 1021;
   repeated string ascii_re = 1022;

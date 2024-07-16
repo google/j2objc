@@ -10,10 +10,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto2";
+edition = "2023";
 
 package protos;
 
+option features.repeated_field_encoding = EXPANDED;
 option java_package = "protos";
 option java_multiple_files = true;
 
@@ -21,11 +22,11 @@ message NoFields {
 }
 
 message SingleInt {
-  optional int32 int = 1;
+  int32 int = 1;
 }
 
 message SingleLong {
-  optional int64 long = 1;
+  int64 long = 1;
 }
 
 message SingleRepeatedInt {
@@ -37,7 +38,7 @@ message SingleRepeatedLong {
 }
 
 message SingleMessage {
-  optional NoFields msg = 1;
+  NoFields msg = 1;
 }
 
 message SingleRepeatedMessage {
@@ -49,6 +50,6 @@ message MessageWithExtensions {
 }
 
 extend MessageWithExtensions {
-  optional int32 int_ext = 1000;
+  int32 int_ext = 1000;
   repeated int32 repeated_int_ext = 1001;
 }

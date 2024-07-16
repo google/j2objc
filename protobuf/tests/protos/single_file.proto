@@ -10,22 +10,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto2";
+edition = "2023";
 
 package protos;
 
+option features.utf8_validation = NONE;
 option java_package = "protos";
+
 // The point of this .proto is to test java_multiple_files = false.
 option java_multiple_files = false;
 
 message Data1 {
-  optional int32 int_value = 1;
+  int32 int_value = 1;
 
   message Internal {
-    optional int32 int_value = 1;
+    int32 int_value = 1;
   }
 
   repeated Internal internal_repeated = 2;
-
   repeated string repeated_string = 3;
 }

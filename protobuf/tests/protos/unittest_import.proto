@@ -10,10 +10,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// A proto file which is imported by unittest.proto to test importing, a simplified version of
+// A proto file which is imported by unittest.proto to test importing, a
+// simplified version of
 // https://github.com/protocolbuffers/protobuf/blob/master/src/google/protobuf/unittest_import.proto
 
-syntax = "proto2";
+edition = "2023";
 
 // We don't put this in a package within proto2 because we need to make sure
 // that the generated code doesn't depend on being in the proto2 namespace.
@@ -21,20 +22,20 @@ syntax = "proto2";
 // "using namespace unittest_import = protobuf_unittest_import".
 package protobuf_unittest_import;
 
-option optimize_for = SPEED;
-option cc_enable_arenas = true;
-
-// Exercise the java_package option.
-option java_package = "com.google.protobuf.test";
-
 // Do not set a java_outer_classname here to verify that Proto2 works without
 // one.
 
 // Test public import
 import public "unittest_import_public.proto";
 
+option features.enum_type = CLOSED;
+option optimize_for = SPEED;
+
+// Exercise the java_package option.
+option java_package = "com.google.protobuf.test";
+
 message ImportMessage {
-  optional int32 d = 1;
+  int32 d = 1;
 }
 
 enum ImportEnum {
@@ -42,7 +43,6 @@ enum ImportEnum {
   IMPORT_BAR = 8;
   IMPORT_BAZ = 9;
 }
-
 
 // To use an enum in a map, it must has the first value as 0.
 enum ImportEnumForMap {

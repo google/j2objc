@@ -34,10 +34,10 @@
 //
 // This file contains messages for testing message_set_wire_format.
 
-syntax = "proto2";
+edition = "2023";
+
 package proto2_wireformat_unittest;
 
-option cc_enable_arenas = true;
 option optimize_for = SPEED;
 option csharp_namespace = "Google.ProtocolBuffers.TestProtos";
 option java_package = "proto2_wireformat_unittest";
@@ -45,9 +45,10 @@ option java_package = "proto2_wireformat_unittest";
 // A message with message_set_wire_format.
 message TestMessageSet {
   option message_set_wire_format = true;
+
   extensions 4 to max;
 }
 
 message TestMessageSetWireFormatContainer {
-  optional TestMessageSet message_set = 1;
+  TestMessageSet message_set = 1;
 }
