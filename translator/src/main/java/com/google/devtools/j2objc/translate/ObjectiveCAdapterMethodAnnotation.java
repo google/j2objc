@@ -116,7 +116,9 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
         List<Adaptation> adaptations = new ArrayList<>();
         for (AnnotationValue av : annotationValues) {
           for (Adaptation adaptation : Adaptation.values()) {
-            if (av.toString().equals(adaptation.toString())) {
+            // Match fully qualified and unqualified enum names.
+            if (av.toString().equals(adaptation.toString())
+                || av.toString().endsWith("." + adaptation.toString())) {
               adaptations.add(adaptation);
             }
           }

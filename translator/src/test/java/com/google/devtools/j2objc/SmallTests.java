@@ -66,7 +66,9 @@ import com.google.devtools.j2objc.translate.LogSiteInjectorTest;
 import com.google.devtools.j2objc.translate.MetadataWriterTest;
 import com.google.devtools.j2objc.translate.NilCheckResolverTest;
 import com.google.devtools.j2objc.translate.NumberMethodRewriterTest;
+import com.google.devtools.j2objc.translate.ObjectiveCAdapterMethodAnnotationTest;
 import com.google.devtools.j2objc.translate.ObjectiveCNativeEnumNameTest;
+import com.google.devtools.j2objc.translate.ObjectiveCNativeProtocolAnnotationTest;
 import com.google.devtools.j2objc.translate.OcniExtractorTest;
 import com.google.devtools.j2objc.translate.OperatorRewriterTest;
 import com.google.devtools.j2objc.translate.OuterReferenceFixerTest;
@@ -155,13 +157,11 @@ public class SmallTests {
         NameTableTest.class,
         NilCheckResolverTest.class,
         NumberMethodRewriterTest.class,
-        // TODO b/347091750: reenable test
-        // ObjectiveCAdapterMethodAnnotationTest.class,
+        ObjectiveCAdapterMethodAnnotationTest.class,
         ObjectiveCHeaderGeneratorTest.class,
         ObjectiveCImplementationGeneratorTest.class,
         ObjectiveCNativeEnumNameTest.class,
-        // TODO b/347091750: reenable test
-        // ObjectiveCNativeProtocolAnnotationTest.class,
+        ObjectiveCNativeProtocolAnnotationTest.class,
         ObjectiveCSegmentedHeaderGeneratorTest.class,
         ObjectiveCSourceFileGeneratorTest.class,
         OcniExtractorTest.class,

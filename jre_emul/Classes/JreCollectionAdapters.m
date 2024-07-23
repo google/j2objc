@@ -92,7 +92,8 @@
 - (id)objectAtIndex:(NSUInteger)index {
   // _size previously constrained to jint/int32_t range implicitly in initializer.
   if (index >= _size) {
-    [NSException raise:NSRangeException format:@"%@ index %lu beyond bounds.", [self class], index];
+    [NSException raise:NSRangeException
+                format:@"%@ index %lu beyond bounds.", [self class], (unsigned long)index];
     return nil;  // Won't get here.
   }
   return [_list getWithInt:(jint)index];
