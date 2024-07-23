@@ -94,7 +94,7 @@ const std::string &FieldName(const FieldDescriptor *field) {
   // Groups are hacky:  The name of the field is just the lower-cased name
   // of the group type.  In Java, though, we would like to retain the original
   // capitalization of the type name.
-  if (proto2::internal::cpp::IsGroupLike(*field)) {
+  if (internal::cpp::IsGroupLike(*field)) {
     return field->message_type()->name();
   } else {
     return field->name();

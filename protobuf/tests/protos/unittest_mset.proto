@@ -41,8 +41,7 @@ edition = "2023";
 
 package protobuf_unittest;
 
-import public
-// "unittest_mset_wire_format.proto";
+import public "unittest_mset_wire_format.proto";
 
 option features.utf8_validation = NONE;
 option optimize_for = SPEED;
