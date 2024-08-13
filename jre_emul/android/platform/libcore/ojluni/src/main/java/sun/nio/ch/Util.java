@@ -35,8 +35,11 @@ import java.nio.ByteBuffer;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import sun.misc.Unsafe;
 import sun.misc.Cleaner;
 import sun.security.action.GetPropertyAction;
@@ -498,33 +501,14 @@ public class Util {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static <E> BlockingQueue<E> createArrayBlockingQueue(int capacity) {
-        try {
-            Class<?> cls = Class.forName("java.util.concurrent.ArrayBlockingQueue");
-            java.lang.reflect.Constructor<?> cons = cls.getDeclaredConstructor(Integer.TYPE);
-            return (BlockingQueue<E>) cons.newInstance(capacity);
-        } catch (Exception e) {
-            throw new LibraryNotLinkedError("java.util.concurrent support", "jre_concurrent",
-                "JavaUtilConcurrentArrayBlockingQueue");
-        }
+        return new ArrayBlockingQueue<E>(capacity);
     }
 
     public static <E> Queue<E> createConcurrentLinkedQueue() {
-        try {
-            Class<?> cls = Class.forName("java.util.concurrent.ConcurrentLinkedQueue");
-            return (Queue<E>) cls.newInstance();
-        } catch (Exception e) {
-            throw new LibraryNotLinkedError("java.util.concurrent support", "jre_concurrent",
-                "JavaUtilConcurrentConcurrentLinkedQueue");
-        }
+        return new ConcurrentLinkedQueue<E>();
     }
 
     public static ReadWriteLock createReentrantReadWriteLock() {
-        try {
-            Class<?> cls = Class.forName("java.util.concurrent.locks.ReentrantReadWriteLock");
-            return (ReadWriteLock) cls.newInstance();
-        } catch (Exception e) {
-            throw new LibraryNotLinkedError("java.util.concurrent support", "jre_concurrent",
-                "JavaUtilConcurrentLocksReentrantReadWriteLock");
-        }
+        return new ReentrantReadWriteLock();
     }
 }
