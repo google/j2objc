@@ -353,7 +353,8 @@ $(TESTS_DIR)/core_plus_file:
 
 $(TESTS_DIR)/core_plus_channels:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_channels -ljre_net -ljre_security -ljre_util -o $@ -ObjC $(COVERAGE_FLAGS)
+	$(J2OBJCC) -ljre_channels -ljre_net -ljre_security -ljre_util -ljre_concurrent \
+	    -o $@ -ObjC $(COVERAGE_FLAGS)
 
 $(TESTS_DIR)/core_plus_security:
 	@mkdir -p $(@D)
