@@ -158,7 +158,7 @@ class JavacJ2ObjCIncompatibleStripper extends TreeScanner<Void, Void> {
       }
       int endPos = endPosition(node);
       // If node is an enum constant, check for trailing comma and remove that, too.
-      if (node.getKind() == Tree.Kind.VARIABLE) {
+      if (node.getKind().name().equals("VARIABLE")) {
         JCTree.JCVariableDecl varNode = (JCTree.JCVariableDecl) node;
         long flags = varNode.getModifiers().flags;
         if ((flags & Flags.ENUM) > 0) {
@@ -195,10 +195,10 @@ class JavacJ2ObjCIncompatibleStripper extends TreeScanner<Void, Void> {
   }
 
   private String getLastComponent(Tree name) {
-    switch (name.getKind()) {
-      case IDENTIFIER:
+    switch (name.getKind().name()) {
+      case "IDENTIFIER":
         return ((IdentifierTree) name).getName().toString();
-      case MEMBER_SELECT:
+      case "MEMBER_SELECT":
         return ((MemberSelectTree) name).getIdentifier().toString();
       default:
         return "";

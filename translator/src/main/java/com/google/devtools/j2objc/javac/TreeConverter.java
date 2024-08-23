@@ -162,7 +162,6 @@ import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.SynchronizedTree;
 import com.sun.source.tree.ThrowTree;
 import com.sun.source.tree.Tree;
-import com.sun.source.tree.Tree.Kind;
 import com.sun.source.tree.TryTree;
 import com.sun.source.tree.TypeCastTree;
 import com.sun.source.tree.UnaryTree;
@@ -194,7 +193,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
@@ -204,14 +202,19 @@ import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.JavaFileObject;
+import org.jspecify.annotations.Nullable;
 
 /** Converts a Java AST from the Javac data structure to our J2ObjC data structure. */
+@Nullable
 public class TreeConverter {
   private final CompilationUnitTree unit;
   private final JavacEnvironment env;
   private CompilationUnit newUnit;
   private final Trees trees;
   private final SourcePositions sourcePositions;
+
+  // Note: due to new constants added to the Tree.Kind and ElementKind enums between supported
+  // JDK versions, we need to reference those constants by name.
 
   public static CompilationUnit convertCompilationUnit(
       Options options, JavacEnvironment env, CompilationUnitTree javacUnit) {
@@ -226,11 +229,11 @@ public class TreeConverter {
       TreePath path = new TreePath(javacUnit);
       converter.newUnit.setPackage(converter.convertPackage(path));
       for (Tree type : javacUnit.getTypeDecls()) {
-        if (type.getKind() == Kind.IMPORT) {
+        if (type.getKind().name().equals("IMPORT")) {
           continue;
         }
         TreeNode newNode = converter.convert(type, path);
-        if (newNode.getKind() != TreeNode.Kind.EMPTY_STATEMENT) {
+        if (!newNode.getKind().name().equals("EMPTY_STATEMENT")) {
           converter.newUnit.addType((AbstractTypeDeclaration) newNode);
         }
       }
@@ -254,6 +257,7 @@ public class TreeConverter {
     sourcePositions = trees.getSourcePositions();
   }
 
+  @Nullable
   private TreeNode convert(Tree node, TreePath parent) {
     if (node == null) {
       return null;
@@ -275,159 +279,160 @@ public class TreeConverter {
     return getSourcePosition(startPosition, length);
   }
 
-  @SuppressWarnings("fallthrough")
   private TreeNode convertInner(Tree javacNode, TreePath parent) {
-    switch (javacNode.getKind()) {
-      case ANNOTATION:
-      case TYPE_ANNOTATION:
+    switch (javacNode.getKind().name()) {
+      case "ANNOTATION":
+      case "TYPE_ANNOTATION":
         return convertAnnotation((AnnotationTree) javacNode, parent);
-      case ANNOTATION_TYPE:
+      case "ANNOTATION_TYPE":
         return convertAnnotationTypeDeclaration((ClassTree) javacNode, parent);
-      case ARRAY_ACCESS:
+      case "ARRAY_ACCESS":
         return convertArrayAccess((ArrayAccessTree) javacNode, parent);
-      case ARRAY_TYPE:
+      case "ARRAY_TYPE":
         return convertArrayType((ArrayTypeTree) javacNode, parent);
-      case ASSERT:
+      case "ASSERT":
         return convertAssert((AssertTree) javacNode, parent);
-      case ASSIGNMENT:
+      case "ASSIGNMENT":
         return convertAssignment((AssignmentTree) javacNode, parent);
-      case BLOCK:
+      case "BLOCK":
         return convertBlock((BlockTree) javacNode, parent);
-      case BREAK:
+      case "BREAK":
         return convertBreakStatement((BreakTree) javacNode);
-      case CASE:
+      case "CASE":
         return convertCase((CaseTree) javacNode, parent);
-      case CATCH:
+      case "CATCH":
         return convertCatch((CatchTree) javacNode, parent);
-      case CLASS:
+      case "CLASS":
         return convertClassDeclaration((ClassTree) javacNode, parent);
-      case COMPILATION_UNIT:
+      case "COMPILATION_UNIT":
         throw new AssertionError(
             "CompilationUnit must be converted using convertCompilationUnit()");
-      case CONDITIONAL_EXPRESSION:
+      case "CONDITIONAL_EXPRESSION":
         return convertConditionalExpression((ConditionalExpressionTree) javacNode, parent);
-      case CONTINUE:
+      case "CONTINUE":
         return convertContinueStatement((ContinueTree) javacNode);
-      case DO_WHILE_LOOP:
+      case "DO_WHILE_LOOP":
         return convertDoStatement((DoWhileLoopTree) javacNode, parent);
-      case EMPTY_STATEMENT:
+      case "EMPTY_STATEMENT":
         return new EmptyStatement();
-      case ENHANCED_FOR_LOOP:
+      case "ENHANCED_FOR_LOOP":
         return convertEnhancedForStatement((EnhancedForLoopTree) javacNode, parent);
-      case ENUM:
+      case "ENUM":
         return convertEnum((ClassTree) javacNode, parent);
-      case EXPRESSION_STATEMENT:
+      case "EXPRESSION_STATEMENT":
         return convertExpressionStatement((ExpressionStatementTree) javacNode, parent);
-      case FOR_LOOP:
+      case "FOR_LOOP":
         return convertForLoop((ForLoopTree) javacNode, parent);
-      case IDENTIFIER:
+      case "IDENTIFIER":
         return convertIdent((IdentifierTree) javacNode, parent);
-      case INSTANCE_OF:
+      case "INSTANCE_OF":
         return convertInstanceOf((InstanceOfTree) javacNode, parent);
-      case INTERFACE:
+      case "INTERFACE":
         return convertClassDeclaration((ClassTree) javacNode, parent);
-      case IF:
+      case "IF":
         return convertIf((IfTree) javacNode, parent);
-      case LABELED_STATEMENT:
+      case "LABELED_STATEMENT":
         return convertLabeledStatement((LabeledStatementTree) javacNode, parent);
-      case LAMBDA_EXPRESSION:
+      case "LAMBDA_EXPRESSION":
         return convertLambda((LambdaExpressionTree) javacNode, parent);
-      case MEMBER_REFERENCE:
+      case "MEMBER_REFERENCE":
         return convertMemberReference((MemberReferenceTree) javacNode, parent);
-      case MEMBER_SELECT:
+      case "MEMBER_SELECT":
         return convertFieldAccess((MemberSelectTree) javacNode, parent);
-      case METHOD:
+      case "METHOD":
         return convertMethodDeclaration((MethodTree) javacNode, parent);
-      case METHOD_INVOCATION:
+      case "METHOD_INVOCATION":
         return convertMethodInvocation((MethodInvocationTree) javacNode, parent);
-      case NEW_ARRAY:
+      case "NEW_ARRAY":
         return convertNewArray((NewArrayTree) javacNode, parent);
-      case NEW_CLASS:
+      case "NEW_CLASS":
         return convertNewClass((NewClassTree) javacNode, parent);
-      case PARAMETERIZED_TYPE:
+      case "PARAMETERIZED_TYPE":
         return convertTypeApply((ParameterizedTypeTree) javacNode, parent);
-      case PARENTHESIZED:
+      case "PARENTHESIZED":
         return convertParens((ParenthesizedTree) javacNode, parent);
-      case PRIMITIVE_TYPE:
+      case "PRIMITIVE_TYPE":
         return convertPrimitiveType((PrimitiveTypeTree) javacNode, parent);
-      case RETURN:
+      case "RETURN":
         return convertReturn((ReturnTree) javacNode, parent);
-      case SWITCH:
+      case "SWITCH":
         return convertSwitch((SwitchTree) javacNode, parent);
-      case THROW:
+      case "THROW":
         return convertThrow((ThrowTree) javacNode, parent);
-      case TRY:
+      case "TRY":
         return convertTry((TryTree) javacNode, parent);
-      case TYPE_CAST:
+      case "TYPE_CAST":
         return convertTypeCast((TypeCastTree) javacNode, parent);
-      case VARIABLE:
+      case "VARIABLE":
         return convertVariableDeclaration((VariableTree) javacNode, parent);
-      case WHILE_LOOP:
+      case "WHILE_LOOP":
         return convertWhileLoop((WhileLoopTree) javacNode, parent);
 
-      case BOOLEAN_LITERAL:
+      case "BOOLEAN_LITERAL":
         return convertBooleanLiteral((LiteralTree) javacNode, parent);
-      case CHAR_LITERAL:
+      case "CHAR_LITERAL":
         return convertCharLiteral((LiteralTree) javacNode, parent);
-      case DOUBLE_LITERAL:
-      case FLOAT_LITERAL:
-      case INT_LITERAL:
-      case LONG_LITERAL:
+      case "DOUBLE_LITERAL":
+      case "FLOAT_LITERAL":
+      case "INT_LITERAL":
+      case "LONG_LITERAL":
         return convertNumberLiteral((LiteralTree) javacNode, parent);
-      case STRING_LITERAL:
+      case "STRING_LITERAL":
         return convertStringLiteral((LiteralTree) javacNode, parent);
-      case SYNCHRONIZED:
+      case "SYNCHRONIZED":
         return convertSynchronized((SynchronizedTree) javacNode, parent);
-      case NULL_LITERAL:
+      case "NULL_LITERAL":
         return new NullLiteral(getTypeMirror(getTreePath(parent, javacNode)));
 
-      case AND:
-      case CONDITIONAL_AND:
-      case CONDITIONAL_OR:
-      case DIVIDE:
-      case EQUAL_TO:
-      case GREATER_THAN:
-      case GREATER_THAN_EQUAL:
-      case LEFT_SHIFT:
-      case LESS_THAN:
-      case LESS_THAN_EQUAL:
-      case MINUS:
-      case MULTIPLY:
-      case NOT_EQUAL_TO:
-      case OR:
-      case PLUS:
-      case REMAINDER:
-      case RIGHT_SHIFT:
-      case UNSIGNED_RIGHT_SHIFT:
-      case XOR:
+      case "AND":
+      case "CONDITIONAL_AND":
+      case "CONDITIONAL_OR":
+      case "DIVIDE":
+      case "EQUAL_TO":
+      case "GREATER_THAN":
+      case "GREATER_THAN_EQUAL":
+
+      case "LEFT_SHIFT":
+      case "LESS_THAN":
+      case "LESS_THAN_EQUAL":
+      case "MINUS":
+      case "MULTIPLY":
+      case "NOT_EQUAL_TO":
+      case "OR":
+      case "PLUS":
+      case "REMAINDER":
+      case "RIGHT_SHIFT":
+      case "UNSIGNED_RIGHT_SHIFT":
+      case "XOR":
         return convertBinary((BinaryTree) javacNode, parent);
 
-      case BITWISE_COMPLEMENT:
-      case LOGICAL_COMPLEMENT:
-      case PREFIX_DECREMENT:
-      case PREFIX_INCREMENT:
-      case UNARY_MINUS:
-      case UNARY_PLUS:
+      case "BITWISE_COMPLEMENT":
+      case "LOGICAL_COMPLEMENT":
+      case "PREFIX_DECREMENT":
+      case "PREFIX_INCREMENT":
+      case "UNARY_MINUS":
+      case "UNARY_PLUS":
         return convertPrefixExpr((UnaryTree) javacNode, parent);
 
-      case POSTFIX_DECREMENT:
-      case POSTFIX_INCREMENT:
+      case "POSTFIX_DECREMENT":
+      case "POSTFIX_INCREMENT":
         return convertPostExpr((UnaryTree) javacNode, parent);
 
-      case AND_ASSIGNMENT:
-      case DIVIDE_ASSIGNMENT:
-      case LEFT_SHIFT_ASSIGNMENT:
-      case MINUS_ASSIGNMENT:
-      case MULTIPLY_ASSIGNMENT:
-      case OR_ASSIGNMENT:
-      case PLUS_ASSIGNMENT:
-      case REMAINDER_ASSIGNMENT:
-      case RIGHT_SHIFT_ASSIGNMENT:
-      case UNSIGNED_RIGHT_SHIFT_ASSIGNMENT:
-      case XOR_ASSIGNMENT:
+      case "AND_ASSIGNMENT":
+      case "DIVIDE_ASSIGNMENT":
+      case "LEFT_SHIFT_ASSIGNMENT":
+      case "MINUS_ASSIGNMENT":
+      case "MULTIPLY_ASSIGNMENT":
+
+      case "OR_ASSIGNMENT":
+      case "PLUS_ASSIGNMENT":
+      case "REMAINDER_ASSIGNMENT":
+      case "RIGHT_SHIFT_ASSIGNMENT":
+      case "UNSIGNED_RIGHT_SHIFT_ASSIGNMENT":
+      case "XOR_ASSIGNMENT":
         return convertAssignOp((CompoundAssignmentTree) javacNode, parent);
 
-      case OTHER:
+      case "OTHER":
         {
           if (((JCTree) javacNode).hasTag(Tag.NULLCHK)) {
             // Skip javac's nullchk operators, since j2objc provides its own.
@@ -506,7 +511,7 @@ public class TreeConverter {
     Element element = getElement(path);
     convertBodyDeclaration(node, path, node.getModifiers(), newNode);
     for (Tree bodyDecl : node.getMembers()) {
-      if (bodyDecl.getKind() == Kind.METHOD) {
+      if (bodyDecl.getKind().name().equals("METHOD")) {
         MethodTree methodTree = (MethodTree) bodyDecl;
         TreePath methodPath = getTreePath(path, methodTree);
         ExecutableElement methodElement = (ExecutableElement) getElement(methodPath);
@@ -593,8 +598,8 @@ public class TreeConverter {
       if (child instanceof BinaryTree) {
         BinaryTree infixChild = (BinaryTree) child;
         if (infixChild.getKind() == node.getKind()
-            && infixChild.getKind() != Kind.EQUAL_TO
-            && infixChild.getKind() != Kind.NOT_EQUAL_TO) {
+            && !infixChild.getKind().name().equals("EQUAL_TO")
+            && !infixChild.getKind().name().equals("NOT_EQUAL_TO")) {
           stack.add(new StackState(infixChild));
           continue;
         }
@@ -672,14 +677,15 @@ public class TreeConverter {
     TypeElement element = (TypeElement) getElement(path);
     // javac defines all type declarations with JCClassDecl, so differentiate here
     // to support our different declaration nodes.
-    if (element.getKind() == ElementKind.ANNOTATION_TYPE) {
+    if (element.getKind().name().equals("ANNOTATION_TYPE")) {
       throw new AssertionError("Annotation type declaration tree conversion not implemented");
     }
 
     TypeDeclaration newNode = convertClassDeclarationHelper(node, parent);
 
     newNode.setInterface(
-        node.getKind() == Kind.INTERFACE || node.getKind() == Kind.ANNOTATION_TYPE);
+        node.getKind().name().equals("INTERFACE")
+            || node.getKind().name().equals("ANNOTATION_TYPE"));
     if (ElementUtil.isAnonymous(element)) {
       TypeMirror classType = getTypeMirror(path);
       if (!classType.getAnnotationMirrors().isEmpty()) {
@@ -708,7 +714,7 @@ public class TreeConverter {
       return false;
     }
     boolean annotationFound = false;
-    if (clause.getKind() == Kind.ANNOTATED_TYPE) {
+    if (clause.getKind().name().equals("ANNOTATED_TYPE")) {
       for (AnnotationTree annTree : ((AnnotatedTypeTree) clause).getAnnotations()) {
         Annotation ann = (Annotation) convert(annTree, getTreePath(path, annTree));
         newNode.addAnnotation(ann);
@@ -788,14 +794,14 @@ public class TreeConverter {
         .setName(convertSimpleName(element, getTypeMirror(path), getNamePosition(node)))
         .setTypeElement(element);
     for (Tree bodyDecl : node.getMembers()) {
-      if (bodyDecl.getKind() == Kind.VARIABLE) {
+      if (bodyDecl.getKind().name().equals("VARIABLE")) {
         TreeNode var = convertVariableDeclaration((VariableTree) bodyDecl, path);
         if (var.getKind() == TreeNode.Kind.ENUM_CONSTANT_DECLARATION) {
           newNode.addEnumConstant((EnumConstantDeclaration) var);
         } else {
           newNode.addBodyDeclaration((BodyDeclaration) var);
         }
-      } else if (bodyDecl.getKind() == Kind.BLOCK) {
+      } else if (bodyDecl.getKind().name().equals("BLOCK")) {
         BlockTree javacBlock = (BlockTree) bodyDecl;
         Block block = (Block) convert(javacBlock, path);
         newNode.addBodyDeclaration(new Initializer(block, javacBlock.isStatic()));
@@ -849,7 +855,7 @@ public class TreeConverter {
           new SuperFieldAccess()
               .setVariableElement((VariableElement) element)
               .setTypeMirror(typeMirror);
-      if (selected.getKind() == Kind.MEMBER_SELECT) {
+      if (selected.getKind().name().equals("MEMBER_SELECT")) {
         newNode.setQualifier(
             (Name) convert(((MemberSelectTree) selected).getExpression(), selectedPath));
       }
@@ -860,7 +866,7 @@ public class TreeConverter {
       type.setPosition(getPosition(node));
       return new TypeLiteral(typeMirror).setType(type);
     }
-    if (selected.getKind() == Kind.IDENTIFIER
+    if (selected.getKind().name().equals("IDENTIFIER")
         && (!element.getKind().isField() || ElementUtil.isConstant((VariableElement) element))) {
       if (selected.toString().equals("this")) {
         // Just return the constant.
@@ -872,7 +878,7 @@ public class TreeConverter {
               convertSimpleName(getElement(selectedPath), getTypeMirror(selectedPath), pos))
           .setElement(element);
     }
-    if (selected.getKind() == Kind.MEMBER_SELECT) {
+    if (selected.getKind().name().equals("MEMBER_SELECT")) {
       TreeNode newSelected = convertFieldAccess((MemberSelectTree) selected, path).setPosition(pos);
       if (newSelected.getKind() == TreeNode.Kind.QUALIFIED_NAME) {
         return new QualifiedName()
@@ -883,9 +889,9 @@ public class TreeConverter {
     }
     if (ElementUtil.isConstant((VariableElement) element)
         && ElementUtil.isStatic(element)
-        && !(selected.getKind() == Kind.METHOD_INVOCATION)
-        && !(selected.getKind() == Kind.MEMBER_SELECT)
-        && !(selected.getKind() == Kind.PARENTHESIZED)) {
+        && !selected.getKind().name().equals("METHOD_INVOCATION")
+        && !selected.getKind().name().equals("MEMBER_SELECT")
+        && !selected.getKind().name().equals("PARENTHESIZED")) {
       return new QualifiedName()
           .setName(convertSimpleName(element, typeMirror, pos))
           .setQualifier((Name) convert(selected, path))
@@ -905,7 +911,7 @@ public class TreeConverter {
             .setBody((Statement) convert(node.getStatement(), path));
     VariableDeclarationExpression lastVar = null;
     for (StatementTree initializer : node.getInitializer()) {
-      if (initializer.getKind() == Kind.VARIABLE) {
+      if (initializer.getKind().name().equals("VARIABLE")) {
         VariableTree var = (VariableTree) initializer;
         VariableDeclarationExpression newVar = convertVariableExpression(var, path);
         if (lastVar == null) {
@@ -915,7 +921,6 @@ public class TreeConverter {
           lastVar.addFragment(TreeUtil.remove(newVar.getFragment(0)));
         }
       } else {
-        assert initializer.getKind() == Kind.EXPRESSION_STATEMENT;
         TreePath initializerPath = getTreePath(path, initializer);
         TreeNode expr =
             convert(((ExpressionStatementTree) initializer).getExpression(), initializerPath);
@@ -1034,7 +1039,7 @@ public class TreeConverter {
     if (((JCMemberReference) node).hasKind(JCMemberReference.ReferenceKind.SUPER)) {
       SuperMethodReference newNode = new SuperMethodReference();
       convertMethodReference(node, parent, newNode);
-      if (node.getQualifierExpression().getKind() == Kind.IDENTIFIER) {
+      if (node.getQualifierExpression().getKind().name().equals("IDENTIFIER")) {
         // super::foo
         return newNode;
       } else {
@@ -1088,10 +1093,10 @@ public class TreeConverter {
   }
 
   private static String getMemberName(ExpressionTree node) {
-    switch (node.getKind()) {
-      case IDENTIFIER:
+    switch (node.getKind().name()) {
+      case "IDENTIFIER":
         return node.toString();
-      case MEMBER_SELECT:
+      case "MEMBER_SELECT":
         return ((MemberSelectTree) node).getIdentifier().toString();
       default:
         return null;
@@ -1106,7 +1111,9 @@ public class TreeConverter {
     ExecutableType type = (ExecutableType) getTypeMirror(methodInvocationPath);
     ExecutableElement element = (ExecutableElement) getElement(methodInvocationPath);
     ExpressionTree target =
-        method.getKind() == Kind.MEMBER_SELECT ? ((MemberSelectTree) method).getExpression() : null;
+        method.getKind().name().equals("MEMBER_SELECT")
+            ? ((MemberSelectTree) method).getExpression()
+            : null;
 
     if ("this".equals(methodName)) {
       ConstructorInvocation newNode =
@@ -1124,7 +1131,7 @@ public class TreeConverter {
         // If multiple classes have default constructors added, javac may not have an element
         // defined for the super() invocation, so create an equivalent here.
         TreePath methodPath = parent;
-        while (methodPath.getLeaf().getKind() != Kind.METHOD) {
+        while (methodPath.getLeaf().getKind().name().equals("METHOD")) {
           methodPath = methodPath.getParentPath();
         }
         ExecutableElement enclosingMethod = (ExecutableElement) getElement(methodPath);
@@ -1151,7 +1158,7 @@ public class TreeConverter {
           new SuperMethodInvocation()
               .setExecutablePair(new ExecutablePair(element, type))
               .setVarargsType(((JCMethodInvocation) node).varargsElement);
-      if (target.getKind() == Kind.MEMBER_SELECT) {
+      if (target.getKind().name().equals("MEMBER_SELECT")) {
         // foo.bar.MyClass.super.print(...):
         //   target: foo.bar.MyClass.super
         //   target.selected: foo.bar.MyClass
@@ -1329,7 +1336,7 @@ public class TreeConverter {
     TreePath path = getTreePath(parent, node);
     TryStatement newNode = new TryStatement();
     for (Tree obj : node.getResources()) {
-      if (obj.getKind() == Kind.VARIABLE) {
+      if (obj.getKind().name().equals("VARIABLE")) {
         newNode.addResource(convertVariableExpression((VariableTree) obj, path));
       } else {
         newNode.addResource(convertInner(obj, path));
@@ -1402,17 +1409,17 @@ public class TreeConverter {
   private TreeNode convertVariableDeclaration(VariableTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
     VariableElement element = (VariableElement) getElement(path);
-    if (element.getKind() == ElementKind.FIELD) {
+    if (element.getKind().name().equals("FIELD")) {
       FieldDeclaration newNode =
           new FieldDeclaration(element, (Expression) convert(node.getInitializer(), path));
       convertBodyDeclaration(node, parent, node.getModifiers(), newNode);
       return newNode;
     }
-    if (element.getKind() == ElementKind.LOCAL_VARIABLE) {
+    if (element.getKind().name().equals("LOCAL_VARIABLE")) {
       return new VariableDeclarationStatement(
           element, (Expression) convert(node.getInitializer(), path));
     }
-    if (element.getKind() == ElementKind.ENUM_CONSTANT) {
+    if (element.getKind().name().equals("ENUM_CONSTANT")) {
       EnumConstantDeclaration newNode = new EnumConstantDeclaration().setVariableElement(element);
       convertBodyDeclaration(node, parent, node.getModifiers(), newNode);
       ClassInstanceCreation init = (ClassInstanceCreation) convert(node.getInitializer(), path);
@@ -1579,14 +1586,15 @@ public class TreeConverter {
       return SourcePosition.NO_POSITION;
     }
     String src = newUnit.getSource();
-    Kind kind = node.getKind();
-    if (kind == Kind.ANNOTATION_TYPE
-        || kind == Kind.CLASS
-        || kind == Kind.ENUM
-        || kind == Kind.INTERFACE) {
+    String kind = node.getKind().name();
+    if (kind.equals("ANNOTATION_TYPE")
+        || kind.equals("CLASS")
+        || kind.equals("ENUM")
+        || kind.equals("INTERFACE")
+        || kind.equals("RECORD")) {
       // Skip the class/enum/interface token.
       while (src.charAt(start++) != ' ') {}
-    } else if (kind != Kind.METHOD && kind != Kind.VARIABLE) {
+    } else if (!kind.equals("METHOD") && !kind.equals("VARIABLE")) {
       return getPosition(node);
     }
     if (!Character.isJavaIdentifierStart(src.charAt(start))) {
