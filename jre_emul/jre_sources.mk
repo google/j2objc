@@ -639,6 +639,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/util/KeyValueHolder.java \
   java/util/ImmutableCollections.java \
   java/util/RegularEnumSet.java \
+  java/util/Tripwire.java \
   java/util/logging/Logging.java \
   java/util/logging/LoggingProxyImpl.java \
   java/util/stream/AbstractPipeline.java \
@@ -665,6 +666,8 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/util/stream/StreamShape.java \
   java/util/stream/StreamSpliterators.java \
   java/util/stream/TerminalOp.java \
+  java/util/stream/Tripwire.java \
+  java/util/stream/WhileOps.java \
   jdk/internal/module/SystemModulesMap.java \
   jdk/internal/util/Preconditions.java \
   libcore/api/CorePlatformApi.java \

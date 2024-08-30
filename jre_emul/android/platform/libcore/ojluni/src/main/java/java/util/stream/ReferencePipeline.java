@@ -129,8 +129,10 @@ public abstract class ReferencePipeline<P_IN, P_OUT>
 
     @Override
     // Android-changed: Make public, to match the method it's overriding.
-    public final void forEachWithCancel(Spliterator<P_OUT> spliterator, Sink<P_OUT> sink) {
-        do { } while (!sink.cancellationRequested() && spliterator.tryAdvance(sink));
+    public final boolean forEachWithCancel(Spliterator<P_OUT> spliterator, Sink<P_OUT> sink) {
+        boolean cancelled;
+        do { } while (!(cancelled = sink.cancellationRequested()) && spliterator.tryAdvance(sink));
+        return cancelled;
     }
 
     @Override

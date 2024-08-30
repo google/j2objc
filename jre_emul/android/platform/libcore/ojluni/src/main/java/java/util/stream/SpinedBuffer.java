@@ -742,8 +742,8 @@ public class SpinedBuffer<E>
                 forEach((IntConsumer) consumer);
             }
             else {
-//                if (Tripwire.ENABLED)
-//                    Tripwire.trip(getClass(), "{0} calling SpinedBuffer.OfInt.forEach(Consumer)");
+                if (Tripwire.ENABLED)
+                    Tripwire.trip(getClass(), "{0} calling SpinedBuffer.OfInt.forEach(Consumer)");
                 spliterator().forEachRemaining(consumer);
             }
         }
@@ -859,8 +859,8 @@ public class SpinedBuffer<E>
                 forEach((LongConsumer) consumer);
             }
             else {
-//                if (Tripwire.ENABLED)
-//                    Tripwire.trip(getClass(), "{0} calling SpinedBuffer.OfLong.forEach(Consumer)");
+                if (Tripwire.ENABLED)
+                    Tripwire.trip(getClass(), "{0} calling SpinedBuffer.OfLong.forEach(Consumer)");
                 spliterator().forEachRemaining(consumer);
             }
         }
@@ -978,8 +978,8 @@ public class SpinedBuffer<E>
                 forEach((DoubleConsumer) consumer);
             }
             else {
-//                if (Tripwire.ENABLED)
-//                    Tripwire.trip(getClass(), "{0} calling SpinedBuffer.OfDouble.forEach(Consumer)");
+                if (Tripwire.ENABLED)
+                    Tripwire.trip(getClass(), "{0} calling SpinedBuffer.OfDouble.forEach(Consumer)");
                 spliterator().forEachRemaining(consumer);
             }
         }

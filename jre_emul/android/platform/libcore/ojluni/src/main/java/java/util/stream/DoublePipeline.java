@@ -100,9 +100,9 @@ public abstract class DoublePipeline<E_IN>
         if (sink instanceof DoubleConsumer) {
             return (DoubleConsumer) sink;
         } else {
-//            if (Tripwire.ENABLED)
-//                Tripwire.trip(AbstractPipeline.class,
-//                              "using DoubleStream.adapt(Sink<Double> s)");
+            if (Tripwire.ENABLED)
+                Tripwire.trip(AbstractPipeline.class,
+                              "using DoubleStream.adapt(Sink<Double> s)");
             return sink::accept;
         }
     }
@@ -118,9 +118,9 @@ public abstract class DoublePipeline<E_IN>
         if (s instanceof Spliterator.OfDouble) {
             return (Spliterator.OfDouble) s;
         } else {
-//            if (Tripwire.ENABLED)
-//                Tripwire.trip(AbstractPipeline.class,
-//                              "using DoubleStream.adapt(Spliterator<Double> s)");
+            if (Tripwire.ENABLED)
+                Tripwire.trip(AbstractPipeline.class,
+                              "using DoubleStream.adapt(Spliterator<Double> s)");
             throw new UnsupportedOperationException("DoubleStream.adapt(Spliterator<Double> s)");
         }
     }
@@ -160,10 +160,12 @@ public abstract class DoublePipeline<E_IN>
 
     @Override
     // Android-changed: Make public, to match the method it's overriding.
-    public final void forEachWithCancel(Spliterator<Double> spliterator, Sink<Double> sink) {
+    public final boolean forEachWithCancel(Spliterator<Double> spliterator, Sink<Double> sink) {
         Spliterator.OfDouble spl = adapt(spliterator);
         DoubleConsumer adaptedSink = adapt(sink);
-        do { } while (!sink.cancellationRequested() && spl.tryAdvance(adaptedSink));
+        boolean cancelled;
+        do { } while (!(cancelled = sink.cancellationRequested()) && spl.tryAdvance(adaptedSink));
+        return cancelled;
     }
 
     @Override

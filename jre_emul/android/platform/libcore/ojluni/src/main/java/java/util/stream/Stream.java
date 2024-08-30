@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2021, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -24,13 +24,14 @@
  */
 package java.util.stream;
 
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Spliterator;
@@ -40,8 +41,11 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
 import java.util.function.Function;
+import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
+import java.util.function.LongConsumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
@@ -83,6 +87,19 @@ import java.util.function.UnaryOperator;
  * Streams are lazy; computation on the source data is only performed when the
  * terminal operation is initiated, and source elements are consumed only
  * as needed.
+ *
+ * <p>A stream implementation is permitted significant latitude in optimizing
+ * the computation of the result.  For example, a stream implementation is free
+ * to elide operations (or entire stages) from a stream pipeline -- and
+ * therefore elide invocation of behavioral parameters -- if it can prove that
+ * it would not affect the result of the computation.  This means that
+ * side-effects of behavioral parameters may not always be executed and should
+ * not be relied upon, unless otherwise specified (such as by the terminal
+ * operations {@code forEach} and {@code forEachOrdered}). (For a specific
+ * example of such an optimization, see the API note documented on the
+ * {@link #count} operation.  For more detail, see the
+ * <a href="package-summary.html#SideEffects">side-effects</a> section of the
+ * stream package documentation.)
  *
  * <p>Collections and streams, while bearing some superficial similarities,
  * have different goals.  Collections are primarily concerned with the efficient
@@ -126,13 +143,15 @@ import java.util.function.UnaryOperator;
  * operations may return their receiver rather than a new stream object, it may
  * not be possible to detect reuse in all cases.
  *
- * <p>Streams have a {@link #close()} method and implement {@link AutoCloseable},
- * but nearly all stream instances do not actually need to be closed after use.
- * Generally, only streams whose source is an IO channel (such as those returned
- * by {@link Files#lines(Path, Charset)}) will require closing.  Most streams
+ * <p>Streams have a {@link #close()} method and implement {@link AutoCloseable}.
+ * Operating on a stream after it has been closed will throw {@link IllegalStateException}.
+ * Most stream instances do not actually need to be closed after use, as they
  * are backed by collections, arrays, or generating functions, which require no
- * special resource management.  (If a stream does require closing, it can be
- * declared as a resource in a {@code try}-with-resources statement.)
+ * special resource management. Generally, only streams whose source is an IO channel,
+ * such as those returned by {@link Files#lines(Path)}, will require closing. If a
+ * stream does require closing, it must be opened as a resource within a try-with-resources
+ * statement or similar control structure to ensure that it is closed promptly after its
+ * operations have completed.
  *
  * <p>Stream pipelines may execute either sequentially or in
  * <a href="package-summary.html#Parallelism">parallel</a>.  This
@@ -266,6 +285,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *               function to apply to each element which produces a stream
      *               of new values
      * @return the new stream
+     * @see #mapMulti
      */
     <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper);
 
@@ -328,6 +348,212 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @see #flatMap(Function)
      */
     DoubleStream flatMapToDouble(Function<? super T, ? extends DoubleStream> mapper);
+
+    // THE EXAMPLES USED IN THE JAVADOC MUST BE IN SYNC WITH THEIR CORRESPONDING
+    // TEST IN test/jdk/java/util/stream/examples/JavadocExamples.java.
+    /**
+     * Returns a stream consisting of the results of replacing each element of
+     * this stream with multiple elements, specifically zero or more elements.
+     * Replacement is performed by applying the provided mapping function to each
+     * element in conjunction with a {@linkplain Consumer consumer} argument
+     * that accepts replacement elements. The mapping function calls the consumer
+     * zero or more times to provide the replacement elements.
+     *
+     * <p>This is an <a href="package-summary.html#StreamOps">intermediate
+     * operation</a>.
+     *
+     * <p>If the {@linkplain Consumer consumer} argument is used outside the scope of
+     * its application to the mapping function, the results are undefined.
+     *
+     * @implSpec
+     * The default implementation invokes {@link #flatMap flatMap} on this stream,
+     * passing a function that behaves as follows. First, it calls the mapper function
+     * with a {@code Consumer} that accumulates replacement elements into a newly created
+     * internal buffer. When the mapper function returns, it creates a stream from the
+     * internal buffer. Finally, it returns this stream to {@code flatMap}.
+     *
+     * @apiNote
+     * This method is similar to {@link #flatMap flatMap} in that it applies a one-to-many
+     * transformation to the elements of the stream and flattens the result elements
+     * into a new stream. This method is preferable to {@code flatMap} in the following
+     * circumstances:
+     * <ul>
+     * <li>When replacing each stream element with a small (possibly zero) number of
+     * elements. Using this method avoids the overhead of creating a new Stream instance
+     * for every group of result elements, as required by {@code flatMap}.</li>
+     * <li>When it is easier to use an imperative approach for generating result
+     * elements than it is to return them in the form of a Stream.</li>
+     * </ul>
+     *
+     * <p>If a lambda expression is provided as the mapper function argument, additional type
+     * information may be necessary for proper inference of the element type {@code <R>} of
+     * the returned stream. This can be provided in the form of explicit type declarations for
+     * the lambda parameters or as an explicit type argument to the {@code mapMulti} call.
+     *
+     * <p><b>Examples</b>
+     *
+     * <p>Given a stream of {@code Number} objects, the following
+     * produces a list containing only the {@code Integer} objects:
+     * <pre>{@code
+     *     Stream<Number> numbers = ... ;
+     *     List<Integer> integers = numbers.<Integer>mapMulti((number, consumer) -> {
+     *             if (number instanceof Integer i)
+     *                 consumer.accept(i);
+     *         })
+     *         .collect(Collectors.toList());
+     * }</pre>
+     *
+     * <p>If we have an {@code Iterable<Object>} and need to recursively expand its elements
+     * that are themselves of type {@code Iterable}, we can use {@code mapMulti} as follows:
+     * <pre>{@code
+     * class C {
+     *     static void expandIterable(Object e, Consumer<Object> c) {
+     *         if (e instanceof Iterable<?> elements) {
+     *             for (Object ie : elements) {
+     *                 expandIterable(ie, c);
+     *             }
+     *         } else if (e != null) {
+     *             c.accept(e);
+     *         }
+     *     }
+     *
+     *     public static void main(String[] args) {
+     *         var nestedList = List.of(1, List.of(2, List.of(3, 4)), 5);
+     *         Stream<Object> expandedStream = nestedList.stream().mapMulti(C::expandIterable);
+     *     }
+     * }
+     * }</pre>
+     *
+     * @param <R> The element type of the new stream
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a>
+     *               function that generates replacement elements
+     * @return the new stream
+     * @see #flatMap flatMap
+     * @since 16
+     */
+    default <R> Stream<R> mapMulti(BiConsumer<? super T, ? super Consumer<R>> mapper) {
+        Objects.requireNonNull(mapper);
+        return flatMap(e -> {
+            SpinedBuffer<R> buffer = new SpinedBuffer<>();
+            mapper.accept(e, buffer);
+            return StreamSupport.stream(buffer.spliterator(), false);
+        });
+    }
+
+    /**
+     * Returns an {@code IntStream} consisting of the results of replacing each
+     * element of this stream with multiple elements, specifically zero or more
+     * elements.
+     * Replacement is performed by applying the provided mapping function to each
+     * element in conjunction with a {@linkplain IntConsumer consumer} argument
+     * that accepts replacement elements. The mapping function calls the consumer
+     * zero or more times to provide the replacement elements.
+     *
+     * <p>This is an <a href="package-summary.html#StreamOps">intermediate
+     * operation</a>.
+     *
+     * <p>If the {@linkplain IntConsumer consumer} argument is used outside the scope of
+     * its application to the mapping function, the results are undefined.
+     *
+     * @implSpec
+     * The default implementation invokes {@link #flatMapToInt flatMapToInt} on this stream,
+     * passing a function that behaves as follows. First, it calls the mapper function
+     * with an {@code IntConsumer} that accumulates replacement elements into a newly created
+     * internal buffer. When the mapper function returns, it creates an {@code IntStream} from
+     * the internal buffer. Finally, it returns this stream to {@code flatMapToInt}.
+     *
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a>
+     *               function that generates replacement elements
+     * @return the new stream
+     * @see #mapMulti mapMulti
+     * @since 16
+     */
+    default IntStream mapMultiToInt(BiConsumer<? super T, ? super IntConsumer> mapper) {
+        Objects.requireNonNull(mapper);
+        return flatMapToInt(e -> {
+            SpinedBuffer.OfInt buffer = new SpinedBuffer.OfInt();
+            mapper.accept(e, buffer);
+            return StreamSupport.intStream(buffer.spliterator(), false);
+        });
+    }
+
+    /**
+     * Returns a {@code LongStream} consisting of the results of replacing each
+     * element of this stream with multiple elements, specifically zero or more
+     * elements.
+     * Replacement is performed by applying the provided mapping function to each
+     * element in conjunction with a {@linkplain LongConsumer consumer} argument
+     * that accepts replacement elements. The mapping function calls the consumer
+     * zero or more times to provide the replacement elements.
+     *
+     * <p>This is an <a href="package-summary.html#StreamOps">intermediate
+     * operation</a>.
+     *
+     * <p>If the {@linkplain LongConsumer consumer} argument is used outside the scope of
+     * its application to the mapping function, the results are undefined.
+     *
+     * @implSpec
+     * The default implementation invokes {@link #flatMapToLong flatMapToLong} on this stream,
+     * passing a function that behaves as follows. First, it calls the mapper function
+     * with a {@code LongConsumer} that accumulates replacement elements into a newly created
+     * internal buffer. When the mapper function returns, it creates a {@code LongStream} from
+     * the internal buffer. Finally, it returns this stream to {@code flatMapToLong}.
+     *
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a>
+     *               function that generates replacement elements
+     * @return the new stream
+     * @see #mapMulti mapMulti
+     * @since 16
+     */
+    default LongStream mapMultiToLong(BiConsumer<? super T, ? super LongConsumer> mapper) {
+        Objects.requireNonNull(mapper);
+        return flatMapToLong(e -> {
+            SpinedBuffer.OfLong buffer = new SpinedBuffer.OfLong();
+            mapper.accept(e, buffer);
+            return StreamSupport.longStream(buffer.spliterator(), false);
+        });
+    }
+
+    /**
+     * Returns a {@code DoubleStream} consisting of the results of replacing each
+     * element of this stream with multiple elements, specifically zero or more
+     * elements.
+     * Replacement is performed by applying the provided mapping function to each
+     * element in conjunction with a {@linkplain DoubleConsumer consumer} argument
+     * that accepts replacement elements. The mapping function calls the consumer
+     * zero or more times to provide the replacement elements.
+     *
+     * <p>This is an <a href="package-summary.html#StreamOps">intermediate
+     * operation</a>.
+     *
+     * <p>If the {@linkplain DoubleConsumer consumer} argument is used outside the scope of
+     * its application to the mapping function, the results are undefined.
+     *
+     * @implSpec
+     * The default implementation invokes {@link #flatMapToDouble flatMapToDouble} on this stream,
+     * passing a function that behaves as follows. First, it calls the mapper function
+     * with an {@code DoubleConsumer} that accumulates replacement elements into a newly created
+     * internal buffer. When the mapper function returns, it creates a {@code DoubleStream} from
+     * the internal buffer. Finally, it returns this stream to {@code flatMapToDouble}.
+     *
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a>
+     *               function that generates replacement elements
+     * @return the new stream
+     * @see #mapMulti mapMulti
+     * @since 16
+     */
+    default DoubleStream mapMultiToDouble(BiConsumer<? super T, ? super DoubleConsumer> mapper) {
+        Objects.requireNonNull(mapper);
+        return flatMapToDouble(e -> {
+            SpinedBuffer.OfDouble buffer = new SpinedBuffer.OfDouble();
+            mapper.accept(e, buffer);
+            return StreamSupport.doubleStream(buffer.spliterator(), false);
+        });
+    }
 
     /**
      * Returns a stream consisting of the distinct elements (according to
@@ -415,6 +641,11 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *         .collect(Collectors.toList());
      * }</pre>
      *
+     * <p>In cases where the stream implementation is able to optimize away the
+     * production of some or all the elements (such as with short-circuiting
+     * operations like {@code findFirst}, or in the example described in
+     * {@link #count}), the action will not be invoked for those elements.
+     *
      * @param action a <a href="package-summary.html#NonInterference">
      *                 non-interfering</a> action to perform on the elements as
      *                 they are consumed from the stream
@@ -479,6 +710,137 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
     Stream<T> skip(long n);
 
     /**
+     * Returns, if this stream is ordered, a stream consisting of the longest
+     * prefix of elements taken from this stream that match the given predicate.
+     * Otherwise returns, if this stream is unordered, a stream consisting of a
+     * subset of elements taken from this stream that match the given predicate.
+     *
+     * <p>If this stream is ordered then the longest prefix is a contiguous
+     * sequence of elements of this stream that match the given predicate.  The
+     * first element of the sequence is the first element of this stream, and
+     * the element immediately following the last element of the sequence does
+     * not match the given predicate.
+     *
+     * <p>If this stream is unordered, and some (but not all) elements of this
+     * stream match the given predicate, then the behavior of this operation is
+     * nondeterministic; it is free to take any subset of matching elements
+     * (which includes the empty set).
+     *
+     * <p>Independent of whether this stream is ordered or unordered if all
+     * elements of this stream match the given predicate then this operation
+     * takes all elements (the result is the same as the input), or if no
+     * elements of the stream match the given predicate then no elements are
+     * taken (the result is an empty stream).
+     *
+     * <p>This is a <a href="package-summary.html#StreamOps">short-circuiting
+     * stateful intermediate operation</a>.
+     *
+     * @implSpec
+     * The default implementation obtains the {@link #spliterator() spliterator}
+     * of this stream, wraps that spliterator so as to support the semantics
+     * of this operation on traversal, and returns a new stream associated with
+     * the wrapped spliterator.  The returned stream preserves the execution
+     * characteristics of this stream (namely parallel or sequential execution
+     * as per {@link #isParallel()}) but the wrapped spliterator may choose to
+     * not support splitting.  When the returned stream is closed, the close
+     * handlers for both the returned and this stream are invoked.
+     *
+     * @apiNote
+     * While {@code takeWhile()} is generally a cheap operation on sequential
+     * stream pipelines, it can be quite expensive on ordered parallel
+     * pipelines, since the operation is constrained to return not just any
+     * valid prefix, but the longest prefix of elements in the encounter order.
+     * Using an unordered stream source (such as {@link #generate(Supplier)}) or
+     * removing the ordering constraint with {@link #unordered()} may result in
+     * significant speedups of {@code takeWhile()} in parallel pipelines, if the
+     * semantics of your situation permit.  If consistency with encounter order
+     * is required, and you are experiencing poor performance or memory
+     * utilization with {@code takeWhile()} in parallel pipelines, switching to
+     * sequential execution with {@link #sequential()} may improve performance.
+     *
+     * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                  <a href="package-summary.html#Statelessness">stateless</a>
+     *                  predicate to apply to elements to determine the longest
+     *                  prefix of elements.
+     * @return the new stream
+     * @since 9
+     */
+    default Stream<T> takeWhile(Predicate<? super T> predicate) {
+        Objects.requireNonNull(predicate);
+        // Reuses the unordered spliterator, which, when encounter is present,
+        // is safe to use as long as it configured not to split
+        return StreamSupport.stream(
+                new WhileOps.UnorderedWhileSpliterator.OfRef.Taking<>(spliterator(), true, predicate),
+                isParallel()).onClose(this::close);
+    }
+
+    /**
+     * Returns, if this stream is ordered, a stream consisting of the remaining
+     * elements of this stream after dropping the longest prefix of elements
+     * that match the given predicate.  Otherwise returns, if this stream is
+     * unordered, a stream consisting of the remaining elements of this stream
+     * after dropping a subset of elements that match the given predicate.
+     *
+     * <p>If this stream is ordered then the longest prefix is a contiguous
+     * sequence of elements of this stream that match the given predicate.  The
+     * first element of the sequence is the first element of this stream, and
+     * the element immediately following the last element of the sequence does
+     * not match the given predicate.
+     *
+     * <p>If this stream is unordered, and some (but not all) elements of this
+     * stream match the given predicate, then the behavior of this operation is
+     * nondeterministic; it is free to drop any subset of matching elements
+     * (which includes the empty set).
+     *
+     * <p>Independent of whether this stream is ordered or unordered if all
+     * elements of this stream match the given predicate then this operation
+     * drops all elements (the result is an empty stream), or if no elements of
+     * the stream match the given predicate then no elements are dropped (the
+     * result is the same as the input).
+     *
+     * <p>This is a <a href="package-summary.html#StreamOps">stateful
+     * intermediate operation</a>.
+     *
+     * @implSpec
+     * The default implementation obtains the {@link #spliterator() spliterator}
+     * of this stream, wraps that spliterator so as to support the semantics
+     * of this operation on traversal, and returns a new stream associated with
+     * the wrapped spliterator.  The returned stream preserves the execution
+     * characteristics of this stream (namely parallel or sequential execution
+     * as per {@link #isParallel()}) but the wrapped spliterator may choose to
+     * not support splitting.  When the returned stream is closed, the close
+     * handlers for both the returned and this stream are invoked.
+     *
+     * @apiNote
+     * While {@code dropWhile()} is generally a cheap operation on sequential
+     * stream pipelines, it can be quite expensive on ordered parallel
+     * pipelines, since the operation is constrained to return not just any
+     * valid prefix, but the longest prefix of elements in the encounter order.
+     * Using an unordered stream source (such as {@link #generate(Supplier)}) or
+     * removing the ordering constraint with {@link #unordered()} may result in
+     * significant speedups of {@code dropWhile()} in parallel pipelines, if the
+     * semantics of your situation permit.  If consistency with encounter order
+     * is required, and you are experiencing poor performance or memory
+     * utilization with {@code dropWhile()} in parallel pipelines, switching to
+     * sequential execution with {@link #sequential()} may improve performance.
+     *
+     * @param predicate a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *                  <a href="package-summary.html#Statelessness">stateless</a>
+     *                  predicate to apply to elements to determine the longest
+     *                  prefix of elements.
+     * @return the new stream
+     * @since 9
+     */
+    default Stream<T> dropWhile(Predicate<? super T> predicate) {
+        Objects.requireNonNull(predicate);
+        // Reuses the unordered spliterator, which, when encounter is present,
+        // is safe to use as long as it configured not to split
+        return StreamSupport.stream(
+                new WhileOps.UnorderedWhileSpliterator.OfRef.Dropping<>(spliterator(), true, predicate),
+                isParallel()).onClose(this::close);
+    }
+
+    /**
      * Performs an action for each element of this stream.
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
@@ -522,7 +884,8 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * <p>This is a <a href="package-summary.html#StreamOps">terminal
      * operation</a>.
      *
-     * @return an array containing the elements of this stream
+     * @return an array, whose {@linkplain Class#getComponentType runtime component
+     * type} is {@code Object}, containing the elements of this stream
      */
     Object[] toArray();
 
@@ -545,13 +908,13 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *                          .toArray(Person[]::new);
      * }</pre>
      *
-     * @param <A> the element type of the resulting array
+     * @param <A> the component type of the resulting array
      * @param generator a function which produces a new array of the desired
      *                  type and the provided length
      * @return an array containing the elements in this stream
-     * @throws ArrayStoreException if the runtime type of the array returned
-     * from the array generator is not a supertype of the runtime type of every
-     * element in this stream
+     * @throws ArrayStoreException if the runtime type of any element of this
+     *         stream is not assignable to the {@linkplain Class#getComponentType
+     *         runtime component type} of the generated array
      */
     <A> A[] toArray(IntFunction<A[]> generator);
 
@@ -733,19 +1096,23 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *                                 .toString();
      * }</pre>
      *
-     * @param <R> type of the result
-     * @param supplier a function that creates a new result container. For a
-     *                 parallel execution, this function may be called
+     * @param <R> the type of the mutable result container
+     * @param supplier a function that creates a new mutable result container.
+     *                 For a parallel execution, this function may be called
      *                 multiple times and must return a fresh value each time.
      * @param accumulator an <a href="package-summary.html#Associativity">associative</a>,
      *                    <a href="package-summary.html#NonInterference">non-interfering</a>,
      *                    <a href="package-summary.html#Statelessness">stateless</a>
-     *                    function for incorporating an additional element into a result
+     *                    function that must fold an element into a result
+     *                    container.
      * @param combiner an <a href="package-summary.html#Associativity">associative</a>,
      *                    <a href="package-summary.html#NonInterference">non-interfering</a>,
      *                    <a href="package-summary.html#Statelessness">stateless</a>
-     *                    function for combining two values, which must be
-     *                    compatible with the accumulator function
+     *                    function that accepts two partial result containers
+     *                    and merges them, which must be compatible with the
+     *                    accumulator function.  The combiner function must fold
+     *                    the elements from the second result container into the
+     *                    first result container.
      * @return the result of the reduction
      */
     <R> R collect(Supplier<R> supplier,
@@ -778,7 +1145,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * additional synchronization is needed for a parallel reduction.
      *
      * @apiNote
-     * The following will accumulate strings into an ArrayList:
+     * The following will accumulate strings into a List:
      * <pre>{@code
      *     List<String> asList = stringStream.collect(Collectors.toList());
      * }</pre>
@@ -805,6 +1172,40 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @see Collectors
      */
     <R, A> R collect(Collector<? super T, A, R> collector);
+
+    /**
+     * Accumulates the elements of this stream into a {@code List}. The elements in
+     * the list will be in this stream's encounter order, if one exists. The returned List
+     * is unmodifiable; calls to any mutator method will always cause
+     * {@code UnsupportedOperationException} to be thrown. There are no
+     * guarantees on the implementation type or serializability of the returned List.
+     *
+     * <p>The returned instance may be <a href="{@docRoot}/java.base/java/lang/doc-files/ValueBased.html">value-based</a>.
+     * Callers should make no assumptions about the identity of the returned instances.
+     * Identity-sensitive operations on these instances (reference equality ({@code ==}),
+     * identity hash code, and synchronization) are unreliable and should be avoided.
+     *
+     * <p>This is a <a href="package-summary.html#StreamOps">terminal operation</a>.
+     *
+     * @apiNote If more control over the returned object is required, use
+     * {@link Collectors#toCollection(Supplier)}.
+     *
+     * @implSpec The implementation in this interface returns a List produced as if by the following:
+     * <pre>{@code
+     * Collections.unmodifiableList(new ArrayList<>(Arrays.asList(this.toArray())))
+     * }</pre>
+     *
+     * @implNote Most instances of Stream will override this method and provide an implementation
+     * that is highly optimized compared to the implementation in this interface.
+     *
+     * @return a List containing the stream elements
+     *
+     * @since 16
+     */
+    @SuppressWarnings("unchecked")
+    default List<T> toList() {
+        return (List<T>) Collections.unmodifiableList(new ArrayList<>(Arrays.asList(this.toArray())));
+    }
 
     /**
      * Returns the minimum element of this stream according to the provided
@@ -848,6 +1249,25 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * }</pre>
      *
      * <p>This is a <a href="package-summary.html#StreamOps">terminal operation</a>.
+     *
+     * @apiNote
+     * An implementation may choose to not execute the stream pipeline (either
+     * sequentially or in parallel) if it is capable of computing the count
+     * directly from the stream source.  In such cases no source elements will
+     * be traversed and no intermediate operations will be evaluated.
+     * Behavioral parameters with side-effects, which are strongly discouraged
+     * except for harmless cases such as debugging, may be affected.  For
+     * example, consider the following stream:
+     * <pre>{@code
+     *     List<String> l = Arrays.asList("A", "B", "C", "D");
+     *     long count = l.stream().peek(System.out::println).count();
+     * }</pre>
+     * The number of elements covered by the stream source, a {@code List}, is
+     * known and the intermediate operation, {@code peek}, does not inject into
+     * or remove elements from the stream (as may be the case for
+     * {@code flatMap} or {@code filter} operations).  Thus the count is the
+     * size of the {@code List} and there is no need to execute the pipeline
+     * and, as a side-effect, print out the list elements.
      *
      * @return the count of elements in this stream
      */
@@ -988,6 +1408,21 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
     }
 
     /**
+     * Returns a sequential {@code Stream} containing a single element, if
+     * non-null, otherwise returns an empty {@code Stream}.
+     *
+     * @param t the single element
+     * @param <T> the type of stream elements
+     * @return a stream with a single element if the specified element
+     *         is non-null, otherwise an empty stream
+     * @since 9
+     */
+    public static<T> Stream<T> ofNullable(T t) {
+        return t == null ? Stream.empty()
+                         : StreamSupport.stream(new Streams.StreamBuilderImpl<>(t), false);
+    }
+
+    /**
      * Returns a sequential ordered stream whose elements are the specified values.
      *
      * @param <T> the type of stream elements
@@ -1011,31 +1446,124 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * {@code n}, will be the result of applying the function {@code f} to the
      * element at position {@code n - 1}.
      *
+     * <p>The action of applying {@code f} for one element
+     * <a href="../concurrent/package-summary.html#MemoryVisibility"><i>happens-before</i></a>
+     * the action of applying {@code f} for subsequent elements.  For any given
+     * element the action may be performed in whatever thread the library
+     * chooses.
+     *
      * @param <T> the type of stream elements
      * @param seed the initial element
-     * @param f a function to be applied to to the previous element to produce
+     * @param f a function to be applied to the previous element to produce
      *          a new element
      * @return a new sequential {@code Stream}
      */
     public static<T> Stream<T> iterate(final T seed, final UnaryOperator<T> f) {
         Objects.requireNonNull(f);
-        final Iterator<T> iterator = new Iterator<T>() {
-            @SuppressWarnings("unchecked")
-            T t = (T) Streams.NONE;
+        Spliterator<T> spliterator = new Spliterators.AbstractSpliterator<>(Long.MAX_VALUE,
+               Spliterator.ORDERED | Spliterator.IMMUTABLE) {
+            T prev;
+            boolean started;
 
             @Override
-            public boolean hasNext() {
+            public boolean tryAdvance(Consumer<? super T> action) {
+                Objects.requireNonNull(action);
+                T t;
+                if (started)
+                    t = f.apply(prev);
+                else {
+                    t = seed;
+                    started = true;
+                }
+                action.accept(prev = t);
+                return true;
+            }
+        };
+        return StreamSupport.stream(spliterator, false);
+    }
+
+    /**
+     * Returns a sequential ordered {@code Stream} produced by iterative
+     * application of the given {@code next} function to an initial element,
+     * conditioned on satisfying the given {@code hasNext} predicate.  The
+     * stream terminates as soon as the {@code hasNext} predicate returns false.
+     *
+     * <p>{@code Stream.iterate} should produce the same sequence of elements as
+     * produced by the corresponding for-loop:
+     * <pre>{@code
+     *     for (T index=seed; hasNext.test(index); index = next.apply(index)) {
+     *         ...
+     *     }
+     * }</pre>
+     *
+     * <p>The resulting sequence may be empty if the {@code hasNext} predicate
+     * does not hold on the seed value.  Otherwise the first element will be the
+     * supplied {@code seed} value, the next element (if present) will be the
+     * result of applying the {@code next} function to the {@code seed} value,
+     * and so on iteratively until the {@code hasNext} predicate indicates that
+     * the stream should terminate.
+     *
+     * <p>The action of applying the {@code hasNext} predicate to an element
+     * <a href="../concurrent/package-summary.html#MemoryVisibility"><i>happens-before</i></a>
+     * the action of applying the {@code next} function to that element.  The
+     * action of applying the {@code next} function for one element
+     * <i>happens-before</i> the action of applying the {@code hasNext}
+     * predicate for subsequent elements.  For any given element an action may
+     * be performed in whatever thread the library chooses.
+     *
+     * @param <T> the type of stream elements
+     * @param seed the initial element
+     * @param hasNext a predicate to apply to elements to determine when the
+     *                stream must terminate.
+     * @param next a function to be applied to the previous element to produce
+     *             a new element
+     * @return a new sequential {@code Stream}
+     * @since 9
+     */
+    public static<T> Stream<T> iterate(T seed, Predicate<? super T> hasNext, UnaryOperator<T> next) {
+        Objects.requireNonNull(next);
+        Objects.requireNonNull(hasNext);
+        Spliterator<T> spliterator = new Spliterators.AbstractSpliterator<>(Long.MAX_VALUE,
+               Spliterator.ORDERED | Spliterator.IMMUTABLE) {
+            T prev;
+            boolean started, finished;
+
+            @Override
+            public boolean tryAdvance(Consumer<? super T> action) {
+                Objects.requireNonNull(action);
+                if (finished)
+                    return false;
+                T t;
+                if (started)
+                    t = next.apply(prev);
+                else {
+                    t = seed;
+                    started = true;
+                }
+                if (!hasNext.test(t)) {
+                    prev = null;
+                    finished = true;
+                    return false;
+                }
+                action.accept(prev = t);
                 return true;
             }
 
             @Override
-            public T next() {
-                return t = (t == Streams.NONE) ? seed : f.apply(t);
+            public void forEachRemaining(Consumer<? super T> action) {
+                Objects.requireNonNull(action);
+                if (finished)
+                    return;
+                finished = true;
+                T t = started ? next.apply(prev) : seed;
+                prev = null;
+                while (hasNext.test(t)) {
+                    action.accept(t);
+                    t = next.apply(t);
+                }
             }
         };
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-                iterator,
-                Spliterator.ORDERED | Spliterator.IMMUTABLE), false);
+        return StreamSupport.stream(spliterator, false);
     }
 
     /**
@@ -1047,7 +1575,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @param s the {@code Supplier} of generated elements
      * @return a new infinite sequential unordered {@code Stream}
      */
-    public static<T> Stream<T> generate(Supplier<T> s) {
+    public static<T> Stream<T> generate(Supplier<? extends T> s) {
         Objects.requireNonNull(s);
         return StreamSupport.stream(
                 new StreamSpliterators.InfiniteSupplyingSpliterator.OfRef<>(Long.MAX_VALUE, s), false);
@@ -1061,10 +1589,29 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * streams is parallel.  When the resulting stream is closed, the close
      * handlers for both input streams are invoked.
      *
+     * <p>This method operates on the two input streams and binds each stream
+     * to its source.  As a result subsequent modifications to an input stream
+     * source may not be reflected in the concatenated stream result.
+     *
      * @implNote
      * Use caution when constructing streams from repeated concatenation.
      * Accessing an element of a deeply concatenated stream can result in deep
-     * call chains, or even {@code StackOverflowException}.
+     * call chains, or even {@code StackOverflowError}.
+     *
+     * <p>Subsequent changes to the sequential/parallel execution mode of the
+     * returned stream are not guaranteed to be propagated to the input streams.
+     *
+     * @apiNote
+     * To preserve optimization opportunities this method binds each stream to
+     * its source and accepts only two streams as parameters.  For example, the
+     * exact size of the concatenated stream source can be computed if the exact
+     * size of each input stream source is known.
+     * To concatenate more streams without binding, or without nested calls to
+     * this method, try creating a stream of streams and flat-mapping with the
+     * identity function, for example:
+     * <pre>{@code
+     *     Stream<T> concat = Stream.of(s1, s2, s3, s4).flatMap(s -> s);
+     * }</pre>
      *
      * @param <T> The type of stream elements
      * @param a the first stream

@@ -327,12 +327,24 @@ public enum StreamOpFlag {
      */
     // 12, 0x01000000
     SHORT_CIRCUIT(12,
-                  set(Type.OP).set(Type.TERMINAL_OP));
+                  set(Type.OP).set(Type.TERMINAL_OP)),
+
+    /**
+     * Characteristic value signifying that an operation may adjust the
+     * total size of the stream.
+     * <p>
+     * The flag, if present, is only valid when SIZED is present;
+     * and is only valid for sequential streams.
+     * <p>
+     * An intermediate operation can preserve or inject this value.
+     */
+    // 13, 0x04000000
+    SIZE_ADJUSTING(13,
+                   set(Type.OP));
 
     // The following 2 flags are currently undefined and a free for any further
     // stream flags if/when required
     //
-    // 13, 0x04000000
     // 14, 0x10000000
     // 15, 0x40000000
 
@@ -652,6 +664,12 @@ public enum StreamOpFlag {
      */
     // Android-changed: Made public for CTS tests only.
     public static final int IS_SHORT_CIRCUIT = SHORT_CIRCUIT.set;
+
+    /**
+     * The bit value to inject {@link #SIZE_ADJUSTING}.
+     */
+    // Android-changed: Made public for CTS tests only.
+    public static final int IS_SIZE_ADJUSTING = SIZE_ADJUSTING.set;
 
     private static int getMask(int flags) {
         return (flags == 0)

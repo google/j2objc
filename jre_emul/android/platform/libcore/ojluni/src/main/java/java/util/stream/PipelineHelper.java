@@ -140,7 +140,7 @@ public abstract class PipelineHelper<P_OUT> {
      * @param wrappedSink the destination {@code Sink}
      * @param spliterator the source {@code Spliterator}
      */
-    abstract <P_IN> void copyIntoWithCancel(Sink<P_IN> wrappedSink, Spliterator<P_IN> spliterator);
+    abstract <P_IN> boolean copyIntoWithCancel(Sink<P_IN> wrappedSink, Spliterator<P_IN> spliterator);
 
     /**
      * Takes a {@code Sink} that accepts elements of the output type of the

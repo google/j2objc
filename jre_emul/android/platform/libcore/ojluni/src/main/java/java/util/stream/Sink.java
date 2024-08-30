@@ -194,8 +194,8 @@ public interface Sink<T> extends Consumer<T> {
 
         @Override
         default void accept(Integer i) {
-//            if (Tripwire.ENABLED)
-//                Tripwire.trip(getClass(), "{0} calling Sink.OfInt.accept(Integer)");
+            if (Tripwire.ENABLED)
+                Tripwire.trip(getClass(), "{0} calling Sink.OfInt.accept(Integer)");
             accept(i.intValue());
         }
     }
@@ -211,8 +211,8 @@ public interface Sink<T> extends Consumer<T> {
 
         @Override
         default void accept(Long i) {
-//            if (Tripwire.ENABLED)
-//                Tripwire.trip(getClass(), "{0} calling Sink.OfLong.accept(Long)");
+            if (Tripwire.ENABLED)
+                Tripwire.trip(getClass(), "{0} calling Sink.OfLong.accept(Long)");
             accept(i.longValue());
         }
     }
@@ -228,8 +228,8 @@ public interface Sink<T> extends Consumer<T> {
 
         @Override
         default void accept(Double i) {
-//            if (Tripwire.ENABLED)
-//                Tripwire.trip(getClass(), "{0} calling Sink.OfDouble.accept(Double)");
+            if (Tripwire.ENABLED)
+                Tripwire.trip(getClass(), "{0} calling Sink.OfDouble.accept(Double)");
             accept(i.doubleValue());
         }
     }

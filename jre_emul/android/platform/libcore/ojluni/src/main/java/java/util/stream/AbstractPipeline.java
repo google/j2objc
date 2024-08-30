@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2012, 2021, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -333,6 +333,9 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
     @Override
     @SuppressWarnings("unchecked")
     public S onClose(Runnable closeHandler) {
+        if (linkedOrConsumed)
+            throw new IllegalStateException(MSG_STREAM_LINKED);
+        Objects.requireNonNull(closeHandler);
         Runnable existingHandler = sourceStage.sourceCloseAction;
         sourceStage.sourceCloseAction =
                 (existingHandler == null)
@@ -470,7 +473,32 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
 
     @Override
     final <P_IN> long exactOutputSizeIfKnown(Spliterator<P_IN> spliterator) {
-        return StreamOpFlag.SIZED.isKnown(getStreamAndOpFlags()) ? spliterator.getExactSizeIfKnown() : -1;
+        int flags = getStreamAndOpFlags();
+        long size = StreamOpFlag.SIZED.isKnown(flags) ? spliterator.getExactSizeIfKnown() : -1;
+        // Currently, we have no stateless SIZE_ADJUSTING intermediate operations,
+        // so we can simply ignore SIZE_ADJUSTING in parallel streams, since adjustments
+        // are already accounted in the input spliterator.
+        //
+        // If we ever have a stateless SIZE_ADJUSTING intermediate operation,
+        // we would need step back until depth == 0, then call exactOutputSize() for
+        // the subsequent stages.
+        if (size != -1 && StreamOpFlag.SIZE_ADJUSTING.isKnown(flags) && !isParallel()) {
+            // Skip the source stage as it's never SIZE_ADJUSTING
+            for (AbstractPipeline<?, ?, ?> stage = sourceStage.nextStage; stage != null; stage = stage.nextStage) {
+                size = stage.exactOutputSize(size);
+            }
+        }
+        return size;
+    }
+
+    /**
+     * Returns the exact output size of the pipeline given the exact size reported by the previous stage.
+     *
+     * @param previousSize the exact size reported by the previous stage
+     * @return the output size of this stage
+     */
+    long exactOutputSize(long previousSize) {
+        return previousSize;
     }
 
     @Override
@@ -495,15 +523,17 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
 
     @Override
     @SuppressWarnings("unchecked")
-    final <P_IN> void copyIntoWithCancel(Sink<P_IN> wrappedSink, Spliterator<P_IN> spliterator) {
+    final <P_IN> boolean copyIntoWithCancel(Sink<P_IN> wrappedSink, Spliterator<P_IN> spliterator) {
         @SuppressWarnings({"rawtypes","unchecked"})
         AbstractPipeline p = AbstractPipeline.this;
         while (p.depth > 0) {
             p = p.previousStage;
         }
+
         wrappedSink.begin(spliterator.getExactSizeIfKnown());
-        p.forEachWithCancel(spliterator, wrappedSink);
+        boolean cancelled = p.forEachWithCancel(spliterator, wrappedSink);
         wrappedSink.end();
+        return cancelled;
     }
 
     @Override
@@ -615,9 +645,10 @@ public abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, 
      *
      * @param spliterator the spliterator to pull elements from
      * @param sink the sink to push elements to
+     * @return true if the cancellation was requested
      */
     // Android-changed: Made public for CTS tests only.
-    public abstract void forEachWithCancel(Spliterator<E_OUT> spliterator, Sink<E_OUT> sink);
+    public abstract boolean forEachWithCancel(Spliterator<E_OUT> spliterator, Sink<E_OUT> sink);
 
     /**
      * Make a node builder compatible with this stream shape.
