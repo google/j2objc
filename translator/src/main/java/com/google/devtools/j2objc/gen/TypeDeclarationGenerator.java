@@ -716,6 +716,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   private void printMethodDeclaration(MethodDeclaration m, boolean isCompanionClass) {
     ExecutableElement methodElement = m.getExecutableElement();
     TypeElement typeElement = ElementUtil.getDeclaringClass(methodElement);
+    boolean allowGenerics = !typeUtil.isProtoClass(typeElement.asType());
 
     if (typeElement.getKind().isInterface()) {
       // isCompanion and isStatic must be both false (i.e. this prints a non-static method decl
@@ -735,7 +736,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
 
     // Method declarations allow generics.
-    String methodSignature = getMethodSignature(m, true);
+    String methodSignature = getMethodSignature(m, allowGenerics);
 
     // In order to properly map the method name from the entire signature, we must isolate it from
     // associated type and parameter declarations.  The method name is guaranteed to be between the

@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.util;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.types.AbstractTypeMirror;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedArrayType;
@@ -35,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
@@ -726,18 +726,14 @@ public final class TypeUtil {
   }
 
   public boolean isProtoClass(TypeMirror type) {
-    ImmutableSet<String> protoClassNames =
-        ImmutableSet.of(
-            "com.google.protobuf.GeneratedMessage",
-            "com.google.protobuf.GeneratedMessageLite",
-            "com.google.protobuf.MessageOrBuilder",
-            "com.google.protobuf.MessageLiteOrBuilder",
-            "com.google.protobuf.Extension",
-            "com.google.protobuf.ExtensionLite");
-
     TypeElement element = asTypeElement(type);
-    if (element != null && protoClassNames.contains(element.getQualifiedName().toString())) {
-      return true;
+    if (element != null) {
+      PackageElement pkg = ElementUtil.getPackage(element);
+      if (pkg != null) {
+        if (pkg.toString().equals("com.google.protobuf")) {
+          return true;
+        }
+      }
     }
     for (TypeMirror t : directSupertypes(type)) {
       boolean result = isProtoClass(t);

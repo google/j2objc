@@ -296,9 +296,11 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
 
   protected String getReturnType(MethodDeclaration m, boolean generatorAllowsGenerics) {
     ExecutableElement element = m.getExecutableElement();
+    boolean allowGenerics =
+        !typeUtil.isProtoClass(element.getReturnType()) && generatorAllowsGenerics;
     return nameTable.getObjCTypeDeclaration(
         element.getReturnType(),
-        generatorAllowsGenerics
+        allowGenerics
             && (generateObjectiveCGenerics(element.getReturnType())
                 || generateObjectiveCGenerics(typeElement.asType())),
         typeElement);
@@ -362,10 +364,11 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
           sb.append(pad(baseLength - selParts[i].length()));
         }
         VariableElement var = params.get(i).getVariableElement();
+        boolean allowGenerics = !typeUtil.isProtoClass(var.asType()) && generatorAllowsGenerics;
         String typeName =
             nameTable.getObjCTypeDeclaration(
                 var.asType(),
-                generatorAllowsGenerics
+                allowGenerics
                     && (generateObjectiveCGenerics(var.asType())
                         || generateObjectiveCGenerics(typeElement.asType())),
                 typeElement);

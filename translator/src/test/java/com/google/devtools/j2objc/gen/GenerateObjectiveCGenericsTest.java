@@ -403,4 +403,23 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String header = translateSourceFile("Foo", "Foo.h");
     assertTranslation(header, "- (IOSClass *)sameClassWithIOSClass:(IOSClass *)thing");
   }
+
+  // Verify that generics aren't generated for a Google Protobuf class.
+  public void testProtoDeclaration() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    addSourceFile(
+        "package com.google.protobuf;"
+            + "public class Test<V> {                         "
+            + "  V get(V input) { "
+            + "    return input;"
+            + "  }"
+            + "}",
+        "com/google/protobuf/Test.java");
+
+    String testHeader = translateSourceFile(
+        "com.google.protobuf.Test", "com/google/protobuf/Test.h");
+
+    assertTranslation(testHeader, "@interface ComGoogleProtobufTest : NSObject");
+    assertTranslation(testHeader, "- (id)getWithId:(id)input;");
+  }
 }
