@@ -306,10 +306,11 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
 
 void SingleFieldGenerator::GenerateMessageOrBuilderProtocol(io::Printer* printer)
     const {
-  printer->Print(variables_,
-                 "\n"
-                 "- (BOOL)has$capitalized_name$;\n"
-                 "- ($nonnull_type$)get$capitalized_name$;\n");
+  printer->Print("\n");
+  if (descriptor_->has_presence()) {
+    printer->Print(variables_, "- (BOOL)has$capitalized_name$;\n");
+  }
+  printer->Print(variables_, "- ($nonnull_type$)get$capitalized_name$;\n");
 }
 
 void SingleFieldGenerator::GenerateDeclaration(io::Printer* printer) const {
