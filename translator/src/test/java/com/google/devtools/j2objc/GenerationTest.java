@@ -100,7 +100,7 @@ public abstract class GenerationTest extends TestCase {
   @Override
   protected void setUp() throws IOException {
     tempDir = FileUtil.createTempDir("testout");
-    if (onJava9OrAbove()) {
+    if (onJava11OrAbove()) {
       SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_11);
     }
     loadOptions();
@@ -827,6 +827,15 @@ public abstract class GenerationTest extends TestCase {
   protected boolean onJava11OrAbove() {
     try {
       Class.forName("java.net.http.HttpClient");
+      return true;
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+
+  protected boolean onJava17OrAbove() {
+    try {
+      Class.forName("java.util.HexFormat");
       return true;
     } catch (ClassNotFoundException e) {
       return false;
