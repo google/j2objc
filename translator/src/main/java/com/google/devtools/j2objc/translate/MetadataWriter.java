@@ -33,6 +33,7 @@ import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NativeStatement;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
@@ -95,6 +96,11 @@ public class MetadataWriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
+    visitType(node);
+  }
+
+  @Override
+  public void endVisit(RecordDeclaration node) {
     visitType(node);
   }
 

@@ -796,6 +796,28 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(RecordDeclaration node) {
+    sb.printIndent();
+    printAnnotations(node.getAnnotations());
+    printModifiers(node.getModifiers());
+    sb.print("record ");
+    node.getName().accept(this);
+    sb.print(' ');
+    sb.println('{');
+    sb.indent();
+    List<BodyDeclaration> bodyDeclarations = new ArrayList<>(node.getBodyDeclarations());
+    sort(bodyDeclarations);
+    for (BodyDeclaration bodyDecl : bodyDeclarations) {
+      bodyDecl.accept(this);
+    }
+    printStaticBlock(node);
+    sb.unindent();
+    sb.printIndent();
+    sb.println('}');
+    return false;
+  }
+
+  @Override
  public boolean visit(ReturnStatement node) {
     sb.printIndent();
     sb.print("return");
@@ -1021,39 +1043,42 @@ public class DebugASTPrinter extends TreeVisitor {
     printAnnotations(node.getAnnotations());
     printModifiers(node.getModifiers());
     sb.print(node.isInterface() ? "interface " : "class ");
-    node.getName().accept(this);
-    printTypeParameters(node.getTypeElement().getTypeParameters());
-    sb.print(' ');
-    TypeMirror superclassTypeMirror = node.getSuperclassTypeMirror();
-    if (!(TypeUtil.isNone(superclassTypeMirror)
-        || TypeUtil.isJavaObject(superclassTypeMirror))) {
-      sb.print("extends ");
-      sb.print(superclassTypeMirror.toString());
+    if (node.getName() != null) {
+      node.getName().accept(this);
+      printTypeParameters(node.getTypeElement().getTypeParameters());
       sb.print(' ');
-    }
-    List<? extends TypeMirror> superInterfaceTypeMirrors = node.getSuperInterfaceTypeMirrors();
-    if (!superInterfaceTypeMirrors.isEmpty()) {
-      sb.print(node.isInterface() ? "extends " : "implements "); //$NON-NLS-2$
-      for (Iterator<? extends TypeMirror> it = node.getSuperInterfaceTypeMirrors().iterator();
-          it.hasNext(); ) {
-        sb.print(it.next().toString());
-        if (it.hasNext()) {
-          sb.print(", ");
-        }
+      TypeMirror superclassTypeMirror = node.getSuperclassTypeMirror();
+      if (!(TypeUtil.isNone(superclassTypeMirror) || TypeUtil.isJavaObject(superclassTypeMirror))) {
+        sb.print("extends ");
+        sb.print(superclassTypeMirror.toString());
+        sb.print(' ');
       }
-      sb.print(' ');
+      List<? extends TypeMirror> superInterfaceTypeMirrors = node.getSuperInterfaceTypeMirrors();
+      if (!superInterfaceTypeMirrors.isEmpty()) {
+        sb.print(node.isInterface() ? "extends " : "implements "); // $NON-NLS-2$
+        for (Iterator<? extends TypeMirror> it = node.getSuperInterfaceTypeMirrors().iterator();
+            it.hasNext(); ) {
+          sb.print(it.next().toString());
+          if (it.hasNext()) {
+            sb.print(", ");
+          }
+        }
+        sb.print(' ');
+      }
+      sb.println('{');
+      sb.indent();
+      List<BodyDeclaration> bodyDeclarations = new ArrayList<>(node.getBodyDeclarations());
+      sort(bodyDeclarations);
+      for (BodyDeclaration bodyDecl : bodyDeclarations) {
+        bodyDecl.accept(this);
+      }
+      printStaticBlock(node);
+      sb.unindent();
+      sb.printIndent();
+      sb.println('}');
+    } else {
+      sb.println("<uninitialized> {}");
     }
-    sb.println('{');
-    sb.indent();
-    List<BodyDeclaration> bodyDeclarations = new ArrayList<>(node.getBodyDeclarations());
-    sort(bodyDeclarations);
-    for (BodyDeclaration bodyDecl : bodyDeclarations) {
-      bodyDecl.accept(this);
-    }
-    printStaticBlock(node);
-    sb.unindent();
-    sb.printIndent();
-    sb.println('}');
     return false;
   }
 

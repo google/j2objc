@@ -39,6 +39,7 @@ import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
@@ -304,6 +305,11 @@ public class Rewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
+    checkForNullabilityAnnotation(node);
+  }
+
+  @Override
+  public void endVisit(RecordDeclaration node) {
     checkForNullabilityAnnotation(node);
   }
 

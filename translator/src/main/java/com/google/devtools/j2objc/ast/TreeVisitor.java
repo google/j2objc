@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.ast;
 /**
  * Base visitor class for the J2ObjC tree.
  */
+@SuppressWarnings("UngroupedOverloads")
 public class TreeVisitor {
 
   public boolean preVisit(TreeNode node) {
@@ -404,6 +405,12 @@ public class TreeVisitor {
   }
 
   public void endVisit(QualifiedType node) {}
+
+  public boolean visit(RecordDeclaration node) {
+    return true;
+  }
+
+  public void endVisit(RecordDeclaration node) {}
 
   public boolean visit(ReturnStatement node) {
     return true;

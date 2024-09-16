@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NativeStatement;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -51,6 +52,7 @@ import javax.lang.model.type.TypeMirror;
  *
  * @author Keith Stanger
  */
+@SuppressWarnings("UngroupedOverloads")
 public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
 
   private Set<SuperMethodElementPair> superMethods = new LinkedHashSet<>();
@@ -142,6 +144,11 @@ public class SuperMethodInvocationRewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
+    typeMap.put(node.getTypeElement(), node);
+  }
+
+  @Override
+  public void endVisit(RecordDeclaration node) {
     typeMap.put(node.getTypeElement(), node);
   }
 

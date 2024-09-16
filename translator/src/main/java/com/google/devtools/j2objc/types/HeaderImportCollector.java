@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -47,6 +48,7 @@ import javax.lang.model.type.TypeMirror;
  *
  * @author Tom Ball
  */
+@SuppressWarnings("UngroupedOverloads")
 public class HeaderImportCollector extends UnitTreeVisitor {
 
   /**
@@ -246,6 +248,11 @@ public class HeaderImportCollector extends UnitTreeVisitor {
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
+    return visitTypeDeclaration(node);
+  }
+
+  @Override
+  public boolean visit(RecordDeclaration node) {
     return visitTypeDeclaration(node);
   }
 }

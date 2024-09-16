@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
@@ -70,6 +71,12 @@ public class DeadCodeEliminator extends UnitTreeVisitor {
       node.getEnumConstants().clear();
       node.stripSuperInterfaces();
     }
+  }
+
+  @Override
+  public void endVisit(RecordDeclaration node) {
+    TypeElement type = node.getTypeElement();
+    eliminateDeadCode(type, node);
   }
 
   @Override

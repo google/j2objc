@@ -184,6 +184,12 @@ public class DebugASTDump extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(RecordDeclaration node) {
+    printName(node.getName());
+    return true;
+  }
+
+  @Override
   public boolean visit(SimpleName node) {
     printName(node);
     return true;

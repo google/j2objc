@@ -18,6 +18,7 @@ import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.LambdaExpression;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -37,6 +38,7 @@ import javax.lang.model.element.VariableElement;
  *
  * @author Keith Stanger
  */
+@SuppressWarnings("UngroupedOverloads")
 public class VariableRenamer extends UnitTreeVisitor {
 
   private List<Set<String>> fieldNameStack = new ArrayList<>();
@@ -168,6 +170,17 @@ public class VariableRenamer extends UnitTreeVisitor {
 
   @Override
   public void endVisit(LambdaExpression node) {
+    popType();
+  }
+
+  @Override
+  public boolean visit(RecordDeclaration node) {
+    pushType(node.getTypeElement());
+    return true;
+  }
+
+  @Override
+  public void endVisit(RecordDeclaration node) {
     popType();
   }
 }

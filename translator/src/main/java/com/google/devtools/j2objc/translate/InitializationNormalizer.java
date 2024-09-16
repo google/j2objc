@@ -29,6 +29,7 @@ import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.Initializer;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
@@ -77,6 +78,11 @@ public class InitializationNormalizer extends UnitTreeVisitor {
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
+    new TypeNormalizer(node).normalizeMembers();
+  }
+
+  @Override
+  public void endVisit(RecordDeclaration node) {
     new TypeNormalizer(node).normalizeMembers();
   }
 

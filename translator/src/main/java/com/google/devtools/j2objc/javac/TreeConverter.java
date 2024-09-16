@@ -78,6 +78,7 @@ import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.PrimitiveType;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SimpleType;
@@ -353,6 +354,8 @@ public class TreeConverter {
         return convertParens((ParenthesizedTree) javacNode, parent);
       case "PRIMITIVE_TYPE":
         return convertPrimitiveType((PrimitiveTypeTree) javacNode, parent);
+      case "RECORD":
+        return convertRecord((ClassTree) javacNode, parent);
       case "RETURN":
         return convertReturn((ReturnTree) javacNode, parent);
       case "SWITCH":
@@ -1295,6 +1298,28 @@ public class TreeConverter {
     return new PrimitiveType(getTypeMirror(getTreePath(parent, node)));
   }
 
+  private TreeNode convertRecord(ClassTree node, TreePath parent) {
+    ErrorUtil.error("Record translation not implemented");
+    TreePath path = getTreePath(parent, node);
+    TypeElement element = (TypeElement) getElement(path);
+    RecordDeclaration newNode = new RecordDeclaration(element);
+    convertBodyDeclaration(node, parent, node.getModifiers(), newNode);
+    newNode.setName(convertSimpleName(element, getTypeMirror(path), getNamePosition(node)));
+    for (Tree bodyDecl : node.getMembers()) {
+      if (bodyDecl.getKind().name().equals("VARIABLE")) {
+        TreeNode var = convertVariableDeclaration((VariableTree) bodyDecl, path);
+        newNode.addBodyDeclaration((BodyDeclaration) var);
+      } else if (bodyDecl.getKind().name().equals("BLOCK")) {
+        BlockTree javacBlock = (BlockTree) bodyDecl;
+        Block block = (Block) convert(javacBlock, path);
+        newNode.addBodyDeclaration(new Initializer(block, javacBlock.isStatic()));
+      } else {
+        newNode.addBodyDeclaration((BodyDeclaration) convert(bodyDecl, path));
+      }
+    }
+    return newNode;
+  }
+
   private TreeNode convertReturn(ReturnTree node, TreePath parent) {
     return new ReturnStatement(
         (Expression) convert(node.getExpression(), getTreePath(parent, node)));
@@ -1592,7 +1617,7 @@ public class TreeConverter {
         || kind.equals("ENUM")
         || kind.equals("INTERFACE")
         || kind.equals("RECORD")) {
-      // Skip the class/enum/interface token.
+      // Skip the class/enum/interface/record token.
       while (src.charAt(start++) != ' ') {}
     } else if (!kind.equals("METHOD") && !kind.equals("VARIABLE")) {
       return getPosition(node);

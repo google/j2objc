@@ -36,6 +36,7 @@ import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
@@ -66,6 +67,7 @@ import javax.lang.model.type.TypeMirror;
  *
  * @author Tom Ball
  */
+@SuppressWarnings("UngroupedOverloads")
 public class ImplementationImportCollector extends UnitTreeVisitor {
 
   private Set<Import> imports = new LinkedHashSet<>();
@@ -227,6 +229,12 @@ public class ImplementationImportCollector extends UnitTreeVisitor {
         addImports(node.getQualifier().getTypeMirror());
       }
     }
+    return true;
+  }
+
+  @Override
+  public boolean visit(RecordDeclaration node) {
+    addImports(node.getTypeElement());
     return true;
   }
 

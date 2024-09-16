@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.TypeDeclarationStatement;
@@ -84,6 +85,16 @@ public class InnerClassExtractor extends UnitTreeVisitor {
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
+    endHandleType(node);
+  }
+
+  @Override
+  public boolean visit(RecordDeclaration node) {
+    return handleType();
+  }
+
+  @Override
+  public void endVisit(RecordDeclaration node) {
     endHandleType(node);
   }
 

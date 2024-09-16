@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeStatement;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.SynchronizedStatement;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
@@ -137,6 +138,11 @@ public class OcniExtractor extends UnitTreeVisitor {
     if (!node.isInterface()) {
       visitType(node);
     }
+  }
+
+  @Override
+  public void endVisit(RecordDeclaration node) {
+    // Do nothing, as records cannot have native methods.
   }
 
   private void visitType(AbstractTypeDeclaration node) {

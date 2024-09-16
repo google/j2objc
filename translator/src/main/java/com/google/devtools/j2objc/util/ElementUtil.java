@@ -192,6 +192,11 @@ public final class ElementUtil {
     return e.getKind() == ElementKind.PACKAGE;
   }
 
+  public static boolean isRecord(Element e) {
+    // Check it as a string so translator doesn't have to run with a Java 17 minimum.
+    return e.getKind().name().equals("RECORD");
+  }
+
   public static boolean isTypeElement(Element e) {
     ElementKind kind = e.getKind();
     return kind.isClass() || kind.isInterface();

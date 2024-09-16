@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
@@ -106,6 +107,11 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
   }
 
   @Override
+  public boolean visit(RecordDeclaration node) {
+    return visitAbstractTypeDeclaration(node);
+  }
+
+  @Override
   public boolean visit(MethodDeclaration node) {
     if (!annotatedElementStack.peekLast().isPresent()) {
       return true;
@@ -151,6 +157,11 @@ public final class ExternalAnnotationInjector extends UnitTreeVisitor {
 
   @Override
   public void endVisit(EnumDeclaration node) {
+    endVisitAbstractTypeDeclaration();
+  }
+
+  @Override
+  public void endVisit(RecordDeclaration node) {
     endVisitAbstractTypeDeclaration();
   }
 

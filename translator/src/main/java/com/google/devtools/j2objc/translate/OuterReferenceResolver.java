@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
@@ -69,6 +70,7 @@ import javax.lang.model.type.TypeMirror;
  *
  * @author Keith Stanger
  */
+@SuppressWarnings("UngroupedOverloads")
 public class OuterReferenceResolver extends UnitTreeVisitor {
 
   private final CaptureInfo captureInfo;
@@ -331,6 +333,17 @@ public class OuterReferenceResolver extends UnitTreeVisitor {
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
+    popType();
+  }
+
+  @Override
+  public boolean visit(RecordDeclaration node) {
+    pushType(node.getTypeElement());
+    return true;
+  }
+
+  @Override
+  public void endVisit(RecordDeclaration node) {
     popType();
   }
 
