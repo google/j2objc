@@ -35,7 +35,7 @@ import java.util.Set;
 @SuppressWarnings("UngroupedOverloads")
 public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
-  private final Options options;
+  protected final Options options;
 
   // The prefix to use for preprocessor variable names. Derived from the path of
   // the generated file. For example if "my/pkg/Foo.h" is being generated the
@@ -271,7 +271,12 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
         return;
       }
 
-      printf("#include \"%s\"\n", getOutputPath());
+      if (options.suppressHeaderClangTidyWarnings()) {
+        printf("#include \"%s\"  // IWYU pragma: export\n", getOutputPath());
+      } else {
+        printf("#include \"%s\"\n", getOutputPath());
+      }
+
       save(sourcePath, getGenerationUnit().options().fileUtil().getHeaderOutputDirectory());
     }
   }

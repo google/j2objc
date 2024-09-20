@@ -114,6 +114,7 @@ public class Options {
   private boolean stripReflectionErrors = false;
   private boolean linkProtocols = false;
   private boolean addTextSegmentAttribute = false;
+  private boolean suppressHeaderClangTidyWarnings = false;
 
   private Mappings mappings = new Mappings();
   private FileUtil fileUtil = new FileUtil();
@@ -421,6 +422,8 @@ public class Options {
         fileUtil.setHeaderOutputDirectory(new File(getArgValue(args, arg)));
       } else if (arg.equals("-Xlink-protocols")) {
         linkProtocols = true;
+      } else if (arg.equals("--suppress-header-clang-tidy-warnings")) {
+        suppressHeaderClangTidyWarnings = true;
       } else if (arg.equals("-use-arc")) {
         checkMemoryManagementOption(MemoryManagementOption.ARC);
       } else if (arg.equals("-Xstrict-field-assign")) {
@@ -1326,6 +1329,10 @@ public class Options {
   @VisibleForTesting
   public void setLinkProtocols(boolean b) {
     linkProtocols = b;
+  }
+
+  public boolean suppressHeaderClangTidyWarnings() {
+    return suppressHeaderClangTidyWarnings;
   }
 
   public boolean addTextSegmentAttribute() {
