@@ -584,6 +584,26 @@ static void CallMethodV(JNIEnv *env, jobject obj, jmethodID methodID, va_list ar
   DEALLOC_JARGS(jargs);
 }
 
+jobject CallObjectMethodV(JNIEnv *env, jobject obj, jmethodID methodID, va_list args) {
+  @autoreleasepool {
+    jvalue result;
+    CallMethodV(env, obj, methodID, args, &result);
+    return [result.l retain];
+  }
+}
+
+jobject CallObjectMethodA(JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args) {
+  @autoreleasepool {
+    jvalue result;
+    CallMethodA(env, obj, methodID, args, &result);
+    return [result.l retain];
+  }
+}
+
+jobject CallObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...) {
+  FORWARD_VARGS(jobject, CallObjectMethodV(env, obj, methodID, args));
+}
+
 #define DEFINE_CALL_METHOD_VARIANTS(RESULT_NAME, RESULT_TYPE, RESULT_CODE) \
   RESULT_TYPE Call##RESULT_NAME##MethodV(JNIEnv *env, jobject obj, jmethodID methodID, va_list args) { \
     jvalue result; \
@@ -599,7 +619,6 @@ static void CallMethodV(JNIEnv *env, jobject obj, jmethodID methodID, va_list ar
     FORWARD_VARGS(RESULT_TYPE, Call##RESULT_NAME##MethodV(env, obj, methodID, args)); \
   }
 
-DEFINE_CALL_METHOD_VARIANTS(Object, jobject, l)
 DEFINE_CALL_METHOD_VARIANTS(Boolean, jboolean, z)
 DEFINE_CALL_METHOD_VARIANTS(Byte, jbyte, b)
 DEFINE_CALL_METHOD_VARIANTS(Char, jchar, c)
@@ -696,6 +715,26 @@ void SetDoubleField(JNIEnv *env, jobject obj, jfieldID fieldID, jdouble value) {
   [(JavaLangReflectField *)fieldID setDoubleWithId:obj withDouble:value];
 }
 
+jobject CallStaticObjectMethodV(JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) {
+  @autoreleasepool {
+    jvalue result;
+    CallMethodV(env, nil, methodID, args, &result);
+    return [result.l retain];
+  }
+}
+
+jobject CallStaticObjectMethodA(JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) {
+  @autoreleasepool {
+    jvalue result;
+    CallMethodA(env, nil, methodID, args, &result);
+    return [result.l retain];
+  }
+}
+
+jobject CallStaticObjectMethod(JNIEnv *env, jclass clazz, jmethodID methodID, ...) {
+  FORWARD_VARGS(jobject, CallObjectMethodV(env, nil, methodID, args));
+}
+
 #define DEFINE_CALL_STATIC_METHOD_VARIANTS(RESULT_NAME, RESULT_TYPE, RESULT_CODE) \
   RESULT_TYPE CallStatic##RESULT_NAME##MethodV(JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) { \
     jvalue result; \
@@ -711,7 +750,6 @@ void SetDoubleField(JNIEnv *env, jobject obj, jfieldID fieldID, jdouble value) {
     FORWARD_VARGS(RESULT_TYPE, Call##RESULT_NAME##MethodV(env, nil, methodID, args)); \
   }
 
-DEFINE_CALL_STATIC_METHOD_VARIANTS(Object, jobject, l)
 DEFINE_CALL_STATIC_METHOD_VARIANTS(Boolean, jboolean, z)
 DEFINE_CALL_STATIC_METHOD_VARIANTS(Byte, jbyte, b)
 DEFINE_CALL_STATIC_METHOD_VARIANTS(Char, jchar, c)
