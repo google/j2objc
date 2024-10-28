@@ -172,6 +172,7 @@ import com.sun.source.util.SourcePositions;
 import com.sun.source.util.TreePath;
 import com.sun.source.util.Trees;
 import com.sun.tools.javac.code.Flags;
+import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.VarSymbol;
 import com.sun.tools.javac.code.TypeTag;
 import com.sun.tools.javac.code.Types;
@@ -190,8 +191,11 @@ import com.sun.tools.javac.tree.JCTree.JCVariableDecl;
 import com.sun.tools.javac.tree.JCTree.Tag;
 import com.sun.tools.javac.util.Position;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -258,8 +262,7 @@ public class TreeConverter {
     sourcePositions = trees.getSourcePositions();
   }
 
-  @Nullable
-  private TreeNode convert(Tree node, TreePath parent) {
+  private @Nullable TreeNode convert(Tree node, TreePath parent) {
     if (node == null) {
       return null;
     }
@@ -853,7 +856,7 @@ public class TreeConverter {
           .setQualifier((Name) convert(selected, path))
           .setTypeMirror(typeMirror);
     }
-    if ("super".equals(getMemberName(selected))) {
+    if (Objects.equals(getMemberName(selected), "super")) {
       SuperFieldAccess newNode =
           new SuperFieldAccess()
               .setVariableElement((VariableElement) element)
@@ -1298,8 +1301,8 @@ public class TreeConverter {
     return new PrimitiveType(getTypeMirror(getTreePath(parent, node)));
   }
 
+  @SuppressWarnings("unchecked")
   private TreeNode convertRecord(ClassTree node, TreePath parent) {
-    ErrorUtil.error("Record translation not implemented");
     TreePath path = getTreePath(parent, node);
     TypeElement element = (TypeElement) getElement(path);
     RecordDeclaration newNode = new RecordDeclaration(element);
@@ -1314,9 +1317,37 @@ public class TreeConverter {
         Block block = (Block) convert(javacBlock, path);
         newNode.addBodyDeclaration(new Initializer(block, javacBlock.isStatic()));
       } else {
-        newNode.addBodyDeclaration((BodyDeclaration) convert(bodyDecl, path));
+        BodyDeclaration member = (BodyDeclaration) convert(bodyDecl, path);
+        newNode.addBodyDeclaration(member);
       }
     }
+
+    // Use reflection to convert record components, so that the translator
+    // doesn't have to only run on Java 17 and higher. If running on an
+    // earlier version of Java, the record components field doesn't exist.
+    // So even though javac won't return a record in previous versions (so
+    // this method won't be called), compiling j2objc with an older JDK will
+    // fail if we directly reference javac's Java 17 API.
+    // TODO(tball): simplify when the minimum supported j2objc JDK is Java 17.
+    try {
+      Symbol.ClassSymbol recordClass = (Symbol.ClassSymbol) getElement(path);
+      Method getRecordComponentsMethod = recordClass.getClass().getMethod("getRecordComponents");
+      List<VariableElement> recordComponents =
+          (List<VariableElement>) getRecordComponentsMethod.invoke(recordClass);
+      for (VariableElement componentVar : recordComponents) {
+        Field accessorMethodField = componentVar.getClass().getField("accessorMeth");
+        MethodTree accessor = (MethodTree) accessorMethodField.get(componentVar);
+        if (accessor != null) {
+          newNode.addRecordComponent(
+              componentVar, (MethodDeclaration) convertMethodDeclaration(accessor, path));
+        } else {
+          newNode.addRecordComponent(componentVar, null);
+        }
+      }
+    } catch (ReflectiveOperationException e) {
+      throw new LinkageError("Failed accessing type's recordComponents.", e);
+    }
+
     return newNode;
   }
 

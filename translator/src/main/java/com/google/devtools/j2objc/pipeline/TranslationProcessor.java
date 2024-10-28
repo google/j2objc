@@ -55,6 +55,7 @@ import com.google.devtools.j2objc.translate.OperatorRewriter;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.translate.PackageInfoRewriter;
 import com.google.devtools.j2objc.translate.PrivateDeclarationResolver;
+import com.google.devtools.j2objc.translate.RecordExpander;
 import com.google.devtools.j2objc.translate.ReflectionCodeDetector;
 import com.google.devtools.j2objc.translate.Rewriter;
 import com.google.devtools.j2objc.translate.SerializationStripper;
@@ -171,6 +172,9 @@ public class TranslationProcessor extends FileProcessor {
 
     new OuterReferenceResolver(unit).run();
     ticker.tick("OuterReferenceResolver");
+
+    new RecordExpander(unit).run();
+    ticker.tick("RecordExpander");
 
     // Update code that has GWT references.
     new GwtConverter(unit).run();

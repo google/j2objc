@@ -75,6 +75,7 @@ import com.google.devtools.j2objc.translate.OuterReferenceFixerTest;
 import com.google.devtools.j2objc.translate.OuterReferenceResolverTest;
 import com.google.devtools.j2objc.translate.PackageInfoRewriterTest;
 import com.google.devtools.j2objc.translate.PrivateDeclarationResolverTest;
+import com.google.devtools.j2objc.translate.RecordExpanderTest;
 import com.google.devtools.j2objc.translate.ReflectionCodeDetectorTest;
 import com.google.devtools.j2objc.translate.RewriterTest;
 import com.google.devtools.j2objc.translate.SerializationStripperTest;
@@ -175,6 +176,7 @@ public class SmallTests {
         PrimitiveArrayTest.class,
         PrivateDeclarationResolverTest.class,
         ProGuardUsageParserTest.class,
+        RecordExpanderTest.class,
         ReflectionCodeDetectorTest.class,
         RewriterTest.class,
         SerializationStripperTest.class,

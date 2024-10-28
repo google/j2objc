@@ -969,4 +969,8 @@ public final class ElementUtil {
     }
     return null;
   }
+
+  public TypeElement getTypeElement(String fullyQualifiedName) {
+    return javacElements.getTypeElement(fullyQualifiedName);
+  }
 }

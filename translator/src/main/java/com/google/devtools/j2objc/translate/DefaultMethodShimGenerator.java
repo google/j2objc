@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
@@ -255,6 +256,11 @@ public class DefaultMethodShimGenerator extends UnitTreeVisitor {
 
   @Override
   public void endVisit(EnumDeclaration node) {
+    new TypeFixer(node).visit();
+  }
+
+  @Override
+  public void endVisit(RecordDeclaration node) {
     new TypeFixer(node).visit();
   }
 

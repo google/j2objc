@@ -31,6 +31,7 @@ import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
@@ -65,12 +66,13 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
- * Converts methods that don't need dynamic dispatch to C functions. This optimization
- * initially just targets private methods, but will be expanded to include final methods
- * that don't override superclass methods.
+ * Converts methods that don't need dynamic dispatch to C functions. This optimization initially
+ * just targets private methods, but will be expanded to include final methods that don't override
+ * superclass methods.
  *
  * @author Tom Ball
  */
+@SuppressWarnings("UngroupedOverloads")
 public class Functionizer extends UnitTreeVisitor {
 
   private final CaptureInfo captureInfo;
@@ -522,12 +524,18 @@ public class Functionizer extends UnitTreeVisitor {
     }
   }
 
+  @Override
+  public void endVisit(RecordDeclaration node) {
+    if (options.disallowInheritedConstructors()) {
+      addDisallowedConstructors(node);
+    }
+  }
+
   /**
-   * Declare any inherited constructors that aren't allowed to be accessed in Java
-   * with a NS_UNAVAILABLE macro, so that clang will flag such access from native
-   * code as an error.
+   * Declare any inherited constructors that aren't allowed to be accessed in Java with a
+   * NS_UNAVAILABLE macro, so that clang will flag such access from native code as an error.
    */
-  private void addDisallowedConstructors(TypeDeclaration node) {
+  private void addDisallowedConstructors(AbstractTypeDeclaration node) {
     TypeElement typeElement = node.getTypeElement();
     TypeElement superClass = ElementUtil.getSuperclass(typeElement);
     if (ElementUtil.isPrivateInnerType(typeElement)

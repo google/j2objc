@@ -14,12 +14,17 @@
 
 package com.google.devtools.j2objc.ast;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 
 /**
  * Node type for a record declaration.
  */
 public class RecordDeclaration extends AbstractTypeDeclaration {
+
+  private List<RecordComponent> recordComponents = new ArrayList<>();
 
   public RecordDeclaration() {}
 
@@ -41,6 +46,14 @@ public class RecordDeclaration extends AbstractTypeDeclaration {
     return new RecordDeclaration(this);
   }
 
+  public List<RecordComponent> getRecordComponents() {
+    return recordComponents;
+  }
+
+  public void addRecordComponent(VariableElement component, MethodDeclaration accessor) {
+    recordComponents.add(new RecordComponent(component, accessor));
+  }
+
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
@@ -51,5 +64,29 @@ public class RecordDeclaration extends AbstractTypeDeclaration {
       classInitStatements.accept(visitor);
     }
     visitor.endVisit(this);
+  }
+
+  /** A record component is an extended VariableElement which adds an accessor method. */
+  public static class RecordComponent {
+    private final VariableElement var;
+    private final MethodDeclaration accessor;
+
+    public RecordComponent(VariableElement component, MethodDeclaration accessor) {
+      this.var = component;
+      this.accessor = accessor;
+    }
+
+    public VariableElement getElement() {
+      return var;
+    }
+
+    public MethodDeclaration getAccessor() {
+      return accessor;
+    }
+
+    @Override
+    public String toString() {
+      return var.getSimpleName().toString();
+    }
   }
 }

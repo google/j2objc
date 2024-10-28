@@ -201,6 +201,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/OutOfMemoryError.java \
   java/lang/Package.java \
   java/lang/Readable.java \
+  java/lang/Record.java \
   java/lang/ReflectiveOperationException.java \
   java/lang/Runnable.java \
   java/lang/Runtime.java \

@@ -833,6 +833,15 @@ public abstract class GenerationTest extends TestCase {
     }
   }
 
+  protected boolean onJava16OrAbove() {
+    try {
+      Class.forName("java.lang.Record");
+      return true;
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+
   protected boolean onJava17OrAbove() {
     try {
       Class.forName("java.util.HexFormat");
