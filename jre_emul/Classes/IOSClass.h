@@ -176,6 +176,7 @@
 - (jboolean)desiredAssertionStatus;
 
 - (IOSObjectArray *)getEnumConstants;
+- (IOSObjectArray *)getRecordComponents;
 
 // Class.getResource, getResourceAsStream
 - (JavaNetURL *)getResource:(NSString *)name;

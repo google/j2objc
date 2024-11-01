@@ -25,6 +25,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericDeclaration;
 import java.lang.reflect.Method;
+import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.net.URL;
@@ -641,48 +642,79 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type, A
   }
 
   /**
-   * Returns a {@code Method} object that reflects the specified
-   * declared method of the class or interface represented by this
-   * {@code Class} object. The {@code name} parameter is a
-   * {@code String} that specifies the simple name of the desired
-   * method, and the {@code parameterTypes} parameter is an array of
-   * {@code Class} objects that identify the method's formal parameter
-   * types, in declared order.  If more than one method with the same
-   * parameter types is declared in a class, and one of these methods has a
-   * return type that is more specific than any of the others, that method is
-   * returned; otherwise one of the methods is chosen arbitrarily.  If the
-   * name is "&lt;init&gt;"or "&lt;clinit&gt;" a {@code NoSuchMethodException}
-   * is raised.
+   * Returns an array of {@code RecordComponent} objects representing all the record components of
+   * this record class, or {@code null} if this class is not a record class.
    *
-   * <p> If this {@code Class} object represents an array type, then this
-   * method does not find the {@code clone()} method.
+   * <p>The components are returned in the same order that they are declared in the record header.
+   * The array is empty if this record class has no components. If the class is not a record class,
+   * that is {@link #isRecord()} returns {@code false}, then this method returns {@code null}.
+   * Conversely, if {@link #isRecord()} returns {@code true}, then this method returns a non-null
+   * value.
+   *
+   * @apiNote
+   *     <p>The following method can be used to find the record canonical constructor:
+   *     <pre>{@code
+   * static <T extends Record> Constructor<T> getCanonicalConstructor(Class<T> cls)
+   *     throws NoSuchMethodException {
+   *   Class<?>[] paramTypes =
+   *     Arrays.stream(cls.getRecordComponents())
+   *           .map(RecordComponent::getType)
+   *           .toArray(Class<?>[]::new);
+   *   return cls.getDeclaredConstructor(paramTypes);
+   * }
+   * }</pre>
+   *
+   * @return An array of {@code RecordComponent} objects representing all the record components of
+   *     this record class, or {@code null} if this class is not a record class
+   * @throws SecurityException If a security manager, <i>s</i>, is present and any of the following
+   *     conditions is met:
+   *     <ul>
+   *       <li>the caller's class loader is not the same as the class loader of this class and
+   *           invocation of {@link SecurityManager#checkPermission s.checkPermission} method with
+   *           {@code RuntimePermission("accessDeclaredMembers")} denies access to the declared
+   *           methods within this class
+   *       <li>the caller's class loader is not the same as or an ancestor of the class loader for
+   *           the current class and invocation of {@link SecurityManager#checkPackageAccess
+   *           s.checkPackageAccess()} denies access to the package of this class
+   *     </ul>
+   *
+   * @jls 8.10 Record Classes
+   * @since 16
+   */
+  public RecordComponent[] getRecordComponents() {
+    return null;
+  }
+
+  /**
+   * Returns a {@code Method} object that reflects the specified declared method of the class or
+   * interface represented by this {@code Class} object. The {@code name} parameter is a {@code
+   * String} that specifies the simple name of the desired method, and the {@code parameterTypes}
+   * parameter is an array of {@code Class} objects that identify the method's formal parameter
+   * types, in declared order. If more than one method with the same parameter types is declared in
+   * a class, and one of these methods has a return type that is more specific than any of the
+   * others, that method is returned; otherwise one of the methods is chosen arbitrarily. If the
+   * name is "&lt;init&gt;"or "&lt;clinit&gt;" a {@code NoSuchMethodException} is raised.
+   *
+   * <p>If this {@code Class} object represents an array type, then this method does not find the
+   * {@code clone()} method.
    *
    * @param name the name of the method
    * @param parameterTypes the parameter array
-   * @return  the {@code Method} object for the method of this class
-   *          matching the specified name and parameters
-   * @throws  NoSuchMethodException if a matching method is not found.
-   * @throws  NullPointerException if {@code name} is {@code null}
-   * @throws  SecurityException
-   *          If a security manager, <i>s</i>, is present and any of the
-   *          following conditions is met:
-   *
-   *          <ul>
-   *
-   *          <li> the caller's class loader is not the same as the
-   *          class loader of this class and invocation of
-   *          {@link SecurityManager#checkPermission
-   *          s.checkPermission} method with
-   *          {@code RuntimePermission("accessDeclaredMembers")}
-   *          denies access to the declared method
-   *
-   *          <li> the caller's class loader is not the same as or an
-   *          ancestor of the class loader for the current class and
-   *          invocation of {@link SecurityManager#checkPackageAccess
-   *          s.checkPackageAccess()} denies access to the package
-   *          of this class
-   *
-   *          </ul>
+   * @return the {@code Method} object for the method of this class matching the specified name and
+   *     parameters
+   * @throws NoSuchMethodException if a matching method is not found.
+   * @throws NullPointerException if {@code name} is {@code null}
+   * @throws SecurityException If a security manager, <i>s</i>, is present and any of the following
+   *     conditions is met:
+   *     <ul>
+   *       <li>the caller's class loader is not the same as the class loader of this class and
+   *           invocation of {@link SecurityManager#checkPermission s.checkPermission} method with
+   *           {@code RuntimePermission("accessDeclaredMembers")} denies access to the declared
+   *           method
+   *       <li>the caller's class loader is not the same as or an ancestor of the class loader for
+   *           the current class and invocation of {@link SecurityManager#checkPackageAccess
+   *           s.checkPackageAccess()} denies access to the package of this class
+   *     </ul>
    *
    * @jls 8.2 Class Members
    * @jls 8.4 Method Declarations
@@ -1563,6 +1595,25 @@ public final class Class<T> implements Serializable, GenericDeclaration, Type, A
    */
   public boolean isEnum() {
   	return false;
+  }
+
+  /**
+   * Returns {@code true} if and only if this class is a record class.
+   *
+   * <p>The {@linkplain #getSuperclass() direct superclass} of a record class is {@code
+   * java.lang.Record}. A record class is {@linkplain Modifier#FINAL final}. A record class has
+   * (possibly zero) record components; {@link #getRecordComponents()} returns a non-null but
+   * possibly empty value for a record.
+   *
+   * <p>Note that class {@link Record} is not a record class and thus invoking this method on class
+   * {@code Record} returns {@code false}.
+   *
+   * @return true if and only if this class is a record class, otherwise false
+   * @jls 8.10 Record Classes
+   * @since 16
+   */
+  public boolean isRecord() {
+    return false;
   }
 
   /**

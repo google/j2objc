@@ -272,6 +272,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/reflect/Parameter.java \
   java/lang/reflect/ParameterizedType.java \
   java/lang/reflect/Proxy.java \
+  java/lang/reflect/RecordComponent.java \
   java/lang/reflect/ReflectPermission.java \
   java/lang/reflect/Type.java \
   java/lang/reflect/TypeVariable.java \

@@ -47,6 +47,7 @@
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/NullPointerException.h"
 #import "java/lang/Package.h"
+#import "java/lang/Record.h"
 #import "java/lang/StringBuilder.h"
 #import "java/lang/annotation/Annotation.h"
 #import "java/lang/annotation/Inherited.h"
@@ -54,6 +55,7 @@
 #import "java/lang/reflect/Field.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
+#import "java/lang/reflect/RecordComponent.h"
 #import "java/lang/reflect/TypeVariable.h"
 #import "java/util/ArrayList.h"
 #import "java/util/Iterator.h"
@@ -716,6 +718,10 @@ IOSClass *IOSClass_forName_initialize_classLoader_(
   return false;
 }
 
+- (jboolean)isRecord{
+  return [self getSuperclass] == JavaLangRecord_class_();
+}
+
 - (jboolean)isInterface {
   return false;
 }
@@ -1090,6 +1096,30 @@ static IOSObjectArray *GetEnumConstants(IOSClass *cls) {
 
 - (IOSObjectArray *)getEnumConstants {
   return [GetEnumConstants(self) java_clone];
+}
+
+- (IOSObjectArray *)getRecordComponents {
+  if (![self isRecord]) {
+    return nil;
+  }
+  IOSObjectArray *fields = [self getDeclaredFields];
+  NSMutableArray *components = [[NSMutableArray alloc] initWithCapacity:[fields length]];
+  for (JavaLangReflectField *field in fields) {
+    if (([field getModifiers] & JavaLangReflectModifier_STATIC) == 0) {
+      JavaLangReflectMethod *accessor = 
+          [self getDeclaredMethod:[field getName]
+                   parameterTypes:[IOSObjectArray arrayWithLength:0 type:IOSClass_class_()]];
+      JavaLangReflectRecordComponent *comp = 
+          [[JavaLangReflectRecordComponent alloc] initWithIOSClass:self
+                                          withJavaLangReflectField:field
+                                         withJavaLangReflectMethod:accessor];
+      [components addObject:comp];
+      [comp release];
+    }
+  }
+  IOSObjectArray *result = copyFieldsToObjectArray(components);
+  [components release];
+  return result;
 }
 
 // Package private method. In OpenJDK it differentiated from the above because
@@ -1499,8 +1529,9 @@ J2OBJC_NAME_MAPPING(IOSClass, "java.lang.Class", "IOSClass")
 @implementation PackagePrefixLoader
 
 - (void)load__WithNSString:(NSString *)key withNSString:(NSString *)value {
-  [nil_chk(prefixMapping) addWithId:[[PackagePrefixEntry alloc] initWithNSString:key
-                                                                    withNSString:value]];
+  PackagePrefixEntry *entry = [[PackagePrefixEntry alloc] initWithNSString:key withNSString:value];
+  [nil_chk(prefixMapping) addWithId:entry];
+  [entry release];
 }
 
 @end
