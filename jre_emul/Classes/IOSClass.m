@@ -1102,23 +1102,33 @@ static IOSObjectArray *GetEnumConstants(IOSClass *cls) {
   if (![self isRecord]) {
     return nil;
   }
-  IOSObjectArray *fields = [self getDeclaredFields];
-  NSMutableArray *components = [[NSMutableArray alloc] initWithCapacity:[fields length]];
-  for (JavaLangReflectField *field in fields) {
-    if (([field getModifiers] & JavaLangReflectModifier_STATIC) == 0) {
-      JavaLangReflectMethod *accessor = 
-          [self getDeclaredMethod:[field getName]
-                   parameterTypes:[IOSObjectArray arrayWithLength:0 type:IOSClass_class_()]];
-      JavaLangReflectRecordComponent *comp = 
+  // Return record components in declaration order, which is how they're stored in metadata.
+  const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(self);
+  uint16_t fieldCount = metadata->fieldCount;
+  NSMutableArray *componentFields = [[NSMutableArray alloc] initWithCapacity:fieldCount];
+  for (uint16_t i = 0; i < fieldCount; i++) {
+    const J2ObjcFieldInfo *fieldInfo = &metadata->fields[i];
+    if (fieldInfo->modifiers == (JavaLangReflectModifier_PRIVATE | JavaLangReflectModifier_FINAL)) {
+      [componentFields addObject:[self getDeclaredField:
+          [NSString stringWithUTF8String:fieldInfo->name]]];
+    }
+  }
+
+  uint16_t count = (jint)[componentFields count];
+  IOSObjectArray *result =
+      [IOSObjectArray arrayWithLength:count type:JavaLangReflectRecordComponent_class_()];
+  for (uint16_t i = 0; i < count; i++) {
+    JavaLangReflectField *field = [componentFields objectAtIndex:i];
+    NSString *name = [field getName];
+    JavaLangReflectMethod *accessor = [self getMethod:name parameterTypes:nil];
+    JavaLangReflectRecordComponent *comp = 
           [[JavaLangReflectRecordComponent alloc] initWithIOSClass:self
                                           withJavaLangReflectField:field
                                          withJavaLangReflectMethod:accessor];
-      [components addObject:comp];
-      [comp release];
-    }
+    [result replaceObjectAtIndex:i withObject:comp];
+    [comp release];
   }
-  IOSObjectArray *result = copyFieldsToObjectArray(components);
-  [components release];
+  [componentFields release];
   return result;
 }
 

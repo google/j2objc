@@ -148,6 +148,7 @@
 - (jboolean)isPrimitive;
 - (jboolean)isAnnotation;
 - (jboolean)isSynthetic;
+- (jboolean)isRecord;
 
 - (IOSObjectArray *)getInterfaces;
 - (IOSObjectArray *)getGenericInterfaces;
