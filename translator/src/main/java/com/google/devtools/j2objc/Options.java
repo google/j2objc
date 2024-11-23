@@ -753,6 +753,22 @@ public class Options {
     } else {
       platformModuleSystemOptions.clear();
     }
+    if (sourceVersion.version() >= 11) {
+      // Enable access to the javac packages.
+      String[] javacPackages = {
+        "java.compiler/javax.lang.model.element",
+        "java.compiler/javax.lang.model.type",
+        "java.compiler/javax.lang.model.util",
+        "jdk.compiler/com.sun.tools.javac.api",
+        "jdk.compiler/com.sun.tools.javac.code",
+        "jdk.compiler/com.sun.tools.javac.parser",
+        "jdk.compiler/com.sun.tools.javac.tree",
+        "jdk.compiler/com.sun.tools.javac.util"
+      };
+      for (String pkg : javacPackages) {
+        addPlatformModuleSystemOptions("--add-exports", pkg + "=ALL-UNNAMED");
+      }
+    }
   }
 
   private boolean hasKnownFileSuffix(String s) {

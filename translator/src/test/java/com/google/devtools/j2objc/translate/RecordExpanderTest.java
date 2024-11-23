@@ -135,4 +135,23 @@ public class RecordExpanderTest extends GenerationTest {
         "- (NSString *)description {",
             "return JreStrcat(\"$I$IC\", @\"Point[x=\", x_, @\", y=\", y_, ']');");
   }
+
+  public void testHashCodeUsesEqualsForObjectTypes() throws IOException {
+    if (!onJava16OrAbove()) {
+      return;
+    }
+    SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_16);
+    options.setSourceVersion(SourceVersion.JAVA_16);
+    String translation =
+        translateSourceFile(
+            "import java.util.List; public record Point(String s, int i, List<?>[] l) {}",
+            "Point",
+            "Point.m");
+    assertTranslatedLines(
+        translation,
+        "if (!([o isKindOfClass:[Point class]])) return false;",
+        "Point *other = (Point *) cast_chk(o, [Point class]);",
+        "return JreStringEqualsEquals(((Point *) nil_chk(other))->s_, s_) "
+            + "&& other->i_ == i_ && JreObjectEqualsEquals(other->l_, l_);");
+  }
 }
