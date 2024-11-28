@@ -281,8 +281,18 @@ check_protobuf_dir = $(error PROTOBUF_ROOT_DIR not defined)
 endif
 endif
 
+ifndef ABSL_ROOT_DIR
+ifndef IS_CLEAN_GOAL
+check_protobuf_dir = $(error ABSL_ROOT_DIR not defined)
+endif
+endif
+
+
 PROTOBUF_LIB_PATH = $(PROTOBUF_ROOT_DIR)/lib
 PROTOBUF_INCLUDE_PATH = $(PROTOBUF_ROOT_DIR)/include
+ABSL_LIB_PATH = $(ABSL_ROOT_DIR)/lib
+ABSL_INCLUDE_PATH = $(ABSL_ROOT_DIR)/include
+
 PROTOBUF_BIN_PATH = $(PROTOBUF_ROOT_DIR)/bin
 PROTOBUF_PROTOC = $(PROTOBUF_BIN_PATH)/protoc
 

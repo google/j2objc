@@ -55,9 +55,9 @@ ABSL_LIBS = \
 	-l absl_spinlock_wait \
 	-l absl_strings
 
-CXXFLAGS = -x c++ -std=c++17 -stdlib=libc++ -Isrc -I$(PROTOBUF_INCLUDE_PATH) \
+CXXFLAGS = -x c++ -std=c++17 -stdlib=libc++ -Isrc -I$(PROTOBUF_INCLUDE_PATH) -I$(ABSL_INCLUDE_PATH) \
   -Wno-deprecated-declarations
-LDFLAGS = -L $(PROTOBUF_LIB_PATH) $(PROTOBUF_LIB) $(PROTOC_LIB) \
+LDFLAGS = -L $(PROTOBUF_LIB_PATH) -L $(ABSL_LIB_PATH) $(PROTOBUF_LIB) $(PROTOC_LIB) \
   $(ABSL_LIBS)
 
 dist: $(PROTOC_EXE_DIST) $(PROTOC_PLUGIN_DIST) $(DESCRIPTOR_PROTO_DIST)
