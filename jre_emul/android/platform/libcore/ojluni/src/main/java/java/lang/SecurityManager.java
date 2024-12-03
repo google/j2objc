@@ -43,6 +43,8 @@ import java.net.InetAddress;
  * developers can assume that there's no SecurityManager installed,
  * i.e. {@link java.lang.System#getSecurityManager()} will return null.
  */
+// TODO: b/381944419 - remove SecurityManager usage
+@com.google.devtools.staticanalysis.errorprone.SuppressBanSecurityManager
 public
 class SecurityManager {
 
