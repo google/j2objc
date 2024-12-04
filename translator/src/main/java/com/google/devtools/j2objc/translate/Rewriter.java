@@ -272,6 +272,7 @@ public class Rewriter extends UnitTreeVisitor {
         MethodDeclaration method = (MethodDeclaration) body;
         if (method.getParameters().isEmpty()
             && !method.isConstructor()
+            && !TypeUtil.isVoid(method.getReturnTypeMirror())
             && !ElementUtil.hasAnnotation(method.getExecutableElement(), Property.Suppress.class)) {
           method.setIsPseudoProperty(true);
         }

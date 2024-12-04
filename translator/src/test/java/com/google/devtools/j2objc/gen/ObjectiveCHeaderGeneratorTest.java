@@ -887,6 +887,18 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + " NSString * fooField;");
   }
 
+  public void testPropertyAnnotationIgnoresVoidMethod() throws IOException {
+    String sourceContent =
+        "  import com.google.j2objc.annotations.Property;"
+            + "@Property "
+            + "public class FooBar {"
+            + "  public void doFoo() {}"
+            + "  "
+            + "}";
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertNotInTranslation(translation, "@property");
+  }
+
   public void testPropertiesOfClassTypes() throws IOException {
     String sourceContent =
         "  import com.google.j2objc.annotations.Property;"
