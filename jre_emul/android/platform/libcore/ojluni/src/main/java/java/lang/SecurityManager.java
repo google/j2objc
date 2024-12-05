@@ -26,9 +26,9 @@
 
 package java.lang;
 
-import java.security.*;
 import java.io.FileDescriptor;
 import java.net.InetAddress;
+import java.security.*;
 
 // Android-changed: Stubbed the implementation.  Android doesn't support SecurityManager.
 // SecurityManager can only check access by Java code, so it can be bypassed by using
@@ -37,14 +37,12 @@ import java.net.InetAddress;
 /**
  * Legacy security code; do not use.
  *
- * <p>Security managers do <i>not</i> provide a secure environment for
- * executing untrusted code and are unsupported on Android. Untrusted code
- * cannot be safely isolated within a single VM on Android. Application
- * developers can assume that there's no SecurityManager installed,
- * i.e. {@link java.lang.System#getSecurityManager()} will return null.
+ * <p>Security managers do <i>not</i> provide a secure environment for executing untrusted code and
+ * are unsupported on Android. Untrusted code cannot be safely isolated within a single VM on
+ * Android. Application developers can assume that there's no SecurityManager installed, i.e. {@link
+ * java.lang.System#getSecurityManager()} will return null.
  */
-public
-class SecurityManager {
+public class SecurityManager {
 
     /**
      * @deprecated Use {@link #checkPermission} instead.
