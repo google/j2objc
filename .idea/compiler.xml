@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <option name="USE_RELEASE_OPTION" value="false" />
     <excludeFromCompile>
       <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/util/TestFormatter.java" />
       <file url="file://$PROJECT_DIR$/jre_emul/android/platform/libcore/ojluni/src/test/java/time/test/java/time/TestLocalDate.java" />

@@ -27,8 +27,8 @@
       <excludeFolder url="file://$MODULE_DIR$/build_result" />
       <excludeFolder url="file://$MODULE_DIR$/src/test/java/com/google/devtools/j2objc/regression" />
     </content>
+    <orderEntry type="jdk" jdkName="zulu-22" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="inheritedJdk" />
     <orderEntry type="module" module-name="annotations" />
     <orderEntry type="module-library">
       <library name="j2objc_junit.jar">
