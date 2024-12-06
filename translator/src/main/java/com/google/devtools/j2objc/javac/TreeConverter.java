@@ -73,6 +73,7 @@ import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.ParameterizedType;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
+import com.google.devtools.j2objc.ast.Pattern;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.PrimitiveType;
@@ -985,19 +986,55 @@ public class TreeConverter {
 
   private TreeNode convertIf(IfTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
+    Expression condition = convertWithoutParens(node.getCondition(), path);
+    Statement thenStatement = (Statement) convert(node.getThenStatement(), path);
+    if (condition.getKind() == TreeNode.Kind.INSTANCEOF_EXPRESSION) {
+      Pattern pattern = ((InstanceofExpression) condition).getPattern();
+      if (pattern != null) {
+        // Create local variable with pattern variable element.
+        VariableElement localVar =
+            ((Pattern.BindingPattern) pattern).getVariable().getVariableElement();
+        CastExpression castExpr = new CastExpression(localVar.asType(),
+            ((InstanceofExpression) condition).getLeftOperand().copy());
+        VariableDeclarationStatement localVarDecl =
+            new VariableDeclarationStatement(localVar, castExpr);
+        Block block = new Block()
+            .addStatement(localVarDecl)
+            .addStatement(thenStatement);
+        thenStatement = block;
+      }
+    }
     return new IfStatement()
-        .setExpression(convertWithoutParens(node.getCondition(), path))
-        .setThenStatement((Statement) convert(node.getThenStatement(), path))
+        .setExpression(condition)
+        .setThenStatement(thenStatement)
         .setElseStatement((Statement) convert(node.getElseStatement(), path));
   }
 
   private TreeNode convertInstanceOf(InstanceOfTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
     TypeMirror clazz = getTypeMirror(getTreePath(path, node.getType()));
+    // Use reflection to fetch pattern.var.sym, so j2objc can still run on Java 11.
+    Pattern pattern = null;
+    try {
+      Field patternField = node.getClass().getDeclaredField("pattern");
+      Object bindingPattern = patternField.get(node);
+      if (bindingPattern != null) {
+        Field varField = bindingPattern.getClass().getField("var");
+        Object var = varField.get(bindingPattern);
+        if (var != null) {
+          Field symField = var.getClass().getField("sym");
+          VariableElement sym = (VariableElement) symField.get(var);
+          pattern = new Pattern.BindingPattern(sym);
+        }
+      }
+    } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException e) {
+      // Keep null declaration.
+    }
     return new InstanceofExpression()
         .setLeftOperand((Expression) convert(node.getExpression(), path))
         .setRightOperand(Type.newType(clazz))
-        .setTypeMirror(getTypeMirror(path));
+        .setTypeMirror(getTypeMirror(path))
+        .setPattern(pattern);
   }
 
   private TreeNode convertLabeledStatement(LabeledStatementTree node, TreePath parent) {
