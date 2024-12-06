@@ -38,6 +38,12 @@ public class TreeVisitor {
 
   public void endVisit(AnnotationTypeMemberDeclaration node) {}
 
+  public boolean visit(Pattern.AnyPattern node) {
+    return true;
+  }
+
+  public void endVisit(Pattern.AnyPattern node) {}
+
   public boolean visit(ArrayAccess node) {
     return true;
   }
@@ -73,6 +79,12 @@ public class TreeVisitor {
   }
 
   public void endVisit(Assignment node) {}
+
+  public boolean visit(Pattern.BindingPattern node) {
+    return true;
+  }
+
+  public void endVisit(Pattern.BindingPattern node) {}
 
   public boolean visit(Block node) {
     return true;
