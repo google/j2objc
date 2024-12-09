@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.gen;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.util.SourceVersion;
 import java.io.IOException;
 import java.util.List;
 
@@ -1714,5 +1715,32 @@ public class StatementGeneratorTest extends GenerationTest {
         "}"), "Test", "Test.m");
     assertTranslation(translation,
         "@interface Test_$Lambda$1 : NSObject < JavaUtilFunctionFunction >");
+  }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testInstanceOfPatternVariableTranslation() throws IOException {
+    if (!onJava16OrAbove()) {
+      return;
+    }
+    SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_16);
+    options.setSourceVersion(SourceVersion.JAVA_16);
+    String translation = translateSourceFile(String.join("\n",
+        "class Test {",
+            "  int test(Object o) {",
+            "    if (o instanceof String s) {",
+            "      return s.length();",
+            "    }",
+            "    return 0;",
+            "  }",
+            "}"), "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "if ([o isKindOfClass:[NSString class]]) {",
+        "NSString *s = (NSString *) o;",
+        "{",
+        "return [s java_length];",
+        "}",
+        "}",
+        "return 0;",
+        "}");
   }
 }

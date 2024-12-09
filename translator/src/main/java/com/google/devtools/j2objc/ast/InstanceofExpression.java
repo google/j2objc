@@ -24,6 +24,7 @@ public class InstanceofExpression extends Expression {
   private TypeMirror typeMirror;
   private ChildLink<Expression> leftOperand = ChildLink.create(Expression.class, this);
   private ChildLink<Type> rightOperand = ChildLink.create(Type.class, this);
+  private ChildLink<Pattern> pattern = ChildLink.create(Pattern.class, this);
 
   public InstanceofExpression() {}
 
@@ -32,6 +33,7 @@ public class InstanceofExpression extends Expression {
     typeMirror = other.getTypeMirror();
     leftOperand.copyFrom(other.getLeftOperand());
     rightOperand.copyFrom(other.getRightOperand());
+    pattern.copyFrom(other.getPattern());
   }
 
   @Override
@@ -64,6 +66,15 @@ public class InstanceofExpression extends Expression {
 
   public InstanceofExpression setRightOperand(Type operand) {
     rightOperand.set(operand);
+    return this;
+  }
+
+  public Pattern getPattern() {
+    return pattern.get(); // null if no pattern in expression.
+  }
+
+  public InstanceofExpression setPattern(Pattern bindingPattern) {
+    pattern.set(bindingPattern);
     return this;
   }
 

@@ -18,8 +18,8 @@ import java.util.List;
 import javax.lang.model.element.VariableElement;
 
 /**
- * Node type for a declaration of a single variable. Used in parameter lists
- * and catch clauses.
+ * Node type for a declaration of a single variable. Used in parameter lists,
+ * catch clauses and binding patterns.
  */
 public class SingleVariableDeclaration extends VariableDeclaration {
 

@@ -548,6 +548,11 @@ public class DebugASTPrinter extends TreeVisitor {
     node.getLeftOperand().accept(this);
     sb.print(" instanceof ");
     node.getRightOperand().accept(this);
+    Pattern pattern = node.getPattern();
+    if (pattern != null && pattern.getKind() == TreeNode.Kind.BINDING_PATTERN) {
+      sb.print(" ");
+      var unused = visit(((Pattern.BindingPattern) pattern).getVariable());
+    }
     return false;
   }
 
