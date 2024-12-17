@@ -916,16 +916,6 @@ public class IntrospectorTest extends TestCase {
 
     }
 
-    static class MockSecurity2 extends SecurityManager {
-
-        @Override
-        public void checkPermission(Permission p) {
-            if (p instanceof PropertyPermission) {
-                throw new SecurityException("Expected exception.");
-            }
-        }
-    }
-
     /*
      * If Bean3 has empty BeanInfo, then
      * Introspector.getBeanInfo(Bean3.class).getBeanDescriptor() returns null.
