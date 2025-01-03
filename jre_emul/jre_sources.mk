@@ -2003,6 +2003,7 @@ JAVA_PUBLIC_SOURCES_TIME = \
   java/time/DayOfWeek.java \
   java/time/Duration.java \
   java/time/Instant.java \
+  java/time/InstantSource.java \
   java/time/LocalDate.java \
   java/time/LocalDateTime.java \
   java/time/LocalTime.java \
