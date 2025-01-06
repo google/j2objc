@@ -1734,13 +1734,46 @@ public class StatementGeneratorTest extends GenerationTest {
             "  }",
             "}"), "Test", "Test.m");
     assertTranslatedLines(translation,
-        "if ([o isKindOfClass:[NSString class]]) {",
-        "NSString *s = (NSString *) o;",
         "{",
+        "NSString *s = (NSString *) cast_chk(o, [NSString class]);",
+        "if ([o isKindOfClass:[NSString class]]) {",
         "return [s java_length];",
         "}",
         "}",
         "return 0;",
+        "}");
+  }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testInstanceOfPatternVariableTranslationWithGuards() throws IOException {
+    if (!onJava16OrAbove()) {
+      return;
+    }
+    SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_16);
+    options.setSourceVersion(SourceVersion.JAVA_16);
+    String translation = translateSourceFile(String.join("\n",
+        "class Point {",
+        "  private final int x;",
+        "  private final int y;",
+        "  Point(int x, int y) { this.x = x; this.y = y; }",
+        "  @Override public boolean equals(Object o) {",
+        // Define instanceof pattern variable p with two guards.
+        "    if (o instanceof Point p && x == p.x && y == p.y) {",
+        "      return true;",
+        "    } else {",
+        "      return false;",
+        "    }",
+        "  }",
+        "}"), "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "{",
+        "Point *p = (Point *) cast_chk(o, [Point class]);",
+        "if ([o isKindOfClass:[Point class]] && x_ == p->x_ && y_ == p->y_) {",
+        "return true;",
+        "}",
+        "else {",
+        "return false;",
+        "}",
         "}");
   }
 }

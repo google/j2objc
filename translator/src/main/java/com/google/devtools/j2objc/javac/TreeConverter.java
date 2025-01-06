@@ -988,26 +988,36 @@ public class TreeConverter {
     TreePath path = getTreePath(parent, node);
     Expression condition = convertWithoutParens(node.getCondition(), path);
     Statement thenStatement = (Statement) convert(node.getThenStatement(), path);
-    if (condition.getKind() == TreeNode.Kind.INSTANCEOF_EXPRESSION) {
-      Pattern pattern = ((InstanceofExpression) condition).getPattern();
-      if (pattern != null) {
-        // Create local variable with pattern variable element.
-        VariableElement localVar =
-            ((Pattern.BindingPattern) pattern).getVariable().getVariableElement();
-        CastExpression castExpr = new CastExpression(localVar.asType(),
-            ((InstanceofExpression) condition).getLeftOperand().copy());
-        VariableDeclarationStatement localVarDecl =
-            new VariableDeclarationStatement(localVar, castExpr);
-        Block block = new Block()
-            .addStatement(localVarDecl)
-            .addStatement(thenStatement);
-        thenStatement = block;
-      }
-    }
-    return new IfStatement()
+    Statement newNode = new IfStatement()
         .setExpression(condition)
         .setThenStatement(thenStatement)
         .setElseStatement((Statement) convert(node.getElseStatement(), path));
+    InstanceofExpression instanceofExpr = null;
+    if (condition.getKind() == TreeNode.Kind.INSTANCEOF_EXPRESSION) {
+      instanceofExpr = (InstanceofExpression) condition;
+    } else if (condition.getKind() == TreeNode.Kind.INFIX_EXPRESSION) {
+      for (Expression operand : ((InfixExpression) condition).getOperands()) {
+        if (operand.getKind() == TreeNode.Kind.INSTANCEOF_EXPRESSION) {
+          instanceofExpr = (InstanceofExpression) operand;
+          break;
+        }
+      }
+    }
+    Pattern pattern = instanceofExpr != null ? instanceofExpr.getPattern() : null;
+    if (pattern != null) {
+      // Create local variable with pattern variable element.
+      VariableElement localVar =
+          ((Pattern.BindingPattern) pattern).getVariable().getVariableElement();
+      CastExpression castExpr = new CastExpression(localVar.asType(),
+          instanceofExpr.getLeftOperand().copy());
+      VariableDeclarationStatement localVarDecl =
+          new VariableDeclarationStatement(localVar, castExpr);
+      Block block = new Block()
+          .addStatement(localVarDecl)
+          .addStatement(newNode);
+      newNode = block;
+    }
+    return newNode;
   }
 
   private TreeNode convertInstanceOf(InstanceOfTree node, TreePath parent) {
