@@ -123,6 +123,11 @@ import org.junit.Test;
 @RunWith(DataProviderRunner.class)
 public class TCKYearMonth extends AbstractDateTimeTest {
 
+    /*-[
+        // Some test values intentionally cause integer overflow, valid in Java.
+        #pragma GCC diagnostic ignored "-Winteger-overflow"
+    ]-*/
+
     // Android-changed: This was originally non-static and initialized in @Before,
     // but @Before is run after @DataProvider
     // since multiple test methods were run and the first one did not require this value.
