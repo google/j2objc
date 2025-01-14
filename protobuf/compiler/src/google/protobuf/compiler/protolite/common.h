@@ -40,6 +40,7 @@
 #ifndef GOOGLE_PROTOBUF_COMPILER_J2OBJC_COMMON_H__
 #define GOOGLE_PROTOBUF_COMPILER_J2OBJC_COMMON_H__
 
+#include "absl/strings/str_cat.h"
 #include "absl/strings/str_replace.h"
 #include "google/protobuf/compiler/code_generator.h"
 #include "google/protobuf/io/printer.h"

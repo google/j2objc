@@ -97,7 +97,7 @@ std::string GetPackagePrefix(const FileDescriptor *file) {
   const UnknownField *package_prefix_field =
       FindUnknownField(file, kPackagePrefixFieldNumber);
   if (package_prefix_field) {
-    return globalPrefix + package_prefix_field->length_delimited();
+    return absl::StrCat(globalPrefix, package_prefix_field->length_delimited());
   }
 
   // Look for a matching prefix from the prefixes file.
@@ -221,8 +221,8 @@ bool HasConflictingClassName(const FileDescriptor *file,
 
 std::string FileBaseName(const FileDescriptor *file) {
   std::string::size_type last_slash = file->name().find_last_of('/');
-  return last_slash == std::string::npos ? file->name()
-                                         : file->name().substr(last_slash + 1);
+  return std::string(last_slash == std::string::npos ? file->name()
+                                         : file->name().substr(last_slash + 1));
 }
 
 std::string FileJavaPackage(const FileDescriptor *file) {
@@ -248,32 +248,37 @@ std::string JavaPackageToDir(std::string package_name) {
 }
 
 std::string ClassName(const Descriptor *descriptor) {
-  return GetClassPrefix(descriptor->file(), descriptor->containing_type()) +
-         descriptor->name() + globalPostfix;
+  return absl::StrCat(GetClassPrefix(descriptor->file(),
+                                     descriptor->containing_type()),
+                                     descriptor->name(), globalPostfix);
 }
 
 std::string ClassName(const EnumDescriptor *descriptor) {
-  return GetClassPrefix(descriptor->file(), descriptor->containing_type()) +
-         descriptor->name() + globalPostfix;
+  return absl::StrCat(GetClassPrefix(descriptor->file(),
+                                     descriptor->containing_type()),
+                                     descriptor->name(), globalPostfix);
 }
 
 std::string ClassName(const FileDescriptor *descriptor) {
-  return GetPackagePrefix(descriptor) + FileClassName(descriptor) +
-         globalPostfix;
+  return absl::StrCat(GetPackagePrefix(descriptor), FileClassName(descriptor),
+         globalPostfix);
 }
 
 std::string JavaClassName(const Descriptor *descriptor) {
-  return GetJavaClassPrefix(descriptor->file(), descriptor->containing_type())
-      + "." + descriptor->name();
+  return absl::StrCat(GetJavaClassPrefix(descriptor->file(),
+                                         descriptor->containing_type()),
+                                         ".", descriptor->name());
 }
 
 std::string JavaClassName(const EnumDescriptor *descriptor) {
-  return GetJavaClassPrefix(descriptor->file(), descriptor->containing_type())
-      + "." + descriptor->name();
+  return absl::StrCat(GetJavaClassPrefix(descriptor->file(),
+                                         descriptor->containing_type()),
+                                         ".", descriptor->name());
 }
 
 std::string JavaClassName(const FileDescriptor *descriptor) {
-  return FileJavaPackage(descriptor) + "." + FileClassName(descriptor);
+  return absl::StrCat(FileJavaPackage(descriptor), ".",
+                      FileClassName(descriptor));
 }
 
 std::string MappedInputName(const FileDescriptor *file) {
