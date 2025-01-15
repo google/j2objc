@@ -62,7 +62,6 @@
 package java.time;
 
 import static java.time.LocalTime.MINUTES_PER_HOUR;
-import static java.time.LocalTime.NANOS_PER_MILLI;
 import static java.time.LocalTime.NANOS_PER_SECOND;
 import static java.time.LocalTime.SECONDS_PER_DAY;
 import static java.time.LocalTime.SECONDS_PER_HOUR;
@@ -141,13 +140,13 @@ public final class Duration
      * Constant for nanos per second.
      */
     private static final BigInteger BI_NANOS_PER_SECOND = BigInteger.valueOf(NANOS_PER_SECOND);
-    /**
-     * The pattern for parsing.
-     */
-    private static final Pattern PATTERN =
-            Pattern.compile("([-+]?)P(?:([-+]?[0-9]+)D)?" +
-                    "(T(?:([-+]?[0-9]+)H)?(?:([-+]?[0-9]+)M)?(?:([-+]?[0-9]+)(?:[.,]([0-9]{0,9}))?S)?)?",
-                    Pattern.CASE_INSENSITIVE);
+
+  /** The pattern for parsing. */
+  private static final Pattern PATTERN =
+      Pattern.compile(
+          "([-+]?)P(?:([-+]?[0-9]+)D)?"
+              + "(T(?:([-+]?[0-9]+)H)?(?:([-+]?[0-9]+)M)?(?:([-+]?[0-9]+)(?:[.,]([0-9]{0,9}))?S)?)?",
+          Pattern.CASE_INSENSITIVE);
 
     /**
      * The number of seconds in the duration.
@@ -400,7 +399,9 @@ public final class Duration
                     try {
                         return create(negate, daysAsSecs, hoursAsSecs, minsAsSecs, seconds, nanos);
                     } catch (ArithmeticException ex) {
-                        throw (DateTimeParseException) new DateTimeParseException("Text cannot be parsed to a Duration: overflow", text, 0).initCause(ex);
+            throw (DateTimeParseException)
+                new DateTimeParseException("Text cannot be parsed to a Duration: overflow", text, 0)
+                    .initCause(ex);
                     }
                 }
             }
@@ -417,7 +418,9 @@ public final class Duration
             long val = Long.parseLong(parsed);
             return Math.multiplyExact(val, multiplier);
         } catch (NumberFormatException | ArithmeticException ex) {
-            throw (DateTimeParseException) new DateTimeParseException("Text cannot be parsed to a Duration: " + errorText, text, 0).initCause(ex);
+      throw (DateTimeParseException)
+          new DateTimeParseException("Text cannot be parsed to a Duration: " + errorText, text, 0)
+              .initCause(ex);
         }
     }
 
@@ -430,7 +433,9 @@ public final class Duration
             parsed = (parsed + "000000000").substring(0, 9);
             return Integer.parseInt(parsed) * negate;
         } catch (NumberFormatException | ArithmeticException ex) {
-            throw (DateTimeParseException) new DateTimeParseException("Text cannot be parsed to a Duration: fraction", text, 0).initCause(ex);
+      throw (DateTimeParseException)
+          new DateTimeParseException("Text cannot be parsed to a Duration: fraction", text, 0)
+              .initCause(ex);
         }
     }
 
@@ -587,6 +592,19 @@ public final class Duration
     public boolean isNegative() {
         return seconds < 0;
     }
+
+  /**
+   * Checks if this duration is positive, excluding zero.
+   *
+   * <p>A {@code Duration} represents a directed distance between two points on the time-line and
+   * can therefore be positive, zero or negative. This method checks whether the length is greater
+   * than zero.
+   *
+   * @return true if this duration has a total length greater than zero
+   */
+  public boolean isPositive() {
+    return (seconds | nanos) > 0;
+  }
 
     //-----------------------------------------------------------------------
     /**
@@ -1349,11 +1367,12 @@ public final class Duration
         }
         Duration unitDur = unit.getDuration();
         if (unitDur.getSeconds() > LocalTime.SECONDS_PER_DAY) {
-            throw new UnsupportedTemporalTypeException("Unit is too large to be used for truncation");
+      throw new UnsupportedTemporalTypeException("Unit is too large to be used for truncation");
         }
         long dur = unitDur.toNanos();
         if ((LocalTime.NANOS_PER_DAY % dur) != 0) {
-            throw new UnsupportedTemporalTypeException("Unit must divide into a standard day without remainder");
+      throw new UnsupportedTemporalTypeException(
+          "Unit must divide into a standard day without remainder");
         }
         long nod = (seconds % LocalTime.SECONDS_PER_DAY) * LocalTime.NANOS_PER_SECOND + nanos;
         long result = (nod / dur) * dur;
