@@ -34,6 +34,7 @@ import javax.lang.model.type.TypeMirror;
  *
  * @author Tom Ball
  */
+@SuppressWarnings("UngroupedOverloads")
 public class DebugASTPrinter extends TreeVisitor {
   protected SourceBuilder sb = new SourceBuilder(false);
   private boolean inIfStatement = false;
@@ -959,6 +960,31 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(SwitchExpressionCase node) {
+    sb.unindent();
+    sb.printIndent();
+    if (node.isDefault()) {
+      sb.println("default :");
+    } else {
+      sb.print("case ");
+      for (Iterator<Expression> it = node.getExpressions().iterator();
+           it.hasNext(); ) {
+        it.next().accept(this);
+        if (it.hasNext()) {
+          sb.print(", ");
+        }
+      }
+      if (node.getGuard() != null) {
+        sb.print(" when ");
+        node.getGuard().accept(this);
+      }
+      sb.println(" -> ");
+    }
+    sb.indent();
+    return false;
+  }
+
+  @Override
   public boolean visit(SwitchStatement node) {
     sb.printIndent();
     sb.print("switch (");
@@ -969,6 +995,25 @@ public class DebugASTPrinter extends TreeVisitor {
     sb.indent();
     for (Iterator<Statement> it = node.getStatements().iterator(); it.hasNext(); ) {
       it.next().accept(this);
+    }
+    sb.unindent();
+    sb.unindent();
+    sb.printIndent();
+    sb.println("}");
+    return false;
+  }
+
+  @Override
+  public boolean visit(SwitchExpression node) {
+    sb.printIndent();
+    sb.print("switch (");
+    node.getExpression().accept(this);
+    sb.print(") ");
+    sb.println("{");
+    sb.indent();
+    sb.indent();
+    for (Statement element : node.getStatements()) {
+      element.accept(this);
     }
     sb.unindent();
     sb.unindent();

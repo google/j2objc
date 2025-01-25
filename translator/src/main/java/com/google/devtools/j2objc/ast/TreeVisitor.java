@@ -490,6 +490,18 @@ public class TreeVisitor {
 
   public void endVisit(SwitchCase node) {}
 
+  public boolean visit(SwitchExpression node) {
+    return true;
+  }
+
+  public void endVisit(SwitchExpression node) {}
+
+  public boolean visit(SwitchExpressionCase node) {
+    return true;
+  }
+
+  public void endVisit(SwitchExpressionCase node) {}
+
   public boolean visit(SwitchStatement node) {
     return true;
   }
@@ -585,4 +597,10 @@ public class TreeVisitor {
   }
 
   public void endVisit(WhileStatement node) {}
+
+  public boolean visit(YieldStatement node) {
+    return true;
+  }
+
+  public void endVisit(YieldStatement node) {}
 }
