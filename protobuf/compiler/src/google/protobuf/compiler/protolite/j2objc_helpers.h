@@ -44,7 +44,7 @@ namespace protobuf {
 namespace compiler {
 namespace j2objc {
 
-std::string UnderscoresToCamelCase(const std::string &input,
+std::string UnderscoresToCamelCase(absl::string_view input,
                                    bool cap_next_letter);
 
 // Returns the file's base name.

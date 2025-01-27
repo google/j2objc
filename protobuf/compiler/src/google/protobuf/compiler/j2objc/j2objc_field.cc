@@ -105,7 +105,7 @@ std::string GetNonNullType(const FieldDescriptor* descriptor) {
   }
 }
 
-std::string GetFieldName(const FieldDescriptor* descriptor) {
+absl::string_view GetFieldName(const FieldDescriptor* descriptor) {
   if (internal::cpp::IsGroupLike(*descriptor)) {
     return descriptor->message_type()->name();
   } else {

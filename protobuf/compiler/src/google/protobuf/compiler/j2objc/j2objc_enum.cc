@@ -232,7 +232,7 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
   // Count characters and only add line breaks when the line exceeds the max.
   int row_chars = kMaxRowChars + 1;
   for (int i = 0; i < canonical_values_.size(); i++) {
-    std::string name = canonical_values_[i]->name();
+    absl::string_view name = canonical_values_[i]->name();
     size_t added_chars = name.length() + 5;
     if (row_chars + added_chars > kMaxRowChars) {
       printer->Print("\n     ");

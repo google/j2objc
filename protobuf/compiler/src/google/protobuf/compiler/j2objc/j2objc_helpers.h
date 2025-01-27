@@ -46,7 +46,7 @@ namespace j2objc {
 
 std::string SafeName(const std::string &name);
 
-std::string UnderscoresToCamelCase(const std::string &input,
+std::string UnderscoresToCamelCase(absl::string_view input,
                                    bool cap_next_letter);
 
 // Converts the field's name to camel-case, e.g. "foo_bar_baz" becomes
