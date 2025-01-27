@@ -429,7 +429,7 @@ void FileGenerator::Generate(GeneratorContext* context) {
 
 void FileGenerator::GenerateEnumHeader(GeneratorContext* context,
                                        const EnumDescriptor* descriptor) {
-  std::string filename = output_dir_ + descriptor->name() + ".h";
+  std::string filename = absl::StrCat(output_dir_, descriptor->name(), ".h");
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
@@ -444,7 +444,7 @@ void FileGenerator::GenerateEnumHeader(GeneratorContext* context,
 
 void FileGenerator::GenerateEnumSource(GeneratorContext* context,
                                        const EnumDescriptor* descriptor) {
-  std::string filename = output_dir_ + descriptor->name() + ".m";
+  std::string filename = absl::StrCat(output_dir_, descriptor->name(), ".m");
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
@@ -452,7 +452,7 @@ void FileGenerator::GenerateEnumSource(GeneratorContext* context,
 
   EnumGenerator generator(descriptor);
   std::set<std::string> headers;
-  headers.insert(output_dir_ + descriptor->name() + ".h");
+  headers.insert(absl::StrCat(output_dir_, descriptor->name(), ".h"));
   AddSourceImports(headers);
   generator.CollectSourceImports(&headers);
   PrintImports(&headers, &printer);
@@ -462,7 +462,7 @@ void FileGenerator::GenerateEnumSource(GeneratorContext* context,
 
 void FileGenerator::GenerateMessageHeader(GeneratorContext* context,
                                           const Descriptor* descriptor) {
-  std::string filename = output_dir_ + descriptor->name() + ".h";
+  std::string filename = absl::StrCat(output_dir_, descriptor->name(), ".h");
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
@@ -470,7 +470,7 @@ void FileGenerator::GenerateMessageHeader(GeneratorContext* context,
 
   MessageGenerator generator(descriptor);
   std::set<std::string> headers;
-  headers.insert(output_dir_ + descriptor->name() + "OrBuilder.h");
+  headers.insert(absl::StrCat(output_dir_, descriptor->name(), "OrBuilder.h"));
   AddHeaderImports(headers);
   generator.CollectHeaderImports(&headers);
   PrintImports(&headers, &printer);
@@ -483,7 +483,7 @@ void FileGenerator::GenerateMessageHeader(GeneratorContext* context,
 
 void FileGenerator::GenerateMessageSource(GeneratorContext* context,
                                           const Descriptor* descriptor) {
-  std::string filename = output_dir_ + descriptor->name() + ".m";
+  std::string filename = absl::StrCat(output_dir_, descriptor->name(), ".m");
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
@@ -491,7 +491,7 @@ void FileGenerator::GenerateMessageSource(GeneratorContext* context,
 
   MessageGenerator generator(descriptor);
   std::set<std::string> headers;
-  headers.insert(output_dir_ + descriptor->name() + ".h");
+  headers.insert(absl::StrCat(output_dir_, descriptor->name(), ".h"));
   generator.CollectSourceImports(&headers);
   AddSourceImports(headers);
   PrintImports(&headers, &printer);
@@ -502,7 +502,8 @@ void FileGenerator::GenerateMessageSource(GeneratorContext* context,
 void FileGenerator::GenerateMessageOrBuilder(
     GeneratorContext* context,
     const Descriptor* descriptor) {
-  std::string filename = output_dir_ + descriptor->name() + "OrBuilder.h";
+  std::string filename = absl::StrCat(output_dir_, descriptor->name(),
+                                      "OrBuilder.h");
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 

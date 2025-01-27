@@ -90,7 +90,7 @@ std::set<std::string> MakeKeywordsMap() {
 
 std::set<std::string> kKeywords = MakeKeywordsMap();
 
-const std::string &FieldName(const FieldDescriptor *field) {
+absl::string_view FieldName(const FieldDescriptor *field) {
   // Groups are hacky:  The name of the field is just the lower-cased name
   // of the group type.  In Java, though, we would like to retain the original
   // capitalization of the type name.
@@ -101,7 +101,7 @@ const std::string &FieldName(const FieldDescriptor *field) {
   }
 }
 
-std::string StripProto(const std::string &filename) {
+std::string StripProto(absl::string_view filename) {
   if (absl::EndsWith(filename, ".protodevel")) {
     return std::string(absl::StripSuffix(filename, ".protodevel"));
   } else {
@@ -127,7 +127,8 @@ std::string CapitalizeJavaPackage(const std::string input) {
   return result;
 }
 
-const UnknownField *FindUnknownField(const FileDescriptor *file, int field_num) {
+const UnknownField *FindUnknownField(const FileDescriptor *file,
+                                     int field_num) {
   const Reflection *reflection = file->options().GetReflection();
   const UnknownFieldSet& unknown_fields =
       reflection->GetUnknownFields(file->options());
@@ -148,7 +149,7 @@ std::string GetPackagePrefix(const FileDescriptor *file) {
   const UnknownField *package_prefix_field =
       FindUnknownField(file, kPackagePrefixFieldNumber);
   if (package_prefix_field) {
-    return globalPrefix + package_prefix_field->length_delimited();
+    return absl::StrCat(globalPrefix, package_prefix_field->length_delimited());
   }
 
   // Look for a matching prefix from the prefixes file.
@@ -203,7 +204,7 @@ std::string GetClassPrefix(const FileDescriptor *file,
   }
 }
 
-} // namespace
+}  // namespace
 
 std::string SafeName(const std::string &name) {
   std::string result = name;
@@ -213,7 +214,7 @@ std::string SafeName(const std::string &name) {
   return result;
 }
 
-std::string UnderscoresToCamelCase(const std::string &input,
+std::string UnderscoresToCamelCase(absl::string_view input,
                                    bool cap_next_letter) {
   std::string result;
   // Note:  I distrust ctype.h due to locales.
@@ -288,13 +289,13 @@ bool HasConflictingClassName(const FileDescriptor *file,
 
 std::string FileParentDir(const FileDescriptor *file) {
   std::string::size_type last_slash = file->name().find_last_of('/');
-  return file->name().substr(0, last_slash + 1);
+  return std::string(file->name().substr(0, last_slash + 1));
 }
 
 std::string FileBaseName(const FileDescriptor *file) {
   std::string::size_type last_slash = file->name().find_last_of('/');
-  return last_slash == std::string::npos ? file->name()
-                                         : file->name().substr(last_slash + 1);
+  return std::string(last_slash == std::string::npos ? file->name()
+                                         : file->name().substr(last_slash + 1));
 }
 
 std::string FileJavaPackage(const FileDescriptor *file) {
@@ -320,13 +321,15 @@ std::string JavaPackageToDir(std::string package_name) {
 }
 
 std::string ClassName(const Descriptor *descriptor) {
-  return GetClassPrefix(descriptor->file(), descriptor->containing_type()) +
-         descriptor->name() + globalPostfix;
+  return absl::StrCat(GetClassPrefix(descriptor->file(),
+                                     descriptor->containing_type()),
+                                     descriptor->name(), globalPostfix);
 }
 
 std::string ClassName(const EnumDescriptor *descriptor) {
-  return GetClassPrefix(descriptor->file(), descriptor->containing_type()) +
-         descriptor->name() + globalPostfix;
+  return absl::StrCat(GetClassPrefix(descriptor->file(),
+                                     descriptor->containing_type()),
+                                     descriptor->name(), globalPostfix);
 }
 
 std::string COrdinalEnumName(const EnumDescriptor *descriptor) {
@@ -351,27 +354,31 @@ std::string ClassName(const FileDescriptor *descriptor) {
 }
 
 std::string EnumOrdinalName(const EnumValueDescriptor *descriptor) {
-  return COrdinalEnumName(descriptor->type()) + "_" + descriptor->name();
+  return absl::StrCat(COrdinalEnumName(descriptor->type()), "_",
+                      descriptor->name());
 }
 
 std::string EnumValueName(const EnumValueDescriptor *descriptor) {
-  return CValueEnumName(descriptor->type()) + "_" + descriptor->name();
+  return absl::StrCat(CValueEnumName(descriptor->type()), "_",
+                      descriptor->name());
 }
 
 std::string FieldConstantName(const FieldDescriptor *field) {
-  std::string name = field->name() + "_FIELD_NUMBER";
+  std::string name = absl::StrCat(field->name(), "_FIELD_NUMBER");
   UpperString(&name);
   return name;
 }
 
 std::string JavaClassName(const Descriptor *descriptor) {
-  return GetJavaClassPrefix(descriptor->file(), descriptor->containing_type())
-      + "." + descriptor->name();
+  return absl::StrCat(GetJavaClassPrefix(descriptor->file(),
+                                         descriptor->containing_type()),
+                                         ".", descriptor->name());
 }
 
 std::string JavaClassName(const EnumDescriptor *descriptor) {
-  return GetJavaClassPrefix(descriptor->file(), descriptor->containing_type())
-      + "." + descriptor->name();
+  return absl::StrCat(GetJavaClassPrefix(descriptor->file(),
+                                         descriptor->containing_type()),
+                                         ".", descriptor->name());
 }
 
 std::string JavaClassName(const FileDescriptor *descriptor) {
@@ -397,8 +404,8 @@ std::string GetHeader(const Descriptor *descriptor) {
       if (IsGenerateFileDirMapping()) {
         return StaticOutputFileName(file, ".h");
       } else {
-        return JavaPackageToDir(FileJavaPackage(file))
-            + descriptor->name() + ".h";
+        return absl::StrCat(JavaPackageToDir(FileJavaPackage(file)),
+            descriptor->name(), ".h");
       }
     }
   } else {
@@ -416,8 +423,8 @@ std::string GetHeader(const EnumDescriptor *descriptor) {
       if (IsGenerateFileDirMapping()) {
         return StaticOutputFileName(file, ".h");
       } else {
-        return JavaPackageToDir(FileJavaPackage(file))
-            + descriptor->name() + ".h";
+        return absl::StrCat(JavaPackageToDir(FileJavaPackage(file)),
+            descriptor->name(), ".h");
       }
     }
   } else {
@@ -569,7 +576,7 @@ std::string DefaultValue(const FieldDescriptor *field) {
     case FieldDescriptor::CPPTYPE_BOOL:
       return field->default_value_bool() ? "YES" : "NO";
     case FieldDescriptor::CPPTYPE_STRING: {
-      const std::string &default_string = field->default_value_string();
+      const absl::string_view default_string = field->default_value_string();
       if (field->type() == FieldDescriptor::TYPE_BYTES) {
         const bool has_default_value = field->has_default_value();
         if (!has_default_value || default_string.length() == 0) {
