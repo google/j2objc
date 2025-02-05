@@ -189,6 +189,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/Iterable.java \
   java/lang/LinkageError.java \
   java/lang/Long.java \
+  java/lang/MatchException.java \
   java/lang/Math.java \
   java/lang/NegativeArraySizeException.java \
   java/lang/NoClassDefFoundError.java \

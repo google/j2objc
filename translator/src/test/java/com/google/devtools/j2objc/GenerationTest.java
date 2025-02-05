@@ -851,6 +851,15 @@ public abstract class GenerationTest extends TestCase {
     }
   }
 
+  protected boolean onJava21OrAbove() {
+    try {
+      Class.forName("java.lang.MatchException");
+      return true;
+    } catch (ClassNotFoundException e) {
+      return false;
+    }
+  }
+
   protected String extractKytheMetadata(String translation) {
     String openingDelimiter = "/* This file contains Kythe metadata.";
     String closingDelimiter = "*/";

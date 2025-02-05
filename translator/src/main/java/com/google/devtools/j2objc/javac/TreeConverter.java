@@ -93,6 +93,8 @@ import com.google.devtools.j2objc.ast.SuperFieldAccess;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.SwitchCase;
+import com.google.devtools.j2objc.ast.SwitchExpression;
+import com.google.devtools.j2objc.ast.SwitchExpressionCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.SynchronizedStatement;
 import com.google.devtools.j2objc.ast.ThisExpression;
@@ -212,6 +214,7 @@ import org.jspecify.annotations.Nullable;
 
 /** Converts a Java AST from the Javac data structure to our J2ObjC data structure. */
 @Nullable
+@SuppressWarnings("CheckReturnValue")
 public class TreeConverter {
   private final CompilationUnitTree unit;
   private final JavacEnvironment env;
@@ -364,6 +367,8 @@ public class TreeConverter {
         return convertReturn((ReturnTree) javacNode, parent);
       case "SWITCH":
         return convertSwitch((SwitchTree) javacNode, parent);
+      case "SWITCH_EXPRESSION":
+        return convertSwitchExpression((ExpressionTree) javacNode, parent);
       case "THROW":
         return convertThrow((ThrowTree) javacNode, parent);
       case "TRY":
@@ -440,15 +445,15 @@ public class TreeConverter {
         return convertAssignOp((CompoundAssignmentTree) javacNode, parent);
 
       case "OTHER":
-        {
-          if (((JCTree) javacNode).hasTag(Tag.NULLCHK)) {
-            // Skip javac's nullchk operators, since j2objc provides its own.
-            // TODO(tball): convert to nil_chk() functions in this class, to
-            // always check references that javac flagged?
-            return convert(((UnaryTree) javacNode).getExpression(), getTreePath(parent, javacNode));
-          }
-          throw new AssertionError("Unknown OTHER node, tag: " + ((JCTree) javacNode).getTag());
+      {
+        if (((JCTree) javacNode).hasTag(Tag.NULLCHK)) {
+          // Skip javac's nullchk operators, since j2objc provides its own.
+          // TODO(tball): convert to nil_chk() functions in this class, to
+          // always check references that javac flagged?
+          return convert(((UnaryTree) javacNode).getExpression(), getTreePath(parent, javacNode));
         }
+        throw new AssertionError("Unknown OTHER node, tag: " + ((JCTree) javacNode).getTag());
+      }
 
       default:
         throw new AssertionError("Unknown node type: " + javacNode.getKind());
@@ -1419,6 +1424,78 @@ public class TreeConverter {
       }
     }
     return newNode;
+  }
+
+  // Use reflection to convert switch expressions, so that the translator
+  // doesn't have to only run on Java 21 and higher.
+  // TODO(tball): simplify when the minimum supported j2objc JDK is Java 21.
+  @SuppressWarnings("unchecked")
+  private TreeNode convertSwitchExpression(ExpressionTree node, TreePath parent) {
+    SwitchExpression newNode = null;
+    TreePath path = getTreePath(parent, node);
+    try {
+      Field expressionField = node.getClass().getDeclaredField("selector");
+      ExpressionTree expressionVar = (ExpressionTree) expressionField.get(node);
+      newNode = new SwitchExpression().setExpression(convertWithoutParens(expressionVar, path));
+
+      Field typeField = node.getClass().getField("type");
+      newNode.setTypeMirror((TypeMirror) typeField.get(node));
+
+      Field casesField = node.getClass().getDeclaredField("cases");
+      List<? extends CaseTree> cases = (List<? extends CaseTree>) casesField.get(node);
+      for (CaseTree switchCase : cases) {
+        TreePath switchCasePath = getTreePath(path, switchCase);
+        if (switchCase.getKind().toString().equals("PATTERN_CASE_LABEL")) {
+          newNode.addStatement(convertPatternCaseTree(switchCase, switchCasePath));
+        } else {
+          newNode.addStatement(convertConstantCaseTree(switchCase, switchCasePath));
+        }
+      }
+    } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException e) {
+      newNode = new SwitchExpression();
+    }
+
+    return newNode;
+  }
+
+  @SuppressWarnings("unchecked")
+  private Statement convertConstantCaseTree(CaseTree switchCase, TreePath parent) {
+    SwitchExpressionCase switchExprCase = new SwitchExpressionCase();
+
+    // Use reflection for CaseTree API added after Java 11.
+    try {
+      Field expressionsField = switchCase.getClass().getDeclaredField("labels");
+      List<? extends ExpressionTree> caseExpressionsList =
+          (List<? extends ExpressionTree>) expressionsField.get(switchCase);
+        for (Tree caseExpressionTree : caseExpressionsList) {
+          String kind = caseExpressionTree.getKind().toString();
+          if (kind.equals("CONSTANT_CASE_LABEL")) {
+            ExpressionTree expr = (ExpressionTree) caseExpressionTree.getClass().getDeclaredField("expr").get(caseExpressionTree);
+            switchExprCase.addExpression((Expression) convert(expr, parent));
+          } else if (kind.equals("DEFAULT_CASE_LABEL")){
+            switchExprCase.setIsDefault(true);
+          }
+          // Prior to Java 21, they were of type ???? (TODO: debug on Java 17).
+        }
+        ExpressionTree guard = (ExpressionTree) switchCase.getClass().getDeclaredField("guard").get(switchCase);
+        switchExprCase.setGuard((Expression) convert(guard, parent));
+        Tree body = (Tree) switchCase.getClass().getDeclaredField("body").get(switchCase);
+        switchExprCase.setBody(convert(body, parent));
+    } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException e) {
+      switchExprCase = new SwitchExpressionCase();
+    }
+
+    return switchExprCase;
+  }
+
+  // TODO(tball): implement pattern cases.
+  private Statement convertPatternCaseTree(
+      @SuppressWarnings("unused") // Remove when implemented.
+      CaseTree switchCase,
+      @SuppressWarnings("unused")
+      TreePath parent) {
+    SwitchExpressionCase switchExprCase = new SwitchExpressionCase();
+    return switchExprCase;
   }
 
   private TreeNode convertSynchronized(SynchronizedTree node, TreePath parent) {
