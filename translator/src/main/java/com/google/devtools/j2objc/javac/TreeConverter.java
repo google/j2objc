@@ -1420,8 +1420,21 @@ public class TreeConverter {
     for (CaseTree switchCase : node.getCases()) {
       newNode.addStatement((SwitchCase) convert(switchCase, path));
       TreePath switchCasePath = getTreePath(path, switchCase);
-      for (StatementTree s : switchCase.getStatements()) {
-        newNode.addStatement((Statement) convert(s, switchCasePath));
+      boolean caseIsRule = false;
+      try {
+        Field caseKindField = switchCase.getClass().getDeclaredField("caseKind");
+        String caseKind = caseKindField.get(switchCase).toString();
+        if (caseKind.equals("RULE")) {
+          newNode.addStatement(convertPatternCaseTree(switchCase, switchCasePath));
+          caseIsRule = true;
+        }
+      } catch (ReflectiveOperationException e) {
+        // Running on pre-Java 21, fall-through.
+      }
+      if (!caseIsRule) {
+        for (StatementTree s : switchCase.getStatements()) {
+          newNode.addStatement((Statement) convert(s, switchCasePath));
+        }
       }
     }
     return newNode;

@@ -1840,4 +1840,63 @@ public class StatementGeneratorTest extends GenerationTest {
         + "    return msg;\n"
         + "  }");
   }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testNullSwitchExpressionCase() throws IOException {
+    if (!onJava21OrAbove()) {
+      return;
+    }
+    SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_21);
+    options.setSourceVersion(SourceVersion.JAVA_21);
+    String ast = translateType("Test",
+        "class Test {\n"
+        + "  String testNullCase(String s) {\n"
+        + "    return switch (s) {\n"
+        + "      case null -> \"oops\";\n"
+        + "      case \"Foo\", \"Bar\" -> \"great\";\n"
+        + "      default -> \"okay\";\n"
+        + "    };\n"
+        + "  }\n"
+        + "}\n").toString();
+    assertTranslatedLines(ast,
+        "    return switch (s) {\n"
+        + "      case null -> yield \"oops\";\n"
+        + "      case \"Foo\", \"Bar\" -> yield \"great\";\n"
+        + "      default -> yield \"okay\";\n"
+        + "    };\n");
+  }
+
+  // Test from https://openjdk.org/jeps/441: Improved enum constant case labels
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testQualifiedEnumNamesInSwitchExpressionCase() throws IOException {
+    if (!onJava21OrAbove()) {
+      return;
+    }
+    SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_21);
+    options.setSourceVersion(SourceVersion.JAVA_21);
+    String ast = translateType("Test",
+        "sealed interface Currency permits Coin {}\n"
+        + "enum Coin implements Currency { HEADS, TAILS }\n"
+        + "class Test {"
+        + "  void goodEnumSwitch1(Currency c) {\n"
+        + "    switch (c) {\n"
+        + "      case Coin.HEADS -> {\n"
+        + "        System.out.println(\"Heads\");\n"
+        + "      }\n"
+        + "      case Coin.TAILS -> {\n"
+        + "        System.out.println(\"Tails\");\n"
+        + "      }\n"
+        + "    }\n"
+        + "  }\n"
+        + "}").toString();
+    assertTranslatedLines(ast,
+        "  void goodEnumSwitch1(  Currency c){\n"
+        + "    switch (c) {\n"
+        + "      case Coin_Enum_HEADS:\n"
+        + "      case  -> \n"
+        + "      case Coin_Enum_TAILS:\n"
+        + "      case  -> \n"
+        + "    }\n"
+        + "  }\n");
+  }
 }
