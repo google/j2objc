@@ -1804,7 +1804,7 @@ public class StatementGeneratorTest extends GenerationTest {
   // Verify converted switch expression's AST looks correct. This isolates
   // the TreeConverter from later translation steps.
 
-  // TODO(tball): use text block when minimum Java is 15 or higher.
+  // TODO(tball): use text blocks when minimum Java is 15 or higher.
   @SuppressWarnings("StringConcatToTextBlock")
   public void testASTConversionSimpleSwitchExpression() throws IOException {
     if (!onJava17OrAbove()) {
@@ -1834,8 +1834,8 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslatedLines(ast,
         "java.lang.String test(  java.lang.String str){\n"
         + "    java.lang.String msg=switch (str) {\n"
-        + "      case  when s.length() > 10 -> yield \"Long string: \" + s;\n"
-        + "      case  -> yield \"Short string: \" + s;\n"
+        + "      case java.lang.String s when s.length() > 10 -> yield \"Long string: \" + s;\n"
+        + "      case java.lang.String s -> yield \"Short string: \" + s;\n"
         + "    };\n"
         + "    return msg;\n"
         + "  }");

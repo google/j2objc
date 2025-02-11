@@ -946,22 +946,19 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(SwitchCase node) {
-    sb.unindent();
     sb.printIndent();
     if (node.isDefault()) {
-      sb.println("default :");
+      sb.println("default:");
     } else {
       sb.print("case ");
       node.getExpression().accept(this);
       sb.println(":");
     }
-    sb.indent();
     return false;
   }
 
   @Override
   public boolean visit(SwitchExpressionCase node) {
-    sb.unindent();
     sb.printIndent();
     if (node.isDefault()) {
       sb.print("default -> ");
@@ -974,6 +971,16 @@ public class DebugASTPrinter extends TreeVisitor {
           sb.print(", ");
         }
       }
+      if (node.getPattern() != null) {
+        if (node.getPattern() instanceof Pattern.BindingPattern) {
+          SingleVariableDeclaration varDecl =
+              ((Pattern.BindingPattern) node.getPattern()).getVariable();
+          VariableElement variableElement = varDecl.getVariableElement();
+          sb.print(variableElement.asType().toString());
+          sb.print(" ");
+          sb.print(variableElement.getSimpleName().toString());
+        }
+      }
       if (node.getGuard() != null) {
         sb.print(" when ");
         node.getGuard().accept(this);
@@ -983,14 +990,9 @@ public class DebugASTPrinter extends TreeVisitor {
     TreeNode body = node.getBody();
     if (body == null) {
       sb.newline();
-    } else if (body.getKind() == TreeNode.Kind.BLOCK) {
-        sb.println(body.toString());
     } else {
-      sb.print("yield ");
       sb.print(body.toString());
-      sb.println(";");
     }
-    sb.indent();
     return false;
   }
 
@@ -1002,11 +1004,9 @@ public class DebugASTPrinter extends TreeVisitor {
     sb.print(") ");
     sb.println("{");
     sb.indent();
-    sb.indent();
     for (Iterator<Statement> it = node.getStatements().iterator(); it.hasNext(); ) {
       it.next().accept(this);
     }
-    sb.unindent();
     sb.unindent();
     sb.printIndent();
     sb.println("}");
@@ -1020,11 +1020,9 @@ public class DebugASTPrinter extends TreeVisitor {
     sb.print(") ");
     sb.println("{");
     sb.indent();
-    sb.indent();
     for (Statement element : node.getStatements()) {
       element.accept(this);
     }
-    sb.unindent();
     sb.unindent();
     sb.printIndent();
     sb.print("}");
@@ -1231,6 +1229,15 @@ public class DebugASTPrinter extends TreeVisitor {
     node.getExpression().accept(this);
     sb.print(") ");
     node.getBody().accept(this);
+    return false;
+  }
+
+  @Override
+  public boolean visit(YieldStatement node) {
+    sb.printIndent();
+    sb.print("yield ");
+    node.getExpression().accept(this);
+    sb.println(";");
     return false;
   }
 

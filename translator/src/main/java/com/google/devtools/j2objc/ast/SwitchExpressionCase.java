@@ -21,15 +21,17 @@ import java.util.List;
 public class SwitchExpressionCase extends Statement {
 
   private boolean isDefault = false;
-  private ChildList<Expression> expressions = ChildList.create(Expression.class, this);
-  private ChildLink<Expression> guard = ChildLink.create(Expression.class, this);
-  private ChildLink<TreeNode> body = ChildLink.create(TreeNode.class, this);
+  private final ChildLink<Pattern> pattern = ChildLink.create(Pattern.class, this);
+  private final ChildList<Expression> expressions = ChildList.create(Expression.class, this);
+  private final ChildLink<Expression> guard = ChildLink.create(Expression.class, this);
+  private final ChildLink<TreeNode> body = ChildLink.create(TreeNode.class, this);
 
   public SwitchExpressionCase() {}
 
   public SwitchExpressionCase(SwitchExpressionCase other) {
     super(other);
     isDefault = other.isDefault();
+    pattern.set(other.getPattern());
     expressions.copyFrom(other.getExpressions());
     guard.set(other.getGuard());
     body.set(other.getBody());
@@ -55,6 +57,15 @@ public class SwitchExpressionCase extends Statement {
 
   public SwitchExpressionCase addExpression(Expression newExpression) {
     expressions.add(newExpression);
+    return this;
+  }
+
+  public Pattern getPattern() {
+    return pattern.get();
+  }
+
+  public SwitchExpressionCase setPattern(Pattern newPattern) {
+    pattern.set(newPattern);
     return this;
   }
 
