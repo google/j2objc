@@ -43,6 +43,7 @@ import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
+import com.google.devtools.j2objc.ast.SwitchExpression;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.SynchronizedStatement;
 import com.google.devtools.j2objc.ast.ThrowStatement;
@@ -527,6 +528,18 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
     Statement elseStmt = node.getElseStatement();
     if (elseStmt != null) {
       elseStmt.accept(this);
+    }
+    return false;
+  }
+
+  @Override
+  @SuppressWarnings("UngroupedOverloads")
+  public boolean visit(SwitchExpression node) {
+    Expression expr = node.getExpression();
+    newExpression(expr);
+    expr.accept(this);
+    for (Statement stmt : node.getStatements()) {
+      stmt.accept(this);
     }
     return false;
   }

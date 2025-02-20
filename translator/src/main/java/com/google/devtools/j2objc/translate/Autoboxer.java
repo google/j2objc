@@ -40,6 +40,7 @@ import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.SwitchExpression;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
@@ -457,6 +458,15 @@ public class Autoboxer extends UnitTreeVisitor {
 
   @Override
   public void endVisit(WhileStatement node) {
+    Expression expression = node.getExpression();
+    if (!expression.getTypeMirror().getKind().isPrimitive()) {
+      unbox(expression);
+    }
+  }
+
+  @Override
+  @SuppressWarnings("UngroupedOverloads")
+  public void endVisit(SwitchExpression node) {
     Expression expression = node.getExpression();
     if (!expression.getTypeMirror().getKind().isPrimitive()) {
       unbox(expression);
