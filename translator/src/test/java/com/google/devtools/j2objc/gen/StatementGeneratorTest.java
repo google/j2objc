@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.gen;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
 import com.google.devtools.j2objc.ast.Statement;
-import com.google.devtools.j2objc.util.SourceVersion;
 import java.io.IOException;
 import java.util.List;
 
@@ -320,10 +319,10 @@ public class StatementGeneratorTest extends GenerationTest {
             + "public void call() { foo(1); }"
             + "void foo(Object ... args) { }}",
         "Example", "Example.m");
-    assertTranslation(translation,
-        "[self fooWithNSObjectArray:"
-            + "[IOSObjectArray arrayWithObjects:(id[]){ JavaLangInteger_valueOfWithInt_(1) } count:1 "
-            + "type:NSObject_class_()]];");
+    assertTranslation(
+        translation,
+        "[self fooWithNSObjectArray:[IOSObjectArray arrayWithObjects:(id[]){"
+            + " JavaLangInteger_valueOfWithInt_(1) } count:1 type:NSObject_class_()]];");
   }
 
   public void testVarargsMethodInvocationPrimitiveArgs() throws IOException {
@@ -458,10 +457,12 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testStaticInnerClassSuperFieldAccess() throws IOException {
-    String translation = translateSourceFile(
-        "public class Test { protected int foo; "
-            + "static class One extends Test { int i; One() { i = foo; } int test() { return i; }}}",
-        "Test", "Test.m");
+    String translation =
+        translateSourceFile(
+            "public class Test { protected int foo; static class One extends Test { int i; One() {"
+                + " i = foo; } int test() { return i; }}}",
+            "Test",
+            "Test.m");
     assertTranslation(translation, "- (instancetype)init {");
     assertTranslation(translation, "self->i_ = self->foo_;");
     assertTranslation(translation, "return i_;");
@@ -1360,13 +1361,16 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testBinaryLiterals() throws IOException {
-    String translation = translateSourceFile(
-        "public class A { "
-            + "  byte aByte = (byte)0b00100001; short aShort = (short)0b1010000101000101;"
-            + "  int anInt1 = 0b10100001010001011010000101000101; "
-            + "  int anInt2 = 0b101; int anInt3 = 0B101;"  // b can be lower or upper case.
-            + "  long aLong = 0b1010000101000101101000010100010110100001010001011010000101000101L; }",
-        "A", "A.m");
+    String translation =
+        translateSourceFile(
+            "public class A { "
+                + "  byte aByte = (byte)0b00100001; short aShort = (short)0b1010000101000101;"
+                + "  int anInt1 = 0b10100001010001011010000101000101; "
+                + "  int anInt2 = 0b101; int anInt3 = 0B101;" // b can be lower or upper case.
+                + "  long aLong ="
+                + " 0b1010000101000101101000010100010110100001010001011010000101000101L; }",
+            "A",
+            "A.m");
     assertTranslation(translation, "aByte_ = (jbyte) 0b00100001;");
     assertTranslation(translation, "aShort_ = (jshort) 0b1010000101000101;");
     assertTranslation(translation, "anInt1_ = 0b10100001010001011010000101000101;");
@@ -1706,99 +1710,120 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation, "if (c < d)", ";");
   }
 
+  @SuppressWarnings("StringConcatToTextBlock")
   public void testVarLocalVariables() throws IOException {
-    if (!onJava10OrAbove()) {
-      return;
-    }
-    String translation = translateSourceFile(String.join("\n",
-        "import java.util.ArrayList;",
-        "import java.util.stream.Stream;",
-        "class Test {",
-        "  Stream test() {",
-        "    var list = new ArrayList<String>();",
-        "    var stream = list.stream();",
-        "    return stream;",
-        "  }",
-        "}"), "Test", "Test.m");
-    // Verify correct type inference.
-    assertTranslation(translation, "JavaUtilArrayList *list = create_JavaUtilArrayList_init();");
-    assertTranslation(translation, "id<JavaUtilStreamStream> stream = [list stream];");
+    testOnJava11OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "import java.util.ArrayList;",
+                      "import java.util.stream.Stream;",
+                      "class Test {",
+                      "  Stream test() {",
+                      "    var list = new ArrayList<String>();",
+                      "    var stream = list.stream();",
+                      "    return stream;",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          // Verify correct type inference.
+          assertTranslation(
+              translation, "JavaUtilArrayList *list = create_JavaUtilArrayList_init();");
+          assertTranslation(translation, "id<JavaUtilStreamStream> stream = [list stream];");
+        });
   }
 
+  @SuppressWarnings("StringConcatToTextBlock")
   public void testVarLambdaExpressionParameter() throws IOException {
-    if (!onJava11OrAbove()) {
-      return;
-    }
-    String translation = translateSourceFile(String.join("\n",
-        "import java.util.function.Function;",
-        "class Test {",
-        "  int test(String input) {",
-        "    Function<String, Integer> f = (var s) -> s.length();",
-        "    return f.apply(input);",
-        "  }",
-        "}"), "Test", "Test.m");
-    assertTranslation(translation,
-        "@interface Test_$Lambda$1 : NSObject < JavaUtilFunctionFunction >");
+    testOnJava11OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "import java.util.function.Function;",
+                      "class Test {",
+                      "  int test(String input) {",
+                      "    Function<String, Integer> f = (var s) -> s.length();",
+                      "    return f.apply(input);",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          assertTranslation(
+              translation, "@interface Test_$Lambda$1 : NSObject < JavaUtilFunctionFunction >");
+        });
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testInstanceOfPatternVariableTranslation() throws IOException {
-    if (!onJava16OrAbove()) {
-      return;
-    }
-    SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_16);
-    options.setSourceVersion(SourceVersion.JAVA_16);
-    String translation = translateSourceFile(String.join("\n",
-        "class Test {",
-        "  int test(Object o) {",
-        "    if (o instanceof String s) {",
-        "      return s.length();",
-        "    }",
-        "    return 0;",
-        "  }",
-        "}"), "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "{",
-        "NSString *s = (NSString *) cast_chk(o, [NSString class]);",
-        "if ([o isKindOfClass:[NSString class]]) {",
-        "return [s java_length];",
-        "}",
-        "}",
-        "return 0;",
-        "}");
+    testOnJava16OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "class Test {",
+                      "  int test(Object o) {",
+                      "    if (o instanceof String s) {",
+                      "      return s.length();",
+                      "    }",
+                      "    return 0;",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+              "{",
+              "NSString *s = (NSString *) cast_chk(o, [NSString class]);",
+              "if ([o isKindOfClass:[NSString class]]) {",
+              "return [s java_length];",
+              "}",
+              "}",
+              "return 0;",
+              "}");
+        });
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testInstanceOfPatternVariableTranslationWithGuards() throws IOException {
-    if (!onJava16OrAbove()) {
-      return;
-    }
-    SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_16);
-    options.setSourceVersion(SourceVersion.JAVA_16);
-    String translation = translateSourceFile(String.join("\n",
-        "class Point {",
-        "  private final int x;",
-        "  private final int y;",
-        "  Point(int x, int y) { this.x = x; this.y = y; }",
-        "  @Override public boolean equals(Object o) {",
-        // Define instanceof pattern variable p with two guards.
-        "    if (o instanceof Point p && x == p.x && y == p.y) {",
-        "      return true;",
-        "    } else {",
-        "      return false;",
-        "    }",
-        "  }",
-        "}"), "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "{",
-        "Point *p = (Point *) cast_chk(o, [Point class]);",
-        "if ([o isKindOfClass:[Point class]] && x_ == p->x_ && y_ == p->y_) {",
-        "return true;",
-        "}",
-        "else {",
-        "return false;",
-        "}",
-        "}");
+    testOnJava16OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "class Point {",
+                      "  private final int x;",
+                      "  private final int y;",
+                      "  Point(int x, int y) { this.x = x; this.y = y; }",
+                      "  @Override public boolean equals(Object o) {",
+                      // Define instanceof pattern variable p with two guards.
+                      "    if (o instanceof Point p && x == p.x && y == p.y) {",
+                      "      return true;",
+                      "    } else {",
+                      "      return false;",
+                      "    }",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+              "{",
+              "Point *p = (Point *) cast_chk(o, [Point class]);",
+              "if ([o isKindOfClass:[Point class]] && x_ == p->x_ && y_ == p->y_) {",
+              "return true;",
+              "}",
+              "else {",
+              "return false;",
+              "}",
+              "}");
+        });
   }
 
   // Verify converted switch expression's AST looks correct. This isolates
@@ -1807,96 +1832,101 @@ public class StatementGeneratorTest extends GenerationTest {
   // TODO(tball): use text blocks when minimum Java is 15 or higher.
   @SuppressWarnings("StringConcatToTextBlock")
   public void testASTConversionSimpleSwitchExpression() throws IOException {
-    if (!onJava17OrAbove()) {
-      return;
-    }
-    SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_17);
-    options.setSourceVersion(SourceVersion.JAVA_17);
-    String ast = translateType("Test", SIMPLE_SWITCH_EXPRESSION).toString();
-    assertTranslatedLines(ast, "java.lang.String howMany(  int k){\n"
-        + "    return switch (k) {\n"
-        + "      case 1 -> yield \"one\";\n"
-        + "      case 2 -> yield \"two\";\n"
-        + "      default -> yield \"many\";\n"
-        + "    };\n"
-        + "  }");
+    testOnJava17OrAbove(
+        () -> {
+          String ast = translateType("Test", SIMPLE_SWITCH_EXPRESSION).toString();
+          assertTranslatedLines(
+              ast,
+              "java.lang.String howMany(  int k){\n"
+                  + "    return switch (k) {\n"
+                  + "      case 1 -> yield \"one\";\n"
+                  + "      case 2 -> yield \"two\";\n"
+                  + "      default -> yield \"many\";\n"
+                  + "    };\n"
+                  + "  }");
+        });
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testASTConversionSimpleSwitchExpressionWithPatternAndGuard() throws IOException {
     // Switch expression patterns introduced in Java 21.
-    if (!onJava21OrAbove()) {
-      return;
-    }
-    SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_21);
-    options.setSourceVersion(SourceVersion.JAVA_21);
-    String ast = translateType("Test", SIMPLE_SWITCH_EXPRESSION_WITH_PATTERN_AND_GUARD).toString();
-    assertTranslatedLines(ast,
-        "java.lang.String test(  java.lang.String str){\n"
-        + "    java.lang.String msg=switch (str) {\n"
-        + "      case java.lang.String s when s.length() > 10 -> yield \"Long string: \" + s;\n"
-        + "      case java.lang.String s -> yield \"Short string: \" + s;\n"
-        + "    };\n"
-        + "    return msg;\n"
-        + "  }");
+    testOnJava21OrAbove(
+        () -> {
+          String ast =
+              translateType("Test", SIMPLE_SWITCH_EXPRESSION_WITH_PATTERN_AND_GUARD).toString();
+          assertTranslatedLines(
+              ast,
+              "java.lang.String test(  java.lang.String str){\n"
+                  + "    java.lang.String msg=switch (str) {\n"
+                  + "      case java.lang.String s when s.length() > 10 -> yield \"Long string: \""
+                  + " + s;\n"
+                  + "      case java.lang.String s -> yield \"Short string: \" + s;\n"
+                  + "    };\n"
+                  + "    return msg;\n"
+                  + "  }");
+        });
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testNullSwitchExpressionCase() throws IOException {
-    if (!onJava21OrAbove()) {
-      return;
-    }
-    SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_21);
-    options.setSourceVersion(SourceVersion.JAVA_21);
-    String ast = translateType("Test",
-        "class Test {\n"
-        + "  String testNullCase(String s) {\n"
-        + "    return switch (s) {\n"
-        + "      case null -> \"oops\";\n"
-        + "      case \"Foo\", \"Bar\" -> \"great\";\n"
-        + "      default -> \"okay\";\n"
-        + "    };\n"
-        + "  }\n"
-        + "}\n").toString();
-    assertTranslatedLines(ast,
-        "    return switch (s) {\n"
-        + "      case null -> yield \"oops\";\n"
-        + "      case \"Foo\", \"Bar\" -> yield \"great\";\n"
-        + "      default -> yield \"okay\";\n"
-        + "    };\n");
+    testOnJava21OrAbove(
+        () -> {
+          String ast =
+              translateType(
+                      "Test",
+                      "class Test {\n"
+                          + "  String testNullCase(String s) {\n"
+                          + "    return switch (s) {\n"
+                          + "      case null -> \"oops\";\n"
+                          + "      case \"Foo\", \"Bar\" -> \"great\";\n"
+                          + "      default -> \"okay\";\n"
+                          + "    };\n"
+                          + "  }\n"
+                          + "}\n")
+                  .toString();
+          assertTranslatedLines(
+              ast,
+              "    return switch (s) {\n"
+                  + "      case null -> yield \"oops\";\n"
+                  + "      case \"Foo\", \"Bar\" -> yield \"great\";\n"
+                  + "      default -> yield \"okay\";\n"
+                  + "    };\n");
+        });
   }
 
   // Test from https://openjdk.org/jeps/441: Improved enum constant case labels
   @SuppressWarnings("StringConcatToTextBlock")
   public void testQualifiedEnumNamesInSwitchExpressionCase() throws IOException {
-    if (!onJava21OrAbove()) {
-      return;
-    }
-    SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_21);
-    options.setSourceVersion(SourceVersion.JAVA_21);
-    String ast = translateType("Test",
-        "sealed interface Currency permits Coin {}\n"
-        + "enum Coin implements Currency { HEADS, TAILS }\n"
-        + "class Test {"
-        + "  void goodEnumSwitch1(Currency c) {\n"
-        + "    switch (c) {\n"
-        + "      case Coin.HEADS -> {\n"
-        + "        System.out.println(\"Heads\");\n"
-        + "      }\n"
-        + "      case Coin.TAILS -> {\n"
-        + "        System.out.println(\"Tails\");\n"
-        + "      }\n"
-        + "    }\n"
-        + "  }\n"
-        + "}").toString();
-    assertTranslatedLines(ast,
-        "  void goodEnumSwitch1(  Currency c){\n"
-        + "    switch (c) {\n"
-        + "      case Coin_Enum_HEADS:\n"
-        + "      case  -> \n"
-        + "      case Coin_Enum_TAILS:\n"
-        + "      case  -> \n"
-        + "    }\n"
-        + "  }\n");
+    testOnJava21OrAbove(
+        () -> {
+          String ast =
+              translateType(
+                      "Test",
+                      "sealed interface Currency permits Coin {}\n"
+                          + "enum Coin implements Currency { HEADS, TAILS }\n"
+                          + "class Test {"
+                          + "  void goodEnumSwitch1(Currency c) {\n"
+                          + "    switch (c) {\n"
+                          + "      case Coin.HEADS -> {\n"
+                          + "        System.out.println(\"Heads\");\n"
+                          + "      }\n"
+                          + "      case Coin.TAILS -> {\n"
+                          + "        System.out.println(\"Tails\");\n"
+                          + "      }\n"
+                          + "    }\n"
+                          + "  }\n"
+                          + "}")
+                  .toString();
+          assertTranslatedLines(
+              ast,
+              "  void goodEnumSwitch1(  Currency c){\n"
+                  + "    switch (c) {\n"
+                  + "      case Coin_Enum_HEADS:\n"
+                  + "      case  -> \n"
+                  + "      case Coin_Enum_TAILS:\n"
+                  + "      case  -> \n"
+                  + "    }\n"
+                  + "  }\n");
+        });
   }
 }

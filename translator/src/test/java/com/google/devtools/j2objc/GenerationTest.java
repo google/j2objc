@@ -65,7 +65,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.regex.Matcher;
@@ -806,57 +805,76 @@ public abstract class GenerationTest extends TestCase {
   }
 
   protected boolean onJava9OrAbove() {
-    try {
-      Class.forName("java.lang.Module");
-      return true;
-    } catch (ClassNotFoundException e) {
-      return false;
-    }
-  }
-
-  protected boolean onJava10OrAbove() {
-    try {
-      // orElseThrow(Supplier) is in Java 8, orElseThrow() is new to Java 10.
-      Optional.class.getMethod("orElseThrow");
-      return true;
-    } catch (NoSuchMethodException e) {
-      return false;
-    }
+    return supportsClass("java.lang.Module");
   }
 
   protected boolean onJava11OrAbove() {
-    try {
-      Class.forName("java.net.http.HttpClient");
-      return true;
-    } catch (ClassNotFoundException e) {
-      return false;
-    }
+    return supportsClass("java.net.http.HttpClient");
   }
 
   protected boolean onJava16OrAbove() {
-    try {
-      Class.forName("java.lang.Record");
-      return true;
-    } catch (ClassNotFoundException e) {
-      return false;
-    }
+    return supportsClass("java.lang.Record");
   }
 
   protected boolean onJava17OrAbove() {
+    return supportsClass("java.util.HexFormat");
+  }
+
+  protected boolean onJava21OrAbove() {
+    return supportsClass("java.lang.MatchException");
+  }
+
+  private boolean supportsClass(String fullyQualifiedClassName) {
     try {
-      Class.forName("java.util.HexFormat");
+      Class.forName(fullyQualifiedClassName);
       return true;
     } catch (ClassNotFoundException e) {
       return false;
     }
   }
 
-  protected boolean onJava21OrAbove() {
-    try {
-      Class.forName("java.lang.MatchException");
-      return true;
-    } catch (ClassNotFoundException e) {
-      return false;
+  @FunctionalInterface
+  protected interface TestLambda {
+    void run() throws IOException;
+  }
+
+  protected void testOnJava9OrAbove(TestLambda test) throws IOException {
+    if (onJava9OrAbove()) {
+      SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_9);
+      options.setSourceVersion(SourceVersion.JAVA_9);
+      test.run();
+    }
+  }
+
+  protected void testOnJava11OrAbove(TestLambda test) throws IOException {
+    if (onJava11OrAbove()) {
+      SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_11);
+      options.setSourceVersion(SourceVersion.JAVA_11);
+      test.run();
+    }
+  }
+
+  protected void testOnJava16OrAbove(TestLambda test) throws IOException {
+    if (onJava16OrAbove()) {
+      SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_16);
+      options.setSourceVersion(SourceVersion.JAVA_16);
+      test.run();
+    }
+  }
+
+  protected void testOnJava17OrAbove(TestLambda test) throws IOException {
+    if (onJava17OrAbove()) {
+      SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_17);
+      options.setSourceVersion(SourceVersion.JAVA_17);
+      test.run();
+    }
+  }
+
+  protected void testOnJava21OrAbove(TestLambda test) throws IOException {
+    if (onJava21OrAbove()) {
+      SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_21);
+      options.setSourceVersion(SourceVersion.JAVA_21);
+      test.run();
     }
   }
 
