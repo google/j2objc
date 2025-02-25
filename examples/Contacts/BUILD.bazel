@@ -31,14 +31,10 @@ objc_library(
     hdrs = glob(["src/*.h"]),
     data = ["//resources"],
     sdk_frameworks = ["CoreGraphics"],
-    deps = [":ContactsJava"],
+    deps = [":ContactsJava-j2objc"],
 )
 
-j2objc_library_legacy(
-    name = "ContactsJava",
-    jre_deps = ["@bazel_j2objc//:jre_net_lib"],
-    deps = [":ContactsJavaLib"],
-)
+# TODO: Add back ContactsJava-j2objc target when the new rule is open-sourced.
 
 java_library(
     name = "ContactsJavaLib",
