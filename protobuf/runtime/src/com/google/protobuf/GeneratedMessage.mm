@@ -315,7 +315,7 @@ static inline void ClearPreviousOneof(id msg, CGPHasLocator loc, uintptr_t ptr) 
   static void SingularSet##NAME(id msg, TYPE_##NAME value, size_t offset, CGPHasLocator hasLoc) { \
     TYPE_##NAME *ptr = FIELD_PTR(TYPE_##NAME, msg, offset); \
     ClearPreviousOneof(msg, hasLoc, (uintptr_t)ptr); \
-    TYPE_RETAINED_ASSIGN_##NAME(*ptr, value); \
+    TYPE_ASSIGN_##NAME(*ptr, value); \
     SetHas(msg, hasLoc); \
   }
 
