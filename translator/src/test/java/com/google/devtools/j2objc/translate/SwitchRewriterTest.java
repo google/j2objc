@@ -184,4 +184,79 @@ public class SwitchRewriterTest extends GenerationTest {
         "class Test { void test(int i) { switch (i) { } } }", "Test", "Test.m");
     assertTranslatedLines(translation, "switch (i) {", "}");
   }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testSimpleVoidSwitchNewSyntax() throws IOException {
+    testOnJava17OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "class Test {",
+                      "  void howMany(int k) {",
+                      "    switch (k) {",
+                      "      case  1 -> System.out.println(\"one\");",
+                      "      case  2 -> System.out.println(\"two\");",
+                      "      default -> System.out.println(\"many\");",
+                      "    };",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+              "switch (k) {",
+              "  case 1:",
+              // This first statement does a nil_check on System.out.
+              "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out)))"
+                  + " printlnWithNSString:@\"one\"];",
+              "  break;",
+              "  case 2:",
+              "  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"two\"];",
+              "  break;",
+              "  default:",
+              "  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"many\"];",
+              "  break;",
+              "}");
+        });
+  }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testSimpleSwitchExpression() throws IOException {
+    // Snippet from Guava's com.google.common.base.Joiner.
+    testOnJava17OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "class Test {",
+                      "  private Object first;",
+                      "  private Object second;",
+                      "  private Object[] rest;",
+                      "  public Object get(int index) {",
+                      "    return switch (index) {",
+                      "      case  0 -> first;",
+                      "      case  1 -> second;",
+                      "      default -> rest[index - 2];",
+                      "    };",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+              "- (id)getWithInt:(jint)index {",
+              "  switch (index) {",
+              "    case 0:",
+              "    return first_;",
+              "    case 1:",
+              "    return second_;",
+              "    default:",
+              "    return IOSObjectArray_Get(nil_chk(rest_), index - 2);",
+              "  };",
+              "}");
+        });
+  }
 }

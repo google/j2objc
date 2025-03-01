@@ -90,7 +90,10 @@ public class SwitchExpressionCase extends Statement {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      pattern.accept(visitor);
       expressions.accept(visitor);
+      guard.accept(visitor);
+      body.accept(visitor);
     }
     visitor.endVisit(this);
   }

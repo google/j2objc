@@ -78,6 +78,8 @@ import com.google.devtools.j2objc.ast.SuperFieldAccess;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.SwitchCase;
+import com.google.devtools.j2objc.ast.SwitchExpression;
+import com.google.devtools.j2objc.ast.SwitchExpressionCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.SynchronizedStatement;
 import com.google.devtools.j2objc.ast.ThisExpression;
@@ -746,6 +748,48 @@ public class StatementGenerator extends UnitTreeVisitor {
       buffer.append("  case ");
       node.getExpression().accept(this);
       buffer.append(":\n");
+    }
+    return false;
+  }
+
+  @Override
+  @SuppressWarnings("UngroupedOverloads")
+  public boolean visit(SwitchExpression node) {
+    Expression expr = node.getExpression();
+    buffer.append("switch (");
+    expr.accept(this);
+    buffer.append(") ");
+    buffer.append("{\n");
+    buffer.indent();
+    for (Statement stmt : node.getStatements()) {
+      buffer.printIndent();
+      stmt.accept(this);
+    }
+    buffer.unindent();
+    buffer.printIndent();
+    buffer.append("}");
+    return false;
+  }
+
+  @Override
+  @SuppressWarnings("UngroupedOverloads")
+  public boolean visit(SwitchExpressionCase node) {
+    if (node.isDefault()) {
+      buffer.append("  default:\n");
+    } else {
+      buffer.append("  case ");
+      Iterator<Expression> caseIter = node.getExpressions().iterator();
+      while (caseIter.hasNext()) {
+        caseIter.next().accept(this);
+        if (caseIter.hasNext()) {
+          buffer.append(", ");
+        }
+      }
+      buffer.append(":\n");
+    }
+    TreeNode body = node.getBody();
+    if (body != null) {
+      body.accept(this);
     }
     return false;
   }

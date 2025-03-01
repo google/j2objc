@@ -661,12 +661,26 @@ public class TreeConverter {
     return newNode;
   }
 
+  @SuppressWarnings("deprecation") // only CaseTree.getExpression() is available in Java 11
   private TreeNode convertCase(CaseTree node, TreePath parent) {
     // Case statements are converted in convertSwitch().
     SwitchCase newNode = new SwitchCase();
-    ExpressionTree expressionTree = node.getExpression();
+    Tree expressionTree = null;
+    try {
+      Method getLabelsMethod = node.getClass().getDeclaredMethod("getLabels");
+      List<?> labels = (List<?>) getLabelsMethod.invoke(node);
+      Object patternLabel = labels.isEmpty() ? null : labels.get(0);
+      Field patternField = patternLabel.getClass().getField("pat");
+      if (patternField.get(patternLabel) != null) {
+        // TODO: implement pattern support in switch cases.
+        expressionTree = node.getExpression();
+      }
+    } catch (ReflectiveOperationException e) {
+      expressionTree = node.getExpression();
+    }
+    TreePath path = getTreePath(parent, node);
     if (expressionTree != null) {
-      newNode.setExpression((Expression) convert(expressionTree, getTreePath(parent, node)));
+      newNode.setExpression((Expression) convert(expressionTree, path));
     } else {
       newNode.setIsDefault(true);
     }
@@ -1405,8 +1419,18 @@ public class TreeConverter {
   }
 
   private TreeNode convertReturn(ReturnTree node, TreePath parent) {
-    return new ReturnStatement(
-        (Expression) convert(node.getExpression(), getTreePath(parent, node)));
+    Expression expr = (Expression) convert(node.getExpression(), getTreePath(parent, node));
+    if (expr != null && expr.getKind() == TreeNode.Kind.SWITCH_EXPRESSION) {
+      for (Statement stmt : ((SwitchExpression) expr).getStatements()) {
+        if (stmt.getKind() == TreeNode.Kind.SWITCH_EXPRESSION_CASE) {
+          SwitchExpressionCase switchExpressionCase = (SwitchExpressionCase) stmt;
+          if (switchExpressionCase.getBody().getKind() == TreeNode.Kind.RETURN_STATEMENT) {
+            return new ExpressionStatement(expr);
+          }
+        }
+      }
+    }
+    return new ReturnStatement(expr);
   }
 
   private TreeNode convertStringLiteral(LiteralTree node, TreePath parent) {
@@ -1418,20 +1442,27 @@ public class TreeConverter {
     SwitchStatement newNode =
         new SwitchStatement().setExpression(convertWithoutParens(node.getExpression(), path));
     for (CaseTree switchCase : node.getCases()) {
-      newNode.addStatement((SwitchCase) convert(switchCase, path));
       TreePath switchCasePath = getTreePath(path, switchCase);
       boolean caseIsRule = false;
       try {
         Field caseKindField = switchCase.getClass().getDeclaredField("caseKind");
         String caseKind = caseKindField.get(switchCase).toString();
         if (caseKind.equals("RULE")) {
-          newNode.addStatement(convertPatternCaseTree(switchCase, switchCasePath));
           caseIsRule = true;
         }
       } catch (ReflectiveOperationException e) {
         // Running on pre-Java 21, fall-through.
       }
-      if (!caseIsRule) {
+      if (caseIsRule) {
+        Statement switchCaseStmt = convertPatternCaseTree(switchCase, switchCasePath);
+        newNode.addStatement(switchCaseStmt);
+        TreeNode.Kind stmtKind = switchCaseStmt.getKind();
+        if (stmtKind != TreeNode.Kind.RETURN_STATEMENT
+            && stmtKind != TreeNode.Kind.THROW_STATEMENT) {
+          newNode.addStatement(new BreakStatement());
+        }
+      } else {
+        newNode.addStatement((SwitchCase) convert(switchCase, path));
         for (StatementTree s : switchCase.getStatements()) {
           newNode.addStatement((Statement) convert(s, switchCasePath));
         }
@@ -1455,6 +1486,9 @@ public class TreeConverter {
       Field typeField = node.getClass().getField("type");
       newNode.setTypeMirror((TypeMirror) typeField.get(node));
 
+      // Move a "return switch_expr" to return each case's statement.
+      boolean exprReturned = parent.getLeaf().getKind() == Tree.Kind.RETURN;
+
       Field casesField = node.getClass().getDeclaredField("cases");
       List<? extends CaseTree> cases = (List<? extends CaseTree>) casesField.get(node);
       for (CaseTree switchCase : cases) {
@@ -1465,7 +1499,13 @@ public class TreeConverter {
           newNode.addStatement(convertPatternCaseTree(switchCase, switchCasePath));
         } else {
           // caseKind == "RULE"
-          newNode.addStatement(convertConstantCaseTree(switchCase, switchCasePath));
+          Statement stmt = convertConstantCaseTree(switchCase, switchCasePath);
+          if (exprReturned) {
+            SwitchExpressionCase switchExpressionCase = (SwitchExpressionCase) stmt;
+            YieldStatement yieldStmt = (YieldStatement) switchExpressionCase.getBody();
+            switchExpressionCase.setBody(new ReturnStatement(yieldStmt.getExpression().copy()));
+          }
+          newNode.addStatement(stmt);
         }
       }
     } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException e) {
@@ -1487,12 +1527,16 @@ public class TreeConverter {
       for (Tree caseExpressionTree : caseExpressionsList) {
         String kind = caseExpressionTree.getKind().toString();
         if (kind.equals("CONSTANT_CASE_LABEL")) {
-          ExpressionTree expr = (ExpressionTree) caseExpressionTree.getClass().getDeclaredField("expr").get(caseExpressionTree);
+          ExpressionTree expr =
+              (ExpressionTree)
+                  caseExpressionTree.getClass().getDeclaredField("expr").get(caseExpressionTree);
           switchExprCase.addExpression((Expression) convert(expr, parent));
-          ExpressionTree guard = (ExpressionTree) switchCase.getClass().getDeclaredField("guard").get(switchCase);
+          ExpressionTree guard =
+              (ExpressionTree) switchCase.getClass().getDeclaredField("guard").get(switchCase);
           switchExprCase.setGuard((Expression) convert(guard, parent));
         } else if (kind.equals("PATTERN_CASE_LABEL")) {
-          Tree expr = (Tree) caseExpressionTree.getClass().getDeclaredField("pat").get(caseExpressionTree);
+          Tree expr =
+              (Tree) caseExpressionTree.getClass().getDeclaredField("pat").get(caseExpressionTree);
           if (expr.getKind().toString().equals("BINDING_PATTERN")) {
             try {
               Field varField = expr.getClass().getDeclaredField("var");
@@ -1505,7 +1549,8 @@ public class TreeConverter {
               // Fall-through.
             }
           }
-          ExpressionTree guard = (ExpressionTree) switchCase.getClass().getDeclaredField("guard").get(switchCase);
+          ExpressionTree guard =
+              (ExpressionTree) switchCase.getClass().getDeclaredField("guard").get(switchCase);
           switchExprCase.setGuard((Expression) convert(guard, parent));
         } else if (kind.equals("DEFAULT_CASE_LABEL")){
           switchExprCase.setIsDefault(true);
@@ -1527,13 +1572,64 @@ public class TreeConverter {
     return switchExprCase;
   }
 
-  // TODO(tball): implement pattern cases.
+  @SuppressWarnings("unchecked")
   private Statement convertPatternCaseTree(
       @SuppressWarnings("unused") // Remove when implemented.
-      CaseTree switchCase,
-      @SuppressWarnings("unused")
-      TreePath parent) {
+          CaseTree switchCase,
+      @SuppressWarnings("unused") TreePath parent) {
     SwitchExpressionCase switchExprCase = new SwitchExpressionCase();
+
+    // Use reflection for CaseTree API added after Java 11.
+    try {
+      Field expressionsField = switchCase.getClass().getDeclaredField("labels");
+      List<? extends ExpressionTree> caseExpressionsList =
+          (List<? extends ExpressionTree>) expressionsField.get(switchCase);
+      for (Tree caseExpressionTree : caseExpressionsList) {
+        String kind = caseExpressionTree.getKind().toString();
+        if (kind.equals("CONSTANT_CASE_LABEL")) {
+          ExpressionTree expr =
+              (ExpressionTree)
+                  caseExpressionTree.getClass().getDeclaredField("expr").get(caseExpressionTree);
+          switchExprCase.addExpression((Expression) convert(expr, parent));
+          ExpressionTree guard =
+              (ExpressionTree) switchCase.getClass().getDeclaredField("guard").get(switchCase);
+          switchExprCase.setGuard((Expression) convert(guard, parent));
+        } else if (kind.equals("PATTERN_CASE_LABEL")) {
+          Tree expr =
+              (Tree) caseExpressionTree.getClass().getDeclaredField("pat").get(caseExpressionTree);
+          if (expr.getKind().toString().equals("BINDING_PATTERN")) {
+            try {
+              Field varField = expr.getClass().getDeclaredField("var");
+              VariableTree varTree = (VariableTree) varField.get(expr);
+              VariableElement var =
+                  ((VariableDeclaration) convertVariableDeclaration(varTree, parent))
+                      .getVariableElement();
+              Pattern.BindingPattern pattern = new Pattern.BindingPattern(var);
+              switchExprCase.setPattern(pattern);
+            } catch (NoSuchFieldException e2) {
+              // Fall-through.
+            }
+          }
+          ExpressionTree guard =
+              (ExpressionTree) switchCase.getClass().getDeclaredField("guard").get(switchCase);
+          switchExprCase.setGuard((Expression) convert(guard, parent));
+        } else if (kind.equals("DEFAULT_CASE_LABEL")) {
+          switchExprCase.setIsDefault(true);
+        } else {
+          // Prior to Java 21, they were the constant type, such as INT_LITERAL.
+          switchExprCase.addExpression((Expression) convert(caseExpressionTree, parent));
+        }
+      }
+      Tree javacBody = (Tree) switchCase.getClass().getDeclaredField("body").get(switchCase);
+      TreeNode body = convert(javacBody, parent);
+      if (body instanceof Expression) {
+        body = new YieldStatement((Expression) body);
+      }
+      switchExprCase.setBody(body);
+    } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException e) {
+      switchExprCase = new SwitchExpressionCase();
+    }
+
     return switchExprCase;
   }
 

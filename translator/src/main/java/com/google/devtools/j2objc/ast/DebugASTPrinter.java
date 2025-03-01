@@ -961,7 +961,7 @@ public class DebugASTPrinter extends TreeVisitor {
   public boolean visit(SwitchExpressionCase node) {
     sb.printIndent();
     if (node.isDefault()) {
-      sb.print("default -> ");
+      sb.print("default: ");
     } else {
       sb.print("case ");
       for (Iterator<Expression> it = node.getExpressions().iterator();
@@ -985,7 +985,7 @@ public class DebugASTPrinter extends TreeVisitor {
         sb.print(" when ");
         node.getGuard().accept(this);
       }
-      sb.print(" -> ");
+      sb.print(": ");
     }
     TreeNode body = node.getBody();
     if (body == null) {
@@ -1009,7 +1009,7 @@ public class DebugASTPrinter extends TreeVisitor {
     }
     sb.unindent();
     sb.printIndent();
-    sb.println("}");
+    sb.println("};");
     return false;
   }
 
