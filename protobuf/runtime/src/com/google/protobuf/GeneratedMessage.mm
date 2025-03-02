@@ -291,7 +291,9 @@ static bool UnsetHas(id msg, CGPHasLocator loc) {
 
 // Clears and releases the previous value iff it is a oneof field and the oneof
 // was previously set to a different field.
-static inline void ClearPreviousOneof(id msg, CGPHasLocator loc, uintptr_t ptr) {
+// Returns true if the field was cleared
+static inline BOOL ClearPreviousOneof(id msg, CGPHasLocator loc, uintptr_t ptr) {
+  BOOL wasCleared = NO;
   if (loc.isOneof) {
     jint *oneofCase = (jint *)((uintptr_t)msg + loc.offset);
     // Only clear if the oneof is set to a different field. Merging logic relies
@@ -303,8 +305,10 @@ static inline void ClearPreviousOneof(id msg, CGPHasLocator loc, uintptr_t ptr) 
         *objPtr = nil;
       }
       *oneofCase = 0;
+      wasCleared = YES;
     }
   }
+  return wasCleared;
 }
 
 #define REPEATED_FIELD_PTR(msg, offset) ((CGPRepeatedField *)((uint8_t *)msg + offset))
@@ -315,11 +319,22 @@ static inline void ClearPreviousOneof(id msg, CGPHasLocator loc, uintptr_t ptr) 
   static void SingularSet##NAME(id msg, TYPE_##NAME value, size_t offset, CGPHasLocator hasLoc) { \
     TYPE_##NAME *ptr = FIELD_PTR(TYPE_##NAME, msg, offset); \
     ClearPreviousOneof(msg, hasLoc, (uintptr_t)ptr); \
-    TYPE_RETAINED_ASSIGN_##NAME(*ptr, value); \
+    TYPE_ASSIGN_##NAME(*ptr, value); \
     SetHas(msg, hasLoc); \
   }
 
-FOR_EACH_TYPE_WITH_ENUM(SINGULAR_SETTER_IMP)
+FOR_EACH_TYPE_NO_RETAINABLE(SINGULAR_SETTER_IMP)
+
+static void SingularSetRetainable(id msg, TYPE_Retainable value, size_t offset, CGPHasLocator hasLoc) {
+  TYPE_Retainable *ptr = FIELD_PTR(TYPE_Retainable, msg, offset);
+  if (!ClearPreviousOneof(msg, hasLoc, (uintptr_t)ptr)) {
+    // If it is not a one of field, we need to release the previous value.
+    // Otherwise ClearPreviousOneof has already done it for us if necessary.
+    AUTORELEASE(*ptr);
+  }
+  *ptr = RETAIN_(value);
+  SetHas(msg, hasLoc);
+}
 
 #undef SINGULAR_SETTER_IMP
 
@@ -534,9 +549,12 @@ static BOOL AddBuilderSetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field
   IMP imp = imp_implementationWithBlock(^id(id msg, id value) {
     (void)nil_chk(value);
     id *ptr = FIELD_PTR(id, msg, offset);
-    ClearPreviousOneof(msg, hasLoc, (uintptr_t)ptr);
+    if (!ClearPreviousOneof(msg, hasLoc, (uintptr_t)ptr)) {
+      // If it is not a one of field, we need to release the previous value.
+      // Otherwise ClearPreviousOneof has already done it for us if necessary.
+      AUTORELEASE(*ptr);
+    }
     id builtValue = [(ComGoogleProtobufGeneratedMessage_Builder *)value build];
-    AUTORELEASE(*ptr);
     *ptr = RETAIN_(builtValue);
     SetHas(msg, hasLoc);
     return msg;

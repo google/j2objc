@@ -190,6 +190,16 @@
   MACRO(Enum) \
   MACRO(Retainable)
 
+// Declares the given macro once for each java field type except for retainable
+//types.
+#define FOR_EACH_TYPE_NO_RETAINABLE(MACRO) \
+  MACRO(Int) \
+  MACRO(Long) \
+  MACRO(Float) \
+  MACRO(Double) \
+  MACRO(Bool) \
+  MACRO(Enum)
+
 // The remainder of this file is copied from the translation of the types
 // FieldDescriptor.Type and FieldDescriptor.JavaType in Descriptor.java.
 
