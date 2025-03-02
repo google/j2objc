@@ -417,11 +417,11 @@ static void ReleaseAllEntries(
 }
 
 static void ReleaseData(
-    CGPMapFieldData *data, CGPFieldJavaType keyType, CGPFieldJavaType valueType) {
-  if (data == NULL) {
+    CGPMapField *field, CGPFieldJavaType keyType, CGPFieldJavaType valueType) {
+  if (field->data == NULL) {
     return;
   }
-
+  CGPMapFieldData *data = field->data;
   if (__c11_atomic_fetch_sub(&data->refCount, 1, __ATOMIC_RELEASE) == 1) {
     __c11_atomic_thread_fence(__ATOMIC_ACQUIRE);
 
@@ -430,20 +430,25 @@ static void ReleaseData(
     // Don't need to free hashArray because it is on the same allocation as array.
     free(data->array);
     free(data);
+    field->data = NULL;
   }
 }
 
-void CGPMapFieldClear(CGPMapField *field, CGPFieldJavaType keyType, CGPFieldJavaType valueType) {
+void CGPMapFieldClear(CGPMapField *field, CGPFieldJavaType keyType, CGPFieldJavaType valueType, BOOL releaseData) {
   CGPMapFieldData *data = field->data;
   if (data == NULL) {
     return;
   }
-  ReleaseAllEntries(data, keyType, valueType);
-  data->numEntries = 0;
-  data->modCount++;
-  data->validArray = true;
-  // The hash array and header are now dirty.
-  data->validHashMap = false;
+  if (releaseData) {
+    ReleaseData(field, keyType, valueType);
+  } else {
+    ReleaseAllEntries(data, keyType, valueType);
+    data->numEntries = 0;
+    data->modCount++;
+    data->validArray = true;
+    // The hash array and header are now dirty.
+    data->validHashMap = false;
+  }
 }
 
 bool CGPMapFieldIsEqual(
@@ -637,7 +642,7 @@ void CGPMapFieldAssignFromList(
   CGPFieldDescriptor *valueField = CGPFieldMapValue(descriptor);
   CGPFieldJavaType keyType = CGPFieldGetJavaType(keyField);
   CGPFieldJavaType valueType = CGPFieldGetJavaType(valueField);
-  CGPMapFieldClear(field, keyType, valueType);
+  CGPMapFieldClear(field, keyType, valueType, NO);
   EnsureAdditionalListCapacity(field, [list size]);
   CGPMapFieldData *data = field->data;
 
@@ -713,7 +718,7 @@ id<JavaUtilMap> CGPMapFieldAsJavaMap(
 }
 
 - (void)dealloc {
-  ReleaseData(field_.data, keyType_, valueType_);
+  ReleaseData(&field_, keyType_, valueType_);
   [super dealloc];
 }
 

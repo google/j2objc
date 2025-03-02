@@ -465,7 +465,7 @@ static BOOL AddClearMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
     CGPFieldJavaType keyType = CGPFieldGetJavaType(CGPFieldMapKey(field));
     CGPFieldJavaType valueType = CGPFieldGetJavaType(CGPFieldMapValue(field));
     imp = imp_implementationWithBlock(^id(id msg) {
-      CGPMapFieldClear(MAP_FIELD_PTR(msg, offset), keyType, valueType);
+      CGPMapFieldClear(MAP_FIELD_PTR(msg, offset), keyType, valueType, NO);
       return msg;
     });
   } else if (CGPFieldIsRepeated(field)) {
@@ -1367,7 +1367,7 @@ static id GetRepeatedField(id msg, CGPFieldDescriptor *descriptor, jint index) {
   }
 }
 
-static void ReleaseAllFields(id self, Class cls, CGPDescriptor *descriptor) {
+static void ReleaseAllFields(id self, Class cls, CGPDescriptor *descriptor, BOOL dealloc) {
   CGPFieldDescriptor **fields = descriptor->fields_->buffer_;
   NSUInteger count = descriptor->fields_->size_;
   for (NSUInteger i = 0; i < count; i++) {
@@ -1377,7 +1377,7 @@ static void ReleaseAllFields(id self, Class cls, CGPDescriptor *descriptor) {
     if (CGPFieldIsMap(field)) {
       CGPMapFieldClear(
           (CGPMapField *)ptr, CGPFieldGetJavaType(CGPFieldMapKey(field)),
-          CGPFieldGetJavaType(CGPFieldMapValue(field)));
+          CGPFieldGetJavaType(CGPFieldMapValue(field)), dealloc);
     } else if (CGPFieldIsRepeated(field)) {
       CGPRepeatedFieldClear((CGPRepeatedField *)ptr, javaType);
     } else if (CGPIsRetainedType(javaType) && GetHas(self, GetHasLocator(cls, field))) {
@@ -3592,7 +3592,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 - (void)dealloc {
   Class selfCls = object_getClass(self);
   CGPDescriptor *descriptor = [selfCls getDescriptor];
-  ReleaseAllFields(self, selfCls, descriptor);
+  ReleaseAllFields(self, selfCls, descriptor, YES);
   [super dealloc];
 }
 
@@ -3657,7 +3657,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
 - (ComGoogleProtobufGeneratedMessage_Builder *)clear {
   Class selfCls = object_getClass(self);
   CGPDescriptor *descriptor = [selfCls getDescriptor];
-  ReleaseAllFields(self, selfCls, descriptor);
+  ReleaseAllFields(self, selfCls, descriptor, YES);
   uint8_t *fieldStorage = (uint8_t *)self + class_getInstanceSize(selfCls);
   memset(fieldStorage, 0, descriptor->storageSize_);
   return self;
@@ -3759,7 +3759,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   if (CGPFieldIsMap(descriptor)) {
     CGPFieldJavaType keyType = CGPFieldGetJavaType(CGPFieldMapKey(descriptor));
     CGPFieldJavaType valueType = CGPFieldGetJavaType(CGPFieldMapValue(descriptor));
-    CGPMapFieldClear(MAP_FIELD_PTR(self, offset), keyType, valueType);
+    CGPMapFieldClear(MAP_FIELD_PTR(self, offset), keyType, valueType, NO);
   } else if (CGPFieldIsRepeated(descriptor)) {
     CGPRepeatedFieldClear(REPEATED_FIELD_PTR(self, offset), CGPFieldGetJavaType(descriptor));
   } else {
@@ -3875,7 +3875,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
 - (void)dealloc {
   Class selfCls = object_getClass(self);
   CGPDescriptor *descriptor = [selfCls getDescriptor];
-  ReleaseAllFields(self, selfCls, descriptor);
+  ReleaseAllFields(self, selfCls, descriptor, YES);
   [super dealloc];
 }
 
