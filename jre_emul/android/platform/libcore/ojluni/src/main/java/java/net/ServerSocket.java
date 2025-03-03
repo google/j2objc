@@ -378,9 +378,9 @@ class ServerSocket implements java.io.Closeable {
         if (backlog < 1)
           backlog = 50;
         try {
-            SecurityManager security = System.getSecurityManager();
-            if (security != null)
-                security.checkListen(epoint.getPort());
+            // SecurityManager security = System.getSecurityManager();
+            // if (security != null)
+            //     security.checkListen(epoint.getPort());
             getImpl().bind(epoint.getAddress(), epoint.getPort());
             getImpl().listen(backlog);
             bound = true;
@@ -416,9 +416,9 @@ class ServerSocket implements java.io.Closeable {
             return null;
         try {
             InetAddress in = getImpl().getInetAddress();
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null)
-                sm.checkConnect(in.getHostAddress(), -1);
+            // SecurityManager sm = System.getSecurityManager();
+            // if (sm != null)
+            //     sm.checkConnect(in.getHostAddress(), -1);
             return in;
         } catch (SecurityException e) {
             return InetAddress.getLoopbackAddress();
@@ -553,11 +553,11 @@ class ServerSocket implements java.io.Closeable {
             si.fd = new FileDescriptor();
             getImpl().accept(si);
 
-            SecurityManager security = System.getSecurityManager();
-            if (security != null) {
-                security.checkAccept(si.getInetAddress().getHostAddress(),
-                                     si.getPort());
-            }
+            // SecurityManager security = System.getSecurityManager();
+            // if (security != null) {
+            //     security.checkAccept(si.getInetAddress().getHostAddress(),
+            //                          si.getPort());
+            // }
         } catch (IOException e) {
             if (si != null)
                 si.reset();
@@ -756,9 +756,9 @@ class ServerSocket implements java.io.Closeable {
         if (!isBound())
             return "ServerSocket[unbound]";
         InetAddress in;
-        if (System.getSecurityManager() != null)
-            in = InetAddress.getLoopbackAddress();
-        else
+        // if (System.getSecurityManager() != null)
+        //     in = InetAddress.getLoopbackAddress();
+        // else
             in = impl.getInetAddress();
         return "ServerSocket[addr=" + in +
                 ",localport=" + impl.getLocalPort()  + "]";
@@ -806,10 +806,10 @@ class ServerSocket implements java.io.Closeable {
         if (factory != null) {
             throw new SocketException("factory already defined");
         }
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            security.checkSetFactory();
-        }
+        // SecurityManager security = System.getSecurityManager();
+        // if (security != null) {
+        //     security.checkSetFactory();
+        // }
         factory = fac;
     }
 

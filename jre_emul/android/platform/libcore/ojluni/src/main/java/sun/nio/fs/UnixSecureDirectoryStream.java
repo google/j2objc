@@ -113,10 +113,10 @@ class UnixSecureDirectoryStream
         boolean followLinks = Util.followLinks(options);
 
         // permission check using name resolved against original path of directory
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            child.checkRead();
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     child.checkRead();
+        // }
 
         ds.readLock().lock();
         try {
@@ -191,10 +191,10 @@ class UnixSecureDirectoryStream
         UnixPath file = getName(obj);
 
         // permission check using name resolved against original path of directory
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            ds.directory().resolve(file).checkDelete();
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     ds.directory().resolve(file).checkDelete();
+        // }
 
         ds.readLock().lock();
         try {
@@ -256,11 +256,11 @@ class UnixSecureDirectoryStream
         UnixSecureDirectoryStream that = (UnixSecureDirectoryStream)dir;
 
         // permission check
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            this.ds.directory().resolve(from).checkWrite();
-            that.ds.directory().resolve(to).checkWrite();
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     this.ds.directory().resolve(from).checkWrite();
+        //     that.ds.directory().resolve(to).checkWrite();
+        // }
 
         // lock ordering doesn't matter
         this.ds.readLock().lock();
@@ -353,14 +353,14 @@ class UnixSecureDirectoryStream
         }
 
         private void checkWriteAccess() {
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                if (file == null) {
-                    ds.directory().checkWrite();
-                } else {
-                    ds.directory().resolve(file).checkWrite();
-                }
-            }
+            // SecurityManager sm = System.getSecurityManager();
+            // if (sm != null) {
+            //     if (file == null) {
+            //         ds.directory().checkWrite();
+            //     } else {
+            //         ds.directory().resolve(file).checkWrite();
+            //     }
+            // }
         }
 
         @Override
@@ -375,14 +375,14 @@ class UnixSecureDirectoryStream
                 if (!ds.isOpen())
                     throw new ClosedDirectoryStreamException();
 
-                SecurityManager sm = System.getSecurityManager();
-                if (sm != null) {
-                    if (file == null) {
-                        ds.directory().checkRead();
-                    } else {
-                        ds.directory().resolve(file).checkRead();
-                    }
-                }
+                // SecurityManager sm = System.getSecurityManager();
+                // if (sm != null) {
+                //     if (file == null) {
+                //         ds.directory().checkRead();
+                //     } else {
+                //         ds.directory().resolve(file).checkRead();
+                //     }
+                // }
                 try {
                      UnixFileAttributes attrs = (file == null) ?
                          UnixFileAttributes.get(dfd) :
@@ -455,11 +455,11 @@ class UnixSecureDirectoryStream
         }
 
         private void checkWriteAndUserAccess() {
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                super.checkWriteAccess();
-                sm.checkPermission(new RuntimePermission("accessUserInformation"));
-            }
+            // SecurityManager sm = System.getSecurityManager();
+            // if (sm != null) {
+            //     super.checkWriteAccess();
+            //     sm.checkPermission(new RuntimePermission("accessUserInformation"));
+            // }
         }
 
         @Override
@@ -469,14 +469,14 @@ class UnixSecureDirectoryStream
 
         @Override
         public PosixFileAttributes readAttributes() throws IOException {
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                if (file == null)
-                    ds.directory().checkRead();
-                else
-                    ds.directory().resolve(file).checkRead();
-                sm.checkPermission(new RuntimePermission("accessUserInformation"));
-            }
+            // SecurityManager sm = System.getSecurityManager();
+            // if (sm != null) {
+            //     if (file == null)
+            //         ds.directory().checkRead();
+            //     else
+            //         ds.directory().resolve(file).checkRead();
+            //     sm.checkPermission(new RuntimePermission("accessUserInformation"));
+            // }
 
             ds.readLock().lock();
             try {

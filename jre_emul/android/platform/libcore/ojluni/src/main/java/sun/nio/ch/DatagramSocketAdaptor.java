@@ -230,14 +230,14 @@ public class DatagramSocketAdaptor
         if (local == null)
             local = new InetSocketAddress(0);
         InetAddress result = ((InetSocketAddress)local).getAddress();
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            try {
-                sm.checkConnect(result.getHostAddress(), -1);
-            } catch (SecurityException x) {
-                return new InetSocketAddress(0).getAddress();
-            }
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     try {
+        //         sm.checkConnect(result.getHostAddress(), -1);
+        //     } catch (SecurityException x) {
+        //         return new InetSocketAddress(0).getAddress();
+        //     }
+        // }
         return result;
     }
 

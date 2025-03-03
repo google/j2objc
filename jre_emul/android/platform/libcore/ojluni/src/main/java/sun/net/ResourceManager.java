@@ -67,17 +67,17 @@ public class ResourceManager {
     }
 
     public static void beforeUdpCreate() throws SocketException {
-        if (System.getSecurityManager() != null) {
-            if (numSockets.incrementAndGet() > maxSockets) {
-                numSockets.decrementAndGet();
-                throw new SocketException("maximum number of DatagramSockets reached");
-            }
-        }
+        // if (System.getSecurityManager() != null) {
+        //     if (numSockets.incrementAndGet() > maxSockets) {
+        //         numSockets.decrementAndGet();
+        //         throw new SocketException("maximum number of DatagramSockets reached");
+        //     }
+        // }
     }
 
     public static void afterUdpClose() {
-        if (System.getSecurityManager() != null) {
-            numSockets.decrementAndGet();
-        }
+        // if (System.getSecurityManager() != null) {
+        //     numSockets.decrementAndGet();
+        // }
     }
 }

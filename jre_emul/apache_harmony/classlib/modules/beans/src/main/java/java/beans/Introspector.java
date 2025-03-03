@@ -247,9 +247,9 @@ public class Introspector extends java.lang.Object {
      * @param path the new search packages to be set.
      */
     public static void setBeanInfoSearchPath(String[] path) {
-        if (System.getSecurityManager() != null) {
-            System.getSecurityManager().checkPropertiesAccess();
-        }
+        // if (System.getSecurityManager() != null) {
+        //     System.getSecurityManager().checkPropertiesAccess();
+        // }
         searchPath = path;
     }
 

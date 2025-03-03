@@ -52,9 +52,9 @@ import java.security.PrivilegedAction;
 
 public abstract class AsynchronousChannelProvider {
     private static Void checkPermission() {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
-            sm.checkPermission(new RuntimePermission("asynchronousChannelProvider"));
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null)
+        //     sm.checkPermission(new RuntimePermission("asynchronousChannelProvider"));
         return null;
     }
     private AsynchronousChannelProvider(Void ignore) { }

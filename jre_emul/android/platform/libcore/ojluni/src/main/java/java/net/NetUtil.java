@@ -43,28 +43,28 @@ class NetUtil {
     }
 
     private static boolean readRevealLocalAddr() {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            try {
-                /*
-                revealLocalAddress = Boolean.parseBoolean(
-                      AccessController.doPrivileged(
-                          new PrivilegedExceptionAction<String>() {
-                              @Override
-                              public String run() {
-                                  return System.getProperty(
-                                      "jdk.net.revealLocalAddress");
-                              }
-                          }));
-                 */
-                 revealLocalAddress = Boolean.parseBoolean(
-                     System.getProperty("jdk.net.revealLocalAddress"));
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     try {
+        //         /*
+        //         revealLocalAddress = Boolean.parseBoolean(
+        //               AccessController.doPrivileged(
+        //                   new PrivilegedExceptionAction<String>() {
+        //                       @Override
+        //                       public String run() {
+        //                           return System.getProperty(
+        //                               "jdk.net.revealLocalAddress");
+        //                       }
+        //                   }));
+        //          */
+        //          revealLocalAddress = Boolean.parseBoolean(
+        //              System.getProperty("jdk.net.revealLocalAddress"));
 
-            } catch (Exception e) {
-                //revealLocalAddress is false
-            }
-            propRevealLocalAddr = true;
-        }
+        //     } catch (Exception e) {
+        //         //revealLocalAddress is false
+        //     }
+        //     propRevealLocalAddr = true;
+        // }
         /*
          * No security manager, or security check passed or
          * jdk.net.revealLocalAddress set to true

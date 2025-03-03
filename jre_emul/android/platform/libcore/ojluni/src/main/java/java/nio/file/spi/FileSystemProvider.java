@@ -85,9 +85,9 @@ public abstract class FileSystemProvider {
     private static boolean loadingProviders  = false;
 
     private static Void checkPermission() {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
-            sm.checkPermission(new RuntimePermission("fileSystemProvider"));
+    //     SecurityManager sm = System.getSecurityManager();
+    //     if (sm != null)
+    //         sm.checkPermission(new RuntimePermission("fileSystemProvider"));
         return null;
     }
     private FileSystemProvider(Void ignore) { }

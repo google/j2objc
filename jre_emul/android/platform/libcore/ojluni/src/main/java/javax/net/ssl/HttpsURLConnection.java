@@ -392,10 +392,10 @@ class HttpsURLConnection extends HttpURLConnection
                 "no default SSLSocketFactory specified");
         }
 
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkSetFactory();
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     sm.checkSetFactory();
+        // }
         defaultSSLSocketFactory = sf;
     }
 
@@ -441,10 +441,10 @@ class HttpsURLConnection extends HttpURLConnection
                 "no SSLSocketFactory specified");
         }
 
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkSetFactory();
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     sm.checkSetFactory();
+        // }
         sslSocketFactory = sf;
     }
 

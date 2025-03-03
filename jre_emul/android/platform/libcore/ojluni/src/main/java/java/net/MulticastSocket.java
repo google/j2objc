@@ -303,10 +303,11 @@ class MulticastSocket extends DatagramSocket {
         }
 
         checkAddress(mcastaddr, "joinGroup");
+        /* SecurityManager is not supported on j2objc.
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
             security.checkMulticast(mcastaddr);
-        }
+        }*/
 
         if (!mcastaddr.isMulticastAddress()) {
             throw new SocketException("Not a multicast address");
@@ -348,10 +349,10 @@ class MulticastSocket extends DatagramSocket {
         }
 
         checkAddress(mcastaddr, "leaveGroup");
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            security.checkMulticast(mcastaddr);
-        }
+        // SecurityManager security = System.getSecurityManager();
+        // if (security != null) {
+        //     security.checkMulticast(mcastaddr);
+        // }
 
         if (!mcastaddr.isMulticastAddress()) {
             throw new SocketException("Not a multicast address");
@@ -396,10 +397,10 @@ class MulticastSocket extends DatagramSocket {
             throw new UnsupportedOperationException();
 
         checkAddress(((InetSocketAddress)mcastaddr).getAddress(), "joinGroup");
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            security.checkMulticast(((InetSocketAddress)mcastaddr).getAddress());
-        }
+        // SecurityManager security = System.getSecurityManager();
+        // if (security != null) {
+        //     security.checkMulticast(((InetSocketAddress)mcastaddr).getAddress());
+        // }
 
         if (!((InetSocketAddress)mcastaddr).getAddress().isMulticastAddress()) {
             throw new SocketException("Not a multicast address");
@@ -443,10 +444,10 @@ class MulticastSocket extends DatagramSocket {
             throw new UnsupportedOperationException();
 
         checkAddress(((InetSocketAddress)mcastaddr).getAddress(), "leaveGroup");
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            security.checkMulticast(((InetSocketAddress)mcastaddr).getAddress());
-        }
+        // SecurityManager security = System.getSecurityManager();
+        // if (security != null) {
+        //     security.checkMulticast(((InetSocketAddress)mcastaddr).getAddress());
+        // }
 
         if (!((InetSocketAddress)mcastaddr).getAddress().isMulticastAddress()) {
             throw new SocketException("Not a multicast address");
@@ -670,15 +671,15 @@ class MulticastSocket extends DatagramSocket {
                         // Security manager makes sure that the multicast address
                         // is allowed one and that the ttl used is less
                         // than the allowed maxttl.
-                        SecurityManager security = System.getSecurityManager();
-                        if (security != null) {
-                            if (p.getAddress().isMulticastAddress()) {
-                                security.checkMulticast(p.getAddress(), ttl);
-                            } else {
-                                security.checkConnect(p.getAddress().getHostAddress(),
-                                                      p.getPort());
-                            }
-                        }
+                        // SecurityManager security = System.getSecurityManager();
+                        // if (security != null) {
+                        //     if (p.getAddress().isMulticastAddress()) {
+                        //         security.checkMulticast(p.getAddress(), ttl);
+                        //     } else {
+                        //         security.checkConnect(p.getAddress().getHostAddress(),
+                        //                               p.getPort());
+                        //     }
+                        // }
                     } else {
                         // we're connected
                         InetAddress packetAddress = null;

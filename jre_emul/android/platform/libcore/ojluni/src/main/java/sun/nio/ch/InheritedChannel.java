@@ -127,12 +127,12 @@ class InheritedChannel {
      * RuntimePermission.
      */
     private static void checkAccess(Channel c) {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkPermission(
-                new RuntimePermission("inheritedChannel")
-            );
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     sm.checkPermission(
+        //         new RuntimePermission("inheritedChannel")
+        //     );
+        // }
     }
 
 

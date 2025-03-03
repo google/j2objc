@@ -392,38 +392,38 @@ class DatagramChannelImpl
                 begin();
                 if (!isOpen())
                     return null;
-                SecurityManager security = System.getSecurityManager();
+                // SecurityManager security = System.getSecurityManager();
                 readerThread = NativeThread.current();
-                if (isConnected() || (security == null)) {
+                // if (isConnected() || (security == null)) {
                     do {
                         n = receive(fd, dst);
                     } while ((n == IOStatus.INTERRUPTED) && isOpen());
                     if (n == IOStatus.UNAVAILABLE)
                         return null;
-                } else {
-                    bb = Util.getTemporaryDirectBuffer(dst.remaining());
-                    for (;;) {
-                        do {
-                            n = receive(fd, bb);
-                        } while ((n == IOStatus.INTERRUPTED) && isOpen());
-                        if (n == IOStatus.UNAVAILABLE)
-                            return null;
-                        InetSocketAddress isa = (InetSocketAddress)sender;
-                        try {
-                            security.checkAccept(
-                                isa.getAddress().getHostAddress(),
-                                isa.getPort());
-                        } catch (SecurityException se) {
-                            // Ignore packet
-                            bb.clear();
-                            n = 0;
-                            continue;
-                        }
-                        bb.flip();
-                        dst.put(bb);
-                        break;
-                    }
-                }
+                // } else {
+                //     bb = Util.getTemporaryDirectBuffer(dst.remaining());
+                //     for (;;) {
+                //         do {
+                //             n = receive(fd, bb);
+                //         } while ((n == IOStatus.INTERRUPTED) && isOpen());
+                //         if (n == IOStatus.UNAVAILABLE)
+                //             return null;
+                //         InetSocketAddress isa = (InetSocketAddress)sender;
+                //         try {
+                //             security.checkAccept(
+                //                 isa.getAddress().getHostAddress(),
+                //                 isa.getPort());
+                //         } catch (SecurityException se) {
+                //             // Ignore packet
+                //             bb.clear();
+                //             n = 0;
+                //             continue;
+                //         }
+                //         bb.flip();
+                //         dst.put(bb);
+                //         break;
+                //     }
+                // }
                 return sender;
             } finally {
                 if (bb != null)
@@ -491,15 +491,15 @@ class DatagramChannelImpl
                 if (!isConnected()) {
                     if (target == null)
                         throw new NullPointerException();
-                    SecurityManager sm = System.getSecurityManager();
-                    if (sm != null) {
-                        if (ia.isMulticastAddress()) {
-                            sm.checkMulticast(ia);
-                        } else {
-                            sm.checkConnect(ia.getHostAddress(),
-                                            isa.getPort());
-                        }
-                    }
+                    // SecurityManager sm = System.getSecurityManager();
+                    // if (sm != null) {
+                    //     if (ia.isMulticastAddress()) {
+                    //         sm.checkMulticast(ia);
+                    //     } else {
+                    //         sm.checkConnect(ia.getHostAddress(),
+                    //                         isa.getPort());
+                    //     }
+                    // }
                 } else { // Connected case; Check address then write
                     if (!target.equals(remoteAddress)) {
                         throw new IllegalArgumentException(
@@ -744,10 +744,10 @@ class DatagramChannelImpl
                                 throw new UnsupportedAddressTypeException();
                         }
                     }
-                    SecurityManager sm = System.getSecurityManager();
-                    if (sm != null) {
-                        sm.checkListen(isa.getPort());
-                    }
+                    // SecurityManager sm = System.getSecurityManager();
+                    // if (sm != null) {
+                    //     sm.checkListen(isa.getPort());
+                    // }
                     Net.bind(family, fd, isa.getAddress(), isa.getPort());
                     localAddress = Net.localAddress(fd);
                 }
@@ -780,10 +780,10 @@ class DatagramChannelImpl
                 synchronized (stateLock) {
                     ensureOpenAndUnconnected();
                     InetSocketAddress isa = Net.checkAddress(sa);
-                    SecurityManager sm = System.getSecurityManager();
-                    if (sm != null)
-                        sm.checkConnect(isa.getAddress().getHostAddress(),
-                                        isa.getPort());
+                    // SecurityManager sm = System.getSecurityManager();
+                    // if (sm != null)
+                    //     sm.checkConnect(isa.getAddress().getHostAddress(),
+                    //                     isa.getPort());
                     int n = Net.connect(family,
                                         fd,
                                         isa.getAddress(),
@@ -833,10 +833,10 @@ class DatagramChannelImpl
                     if (!isConnected() || !isOpen())
                         return this;
                     InetSocketAddress isa = remoteAddress;
-                    SecurityManager sm = System.getSecurityManager();
-                    if (sm != null)
-                        sm.checkConnect(isa.getAddress().getHostAddress(),
-                                        isa.getPort());
+                    // SecurityManager sm = System.getSecurityManager();
+                    // if (sm != null)
+                    //     sm.checkConnect(isa.getAddress().getHostAddress(),
+                    //                     isa.getPort());
                     boolean isIPv6 = (family == StandardProtocolFamily.INET6);
                     disconnect0(fd, isIPv6);
                     remoteAddress = null;
@@ -883,9 +883,9 @@ class DatagramChannelImpl
                 throw new IllegalArgumentException("Source address is different type to group");
         }
 
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
-            sm.checkMulticast(group);
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null)
+        //     sm.checkMulticast(group);
 
         synchronized (stateLock) {
             if (!isOpen())

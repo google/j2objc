@@ -60,8 +60,10 @@ public class ICUConfig {
      * exist, <code>def</code> is returned.
      */
     public static String get(String name, String def) {
+        /* SecurityManager is not supported on j2objc.
         String val = null;
         final String fname = name;
+        
         if (System.getSecurityManager() != null) {
             try {
                 val = AccessController.doPrivileged(new PrivilegedAction<String>() {
@@ -77,7 +79,9 @@ public class ICUConfig {
         } else {
             val = System.getProperty(name);
         }
+        */
 
+        String val = System.getProperty(name);
         if (val == null) {
             val = CONFIG_PROPS.getProperty(name, def);
         }

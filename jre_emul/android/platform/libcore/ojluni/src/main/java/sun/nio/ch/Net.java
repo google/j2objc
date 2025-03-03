@@ -176,23 +176,24 @@ public class Net {
      * Returns the local address after performing a SecurityManager#checkConnect.
      */
     static InetSocketAddress getRevealedLocalAddress(InetSocketAddress addr) {
-        SecurityManager sm = System.getSecurityManager();
-        if (addr == null || sm == null)
-            return addr;
+        // SecurityManager sm = System.getSecurityManager();
+        // if (addr == null || sm == null)
+        //     return addr;
 
-        try{
-            sm.checkConnect(addr.getAddress().getHostAddress(), -1);
-            // Security check passed
-        } catch (SecurityException e) {
-            // Return loopback address only if security check fails
-            addr = getLoopbackAddress(addr.getPort());
-        }
+        // try{
+        //     sm.checkConnect(addr.getAddress().getHostAddress(), -1);
+        //     // Security check passed
+        // } catch (SecurityException e) {
+        //     // Return loopback address only if security check fails
+        //     addr = getLoopbackAddress(addr.getPort());
+        // }
         return addr;
     }
 
     static String getRevealedLocalAddressAsString(InetSocketAddress addr) {
-        return System.getSecurityManager() == null ? addr.toString() :
-                getLoopbackAddress(addr.getPort()).toString();
+        // return System.getSecurityManager() == null ? addr.toString() :
+        //         getLoopbackAddress(addr.getPort()).toString();
+        return addr.toString();
     }
 
     private static InetSocketAddress getLoopbackAddress(int port) {
@@ -288,10 +289,10 @@ public class Net {
         Class<?> type = name.type();
 
         if (type == SocketFlow.class) {
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                sm.checkPermission(new NetworkPermission("setOption.SO_FLOW_SLA"));
-            }
+            // SecurityManager sm = System.getSecurityManager();
+            // if (sm != null) {
+            //     sm.checkPermission(new NetworkPermission("setOption.SO_FLOW_SLA"));
+            // }
             ExtendedOptionsImpl.setFlowOption(fd, (SocketFlow)value);
             return;
         }
@@ -350,10 +351,10 @@ public class Net {
         Class<?> type = name.type();
 
         if (type == SocketFlow.class) {
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                sm.checkPermission(new NetworkPermission("getOption.SO_FLOW_SLA"));
-            }
+            // SecurityManager sm = System.getSecurityManager();
+            // if (sm != null) {
+            //     sm.checkPermission(new NetworkPermission("getOption.SO_FLOW_SLA"));
+            // }
             SocketFlow flow = SocketFlow.create();
             ExtendedOptionsImpl.getFlowOption(fd, flow);
             return flow;

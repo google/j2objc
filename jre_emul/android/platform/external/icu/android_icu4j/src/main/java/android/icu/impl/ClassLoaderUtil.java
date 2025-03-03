@@ -9,8 +9,8 @@
  */
 package android.icu.impl;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
+// import java.security.AccessController;
+// import java.security.PrivilegedAction;
 
 
 /**
@@ -53,18 +53,18 @@ public class ClassLoaderUtil {
         if (BOOTSTRAP_CLASSLOADER == null) {
             synchronized(ClassLoaderUtil.class) {
                 if (BOOTSTRAP_CLASSLOADER == null) {
-                    ClassLoader cl = null;
-                    if (System.getSecurityManager() != null) {
-                        cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-                            @Override
-                            public BootstrapClassLoader run() {
-                                return new BootstrapClassLoader();
-                            }
-                        });
-                    } else {
-                        cl = new BootstrapClassLoader();
-                    }
-                    BOOTSTRAP_CLASSLOADER = cl;
+                    // ClassLoader cl = null;
+                    // if (System.getSecurityManager() != null) {
+                    //     cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+                    //         @Override
+                    //         public BootstrapClassLoader run() {
+                    //             return new BootstrapClassLoader();
+                    //         }
+                    //     });
+                    // } else {
+                    //     cl = new BootstrapClassLoader();
+                    // }
+                    BOOTSTRAP_CLASSLOADER = new BootstrapClassLoader();
                 }
             }
         }

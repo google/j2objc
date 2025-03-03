@@ -4108,6 +4108,7 @@ public final class ULocale implements Serializable, Comparable<ULocale> {
         }
 
         public static String getSystemProperty(String key) {
+            /* SecurityManager is not supported on j2objc.
             String val = null;
             final String fkey = key;
             if (System.getSecurityManager() != null) {
@@ -4125,6 +4126,8 @@ public final class ULocale implements Serializable, Comparable<ULocale> {
                 val = System.getProperty(fkey);
             }
             return val;
+            */
+            return System.getProperty(key);
         }
     }
 }

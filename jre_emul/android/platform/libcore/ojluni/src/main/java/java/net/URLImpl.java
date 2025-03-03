@@ -200,10 +200,10 @@ public final class URLImpl implements URLDelegate {
       if (factory != null) {
         throw new Error("factory already defined");
       }
-      SecurityManager security = System.getSecurityManager();
-      if (security != null) {
-        security.checkSetFactory();
-      }
+      // SecurityManager security = System.getSecurityManager();
+      // if (security != null) {
+      //   security.checkSetFactory();
+      // }
       handlers.clear();
       factory = (URLStreamHandlerFactory) fac;
     }

@@ -72,9 +72,9 @@ public abstract class SelectorProvider {
     private static SelectorProvider provider = null;
 
     private static Void checkPermission() {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
-            sm.checkPermission(new RuntimePermission("selectorProvider"));
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null)
+        //     sm.checkPermission(new RuntimePermission("selectorProvider"));
         return null;
     }
     private SelectorProvider(Void ignore) { }

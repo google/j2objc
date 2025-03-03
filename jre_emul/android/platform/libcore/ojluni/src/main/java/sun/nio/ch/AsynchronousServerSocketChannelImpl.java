@@ -148,9 +148,9 @@ abstract class AsynchronousServerSocketChannelImpl
     {
         InetSocketAddress isa = (local == null) ? new InetSocketAddress(0) :
             Net.checkAddress(local);
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
-            sm.checkListen(isa.getPort());
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null)
+        //     sm.checkListen(isa.getPort());
 
         try {
             begin();

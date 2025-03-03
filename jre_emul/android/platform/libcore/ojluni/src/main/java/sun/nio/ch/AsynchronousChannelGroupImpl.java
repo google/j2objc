@@ -321,25 +321,25 @@ abstract class AsynchronousChannelGroupImpl
      */
     @Override
     public final void execute(Runnable task) {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            // when a security manager is installed then the user's task
-            // must be run with the current calling context
-            final AccessControlContext acc = AccessController.getContext();
-            final Runnable delegate = task;
-            task = new Runnable() {
-                @Override
-                public void run() {
-                    AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                        @Override
-                        public Void run() {
-                            delegate.run();
-                            return null;
-                        }
-                    }, acc);
-                }
-            };
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     // when a security manager is installed then the user's task
+        //     // must be run with the current calling context
+        //     final AccessControlContext acc = AccessController.getContext();
+        //     final Runnable delegate = task;
+        //     task = new Runnable() {
+        //         @Override
+        //         public void run() {
+        //             AccessController.doPrivileged(new PrivilegedAction<Void>() {
+        //                 @Override
+        //                 public Void run() {
+        //                     delegate.run();
+        //                     return null;
+        //                 }
+        //             }, acc);
+        //         }
+        //     };
+        // }
         executeOnPooledThread(task);
     }
 }

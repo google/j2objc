@@ -454,8 +454,8 @@ public class Logger {
 
     private static Logger demandLogger(String name, String resourceBundleName, Class<?> caller) {
         LogManager manager = LogManager.getLogManager();
-        SecurityManager sm = System.getSecurityManager();
         /* J2ObjC modified.
+        SecurityManager sm = System.getSecurityManager();
         if (sm != null && !SystemLoggerHelper.disableCallerCheck) {
          */
         if (caller != null && !SystemLoggerHelper.disableCallerCheck) {

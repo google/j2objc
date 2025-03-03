@@ -154,10 +154,10 @@ public class DriverManager {
      */
     public static void setLogWriter(java.io.PrintWriter out) {
 
-        SecurityManager sec = System.getSecurityManager();
-        if (sec != null) {
-            sec.checkPermission(SET_LOG_PERMISSION);
-        }
+        // SecurityManager sec = System.getSecurityManager();
+        // if (sec != null) {
+        //     sec.checkPermission(SET_LOG_PERMISSION);
+        // }
             logStream = null;
             logWriter = out;
     }
@@ -406,10 +406,10 @@ public class DriverManager {
     @Deprecated
     public static void setLogStream(java.io.PrintStream out) {
 
-        SecurityManager sec = System.getSecurityManager();
-        if (sec != null) {
-            sec.checkPermission(SET_LOG_PERMISSION);
-        }
+        // SecurityManager sec = System.getSecurityManager();
+        // if (sec != null) {
+        //     sec.checkPermission(SET_LOG_PERMISSION);
+        // }
 
         logStream = out;
         if ( out != null )

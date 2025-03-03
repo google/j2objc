@@ -271,15 +271,15 @@ public class LogManager {
     }
 
     private static Void checkSubclassPermissions() {
-        final SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            // These permission will be checked in the LogManager constructor,
-            // in order to register the Cleaner() thread as a shutdown hook.
-            // Check them here to avoid the penalty of constructing the object
-            // etc...
-            sm.checkPermission(new RuntimePermission("shutdownHooks"));
-            sm.checkPermission(new RuntimePermission("setContextClassLoader"));
-        }
+        // final SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     // These permission will be checked in the LogManager constructor,
+        //     // in order to register the Cleaner() thread as a shutdown hook.
+        //     // Check them here to avoid the penalty of constructing the object
+        //     // etc...
+        //     sm.checkPermission(new RuntimePermission("shutdownHooks"));
+        //     sm.checkPermission(new RuntimePermission("setContextClassLoader"));
+        // }
         return null;
     }
 

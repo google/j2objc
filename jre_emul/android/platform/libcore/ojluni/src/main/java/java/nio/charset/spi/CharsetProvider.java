@@ -79,9 +79,9 @@ public abstract class CharsetProvider {
      *          {@link RuntimePermission}<tt>("charsetProvider")</tt>
      */
     protected CharsetProvider() {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
-            sm.checkPermission(new RuntimePermission("charsetProvider"));
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null)
+        //     sm.checkPermission(new RuntimePermission("charsetProvider"));
     }
 
     /**

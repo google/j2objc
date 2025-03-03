@@ -78,20 +78,20 @@ public final class ReflectUtil {
      * the true caller (application).
      */
     public static void checkPackageAccess(String name) {
-        SecurityManager s = System.getSecurityManager();
-        if (s != null) {
-            String cname = name.replace('/', '.');
-            if (cname.startsWith("[")) {
-                int b = cname.lastIndexOf('[') + 2;
-                if (b > 1 && b < cname.length()) {
-                    cname = cname.substring(b);
-                }
-            }
-            int i = cname.lastIndexOf('.');
-            if (i != -1) {
-                s.checkPackageAccess(cname.substring(0, i));
-            }
-        }
+        // SecurityManager s = System.getSecurityManager();
+        // if (s != null) {
+        //     String cname = name.replace('/', '.');
+        //     if (cname.startsWith("[")) {
+        //         int b = cname.lastIndexOf('[') + 2;
+        //         if (b > 1 && b < cname.length()) {
+        //             cname = cname.substring(b);
+        //         }
+        //     }
+        //     int i = cname.lastIndexOf('.');
+        //     if (i != -1) {
+        //         s.checkPackageAccess(cname.substring(0, i));
+        //     }
+        // }
     }
 
     public static boolean isPackageAccessible(Class clazz) {
@@ -144,15 +144,15 @@ public final class ReflectUtil {
      * @param clazz Proxy class object
      */
     public static void checkProxyPackageAccess(Class<?> clazz) {
-        SecurityManager s = System.getSecurityManager();
-        if (s != null) {
-            // check proxy interfaces if the given class is a proxy class
-            if (Proxy.isProxyClass(clazz)) {
-                for (Class<?> intf : clazz.getInterfaces()) {
-                    checkPackageAccess(intf);
-                }
-            }
-        }
+        // SecurityManager s = System.getSecurityManager();
+        // if (s != null) {
+        //     // check proxy interfaces if the given class is a proxy class
+        //     if (Proxy.isProxyClass(clazz)) {
+        //         for (Class<?> intf : clazz.getInterfaces()) {
+        //             checkPackageAccess(intf);
+        //         }
+        //     }
+        // }
     }
 
     /**
@@ -166,15 +166,15 @@ public final class ReflectUtil {
     public static void checkProxyPackageAccess(ClassLoader ccl,
                                                Class<?>... interfaces)
     {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            for (Class<?> intf : interfaces) {
-                ClassLoader cl = intf.getClassLoader();
-                if (needsPackageAccessCheck(ccl, cl)) {
-                    checkPackageAccess(intf);
-                }
-            }
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     for (Class<?> intf : interfaces) {
+        //         ClassLoader cl = intf.getClassLoader();
+        //         if (needsPackageAccessCheck(ccl, cl)) {
+        //             checkPackageAccess(intf);
+        //         }
+        //     }
+        // }
     }
 
     /**

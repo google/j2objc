@@ -547,11 +547,11 @@ abstract public class HttpURLConnection extends URLConnection {
      * @see #getFollowRedirects()
      */
     public static void setFollowRedirects(boolean set) {
-        SecurityManager sec = System.getSecurityManager();
-        if (sec != null) {
-            // seems to be the best check here...
-            sec.checkSetFactory();
-        }
+        // SecurityManager sec = System.getSecurityManager();
+        // if (sec != null) {
+        //     // seems to be the best check here...
+        //     sec.checkSetFactory();
+        // }
         followRedirects = set;
     }
 
@@ -633,12 +633,12 @@ abstract public class HttpURLConnection extends URLConnection {
 
         for (int i = 0; i < methods.length; i++) {
             if (methods[i].equals(method)) {
-                if (method.equals("TRACE")) {
-                    SecurityManager s = System.getSecurityManager();
-                    if (s != null) {
-                        s.checkPermission(new NetPermission("allowHttpTrace"));
-                    }
-                }
+                // if (method.equals("TRACE")) {
+                //     SecurityManager s = System.getSecurityManager();
+                //     if (s != null) {
+                //         s.checkPermission(new NetPermission("allowHttpTrace"));
+                //     }
+                // }
                 this.method = method;
                 return;
             }

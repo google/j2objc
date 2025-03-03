@@ -120,12 +120,12 @@ class Authenticator {
      * @see java.net.NetPermission
      */
     public synchronized static void setDefault(Authenticator a) {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            NetPermission setDefaultPermission
-                = new NetPermission("setDefaultAuthenticator");
-            sm.checkPermission(setDefaultPermission);
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     NetPermission setDefaultPermission
+        //         = new NetPermission("setDefaultAuthenticator");
+        //     sm.checkPermission(setDefaultPermission);
+        // }
 
         theAuthenticator = a;
     }
@@ -164,12 +164,12 @@ class Authenticator {
                                             String prompt,
                                             String scheme) {
 
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            NetPermission requestPermission
-                = new NetPermission("requestPasswordAuthentication");
-            sm.checkPermission(requestPermission);
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     NetPermission requestPermission
+        //         = new NetPermission("requestPasswordAuthentication");
+        //     sm.checkPermission(requestPermission);
+        // }
 
         Authenticator a = theAuthenticator;
         if (a == null) {
@@ -226,12 +226,12 @@ class Authenticator {
                                             String prompt,
                                             String scheme) {
 
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            NetPermission requestPermission
-                = new NetPermission("requestPasswordAuthentication");
-            sm.checkPermission(requestPermission);
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     NetPermission requestPermission
+        //         = new NetPermission("requestPasswordAuthentication");
+        //     sm.checkPermission(requestPermission);
+        // }
 
         Authenticator a = theAuthenticator;
         if (a == null) {
@@ -293,12 +293,12 @@ class Authenticator {
                                     URL url,
                                     RequestorType reqType) {
 
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            NetPermission requestPermission
-                = new NetPermission("requestPasswordAuthentication");
-            sm.checkPermission(requestPermission);
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     NetPermission requestPermission
+        //         = new NetPermission("requestPasswordAuthentication");
+        //     sm.checkPermission(requestPermission);
+        // }
 
         Authenticator a = theAuthenticator;
         if (a == null) {

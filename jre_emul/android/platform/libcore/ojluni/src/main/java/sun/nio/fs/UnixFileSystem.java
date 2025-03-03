@@ -157,9 +157,9 @@ abstract class UnixFileSystem
         return new Iterable<Path>() {
             public Iterator<Path> iterator() {
                 try {
-                    SecurityManager sm = System.getSecurityManager();
-                    if (sm != null)
-                        sm.checkRead(rootDirectory.toString());
+                    // SecurityManager sm = System.getSecurityManager();
+                    // if (sm != null)
+                    //     sm.checkRead(rootDirectory.toString());
                     return allowedList.iterator();
                 } catch (SecurityException x) {
                     List<Path> disallowed = Collections.emptyList();
@@ -203,14 +203,14 @@ abstract class UnixFileSystem
                     continue;
 
                 // check permission to read mount point
-                SecurityManager sm = System.getSecurityManager();
-                if (sm != null) {
-                    try {
-                        sm.checkRead(Util.toString(entry.dir()));
-                    } catch (SecurityException x) {
-                        continue;
-                    }
-                }
+                // SecurityManager sm = System.getSecurityManager();
+                // if (sm != null) {
+                //     try {
+                //         sm.checkRead(Util.toString(entry.dir()));
+                //     } catch (SecurityException x) {
+                //         continue;
+                //     }
+                // }
                 try {
                     return getFileStore(entry);
                 } catch (IOException ignore) {
@@ -248,14 +248,14 @@ abstract class UnixFileSystem
 
     @Override
     public final Iterable<FileStore> getFileStores() {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            try {
-                sm.checkPermission(new RuntimePermission("getFileStoreAttributes"));
-            } catch (SecurityException se) {
-                return Collections.emptyList();
-            }
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     try {
+        //         sm.checkPermission(new RuntimePermission("getFileStoreAttributes"));
+        //     } catch (SecurityException se) {
+        //         return Collections.emptyList();
+        //     }
+        // }
         return new Iterable<FileStore>() {
             public Iterator<FileStore> iterator() {
                 return new FileStoreIterator();

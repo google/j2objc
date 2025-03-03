@@ -137,10 +137,10 @@ class UnixUserPrincipals {
     private static int lookupName(String name, boolean isGroup)
         throws IOException
     {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkPermission(new RuntimePermission("lookupUserInformation"));
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     sm.checkPermission(new RuntimePermission("lookupUserInformation"));
+        // }
         int id = -1;
         try {
             id = (isGroup) ? getgrnam(name) : getpwnam(name);

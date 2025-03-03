@@ -32,8 +32,6 @@ import java.io.FileDescriptor;
 import java.net.InetSocketAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.security.AccessControlContext;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 /* J2ObjC removed: unsupported annotation
 import dalvik.annotation.optimization.ReachabilitySensitive;
@@ -242,33 +240,33 @@ class UnixAsynchronousServerSocketChannelImpl
         }
 
         // permission check must always be in initiator's context
-        try {
-            if (acc != null) {
-                AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                    public Void run() {
-                        SecurityManager sm = System.getSecurityManager();
-                        if (sm != null) {
-                            sm.checkAccept(remote.getAddress().getHostAddress(),
-                                           remote.getPort());
-                        }
-                        return null;
-                    }
-                }, acc);
-            } else {
-                SecurityManager sm = System.getSecurityManager();
-                if (sm != null) {
-                    sm.checkAccept(remote.getAddress().getHostAddress(),
-                                   remote.getPort());
-                }
-            }
-        } catch (SecurityException x) {
-            try {
-                ch.close();
-            } catch (Throwable suppressed) {
-                x.addSuppressed(suppressed);
-            }
-            throw x;
-        }
+        // try {
+        //     if (acc != null) {
+        //         AccessController.doPrivileged(new PrivilegedAction<Void>() {
+        //             public Void run() {
+        //                 SecurityManager sm = System.getSecurityManager();
+        //                 if (sm != null) {
+        //                     sm.checkAccept(remote.getAddress().getHostAddress(),
+        //                                    remote.getPort());
+        //                 }
+        //                 return null;
+        //             }
+        //         }, acc);
+        //     } else {
+        //         SecurityManager sm = System.getSecurityManager();
+        //         if (sm != null) {
+        //             sm.checkAccept(remote.getAddress().getHostAddress(),
+        //                            remote.getPort());
+        //         }
+        //     }
+        // } catch (SecurityException x) {
+        //     try {
+        //         ch.close();
+        //     } catch (Throwable suppressed) {
+        //         x.addSuppressed(suppressed);
+        //     }
+        //     throw x;
+        // }
         return ch;
     }
 
@@ -321,8 +319,8 @@ class UnixAsynchronousServerSocketChannelImpl
                         this.acceptHandler = handler;
                         this.acceptAttachment = att;
                     }
-                    this.acceptAcc = (System.getSecurityManager() == null) ?
-                        null : AccessController.getContext();
+                    this.acceptAcc = /* (System.getSecurityManager() == null) ?
+                        null : AccessController.getContext() */ null;
                     this.acceptPending = true;
                 }
 

@@ -218,9 +218,9 @@ class ServerSocketChannelImpl
                 throw new AlreadyBoundException();
             InetSocketAddress isa = (local == null) ? new InetSocketAddress(0) :
                 Net.checkAddress(local);
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null)
-                sm.checkListen(isa.getPort());
+            // SecurityManager sm = System.getSecurityManager();
+            // if (sm != null)
+            //     sm.checkListen(isa.getPort());
             NetHooks.beforeTcpBind(fd, isa.getAddress(), isa.getPort());
             Net.bind(fd, isa.getAddress(), isa.getPort());
             Net.listen(fd, backlog < 1 ? 50 : backlog);
@@ -266,16 +266,16 @@ class ServerSocketChannelImpl
             IOUtil.configureBlocking(newfd, true);
             InetSocketAddress isa = isaa[0];
             sc = new SocketChannelImpl(provider(), newfd, isa);
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                try {
-                    sm.checkAccept(isa.getAddress().getHostAddress(),
-                                   isa.getPort());
-                } catch (SecurityException x) {
-                    sc.close();
-                    throw x;
-                }
-            }
+            // SecurityManager sm = System.getSecurityManager();
+            // if (sm != null) {
+            //     try {
+            //         sm.checkAccept(isa.getAddress().getHostAddress(),
+            //                        isa.getPort());
+            //     } catch (SecurityException x) {
+            //         sc.close();
+            //         throw x;
+            //     }
+            // }
             return sc;
 
         }

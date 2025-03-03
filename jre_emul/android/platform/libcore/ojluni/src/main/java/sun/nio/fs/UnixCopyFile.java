@@ -373,11 +373,11 @@ class UnixCopyFile {
         throws IOException
     {
         // permission check
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            source.checkWrite();
-            target.checkWrite();
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     source.checkWrite();
+        //     target.checkWrite();
+        // }
 
         // translate options into flags
         Flags flags = Flags.fromMoveOptions(options);
@@ -507,11 +507,11 @@ class UnixCopyFile {
                      CopyOption... options) throws IOException
     {
         // permission checks
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            source.checkRead();
-            target.checkWrite();
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     source.checkRead();
+        //     target.checkWrite();
+        // }
 
         // translate options into flags
         final Flags flags = Flags.fromCopyOptions(options);
@@ -527,9 +527,9 @@ class UnixCopyFile {
         }
 
         // if source file is symbolic link then we must check LinkPermission
-        if (sm != null && sourceAttrs.isSymbolicLink()) {
-            sm.checkPermission(new LinkPermission("symbolic"));
-        }
+        // if (sm != null && sourceAttrs.isSymbolicLink()) {
+        //     sm.checkPermission(new LinkPermission("symbolic"));
+        // }
 
         // get attributes of target file (don't follow links)
         try {

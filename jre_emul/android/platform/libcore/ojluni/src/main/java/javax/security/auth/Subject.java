@@ -1068,17 +1068,17 @@ public final class Subject implements java.io.Serializable {
                         return i.next();
                     }
 
-                    SecurityManager sm = System.getSecurityManager();
-                    if (sm != null) {
-                        try {
-                            sm.checkPermission(new PrivateCredentialPermission
-                                (list.get(i.nextIndex()).getClass().getName(),
-                                subject.getPrincipals()));
-                        } catch (SecurityException se) {
-                            i.next();
-                            throw (se);
-                        }
-                    }
+                    // SecurityManager sm = System.getSecurityManager();
+                    // if (sm != null) {
+                    //     try {
+                    //         sm.checkPermission(new PrivateCredentialPermission
+                    //             (list.get(i.nextIndex()).getClass().getName(),
+                    //             subject.getPrincipals()));
+                    //     } catch (SecurityException se) {
+                    //         i.next();
+                    //         throw (se);
+                    //     }
+                    // }
                     return i.next();
                 }
 
@@ -1196,12 +1196,12 @@ public final class Subject implements java.io.Serializable {
                     // Otherwise we check the private cred set to see whether
                     // it contains the Object
 
-                    SecurityManager sm = System.getSecurityManager();
-                    if (sm != null) {
-                        sm.checkPermission(new PrivateCredentialPermission
-                                                (o.getClass().getName(),
-                                                subject.getPrincipals()));
-                    }
+                    // SecurityManager sm = System.getSecurityManager();
+                    // if (sm != null) {
+                    //     sm.checkPermission(new PrivateCredentialPermission
+                    //                             (o.getClass().getName(),
+                    //                             subject.getPrincipals()));
+                    // }
                     next = java.security.AccessController.doPrivileged
                         (new java.security.PrivilegedAction<E>() {
                         public E run() {
@@ -1425,12 +1425,12 @@ public final class Subject implements java.io.Serializable {
                         set.add((T)next);
                     } else {
                         // Check permission for private creds
-                        SecurityManager sm = System.getSecurityManager();
-                        if (sm != null) {
-                            sm.checkPermission(new PrivateCredentialPermission
-                                                (next.getClass().getName(),
-                                                Subject.this.getPrincipals()));
-                        }
+                        // SecurityManager sm = System.getSecurityManager();
+                        // if (sm != null) {
+                        //     sm.checkPermission(new PrivateCredentialPermission
+                        //                         (next.getClass().getName(),
+                        //                         Subject.this.getPrincipals()));
+                        // }
                         set.add((T)next);
                     }
                 }

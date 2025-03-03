@@ -792,21 +792,21 @@ class UnixPath
     }
 
     void checkRead() {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
-            sm.checkRead(getPathForPermissionCheck());
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null)
+        //     sm.checkRead(getPathForPermissionCheck());
     }
 
     void checkWrite() {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
-            sm.checkWrite(getPathForPermissionCheck());
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null)
+        //     sm.checkWrite(getPathForPermissionCheck());
     }
 
     void checkDelete() {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
-            sm.checkDelete(getPathForPermissionCheck());
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null)
+        //     sm.checkDelete(getPathForPermissionCheck());
     }
 
     @Override
@@ -816,10 +816,10 @@ class UnixPath
         }
         // The path is relative so need to resolve against default directory,
         // taking care not to reveal the user.dir
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkPropertyAccess("user.dir");
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     sm.checkPropertyAccess("user.dir");
+        // }
         return new UnixPath(getFileSystem(),
             resolve(getFileSystem().defaultDirectory(), path));
     }

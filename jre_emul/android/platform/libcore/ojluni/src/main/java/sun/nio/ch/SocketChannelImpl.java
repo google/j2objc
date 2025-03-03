@@ -622,10 +622,10 @@ class SocketChannelImpl
                         throw new AlreadyBoundException();
                     InetSocketAddress isa = (local == null) ?
                         new InetSocketAddress(0) : Net.checkAddress(local);
-                    SecurityManager sm = System.getSecurityManager();
-                    if (sm != null) {
-                        sm.checkListen(isa.getPort());
-                    }
+                    // SecurityManager sm = System.getSecurityManager();
+                    // if (sm != null) {
+                    //     sm.checkListen(isa.getPort());
+                    // }
                     NetHooks.beforeTcpBind(fd, isa.getAddress(), isa.getPort());
                     Net.bind(fd, isa.getAddress(), isa.getPort());
                     localAddress = Net.localAddress(fd);
@@ -665,10 +665,10 @@ class SocketChannelImpl
             synchronized (writeLock) {
                 ensureOpenAndUnconnected();
                 InetSocketAddress isa = Net.checkAddress(sa);
-                SecurityManager sm = System.getSecurityManager();
-                if (sm != null)
-                    sm.checkConnect(isa.getAddress().getHostAddress(),
-                                    isa.getPort());
+                // SecurityManager sm = System.getSecurityManager();
+                // if (sm != null)
+                //     sm.checkConnect(isa.getAddress().getHostAddress(),
+                //                     isa.getPort());
                 synchronized (blockingLock()) {
                     int n = 0;
                     try {

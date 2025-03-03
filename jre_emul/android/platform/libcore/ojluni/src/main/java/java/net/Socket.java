@@ -127,20 +127,20 @@ class Socket implements java.io.Closeable {
         // Android-changed: Removed HTTP proxy support.
         // if (type == Proxy.Type.SOCKS || type == Proxy.Type.HTTP) {
         if (type == Proxy.Type.SOCKS) {
-            SecurityManager security = System.getSecurityManager();
+            // SecurityManager security = System.getSecurityManager();
             InetSocketAddress epoint = (InetSocketAddress) p.address();
             if (epoint.getAddress() != null) {
                 checkAddress (epoint.getAddress(), "Socket");
             }
-            if (security != null) {
-                if (epoint.isUnresolved())
-                    epoint = new InetSocketAddress(epoint.getHostName(), epoint.getPort());
-                if (epoint.isUnresolved())
-                    security.checkConnect(epoint.getHostName(), epoint.getPort());
-                else
-                    security.checkConnect(epoint.getAddress().getHostAddress(),
-                                  epoint.getPort());
-            }
+            // if (security != null) {
+            //     if (epoint.isUnresolved())
+            //         epoint = new InetSocketAddress(epoint.getHostName(), epoint.getPort());
+            //     if (epoint.isUnresolved())
+            //         security.checkConnect(epoint.getHostName(), epoint.getPort());
+            //     else
+            //         security.checkConnect(epoint.getAddress().getHostAddress(),
+            //                       epoint.getPort());
+            // }
             // Android-changed: Removed HTTP proxy support.
             // impl = type == Proxy.Type.SOCKS ? new SocksSocketImpl(p)
             //                                : new HttpConnectSocketImpl(p);
@@ -635,13 +635,13 @@ class Socket implements java.io.Closeable {
         int port = epoint.getPort();
         checkAddress(addr, "connect");
 
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            if (epoint.isUnresolved())
-                security.checkConnect(epoint.getHostName(), port);
-            else
-                security.checkConnect(addr.getHostAddress(), port);
-        }
+        // SecurityManager security = System.getSecurityManager();
+        // if (security != null) {
+        //     if (epoint.isUnresolved())
+        //         security.checkConnect(epoint.getHostName(), port);
+        //     else
+        //         security.checkConnect(addr.getHostAddress(), port);
+        // }
         if (!created)
             createImpl(true);
         if (!oldImpl)
@@ -696,10 +696,10 @@ class Socket implements java.io.Closeable {
         InetAddress addr = epoint.getAddress();
         int port = epoint.getPort();
         checkAddress (addr, "bind");
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            security.checkListen(port);
-        }
+        // SecurityManager security = System.getSecurityManager();
+        // if (security != null) {
+        //     security.checkListen(port);
+        // }
         getImpl().bind (addr, port);
         bound = true;
     }
@@ -776,9 +776,9 @@ class Socket implements java.io.Closeable {
         InetAddress in = null;
         try {
             in = (InetAddress) getImpl().getOption(SocketOptions.SO_BINDADDR);
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null)
-                sm.checkConnect(in.getHostAddress(), -1);
+            // SecurityManager sm = System.getSecurityManager();
+            // if (sm != null)
+            //     sm.checkConnect(in.getHostAddress(), -1);
             if (in.isAnyLocalAddress()) {
                 in = InetAddress.anyLocalAddress();
             }
@@ -1754,10 +1754,10 @@ class Socket implements java.io.Closeable {
         if (factory != null) {
             throw new SocketException("factory already defined");
         }
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            security.checkSetFactory();
-        }
+        // SecurityManager security = System.getSecurityManager();
+        // if (security != null) {
+        //     security.checkSetFactory();
+        // }
         factory = fac;
     }
 

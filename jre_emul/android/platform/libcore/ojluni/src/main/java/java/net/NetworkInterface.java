@@ -139,19 +139,19 @@ public final class NetworkInterface {
                 local_addrs = new InetAddress[addrs.length];
                 boolean trusted = true;
 
-                SecurityManager sec = System.getSecurityManager();
-                if (sec != null) {
-                    try {
-                        sec.checkPermission(new NetPermission("getNetworkInformation"));
-                    } catch (SecurityException e) {
-                        trusted = false;
-                    }
-                }
+                // SecurityManager sec = System.getSecurityManager();
+                // if (sec != null) {
+                //     try {
+                //         sec.checkPermission(new NetPermission("getNetworkInformation"));
+                //     } catch (SecurityException e) {
+                //         trusted = false;
+                //     }
+                // }
                 for (int j=0; j<addrs.length; j++) {
                     try {
-                        if (sec != null && !trusted) {
-                            sec.checkConnect(addrs[j].getHostAddress(), -1);
-                        }
+                        // if (sec != null && !trusted) {
+                        //     sec.checkConnect(addrs[j].getHostAddress(), -1);
+                        // }
                         local_addrs[count++] = addrs[j];
                     } catch (SecurityException e) { }
                 }
@@ -192,12 +192,12 @@ public final class NetworkInterface {
         // BEGIN Android-changed: Cherry-picked upstream OpenJDK9 change rev 59a110a38cea
         // http://b/30628919
         if (bindings != null) {
-            SecurityManager sec = System.getSecurityManager();
+            // SecurityManager sec = System.getSecurityManager();
             for (int j=0; j<bindings.length; j++) {
                 try {
-                    if (sec != null) {
-                        sec.checkConnect(bindings[j].getAddress().getHostAddress(), -1);
-                    }
+                    // if (sec != null) {
+                    //     sec.checkConnect(bindings[j].getAddress().getHostAddress(), -1);
+                    // }
                     lst.add(bindings[j]);
                 } catch (SecurityException e) { }
             }

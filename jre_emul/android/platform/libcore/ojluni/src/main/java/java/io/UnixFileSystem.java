@@ -384,10 +384,10 @@ class UnixFileSystem extends FileSystem {
 
     public File[] listRoots() {
         try {
-            SecurityManager security = System.getSecurityManager();
-            if (security != null) {
-                security.checkRead("/");
-            }
+            // SecurityManager security = System.getSecurityManager();
+            // if (security != null) {
+            //     security.checkRead("/");
+            // }
             return new File[] { new File("/") };
         } catch (SecurityException x) {
             return new File[0];

@@ -574,8 +574,8 @@ public class Executors {
         private final String namePrefix;
 
         DefaultThreadFactory() {
-            SecurityManager s = System.getSecurityManager();
-            group = (s != null) ? s.getThreadGroup() :
+            // SecurityManager s = System.getSecurityManager();
+            group = /* (s != null) ? s.getThreadGroup() : */
                                   Thread.currentThread().getThreadGroup();
             namePrefix = "pool-" +
                           poolNumber.getAndIncrement() +

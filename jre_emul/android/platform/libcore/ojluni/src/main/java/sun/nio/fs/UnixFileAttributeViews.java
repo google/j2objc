@@ -142,19 +142,19 @@ class UnixFileAttributeViews {
         }
 
         final void checkReadExtended() {
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                file.checkRead();
-                sm.checkPermission(new RuntimePermission("accessUserInformation"));
-            }
+            // SecurityManager sm = System.getSecurityManager();
+            // if (sm != null) {
+            //     file.checkRead();
+            //     sm.checkPermission(new RuntimePermission("accessUserInformation"));
+            // }
         }
 
         final void checkWriteExtended() {
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                file.checkWrite();
-                sm.checkPermission(new RuntimePermission("accessUserInformation"));
-            }
+            // SecurityManager sm = System.getSecurityManager();
+            // if (sm != null) {
+            //     file.checkWrite();
+            //     sm.checkPermission(new RuntimePermission("accessUserInformation"));
+            // }
         }
 
         @Override

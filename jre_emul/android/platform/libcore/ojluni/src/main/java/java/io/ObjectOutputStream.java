@@ -277,10 +277,10 @@ public class ObjectOutputStream
      * @see java.io.SerializablePermission
      */
     protected ObjectOutputStream() throws IOException, SecurityException {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkPermission(SUBCLASS_IMPLEMENTATION_PERMISSION);
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     sm.checkPermission(SUBCLASS_IMPLEMENTATION_PERMISSION);
+        // }
         bout = null;
         handles = null;
         subs = null;
@@ -637,12 +637,12 @@ public class ObjectOutputStream
         if (enable == enableReplace) {
             return enable;
         }
-        if (enable) {
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                sm.checkPermission(SUBSTITUTION_PERMISSION);
-            }
-        }
+        // if (enable) {
+        //     SecurityManager sm = System.getSecurityManager();
+        //     if (sm != null) {
+        //         sm.checkPermission(SUBSTITUTION_PERMISSION);
+        //     }
+        // }
         enableReplace = enable;
         return !enableReplace;
     }
@@ -1066,21 +1066,21 @@ public class ObjectOutputStream
         if (cl == ObjectOutputStream.class) {
             return;
         }
-        SecurityManager sm = System.getSecurityManager();
-        if (sm == null) {
-            return;
-        }
-        processQueue(Caches.subclassAuditsQueue, Caches.subclassAudits);
-        WeakClassKey key = new WeakClassKey(cl, Caches.subclassAuditsQueue);
-        Boolean result = Caches.subclassAudits.get(key);
-        if (result == null) {
-            result = Boolean.valueOf(auditSubclass(cl));
-            Caches.subclassAudits.putIfAbsent(key, result);
-        }
-        if (result.booleanValue()) {
-            return;
-        }
-        sm.checkPermission(SUBCLASS_IMPLEMENTATION_PERMISSION);
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm == null) {
+        //     return;
+        // }
+        // processQueue(Caches.subclassAuditsQueue, Caches.subclassAudits);
+        // WeakClassKey key = new WeakClassKey(cl, Caches.subclassAuditsQueue);
+        // Boolean result = Caches.subclassAudits.get(key);
+        // if (result == null) {
+        //     result = Boolean.valueOf(auditSubclass(cl));
+        //     Caches.subclassAudits.putIfAbsent(key, result);
+        // }
+        // if (result.booleanValue()) {
+        //     return;
+        // }
+        // sm.checkPermission(SUBCLASS_IMPLEMENTATION_PERMISSION);
     }
 
     /**

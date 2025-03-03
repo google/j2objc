@@ -83,12 +83,10 @@ public abstract class ResponseCache {
      * @since 1.5
      */
     public synchronized  static ResponseCache getDefault() {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            /* J2ObjC removed.
-            sm.checkPermission(SecurityConstants.GET_RESPONSECACHE_PERMISSION);
-             */
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     sm.checkPermission(SecurityConstants.GET_RESPONSECACHE_PERMISSION);
+        // }
         return theResponseCache;
     }
 
@@ -108,12 +106,10 @@ public abstract class ResponseCache {
      * @since 1.5
      */
     public synchronized static void setDefault(ResponseCache responseCache) {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            /* J2ObjC removed.
-            sm.checkPermission(SecurityConstants.SET_RESPONSECACHE_PERMISSION);
-             */
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     sm.checkPermission(SecurityConstants.SET_RESPONSECACHE_PERMISSION);
+        // }
         theResponseCache = responseCache;
     }
 

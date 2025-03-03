@@ -353,8 +353,8 @@ public abstract class URLConnection {
      * @since 1.2
      */
     public static void setFileNameMap(FileNameMap map) {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) sm.checkSetFactory();
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) sm.checkSetFactory();
         fileNameMap = map;
     }
 
@@ -1253,10 +1253,10 @@ public abstract class URLConnection {
         if (factory != null) {
             throw new Error("factory already defined");
         }
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            security.checkSetFactory();
-        }
+        // SecurityManager security = System.getSecurityManager();
+        // if (security != null) {
+        //     security.checkSetFactory();
+        // }
         factory = fac;
     }
 

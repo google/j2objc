@@ -360,11 +360,11 @@ public final class URL implements java.io.Serializable {
     public URL(String protocol, String host, int port, String file,
                Object handler) throws MalformedURLException {
         if (handler != null) {
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                // check for permission to specify a handler
-                // checkSpecifyHandler(sm);
-            }
+            // SecurityManager sm = System.getSecurityManager();
+            // if (sm != null) {
+            //     // check for permission to specify a handler
+            //     checkSpecifyHandler(sm);
+            // }
         }
 
         protocol = protocol.toLowerCase();

@@ -120,15 +120,15 @@ class TempFileHelper {
         }
 
         // loop generating random names until file or directory can be created
-        SecurityManager sm = System.getSecurityManager();
+        // SecurityManager sm = System.getSecurityManager();
         for (;;) {
             Path f;
             try {
                 f = generatePath(prefix, suffix, dir);
             } catch (InvalidPathException e) {
                 // don't reveal temporary directory location
-                if (sm != null)
-                    throw new IllegalArgumentException("Invalid prefix or suffix");
+                // if (sm != null)
+                //     throw new IllegalArgumentException("Invalid prefix or suffix");
                 throw e;
             }
             try {
@@ -139,7 +139,7 @@ class TempFileHelper {
                 }
             } catch (SecurityException e) {
                 // don't reveal temporary directory location
-                if (dir == tmpdir && sm != null)
+                if (dir == tmpdir /* && sm != null */)
                     throw new SecurityException("Unable to create temporary file or directory");
                 throw e;
             } catch (FileAlreadyExistsException e) {

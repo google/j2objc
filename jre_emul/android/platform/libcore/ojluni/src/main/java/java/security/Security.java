@@ -656,11 +656,11 @@ public final class Security {
      * @see java.security.SecurityPermission
      */
     public static String getProperty(String key) {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkPermission(new SecurityPermission("getProperty."+
-                                                      key));
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     sm.checkPermission(new SecurityPermission("getProperty."+
+        //                                               key));
+        // }
         String name = props.getProperty(key);
         if (name != null)
             name = name.trim(); // could be a class name with trailing ws
@@ -751,10 +751,10 @@ public final class Security {
     }
 
     private static void check(String directive) {
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            security.checkSecurityAccess(directive);
-        }
+        // SecurityManager security = System.getSecurityManager();
+        // if (security != null) {
+        //     security.checkSecurityAccess(directive);
+        // }
     }
 
     /*

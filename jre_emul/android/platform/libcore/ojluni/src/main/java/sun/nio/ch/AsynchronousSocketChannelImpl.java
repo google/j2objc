@@ -429,10 +429,10 @@ abstract class AsynchronousSocketChannelImpl
                     throw new AlreadyBoundException();
                 InetSocketAddress isa = (local == null) ?
                     new InetSocketAddress(0) : Net.checkAddress(local);
-                SecurityManager sm = System.getSecurityManager();
-                if (sm != null) {
-                    sm.checkListen(isa.getPort());
-                }
+                // SecurityManager sm = System.getSecurityManager();
+                // if (sm != null) {
+                //     sm.checkListen(isa.getPort());
+                // }
                 NetHooks.beforeTcpBind(fd, isa.getAddress(), isa.getPort());
                 Net.bind(fd, isa.getAddress(), isa.getPort());
                 localAddress = Net.localAddress(fd);

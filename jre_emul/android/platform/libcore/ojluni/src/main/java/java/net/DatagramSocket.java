@@ -142,15 +142,15 @@ class DatagramSocket implements java.io.Closeable {
         checkAddress (address, "connect");
         if (isClosed())
             return;
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            if (address.isMulticastAddress()) {
-                security.checkMulticast(address);
-            } else {
-                security.checkConnect(address.getHostAddress(), port);
-                security.checkAccept(address.getHostAddress(), port);
-            }
-        }
+        // SecurityManager security = System.getSecurityManager();
+        // if (security != null) {
+        //     if (address.isMulticastAddress()) {
+        //         security.checkMulticast(address);
+        //     } else {
+        //         security.checkConnect(address.getHostAddress(), port);
+        //         security.checkAccept(address.getHostAddress(), port);
+        //     }
+        // }
 
         if (!isBound())
           bind(new InetSocketAddress(0));
@@ -411,10 +411,11 @@ class DatagramSocket implements java.io.Closeable {
         InetAddress iaddr = epoint.getAddress();
         int port = epoint.getPort();
         checkAddress(iaddr, "bind");
+        /* SecurityManager is not supported on j2objc.
         SecurityManager sec = System.getSecurityManager();
         if (sec != null) {
             sec.checkListen(port);
-        }
+        }*/
         try {
             getImpl().bind(port, iaddr);
         } catch (SocketException e) {
@@ -694,20 +695,20 @@ class DatagramSocket implements java.io.Closeable {
             checkAddress (p.getAddress(), "send");
             if (connectState == ST_NOT_CONNECTED) {
                 // check the address is ok wiht the security manager on every send.
-                SecurityManager security = System.getSecurityManager();
+                // SecurityManager security = System.getSecurityManager();
 
                 // The reason you want to synchronize on datagram packet
                 // is because you don't want an applet to change the address
                 // while you are trying to send the packet for example
                 // after the security check but before the send.
-                if (security != null) {
-                    if (p.getAddress().isMulticastAddress()) {
-                        security.checkMulticast(p.getAddress());
-                    } else {
-                        security.checkConnect(p.getAddress().getHostAddress(),
-                                              p.getPort());
-                    }
-                }
+                // if (security != null) {
+                //     if (p.getAddress().isMulticastAddress()) {
+                //         security.checkMulticast(p.getAddress());
+                //     } else {
+                //         security.checkConnect(p.getAddress().getHostAddress(),
+                //                               p.getPort());
+                //     }
+                // }
             } else {
                 // we're connected
                 packetAddress = p.getAddress();
@@ -773,43 +774,43 @@ class DatagramSocket implements java.io.Closeable {
 
             if (connectState == ST_NOT_CONNECTED) {
                 // check the address is ok with the security manager before every recv.
-                SecurityManager security = System.getSecurityManager();
-                if (security != null) {
-                    while(true) {
-                        String peekAd = null;
-                        int peekPort = 0;
-                        // peek at the packet to see who it is from.
-                        if (!oldImpl) {
-                            // We can use the new peekData() API
-                            DatagramPacket peekPacket = new DatagramPacket(new byte[1], 1);
-                            peekPort = getImpl().peekData(peekPacket);
-                            peekAd = peekPacket.getAddress().getHostAddress();
-                        } else {
-                            InetAddress adr = new InetAddress();
-                            peekPort = getImpl().peek(adr);
-                            peekAd = adr.getHostAddress();
-                        }
-                        try {
-                            security.checkAccept(peekAd, peekPort);
-                            // security check succeeded - so now break
-                            // and recv the packet.
-                            break;
-                        } catch (SecurityException se) {
-                            // Throw away the offending packet by consuming
-                            // it in a tmp buffer.
-                            DatagramPacket tmp = new DatagramPacket(new byte[1], 1);
-                            getImpl().receive(tmp);
+                // SecurityManager security = System.getSecurityManager();
+                // if (security != null) {
+                //     while(true) {
+                //         String peekAd = null;
+                //         int peekPort = 0;
+                //         // peek at the packet to see who it is from.
+                //         if (!oldImpl) {
+                //             // We can use the new peekData() API
+                //             DatagramPacket peekPacket = new DatagramPacket(new byte[1], 1);
+                //             peekPort = getImpl().peekData(peekPacket);
+                //             peekAd = peekPacket.getAddress().getHostAddress();
+                //         } else {
+                //             InetAddress adr = new InetAddress();
+                //             peekPort = getImpl().peek(adr);
+                //             peekAd = adr.getHostAddress();
+                //         }
+                //         try {
+                //             security.checkAccept(peekAd, peekPort);
+                //             // security check succeeded - so now break
+                //             // and recv the packet.
+                //             break;
+                //         } catch (SecurityException se) {
+                //             // Throw away the offending packet by consuming
+                //             // it in a tmp buffer.
+                //             DatagramPacket tmp = new DatagramPacket(new byte[1], 1);
+                //             getImpl().receive(tmp);
 
-                            // silently discard the offending packet
-                            // and continue: unknown/malicious
-                            // entities on nets should not make
-                            // runtime throw security exception and
-                            // disrupt the applet by sending random
-                            // datagram packets.
-                            continue;
-                        }
-                    } // end of while
-                }
+                //             // silently discard the offending packet
+                //             // and continue: unknown/malicious
+                //             // entities on nets should not make
+                //             // runtime throw security exception and
+                //             // disrupt the applet by sending random
+                //             // datagram packets.
+                //             continue;
+                //         }
+                //     } // end of while
+                // }
             }
             DatagramPacket tmp = null;
             if ((connectState == ST_CONNECTED_NO_IMPL) || explicitFilter) {
@@ -895,10 +896,10 @@ class DatagramSocket implements java.io.Closeable {
             if (in.isAnyLocalAddress()) {
                 in = InetAddress.anyLocalAddress();
             }
-            SecurityManager s = System.getSecurityManager();
-            if (s != null) {
-                s.checkConnect(in.getHostAddress(), -1);
-            }
+            // SecurityManager s = System.getSecurityManager();
+            // if (s != null) {
+            //     s.checkConnect(in.getHostAddress(), -1);
+            // }
         } catch (Exception e) {
             in = InetAddress.anyLocalAddress(); // "0.0.0.0"
         }
@@ -1347,10 +1348,10 @@ class DatagramSocket implements java.io.Closeable {
         if (factory != null) {
             throw new SocketException("factory already defined");
         }
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            security.checkSetFactory();
-        }
+        // SecurityManager security = System.getSecurityManager();
+        // if (security != null) {
+        //     security.checkSetFactory();
+        // }
         factory = fac;
     }
 

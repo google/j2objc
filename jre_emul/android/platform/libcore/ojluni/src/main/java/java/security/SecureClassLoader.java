@@ -75,10 +75,10 @@ public class SecureClassLoader extends ClassLoader {
     protected SecureClassLoader(ClassLoader parent) {
         super(parent);
         // this is to make the stack depth consistent with 1.1
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            security.checkCreateClassLoader();
-        }
+        // SecurityManager security = System.getSecurityManager();
+        // if (security != null) {
+        //     security.checkCreateClassLoader();
+        // }
         initialized = true;
     }
 
@@ -98,10 +98,10 @@ public class SecureClassLoader extends ClassLoader {
     protected SecureClassLoader() {
         super();
         // this is to make the stack depth consistent with 1.1
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            security.checkCreateClassLoader();
-        }
+        // SecurityManager security = System.getSecurityManager();
+        // if (security != null) {
+        //     security.checkCreateClassLoader();
+        // }
         initialized = true;
     }
 

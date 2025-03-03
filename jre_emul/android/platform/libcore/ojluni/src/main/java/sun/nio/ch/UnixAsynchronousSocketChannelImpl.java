@@ -332,9 +332,9 @@ class UnixAsynchronousSocketChannelImpl
         InetSocketAddress isa = Net.checkAddress(remote);
 
         // permission check
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
-            sm.checkConnect(isa.getAddress().getHostAddress(), isa.getPort());
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null)
+        //     sm.checkConnect(isa.getAddress().getHostAddress(), isa.getPort());
 
         // check and set state
         boolean notifyBeforeTcpConnect;

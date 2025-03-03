@@ -295,11 +295,11 @@ public abstract class UnixFileSystemProvider
             mode |= W_OK;
         }
         if (x) {
-            SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                // not cached
-                sm.checkExec(file.getPathForPermissionCheck());
-            }
+            // SecurityManager sm = System.getSecurityManager();
+            // if (sm != null) {
+            //     // not cached
+            //     sm.checkExec(file.getPathForPermissionCheck());
+            // }
             mode |= X_OK;
         }
         try {
@@ -451,11 +451,11 @@ public abstract class UnixFileSystemProvider
         }
 
         // permission check
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkPermission(new LinkPermission("symbolic"));
-            link.checkWrite();
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     sm.checkPermission(new LinkPermission("symbolic"));
+        //     link.checkWrite();
+        // }
 
         // create link
         try {
@@ -471,12 +471,12 @@ public abstract class UnixFileSystemProvider
         UnixPath existing = UnixPath.toUnixPath(obj2);
 
         // permission check
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkPermission(new LinkPermission("hard"));
-            link.checkWrite();
-            existing.checkWrite();
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     sm.checkPermission(new LinkPermission("hard"));
+        //     link.checkWrite();
+        //     existing.checkWrite();
+        // }
         try {
             link(existing, link);
         } catch (UnixException x) {
@@ -488,12 +488,12 @@ public abstract class UnixFileSystemProvider
     public Path readSymbolicLink(Path obj1) throws IOException {
         UnixPath link = UnixPath.toUnixPath(obj1);
         // permission check
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            FilePermission perm = new FilePermission(link.getPathForPermissionCheck(),
-                SecurityConstants.FILE_READLINK_ACTION);
-            sm.checkPermission(perm);
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     FilePermission perm = new FilePermission(link.getPathForPermissionCheck(),
+        //         SecurityConstants.FILE_READLINK_ACTION);
+        //     sm.checkPermission(perm);
+        // }
         try {
             byte[] target = readlink(link);
             return new UnixPath(link.getFileSystem(), target);

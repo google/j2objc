@@ -15,8 +15,8 @@ package android.icu.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
+// import java.security.AccessController;
+// import java.security.PrivilegedAction;
 import java.util.MissingResourceException;
 import java.util.logging.Logger;
 
@@ -104,6 +104,7 @@ public final class ICUData {
             Logger.getLogger(ICUData.class.getName()) : null;
 
     public static boolean exists(final String resourceName) {
+        /* SecurityManager is not supported on j2objc.
         URL i = null;
         if (System.getSecurityManager() != null) {
             i = AccessController.doPrivileged(new PrivilegedAction<URL>() {
@@ -115,10 +116,13 @@ public final class ICUData {
         } else {
             i = ICUData.class.getResource(resourceName);
         }
+        */
+        URL i = ICUData.class.getResource(resourceName);
         return i != null;
     }
 
     private static InputStream getStream(final Class<?> root, final String resourceName, boolean required) {
+        /* SecurityManager is not supported on j2objc.
         InputStream i = null;
         if (System.getSecurityManager() != null) {
             i = AccessController.doPrivileged(new PrivilegedAction<InputStream>() {
@@ -130,7 +134,9 @@ public final class ICUData {
         } else {
             i = root.getResourceAsStream(resourceName);
         }
+        */
 
+        InputStream i = root.getResourceAsStream(resourceName);
         if (i == null && required) {
             throw new MissingResourceException("could not locate data " +resourceName, root.getPackage().getName(), resourceName);
         }
@@ -142,6 +148,7 @@ public final class ICUData {
      * Should be called only from ICUBinary.getData() or from convenience overloads here.
      */
     static InputStream getStream(final ClassLoader loader, final String resourceName, boolean required) {
+        /* SecurityManager is not supported on j2objc.
         InputStream i = null;
         if (System.getSecurityManager() != null) {
             i = AccessController.doPrivileged(new PrivilegedAction<InputStream>() {
@@ -152,7 +159,9 @@ public final class ICUData {
                 });
         } else {
             i = loader.getResourceAsStream(resourceName);
-        }
+        }*/
+
+        InputStream i = loader.getResourceAsStream(resourceName);
         if (i == null && required) {
             throw new MissingResourceException("could not locate data", loader.toString(), resourceName);
         }

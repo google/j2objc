@@ -347,18 +347,18 @@ class SocksSocketImpl extends PlainSocketImpl implements SocksConsts {
             deadlineMillis = finish < 0 ? Long.MAX_VALUE : finish;
         }
 
-        SecurityManager security = System.getSecurityManager();
+        // SecurityManager security = System.getSecurityManager();
         if (endpoint == null || !(endpoint instanceof InetSocketAddress))
             throw new IllegalArgumentException("Unsupported address type");
         InetSocketAddress epoint = (InetSocketAddress) endpoint;
-        if (security != null) {
-            if (epoint.isUnresolved())
-                security.checkConnect(epoint.getHostName(),
-                                      epoint.getPort());
-            else
-                security.checkConnect(epoint.getAddress().getHostAddress(),
-                                      epoint.getPort());
-        }
+        // if (security != null) {
+        //     if (epoint.isUnresolved())
+        //         security.checkConnect(epoint.getHostName(),
+        //                               epoint.getPort());
+        //     else
+        //         security.checkConnect(epoint.getAddress().getHostAddress(),
+        //                               epoint.getPort());
+        // }
         if (server == null) {
             // Android-removed: Logic to establish proxy connection based on default ProxySelector.
             // Removed code that tried to establish proxy connection if ProxySelector#getDefault()

@@ -664,10 +664,10 @@ public abstract class Provider extends Properties {
 
     private void check(String directive) {
         checkInitialized();
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            security.checkSecurityAccess(directive);
-        }
+        // SecurityManager security = System.getSecurityManager();
+        // if (security != null) {
+        //     security.checkSecurityAccess(directive);
+        // }
     }
 
     // legacy properties changed since last call to any services method?

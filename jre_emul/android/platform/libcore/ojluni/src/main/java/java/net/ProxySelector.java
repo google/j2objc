@@ -91,12 +91,10 @@ public abstract class ProxySelector {
      * @since 1.5
      */
     public static ProxySelector getDefault() {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            /* J2ObjC removed.
-            sm.checkPermission(SecurityConstants.GET_PROXYSELECTOR_PERMISSION);
-             */
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     sm.checkPermission(SecurityConstants.GET_PROXYSELECTOR_PERMISSION);
+        // }
         return theProxySelector;
     }
 
@@ -116,12 +114,10 @@ public abstract class ProxySelector {
      * @since 1.5
      */
     public static void setDefault(ProxySelector ps) {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            /* J2ObjC removed.
-            sm.checkPermission(SecurityConstants.SET_PROXYSELECTOR_PERMISSION);
-             */
-        }
+        // SecurityManager sm = System.getSecurityManager();
+        // if (sm != null) {
+        //     sm.checkPermission(SecurityConstants.SET_PROXYSELECTOR_PERMISSION);
+        // }
         theProxySelector = ps;
     }
 
