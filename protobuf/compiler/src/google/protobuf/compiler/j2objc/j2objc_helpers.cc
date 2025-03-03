@@ -34,6 +34,7 @@
 
 #include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
 
+#include <cstdint>
 #include <fstream>
 #include <map>
 #include <set>
@@ -466,7 +467,7 @@ std::string GetFieldFlags(const FieldDescriptor *field) {
   return JoinFlags(flags);
 }
 
-static std::string DefaultValueInt(int32 i) {
+static std::string DefaultValueInt(int32_t i) {
   // gcc and llvm reject the decimal form of kint32min and kint64min.
   if (i == INT_MIN) {
     return "-0x80000000";
@@ -474,7 +475,7 @@ static std::string DefaultValueInt(int32 i) {
   return SimpleItoa(i);
 }
 
-static std::string DefaultValueLong(int64 l) {
+static std::string DefaultValueLong(int64_t l) {
   // gcc and llvm reject the decimal form of kint32min and kint64min.
   if (l == LLONG_MIN) {
     return "-0x8000000000000000LL";

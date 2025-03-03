@@ -171,7 +171,7 @@ bool CGPCodedInputStream::ReadLittleEndian32Fallback(uint32* value) {
     if (!ReadRaw(bytes, sizeof(*value))) return false;
     ptr = bytes;
   }
-  uint32 readVal;
+  uint32_t readVal;
   memcpy(&readVal, ptr, sizeof(readVal));
   *value = OSSwapLittleToHostInt32(readVal);
   return true;
@@ -190,7 +190,7 @@ bool CGPCodedInputStream::ReadLittleEndian64Fallback(uint64* value) {
     if (!ReadRaw(bytes, sizeof(*value))) return false;
     ptr = bytes;
   }
-  uint64 readVal;
+  uint64_t readVal;
   memcpy(&readVal, ptr, sizeof(readVal));
   *value = OSSwapLittleToHostInt64(readVal);
   return true;
@@ -204,8 +204,8 @@ inline const uint8* ReadVarint32FromArray(const uint8* buffer, uint32* value) {
   // Fast path:  We have enough bytes left in the buffer to guarantee that
   // this read won't cross the end, so we can skip the checks.
   const uint8* ptr = buffer;
-  uint32 b;
-  uint32 result;
+  uint32_t b;
+  uint32_t result;
 
   b = *(ptr++); result  = (b & 0x7F)      ; if (!(b & 0x80)) goto done;
   b = *(ptr++); result |= (b & 0x7F) <<  7; if (!(b & 0x80)) goto done;
@@ -231,7 +231,7 @@ inline const uint8* ReadVarint32FromArray(const uint8* buffer, uint32* value) {
 }  // namespace
 
 bool CGPCodedInputStream::ReadVarint32Slow(uint32* value) {
-  uint64 result;
+  uint64_t result;
   // Directly invoke ReadVarint64Fallback, since we already tried to optimize
   // for one-byte varints.
   if (!ReadVarint64Fallback(&result)) return false;
@@ -256,7 +256,7 @@ bool CGPCodedInputStream::ReadVarint32Fallback(uint32* value) {
   }
 }
 
-uint32 CGPCodedInputStream::ReadTagSlow() {
+uint32_t CGPCodedInputStream::ReadTagSlow() {
   if (buffer_ == buffer_end_) {
     // Call refresh.
     if (!Refresh()) {
@@ -267,18 +267,18 @@ uint32 CGPCodedInputStream::ReadTagSlow() {
 
   // For the slow path, just do a 64-bit read. Try to optimize for one-byte tags
   // again, since we have now refreshed the buffer.
-  uint64 result = 0;
+  uint64_t result = 0;
   if (!ReadVarint64(&result)) return 0;
   return static_cast<uint32>(result);
 }
 
-uint32 CGPCodedInputStream::ReadTagFallback() {
+uint32_t CGPCodedInputStream::ReadTagFallback() {
   const int buf_size = BufferSize();
   if (buf_size >= kMaxVarintBytes ||
       // Optimization:  If the varint ends at exactly the end of the buffer,
       // we can detect that and still use the fast path.
       (buf_size > 0 && !(buffer_end_[-1] & 0x80))) {
-    uint32 tag;
+    uint32_t tag;
     const uint8* end = ReadVarint32FromArray(buffer_, &tag);
     if (end == NULL) {
       return 0;
@@ -303,9 +303,9 @@ bool CGPCodedInputStream::ReadVarint64Slow(uint64* value) {
   // Slow path:  This read might cross the end of the buffer, so we
   // need to check and refresh the buffer if and when it does.
 
-  uint64 result = 0;
+  uint64_t result = 0;
   int count = 0;
-  uint32 b;
+  uint32_t b;
 
   do {
     if (count == kMaxVarintBytes) return false;
@@ -331,11 +331,11 @@ bool CGPCodedInputStream::ReadVarint64Fallback(uint64* value) {
     // this read won't cross the end, so we can skip the checks.
 
     const uint8* ptr = buffer_;
-    uint32 b;
+    uint32_t b;
 
     // Splitting into 32-bit pieces gives better performance on 32-bit
     // processors.
-    uint32 part0 = 0, part1 = 0, part2 = 0;
+    uint32_t part0 = 0, part1 = 0, part2 = 0;
 
     b = *(ptr++); part0  = (b & 0x7F)      ; if (!(b & 0x80)) goto done;
     b = *(ptr++); part0 |= (b & 0x7F) <<  7; if (!(b & 0x80)) goto done;
@@ -399,7 +399,7 @@ bool CGPCodedInputStream::Refresh() {
   }
 }
 
-static NSString *RetainedStringFromBytes(const uint8 *bytes, uint32 size) {
+static NSString *RetainedStringFromBytes(const uint8 *bytes, uint32_t size) {
   NSString *result = (NSString *)CFStringCreateWithBytes(
       NULL, bytes, size, kCFStringEncodingUTF8, false);
   if (result) {
@@ -424,7 +424,7 @@ static NSString *RetainedStringFromBytes(const uint8 *bytes, uint32 size) {
 }
 
 bool CGPCodedInputStream::ReadRetainedNSString(NSString **value) {
-  uint32 size;
+  uint32_t size;
   if (!ReadVarint32(&size)) return false;
 
   if ((unsigned)BufferSize() >= size) {
@@ -442,7 +442,7 @@ bool CGPCodedInputStream::ReadRetainedNSString(NSString **value) {
 }
 
 bool CGPCodedInputStream::ReadRetainedByteString(CGPByteString **value) {
-  uint32 size;
+  uint32_t size;
   if (!ReadVarint32(&size)) return false;
 
   if ((unsigned)BufferSize() >= size) {
@@ -465,7 +465,7 @@ bool CGPCodedInputStream::ReadRetainedByteString(CGPByteString **value) {
 // one byte at a time from the stream because we don't know how long the message
 // is yet and we can't read past the end of the message.
 bool CGPCodedInputStream::ReadVarint32(
-    int firstByte, JavaIoInputStream *input, uint32 *value) {
+    int firstByte, JavaIoInputStream *input, uint32_t *value) {
   *value = firstByte & (int) 0x7f;
   if ((firstByte & (int) 0x80) == 0) {
     return true;

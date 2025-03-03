@@ -173,39 +173,39 @@ class CGPCodedOutputStream {
   void WriteRaw(const void* buffer, int size);
 
   // Write a 32-bit little-endian integer.
-  void WriteLittleEndian32(uint32 value);
+  void WriteLittleEndian32(uint32_t value);
   // Like WriteLittleEndian32()  but writing directly to the target array.
-  static uint8* WriteLittleEndian32ToArray(uint32 value, uint8* target);
+  static uint8* WriteLittleEndian32ToArray(uint32_t value, uint8* target);
   // Write a 64-bit little-endian integer.
-  void WriteLittleEndian64(uint64 value);
+  void WriteLittleEndian64(uint64_t value);
   // Like WriteLittleEndian64()  but writing directly to the target array.
-  static uint8* WriteLittleEndian64ToArray(uint64 value, uint8* target);
+  static uint8* WriteLittleEndian64ToArray(uint64_t value, uint8* target);
 
   // Write an unsigned integer with Varint encoding.  Writing a 32-bit value
-  // is equivalent to casting it to uint64 and writing it as a 64-bit value,
+  // is equivalent to casting it to uint64_t and writing it as a 64-bit value,
   // but may be more efficient.
-  void WriteVarint32(uint32 value);
+  void WriteVarint32(uint32_t value);
   // Write an unsigned integer with Varint encoding.
-  void WriteVarint64(uint64 value);
+  void WriteVarint64(uint64_t value);
 
   // Equivalent to WriteVarint32() except when the value is negative,
   // in which case it must be sign-extended to a full 10 bytes.
-  void WriteVarint32SignExtended(int32 value);
+  void WriteVarint32SignExtended(int32_t value);
 
   // This is identical to WriteVarint32(), but optimized for writing tags.
   // In particular, if the input is a compile-time constant, this method
   // compiles down to a couple instructions.
   // Always inline because otherwise the aformentioned optimization can't work,
   // but GCC by default doesn't want to inline this.
-  void WriteTag(uint32 value);
+  void WriteTag(uint32_t value);
 
   // Returns the number of bytes needed to encode the given value as a varint.
-  static int VarintSize32(uint32 value);
+  static int VarintSize32(uint32_t value);
   // Returns the number of bytes needed to encode the given value as a varint.
-  static int VarintSize64(uint64 value);
+  static int VarintSize64(uint64_t value);
 
   // If negative, 10 bytes.  Otheriwse, same as VarintSize32().
-  static int VarintSize32SignExtended(int32 value);
+  static int VarintSize32SignExtended(int32_t value);
 
   // Returns true if there was an underlying I/O error since this object was
   // created.
@@ -241,18 +241,18 @@ class CGPCodedOutputStream {
   // out-of-line, so it should just invoke this directly to avoid any extra
   // function call overhead.
   static uint8* WriteVarint32FallbackToArrayInline(
-      uint32 value, uint8* target) CGP_ALWAYS_INLINE;
+      uint32_t value, uint8* target) CGP_ALWAYS_INLINE;
   static uint8* WriteVarint64ToArrayInline(
-      uint64 value, uint8* target) CGP_ALWAYS_INLINE;
+      uint64_t value, uint8* target) CGP_ALWAYS_INLINE;
 
-  static int VarintSize32Fallback(uint32 value);
+  static int VarintSize32Fallback(uint32_t value);
 };
 
 // inline methods ====================================================
 // The vast majority of varints are only one byte.  These inline
 // methods optimize for that case.
 
-inline void CGPCodedOutputStream::WriteVarint32SignExtended(int32 value) {
+inline void CGPCodedOutputStream::WriteVarint32SignExtended(int32_t value) {
   if (value < 0) {
     WriteVarint64(static_cast<uint64>(value));
   } else {
@@ -260,23 +260,23 @@ inline void CGPCodedOutputStream::WriteVarint32SignExtended(int32 value) {
   }
 }
 
-inline uint8* CGPCodedOutputStream::WriteLittleEndian32ToArray(uint32 value,
+inline uint8* CGPCodedOutputStream::WriteLittleEndian32ToArray(uint32_t value,
                                                                uint8* target) {
   OSWriteLittleInt32(target, 0, value);
   return target + sizeof(value);
 }
 
-inline uint8* CGPCodedOutputStream::WriteLittleEndian64ToArray(uint64 value,
+inline uint8* CGPCodedOutputStream::WriteLittleEndian64ToArray(uint64_t value,
                                                                uint8* target) {
   OSWriteLittleInt64(target, 0, value);
   return target + sizeof(value);
 }
 
-inline void CGPCodedOutputStream::WriteTag(uint32 value) {
+inline void CGPCodedOutputStream::WriteTag(uint32_t value) {
   WriteVarint32(value);
 }
 
-inline int CGPCodedOutputStream::VarintSize32(uint32 value) {
+inline int CGPCodedOutputStream::VarintSize32(uint32_t value) {
   if (value < (1 << 7)) {
     return 1;
   } else  {
@@ -284,7 +284,7 @@ inline int CGPCodedOutputStream::VarintSize32(uint32 value) {
   }
 }
 
-inline int CGPCodedOutputStream::VarintSize32SignExtended(int32 value) {
+inline int CGPCodedOutputStream::VarintSize32SignExtended(int32_t value) {
   if (value < 0) {
     return 10;
   } else {

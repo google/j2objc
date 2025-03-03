@@ -58,7 +58,7 @@
 //     return;
 //   }
 //
-//   uint32 size;
+//   uint32_t size;
 //   coded_input->ReadVarint32(&size);
 //
 //   char* text = new char[size + 1];
@@ -147,7 +147,7 @@ class CGPCodedInputStream {
   // Always inline because this is only called in once place per parse loop
   // but it is called for every iteration of said loop, so it should be fast.
   // GCC doesn't want to inline this by default.
-  uint32 ReadTag() CGP_ALWAYS_INLINE;
+  uint32_t ReadTag() CGP_ALWAYS_INLINE;
 
   // If the last call to ReadTag() returned the given value, returns true.
   // Otherwise, returns false;
@@ -158,7 +158,7 @@ class CGPCodedInputStream {
   // of the enclosing message.  The enclosing message would like to check that
   // tag to make sure it had the right number, so it calls LastTagWas() on
   // return from the embedded parser to check.
-  bool LastTagWas(uint32 expected);
+  bool LastTagWas(uint32_t expected);
 
   // When parsing message (but NOT a group), this method must be called
   // immediately after MergeFromCodedStream() returns (if it returns true)
@@ -208,7 +208,7 @@ class CGPCodedInputStream {
   bool ReadRetainedNSString(NSString **value);
   bool ReadRetainedByteString(ComGoogleProtobufByteString **value);
   static bool ReadVarint32(int firstByte, JavaIoInputStream *input,
-                           uint32 *value);
+                           uint32_t *value);
 
  private:
   CGPCodedInputStream(const CGPCodedInputStream&);
@@ -223,7 +223,7 @@ class CGPCodedInputStream {
                           // the current buffer
 
   // LastTagWas() stuff.
-  uint32 last_tag_;         // result of last ReadTag().
+  uint32_t last_tag_;         // result of last ReadTag().
 
   // This is set true by ReadTag{Fallback/Slow}() if it is called when exactly
   // at EOF, or by ExpectAtEnd() when it returns true.  This happens when we
@@ -271,8 +271,8 @@ class CGPCodedInputStream {
   // Fallback/slow methods for reading tags. These do not update last_tag_,
   // but will set legitimate_message_end_ if we are at the end of the input
   // stream.
-  uint32 ReadTagFallback();
-  uint32 ReadTagSlow();
+  uint32_t ReadTagFallback();
+  uint32_t ReadTagSlow();
 #ifdef __cplusplus
   bool ReadStringFallback(string* buffer, int size);
 #endif
@@ -307,7 +307,7 @@ inline bool CGPCodedInputStream::ReadVarint64(uint64* value) {
 
 inline bool CGPCodedInputStream::ReadLittleEndian32(uint32* value) {
   if (CGP_PREDICT_TRUE(BufferSize() >= static_cast<int>(sizeof(*value)))) {
-    uint32 readVal;
+    uint32_t readVal;
     memcpy(&readVal, buffer_, sizeof(readVal));
     *value = OSSwapLittleToHostInt32(readVal);
     Advance(sizeof(*value));
@@ -319,7 +319,7 @@ inline bool CGPCodedInputStream::ReadLittleEndian32(uint32* value) {
 
 inline bool CGPCodedInputStream::ReadLittleEndian64(uint64* value) {
   if (CGP_PREDICT_TRUE(BufferSize() >= static_cast<int>(sizeof(*value)))) {
-    uint64 readVal;
+    uint64_t readVal;
     memcpy(&readVal, buffer_, sizeof(readVal));
     *value = OSSwapLittleToHostInt64(readVal);
     Advance(sizeof(*value));
@@ -329,7 +329,7 @@ inline bool CGPCodedInputStream::ReadLittleEndian64(uint64* value) {
   }
 }
 
-inline uint32 CGPCodedInputStream::ReadTag() {
+inline uint32_t CGPCodedInputStream::ReadTag() {
   if (CGP_PREDICT_TRUE(buffer_ < buffer_end_) && buffer_[0] < 0x80) {
     last_tag_ = buffer_[0];
     Advance(1);
@@ -340,7 +340,7 @@ inline uint32 CGPCodedInputStream::ReadTag() {
   }
 }
 
-inline bool CGPCodedInputStream::LastTagWas(uint32 expected) {
+inline bool CGPCodedInputStream::LastTagWas(uint32_t expected) {
   return last_tag_ == expected;
 }
 
