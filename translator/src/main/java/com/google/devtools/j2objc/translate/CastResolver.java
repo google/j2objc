@@ -91,9 +91,13 @@ public class CastResolver extends UnitTreeVisitor {
           node.replaceWith(rewriteFloatToIntegralCast(type, expr, "JreFpToChar", type));
           return;
         case BYTE:
+          node.replaceWith(rewriteFloatToIntegralCast(type, expr, "JreFpToByte", type));
+          return;
         case SHORT:
+          node.replaceWith(rewriteFloatToIntegralCast(type, expr, "JreFpToShort", type));
+          return;
         case INT:
-          node.replaceWith(rewriteFloatToIntegralCast(type, expr, "JreFpToInt", typeUtil.getInt()));
+          node.replaceWith(rewriteFloatToIntegralCast(type, expr, "JreFpToInt", type));
           return;
         default:  // Fall through.
       }

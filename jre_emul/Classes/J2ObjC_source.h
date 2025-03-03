@@ -195,6 +195,12 @@ FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordina
  */
 __attribute__((always_inline))
 __attribute__((no_sanitize("float-cast-overflow")))
+inline jshort JreFpToShort(jdouble d) {
+  jshort tmp = (jshort)d;
+  return tmp == (jshort)0x8000 ? (d != d ? 0 : (d >= 0 ? 0x7FFF : tmp)) : tmp;
+}
+__attribute__((always_inline))
+__attribute__((no_sanitize("float-cast-overflow")))
 inline jint JreFpToInt(jdouble d) {
   jint tmp = (jint)d;
   return tmp == (jint)0x80000000 ? (d != d ? 0 : (d >= 0 ? 0x7FFFFFFF : tmp)) : tmp;
@@ -211,6 +217,12 @@ __attribute__((no_sanitize("float-cast-overflow")))
 inline jchar JreFpToChar(jdouble d) {
   unsigned tmp = (unsigned)d;
   return tmp > 0xFFFF || (tmp == 0 && d > 0) ? 0xFFFF : (jchar)tmp;
+}
+__attribute__((always_inline))
+__attribute__((no_sanitize("float-cast-overflow")))
+inline jbyte JreFpToByte(jdouble d) {
+  unsigned tmp = (unsigned)d;
+  return tmp > 0xFF || (tmp == 0 && d > 0) ? (jbyte)0xFF : (jbyte)tmp;
 }
 
 #define ARITHMETIC_OPERATOR_DEFN(NAME, TYPE, OPNAME, OP, PNAME, PTYPE, CAST) \
@@ -258,12 +270,12 @@ ARITHMETIC_FP_OPERATORS_DEFN(Char, jchar, F, jfloat, fmodf, JreFpToChar)
 ARITHMETIC_FP_OPERATORS_DEFN(Char, jchar, D, jdouble, fmod, JreFpToChar)
 ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Byte, jbyte, I, jint)
 ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Byte, jbyte, J, jlong)
-ARITHMETIC_FP_OPERATORS_DEFN(Byte, jbyte, F, jfloat, fmodf, JreFpToInt)
-ARITHMETIC_FP_OPERATORS_DEFN(Byte, jbyte, D, jdouble, fmod, JreFpToInt)
+ARITHMETIC_FP_OPERATORS_DEFN(Byte, jbyte, F, jfloat, fmodf, JreFpToByte)
+ARITHMETIC_FP_OPERATORS_DEFN(Byte, jbyte, D, jdouble, fmod, JreFpToByte)
 ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Short, jshort, I, jint)
 ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Short, jshort, J, jlong)
-ARITHMETIC_FP_OPERATORS_DEFN(Short, jshort, F, jfloat, fmodf, JreFpToInt)
-ARITHMETIC_FP_OPERATORS_DEFN(Short, jshort, D, jdouble, fmod, JreFpToInt)
+ARITHMETIC_FP_OPERATORS_DEFN(Short, jshort, F, jfloat, fmodf, JreFpToShort)
+ARITHMETIC_FP_OPERATORS_DEFN(Short, jshort, D, jdouble, fmod, JreFpToShort)
 ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Int, jint, I, jint)
 ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Int, jint, J, jlong)
 ARITHMETIC_FP_OPERATORS_DEFN(Int, jint, F, jfloat, fmodf, JreFpToInt)
@@ -303,7 +315,7 @@ ARITHMETIC_FP_OPERATORS_DEFN(Double, jdouble, D, jdouble, fmod, (jdouble))
   } \
   __attribute__((always_inline)) inline TYPE JreLShiftAssignVolatile##NAME( \
       volatile_##TYPE *pLhs, jlong rhs) { \
-    TYPE result = __c11_atomic_load(pLhs, __ATOMIC_SEQ_CST) << (rhs & MASK); \
+    TYPE result = (TYPE)(__c11_atomic_load(pLhs, __ATOMIC_SEQ_CST) << (rhs & MASK)); \
     __c11_atomic_store(pLhs, result, __ATOMIC_SEQ_CST); \
     return result; \
   } \
@@ -315,7 +327,7 @@ ARITHMETIC_FP_OPERATORS_DEFN(Double, jdouble, D, jdouble, fmod, (jdouble))
   } \
   __attribute__((always_inline)) inline TYPE JreURShiftAssignVolatile##NAME( \
       volatile_##TYPE *pLhs, jlong rhs) { \
-    TYPE result = ((UTYPE)__c11_atomic_load(pLhs, __ATOMIC_SEQ_CST)) >> (rhs & MASK); \
+    TYPE result = (TYPE)(((UTYPE)__c11_atomic_load(pLhs, __ATOMIC_SEQ_CST)) >> (rhs & MASK)); \
     __c11_atomic_store(pLhs, result, __ATOMIC_SEQ_CST); \
     return result; \
   }

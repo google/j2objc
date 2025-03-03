@@ -1812,22 +1812,22 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test",
             "Test.m");
     // Verify referenced return value is cast.
-    assertTranslatedLines(translation,
-        "- (jbyte)testByteWithFloat:(jfloat)f {", "return (jbyte) JreFpToInt(f);");
+    assertTranslatedLines(
+        translation, "- (jbyte)testByteWithFloat:(jfloat)f {", "return JreFpToByte(f);");
     assertTranslatedLines(translation,
         "- (jchar)testCharWithFloat:(jfloat)f {", "return JreFpToChar(f);");
-    assertTranslatedLines(translation,
-        "- (jshort)testShortWithFloat:(jfloat)f {", "return (jshort) JreFpToInt(f);");
+    assertTranslatedLines(
+        translation, "- (jshort)testShortWithFloat:(jfloat)f {", "return JreFpToShort(f);");
     assertTranslatedLines(translation,
         "- (jint)testIntWithFloat:(jfloat)f {", "return JreFpToInt(f);");
     assertTranslatedLines(translation,
         "- (jlong)testLongWithFloat:(jfloat)f {", "return JreFpToLong(f);");
-    assertTranslatedLines(translation,
-        "- (jbyte)testByteWithDouble:(jdouble)d {", "return (jbyte) JreFpToInt(d);");
+    assertTranslatedLines(
+        translation, "- (jbyte)testByteWithDouble:(jdouble)d {", "return JreFpToByte(d);");
     assertTranslatedLines(translation,
         "- (jchar)testCharWithDouble:(jdouble)d {", "return JreFpToChar(d);");
-    assertTranslatedLines(translation,
-        "- (jshort)testShortWithDouble:(jdouble)d {", "return (jshort) JreFpToInt(d);");
+    assertTranslatedLines(
+        translation, "- (jshort)testShortWithDouble:(jdouble)d {", "return JreFpToShort(d);");
     assertTranslatedLines(translation,
         "- (jint)testIntWithDouble:(jdouble)d {", "return JreFpToInt(d);");
     assertTranslatedLines(translation,
