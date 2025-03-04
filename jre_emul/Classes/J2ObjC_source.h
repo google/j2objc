@@ -195,12 +195,6 @@ FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordina
  */
 __attribute__((always_inline))
 __attribute__((no_sanitize("float-cast-overflow")))
-inline jshort JreFpToShort(jdouble d) {
-  jshort tmp = (jshort)d;
-  return tmp == (jshort)0x8000 ? (d != d ? 0 : (d >= 0 ? 0x7FFF : tmp)) : tmp;
-}
-__attribute__((always_inline))
-__attribute__((no_sanitize("float-cast-overflow")))
 inline jint JreFpToInt(jdouble d) {
   jint tmp = (jint)d;
   return tmp == (jint)0x80000000 ? (d != d ? 0 : (d >= 0 ? 0x7FFFFFFF : tmp)) : tmp;
@@ -219,10 +213,13 @@ inline jchar JreFpToChar(jdouble d) {
   return tmp > 0xFFFF || (tmp == 0 && d > 0) ? 0xFFFF : (jchar)tmp;
 }
 __attribute__((always_inline))
+inline jshort JreFpToShort(jdouble d) {
+  return (jshort)JreFpToInt(d);
+}
+__attribute__((always_inline))
 __attribute__((no_sanitize("float-cast-overflow")))
 inline jbyte JreFpToByte(jdouble d) {
-  unsigned tmp = (unsigned)d;
-  return tmp > 0xFF || (tmp == 0 && d > 0) ? (jbyte)0xFF : (jbyte)tmp;
+  return (jbyte)JreFpToInt(d);
 }
 
 #define ARITHMETIC_OPERATOR_DEFN(NAME, TYPE, OPNAME, OP, PNAME, PTYPE, CAST) \
