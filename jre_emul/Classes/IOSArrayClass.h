@@ -24,13 +24,22 @@
 
 #import "IOSClass.h"
 
+#if __has_feature(nullability)
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wnullability-completeness"
+#endif
+
 @interface IOSArrayClass : IOSClass {
   // An IOSClass is used instead of a Class so a IOSPrimitiveClass can be used.
-  IOSClass *componentType_;
+  IOSClass *_Nonnull componentType_;
 }
 
-- (instancetype)initWithComponentType:(IOSClass *)type;
+- (instancetype)initWithComponentType:(IOSClass * _Nonnull)type;
 
 @end
+
+#if __has_feature(nullability)
+#pragma clang diagnostic pop
+#endif
 
 #endif // _IOSArrayClass_H_
