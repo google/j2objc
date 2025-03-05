@@ -317,9 +317,7 @@ public class EnumRewriter extends UnitTreeVisitor {
             + "    }\n"
             + "  }\n", numConstants, typeName, typeName));
       }
-      impl.append(
-          "  @throw create_JavaLangIllegalArgumentException_initWithNSString_(name);\n"
-          + "  return nil;");
+      impl.append("  @throw create_JavaLangIllegalArgumentException_initWithNSString_(name);");
     }
 
     body.addStatement(new NativeStatement(impl.toString()));
@@ -391,8 +389,8 @@ public class EnumRewriter extends UnitTreeVisitor {
 
     outerHeader.append(
         UnicodeUtils.format(
-            "FOUNDATION_EXPORT %s *%s_fromOrdinal(%s ordinal);\n",
-            typeName, typeName, ordinalArgType));
+            "FOUNDATION_EXPORT %s *%s%s_fromOrdinal(%s ordinal);\n",
+            typeName, options.nullMarked() ? "_Nullable " : "", typeName, ordinalArgType));
     outerImpl.append(
         UnicodeUtils.format(
             "%s *%s_fromOrdinal(%s ordinal) {\n", typeName, typeName, ordinalArgType));
