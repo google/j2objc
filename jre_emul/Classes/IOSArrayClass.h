@@ -24,6 +24,7 @@
 
 #import "IOSClass.h"
 
+NS_ASSUME_NONNULL_BEGIN
 @interface IOSArrayClass : IOSClass {
   // An IOSClass is used instead of a Class so a IOSPrimitiveClass can be used.
   IOSClass *componentType_;
@@ -32,5 +33,6 @@
 - (instancetype)initWithComponentType:(IOSClass *)type;
 
 @end
+NS_ASSUME_NONNULL_END
 
 #endif // _IOSArrayClass_H_

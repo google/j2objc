@@ -27,6 +27,7 @@
 // An IOSClass instance for primitive Java types, which allow primitives to
 // be used with Java reflection routines.  This class is minimal because Java
 // primitive types have/need little runtime support, other than their name.
+NS_ASSUME_NONNULL_BEGIN
 @interface IOSPrimitiveClass : IOSClass {
   NSString *name_;
   NSString *type_;
@@ -38,5 +39,6 @@
 - (IOSClass *)wrapperClass;
 
 @end
+NS_ASSUME_NONNULL_END
 
 #endif // _IOSPrimitiveClass_H_

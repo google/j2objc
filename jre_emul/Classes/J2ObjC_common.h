@@ -260,8 +260,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @define J2OBJC_TYPE_LITERAL_HEADER
  * @param TYPE The name of the type to declare the accessor for.
  */
-#define J2OBJC_TYPE_LITERAL_HEADER(TYPE) \
-  FOUNDATION_EXPORT IOSClass *TYPE##_class_(void);
+#define J2OBJC_TYPE_LITERAL_HEADER(TYPE) FOUNDATION_EXPORT IOSClass *_Nonnull TYPE##_class_(void);
 
 /*!
  * Defines the type literal accessor for a class or enum type. This macro should
@@ -271,7 +270,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param TYPE The name of the type to define the accessor for.
  */
 #define J2OBJC_CLASS_TYPE_LITERAL_SOURCE(TYPE) \
-  IOSClass *TYPE##_class_(void) {              \
+  IOSClass *_Nonnull TYPE##_class_(void) {     \
     static IOSClass *cls;                      \
     static dispatch_once_t token;              \
     TYPE##_initialize();                       \
@@ -289,7 +288,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param TYPE The name of the type to define the accessor for.
  */
 #define J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(TYPE)  \
-  IOSClass *TYPE##_class_(void) {                   \
+  IOSClass *_Nonnull TYPE##_class_(void) {          \
     static IOSClass *cls;                           \
     static dispatch_once_t token;                   \
     TYPE##_initialize();                            \

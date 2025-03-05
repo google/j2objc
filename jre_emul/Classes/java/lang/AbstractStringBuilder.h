@@ -28,6 +28,7 @@ typedef struct JreStringBuilder {
   jint count_;
 } JreStringBuilder;
 
+NS_ASSUME_NONNULL_BEGIN
 @interface JavaLangAbstractStringBuilder : NSObject < JavaLangAppendable, JavaLangCharSequence > {
  @package
   JreStringBuilder delegate_;
@@ -94,6 +95,7 @@ typedef struct JreStringBuilder {
 - (jint)compareToWithJavaLangAbstractStringBuilder:(JavaLangAbstractStringBuilder *)other;
 
 @end
+NS_ASSUME_NONNULL_END
 
 CF_EXTERN_C_BEGIN
 

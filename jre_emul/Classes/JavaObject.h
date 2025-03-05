@@ -27,6 +27,7 @@
 @class IOSClass;
 
 /// A protocol that defines Java Object-compatible methods.
+NS_ASSUME_NONNULL_BEGIN
 @protocol JavaObject <NSObject>
 
 // Returns a copy of the object, if it implements java.lang.Cloneable.
@@ -50,5 +51,6 @@
 - (void)java_finalize;
 
 @end
+NS_ASSUME_NONNULL_END
 
 #endif // _JavaObject_H_

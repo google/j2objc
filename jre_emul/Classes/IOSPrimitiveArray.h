@@ -51,6 +51,7 @@
  * An Objective-C representation of a Java boolean array. Like a Java array,
  * an IOSBooleanArray is fixed-size but its elements are mutable.
  */
+NS_ASSUME_NONNULL_BEGIN
 @interface IOSBooleanArray : IOSArray<JavaLangBoolean *> {
  @public
   /**
@@ -111,6 +112,7 @@
 - (void)getBooleans:(jboolean *)buffer length:(NSUInteger)length;
 
 @end
+NS_ASSUME_NONNULL_END
 
 /**
  * @brief Return the boolean at the specified index.
@@ -139,6 +141,7 @@ __attribute__((always_inline)) inline jboolean *IOSBooleanArray_GetRef(
  * An Objective-C representation of a Java char array. Like a Java array,
  * an IOSCharArray is fixed-size but its elements are mutable.
  */
+NS_ASSUME_NONNULL_BEGIN
 @interface IOSCharArray : IOSArray<JavaLangCharacter *> {
  @public
   /**
@@ -204,6 +207,7 @@ __attribute__((always_inline)) inline jboolean *IOSBooleanArray_GetRef(
 + (instancetype)arrayWithNSString:(NSString *)string;
 
 @end
+NS_ASSUME_NONNULL_END
 
 /**
  * @brief Return the char at the specified index.
@@ -232,6 +236,7 @@ __attribute__((always_inline)) inline jchar *IOSCharArray_GetRef(
  * An Objective-C representation of a Java byte array. Like a Java array,
  * an IOSByteArray is fixed-size but its elements are mutable.
  */
+NS_ASSUME_NONNULL_BEGIN
 @interface IOSByteArray : IOSArray<JavaLangByte *> {
  @public
   /**
@@ -311,6 +316,7 @@ __attribute__((always_inline)) inline jchar *IOSCharArray_GetRef(
 - (NSData *)toNSData;
 
 @end
+NS_ASSUME_NONNULL_END
 
 /**
  * @brief Return the byte at the specified index.
@@ -339,6 +345,7 @@ __attribute__((always_inline)) inline jbyte *IOSByteArray_GetRef(
  * An Objective-C representation of a Java array of shorts. Like a Java array,
  * an IOSShortArray is fixed-size but its elements are mutable.
  */
+NS_ASSUME_NONNULL_BEGIN
 @interface IOSShortArray : IOSArray<JavaLangShort *> {
  @public
   /**
@@ -399,6 +406,7 @@ __attribute__((always_inline)) inline jbyte *IOSByteArray_GetRef(
 - (void)getShorts:(jshort *)buffer length:(NSUInteger)length;
 
 @end
+NS_ASSUME_NONNULL_END
 
 /**
  * @brief Return the short at the specified index.
@@ -427,6 +435,7 @@ __attribute__((always_inline)) inline jshort *IOSShortArray_GetRef(
  * An Objective-C representation of a Java int array. Like a Java array,
  * an IOSIntArray is fixed-size but its elements are mutable.
  */
+NS_ASSUME_NONNULL_BEGIN
 @interface IOSIntArray : IOSArray<JavaLangInteger *> {
  @public
   /**
@@ -488,6 +497,7 @@ __attribute__((always_inline)) inline jshort *IOSShortArray_GetRef(
 - (void)getInts:(jint *)buffer length:(NSUInteger)length;
 
 @end
+NS_ASSUME_NONNULL_END
 
 /**
  * @brief Return the int at the specified index.
@@ -516,6 +526,7 @@ __attribute__((always_inline)) inline jint *IOSIntArray_GetRef(
  * An Objective-C representation of a Java long array. Like a Java array,
  * an IOSLongArray is fixed-size but its elements are mutable.
  */
+NS_ASSUME_NONNULL_BEGIN
 @interface IOSLongArray : IOSArray<JavaLangLong *> {
  @public
   /**
@@ -577,6 +588,7 @@ __attribute__((always_inline)) inline jint *IOSIntArray_GetRef(
 - (void)getLongs:(jlong *)buffer length:(NSUInteger)length;
 
 @end
+NS_ASSUME_NONNULL_END
 
 /**
  * @brief Return the long at the specified index.
@@ -605,6 +617,7 @@ __attribute__((always_inline)) inline jlong *IOSLongArray_GetRef(
  * An Objective-C representation of a Java float array. Like a Java array,
  * an IOSFloatArray is fixed-size but its elements are mutable.
  */
+NS_ASSUME_NONNULL_BEGIN
 @interface IOSFloatArray : IOSArray<JavaLangFloat *> {
  @public
   /**
@@ -665,6 +678,7 @@ __attribute__((always_inline)) inline jlong *IOSLongArray_GetRef(
 - (void)getFloats:(jfloat *)buffer length:(NSUInteger)length;
 
 @end
+NS_ASSUME_NONNULL_END
 
 /**
  * @brief Return the float at the specified index.
@@ -693,6 +707,7 @@ __attribute__((always_inline)) inline jfloat *IOSFloatArray_GetRef(
  * An Objective-C representation of a Java double array. Like a Java array,
  * an IOSDoubleArray is fixed-size but its elements are mutable.
  */
+NS_ASSUME_NONNULL_BEGIN
 @interface IOSDoubleArray : IOSArray<JavaLangDouble *> {
  @public
   /**
@@ -753,6 +768,7 @@ __attribute__((always_inline)) inline jfloat *IOSFloatArray_GetRef(
 - (void)getDoubles:(jdouble *)buffer length:(NSUInteger)length;
 
 @end
+NS_ASSUME_NONNULL_END
 
 /**
  * @brief Return the double at the specified index.

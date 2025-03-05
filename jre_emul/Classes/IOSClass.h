@@ -45,6 +45,7 @@
  * instances: those representing real classes and interfaces, those
  * representing primitive types, and those representing array classes.
  */
+NS_ASSUME_NONNULL_BEGIN
 @interface IOSClass : NSObject <JavaLangReflectAnnotatedElement,
     JavaLangReflectGenericDeclaration, JavaIoSerializable,
     JavaLangReflectType, NSCopying> {
@@ -99,17 +100,17 @@
 
 // Class.getMethod(String, Class...)
 - (JavaLangReflectMethod *)getMethod:(NSString *)name
-                      parameterTypes:(IOSObjectArray *)types;
+                      parameterTypes:(nullable IOSObjectArray *)types;
 
 // Class.getDeclaredMethod(String, Class...)
 - (JavaLangReflectMethod *)getDeclaredMethod:(NSString *)name
-                              parameterTypes:(IOSObjectArray *)types;
+                              parameterTypes:(nullable IOSObjectArray *)types;
 
 // Class.getDeclaredConstructor(Class...)
-- (JavaLangReflectConstructor *)getDeclaredConstructor:(IOSObjectArray *)types;
+- (JavaLangReflectConstructor *)getDeclaredConstructor:(nullable IOSObjectArray *)types;
 
 // Class.getConstructor(Class)
-- (JavaLangReflectConstructor *)getConstructor:(IOSObjectArray *)types;
+- (JavaLangReflectConstructor *)getConstructor:(nullable IOSObjectArray *)types;
 
 // Class.getConstructors()
 - (IOSObjectArray *)getConstructors;
@@ -130,10 +131,10 @@
 + (IOSClass *)forName:(NSString *)className;
 + (IOSClass *)forName:(NSString *)className
            initialize:(jboolean)load
-          classLoader:(JavaLangClassLoader *)loader;
+          classLoader:(nullable JavaLangClassLoader *)loader;
 
 // Class.cast(Object)
-- (id)cast:(id)throwable;
+- (id)cast:(nullable id)throwable;
 
 // Class.getEnclosingClass()
 - (IOSClass *)getEnclosingClass;
@@ -154,9 +155,8 @@
 - (IOSObjectArray *)getGenericInterfaces;
 - (IOSObjectArray *)getTypeParameters;
 
-- (id<JavaLangAnnotationAnnotation>)
-      getAnnotationWithIOSClass:(IOSClass *)annotationClass;
-- (jboolean)isAnnotationPresentWithIOSClass:(IOSClass *)annotationType;
+- (id<JavaLangAnnotationAnnotation>)getAnnotationWithIOSClass:(nullable IOSClass *)annotationClass;
+- (jboolean)isAnnotationPresentWithIOSClass:(nullable IOSClass *)annotationType;
 - (IOSObjectArray *)getAnnotations;
 - (IOSObjectArray *)getDeclaredAnnotations;
 - (id<JavaLangAnnotationAnnotation>)
@@ -212,6 +212,7 @@
 - (IOSObjectArray *)getEnumConstantsShared;
 
 @end
+NS_ASSUME_NONNULL_END
 
 CF_EXTERN_C_BEGIN
 
