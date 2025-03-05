@@ -36,6 +36,13 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wzero-length-array"
 
+#if __has_feature(nullability)
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wnullability-completeness"
+#endif
+
+NS_ASSUME_NONNULL_BEGIN
+
 @class JavaLangBoolean;
 @class JavaLangByte;
 @class JavaLangCharacter;
@@ -774,9 +781,12 @@ __attribute__((always_inline)) inline jdouble *IOSDoubleArray_GetRef(
   return &array->buffer_[index];
 }
 
+NS_ASSUME_NONNULL_END
 
-#undef PRIMITIVE_ARRAY_INTERFACE
-#undef PRIMITIVE_ARRAY_C_INTERFACE
-
+#if __has_feature(nullability)
 #pragma clang diagnostic pop
+#endif
+
+#pragma clang diagnostic pop // ignored "-Wzero-length-array"
+
 #endif // IOSPrimitiveArray_H

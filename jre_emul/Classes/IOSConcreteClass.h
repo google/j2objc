@@ -23,14 +23,23 @@
 #import "IOSClass.h"
 #import "IOSMetadata.h"
 
+#if __has_feature(nullability)
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wnullability-completeness"
+#endif
+
 @interface IOSConcreteClass : IOSClass {
-  Class class_;
+  Class _Nonnull class_;
 }
 
-- (instancetype)initWithClass:(Class)cls
-                     metadata:(const J2ObjcClassInfo *)metadata;
-- (instancetype)initWithClass:(Class)cls;
+- (instancetype)initWithClass:(Class _Nonnull)cls
+                     metadata:(const J2ObjcClassInfo * _Nonnull)metadata;
+- (instancetype)initWithClass:(Class _Nonnull)cls;
 
 @end
+
+#if __has_feature(nullability)
+#pragma clang diagnostic pop
+#endif
 
 #endif // _IOSConcreteClass_H_
