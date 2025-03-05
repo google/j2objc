@@ -30,7 +30,7 @@
 
 @end
 
-__attribute__((always_inline)) inline void NSNumber_init(NSObject *self) {
+__attribute__((always_inline)) inline void NSNumber_init(NSObject * _Nonnull self) {
   #pragma unused(self)
 }
 

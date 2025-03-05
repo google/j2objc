@@ -18,6 +18,9 @@
 #define _JreEmulation_H_
 
 #ifdef __OBJC__
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wnullability-completeness"
+
 #import "J2ObjC_common.h"
 #import "JavaObject.h"
 #import "IOSClass.h"
@@ -28,6 +31,8 @@
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
+
+#pragma clang diagnostic pop
 #endif // __OBJC__
 
 #endif // _JreEmulation_H_

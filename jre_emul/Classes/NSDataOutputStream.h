@@ -13,6 +13,7 @@
 
 // A concrete subclass of java.io.InputStream that writes into
 // a backing NSData instance, retrievable at any point.
+NS_ASSUME_NONNULL_BEGIN
 @interface NSDataOutputStream : JavaIoOutputStream
 
 + (NSDataOutputStream *)stream;
@@ -23,5 +24,6 @@
 - (NSData *)data;
 
 @end
+NS_ASSUME_NONNULL_END
 
 #endif // _NSDataOutputStream_H_
