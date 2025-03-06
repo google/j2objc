@@ -22,10 +22,12 @@
 
 #import "IOSClass.h"
 
+NS_ASSUME_NONNULL_BEGIN
 @interface IOSProtocolClass : IOSClass
 
 - (instancetype)initWithProtocol:(Protocol *)protocol;
 
 @end
+NS_ASSUME_NONNULL_END
 
 #endif // _IOSProtocolClass_H_

@@ -23,6 +23,7 @@
 #import "IOSClass.h"
 #import "IOSMetadata.h"
 
+NS_ASSUME_NONNULL_BEGIN
 @interface IOSConcreteClass : IOSClass {
   Class class_;
 }
@@ -32,5 +33,6 @@
 - (instancetype)initWithClass:(Class)cls;
 
 @end
+NS_ASSUME_NONNULL_END
 
 #endif // _IOSConcreteClass_H_
