@@ -24,6 +24,11 @@
 
 #import "J2ObjC_types.h"
 
+#if __has_feature(nullability)
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wnullability-completeness"
+#endif
+
 // Current metadata structure version
 #define J2OBJC_METADATA_VERSION 7
 
@@ -87,5 +92,9 @@ typedef struct J2ObjcClassInfo {
   ptr_idx genericSignatureIdx;
   ptr_idx annotationsIdx;
 } J2ObjcClassInfo;
+
+#if __has_feature(nullability)
+#pragma clang diagnostic pop
+#endif
 
 #endif  // JreEmulation_IOSMetadata_h

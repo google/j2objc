@@ -12,12 +12,18 @@
 #import "java/util/AbstractMap.h"
 #import "java/util/Map.h"
 
+#if __has_feature(nullability)
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wnullability-completeness"
+#endif
+
 @protocol JavaUtilFunctionBiConsumer;
 
 // An implementation of java.util.Map backed by an NSDictionary.
 // The entrySet, keySet and valueSet methods return sets not backed
 // by the Map, so modifications to the map won't be reflected in the
 // sets and vice-versa.
+NS_ASSUME_NONNULL_BEGIN
 @interface NSDictionaryMap : JavaUtilAbstractMap < JavaUtilMap > {
  @private
   // The backing native map.
@@ -36,5 +42,10 @@
 - (void)forEachWithJavaUtilFunctionBiConsumer:(id<JavaUtilFunctionBiConsumer>)action;
 
 @end
+NS_ASSUME_NONNULL_END
+
+#if __has_feature(nullability)
+#pragma clang diagnostic pop
+#endif
 
 #endif // _NSDictionaryMap_H_

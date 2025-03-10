@@ -30,10 +30,10 @@
 @protocol JavaObject <NSObject>
 
 // Returns a copy of the object, if it implements java.lang.Cloneable.
-- (id)java_clone;
+- (id _Nonnull)java_clone;
 
 // Returns the IOSClass of the receiver.
-- (IOSClass *)java_getClass;
+- (IOSClass * _Nonnull)java_getClass;
 
 // Wakes up a waiting thread (if any).
 - (void)java_notify;
