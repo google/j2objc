@@ -28,14 +28,14 @@
 // be used with Java reflection routines.  This class is minimal because Java
 // primitive types have/need little runtime support, other than their name.
 @interface IOSPrimitiveClass : IOSClass {
-  NSString *name_;
-  NSString *type_;
+  NSString * _Nonnull name_;
+  NSString * _Nonnull type_;
 }
 
-- (instancetype)initWithName:(NSString *)name type:(NSString *)type;
+- (instancetype)initWithName:(NSString * _Nonnull)name type:(NSString * _Nonnull)type;
 
 // For a primitive type, return its associated wrapper class.
-- (IOSClass *)wrapperClass;
+- (IOSClass * _Nonnull)wrapperClass;
 
 @end
 

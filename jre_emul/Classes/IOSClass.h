@@ -29,6 +29,11 @@
 #import "java/lang/reflect/GenericDeclaration.h"
 #import "java/lang/reflect/Type.h"
 
+#if __has_feature(nullability)
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wnullability-completeness"
+#endif
+
 @class IOSObjectArray;
 @class JavaLangClassLoader;
 @class JavaLangReflectConstructor;
@@ -45,6 +50,7 @@
  * instances: those representing real classes and interfaces, those
  * representing primitive types, and those representing array classes.
  */
+NS_ASSUME_NONNULL_BEGIN
 @interface IOSClass : NSObject <JavaLangReflectAnnotatedElement,
     JavaLangReflectGenericDeclaration, JavaIoSerializable,
     JavaLangReflectType, NSCopying> {
@@ -99,17 +105,17 @@
 
 // Class.getMethod(String, Class...)
 - (JavaLangReflectMethod *)getMethod:(NSString *)name
-                      parameterTypes:(IOSObjectArray *)types;
+                      parameterTypes:(nullable IOSObjectArray *)types;
 
 // Class.getDeclaredMethod(String, Class...)
 - (JavaLangReflectMethod *)getDeclaredMethod:(NSString *)name
-                              parameterTypes:(IOSObjectArray *)types;
+                              parameterTypes:(nullable IOSObjectArray *)types;
 
 // Class.getDeclaredConstructor(Class...)
-- (JavaLangReflectConstructor *)getDeclaredConstructor:(IOSObjectArray *)types;
+- (JavaLangReflectConstructor *)getDeclaredConstructor:(nullable IOSObjectArray *)types;
 
 // Class.getConstructor(Class)
-- (JavaLangReflectConstructor *)getConstructor:(IOSObjectArray *)types;
+- (JavaLangReflectConstructor *)getConstructor:(nullable IOSObjectArray *)types;
 
 // Class.getConstructors()
 - (IOSObjectArray *)getConstructors;
@@ -130,10 +136,10 @@
 + (IOSClass *)forName:(NSString *)className;
 + (IOSClass *)forName:(NSString *)className
            initialize:(jboolean)load
-          classLoader:(JavaLangClassLoader *)loader;
+          classLoader:(nullable JavaLangClassLoader *)loader;
 
 // Class.cast(Object)
-- (id)cast:(id)throwable;
+- (id)cast:(nullable id)throwable;
 
 // Class.getEnclosingClass()
 - (IOSClass *)getEnclosingClass;
@@ -154,9 +160,8 @@
 - (IOSObjectArray *)getGenericInterfaces;
 - (IOSObjectArray *)getTypeParameters;
 
-- (id<JavaLangAnnotationAnnotation>)
-      getAnnotationWithIOSClass:(IOSClass *)annotationClass;
-- (jboolean)isAnnotationPresentWithIOSClass:(IOSClass *)annotationType;
+- (id<JavaLangAnnotationAnnotation>)getAnnotationWithIOSClass:(nullable IOSClass *)annotationClass;
+- (jboolean)isAnnotationPresentWithIOSClass:(nullable IOSClass *)annotationType;
 - (IOSObjectArray *)getAnnotations;
 - (IOSObjectArray *)getDeclaredAnnotations;
 - (id<JavaLangAnnotationAnnotation>)
@@ -219,7 +224,7 @@ CF_EXTERN_C_BEGIN
 IOSClass *IOSClass_forName_(NSString *className);
 // Class.forName(String, boolean, ClassLoader)
 IOSClass *IOSClass_forName_initialize_classLoader_(
-    NSString *className, jboolean load, JavaLangClassLoader *loader);
+    NSString *className, jboolean load, JavaLangClassLoader * _Nullable loader);
 
 // Lookup a IOSClass from its associated ObjC class, protocol or component type.
 IOSClass *IOSClass_fromClass(Class cls);
@@ -251,5 +256,11 @@ CF_EXTERN_C_END
 J2OBJC_STATIC_INIT(IOSClass)
 
 J2OBJC_TYPE_LITERAL_HEADER(IOSClass)
+
+NS_ASSUME_NONNULL_END
+
+#if __has_feature(nullability)
+#pragma clang diagnostic pop
+#endif
 
 #endif // _IOSClass_H_

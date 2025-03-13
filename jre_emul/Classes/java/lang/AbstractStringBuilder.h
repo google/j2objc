@@ -17,6 +17,11 @@
 #import "java/lang/Appendable.h"
 #import "java/lang/CharSequence.h"
 
+#if __has_feature(nullability)
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wnullability-completeness"
+#endif
+
 @class IOSCharArray;
 @class JavaLangStringBuffer;
 
@@ -28,6 +33,7 @@ typedef struct JreStringBuilder {
   jint count_;
 } JreStringBuilder;
 
+NS_ASSUME_NONNULL_BEGIN
 @interface JavaLangAbstractStringBuilder : NSObject < JavaLangAppendable, JavaLangCharSequence > {
  @package
   JreStringBuilder delegate_;
@@ -94,6 +100,7 @@ typedef struct JreStringBuilder {
 - (jint)compareToWithJavaLangAbstractStringBuilder:(JavaLangAbstractStringBuilder *)other;
 
 @end
+NS_ASSUME_NONNULL_END
 
 CF_EXTERN_C_BEGIN
 
@@ -141,4 +148,7 @@ NSString *JreStringBuilder_toStringAndDealloc(JreStringBuilder *sb);
 
 CF_EXTERN_C_END
 
+#if __has_feature(nullability)
+#pragma clang diagnostic pop
+#endif
 #endif // _JavaLangAbstractStringBuilder_H_
