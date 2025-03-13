@@ -775,21 +775,25 @@ public class StatementGenerator extends UnitTreeVisitor {
   @SuppressWarnings("UngroupedOverloads")
   public boolean visit(SwitchExpressionCase node) {
     if (node.isDefault()) {
-      buffer.append("  default:\n");
+      buffer.append("default");
     } else {
-      buffer.append("  case ");
+      buffer.append("case ");
       Iterator<Expression> caseIter = node.getExpressions().iterator();
       while (caseIter.hasNext()) {
         caseIter.next().accept(this);
         if (caseIter.hasNext()) {
-          buffer.append(", ");
+          buffer.println(':');
+          buffer.append("  case ");
         }
       }
-      buffer.append(":\n");
     }
     TreeNode body = node.getBody();
     if (body != null) {
+      buffer.println(':');
+      buffer.indent();
+      buffer.printIndent();
       body.accept(this);
+      buffer.unindent();
     }
     return false;
   }

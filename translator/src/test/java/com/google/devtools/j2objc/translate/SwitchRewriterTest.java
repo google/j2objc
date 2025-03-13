@@ -259,4 +259,62 @@ public class SwitchRewriterTest extends GenerationTest {
               "}");
         });
   }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testMultipleCasesSwitchExpression() throws IOException {
+    // Snippet from Guava's com.google.common.base.CharMatcher.
+    testOnJava17OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "class Test {",
+                      "  public boolean matches(char c) {",
+                      "    return switch (c) {",
+                      "    case '\t',",
+                      "      '\\n',",
+                      "      '\\013',",
+                      "      '\\f',",
+                      "      '\\r',",
+                      "      ' ',",
+                      "      '\u0085',",
+                      "      '\u1680',",
+                      "      '\u2028',",
+                      "      '\u2029',",
+                      "      '\u205f',",
+                      "      '\u3000' ->",
+                      "      true;",
+                      "    case '\u2007' -> false;",
+                      "    default -> c >= '\u2000' && c <= '\u200a';",
+                      "    };",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+              "- (jboolean)matchesWithChar:(jchar)c {",
+              "  switch (c) {",
+              "    case 0x0009:",
+              "    case 0x000a:",
+              "    case 0x000b:",
+              "    case 0x000c:",
+              "    case 0x000d:",
+              "    case ' ':",
+              "    case 0x0085:",
+              "    case 0x1680:",
+              "    case 0x2028:",
+              "    case 0x2029:",
+              "    case 0x205f:",
+              "    case 0x3000:",
+              "    return true;",
+              "    case 0x2007:",
+              "    return false;",
+              "    default:",
+              "    return c >= 0x2000 && c <= 0x200a;",
+              "  };",
+              "}");
+        });
+  }
 }

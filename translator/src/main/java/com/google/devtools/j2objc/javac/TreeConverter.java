@@ -696,7 +696,7 @@ public class TreeConverter {
 
   private TreeNode convertCharLiteral(LiteralTree node, TreePath parent) {
     return new CharacterLiteral(
-        (Character) node.getValue(), getTypeMirror(getTreePath(parent, node)));
+        ((Character) node.getValue()).charValue(), getTypeMirror(getTreePath(parent, node)));
   }
 
   private TreeNode convertClassDeclaration(ClassTree node, TreePath parent) {
