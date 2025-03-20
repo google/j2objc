@@ -63,10 +63,18 @@ void AddSourceImports(std::set<std::string>& imports) {
 }
 
 void PrintSourcePreamble(io::Printer* printer) {
+  // We disable the protocol property synthesis warning as the property access
+  // methods are implemented dynamically in the corresponding message and
+  // builder implementation. An alternative might be to have the property
+  // declared in the builder and message separately.
+  // TODO(b/397423951): Re-consider this when adding the writable property
+  //   required for the builder.
   printer->Print(
       "\n"
       "#pragma GCC diagnostic ignored \"-Wprotocol\"\n"
       "#pragma clang diagnostic ignored \"-Wprotocol\"\n"
+      "#pragma clang diagnostic ignored \"-Wobjc-protocol-property-synthesis\""
+      "\n"
       "#pragma GCC diagnostic ignored \"-Wincomplete-implementation\"\n"
       "#pragma clang diagnostic ignored \"-Wincomplete-implementation\"\n"
       "#pragma clang diagnostic ignored "
@@ -184,6 +192,8 @@ void FileGenerator::GenerateHeader(GeneratorContext* context) {
       "\n"
       "#pragma clang diagnostic push\n"
       "#pragma clang diagnostic ignored \"-Wnullability-completeness\""
+      "\n"
+      "#pragma clang diagnostic ignored \"-Wobjc-protocol-property-synthesis\""
       "\n"
       "@interface $classname$ : NSObject\n"
       "\n",

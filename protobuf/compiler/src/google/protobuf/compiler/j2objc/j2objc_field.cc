@@ -33,8 +33,10 @@
 //  Sanjay Ghemawat, Jeff Dean, Cyrus Najmabadi, and others.
 
 #include <google/protobuf/compiler/j2objc/j2objc_field.h>
-
 #include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
+
+#include <set>
+#include <string>
 
 namespace google {
 namespace protobuf {
@@ -42,6 +44,20 @@ namespace compiler {
 namespace j2objc {
 
 namespace {
+
+// A set of names where we don't generate a Swift-friendly property. These are
+// mostly reserved words, but also including some cases where properties
+// collide with pre-existing code (which should be cleaned up on-demand as
+// needed)
+const std::set<std::string> property_exceptions = {
+    "auto",        "class",    "delete",
+    "description", "do",       "double",
+    "for",         "float",    "hash",
+    "id",          "if",       "inline",
+    "int",         "long",     "namespace",
+    "new",         "operator", "private",
+    "protected",   "public",   "specialCalendars",
+    "template",    "text",     "virtual"};
 
 std::string GetParameterType(const FieldDescriptor* descriptor) {
   switch (GetJavaType(descriptor)) {
@@ -310,6 +326,21 @@ void SingleFieldGenerator::GenerateMessageOrBuilderProtocol(io::Printer* printer
   if (descriptor_->has_presence()) {
     printer->Print(variables_, "- (BOOL)has$capitalized_name$;\n");
   }
+
+  std::string name = UnderscoresToCamelCase(descriptor_);
+  if (!property_exceptions.contains(name)) {
+    if (GetStorageType(descriptor_) == GetNonNullType(descriptor_)) {
+      printer->Print(variables_,
+                     "@property (readonly, getter=Get$capitalized_name$)"
+                     " $storage_type$ $camelcase_name$;\n");
+    } else {
+      printer->Print(
+          variables_,
+          "@property (readonly, nonnull, getter=Get$capitalized_name$)"
+          " $storage_type$ $camelcase_name$;\n");
+    }
+  }
+
   printer->Print(variables_, "- ($nonnull_type$)get$capitalized_name$;\n");
 }
 
