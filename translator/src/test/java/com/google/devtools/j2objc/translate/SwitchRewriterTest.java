@@ -317,4 +317,72 @@ public class SwitchRewriterTest extends GenerationTest {
               "}");
         });
   }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testEnumSwitchExpressionCase() throws IOException {
+    // Snippet from Guava's com.google.common.collect.AbstractIterator.
+    testOnJava17OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(String.join("\n",
+                  "abstract class Test<T> {",
+                  "  private State state = State.NOT_READY;",
+                  "  private enum State {",
+                  "    READY,",
+                  "    NOT_READY,",
+                  "    DONE,",
+                  "  }",
+                  "  private T next;",
+                  "  protected abstract T computeNext();",
+                  "  protected final T endOfData() {",
+                  "    state = State.DONE;",
+                  "    return null;",
+                  "  }",
+                  "  public final boolean hasNext() {",
+                  "    switch (state) {",
+                  "      case DONE -> {",
+                  "        return false;",
+                  "      }",
+                  "      case READY -> {",
+                  "        return true;",
+                  "      }",
+                  "      default -> {}",
+                  "    }",
+                  "    return tryToComputeNext();",
+                  "  }",
+                  "  private boolean tryToComputeNext() {",
+                  "    next = computeNext();",
+                  "    if (state != State.DONE) {",
+                  "      state = State.READY;",
+                  "      return true;",
+                  "    }",
+                  "    return false;",
+                  "  }",
+                  "}"),
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+                  "- (jboolean)hasNext {",
+                  "  switch ([state_ ordinal]) {",
+                  "    case Test_State_Enum_DONE:",
+                  "    {",
+                  "      return false;",
+                  "    }",
+                  "    break;",
+                  "    case Test_State_Enum_READY:",
+                  "    {",
+                  "      return true;",
+                  "    }",
+                  "    break;",
+                  "    default:",
+                  "    {",
+                  "    }",
+                  "    break;",
+                  "  }",
+                  "  return Test_tryToComputeNext(self);",
+                  "}"
+              );
+        });
+  }
 }
