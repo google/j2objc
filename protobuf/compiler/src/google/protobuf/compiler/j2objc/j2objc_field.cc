@@ -35,8 +35,11 @@
 #include <google/protobuf/compiler/j2objc/j2objc_field.h>
 #include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
 
+#include <map>
 #include <set>
 #include <string>
+
+#include "google/protobuf/compiler/j2objc/common.h"
 
 namespace google {
 namespace protobuf {
@@ -58,6 +61,10 @@ const std::set<std::string> property_exceptions = {
     "new",         "operator", "private",
     "protected",   "public",   "specialCalendars",
     "template",    "text",     "virtual"};
+
+bool CanGenerateProperty(const FieldDescriptor* descriptor) {
+  return !property_exceptions.contains(UnderscoresToCamelCase(descriptor));
+}
 
 std::string GetParameterType(const FieldDescriptor* descriptor) {
   switch (GetJavaType(descriptor)) {
@@ -249,6 +256,10 @@ void FieldGenerator::GenerateFieldHeader(io::Printer *printer) const {
       "#define $classname$_$constant_name$ $field_number$\n");
 }
 
+void FieldGenerator::GenerateFieldSource(io::Printer* printer) const {}
+
+void FieldGenerator::GenerateFieldBuilderSource(io::Printer* printer) const {}
+
 void FieldGenerator::GenerateMapEntryFieldData(io::Printer *printer) const {
 }
 
@@ -304,6 +315,12 @@ SingleFieldGenerator::SingleFieldGenerator(
   }
 }
 
+void SingleFieldGenerator::GenerateFieldSource(io::Printer* printer) const {
+  if (CanGenerateProperty(descriptor_)) {
+    printer->Print(variables_, "\n@dynamic $camelcase_name$;\n");
+  }
+}
+
 void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
     // clang-format off
     const {
@@ -311,6 +328,17 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
       "- (nonnull $classname$_Builder *)set$capitalized_name$With$parameter_type$:\n"
       "    ($nonnull_type$)value;\n"
       "- (nonnull $classname$_Builder *)clear$capitalized_name$;\n");
+  
+  if (CanGenerateProperty(descriptor_)) {
+    printer->Print(GetStorageType(descriptor_) == GetNonNullType(descriptor_) 
+                   ? "@property (" : "@property (nonnull, retain, ");
+    printer->Print(
+        variables_,
+        "getter=Get$capitalized_name$, "
+        "setter=Set$capitalized_name$With$parameter_type$:) "
+        "$storage_type$ $camelcase_name$;\n");
+  }
+  
   if (GetJavaType(descriptor_) == JAVATYPE_MESSAGE) {
     printer->Print(variables_,
         "- (nonnull $classname$_Builder*)\n"
@@ -320,6 +348,13 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
   // clang-format on
 }
 
+void SingleFieldGenerator::GenerateFieldBuilderSource(
+    io::Printer* printer) const {
+  if (CanGenerateProperty(descriptor_)) {
+    printer->Print(variables_, "\n@dynamic $camelcase_name$;\n");
+  }
+}
+
 void SingleFieldGenerator::GenerateMessageOrBuilderProtocol(io::Printer* printer)
     const {
   printer->Print("\n");
@@ -327,18 +362,14 @@ void SingleFieldGenerator::GenerateMessageOrBuilderProtocol(io::Printer* printer
     printer->Print(variables_, "- (BOOL)has$capitalized_name$;\n");
   }
 
-  std::string name = UnderscoresToCamelCase(descriptor_);
-  if (!property_exceptions.contains(name)) {
-    if (GetStorageType(descriptor_) == GetNonNullType(descriptor_)) {
-      printer->Print(variables_,
-                     "@property (readonly, getter=Get$capitalized_name$)"
-                     " $storage_type$ $camelcase_name$;\n");
-    } else {
-      printer->Print(
-          variables_,
-          "@property (readonly, nonnull, getter=Get$capitalized_name$)"
-          " $storage_type$ $camelcase_name$;\n");
-    }
+  if (CanGenerateProperty(descriptor_)) {
+    printer->Print(GetStorageType(descriptor_) == GetNonNullType(descriptor_)
+                       ? "@property ("
+                       : "@property (nonnull, ");
+
+    printer->Print(variables_,
+                   "readonly, getter=Get$capitalized_name$) "
+                   "$storage_type$ $camelcase_name$;\n");
   }
 
   printer->Print(variables_, "- ($nonnull_type$)get$capitalized_name$;\n");

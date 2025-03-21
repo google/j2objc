@@ -1243,7 +1243,7 @@ static BOOL ResolveAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, BOOL 
     return ResolveContainsAccessor(cls, descriptor, sel, selName);
   }
   if (isBuilder) {
-    if (Matches(&selName, "set", 3)) {
+    if (Matches(&selName, "set", 3) || Matches(&selName, "Set", 3)) {
       return ResolveSetAccessor(cls, descriptor, sel, selName);
     } else if (Matches(&selName, "clear", 5)) {
       return ResolveClearAccessor(cls, descriptor, sel, selName);

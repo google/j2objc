@@ -412,6 +412,10 @@ void MessageLiteGenerator::GenerateSource(io::Printer* printer) {
   printer->Outdent();
   printer->Print("  }\n}\n");
 
+  for (int i = 0; i < descriptor_->field_count(); i++) {
+    field_generators_.get(descriptor_->field(i)).GenerateFieldSource(printer);
+  }
+
   printer->Print(
       "\n"
       "@end\n"
@@ -534,7 +538,14 @@ void MessageLiteGenerator::GenerateBuilderSource(io::Printer* printer) {
       "@implementation $classname$_Builder\n\n"
       "+ (ComGoogleProtobufDescriptors_Descriptor *)getDescriptor {\n"
       "  return [$classname$ getDescriptor];\n"
-      "}\n"
+      "}\n",
+      "classname", ClassName(descriptor_));
+
+  for (int i = 0; i < descriptor_->field_count(); i++) {
+    field_generators_.get(descriptor_->field(i))
+        .GenerateFieldBuilderSource(printer);
+  }
+  printer->Print(
       "\n"
       "@end\n"
       "\n"

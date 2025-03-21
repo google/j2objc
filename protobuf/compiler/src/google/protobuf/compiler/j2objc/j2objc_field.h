@@ -59,7 +59,9 @@ class FieldGenerator {
   virtual ~FieldGenerator();
 
   virtual void GenerateFieldHeader(io::Printer* printer) const;
+  virtual void GenerateFieldSource(io::Printer* printer) const;
   virtual void GenerateFieldBuilderHeader(io::Printer* printer) const = 0;
+  virtual void GenerateFieldBuilderSource(io::Printer* printer) const;
 
   virtual void GenerateMessageOrBuilderProtocol(io::Printer* printer) const = 0;
 
@@ -93,7 +95,11 @@ class SingleFieldGenerator : public FieldGenerator {
 
   virtual ~SingleFieldGenerator() { }
 
+  virtual void GenerateFieldSource(io::Printer* printer) const;
+
   virtual void GenerateFieldBuilderHeader(io::Printer* printer) const;
+
+  virtual void GenerateFieldBuilderSource(io::Printer* printer) const;
 
   virtual void GenerateMessageOrBuilderProtocol(io::Printer* printer) const;
 
