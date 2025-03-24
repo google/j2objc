@@ -56,6 +56,7 @@ const char *kOuterClassNameSuffix = "OuterClass";
 // The field number of the "j2objc_package_prefix" file option defined in
 // j2objc-descriptor.proto.
 const int kPackagePrefixFieldNumber = 102687446;
+const int kGeneratePropertiesFieldNumber = 102778330;
 
 // NOLINTBEGIN(runtime/string) - Existing code design requires globals.
 static std::string globalPrefix;
@@ -732,6 +733,14 @@ void GenerateFileDirMapping() {
 
 bool IsGenerateFileDirMapping() {
   return generateFileDirMapping;
+}
+
+bool IsGenerateProperties(const FileDescriptor *file) {
+  // Check for the "j2objc_package_prefix" option using unknown fields so we
+  // don't have to pre-build j2objc-descriptor.pb.[h|cc].
+  const UnknownField *generate_properties_field =
+      FindUnknownField(file, kGeneratePropertiesFieldNumber);
+  return generate_properties_field && generate_properties_field->varint();
 }
 
 }  // namespace j2objc

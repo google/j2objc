@@ -65,7 +65,8 @@ const std::set<std::string> property_exceptions = {
 bool CanGenerateProperty(const FieldDescriptor* descriptor) {
   // Use this when -std=c++20 is minimum version..
   // return !property_exceptions.contains(UnderscoresToCamelCase(descriptor));
-  return property_exceptions.find(UnderscoresToCamelCase(descriptor)) ==
+  return IsGenerateProperties(descriptor->file()) &&
+      property_exceptions.find(UnderscoresToCamelCase(descriptor)) ==
          property_exceptions.end();
 }
 

@@ -146,6 +146,7 @@ std::string StaticOutputFileName(const FileDescriptor *file,
 std::string FileDirMappingOutputName(const FileDescriptor *file);
 void GenerateFileDirMapping();
 bool IsGenerateFileDirMapping();
+bool IsGenerateProperties(const FileDescriptor *file);
 
 }  // namespace j2objc
 }  // namespace compiler
