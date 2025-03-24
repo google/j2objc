@@ -134,6 +134,12 @@ std::string GetFieldTypeEnumValue(const FieldDescriptor *descriptor);
 std::string GetDefaultValueTypeName(const FieldDescriptor *descriptor);
 std::string GetFieldOptionsData(const FieldDescriptor *descriptor);
 
+// Checks if the property name for the given field can be added
+bool CanGenerateProperty(const FieldDescriptor *descriptor);
+
+// Checks if the property name for the given enum value can be added
+bool CanGenerateProperty(const EnumValueDescriptor *descriptor);
+
 void SetGlobalPrefix(std::string prefix);
 void SetGlobalPostfix(std::string postfix);
 void SetFileSubExtension(std::string fileSubExtension);

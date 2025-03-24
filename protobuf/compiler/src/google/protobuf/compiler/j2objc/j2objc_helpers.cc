@@ -72,25 +72,46 @@ static bool generateFileDirMapping = false;
 // "non-functional" and likely to change in an edition bump.
 static bool stripNonfunctionalCodegen = false;
 
-const char* const kKeywordList[] = {
-  "TYPE_BOOL",
-  "TRUE",
-  "FALSE",
-  "YES",
-  "NO",
-  "NULL",
-  "FILE"
+// A set of names where we don't generate a Swift-friendly property. These are
+// mostly reserved words, but also including some cases where properties
+// collide with pre-existing code (which should be cleaned up on-demand as
+// needed)
+const std::set<absl::string_view> kKeywords = {
+    "DEBUG",
+    "FALSE",
+    "FILE",
+    "NO",
+    "NO_DATA",
+    "NULL",
+    "OVERFLOW",
+    "TRUE",
+    "TYPE_BOOL",
+    "YES",
+    "auto",
+    "class",
+    "delete",
+    "description",
+    "do",
+    "double",
+    "for",
+    "float",
+    "hash",
+    "id",
+    "if",
+    "inline",
+    "int",
+    "long",
+    "namespace",
+    "new",
+    "operator",
+    "private",
+    "protected",
+    "public",
+    "specialCalendars",
+    "template",
+    "text",
+    "virtual",
 };
-
-std::set<std::string> MakeKeywordsMap() {
-  std::set<std::string> result;
-  for (int i = 0; i < GOOGLE_ARRAYSIZE(kKeywordList); i++) {
-    result.insert(kKeywordList[i]);
-  }
-  return result;
-}
-
-std::set<std::string> kKeywords = MakeKeywordsMap();
 
 absl::string_view FieldName(const FieldDescriptor *field) {
   // Groups are hacky:  The name of the field is just the lower-cased name
@@ -669,6 +690,18 @@ std::string GetFieldOptionsData(const FieldDescriptor *descriptor) {
     return "\"" + absl::CEscape(bytes) + "\"";
   }
   return "NULL";
+}
+
+bool CanGenerateProperty(const FieldDescriptor *descriptor) {
+  // Use this when -std=c++20 is the minimum version:
+  // !kKeywords.contains(UnderscoresToCamelCase(descriptor));
+  return IsGenerateProperties(descriptor->file()) &&
+         kKeywords.find(UnderscoresToCamelCase(descriptor)) == kKeywords.end();
+}
+
+bool CanGenerateProperty(const EnumValueDescriptor *descriptor) {
+  return IsGenerateProperties(descriptor->file()) &&
+         kKeywords.find(descriptor->name()) == kKeywords.end();
 }
 
 void ParsePrefixLine(std::string line) {

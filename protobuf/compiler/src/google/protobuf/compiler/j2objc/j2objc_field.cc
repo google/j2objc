@@ -48,28 +48,6 @@ namespace j2objc {
 
 namespace {
 
-// A set of names where we don't generate a Swift-friendly property. These are
-// mostly reserved words, but also including some cases where properties
-// collide with pre-existing code (which should be cleaned up on-demand as
-// needed)
-const std::set<std::string> property_exceptions = {
-    "auto",        "class",    "delete",
-    "description", "do",       "double",
-    "for",         "float",    "hash",
-    "id",          "if",       "inline",
-    "int",         "long",     "namespace",
-    "new",         "operator", "private",
-    "protected",   "public",   "specialCalendars",
-    "template",    "text",     "virtual"};
-
-bool CanGenerateProperty(const FieldDescriptor* descriptor) {
-  // Use this when -std=c++20 is minimum version..
-  // return !property_exceptions.contains(UnderscoresToCamelCase(descriptor));
-  return IsGenerateProperties(descriptor->file()) &&
-      property_exceptions.find(UnderscoresToCamelCase(descriptor)) ==
-         property_exceptions.end();
-}
-
 std::string GetParameterType(const FieldDescriptor* descriptor) {
   switch (GetJavaType(descriptor)) {
     case JAVATYPE_INT:
