@@ -63,7 +63,10 @@ const std::set<std::string> property_exceptions = {
     "template",    "text",     "virtual"};
 
 bool CanGenerateProperty(const FieldDescriptor* descriptor) {
-  return !property_exceptions.contains(UnderscoresToCamelCase(descriptor));
+  // Use this when -std=c++20 is minimum version..
+  // return !property_exceptions.contains(UnderscoresToCamelCase(descriptor));
+  return property_exceptions.find(UnderscoresToCamelCase(descriptor)) ==
+         property_exceptions.end();
 }
 
 std::string GetParameterType(const FieldDescriptor* descriptor) {
