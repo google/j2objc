@@ -350,6 +350,15 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
     generator.GenerateHeader(printer);
   }
 
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+        "\n"
+        "@compatibility_alias KNP$classname$ $classname$;\n"
+        "@compatibility_alias KNP$classname$_Builder $classname$_Builder;\n"
+        "\n",
+        "classname", ClassName(descriptor_));
+  }
+
   GenerateBuilderHeader(printer);
 }
 

@@ -237,6 +237,11 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
         "FOUNDATION_EXPORT $classname$ *$classname$_get_UNRECOGNIZED(void);\n",
         "classname", ClassName(descriptor_));
   }
+
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print("@compatibility_alias KNP$classname$ $classname$;\n",
+                   "classname", ClassName(descriptor_));
+  }
 }
 
 const int kMaxRowChars = 80;
