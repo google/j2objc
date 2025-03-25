@@ -207,10 +207,29 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
     superclassName = "ComGoogleProtobufGeneratedMessage_ExtendableMessage";
   }
 
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+        "\n"
+        "@class $classname$;"
+        "\n"
+        "@protocol $classname$_Companion\n"
+        "- (nonnull $classname$_Builder *)doNewBuilder;\n"
+        "- (nonnull $classname$ *)getDefaultInstance;\n"
+        "@end\n\n"
+        "\n"
+        "// in j2objc_message.cc \n"
+        "@interface $classname$ : $superclassname$<$classname$OrBuilder>\n\n"
+        "+ (id<$classname$_Companion>) companion;\n"
+        "+ (nonnull $classname$_Builder *)doNewBuilder;\n",
+        "classname", ClassName(descriptor_), "superclassname", superclassName);
+  } else {
+    printer->Print(
+        "\n"
+        "// in j2objc_message.cc \n"
+        "@interface $classname$ : $superclassname$<$classname$OrBuilder>\n\n",
+        "classname", ClassName(descriptor_), "superclassname", superclassName);
+  }
   printer->Print(
-      "\n"
-      "// in j2objc_message.cc \n"
-      "@interface $classname$ : $superclassname$<$classname$OrBuilder>\n\n"
       "+ (nonnull $classname$ *)getDefaultInstance;\n"
       "- (nonnull $classname$ *)getDefaultInstanceForType;\n"
       "+ (nonnull $classname$_Builder *)newBuilder OBJC_METHOD_FAMILY_NONE;\n"
@@ -405,6 +424,17 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "}\n",
       "classname", ClassName(descriptor_));
 
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+        "+ (nonnull id<$classname$_Companion>)companion {\n"
+        "  return (id<$classname$_Companion>) [self class];\n"
+        "}\n"
+        "+ (nonnull $classname$_Builder *)doNewBuilder {\n"
+        "  return [$classname$ newBuilder];\n"
+        "}\n",
+        "classname", ClassName(descriptor_));
+  }
+  
   printer->Print(
       "\n"
       "// Minimal metadata for runtime access to Java class name.\n"
