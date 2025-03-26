@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+// import libcore.util.NonNull;
+
 // Note: this class was written without inspecting the non-free org.json sourcecode.
 
 /**
@@ -581,13 +583,15 @@ public class JSONArray {
      * Encodes this array as a compact JSON string, such as:
      * <pre>[94043,90210]</pre>
      */
-    @Override public String toString() {
+    @Override @NonNull public String toString() {
         try {
             JSONStringer stringer = new JSONStringer();
             writeTo(stringer);
             return stringer.toString();
         } catch (JSONException e) {
-            return null;
+            // j2objc: do not return null from @NonNull method.
+            // return null;
+            return e.toString();
         }
     }
 

@@ -419,7 +419,10 @@ public class JSONArrayTest extends TestCase {
         array.put(Double.valueOf(Double.NaN));
         array.put(Double.valueOf(Double.NEGATIVE_INFINITY));
         array.put(Double.valueOf(Double.POSITIVE_INFINITY));
-        assertEquals(null, array.toString());
+        // j2objc: when the object contains an unsupported number, toString returns a stringified
+        // exception!
+        String result = array.toString();
+        assertTrue(result != null && result.contains("org.json.JSONException"));
     }
 
     /**
@@ -434,9 +437,11 @@ public class JSONArrayTest extends TestCase {
     }
 
     public void testToStringWithUnsupportedNumbers() throws JSONException {
-        // when the array contains an unsupported number, toString returns null!
+        // j2objc: when the object contains an unsupported number, toString returns a stringified
+        // exception!
         JSONArray array = new JSONArray(Arrays.asList(5.5, Double.NaN));
-        assertNull(array.toString());
+        String result = array.toString();
+        assertTrue(result != null && result.contains("org.json.JSONException"));
     }
 
     public void testListConstructorCopiesContents() throws JSONException {
