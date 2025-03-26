@@ -385,4 +385,75 @@ public class SwitchRewriterTest extends GenerationTest {
               );
         });
   }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testYieldInCaseBlock() throws IOException {
+    // Snippet from Guava's com.google.common.math.LongMath.
+    testOnJava17OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "class Test<T> {",
+                      "  static void checkNoOverflow(boolean condition, String methodName, long a,"
+                          + " long b) {}",
+                      "  public static long checkedPow(long b, int k) {",
+                      "    return switch ((int) b) {",
+                      "      case 2 -> {",
+                      "        checkNoOverflow(k < Long.SIZE - 1, \"checkedPow\", b, k);",
+                      "        yield 1L << k;",
+                      "      }",
+                      "      default -> throw new AssertionError();",
+                      "    };",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+              "  switch ((jint) b) {",
+              "    case 2:",
+              "    return JreLShift64(1LL, k);",
+              "    default:",
+              "    @throw create_JavaLangAssertionError_init();",
+              "  };");
+        });
+  }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testEnumConstAsSwitchExpression() throws IOException {
+    // Snippet from Guava's com.google.common.math.ToDoubleRounder.
+    testOnJava17OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "import java.math.RoundingMode;",
+                      "class Test<T> {",
+                      "  final double roundToDouble(Double x, RoundingMode mode) {",
+                      "    if (Double.isInfinite(x)) {",
+                      "      switch (mode) {",
+                      "        case DOWN:",
+                      "          return Double.MAX_VALUE;",
+                      "        default:",
+                      "          return x;",
+                      "      }",
+                      "    }",
+                      "    return Double.MAX_VALUE;",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+              "switch ([mode ordinal]) {",
+              "  case JavaMathRoundingMode_Enum_DOWN:",
+              "    return JavaLangDouble_MAX_VALUE;",
+              "  default:",
+              "    return [x doubleValue];",
+              "}");
+        });
+  }
 }

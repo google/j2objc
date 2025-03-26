@@ -380,6 +380,8 @@ public class TreeConverter {
         return convertVariableDeclaration((VariableTree) javacNode, parent);
       case "WHILE_LOOP":
         return convertWhileLoop((WhileLoopTree) javacNode, parent);
+      case "YIELD":
+        return convertYield((StatementTree) javacNode, parent);
 
       case "BOOLEAN_LITERAL":
         return convertBooleanLiteral((LiteralTree) javacNode, parent);
@@ -1502,8 +1504,21 @@ public class TreeConverter {
           Statement stmt = convertConstantCaseTree(switchCase, switchCasePath);
           if (exprReturned) {
             SwitchExpressionCase switchExpressionCase = (SwitchExpressionCase) stmt;
-            YieldStatement yieldStmt = (YieldStatement) switchExpressionCase.getBody();
-            switchExpressionCase.setBody(new ReturnStatement(yieldStmt.getExpression().copy()));
+            TreeNode body = switchExpressionCase.getBody();
+            if (body.getKind() == TreeNode.Kind.YIELD_STATEMENT) {
+              YieldStatement yieldStmt = (YieldStatement) body;
+              switchExpressionCase.setBody(new ReturnStatement(yieldStmt.getExpression().copy()));
+            } else if (body.getKind() == TreeNode.Kind.BLOCK) {
+              List<Statement> blockStmts = ((Block) body).getStatements();
+              if (!blockStmts.isEmpty()) {
+                int lastIndex = blockStmts.size() - 1;
+                Statement lastStmt = blockStmts.get(lastIndex);
+                if (lastStmt.getKind() == TreeNode.Kind.YIELD_STATEMENT) {
+                  YieldStatement yieldStmt = (YieldStatement) lastStmt;
+                  switchExpressionCase.setBody(new ReturnStatement(yieldStmt.getExpression().copy()));
+                }
+              }
+            }
           }
           newNode.addStatement(stmt);
         }
@@ -1781,6 +1796,18 @@ public class TreeConverter {
     return new WhileStatement()
         .setExpression(convertWithoutParens(node.getCondition(), path))
         .setBody((Statement) convert(node.getStatement(), path));
+  }
+
+  private TreeNode convertYield(StatementTree node, TreePath parent) {
+    TreePath path = getTreePath(parent, node);
+    try {
+      Method m = node.getClass().getDeclaredMethod("getValue");
+      ExpressionTree javacExpr = (ExpressionTree) m.invoke(node);
+      Expression expr = (Expression) convert(javacExpr, path);
+      return new YieldStatement(expr);
+    } catch (ReflectiveOperationException e) {
+      throw new LinkageError("Failed accessing yield expression.", e);
+    }
   }
 
   private TreeNode getAssociatedJavaDoc(Tree node, TreePath path) {

@@ -28,6 +28,7 @@ import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SwitchCase;
+import com.google.devtools.j2objc.ast.SwitchExpression;
 import com.google.devtools.j2objc.ast.SwitchExpressionCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeUtil;
@@ -72,6 +73,11 @@ public class SwitchRewriter extends UnitTreeVisitor {
         stmts.add(emptyStmt);
       }
     }
+  }
+  
+  @Override
+  public void endVisit(SwitchExpression node) {
+    fixEnumValue(node);
   }
 
   @Override
@@ -184,5 +190,17 @@ public class SwitchRewriter extends UnitTreeVisitor {
     ExecutablePair ordinalMethod = typeUtil.findMethod(enumType, "ordinal");
     MethodInvocation invocation = new MethodInvocation(ordinalMethod, TreeUtil.remove(expr));
     node.setExpression(invocation);
+  }
+
+  private void fixEnumValue(SwitchExpression node) {
+    Expression expr = node.getExpression();
+    TypeMirror type = expr.getTypeMirror();
+    if (!TypeUtil.isEnum(type)) {
+      return;
+    }
+    DeclaredType enumType = typeUtil.getSuperclass(type);
+    ExecutablePair ordinalMethod = typeUtil.findMethod(enumType, "ordinal");
+    MethodInvocation invocation = new MethodInvocation(ordinalMethod, TreeUtil.remove(expr));
+    var unused = node.setExpression(invocation);
   }
 }
