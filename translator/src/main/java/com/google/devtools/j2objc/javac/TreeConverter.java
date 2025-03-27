@@ -52,6 +52,7 @@ import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.ForStatement;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.FunctionalExpression;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
@@ -116,6 +117,7 @@ import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.ast.YieldStatement;
 import com.google.devtools.j2objc.translate.OcniExtractor;
 import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedPackageElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
@@ -1160,11 +1162,45 @@ public class TreeConverter {
     for (VariableTree param : node.getParameters()) {
       newNode.addParameter((SingleVariableDeclaration) convert(param, path));
     }
+    Block body = (Block) convert(node.getBody(), path);
+    if (body != null) {
+      maybeAddUnreachableDirective(body);
+    }
     return newNode
         .setIsConstructor(ElementUtil.isConstructor(element))
         .setExecutableElement(element)
-        .setBody((Block) convert(node.getBody(), path))
+        .setBody(body)
         .setName(name);
+  }
+
+  // If method returns a switch expression that doesn't have a default case,
+  // add a function call to tell clang that all cases are handled. This can
+  // be asserted because switch expressions are checked to be exhaustive.
+  private void maybeAddUnreachableDirective(Block body) {
+    List<Statement> stmts = body.getStatements();
+    if (!stmts.isEmpty()) {
+      Statement lastStmt = stmts.getLast();
+      if (lastStmt.getKind() == TreeNode.Kind.EXPRESSION_STATEMENT) {
+        Expression expr = ((ExpressionStatement) lastStmt).getExpression();
+        if (expr.getKind() == TreeNode.Kind.SWITCH_EXPRESSION) {
+          boolean hasDefaultCase = false;
+          for (Statement switchCase : ((SwitchExpression) expr).getStatements()) {
+            if (switchCase.getKind() == TreeNode.Kind.SWITCH_EXPRESSION_CASE) {
+              if (((SwitchExpressionCase) switchCase).isDefault()) {
+                hasDefaultCase = true;
+                break;
+              }
+            }
+          }
+          if (!hasDefaultCase) {
+            TypeMirror voidType = newUnit.getEnv().typeUtil().getVoid();
+            FunctionElement element = new FunctionElement("__builtin_unreachable", voidType, null);
+            FunctionInvocation releaseInvocation = new FunctionInvocation(element, voidType);
+            stmts.addLast(new ExpressionStatement(releaseInvocation));
+          }
+        }
+      }
+    }
   }
 
   private static String getMemberName(ExpressionTree node) {

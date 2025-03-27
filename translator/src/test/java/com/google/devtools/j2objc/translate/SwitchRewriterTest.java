@@ -456,4 +456,53 @@ public class SwitchRewriterTest extends GenerationTest {
               "}");
         });
   }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testSwitchExpressionReturnForAllEnumPaths() throws IOException {
+    // Snippet from Guava's com.google.common.base.Stopwatch.
+    // Verifies that a switch using an enum can have all paths handled without a default case.
+    testOnJava17OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "import java.util.concurrent.TimeUnit;",
+                      "class Test<T> {",
+                      "  static String abbreviate(TimeUnit unit) {",
+                      "    return switch (unit) {",
+                      "      case NANOSECONDS -> \"ns\";",
+                      "      case MICROSECONDS -> \"\\u03bcs\";",
+                      "      case MILLISECONDS -> \"ms\";",
+                      "      case SECONDS -> \"s\";",
+                      "      case MINUTES -> \"min\";",
+                      "      case HOURS -> \"h\";",
+                      "      case DAYS -> \"d\";",
+                      "    };",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+              "  switch ([unit ordinal]) {",
+              "    case JavaUtilConcurrentTimeUnit_Enum_NANOSECONDS:",
+              "    return @\"ns\";",
+              "    case JavaUtilConcurrentTimeUnit_Enum_MICROSECONDS:",
+              "    return @\"\\u03bcs\";",
+              "    case JavaUtilConcurrentTimeUnit_Enum_MILLISECONDS:",
+              "    return @\"ms\";",
+              "    case JavaUtilConcurrentTimeUnit_Enum_SECONDS:",
+              "    return @\"s\";",
+              "    case JavaUtilConcurrentTimeUnit_Enum_MINUTES:",
+              "    return @\"min\";",
+              "    case JavaUtilConcurrentTimeUnit_Enum_HOURS:",
+              "    return @\"h\";",
+              "    case JavaUtilConcurrentTimeUnit_Enum_DAYS:",
+              "    return @\"d\";",
+              "  };",
+              "  __builtin_unreachable();",
+              "}");
+        });
+  }
 }
