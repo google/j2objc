@@ -1179,7 +1179,7 @@ public class TreeConverter {
   private void maybeAddUnreachableDirective(Block body) {
     List<Statement> stmts = body.getStatements();
     if (!stmts.isEmpty()) {
-      Statement lastStmt = stmts.getLast();
+      Statement lastStmt = stmts.get(stmts.size() - 1);
       if (lastStmt.getKind() == TreeNode.Kind.EXPRESSION_STATEMENT) {
         Expression expr = ((ExpressionStatement) lastStmt).getExpression();
         if (expr.getKind() == TreeNode.Kind.SWITCH_EXPRESSION) {
@@ -1196,7 +1196,7 @@ public class TreeConverter {
             TypeMirror voidType = newUnit.getEnv().typeUtil().getVoid();
             FunctionElement element = new FunctionElement("__builtin_unreachable", voidType, null);
             FunctionInvocation releaseInvocation = new FunctionInvocation(element, voidType);
-            stmts.addLast(new ExpressionStatement(releaseInvocation));
+            stmts.add(new ExpressionStatement(releaseInvocation));
           }
         }
       }
