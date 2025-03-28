@@ -2045,9 +2045,9 @@ public class StatementGeneratorTest extends GenerationTest {
               ast,
               "java.lang.String test(  java.lang.String str){",
               "java.lang.String msg=switch (str) {",
-              "  case java.lang.String s when s.length() > 10: yield JreStrcat($$, \"Long string:"
+              "  case java.lang.String s when s.length() > 10: msg=JreStrcat($$, \"Long string:"
                   + " \", s);",
-              "  case java.lang.String s: yield JreStrcat($$, \"Short string: \", s);",
+              "  case java.lang.String s: msg=JreStrcat($$, \"Short string: \", s);",
               "};",
               "return msg;",
               "}");

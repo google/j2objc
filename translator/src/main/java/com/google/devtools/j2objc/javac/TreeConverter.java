@@ -1524,8 +1524,14 @@ public class TreeConverter {
       Field typeField = node.getClass().getField("type");
       newNode.setTypeMirror((TypeMirror) typeField.get(node));
 
-      // Move a "return switch_expr" to return each case's statement.
-      boolean exprReturned = parent.getLeaf().getKind() == Tree.Kind.RETURN;
+      Tree parentTree = parent.getLeaf();
+      boolean exprReturned = parentTree.getKind() == Tree.Kind.RETURN;
+      boolean exprSaved = parentTree.getKind() == Tree.Kind.VARIABLE;
+      VariableElement yieldSymbol = null;
+      if (exprSaved) {
+        Field symField = parentTree.getClass().getField("sym");
+        yieldSymbol = (VariableElement) symField.get(parentTree);
+      }
 
       Field casesField = node.getClass().getDeclaredField("cases");
       List<? extends CaseTree> cases = (List<? extends CaseTree>) casesField.get(node);
@@ -1538,24 +1544,32 @@ public class TreeConverter {
         } else {
           // caseKind == "RULE"
           Statement stmt = convertConstantCaseTree(switchCase, switchCasePath);
-          if (exprReturned) {
             SwitchExpressionCase switchExpressionCase = (SwitchExpressionCase) stmt;
             TreeNode body = switchExpressionCase.getBody();
             if (body.getKind() == TreeNode.Kind.YIELD_STATEMENT) {
-              YieldStatement yieldStmt = (YieldStatement) body;
-              switchExpressionCase.setBody(new ReturnStatement(yieldStmt.getExpression().copy()));
+              Expression yield = ((YieldStatement) body).getExpression().copy();
+              if (exprReturned) {
+                switchExpressionCase.setBody(new ReturnStatement(yield));
+              } else if (exprSaved) {
+                Assignment assignment = new Assignment(new SimpleName(yieldSymbol), yield);
+                switchExpressionCase.setBody(new ExpressionStatement(assignment));
+              }
             } else if (body.getKind() == TreeNode.Kind.BLOCK) {
               List<Statement> blockStmts = ((Block) body).getStatements();
               if (!blockStmts.isEmpty()) {
                 int lastIndex = blockStmts.size() - 1;
                 Statement lastStmt = blockStmts.get(lastIndex);
                 if (lastStmt.getKind() == TreeNode.Kind.YIELD_STATEMENT) {
-                  YieldStatement yieldStmt = (YieldStatement) lastStmt;
-                  switchExpressionCase.setBody(new ReturnStatement(yieldStmt.getExpression().copy()));
+                  Expression yield = ((YieldStatement) lastStmt).getExpression().copy();
+                  if (exprReturned) {
+                    switchExpressionCase.setBody(new ReturnStatement(yield));
+                  } else if (exprSaved) {
+                    Assignment assignment = new Assignment(new SimpleName(yieldSymbol), yield);
+                    switchExpressionCase.setBody(new ExpressionStatement(assignment));
+                  }
                 }
               }
             }
-          }
           newNode.addStatement(stmt);
         }
       }

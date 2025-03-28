@@ -505,4 +505,45 @@ public class SwitchRewriterTest extends GenerationTest {
               "}");
         });
   }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testSavedSwitchExpression() throws IOException {
+    // Verify regression is fixed where the
+    testOnJava17OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "class Test {",
+                      "  String test(int choice) {",
+                      "    String foo = \"foo\";",
+                      "    String result = switch (choice) {",
+                      "      case 1 -> null;",
+                      "      case 2 -> \"Hello\";",
+                      "      default -> {",
+                      "        yield \"World\";",
+                      "      }",
+                      "    };",
+                      "    return result;",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+              "- (NSString *)testWithInt:(jint)choice {",
+              "  NSString *foo = @\"foo\";",
+              "  NSString *result = switch (choice) {",
+              "    case 1:",
+              "    result = nil;",
+              "    case 2:",
+              "    result = @\"Hello\";",
+              "    default:",
+              "    result = @\"World\";",
+              "  };",
+              "  return result;",
+              "}");
+        });
+  }
 }
