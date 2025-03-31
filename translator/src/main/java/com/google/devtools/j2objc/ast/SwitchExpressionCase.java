@@ -31,10 +31,10 @@ public class SwitchExpressionCase extends Statement {
   public SwitchExpressionCase(SwitchExpressionCase other) {
     super(other);
     isDefault = other.isDefault();
-    pattern.set(other.getPattern());
+    pattern.copyFrom(other.getPattern());
     expressions.copyFrom(other.getExpressions());
-    guard.set(other.getGuard());
-    body.set(other.getBody());
+    guard.copyFrom(other.getGuard());
+    body.copyFrom(other.getBody());
   }
 
   @Override

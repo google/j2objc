@@ -120,6 +120,41 @@ public class SwitchRewriter extends UnitTreeVisitor {
     }
   }
 
+  @Override
+  public void endVisit(Block node) {
+    List<Statement> statements = node.getStatements();
+    Block block = new Block();
+    List<Statement> blockStmts = block.getStatements();
+    boolean blockChanged = false;
+    for (Statement stmt : statements) {
+      // If statement declares a local variable and its initializer is a switch
+      // expression, move the initializer into a separate expression statement.
+      if (stmt instanceof VariableDeclarationStatement) {
+        VariableDeclarationStatement declStmt = (VariableDeclarationStatement) stmt;
+        if (!declStmt.getFragments().isEmpty()) {
+          VariableDeclarationFragment fragment = declStmt.getFragments().get(0);
+          SwitchExpression switchExpression = null;
+          Expression initializer = fragment.getInitializer();
+          if (initializer instanceof SwitchExpression) {
+            switchExpression = ((SwitchExpression) initializer).copy();
+            VariableDeclarationFragment newDecl =
+                new VariableDeclarationFragment(fragment.getVariableElement(), null);
+            blockStmts.add(new VariableDeclarationStatement(newDecl));
+            blockStmts.add(new ExpressionStatement(switchExpression));
+            blockChanged = true;
+          } else {
+            blockStmts.add(declStmt.copy());
+          }
+        }
+      } else {
+        blockStmts.add(stmt.copy());
+      }
+    }
+    if (blockChanged) {
+      node.replaceWith(block);
+    }
+  }
+
   /**
    * Moves all variable declarations above the first case statement.
    */

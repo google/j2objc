@@ -508,7 +508,6 @@ public class SwitchRewriterTest extends GenerationTest {
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testSavedSwitchExpression() throws IOException {
-    // Verify regression is fixed where the
     testOnJava17OrAbove(
         () -> {
           String translation =
@@ -534,7 +533,8 @@ public class SwitchRewriterTest extends GenerationTest {
               translation,
               "- (NSString *)testWithInt:(jint)choice {",
               "  NSString *foo = @\"foo\";",
-              "  NSString *result = switch (choice) {",
+              "  NSString *result;",
+              "  switch (choice) {",
               "    case 1:",
               "    result = nil;",
               "    case 2:",

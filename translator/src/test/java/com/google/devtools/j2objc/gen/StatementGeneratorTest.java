@@ -2044,7 +2044,8 @@ public class StatementGeneratorTest extends GenerationTest {
           assertTranslatedLines(
               ast,
               "java.lang.String test(  java.lang.String str){",
-              "java.lang.String msg=switch (str) {",
+              "java.lang.String msg;",
+              "switch (str) {",
               "  case java.lang.String s when s.length() > 10: msg=JreStrcat($$, \"Long string:"
                   + " \", s);",
               "  case java.lang.String s: msg=JreStrcat($$, \"Short string: \", s);",
