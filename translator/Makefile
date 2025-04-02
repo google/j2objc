@@ -300,7 +300,7 @@ TEST_RESOURCE_FILES = $(TEST_RESOURCES:%=$(TEST_DIR)/%)
 
 # Files in dependent jars that aren't needed in combined jar.
 UNUSED_JAR_CONTENTS = \
-  $(CLASS_DIR)/[A-Z]* \
+  $(CLASS_DIR)/META-INF \
   $(CLASS_DIR)/[ahp]* \
   $(CLASS_DIR)/about_files \
   $(CLASS_DIR)/ant_tasks \
