@@ -636,6 +636,7 @@ public class TreeConverter {
       }
       newNode.addStatement((Statement) tree);
     }
+    maybeAddUnreachableDirective(newNode);
     return newNode;
   }
 
@@ -1162,14 +1163,10 @@ public class TreeConverter {
     for (VariableTree param : node.getParameters()) {
       newNode.addParameter((SingleVariableDeclaration) convert(param, path));
     }
-    Block body = (Block) convert(node.getBody(), path);
-    if (body != null) {
-      maybeAddUnreachableDirective(body);
-    }
     return newNode
         .setIsConstructor(ElementUtil.isConstructor(element))
         .setExecutableElement(element)
-        .setBody(body)
+        .setBody((Block) convert(node.getBody(), path))
         .setName(name);
   }
 
