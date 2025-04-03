@@ -215,6 +215,10 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
         "@protocol $classname$_Companion\n"
         "- (nonnull $classname$_Builder *)doNewBuilder;\n"
         "- (nonnull $classname$ *)getDefaultInstance;\n"
+        "- (nonnull $classname$ *)parseFromWithByteString:"
+        "(nonnull ComGoogleProtobufByteString *)data"
+        " withComGoogleProtobufExtensionRegistryLite:(nullable"
+        " ComGoogleProtobufExtensionRegistryLite *)registry;\n"
         "@end\n\n"
         "\n"
         "// in j2objc_message.cc \n"
@@ -443,7 +447,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
         "}\n",
         "classname", ClassName(descriptor_));
   }
-  
+
   printer->Print(
       "\n"
       "// Minimal metadata for runtime access to Java class name.\n"

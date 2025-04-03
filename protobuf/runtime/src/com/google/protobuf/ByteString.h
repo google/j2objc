@@ -83,6 +83,7 @@
 @end
 
 typedef ComGoogleProtobufByteString CGPByteString;
+typedef ComGoogleProtobufByteString KNPComGoogleProtobufByteString;
 
 CF_EXTERN_C_BEGIN
 
