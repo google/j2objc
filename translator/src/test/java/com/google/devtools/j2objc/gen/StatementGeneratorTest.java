@@ -2045,7 +2045,7 @@ public class StatementGeneratorTest extends GenerationTest {
               ast,
               "java.lang.String test(  java.lang.String str){",
               "java.lang.String msg;",
-              "switch (str) {",
+              "switch (JreIndexOfStr(str, {}, 0)) {",
               "  case java.lang.String s when s.length() > 10: msg=JreStrcat($$, \"Long string:"
                   + " \", s);",
               "  case java.lang.String s: msg=JreStrcat($$, \"Short string: \", s);",
@@ -2074,9 +2074,10 @@ public class StatementGeneratorTest extends GenerationTest {
                   .toString();
           assertTranslatedLines(
               ast,
-              "switch (s) {",
-              "  case null: return \"oops\";",
-              "  case \"Foo\", \"Bar\": return \"great\";",
+              "switch (JreIndexOfStr(s, {null,\"Foo\",\"Bar\"}, 3)) {",
+              "  case 0: return \"oops\";",
+              "  case 1:",
+              "  case 2: return \"great\";",
               "  default: return \"okay\";",
               "};");
         });

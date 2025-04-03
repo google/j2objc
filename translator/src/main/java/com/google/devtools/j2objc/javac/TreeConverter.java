@@ -200,6 +200,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.lang.model.element.AnnotationMirror;
@@ -1539,34 +1540,51 @@ public class TreeConverter {
         if (caseKind.equals("PATTERN_CASE_LABEL")) {
           newNode.addStatement(convertPatternCaseTree(switchCase, switchCasePath));
         } else {
-          // caseKind == "RULE"
           Statement stmt = convertConstantCaseTree(switchCase, switchCasePath);
-            SwitchExpressionCase switchExpressionCase = (SwitchExpressionCase) stmt;
-            TreeNode body = switchExpressionCase.getBody();
-            if (body.getKind() == TreeNode.Kind.YIELD_STATEMENT) {
-              Expression yield = ((YieldStatement) body).getExpression().copy();
-              if (exprReturned) {
-                switchExpressionCase.setBody(new ReturnStatement(yield));
-              } else if (exprSaved) {
-                Assignment assignment = new Assignment(new SimpleName(yieldSymbol), yield);
-                switchExpressionCase.setBody(new ExpressionStatement(assignment));
-              }
-            } else if (body.getKind() == TreeNode.Kind.BLOCK) {
-              List<Statement> blockStmts = ((Block) body).getStatements();
-              if (!blockStmts.isEmpty()) {
-                int lastIndex = blockStmts.size() - 1;
-                Statement lastStmt = blockStmts.get(lastIndex);
-                if (lastStmt.getKind() == TreeNode.Kind.YIELD_STATEMENT) {
-                  Expression yield = ((YieldStatement) lastStmt).getExpression().copy();
-                  if (exprReturned) {
-                    switchExpressionCase.setBody(new ReturnStatement(yield));
-                  } else if (exprSaved) {
-                    Assignment assignment = new Assignment(new SimpleName(yieldSymbol), yield);
-                    switchExpressionCase.setBody(new ExpressionStatement(assignment));
-                  }
+          SwitchExpressionCase switchExpressionCase = (SwitchExpressionCase) stmt;
+
+          // Convert any cases that have multiple expressions into a list of
+          // SwitchCases for all but the last expression, remove them from
+          // the SwitchExpressionCase and insert their SwitchCase equivalent
+          // ahead of the current case.
+          List<Expression> caseExprs = switchExpressionCase.getExpressions();
+          if (caseExprs.size() > 1) {
+            Iterator<Expression> caseExprIter = caseExprs.iterator();
+            Expression caseExpr = caseExprIter.next();
+            do {
+              caseExprIter.remove();
+              SwitchCase newCase = new SwitchCase();
+              newCase.setExpression(caseExpr.copy());
+              newNode.addStatement(newCase);
+              caseExpr = caseExprIter.next();
+            } while (caseExprIter.hasNext());
+          }
+
+          TreeNode body = switchExpressionCase.getBody();
+          if (body.getKind() == TreeNode.Kind.YIELD_STATEMENT) {
+            Expression yield = ((YieldStatement) body).getExpression().copy();
+            if (exprReturned) {
+              switchExpressionCase.setBody(new ReturnStatement(yield));
+            } else if (exprSaved) {
+              Assignment assignment = new Assignment(new SimpleName(yieldSymbol), yield);
+              switchExpressionCase.setBody(new ExpressionStatement(assignment));
+            }
+          } else if (body.getKind() == TreeNode.Kind.BLOCK) {
+            List<Statement> blockStmts = ((Block) body).getStatements();
+            if (!blockStmts.isEmpty()) {
+              int lastIndex = blockStmts.size() - 1;
+              Statement lastStmt = blockStmts.get(lastIndex);
+              if (lastStmt.getKind() == TreeNode.Kind.YIELD_STATEMENT) {
+                Expression yield = ((YieldStatement) lastStmt).getExpression().copy();
+                if (exprReturned) {
+                  switchExpressionCase.setBody(new ReturnStatement(yield));
+                } else if (exprSaved) {
+                  Assignment assignment = new Assignment(new SimpleName(yieldSymbol), yield);
+                  switchExpressionCase.setBody(new ExpressionStatement(assignment));
                 }
               }
             }
+          }
           newNode.addStatement(stmt);
         }
       }

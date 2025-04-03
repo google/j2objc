@@ -31,6 +31,7 @@ import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.SwitchExpression;
 import com.google.devtools.j2objc.ast.SwitchExpressionCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
@@ -44,6 +45,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Rewrites switch statements to be more compatible with Objective-C code.
@@ -77,6 +79,7 @@ public class SwitchRewriter extends UnitTreeVisitor {
   
   @Override
   public void endVisit(SwitchExpression node) {
+    fixStringValue(node);
     fixEnumValue(node);
   }
 
@@ -187,21 +190,29 @@ public class SwitchRewriter extends UnitTreeVisitor {
     }
   }
 
-  private void fixStringValue(SwitchStatement node) {
-    Expression expr = node.getExpression();
+  private @Nullable Expression fixStringValue(Expression expr, List<Statement> statements) {
     TypeMirror type = expr.getTypeMirror();
     if (!typeUtil.isString(type)) {
-      return;
+      return null;
     }
     ArrayType arrayType = typeUtil.getArrayType(type);
     ArrayInitializer arrayInit = new ArrayInitializer(arrayType);
     int idx = 0;
-    for (Statement stmt : node.getStatements()) {
-      if (stmt instanceof SwitchCase) {
+    for (Statement stmt : statements) {
+      if (stmt.getKind() == TreeNode.Kind.SWITCH_CASE) {
         SwitchCase caseStmt = (SwitchCase) stmt;
         if (!caseStmt.isDefault()) {
           arrayInit.addExpression(TreeUtil.remove(caseStmt.getExpression()));
           caseStmt.setExpression(NumberLiteral.newIntLiteral(idx++, typeUtil));
+        }
+      } else if (stmt.getKind() == TreeNode.Kind.SWITCH_EXPRESSION_CASE) {
+        SwitchExpressionCase caseStmt = (SwitchExpressionCase) stmt;
+        if (!caseStmt.isDefault()) {
+          List<Expression> caseExprs = caseStmt.getExpressions();
+          for (int i = 0; i < caseExprs.size(); i++) {
+            arrayInit.addExpression(caseExprs.get(i).copy());
+            caseExprs.set(i, NumberLiteral.newIntLiteral(idx++, typeUtil));
+          }
         }
       }
     }
@@ -212,7 +223,21 @@ public class SwitchRewriter extends UnitTreeVisitor {
     invocation.addArgument(TreeUtil.remove(expr))
         .addArgument(arrayInit)
         .addArgument(NumberLiteral.newIntLiteral(idx, typeUtil));
-    node.setExpression(invocation);
+    return invocation;
+  }
+
+  private void fixStringValue(SwitchStatement node) {
+    Expression expr = fixStringValue(node.getExpression(), node.getStatements());
+    if (expr != null) {
+      SwitchStatement unused = node.setExpression(expr);
+    }
+  }
+
+  private void fixStringValue(SwitchExpression node) {
+    Expression expr = fixStringValue(node.getExpression(), node.getStatements());
+    if (expr != null) {
+      SwitchExpression unused = node.setExpression(expr);
+    }
   }
 
   private void fixEnumValue(SwitchStatement node) {

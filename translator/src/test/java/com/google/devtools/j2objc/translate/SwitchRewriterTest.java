@@ -546,4 +546,54 @@ public class SwitchRewriterTest extends GenerationTest {
               "}");
         });
   }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testStringSwitchNewSyntax() throws IOException {
+    // Snippet from Guava's com.google.common.io.Files.
+    testOnJava17OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "import java.util.*;",
+                      "class Test {",
+                      "  String simplifyPath(String pathname) {",
+                      "    String[] components = pathname.split(\"/\");",
+                      "    List<String> path = new ArrayList<>();",
+                      "    for (String component : components) {",
+                      "      switch (component) {",
+                      "        case \".\" -> {",
+                      "          continue;",
+                      "        }",
+                      "        case \"..\" -> {",
+                      "          path.add(\"..\");",
+                      "        }",
+                      "        default -> path.add(component);",
+                      "      }",
+                      "    }",
+                      "    return String.join(\"/\", path);",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+              "switch (JreIndexOfStr(component, (id[]){ @\".\", @\"..\" }, 2)) {",
+              "  case 0:",
+              "  {",
+              "    continue;",
+              "  }",
+              "  break;",
+              "  case 1:",
+              "  {",
+              "    [path addWithId:@\"..\"];",
+              "  }",
+              "  break;",
+              "  default:",
+              "  [path addWithId:component];",
+              "  break;",
+              "}");
+        });
+  }
 }
