@@ -267,7 +267,8 @@ void JreStrictFieldRetainedWithRelease(id parent, id *pVar) {
 
 jint JreIndexOfStr(NSString *str, NSString **values, jint size) {
   for (int i = 0; i < size; i++) {
-    if ([str isEqualToString:values[i]]) {
+    if ([str isEqualToString:values[i]]
+        || (!str && !values[i])) {  // Check for null case, new in Java 21.
       return i;
     }
   }

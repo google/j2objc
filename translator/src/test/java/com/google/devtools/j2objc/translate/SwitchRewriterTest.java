@@ -537,10 +537,13 @@ public class SwitchRewriterTest extends GenerationTest {
               "  switch (choice) {",
               "    case 1:",
               "    result = nil;",
+              "    break;",
               "    case 2:",
               "    result = @\"Hello\";",
+              "    break;",
               "    default:",
               "    result = @\"World\";",
+              "    break;",
               "  };",
               "  return result;",
               "}");

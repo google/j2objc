@@ -1586,6 +1586,9 @@ public class TreeConverter {
             }
           }
           newNode.addStatement(stmt);
+          if (exprSaved) {
+            newNode.addStatement(new BreakStatement());
+          }
         }
       }
     } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException e) {

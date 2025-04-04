@@ -2013,27 +2013,29 @@ public class StatementGeneratorTest extends GenerationTest {
         });
   }
 
-  // Verify converted switch expression's AST looks correct. This isolates
-  // the TreeConverter from later translation steps.
-
   // TODO(tball): use text blocks when minimum Java is 15 or higher.
   @SuppressWarnings("StringConcatToTextBlock")
-  public void testASTConversionSimpleSwitchExpression() throws IOException {
+  public void testSimpleSwitchExpression() throws IOException {
     testOnJava17OrAbove(
         () -> {
-          String ast = translateType("Test", SIMPLE_SWITCH_EXPRESSION).toString();
+          String translation = translateSourceFile(SIMPLE_SWITCH_EXPRESSION, "Test", "Test.m");
           assertTranslatedLines(
-              ast,
-              "java.lang.String howMany(  int k){",
+              translation,
+              "- (NSString *)howManyWithInt:(jint)k {",
               "  switch (k) {",
-              "    case 1: return \"one\";",
-              "    case 2: return \"two\";",
-              "    default: return \"many\";",
+              "    case 1:",
+              "    return @\"one\";",
+              "    case 2:",
+              "    return @\"two\";",
+              "    default:",
+              "    return @\"many\";",
               "  };",
               "}");
         });
   }
 
+  // Verify converted switch expression's AST looks correct. This isolates
+  // the TreeConverter from later translation steps.
   @SuppressWarnings("StringConcatToTextBlock")
   public void testASTConversionSimpleSwitchExpressionWithPatternAndGuard() throws IOException {
     // Switch expression patterns introduced in Java 21.
@@ -2048,7 +2050,9 @@ public class StatementGeneratorTest extends GenerationTest {
               "switch (JreIndexOfStr(str, {}, 0)) {",
               "  case java.lang.String s when s.length() > 10: msg=JreStrcat($$, \"Long string:"
                   + " \", s);",
+              "  break;",
               "  case java.lang.String s: msg=JreStrcat($$, \"Short string: \", s);",
+              "  break;",
               "};",
               "return msg;",
               "}");
@@ -2059,26 +2063,31 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testNullSwitchExpressionCase() throws IOException {
     testOnJava21OrAbove(
         () -> {
-          String ast =
-              translateType(
-                      "Test",
-                      "class Test {\n"
+          String translation =
+              translateSourceFile("class Test {\n"
                           + "  String testNullCase(String s) {\n"
-                          + "    return switch (s) {\n"
+                          + "    String result = switch (s) {\n"
                           + "      case null -> \"oops\";\n"
                           + "      case \"Foo\", \"Bar\" -> \"great\";\n"
                           + "      default -> \"okay\";\n"
                           + "    };\n"
+                          + "    return result;"
                           + "  }\n"
-                          + "}\n")
+                          + "}\n", "Test", "Test.m")
                   .toString();
           assertTranslatedLines(
-              ast,
-              "switch (JreIndexOfStr(s, {null,\"Foo\",\"Bar\"}, 3)) {",
-              "  case 0: return \"oops\";",
+              translation,
+              "switch (JreIndexOfStr(s, (id[]){ nil, @\"Foo\", @\"Bar\" }, 3)) {",
+              "  case 0:",
+              "  result = @\"oops\";",
+              "  break;",
               "  case 1:",
-              "  case 2: return \"great\";",
-              "  default: return \"okay\";",
+              "  case 2:",
+              "  result = @\"great\";",
+              "  break;",
+              "  default:",
+              "  result = @\"okay\";",
+              "  break;",
               "};");
         });
   }
@@ -2088,10 +2097,8 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testQualifiedEnumNamesInSwitchExpressionCase() throws IOException {
     testOnJava21OrAbove(
         () -> {
-          String ast =
-              translateType(
-                      "Test",
-                      "sealed interface Currency permits Coin {}\n"
+          String translation =
+              translateSourceFile("sealed interface Currency permits Coin {}\n"
                           + "enum Coin implements Currency { HEADS, TAILS }\n"
                           + "class Test {"
                           + "  void goodEnumSwitch1(Currency c) {\n"
@@ -2104,22 +2111,22 @@ public class StatementGeneratorTest extends GenerationTest {
                           + "      }\n"
                           + "    }\n"
                           + "  }\n"
-                          + "}")
-                  .toString();
+                          + "}", "Test", "Test.m");
           assertTranslatedLines(
-              ast,
-              "void goodEnumSwitch1(  Currency c){",
+              translation,
+              "- (void)goodEnumSwitch1WithCurrency:(id<Currency>)c {",
               "  switch (c) {",
-              "    case Coin_Enum_HEADS: {",
-              "    ((java.io.PrintStream)nil_chk(JreLoadStatic(JavaLangSystem,"
-                  + " out))).println(\"Heads\");",
-              "    }",
-              "    break;",
-              "    case Coin_Enum_TAILS: {",
-              "    JreLoadStatic(JavaLangSystem, out).println(\"Tails\");",
-              "    }",
-              "    break;",
-              "  };",
+              "  case Coin_Enum_HEADS:",
+              "  {",
+              "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) printlnWithNSString:@\"Heads\"];",
+              "  }",
+              "  break;",
+              "  case Coin_Enum_TAILS:",
+              "  {",
+              "    [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Tails\"];",
+              "  }",
+              "  break;",
+              "  }",
               "}");
         });
   }
