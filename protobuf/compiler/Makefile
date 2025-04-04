@@ -50,6 +50,7 @@ ABSL_LIBS = \
   -l absl_hash \
 	-l absl_log_internal_check_op \
 	-l absl_log_internal_message \
+	-l absl_log_internal_nullguard \
 	-l absl_raw_hash_set \
 	-l absl_raw_logging_internal \
 	-l absl_spinlock_wait \
