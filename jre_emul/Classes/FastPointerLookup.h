@@ -13,8 +13,11 @@
 #ifndef FastPointerLookup_H_
 #define FastPointerLookup_H_
 
+#import <Foundation/Foundation.h>
 #import <pthread.h>
 #import <stdbool.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 struct FastPointerLookupStore;
 
@@ -44,4 +47,5 @@ void *FastPointerLookup(FastPointerLookup_t *lookup, void *key);
 // new mapping was added, false if the key is already mapped.
 bool FastPointerLookupAddMapping(FastPointerLookup_t *lookup, void *key, void *value);
 
+NS_ASSUME_NONNULL_END
 #endif // FastPointerLookup_H_
