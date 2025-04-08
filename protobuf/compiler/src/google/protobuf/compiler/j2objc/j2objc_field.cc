@@ -413,6 +413,25 @@ void RepeatedFieldGenerator::GenerateMessageOrBuilderProtocol(
       "- (jint)get$capitalized_name$Count;\n"
       "- (id<$list_type$>)get$capitalized_name$List;\n"
       "- ($nonnull_type$)get$capitalized_name$WithInt:(int)index;\n");
+
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+        variables_,
+        "@property (readonly, getter=Get$capitalized_name$Count) "
+        "jint $camelcase_name$Count;\n");
+  }
+}
+
+void RepeatedFieldGenerator::GenerateFieldSource(io::Printer* printer) const {
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(variables_, "\n@dynamic $camelcase_name$Count;\n");
+  }
+}
+
+void RepeatedFieldGenerator::GenerateFieldBuilderSource(io::Printer* printer) const {
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(variables_, "\n@dynamic $camelcase_name$Count;\n");
+  }
 }
 
 void RepeatedFieldGenerator::GenerateDeclaration(io::Printer* printer) const {

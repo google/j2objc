@@ -117,7 +117,9 @@ class RepeatedFieldGenerator : public FieldGenerator {
 
   virtual ~RepeatedFieldGenerator() { }
 
+  virtual void GenerateFieldSource(io::Printer* printer) const;
   virtual void GenerateFieldBuilderHeader(io::Printer* printer) const;
+  virtual void GenerateFieldBuilderSource(io::Printer* printer) const;
 
   virtual void GenerateMessageOrBuilderProtocol(io::Printer* printer) const;
 
