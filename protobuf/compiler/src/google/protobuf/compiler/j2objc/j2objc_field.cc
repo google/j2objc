@@ -426,7 +426,8 @@ void RepeatedFieldGenerator::GenerateMessageOrBuilderProtocol(
         "@property (readonly, getter=Get$capitalized_name$Count)"
         " jint $camelcase_name$Count;\n"
         "@property (readonly, getter=Get$capitalized_name$Array)"
-        " NSArray<$storage_type$> *$camelcase_name$List;\n");
+        " NSArray<$storage_type$> *$camelcase_name$List;\n"
+        "- ($nonnull_type$)get$capitalized_name$Index:(int)index;\n");
   }
 }
 

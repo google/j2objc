@@ -1075,7 +1075,8 @@ static BOOL ResolveGetAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, co
         return AddMapGetWithKeyMethod(cls, sel, field, true);
       }
     } else if (CGPFieldIsRepeated(field)) {
-      if (MatchesEnd(tail, "WithInt:")) {
+      if (MatchesEnd(tail, "WithInt:") ||
+         MatchesEnd(tail, "Index:") ) {
         return AddGetterMethod(cls, sel, field);
       } else if (MatchesEnd(tail, "Count")) {
         return AddCountMethod(cls, sel, field);
