@@ -447,6 +447,15 @@ static BOOL AddListGetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   return class_addMethod(cls, sel, imp, "@@:");
 }
 
+static BOOL AddArrayGetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
+  size_t offset = CGPFieldGetOffset(field, cls);
+  CGPFieldJavaType type = CGPFieldGetJavaType(field);
+  IMP imp = imp_implementationWithBlock(^id(id msg) {
+    return AUTORELEASE(CGPNewRepeatedFieldArray(REPEATED_FIELD_PTR(msg, offset), type));
+  });
+  return class_addMethod(cls, sel, imp, "@@:");
+}
+
 static BOOL AddMapGetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   size_t offset = CGPFieldGetOffset(field, cls);
   CGPFieldJavaType keyType = CGPFieldGetJavaType(CGPFieldMapKey(field));
@@ -1072,6 +1081,8 @@ static BOOL ResolveGetAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, co
         return AddCountMethod(cls, sel, field);
       } else if (MatchesEnd(tail, "List")) {
         return AddListGetterMethod(cls, sel, field);
+      } else if (MatchesEnd(tail, "Array")) {
+        return AddArrayGetterMethod(cls, sel, field);
       }
     } else {
       if (*tail == 0) {
@@ -1154,7 +1165,8 @@ static BOOL ResolveAddAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, co
   for (NSUInteger i = 0; i < count; ++i) {
     ComGoogleProtobufDescriptors_FieldDescriptor *field = fieldsBuf[i];
     const char *tail = selName;
-    if (MatchesName(&tail, field) && Matches(&tail, "With", 4) && MatchesKeyword(&tail, field)) {
+    if (MatchesName(&tail, field) &&
+        (Matches(&tail, "With", 4) ? MatchesKeyword(&tail, field) : true)) {
       if (MatchesEnd(tail, ":")) {
         return AddAdderMethod(cls, sel, field);
       } else if (MatchesEnd(tail, "_Builder:")) {

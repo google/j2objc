@@ -29,6 +29,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #import "com/google/protobuf/RepeatedField.h"
+#import <Foundation/Foundation.h>
 
 #import "J2ObjC_source.h"
 #import "com/google/protobuf/ByteString.h"
@@ -273,6 +274,17 @@ id<JavaUtilList> CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaTy
   }
   list->type_ = type;
   return list;
+}
+
+NSArray *CGPNewRepeatedFieldArray(CGPRepeatedField *field, CGPFieldJavaType type) {
+  // Currently, we just copy the list to a NSArray. Alternatively, we could create a NSArray
+  // subclass that behaves similar to the local list implementation here.
+  id<JavaUtilList> list = CGPNewRepeatedFieldList(field, type);
+  NSMutableArray *result = [[NSMutableArray alloc] init];
+  for (id object in list) {
+    [result addObject:object];
+  }
+  return result;
 }
 
 @implementation CGPRepeatedFieldList

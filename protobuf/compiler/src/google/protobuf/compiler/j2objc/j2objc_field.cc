@@ -394,6 +394,12 @@ void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
       "    (id<JavaLangIterable>)values;\n"
       "- (nonnull $classname$_Builder *)clear$capitalized_name$;\n"
   );
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+        variables_,
+        "- (nonnull $classname$_Builder *)add$capitalized_name$:\n"
+        "    ($nonnull_type$)value;\n");
+  }
   if (GetJavaType(descriptor_) == JAVATYPE_MESSAGE) {
     printer->Print(variables_,
         "- (nonnull $classname$_Builder*)\n"
@@ -417,20 +423,30 @@ void RepeatedFieldGenerator::GenerateMessageOrBuilderProtocol(
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
         variables_,
-        "@property (readonly, getter=Get$capitalized_name$Count) "
-        "jint $camelcase_name$Count;\n");
+        "@property (readonly, getter=Get$capitalized_name$Count)"
+        " jint $camelcase_name$Count;\n"
+        "@property (readonly, getter=Get$capitalized_name$Array)"
+        " NSArray<$storage_type$> *$camelcase_name$List;\n");
   }
 }
 
 void RepeatedFieldGenerator::GenerateFieldSource(io::Printer* printer) const {
   if (IsGenerateProperties(descriptor_->file())) {
-    printer->Print(variables_, "\n@dynamic $camelcase_name$Count;\n");
+    printer->Print(
+        variables_,
+        "\n"
+        "@dynamic $camelcase_name$Count;\n"
+        "@dynamic $camelcase_name$List;\n");
   }
 }
 
 void RepeatedFieldGenerator::GenerateFieldBuilderSource(io::Printer* printer) const {
   if (IsGenerateProperties(descriptor_->file())) {
-    printer->Print(variables_, "\n@dynamic $camelcase_name$Count;\n");
+    printer->Print(
+      variables_,
+      "\n"
+      "@dynamic $camelcase_name$Count;\n"
+      "@dynamic $camelcase_name$List;\n");
   }
 }
 

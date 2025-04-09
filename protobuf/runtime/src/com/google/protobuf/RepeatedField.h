@@ -100,6 +100,8 @@ CGP_ALWAYS_INLINE inline void CGPRepeatedFieldAddRetainedId(CGPRepeatedField *fi
 
 id<JavaUtilList> CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaType type);
 
+NSArray *CGPNewRepeatedFieldArray(CGPRepeatedField *field, CGPFieldJavaType type);
+
 id CGPRepeatedFieldGet(CGPRepeatedField *field, jint index, CGPFieldDescriptor *descriptor);
 
 void CGPRepeatedFieldAdd(CGPRepeatedField *field, id value, CGPFieldJavaType type);
