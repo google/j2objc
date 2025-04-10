@@ -229,8 +229,8 @@ std::string GetClassPrefix(const FileDescriptor *file,
 
 }  // namespace
 
-std::string SafeName(const std::string &name) {
-  std::string result = name;
+std::string SafeName(absl::string_view name) {
+  std::string result = std::string(name);
   if (kKeywords.count(result) > 0) {
     result.append("_");
   }
@@ -700,8 +700,7 @@ bool CanGenerateProperty(const FieldDescriptor *descriptor) {
 }
 
 bool CanGenerateProperty(const EnumValueDescriptor *descriptor) {
-  return IsGenerateProperties(descriptor->file()) &&
-         kKeywords.find(descriptor->name()) == kKeywords.end();
+  return IsGenerateProperties(descriptor->file());
 }
 
 void ParsePrefixLine(std::string line) {

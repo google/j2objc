@@ -191,7 +191,7 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
           "@property(class, readonly, retain) $classname$ *$name$ "
           "NS_SWIFT_NAME($name$);\n",
           "classname", ClassName(descriptor_), "name",
-          canonical_values_[i]->name());
+          SafeName(canonical_values_[i]->name()));
     }
   }
   if (!descriptor_->is_closed()) {
@@ -330,11 +330,12 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
   for (int i = 0; i < canonical_values_.size(); i++) {
     if (CanGenerateProperty(canonical_values_[i])) {
       printer->Print(
-          "+ ($classname$ *) $name$ {\n"
+          "+ ($classname$ *) $safe_name$ {\n"
           "  return $classname$_get_$name$();\n"
           "}\n",
           "classname", ClassName(descriptor_), "name",
-          canonical_values_[i]->name());
+          canonical_values_[i]->name(), "safe_name",
+          SafeName(canonical_values_[i]->name()));
     }
   }
 
