@@ -143,7 +143,9 @@ class MapFieldGenerator : public FieldGenerator {
 
   virtual ~MapFieldGenerator() { }
 
+  virtual void GenerateFieldSource(io::Printer* printer) const;
   virtual void GenerateFieldBuilderHeader(io::Printer* printer) const;
+  virtual void GenerateFieldBuilderSource(io::Printer* printer) const;
   virtual void GenerateMessageOrBuilderProtocol(io::Printer* printer) const;
   virtual void GenerateDeclaration(io::Printer* printer) const;
   virtual void GenerateMapEntryFieldData(io::Printer *printer) const;

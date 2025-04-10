@@ -141,6 +141,9 @@ void CGPMapFieldAssignFromList(
 id<JavaUtilMap> CGPMapFieldAsJavaMap(
     CGPMapField *field, CGPFieldJavaType keyType, CGPFieldJavaType valueType);
 
+NSDictionary *CGPMapFieldAsDict(CGPMapField *field, CGPFieldJavaType keyType,
+                                CGPFieldJavaType valueType);
+
 CF_EXTERN_C_END
 
 #endif // __ComGoogleProtobufMapField_H__

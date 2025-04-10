@@ -466,6 +466,16 @@ static BOOL AddMapGetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   return class_addMethod(cls, sel, imp, "@@:");
 }
 
+static BOOL AddDictGetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
+  size_t offset = CGPFieldGetOffset(field, cls);
+  CGPFieldJavaType keyType = CGPFieldGetJavaType(CGPFieldMapKey(field));
+  CGPFieldJavaType valueType = CGPFieldGetJavaType(CGPFieldMapValue(field));
+  IMP imp = imp_implementationWithBlock(^id(id msg) {
+    return CGPMapFieldAsDict(MAP_FIELD_PTR(msg, offset), keyType, valueType);
+  });
+  return class_addMethod(cls, sel, imp, "@@:");
+}
+
 static BOOL AddClearMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   IMP imp;
   size_t offset = CGPFieldGetOffset(field, cls);
@@ -1066,12 +1076,14 @@ static BOOL ResolveGetAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, co
         return AddCountMethod(cls, sel, field);
       } else if (MatchesEnd(tail, "Map")) {
         return AddMapGetterMethod(cls, sel, field);
-      } else if (Matches(&tail, "OrThrowWith", 11)
-          && MatchesKeyword(&tail, CGPFieldMapKey(field)) && MatchesEnd(tail, ":")) {
+      } else if (MatchesEnd(tail, "Dict")) {
+        return AddDictGetterMethod(cls, sel, field);
+      } else if (Matches(&tail, "OrThrowWith", 11) &&
+                 MatchesKeyword(&tail, CGPFieldMapKey(field)) && MatchesEnd(tail, ":")) {
         return AddMapGetWithKeyMethod(cls, sel, field, false);
-      } else if (Matches(&tail2, "OrDefaultWith", 13)
-          && MatchesKeyword(&tail2, CGPFieldMapKey(field)) && Matches(&tail2, ":with", 5)
-          && MatchesKeyword(&tail2, CGPFieldMapValue(field)) && MatchesEnd(tail2, ":")) {
+      } else if (Matches(&tail2, "OrDefaultWith", 13) &&
+                 MatchesKeyword(&tail2, CGPFieldMapKey(field)) && Matches(&tail2, ":with", 5) &&
+                 MatchesKeyword(&tail2, CGPFieldMapValue(field)) && MatchesEnd(tail2, ":")) {
         return AddMapGetWithKeyMethod(cls, sel, field, true);
       }
     } else if (CGPFieldIsRepeated(field)) {
@@ -1216,10 +1228,15 @@ static BOOL ResolvePutAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, co
   for (NSUInteger i = 0; i < count; ++i) {
     CGPFieldDescriptor *field = fieldsBuf[i];
     const char *tail = selName;
-    if (CGPFieldIsMap(field) && MatchesName(&tail, field) && Matches(&tail, "With", 4)
-        && MatchesKeyword(&tail, CGPFieldMapKey(field)) && Matches(&tail, ":with", 5)
-        && MatchesKeyword(&tail, CGPFieldMapValue(field)) && MatchesEnd(tail, ":")) {
-      return AddPutMethod(cls, sel, field);
+    if (CGPFieldIsMap(field) && MatchesName(&tail, field)) {
+      if (Matches(&tail, "With", 4) && MatchesKeyword(&tail, CGPFieldMapKey(field)) &&
+          Matches(&tail, ":with", 5) && MatchesKeyword(&tail, CGPFieldMapValue(field)) &&
+          MatchesEnd(tail, ":")) {
+        return AddPutMethod(cls, sel, field);
+      }
+      if (Matches(&tail, ":value", 6) && MatchesEnd(tail, ":")) {
+        return AddPutMethod(cls, sel, field);
+      }
     }
   }
   return NO;

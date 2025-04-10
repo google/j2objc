@@ -677,6 +677,18 @@ id<JavaUtilMap> CGPMapFieldAsJavaMap(
   return map;
 }
 
+NSDictionary *CGPMapFieldAsDict(CGPMapField *field, CGPFieldJavaType keyType,
+                                CGPFieldJavaType valueType) {
+  id<JavaUtilMap> map = CGPMapFieldAsJavaMap(field, keyType, valueType);
+  // Alternatively, we could use a NSDict subclass here, similar to the "Java" map impl,
+  // avoiding the copy -- or copy the underlying data from the underlying data structures directly.
+  NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
+  for (id entry in map.entrySet) {
+    result[[entry getKey]] = [entry getValue];
+  }
+  return result;
+}
+
 @interface CGPMapFieldEntrySet : JavaUtilAbstractSet {
  @package
   CGPMapFieldMap *map_;

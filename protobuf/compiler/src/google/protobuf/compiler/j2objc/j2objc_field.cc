@@ -94,6 +94,25 @@ std::string GetStorageType(const FieldDescriptor* descriptor) {
   }
 }
 
+std::string GetGenericType(const FieldDescriptor* descriptor) {
+  switch (GetJavaType(descriptor)) {
+    case JAVATYPE_INT:
+    case JAVATYPE_LONG:
+    case JAVATYPE_FLOAT:
+    case JAVATYPE_DOUBLE:
+    case JAVATYPE_BOOLEAN:
+      return "NSNumber *";
+    case JAVATYPE_STRING:
+      return "NSString *";
+    case JAVATYPE_BYTES:
+      return "ComGoogleProtobufByteString *";
+    case JAVATYPE_ENUM:
+      return ClassName(descriptor->enum_type()) + " *";
+    case JAVATYPE_MESSAGE:
+      return ClassName(descriptor->message_type()) + " *";
+  }
+}
+
 std::string GetNonNullType(const FieldDescriptor* descriptor) {
   switch (GetJavaType(descriptor)) {
     case JAVATYPE_INT:
@@ -136,6 +155,7 @@ void SetCommonFieldVariables(const FieldDescriptor* descriptor,
   (*variables)["parameter_type"] = GetParameterType(descriptor);
   (*variables)["storage_type"] = GetStorageType(descriptor);
   (*variables)["nonnull_type"] = GetNonNullType(descriptor);
+  (*variables)["generic_type"] = GetGenericType(descriptor);
   (*variables)["field_name"] = GetFieldName(descriptor);
   (*variables)["flags"] = GetFieldFlags(descriptor);
   (*variables)["field_type"] = GetFieldTypeEnumValue(descriptor);
@@ -426,7 +446,7 @@ void RepeatedFieldGenerator::GenerateMessageOrBuilderProtocol(
         "@property (readonly, getter=Get$capitalized_name$Count)"
         " jint $camelcase_name$Count;\n"
         "@property (readonly, getter=Get$capitalized_name$Array)"
-        " NSArray<$storage_type$> *$camelcase_name$List;\n"
+        " NSArray<$generic_type$> *$camelcase_name$List;\n"
         "- ($nonnull_type$)get$capitalized_name$Index:(int)index;\n");
   }
 }
@@ -466,8 +486,10 @@ MapFieldGenerator::MapFieldGenerator(
   value_field_ = entry_message->FindFieldByName("value");
 
   variables_["key_storage_type"] = GetStorageType(key_field_);
+  variables_["key_generic_type"] = GetStorageType(key_field_);
   variables_["key_parameter_type"] = GetParameterType(key_field_);
   variables_["key_descriptor_type"] = GetFieldTypeEnumValue(key_field_);
+  variables_["value_generic_type"] = GetGenericType(value_field_);
   variables_["value_nonnull_type"] = GetNonNullType(value_field_);
   variables_["value_parameter_type"] = GetParameterType(value_field_);
   variables_["value_descriptor_type"] = GetFieldTypeEnumValue(value_field_);
@@ -501,6 +523,31 @@ void MapFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer) const {
                  "*)put$capitalized_name$With$key_parameter_type$:"
                  "($key_storage_type$)key with$value_parameter_type$:"
                  "($value_nonnull_type$)value;\n");
+  
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+        variables_,
+        "- (nonnull $classname$_Builder *)put$capitalized_name$:"
+        "($key_nonnull_type$)key value:($value_nonnull_type$)value;\n");
+  }
+}
+
+void MapFieldGenerator::GenerateFieldSource(io::Printer* printer) const {
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+        variables_,
+        "\n"
+        "@dynamic $camelcase_name$Map;\n");
+  }
+}
+
+void MapFieldGenerator::GenerateFieldBuilderSource(io::Printer* printer) const {
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+      variables_,
+      "\n"
+      "@dynamic $camelcase_name$Map;\n");
+  }
 }
 
 void MapFieldGenerator::GenerateMessageOrBuilderProtocol(
@@ -518,6 +565,14 @@ void MapFieldGenerator::GenerateMessageOrBuilderProtocol(
       "with$value_parameter_type$:($value_nonnull_type$)defaultValue;\n"
       "- ($value_nonnull_type$)get$capitalized_name$OrThrowWith"
       "$key_parameter_type$:($key_storage_type$)key;\n");
+  
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+        variables_,
+        "@property (readonly, getter=Get$capitalized_name$Dict)"
+        " NSDictionary<$key_generic_type$, $value_generic_type$>"
+        " *$camelcase_name$Map;\n");
+  }
   // clang-format on
 }
 
