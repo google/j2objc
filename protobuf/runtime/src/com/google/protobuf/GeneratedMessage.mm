@@ -1179,7 +1179,7 @@ static BOOL ResolveAddAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, co
     ComGoogleProtobufDescriptors_FieldDescriptor *field = fieldsBuf[i];
     const char *tail = selName;
     if (MatchesName(&tail, field) &&
-        (Matches(&tail, "With", 4) ? MatchesKeyword(&tail, field) : true)) {
+        (Matches(&tail, "With", 4) ? MatchesKeyword(&tail, field) : Matches(&tail, "Value", 5))) {
       if (MatchesEnd(tail, ":")) {
         return AddAdderMethod(cls, sel, field);
       } else if (MatchesEnd(tail, "_Builder:")) {
@@ -1234,7 +1234,7 @@ static BOOL ResolvePutAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, co
           MatchesEnd(tail, ":")) {
         return AddPutMethod(cls, sel, field);
       }
-      if (Matches(&tail, ":value", 6) && MatchesEnd(tail, ":")) {
+      if (Matches(&tail, "Key", 3) && Matches(&tail, ":value", 6) && MatchesEnd(tail, ":")) {
         return AddPutMethod(cls, sel, field);
       }
     }
