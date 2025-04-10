@@ -330,7 +330,7 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
       "- (nonnull $classname$_Builder *)set$capitalized_name$With$parameter_type$:\n"
       "    ($nonnull_type$)value;\n"
       "- (nonnull $classname$_Builder *)clear$capitalized_name$;\n");
-  
+
   if (CanGenerateProperty(descriptor_)) {
     printer->Print(GetStorageType(descriptor_) == GetNonNullType(descriptor_) 
                    ? "@property (" : "@property (nonnull, retain, ");
@@ -340,7 +340,7 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
         "setter=Set$capitalized_name$With$parameter_type$:) "
         "$storage_type$ $camelcase_name$;\n");
   }
-  
+
   if (GetJavaType(descriptor_) == JAVATYPE_MESSAGE) {
     printer->Print(variables_,
         "- (nonnull $classname$_Builder*)\n"
@@ -417,7 +417,7 @@ void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
         variables_,
-        "- (nonnull $classname$_Builder *)add$capitalized_name$:\n"
+        "- (nonnull $classname$_Builder *)add$capitalized_name$Value:\n"
         "    ($nonnull_type$)value;\n");
   }
   if (GetJavaType(descriptor_) == JAVATYPE_MESSAGE) {
@@ -523,11 +523,11 @@ void MapFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer) const {
                  "*)put$capitalized_name$With$key_parameter_type$:"
                  "($key_storage_type$)key with$value_parameter_type$:"
                  "($value_nonnull_type$)value;\n");
-  
+
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
         variables_,
-        "- (nonnull $classname$_Builder *)put$capitalized_name$:"
+        "- (nonnull $classname$_Builder *)put$capitalized_name$Key:"
         "($key_nonnull_type$)key value:($value_nonnull_type$)value;\n");
   }
 }
@@ -565,7 +565,7 @@ void MapFieldGenerator::GenerateMessageOrBuilderProtocol(
       "with$value_parameter_type$:($value_nonnull_type$)defaultValue;\n"
       "- ($value_nonnull_type$)get$capitalized_name$OrThrowWith"
       "$key_parameter_type$:($key_storage_type$)key;\n");
-  
+
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
         variables_,
