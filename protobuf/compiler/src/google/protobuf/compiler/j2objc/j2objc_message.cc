@@ -223,7 +223,8 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
         "\n"
         "// in j2objc_message.cc \n"
         "@interface $classname$ : $superclassname$<$classname$OrBuilder>\n\n"
-        "+ (id<$classname$_Companion>) companion;\n"
+        "@property (nonnull, readonly, class)"
+        " id<$classname$_Companion> companion;\n"
         "+ (nonnull $classname$_Builder *)doNewBuilder;\n",
         "classname", ClassName(descriptor_), "superclassname", superclassName);
   } else {
