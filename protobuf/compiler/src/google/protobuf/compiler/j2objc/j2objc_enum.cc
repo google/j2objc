@@ -185,13 +185,13 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
   // We add an explicit Swift name to prevent weird implicit conversions
   // ("my_ENUM_LITERAL"). If we want to change this to "myEnumLiteral", we'll
   // need to revert cl/738525802
-  for (int i = 0; i < canonical_values_.size(); i++) {
-    if (CanGenerateProperty(canonical_values_[i])) {
+  if (IsGenerateProperties(descriptor_->file())) {
+    for (int i = 0; i < canonical_values_.size(); i++) {
       printer->Print(
           "@property(class, readonly, retain) $classname$ *$name$ "
           "NS_SWIFT_NAME($name$);\n",
           "classname", ClassName(descriptor_), "name",
-          canonical_values_[i]->name());
+          PropertyName(canonical_values_[i]));
     }
   }
   if (!descriptor_->is_closed()) {
@@ -327,14 +327,14 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "valuepreprocessorname", CValuePreprocessorName(descriptor_),
       "is_closed", SimpleItoa(descriptor_->is_closed()));
 
-  for (int i = 0; i < canonical_values_.size(); i++) {
-    if (CanGenerateProperty(canonical_values_[i])) {
+  if (IsGenerateProperties(descriptor_->file())) {
+    for (int i = 0; i < canonical_values_.size(); i++) {
       printer->Print(
           "+ ($classname$ *) $name$ {\n"
           "  return $classname$_get_$name$();\n"
           "}\n",
           "classname", ClassName(descriptor_), "name",
-          canonical_values_[i]->name());
+          PropertyName(canonical_values_[i]));
     }
   }
 

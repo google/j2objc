@@ -148,6 +148,7 @@ void SetCommonFieldVariables(const FieldDescriptor* descriptor,
                              std::map<std::string, std::string>* variables) {
   (*variables)["classname"] = ClassName(descriptor->containing_type());
   (*variables)["camelcase_name"] = UnderscoresToCamelCase(descriptor);
+  (*variables)["property_name"] = PropertyName(descriptor);
   (*variables)["capitalized_name"] =
       UnderscoresToCapitalizedCamelCase(descriptor);
   (*variables)["field_number"] = SimpleItoa(descriptor->number());
@@ -318,8 +319,8 @@ SingleFieldGenerator::SingleFieldGenerator(
 }
 
 void SingleFieldGenerator::GenerateFieldSource(io::Printer* printer) const {
-  if (CanGenerateProperty(descriptor_)) {
-    printer->Print(variables_, "\n@dynamic $camelcase_name$;\n");
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(variables_, "\n@dynamic $property_name$;\n");
   }
 }
 
@@ -331,14 +332,14 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
       "    ($nonnull_type$)value;\n"
       "- (nonnull $classname$_Builder *)clear$capitalized_name$;\n");
   
-  if (CanGenerateProperty(descriptor_)) {
+  if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(GetStorageType(descriptor_) == GetNonNullType(descriptor_) 
                    ? "@property (" : "@property (nonnull, retain, ");
     printer->Print(
         variables_,
         "getter=Get$capitalized_name$, "
         "setter=Set$capitalized_name$With$parameter_type$:) "
-        "$storage_type$ $camelcase_name$;\n");
+        "$storage_type$ $property_name$;\n");
   }
   
   if (GetJavaType(descriptor_) == JAVATYPE_MESSAGE) {
@@ -352,8 +353,8 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
 
 void SingleFieldGenerator::GenerateFieldBuilderSource(
     io::Printer* printer) const {
-  if (CanGenerateProperty(descriptor_)) {
-    printer->Print(variables_, "\n@dynamic $camelcase_name$;\n");
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(variables_, "\n@dynamic $property_name$;\n");
   }
 }
 
@@ -364,14 +365,14 @@ void SingleFieldGenerator::GenerateMessageOrBuilderProtocol(io::Printer* printer
     printer->Print(variables_, "- (BOOL)has$capitalized_name$;\n");
   }
 
-  if (CanGenerateProperty(descriptor_)) {
+  if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(GetStorageType(descriptor_) == GetNonNullType(descriptor_)
                        ? "@property ("
                        : "@property (nonnull, ");
 
     printer->Print(variables_,
                    "readonly, getter=Get$capitalized_name$) "
-                   "$storage_type$ $camelcase_name$;\n");
+                   "$storage_type$ $property_name$;\n");
   }
 
   printer->Print(variables_, "- ($nonnull_type$)get$capitalized_name$;\n");

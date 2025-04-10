@@ -692,16 +692,20 @@ std::string GetFieldOptionsData(const FieldDescriptor *descriptor) {
   return "NULL";
 }
 
-bool CanGenerateProperty(const FieldDescriptor *descriptor) {
+std::string PropertyName(const FieldDescriptor *descriptor) {
   // Use this when -std=c++20 is the minimum version:
   // !kKeywords.contains(UnderscoresToCamelCase(descriptor));
-  return IsGenerateProperties(descriptor->file()) &&
-         kKeywords.find(UnderscoresToCamelCase(descriptor)) == kKeywords.end();
+  return absl::StrCat(
+      UnderscoresToCamelCase(descriptor),
+      kKeywords.find(UnderscoresToCamelCase(descriptor)) == kKeywords.end()
+          ? ""
+          : "_");
 }
 
-bool CanGenerateProperty(const EnumValueDescriptor *descriptor) {
-  return IsGenerateProperties(descriptor->file()) &&
-         kKeywords.find(descriptor->name()) == kKeywords.end();
+std::string PropertyName(const EnumValueDescriptor *descriptor) {
+  return absl::StrCat(
+      descriptor->name(),
+      kKeywords.find(descriptor->name()) == kKeywords.end() ? "" : "_");
 }
 
 void ParsePrefixLine(std::string line) {
