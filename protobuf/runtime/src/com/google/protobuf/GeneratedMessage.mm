@@ -625,7 +625,7 @@ static BOOL AddBuilderAdderMethod(Class cls, SEL sel, CGPFieldDescriptor *field)
 
 #define GET_ADD_ALL_IMP(NAME) \
   static IMP GetAddAllImp##NAME(size_t offset) { \
-    return imp_implementationWithBlock(^id(id msg, id<JavaLangIterable> values) { \
+    return imp_implementationWithBlock(^id(id msg, id<NSFastEnumeration> values) { \
       CGPRepeatedField *repeatedField = REPEATED_FIELD_PTR(msg, offset); \
       for (id value in nil_chk(values)) { \
         CGPRepeatedFieldAdd##NAME(repeatedField, CGPUnboxValue##NAME(nil_chk(value))); \
@@ -1198,7 +1198,8 @@ static BOOL ResolveAddAllAccessor(
   for (NSUInteger i = 0; i < count; ++i) {
     ComGoogleProtobufDescriptors_FieldDescriptor *field = fieldsBuf[i];
     const char *tail = selName;
-    if (MatchesName(&tail, field) && MatchesEnd(tail, "WithJavaLangIterable:")) {
+    if (MatchesName(&tail, field) &&
+        (MatchesEnd(tail, "WithJavaLangIterable:") || MatchesEnd(tail, ":"))) {
       return AddAddAllMethod(cls, sel, field);
     }
   }

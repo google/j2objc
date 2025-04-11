@@ -331,7 +331,7 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
       "- (nonnull $classname$_Builder *)set$capitalized_name$With$parameter_type$:\n"
       "    ($nonnull_type$)value;\n"
       "- (nonnull $classname$_Builder *)clear$capitalized_name$;\n");
-  
+
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(GetStorageType(descriptor_) == GetNonNullType(descriptor_) 
                    ? "@property (" : "@property (nonnull, retain, ");
@@ -341,7 +341,7 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
         "setter=Set$capitalized_name$With$parameter_type$:) "
         "$storage_type$ $property_name$;\n");
   }
-  
+
   if (GetJavaType(descriptor_) == JAVATYPE_MESSAGE) {
     printer->Print(variables_,
         "- (nonnull $classname$_Builder*)\n"
@@ -419,7 +419,9 @@ void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
     printer->Print(
         variables_,
         "- (nonnull $classname$_Builder *)add$capitalized_name$:\n"
-        "    ($nonnull_type$)value;\n");
+        "    ($nonnull_type$)value;\n"
+        "- (nonnull $classname$_Builder *)addAll$capitalized_name$:\n"
+        "    (id<NSFastEnumeration>)values;\n");
   }
   if (GetJavaType(descriptor_) == JAVATYPE_MESSAGE) {
     printer->Print(variables_,
@@ -524,7 +526,7 @@ void MapFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer) const {
                  "*)put$capitalized_name$With$key_parameter_type$:"
                  "($key_storage_type$)key with$value_parameter_type$:"
                  "($value_nonnull_type$)value;\n");
-  
+
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
         variables_,
@@ -566,7 +568,7 @@ void MapFieldGenerator::GenerateMessageOrBuilderProtocol(
       "with$value_parameter_type$:($value_nonnull_type$)defaultValue;\n"
       "- ($value_nonnull_type$)get$capitalized_name$OrThrowWith"
       "$key_parameter_type$:($key_storage_type$)key;\n");
-  
+
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
         variables_,
