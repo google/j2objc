@@ -49,6 +49,10 @@ std::string CapitalizedName(const OneofDescriptor* descriptor) {
   return UnderscoresToCamelCase(descriptor->name(), true);
 }
 
+std::string CamelCaseName(const OneofDescriptor* descriptor) {
+  return UnderscoresToCamelCase(descriptor->name(), false);
+}
+
 std::string NotSetName(const OneofDescriptor* descriptor) {
   return ToUpper(CapitalizedName(descriptor)) + "_NOT_SET";
 }
@@ -160,6 +164,20 @@ void OneofGenerator::GenerateHeader(io::Printer* printer) {
       "+ ($classname$ *)valueOfWithInt:(jint)value;\n"
       "+ ($classname$ *)forNumberWithInt:(jint)value;\n"
       "- (jint)getNumber;\n"
+      "\n",
+      "classname", CaseClassName(descriptor_));
+
+  if (IsGenerateProperties(descriptor_->file())) {
+    for (int i = 0; i < descriptor_->field_count(); i++) {
+      printer->Print(
+          "@property(class, readonly, retain) $classname$ *$name$ "
+          "NS_SWIFT_NAME($name$);\n",
+          "classname", CaseClassName(descriptor_), "name",
+          CaseValueName(descriptor_->field(i)));
+    }
+  }
+
+  printer->Print(
       "\n"
       "@end\n"
       "\n"
@@ -187,6 +205,12 @@ void OneofGenerator::GenerateHeader(io::Printer* printer) {
         "classname", CaseClassName(descriptor_),
         "name", CaseValueName(descriptor_->field(i)));
   }
+
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print("@compatibility_alias KNP$classname$ $classname$;\n",
+                   "classname", CaseClassName(descriptor_));
+  }
+
   printer->Print(
       "inline $classname$ *$classname$_get_$name$(void);\n"
       "J2OBJC_ENUM_CONSTANT($classname$, $name$)\n",
@@ -269,6 +293,22 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
       "- (jint)getNumber {\n"
       "  return value_;\n"
       "}\n"
+      "\n",
+      "classname", CaseClassName(descriptor_), "count",
+      SimpleItoa(descriptor_->field_count() + 1));
+
+  if (IsGenerateProperties(descriptor_->file())) {
+    for (int i = 0; i < descriptor_->field_count(); i++) {
+      printer->Print(
+          "+ ($classname$ *) $name$ {\n"
+          "  return $classname$_get_$name$();\n"
+          "}\n",
+          "classname", CaseClassName(descriptor_), "name",
+          CaseValueName(descriptor_->field(i)));
+    }
+  }
+
+  printer->Print(
       "\n"
       "@end\n"
       "\n"
@@ -332,6 +372,15 @@ void OneofGenerator::GenerateMessageOrBuilder(io::Printer* printer) {
       "- ($classname$ *)get$capitalized_name$Case;\n",
       "classname", CaseClassName(descriptor_),
       "capitalized_name", CapitalizedName(descriptor_));
+
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+        "@property (readonly, getter=Get$capitalized_name$Case) "
+        "$classname$ *$camelcase_name$Case;\n",
+        "classname", CaseClassName(descriptor_), "capitalized_name",
+        CapitalizedName(descriptor_), "camelcase_name",
+        CamelCaseName(descriptor_));
+  }
 }
 
 }  // namespace j2objc

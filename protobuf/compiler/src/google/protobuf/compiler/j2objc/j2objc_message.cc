@@ -447,6 +447,11 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
         "  return [$classname$ newBuilder];\n"
         "}\n",
         "classname", ClassName(descriptor_));
+    for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
+      printer->Print(
+          "@dynamic $camelcase_name$Case;\n", "camelcase_name",
+          UnderscoresToCamelCase(descriptor_->oneof_decl(i)->name(), false));
+    }
   }
 
   printer->Print(
@@ -672,6 +677,13 @@ void MessageGenerator::GenerateBuilderSource(io::Printer* printer) {
   for (int i = 0; i < descriptor_->field_count(); i++) {
     field_generators_.get(descriptor_->field(i))
         .GenerateFieldBuilderSource(printer);
+  }
+  if (IsGenerateProperties(descriptor_->file())) {
+    for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
+      printer->Print(
+          "@dynamic $camelcase_name$Case;\n", "camelcase_name",
+          UnderscoresToCamelCase(descriptor_->oneof_decl(i)->name(), false));
+    }
   }
   printer->Print(
       "\n"
