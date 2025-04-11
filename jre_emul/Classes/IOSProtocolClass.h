@@ -24,7 +24,7 @@
 
 @interface IOSProtocolClass : IOSClass
 
-- (instancetype)initWithProtocol:(Protocol *)protocol;
+- (instancetype)initWithProtocol:(Protocol * _Nonnull)protocol;
 
 @end
 

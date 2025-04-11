@@ -26,10 +26,10 @@
 
 @interface IOSArrayClass : IOSClass {
   // An IOSClass is used instead of a Class so a IOSPrimitiveClass can be used.
-  IOSClass *componentType_;
+  IOSClass *_Nonnull componentType_;
 }
 
-- (instancetype)initWithComponentType:(IOSClass *)type;
+- (instancetype)initWithComponentType:(nonnull IOSClass *)type;
 
 @end
 

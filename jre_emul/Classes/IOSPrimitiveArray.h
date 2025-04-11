@@ -47,6 +47,8 @@
 
 // ********** IOSBooleanArray **********
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  * An Objective-C representation of a Java boolean array. Like a Java array,
  * an IOSBooleanArray is fixed-size but its elements are mutable.
@@ -292,7 +294,7 @@ __attribute__((always_inline)) inline jchar *IOSCharArray_GetRef(
 - (void)getBytes:(jbyte *)buffer length:(NSUInteger)length;
 
 // Create an array from an NSData object.
-+ (instancetype)arrayWithNSData:(NSData *)data;
++ (instancetype)arrayWithNSData:(nullable NSData *)data;
 
 // Copies the array contents into a specified buffer, up to the specified
 // length.  An IndexOutOfBoundsException is thrown if the specified length
@@ -774,9 +776,8 @@ __attribute__((always_inline)) inline jdouble *IOSDoubleArray_GetRef(
   return &array->buffer_[index];
 }
 
+NS_ASSUME_NONNULL_END
 
-#undef PRIMITIVE_ARRAY_INTERFACE
-#undef PRIMITIVE_ARRAY_C_INTERFACE
+#pragma clang diagnostic pop // ignored "-Wzero-length-array"
 
-#pragma clang diagnostic pop
 #endif // IOSPrimitiveArray_H
