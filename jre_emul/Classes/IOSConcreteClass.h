@@ -24,12 +24,12 @@
 #import "IOSMetadata.h"
 
 @interface IOSConcreteClass : IOSClass {
-  Class class_;
+  Class _Nonnull class_;
 }
 
-- (instancetype)initWithClass:(Class)cls
-                     metadata:(const J2ObjcClassInfo *)metadata;
-- (instancetype)initWithClass:(Class)cls;
+- (instancetype)initWithClass:(Class _Nonnull)cls
+                     metadata:(const J2ObjcClassInfo * _Nonnull)metadata;
+- (instancetype)initWithClass:(Class _Nonnull)cls;
 
 @end
 

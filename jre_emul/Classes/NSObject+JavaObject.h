@@ -30,6 +30,7 @@
 @class IOSClass;
 
 // A category that adds Java Object-compatible methods to NSObject.
+NS_ASSUME_NONNULL_BEGIN
 @interface NSObject (JavaObject) <JavaObject>
 
 // JavaObject doesn't implement Comparable, but the Comparable contract wants
@@ -50,14 +51,16 @@
 - (void)_java_lang_ref_original_release;
 
 @end
+NS_ASSUME_NONNULL_END
 
-__attribute__((always_inline)) inline void NSObject_init(NSObject *self) {
-  #pragma unused(self)
+__attribute__((always_inline)) inline void NSObject_init(NSObject* _Nonnull self) {
+#pragma unused(self)
 }
-__attribute__((always_inline)) NS_RETURNS_RETAINED inline NSObject *new_NSObject_init(void) {
+__attribute__((always_inline)) NS_RETURNS_RETAINED inline NSObject* _Nonnull new_NSObject_init(
+    void) {
   return [NSObject alloc];
 }
-__attribute__((always_inline)) inline NSObject *create_NSObject_init(void) {
+__attribute__((always_inline)) inline NSObject* _Nonnull create_NSObject_init(void) {
   return AUTORELEASE([NSObject alloc]);
 }
 

@@ -18,6 +18,7 @@
 // The entrySet, keySet and valueSet methods return sets not backed
 // by the Map, so modifications to the map won't be reflected in the
 // sets and vice-versa.
+NS_ASSUME_NONNULL_BEGIN
 @interface NSDictionaryMap : JavaUtilAbstractMap < JavaUtilMap > {
  @private
   // The backing native map.
@@ -36,5 +37,6 @@
 - (void)forEachWithJavaUtilFunctionBiConsumer:(id<JavaUtilFunctionBiConsumer>)action;
 
 @end
+NS_ASSUME_NONNULL_END
 
 #endif // _NSDictionaryMap_H_
