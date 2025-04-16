@@ -58,29 +58,33 @@ public abstract class AbstractOwnableSynchronizer
      */
     protected AbstractOwnableSynchronizer() { }
 
-    /**
-     * The current owner of exclusive mode synchronization.
-     */
-    private transient Thread exclusiveOwnerThread;
+  /**
+   * The current owner of exclusive mode synchronization.
+   *
+   * <p>J2ObjC: this is a concurrently accessed object field, its assignment cannot be atomic, so it
+   * must be made volatile.
+   */
+  private transient volatile Thread exclusiveOwnerThread;
 
-    /**
-     * Sets the thread that currently owns exclusive access.
-     * A {@code null} argument indicates that no thread owns access.
-     * This method does not otherwise impose any synchronization or
-     * {@code volatile} field accesses.
-     * @param thread the owner thread
-     */
-    protected final void setExclusiveOwnerThread(Thread thread) {
+  /**
+   * Sets the thread that currently owns exclusive access. A {@code null} argument indicates that no
+   * thread owns access. This method does not otherwise impose any synchronization or {@code
+   * volatile} field accesses. NOTE: The above is untrue in J2ObjC.
+   *
+   * @param thread the owner thread
+   */
+  protected final void setExclusiveOwnerThread(Thread thread) {
         exclusiveOwnerThread = thread;
     }
 
-    /**
-     * Returns the thread last set by {@code setExclusiveOwnerThread},
-     * or {@code null} if never set.  This method does not otherwise
-     * impose any synchronization or {@code volatile} field accesses.
-     * @return the owner thread
-     */
-    protected final Thread getExclusiveOwnerThread() {
+  /**
+   * Returns the thread last set by {@code setExclusiveOwnerThread}, or {@code null} if never set.
+   * This method does not otherwise impose any synchronization or {@code volatile} field accesses.
+   * NOTE: The above is untrue in J2ObjC.
+   *
+   * @return the owner thread
+   */
+  protected final Thread getExclusiveOwnerThread() {
         return exclusiveOwnerThread;
     }
 }
