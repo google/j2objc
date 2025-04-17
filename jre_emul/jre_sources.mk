@@ -2091,6 +2091,7 @@ JAVA_PUBLIC_SOURCES_ICU = \
   android/icu/text/DecimalFormat.java \
   android/icu/text/DecimalFormatSymbols.java \
   android/icu/text/DisplayContext.java \
+  android/icu/text/ListFormatter.java \
   android/icu/text/LocaleDisplayNames.java \
   android/icu/text/MessageFormat.java \
   android/icu/text/MessagePattern.java \
