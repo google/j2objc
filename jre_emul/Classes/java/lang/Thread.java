@@ -65,7 +65,7 @@ public class Thread implements Runnable {
   private int priority = NORM_PRIORITY;
   private volatile UncaughtExceptionHandler uncaughtExceptionHandler;
   private boolean isDaemon;
-  boolean interrupted;
+  private boolean interrupted;
   private ClassLoader contextClassLoader;
   ThreadLocal.ThreadLocalMap threadLocals = null;
   ThreadLocal.ThreadLocalMap inheritableThreadLocals = null;
@@ -688,7 +688,9 @@ public class Thread implements Runnable {
    * @see Thread#interrupted
    */
   public boolean isInterrupted() {
-    return interrupted;
+    synchronized (nativeThread) {
+      return interrupted;
+    }
   }
 
   /**

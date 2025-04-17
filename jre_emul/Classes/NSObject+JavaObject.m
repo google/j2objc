@@ -123,14 +123,14 @@ static void doWait(id obj, long long timeout) {
   }
   JavaLangThread *javaThread = JavaLangThread_currentThread();
   int result = OBJC_SYNC_SUCCESS;
-  if (!javaThread->interrupted_) {
+  if (![javaThread isInterrupted]) {
     assert(javaThread->blocker_ == nil);
     javaThread->blocker_ = obj;
     result = objc_sync_wait(obj, timeout);
     javaThread->blocker_ = nil;
   }
-  jboolean wasInterrupted = javaThread->interrupted_;
-  javaThread->interrupted_ = false;
+  // Check if the thread was interrupted after the wait and also clears the interrupted bit.
+  jboolean wasInterrupted = [JavaLangThread interrupted];
   if (wasInterrupted) {
     @throw AUTORELEASE([[JavaLangInterruptedException alloc] init]);
   }
