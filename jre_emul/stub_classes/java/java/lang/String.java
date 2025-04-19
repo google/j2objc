@@ -21,6 +21,8 @@ import java.io.ObjectStreamField;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Comparator;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 /*
  * Stub implementation of java.lang.String.
@@ -2166,10 +2168,9 @@ public final class String
      *
      * @since 11
      */
-    // TODO: b/321287692 - Add support for lines()
-    // public Stream<String> lines() {
-    //     return null;
-    // }
+    public Stream<String> lines() {
+        return null;
+    }
 
     /**
      * Adjusts the indentation of each line of this string based on the value of
@@ -2207,9 +2208,9 @@ public final class String
      *
      * @since 12
      */
-    // public String indent(int n) {
-    //     return null;
-    // }
+    public String indent(int n) {
+        return null;
+    }
 
     /**
      * Returns a string whose value is this string, with incidental
@@ -2299,9 +2300,9 @@ public final class String
      * @since 15
      *
      */
-    // public String stripIndent() {
-    //     return null;
-    // }
+    public String stripIndent() {
+        return null;
+    }
 
     /**
      * Returns a string whose value is this string, with escape sequences
@@ -2389,9 +2390,9 @@ public final class String
      *
      * @since 15
      */
-    // public String translateEscapes() {
-    //     return null;
-    // }
+    public String translateEscapes() {
+        return null;
+    }
 
     /**
      * This method allows the application of a function to {@code this}
@@ -2411,9 +2412,9 @@ public final class String
      *
      * @since 12
      */
-    // public <R> R transform(Function<? super String, ? extends R> f) {
-    //     return null;
-    // }
+    public <R> R transform(Function<? super String, ? extends R> f) {
+        return null;
+    }
 
     /**
      * This object (which is already a string!) is itself returned.
@@ -2424,32 +2425,13 @@ public final class String
         return null;
     }
 
-    /**
-     * Returns a stream of {@code int} zero-extending the {@code char} values
-     * from this sequence.  Any char which maps to a <a
-     * href="{@docRoot}/java.base/java/lang/Character.html#unicode">surrogate code
-     * point</a> is passed through uninterpreted.
-     *
-     * @return an IntStream of char values from this sequence
-     * @since 9
-     */
+    // J2ObjC: use CharSequence.chars() default implementation.
     // @Override
     // public IntStream chars() {
     //     return null;
     // }
 
-
-    /**
-     * Returns a stream of code point values from this sequence.  Any surrogate
-     * pairs encountered in the sequence are combined as if by {@linkplain
-     * Character#toCodePoint Character.toCodePoint} and the result is passed
-     * to the stream. Any other code units, including ordinary BMP characters,
-     * unpaired surrogates, and undefined code units, are zero-extended to
-     * {@code int} values which are then passed to the stream.
-     *
-     * @return an IntStream of Unicode code points from this sequence
-     * @since 9
-     */
+    // J2ObjC: use CharSequence.chars() default implementation.
     // @Override
     // public IntStream codePoints() { 
     //     return null;
@@ -2565,9 +2547,9 @@ public final class String
      * @since 15
      *
      */
-    // public String formatted(Object... args) {
-    //     return null;
-    // }
+    public String formatted(Object... args) {
+        return null;
+    }
 
     /**
      * Returns the string representation of the {@code Object} argument.
