@@ -1344,6 +1344,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     { NULL, "[LJavaLangReflectConstructor;", 0x1, -1, -1, 20, 21, -1, -1 },
     { NULL, "LJavaLangReflectField;", 0x1, 23, 1, 24, -1, -1, -1 },
     { NULL, "[LJavaLangReflectField;", 0x1, -1, -1, -1, -1, -1, -1 },
+    { NULL, "[LJavaLangReflectRecordComponent;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "LJavaLangReflectMethod;", 0x81, 25, 26, 18, 27, -1, -1 },
     { NULL, "[LJavaLangReflectMethod;", 0x1, -1, -1, 20, -1, -1, -1 },
     { NULL, "LIOSClass;", 0x1, -1, -1, -1, 15, -1, -1 },
@@ -1375,6 +1376,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, 38, 7, -1, 39, -1, -1 },
+    { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, 40, 10, -1, -1, -1, -1 },
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
@@ -1413,51 +1415,53 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
   methods[17].selector = @selector(getDeclaredConstructors);
   methods[18].selector = @selector(getDeclaredField:);
   methods[19].selector = @selector(getDeclaredFields);
-  methods[20].selector = @selector(getDeclaredMethod:parameterTypes:);
-  methods[21].selector = @selector(getDeclaredMethods);
-  methods[22].selector = @selector(getDeclaringClass);
-  methods[23].selector = @selector(getEnclosingClass);
-  methods[24].selector = @selector(getEnclosingConstructor);
-  methods[25].selector = @selector(getEnclosingMethod);
-  methods[26].selector = @selector(getEnumConstants);
-  methods[27].selector = @selector(getEnumConstantsShared);
-  methods[28].selector = @selector(getField:);
-  methods[29].selector = @selector(getFields);
-  methods[30].selector = @selector(getGenericInterfaces);
-  methods[31].selector = @selector(getGenericSuperclass);
-  methods[32].selector = @selector(getInterfaces);
-  methods[33].selector = @selector(getMethod:parameterTypes:);
-  methods[34].selector = @selector(getMethods);
-  methods[35].selector = @selector(getModifiers);
-  methods[36].selector = @selector(getName);
-  methods[37].selector = @selector(getPackage);
-  methods[38].selector = @selector(getPackageName);
-  methods[39].selector = @selector(getProtectionDomain);
-  methods[40].selector = @selector(getResource:);
-  methods[41].selector = @selector(getResourceAsStream:);
-  methods[42].selector = @selector(getSigners);
-  methods[43].selector = @selector(getSimpleName);
-  methods[44].selector = @selector(getSuperclass);
-  methods[45].selector = @selector(getTypeParameters);
-  methods[46].selector = @selector(isAnnotation);
-  methods[47].selector = @selector(isAnnotationPresentWithIOSClass:);
-  methods[48].selector = @selector(isAnonymousClass);
-  methods[49].selector = @selector(isArray);
-  methods[50].selector = @selector(isAssignableFrom:);
-  methods[51].selector = @selector(isEnum);
-  methods[52].selector = @selector(isInstance:);
-  methods[53].selector = @selector(isInterface);
-  methods[54].selector = @selector(isLocalClass);
-  methods[55].selector = @selector(isMemberClass);
-  methods[56].selector = @selector(isPrimitive);
-  methods[57].selector = @selector(isSynthetic);
-  methods[58].selector = @selector(newInstance);
-  methods[59].selector = @selector(description);
-  methods[60].selector = @selector(getDeclaredAnnotationsByTypeWithIOSClass:);
-  methods[61].selector = @selector(getAnnotationsByTypeWithIOSClass:);
-  methods[62].selector = @selector(getDeclaredAnnotationWithIOSClass:);
-  methods[63].selector = @selector(getTypeName);
-  methods[64].selector = @selector(toGenericString);
+  methods[20].selector = @selector(getRecordComponents);
+  methods[21].selector = @selector(getDeclaredMethod:parameterTypes:);
+  methods[22].selector = @selector(getDeclaredMethods);
+  methods[23].selector = @selector(getDeclaringClass);
+  methods[24].selector = @selector(getEnclosingClass);
+  methods[25].selector = @selector(getEnclosingConstructor);
+  methods[26].selector = @selector(getEnclosingMethod);
+  methods[27].selector = @selector(getEnumConstants);
+  methods[28].selector = @selector(getEnumConstantsShared);
+  methods[29].selector = @selector(getField:);
+  methods[30].selector = @selector(getFields);
+  methods[31].selector = @selector(getGenericInterfaces);
+  methods[32].selector = @selector(getGenericSuperclass);
+  methods[33].selector = @selector(getInterfaces);
+  methods[34].selector = @selector(getMethod:parameterTypes:);
+  methods[35].selector = @selector(getMethods);
+  methods[36].selector = @selector(getModifiers);
+  methods[37].selector = @selector(getName);
+  methods[38].selector = @selector(getPackage);
+  methods[39].selector = @selector(getPackageName);
+  methods[40].selector = @selector(getProtectionDomain);
+  methods[41].selector = @selector(getResource:);
+  methods[42].selector = @selector(getResourceAsStream:);
+  methods[43].selector = @selector(getSigners);
+  methods[44].selector = @selector(getSimpleName);
+  methods[45].selector = @selector(getSuperclass);
+  methods[46].selector = @selector(getTypeParameters);
+  methods[47].selector = @selector(isAnnotation);
+  methods[48].selector = @selector(isAnnotationPresentWithIOSClass:);
+  methods[49].selector = @selector(isAnonymousClass);
+  methods[50].selector = @selector(isArray);
+  methods[51].selector = @selector(isAssignableFrom:);
+  methods[52].selector = @selector(isEnum);
+  methods[53].selector = @selector(isRecord);
+  methods[54].selector = @selector(isInstance:);
+  methods[55].selector = @selector(isInterface);
+  methods[56].selector = @selector(isLocalClass);
+  methods[57].selector = @selector(isMemberClass);
+  methods[58].selector = @selector(isPrimitive);
+  methods[59].selector = @selector(isSynthetic);
+  methods[60].selector = @selector(newInstance);
+  methods[61].selector = @selector(description);
+  methods[62].selector = @selector(getDeclaredAnnotationsByTypeWithIOSClass:);
+  methods[63].selector = @selector(getAnnotationsByTypeWithIOSClass:);
+  methods[64].selector = @selector(getDeclaredAnnotationWithIOSClass:);
+  methods[65].selector = @selector(getTypeName);
+  methods[66].selector = @selector(toGenericString);
   #pragma clang diagnostic pop
   static const J2ObjcFieldInfo fields[] = {
     { "serialVersionUID", "J", .constantValue.asLong = IOSClass_serialVersionUID, 0x1a, -1, -1, -1,
@@ -1489,7 +1493,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     "Ljava/lang/reflect/GenericDeclaration;Ljava/lang/reflect/Type;"
     "Ljava/lang/reflect/AnnotatedElement;" };
   static const J2ObjcClassInfo _IOSClass = {
-    "Class", "java.lang", ptrTable, methods, fields, 7, 0x11, 65, 1, -1, -1, -1, 48, -1 };
+    "Class", "java.lang", ptrTable, methods, fields, 7, 0x11, 67, 1, -1, -1, -1, 48, -1 };
   return &_IOSClass;
 }
 

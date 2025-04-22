@@ -21,6 +21,9 @@
 
 #import <XCTest/XCTest.h>
 #import "NSString+JavaString.h"
+#import "java/util/List.h"
+#import "java/util/stream/Collectors.h"
+#import "java/util/stream/Stream.h"
 
 @interface NSString_JavaStringTest : XCTestCase {
 }
@@ -170,6 +173,16 @@
   NSString *s2 = @"red";
   XCTAssertTrue([s1 java_isBlank], @"String is blank.");
   XCTAssertFalse([s2 java_isBlank], @"String is not blank.");
+}
+
+- (void)testLines {
+  NSString *s = @"line1\nline2\nline3";
+  id<JavaUtilList> lines = 
+      [[s java_lines] collectWithJavaUtilStreamCollector:JavaUtilStreamCollectors_toList()];
+  XCTAssertEqual(3, [lines size], @"Wrong number of lines.");
+  XCTAssertEqualObjects(@"line1", [lines getWithInt:0], @"Wrong line.");
+  XCTAssertEqualObjects(@"line2", [lines getWithInt:1], @"Wrong line.");
+  XCTAssertEqualObjects(@"line3", [lines getWithInt:2], @"Wrong line.");
 }
 
 // Empty test to workaround an Xcode race condition parsing the test
