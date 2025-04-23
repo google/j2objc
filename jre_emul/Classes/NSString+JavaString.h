@@ -39,6 +39,8 @@
 @class JavaUtilLocale;
 @protocol JavaLangIterable;
 @protocol JavaUtilComparator;
+@protocol JavaUtilFunctionFunction;
+@protocol JavaUtilStreamStream;
 
 // A category that adds java.lang.String-like methods to NSString.  The method
 // list is not exhaustive, since methods that can be directly substituted are
@@ -182,6 +184,9 @@
 // CharSequence.charAt(int)
 - (jchar)charAtWithInt:(jint)index;
 
+// CharSequence.isEmpty()
+- (jboolean)isEmpty;
+
 // CharSequence.subSequence(int, int)
 - (nonnull id<JavaLangCharSequence>)subSequenceFrom:(jint)start
                                                  to:(jint)end;
@@ -303,6 +308,23 @@
 
 // String.isBlank()
 - (jboolean)java_isBlank;
+
+// String.lines()
+- (id<JavaUtilStreamStream>)java_lines;
+
+- (nonnull NSString *)java_indent:(jint)n;
+
+// String.stripIndent()
+- (nonnull NSString *)java_stripIndent;
+
+// String.translateEscapes()
+- (nonnull NSString *)java_translateEscapes;
+
+// String.formatted(Object...)
+- (NSString *)java_formattedWithNSObjectArray:(IOSObjectArray *)args;
+
+// String.transform(Function)
+- (nonnull id)transformWithJavaUtilFunctionFunction:(id<JavaUtilFunctionFunction>)f;
 
 @end
 
