@@ -450,7 +450,8 @@ void RepeatedFieldGenerator::GenerateMessageOrBuilderProtocol(
         " jint $camelcase_name$Count;\n"
         "@property (readonly, getter=Get$capitalized_name$Array)"
         " NSArray<$generic_type$> *$camelcase_name$List;\n"
-        "- ($nonnull_type$)get$capitalized_name$Index:(int)index;\n");
+        "- ($nonnull_type$)get$capitalized_name$Index:(int)index"
+        " NS_SWIFT_NAME(get$capitalized_name$(_:));\n");
   }
 }
 
