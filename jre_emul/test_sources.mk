@@ -273,7 +273,6 @@ TEST_SOURCES := \
     PackagePrefixesTest.java \
     RetentionTest.java \
     SerializationTest.java \
-    StringMethodsTest.java \
     UTF16EncodingTest.java \
     android/icu/dev/test/timezone/TimeZoneTest.java \
     android/icu/dev/test/timezone/TimeZoneAliasTest.java \

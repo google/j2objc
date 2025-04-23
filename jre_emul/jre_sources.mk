@@ -401,7 +401,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/HashMap.java \
   java/util/HashSet.java \
   java/util/Hashtable.java \
-  java/util/HexFormat.java \
   java/util/IdentityHashMap.java \
   java/util/IllegalFormatCodePointException.java \
   java/util/IllegalFormatConversionException.java \
