@@ -419,9 +419,10 @@ void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
     printer->Print(
         variables_,
         "- (nonnull $classname$_Builder *)add$capitalized_name$:\n"
-        "    ($nonnull_type$)value;\n"
+        "    ($nonnull_type$)value NS_SWIFT_NAME(add$capitalized_name$(_:));\n"
         "- (nonnull $classname$_Builder *)addAll$capitalized_name$:\n"
-        "    (id<NSFastEnumeration>)values;\n");
+        "    (id<NSFastEnumeration>)values"
+        " NS_SWIFT_NAME(addAll$capitalized_name$(_:));\n");
   }
   if (GetJavaType(descriptor_) == JAVATYPE_MESSAGE) {
     printer->Print(variables_,
