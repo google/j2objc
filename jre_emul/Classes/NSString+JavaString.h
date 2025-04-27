@@ -19,7 +19,6 @@
 
 #if __has_feature(nullability)
 #pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wnullability"
 #pragma GCC diagnostic ignored "-Wnullability-completeness"
 #endif
 
@@ -45,10 +44,11 @@
 // A category that adds java.lang.String-like methods to NSString.  The method
 // list is not exhaustive, since methods that can be directly substituted are
 // inlined.
+NS_ASSUME_NONNULL_BEGIN
 @interface NSString (JavaString) <JavaIoSerializable, JavaLangComparable, JavaLangCharSequence>
 
 // String.valueOf(Object)
-+ (nonnull NSString *)java_valueOf:(id<NSObject>)obj;
++ (nonnull NSString *)java_valueOf:(nullable id<NSObject>)obj;
 
 // String.valueOf(boolean)
 + (nonnull NSString *)java_valueOfBool:(jboolean)value;
@@ -227,7 +227,7 @@
 // String.format(String, ...), String.format(Locale, String, ...)
 + (nonnull NSString *)java_formatWithNSString:(NSString *)format
                             withNSObjectArray:(IOSObjectArray *)args;
-+ (nonnull NSString *)java_formatWithJavaUtilLocale:(JavaUtilLocale *)locale
++ (nonnull NSString *)java_formatWithJavaUtilLocale:(nullable JavaUtilLocale *)locale
                                        withNSString:(NSString *)format
                                   withNSObjectArray:(IOSObjectArray *)args;
 
@@ -327,6 +327,7 @@
 - (nonnull id)transformWithJavaUtilFunctionFunction:(id<JavaUtilFunctionFunction>)f;
 
 @end
+NS_ASSUME_NONNULL_END
 
 // String.format(Locale, String, Object...)
 FOUNDATION_EXPORT NSString *NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(

@@ -15,6 +15,9 @@
 #ifndef _J2OBJC_HEADER_H_
 #define _J2OBJC_HEADER_H_
 
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wnullability-completeness"
+
 #import "IOSObjectArray.h"
 #import "J2ObjC_common.h"
 #import "JavaObject.h"
@@ -339,5 +342,7 @@ CF_EXTERN_C_END
 // separate j2objc-translpiled code from the rest of the app code, so that developers
 // can measure how much of the app's size is due to transpiled Java code.
 #define J2OBJC_TEXT_SEGMENT __attribute__((section("__TEXT,__j2objc_text")))
+
+#pragma clang diagnostic pop
 
 #endif  // _J2OBJC_HEADER_H_
