@@ -644,6 +644,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/util/ImmutableCollections.java \
   java/util/RegularEnumSet.java \
   java/util/Tripwire.java \
+  java/util/XMLUtils.java \
   java/util/logging/Logging.java \
   java/util/logging/LoggingProxyImpl.java \
   java/util/stream/AbstractPipeline.java \
@@ -973,7 +974,6 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
 JAVA_PRIVATE_SOURCES_CONCURRENT =
 
 JAVA_PUBLIC_SOURCES_CHANNELS = \
-  java/nio/ChannelFactoryImpl.java \
   java/nio/channels/AcceptPendingException.java \
   java/nio/channels/AlreadyBoundException.java \
   java/nio/channels/AlreadyConnectedException.java \
@@ -1289,6 +1289,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/NoSuchAlgorithmException.java \
   java/security/NoSuchProviderException.java \
   java/security/Policy.java \
+  java/security/PolicySpi.java \
   java/security/Principal.java \
   java/security/PrivateKey.java \
   java/security/PrivilegedAction.java \
@@ -1680,7 +1681,6 @@ JAVA_PRIVATE_SOURCES_SSL = \
   com/google/j2objc/net/ssl/IosSslContextSpi.java
 
 JAVA_PUBLIC_SOURCES_XML = \
-  com/google/j2objc/util/PropertiesXmlLoader.java \
   javax/xml/XMLConstants.java \
   javax/xml/datatype/DatatypeConfigurationException.java \
   javax/xml/datatype/DatatypeConstants.java \
