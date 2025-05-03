@@ -82,7 +82,7 @@ std::string GetStorageType(const FieldDescriptor* descriptor) {
     case JAVATYPE_DOUBLE:
       return "jdouble";
     case JAVATYPE_BOOLEAN:
-      return "jboolean";
+      return "bool";
     case JAVATYPE_STRING:
       return "NSString *";
     case JAVATYPE_BYTES:
@@ -562,7 +562,7 @@ void MapFieldGenerator::GenerateMessageOrBuilderProtocol(
       variables_,
       "\n"
       "- (jint)get$capitalized_name$Count;\n"
-      "- (jboolean)contains$capitalized_name$With$key_parameter_type$:"
+      "- (bool)contains$capitalized_name$With$key_parameter_type$:"
       "($key_storage_type$)key;\n"
       "- (nonnull id<JavaUtilMap>)get$capitalized_name$Map;\n"
       "- ($value_nonnull_type$)get$capitalized_name$OrDefaultWith"

@@ -27,16 +27,16 @@
 
 // Base class for fields, methods, and constructors.
 @interface JavaLangReflectAccessibleObject : NSObject < JavaLangReflectAnnotatedElement > {
-  jboolean accessible_;
+  bool accessible_;
 }
 
-- (jboolean)isAccessible;
-- (void)setAccessibleWithBoolean:(jboolean)b;
+- (bool)isAccessible;
+- (void)setAccessibleWithBoolean:(bool)b;
 + (void)setAccessibleWithJavaLangReflectAccessibleObjectArray:(IOSObjectArray *)objects
-                                                  withBoolean:(jboolean)b;
+                                                  withBoolean:(bool)b;
 
 - (id)getAnnotationWithIOSClass:(IOSClass *)annotationClass;
-- (jboolean)isAnnotationPresentWithIOSClass:(IOSClass *)annotationClass;
+- (bool)isAnnotationPresentWithIOSClass:(IOSClass *)annotationClass;
 - (IOSObjectArray *)getAnnotations;
 - (IOSObjectArray *)getDeclaredAnnotations;
 - (NSString *)toGenericString;
@@ -48,7 +48,7 @@ CF_EXTERN_C_BEGIN
 void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self);
 
 void JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleObjectArray_withBoolean_(
-    IOSObjectArray *objects, jboolean b);
+    IOSObjectArray *objects, bool b);
 
 CF_EXTERN_C_END
 

@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -61,7 +60,7 @@ public class GwtConverterTest extends GenerationTest {
         + "class Test { boolean test() { "
         + "  if (GWT.isClient() || GWT.isScript()) { return true; } return false; }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (jboolean)test {", "return false;", "}");
+    assertTranslatedLines(translation, "- (bool)test {", "return false;", "}");
   }
 
   // Verify GwtIncompatible method is not stripped by default.
@@ -82,7 +81,7 @@ public class GwtConverterTest extends GenerationTest {
         + "class Test { "
         + "  @GwtIncompatible(\"don't use\") boolean test() { return false; }}",
         "Test", "Test.h");
-    assertTranslation(translation, "- (jboolean)test;");
+    assertTranslation(translation, "- (bool)test;");
   }
 
   // Verify GwtIncompatible method is not stripped with flag, if
@@ -94,7 +93,7 @@ public class GwtConverterTest extends GenerationTest {
         + "class Test { "
         + "  @GwtIncompatible(\"reflection\") boolean test() { return false; }}",
         "Test", "Test.h");
-    assertTranslation(translation, "- (jboolean)test;");
+    assertTranslation(translation, "- (bool)test;");
   }
 
   // Regression test: GwtConverter.visit(IfStatement) threw an NPE.

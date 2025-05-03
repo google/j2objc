@@ -43,11 +43,10 @@
  */
 
 static jint hashMember(NSString *name, id value);
-static jboolean isValidAnnotationMemberType(IOSClass *type);
-static jboolean memberEquals(IOSClass *type, id o1, id o2);
+static bool isValidAnnotationMemberType(IOSClass *type);
+static bool memberEquals(IOSClass *type, id o1, id o2);
 
-
-jboolean JreAnnotationEquals(id a1, id a2) {
+bool JreAnnotationEquals(id a1, id a2) {
   if (a1 == a2) {
     return true;
   }
@@ -83,7 +82,6 @@ jboolean JreAnnotationEquals(id a1, id a2) {
   return true;
 }
 
-
 jint JreAnnotationHashCode(id a) {
   jint result = 0;
   IOSClass *type = [((id<JavaLangAnnotationAnnotation>) nil_chk(a)) annotationType];
@@ -108,8 +106,7 @@ jint JreAnnotationHashCode(id a) {
   return result;
 }
 
-
-static jboolean isValidAnnotationMemberType(IOSClass *type) {
+static bool isValidAnnotationMemberType(IOSClass *type) {
   if ([type isArray]) {
     type = [type getComponentType];
   }
@@ -120,8 +117,7 @@ static jboolean isValidAnnotationMemberType(IOSClass *type) {
       || [NSString_class_() isEqual:type] || [IOSClass_class_() isEqual:type];
 }
 
-
-static jboolean annotationArrayMemberEquals(IOSObjectArray *a1, IOSObjectArray *a2) {
+static bool annotationArrayMemberEquals(IOSObjectArray *a1, IOSObjectArray *a2) {
   if (a1->size_ != a2->size_) {
     return false;
   }
@@ -133,8 +129,7 @@ static jboolean annotationArrayMemberEquals(IOSObjectArray *a1, IOSObjectArray *
   return true;
 }
 
-
-static jboolean arrayMemberEquals(IOSClass *componentType, id o1, id o2) {
+static bool arrayMemberEquals(IOSClass *componentType, id o1, id o2) {
   if ([componentType isAnnotation]) {
     return annotationArrayMemberEquals(o1, o2);
   }
@@ -165,7 +160,7 @@ static jboolean arrayMemberEquals(IOSClass *componentType, id o1, id o2) {
   return JavaUtilArrays_equalsWithNSObjectArray_withNSObjectArray_(o1, o2);
 }
 
-static jboolean memberEquals(IOSClass *type, id o1, id o2) {
+static bool memberEquals(IOSClass *type, id o1, id o2) {
   if (o1 == o2) {
     return true;
   }
@@ -180,7 +175,6 @@ static jboolean memberEquals(IOSClass *type, id o1, id o2) {
   }
   return [o1 isEqual:o2];
 }
-
 
 jint arrayMemberHash(IOSClass *componentType, id o) {
   if ([componentType isEqual:JavaLangByte_get_TYPE()]) {

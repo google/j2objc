@@ -367,13 +367,11 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@synthesize fooable = fooable_;");
 
     // Verify constructor generated.
-    assertTranslation(translation, "id<FooCompatible> create_FooCompatible(jboolean fooable) {");
+    assertTranslation(translation, "id<FooCompatible> create_FooCompatible(bool fooable) {");
     assertTranslation(translation, "fooable_ = fooable;");
 
     // Verify default value accessor.
-    assertTranslatedLines(translation,
-        "+ (jboolean)fooableDefault {",
-        "return false;");
+    assertTranslatedLines(translation, "+ (bool)fooableDefault {", "return false;");
 
     assertTranslatedLines(translation,
         "- (IOSClass *)annotationType {",

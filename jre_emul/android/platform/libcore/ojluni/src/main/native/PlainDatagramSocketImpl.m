@@ -355,7 +355,7 @@ JNIEXPORT void JNICALL Java_java_net_PlainDatagramSocketImpl_send(JNIEnv *env, j
     jbyteArray packetBuffer;
     jobject packetAddress;
     jint packetBufferOffset, packetBufferLen, packetPort;
-    jboolean connected;
+    bool connected;
 
     /* The fdObj'fd */
     jint fd;
@@ -754,9 +754,9 @@ JNIEXPORT void JNICALL Java_java_net_PlainDatagramSocketImpl_receive0(JNIEnv *en
     int n;
     SOCKADDR remote_addr;
     int len;
-    jboolean retry;
+    bool retry;
 #ifdef __linux__
-    jboolean connected = JNI_FALSE;
+    bool connected = JNI_FALSE;
     jobject connectedAddress = NULL;
     jint connectedPort = 0;
     jlong prevTime = 0;
@@ -1220,16 +1220,17 @@ static void setMulticastInterface(JNIEnv *env, jobject this, int fd,
  * Enable/disable local loopback of multicast datagrams.
  */
 static void mcast_set_loop_v4(JNIEnv *env, jobject this, int fd, jobject value) {
-    jboolean on;
-    char loopback;
+  bool on;
+  char loopback;
 
-    on = [((JavaLangBoolean *)value) booleanValue];
-    loopback = (!on ? 1 : 0);
+  on = [((JavaLangBoolean *)value) booleanValue];
+  loopback = (!on ? 1 : 0);
 
-    if (NET_SetSockOpt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, (const void *)&loopback, sizeof(char)) < 0) {
-        JNU_ThrowByName(env, JNU_JAVANETPKG "SocketException", "Error setting socket option");
-        return;
-    }
+  if (NET_SetSockOpt(fd, IPPROTO_IP, IP_MULTICAST_LOOP, (const void *)&loopback, sizeof(char)) <
+      0) {
+    JNU_ThrowByName(env, JNU_JAVANETPKG "SocketException", "Error setting socket option");
+    return;
+  }
 }
 
 /*
@@ -1237,16 +1238,17 @@ static void mcast_set_loop_v4(JNIEnv *env, jobject this, int fd, jobject value) 
  */
 #ifdef AF_INET6
 static void mcast_set_loop_v6(JNIEnv *env, jobject this, int fd, jobject value) {
-    jboolean on;
-    int loopback;
+  bool on;
+  int loopback;
 
-    on = [((JavaLangBoolean *)value) booleanValue];
-    loopback = (!on ? 1 : 0);
+  on = [((JavaLangBoolean *)value) booleanValue];
+  loopback = (!on ? 1 : 0);
 
-    if (NET_SetSockOpt(fd, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, (const void *)&loopback, sizeof(int)) < 0) {
-        JNU_ThrowByName(env, JNU_JAVANETPKG "SocketException", "Error setting socket option");
-        return;
-    }
+  if (NET_SetSockOpt(fd, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, (const void *)&loopback, sizeof(int)) <
+      0) {
+    JNU_ThrowByName(env, JNU_JAVANETPKG "SocketException", "Error setting socket option");
+    return;
+  }
 
 }
 #endif  /* AF_INET6 */
@@ -1348,14 +1350,14 @@ JNIEXPORT void JNICALL Java_java_net_PlainDatagramSocketImpl_socketSetOption(JNI
         case java_net_SocketOptions_SO_REUSEADDR:
         case java_net_SocketOptions_SO_BROADCAST:
             {
-                jboolean on;
-                on = [((JavaLangBoolean *)value) booleanValue];
+          bool on;
+          on = [((JavaLangBoolean *)value) booleanValue];
 
-                /* SO_REUSEADDR or SO_BROADCAST */
-                optval.i = (on ? 1 : 0);
-                optlen = sizeof(optval.i);
+          /* SO_REUSEADDR or SO_BROADCAST */
+          optval.i = (on ? 1 : 0);
+          optlen = sizeof(optval.i);
 
-                break;
+          break;
             }
 
         default :
@@ -1672,194 +1674,185 @@ JNIEXPORT jbyte JNICALL Java_java_net_PlainDatagramSocketImpl_getTTL(JNIEnv *env
  * socket options and if they fail we use the IPv6 socket options. This
  * seems a reasonable failsafe solution.
  */
-static void mcast_join_leave(JNIEnv *env, jobject this,
-                             jobject iaObj, jobject niObj,
-                             jboolean join) {
+static void mcast_join_leave(JNIEnv *env, jobject this, jobject iaObj, jobject niObj, bool join) {
+  jobject fdObj = (*env)->GetObjectField(env, this, pdsi_fdID);
+  jint fd;
+  jint ipv6_join_leave;
 
-    jobject fdObj = (*env)->GetObjectField(env, this, pdsi_fdID);
-    jint fd;
-    jint ipv6_join_leave;
+  if (IS_NULL(fdObj)) {
+    JNU_ThrowByName(env, JNU_JAVANETPKG "SocketException", "Socket closed");
+    return;
+  } else {
+    fd = (*env)->GetIntField(env, fdObj, IO_fd_fdID);
+  }
+  if (IS_NULL(iaObj)) {
+    JNU_ThrowNullPointerException(env, "iaObj");
+    return;
+  }
 
-    if (IS_NULL(fdObj)) {
-        JNU_ThrowByName(env, JNU_JAVANETPKG "SocketException",
-                        "Socket closed");
-        return;
-    } else {
-        fd = (*env)->GetIntField(env, fdObj, IO_fd_fdID);
-    }
-    if (IS_NULL(iaObj)) {
-        JNU_ThrowNullPointerException(env, "iaObj");
-        return;
-    }
+  /*
+   * Get java/net/NetworkInterface#index field.
+   */
+  static jfieldID ni_indexID;
+
+  if (ni_indexID == NULL) {
+    jclass c = (*env)->FindClass(env, "java/net/NetworkInterface");
+    CHECK_NULL(c);
+    ni_indexID = (*env)->GetFieldID(env, c, "index", "I");
+    CHECK_NULL(ni_indexID);
+  }
+
+  /*
+   * Determine if this is an IPv4 or IPv6 join/leave.
+   */
+  ipv6_join_leave = ipv6_available();
+
+  if (getInetAddress_family(env, iaObj) == IPv4) {
+    ipv6_join_leave = JNI_FALSE;
+  }
+
+  /*
+   * For IPv4 join use IP_ADD_MEMBERSHIP/IP_DROP_MEMBERSHIP socket option
+   *
+   * On Linux if IPv4 or IPv6 use IP_ADD_MEMBERSHIP/IP_DROP_MEMBERSHIP
+   */
+  if (!ipv6_join_leave) {
+    struct ip_mreqn mname;
+    int mname_len;
 
     /*
-     * Get java/net/NetworkInterface#index field.
-     */
-    static jfieldID ni_indexID;
-
-    if (ni_indexID == NULL) {
-      jclass c = (*env)->FindClass(env, "java/net/NetworkInterface");
-      CHECK_NULL(c);
-      ni_indexID = (*env)->GetFieldID(env, c, "index", "I");
-      CHECK_NULL(ni_indexID);
-    }
-
-    /*
-     * Determine if this is an IPv4 or IPv6 join/leave.
-     */
-    ipv6_join_leave = ipv6_available();
-
-    if (getInetAddress_family(env, iaObj) == IPv4) {
-        ipv6_join_leave = JNI_FALSE;
-    }
-
-    /*
-     * For IPv4 join use IP_ADD_MEMBERSHIP/IP_DROP_MEMBERSHIP socket option
+     * joinGroup(InetAddress, NetworkInterface) implementation :-
      *
-     * On Linux if IPv4 or IPv6 use IP_ADD_MEMBERSHIP/IP_DROP_MEMBERSHIP
+     * Linux/IPv6:  use ip_mreqn structure populated with multicast
+     *              address and interface index.
+     *
+     */
+    if (niObj != NULL) {
+      mname.imr_multiaddr.s_addr = htonl(getInetAddress_addr(env, iaObj));
+      mname.imr_address.s_addr = 0;
+      mname.imr_ifindex = (*env)->GetIntField(env, niObj, ni_indexID);
+      mname_len = sizeof(struct ip_mreqn);
+    }
+
+    /*
+     * joinGroup(InetAddress) implementation :-
+     *
+     * Linux/IPv6:  use ip_mreqn structure populated with multicast
+     *              address and interface index. index obtained
+     *              from cached value or IPV6_MULTICAST_IF.
+     *
+     * IPv4:        use ip_mreq structure populated with multicast
+     *              address and local address obtained from
+     *              IP_MULTICAST_IF. On Linux IP_MULTICAST_IF
+     *              returns different structure depending on
+     *              kernel.
+     */
+
+    if (niObj == NULL) {
+      int index;
+      int len = sizeof(index);
+
+      if (getsockopt(fd, IPPROTO_IPV6, IPV6_MULTICAST_IF, (char *)&index, (socklen_t *)&len) < 0) {
+        NET_ThrowCurrent(env, "getsockopt IPV6_MULTICAST_IF failed");
+        return;
+      }
+
+      mname.imr_multiaddr.s_addr = htonl(getInetAddress_addr(env, iaObj));
+      mname.imr_address.s_addr = 0;
+      mname.imr_ifindex = index;
+      mname_len = sizeof(struct ip_mreqn);
+    }
+
+    /*
+     * Join the multicast group.
+     */
+    if (setsockopt(fd, IPPROTO_IP, (join ? IP_ADD_MEMBERSHIP : IP_DROP_MEMBERSHIP), (char *)&mname,
+                   mname_len) < 0) {
+      /*
+       * If IP_ADD_MEMBERSHIP returns ENOPROTOOPT on Linux and we've got
+       * IPv6 enabled then it's possible that the kernel has been fixed
+       * so we switch to IPV6_ADD_MEMBERSHIP socket option.
+       * As of 2.4.7 kernel IPV6_ADD_MEMERSHIP can't handle IPv4-mapped
+       * addresses so we have to use IP_ADD_MEMERSHIP for IPv4 multicast
+       * groups. However if the socket is an IPv6 socket then then setsockopt
+       * should reurn ENOPROTOOPT. We assume this will be fixed in Linux
+       * at some stage.
+       */
+      if (errno == ENOPROTOOPT) {
+        if (ipv6_available()) {
+          ipv6_join_leave = JNI_TRUE;
+          errno = 0;
+        } else {
+          errno = ENOPROTOOPT; /* errno can be changed by ipv6_available */
+        }
+      }
+      if (errno) {
+        if (join) {
+          NET_ThrowCurrent(env, "setsockopt IP_ADD_MEMBERSHIP failed");
+        } else {
+          if (errno == ENOENT)
+            JNU_ThrowByName(env, JNU_JAVANETPKG "SocketException",
+                            "Not a member of the multicast group");
+          else
+            NET_ThrowCurrent(env, "setsockopt IP_DROP_MEMBERSHIP failed");
+        }
+      }
+    }
+
+    /*
+     * If we haven't switched to IPv6 socket option then we're done.
      */
     if (!ipv6_join_leave) {
-        struct ip_mreqn mname;
-        int mname_len;
+      return;
+    }
+  }
 
-        /*
-         * joinGroup(InetAddress, NetworkInterface) implementation :-
-         *
-         * Linux/IPv6:  use ip_mreqn structure populated with multicast
-         *              address and interface index.
-         *
-         */
-        if (niObj != NULL) {
-            mname.imr_multiaddr.s_addr = htonl(getInetAddress_addr(env, iaObj));
-            mname.imr_address.s_addr = 0;
-            mname.imr_ifindex =  (*env)->GetIntField(env, niObj, ni_indexID);
-            mname_len = sizeof(struct ip_mreqn);
-        }
+  /*
+   * IPv6 join. If it's an IPv4 multicast group then we use an IPv4-mapped
+   * address.
+   */
+  {
+    struct ipv6_mreq mname6;
 
+    jbyteArray ipaddress;
+    jbyte caddr[16];
+    jint family;
+    jint address;
+    family = getInetAddress_family(env, iaObj) == IPv4 ? AF_INET : AF_INET6;
+    if (family == AF_INET) { /* will convert to IPv4-mapped address */
+      memset((char *)caddr, 0, 16);
+      address = getInetAddress_addr(env, iaObj);
 
-        /*
-         * joinGroup(InetAddress) implementation :-
-         *
-         * Linux/IPv6:  use ip_mreqn structure populated with multicast
-         *              address and interface index. index obtained
-         *              from cached value or IPV6_MULTICAST_IF.
-         *
-         * IPv4:        use ip_mreq structure populated with multicast
-         *              address and local address obtained from
-         *              IP_MULTICAST_IF. On Linux IP_MULTICAST_IF
-         *              returns different structure depending on
-         *              kernel.
-         */
+      caddr[10] = 0xff;
+      caddr[11] = 0xff;
 
-        if (niObj == NULL) {
-            int index;
-            int len = sizeof(index);
-
-            if (getsockopt(fd, IPPROTO_IPV6, IPV6_MULTICAST_IF,
-                               (char*)&index, (socklen_t *)&len) < 0) {
-                NET_ThrowCurrent(env, "getsockopt IPV6_MULTICAST_IF failed");
-                return;
-            }
-
-            mname.imr_multiaddr.s_addr = htonl(getInetAddress_addr(env, iaObj));
-            mname.imr_address.s_addr = 0 ;
-            mname.imr_ifindex = index;
-            mname_len = sizeof(struct ip_mreqn);
-        }
-
-
-        /*
-         * Join the multicast group.
-         */
-        if (setsockopt(fd, IPPROTO_IP, (join ? IP_ADD_MEMBERSHIP:IP_DROP_MEMBERSHIP),
-                           (char *) &mname, mname_len) < 0) {
-
-            /*
-             * If IP_ADD_MEMBERSHIP returns ENOPROTOOPT on Linux and we've got
-             * IPv6 enabled then it's possible that the kernel has been fixed
-             * so we switch to IPV6_ADD_MEMBERSHIP socket option.
-             * As of 2.4.7 kernel IPV6_ADD_MEMERSHIP can't handle IPv4-mapped
-             * addresses so we have to use IP_ADD_MEMERSHIP for IPv4 multicast
-             * groups. However if the socket is an IPv6 socket then then setsockopt
-             * should reurn ENOPROTOOPT. We assume this will be fixed in Linux
-             * at some stage.
-             */
-            if (errno == ENOPROTOOPT) {
-                if (ipv6_available()) {
-                    ipv6_join_leave = JNI_TRUE;
-                    errno = 0;
-                } else  {
-                    errno = ENOPROTOOPT;    /* errno can be changed by ipv6_available */
-                }
-            }
-            if (errno) {
-                if (join) {
-                    NET_ThrowCurrent(env, "setsockopt IP_ADD_MEMBERSHIP failed");
-                } else {
-                    if (errno == ENOENT)
-                        JNU_ThrowByName(env, JNU_JAVANETPKG "SocketException",
-                            "Not a member of the multicast group");
-                    else
-                        NET_ThrowCurrent(env, "setsockopt IP_DROP_MEMBERSHIP failed");
-                }
-            }
-        }
-
-        /*
-         * If we haven't switched to IPv6 socket option then we're done.
-         */
-        if (!ipv6_join_leave) {
-            return;
-        }
+      caddr[12] = ((address >> 24) & 0xff);
+      caddr[13] = ((address >> 16) & 0xff);
+      caddr[14] = ((address >> 8) & 0xff);
+      caddr[15] = (address & 0xff);
+    } else {
+      ipaddress = ((JavaNetInet6Address *)iaObj)->holder6_->ipaddress_;
+      (*env)->GetByteArrayRegion(env, ipaddress, 0, 16, caddr);
     }
 
+    memcpy((void *)&(mname6.ipv6mr_multiaddr), caddr, sizeof(struct in6_addr));
+    if (IS_NULL(niObj)) {
+      int index;
+      int len = sizeof(index);
 
-    /*
-     * IPv6 join. If it's an IPv4 multicast group then we use an IPv4-mapped
-     * address.
-     */
-    {
-        struct ipv6_mreq mname6;
-
-        jbyteArray ipaddress;
-        jbyte caddr[16];
-        jint family;
-        jint address;
-        family = getInetAddress_family(env, iaObj) == IPv4? AF_INET : AF_INET6;
-        if (family == AF_INET) { /* will convert to IPv4-mapped address */
-            memset((char *) caddr, 0, 16);
-            address = getInetAddress_addr(env, iaObj);
-
-            caddr[10] = 0xff;
-            caddr[11] = 0xff;
-
-            caddr[12] = ((address >> 24) & 0xff);
-            caddr[13] = ((address >> 16) & 0xff);
-            caddr[14] = ((address >> 8) & 0xff);
-            caddr[15] = (address & 0xff);
-        } else {
-            ipaddress = ((JavaNetInet6Address *)iaObj)->holder6_->ipaddress_;
-            (*env)->GetByteArrayRegion(env, ipaddress, 0, 16, caddr);
+      {
+        if (getsockopt(fd, IPPROTO_IPV6, IPV6_MULTICAST_IF, (char *)&index, (socklen_t *)&len) <
+            0) {
+          NET_ThrowCurrent(env, "getsockopt IPV6_MULTICAST_IF failed");
+          return;
         }
+      }
 
-        memcpy((void *)&(mname6.ipv6mr_multiaddr), caddr, sizeof(struct in6_addr));
-        if (IS_NULL(niObj)) {
-            int index;
-            int len = sizeof(index);
-
-            {
-                if (getsockopt(fd, IPPROTO_IPV6, IPV6_MULTICAST_IF,
-                                 (char*)&index, (socklen_t *)&len) < 0) {
-                    NET_ThrowCurrent(env, "getsockopt IPV6_MULTICAST_IF failed");
-                    return;
-                }
-            }
-
-            mname6.ipv6mr_interface = index;
-        } else {
-            jint idx = (*env)->GetIntField(env, niObj, ni_indexID);
-            mname6.ipv6mr_interface = idx;
-        }
+      mname6.ipv6mr_interface = index;
+    } else {
+      jint idx = (*env)->GetIntField(env, niObj, ni_indexID);
+      mname6.ipv6mr_interface = idx;
+    }
 
 #define IPV6_ADD_MEMBERSHIP     IPV6_JOIN_GROUP
 #define IPV6_DROP_MEMBERSHIP    IPV6_LEAVE_GROUP

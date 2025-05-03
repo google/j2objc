@@ -715,7 +715,7 @@ NSDictionary *CGPMapFieldAsDict(CGPMapField *field, CGPFieldJavaType keyType,
   return CGPMapFieldMapSize(&field_, keyType_, valueType_);
 }
 
-- (jboolean)containsKeyWithId:(id)pKey {
+- (bool)containsKeyWithId:(id)pKey {
   CGPValue key = UnboxValue(pKey, keyType_);
   return CGPMapFieldGetWithKey(&field_, key, keyType_, valueType_) != NULL;
 }
@@ -765,7 +765,7 @@ NSDictionary *CGPMapFieldAsDict(CGPMapField *field, CGPFieldJavaType keyType,
 
 @implementation CGPMapFieldEntrySetIterator
 
-- (jboolean)hasNext {
+- (bool)hasNext {
   return nextEntry_ != NULL;
 }
 

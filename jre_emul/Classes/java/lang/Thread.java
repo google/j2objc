@@ -18,7 +18,6 @@
 package java.lang;
 
 import com.google.j2objc.annotations.Weak;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -659,10 +658,9 @@ public class Thread implements Runnable {
   }
 
   /**
-   * Returns a <code>boolean</code> indicating whether the current Thread (
-   * <code>currentThread()</code>) has a pending interrupt request (<code>
-   * true</code>) or not (<code>false</code>). It also has the side-effect of
-   * clearing the flag.
+   * Returns a <code>boolean</code> indicating whether the current Thread ( <code>currentThread()
+   * </code>) has a pending interrupt request (<code>
+   * true</code>) or not (<code>false</code>). It also has the side-effect of clearing the flag.
    *
    * @return a <code>boolean</code> indicating the interrupt status
    * @see Thread#currentThread
@@ -672,7 +670,7 @@ public class Thread implements Runnable {
   public static native boolean interrupted() /*-[
     JavaLangThread *currentThread = JavaLangThread_currentThread();
     @synchronized(currentThread->nativeThread_) {
-      jboolean result = currentThread->interrupted_;
+      bool result = currentThread->interrupted_;
       currentThread->interrupted_ = false;
       return result;
     }

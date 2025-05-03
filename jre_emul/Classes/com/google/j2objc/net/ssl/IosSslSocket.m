@@ -313,35 +313,35 @@ static NSDictionary *protocolMapping;
   }
 }
 
-- (void)setUseClientModeWithBoolean:(jboolean)mode {
+- (void)setUseClientModeWithBoolean:(bool)mode {
   J2ObjCThrowByName(JavaLangUnsupportedOperationException, @"");
 }
 
-- (jboolean)getUseClientMode {
+- (bool)getUseClientMode {
   return TRUE;  // Currently only client mode is supported.
 }
 
-- (void)setNeedClientAuthWithBoolean:(jboolean)need {
+- (void)setNeedClientAuthWithBoolean:(bool)need {
   J2ObjCThrowByName(JavaLangUnsupportedOperationException, @"");
 }
 
-- (jboolean)getNeedClientAuth {
+- (bool)getNeedClientAuth {
   return FALSE;
 }
 
-- (void)setWantClientAuthWithBoolean:(jboolean)want {
+- (void)setWantClientAuthWithBoolean:(bool)want {
   J2ObjCThrowByName(JavaLangUnsupportedOperationException, @"");
 }
 
-- (jboolean)getWantClientAuth {
+- (bool)getWantClientAuth {
   return FALSE;
 }
 
-- (void)setEnableSessionCreationWithBoolean:(jboolean)flag {
+- (void)setEnableSessionCreationWithBoolean:(bool)flag {
   J2ObjCThrowByName(JavaLangUnsupportedOperationException, @"");
 }
 
-- (jboolean)getEnableSessionCreation {
+- (bool)getEnableSessionCreation {
   return FALSE;
 }
 
@@ -593,7 +593,7 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
   return [underlyingSocket getInetAddress];
 }
 
-- (jboolean)getKeepAlive {
+- (bool)getKeepAlive {
   return [underlyingSocket getKeepAlive];
 }
 
@@ -609,7 +609,7 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
   return [underlyingSocket getLocalSocketAddress];
 }
 
-- (jboolean)getOOBInline {
+- (bool)getOOBInline {
   return [underlyingSocket getOOBInline];
 }
 
@@ -625,7 +625,7 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
   return [underlyingSocket getRemoteSocketAddress];
 }
 
-- (jboolean)getReuseAddress {
+- (bool)getReuseAddress {
   return [underlyingSocket getReuseAddress];
 }
 
@@ -641,7 +641,7 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
   return [underlyingSocket getSoTimeout];
 }
 
-- (jboolean)getTcpNoDelay {
+- (bool)getTcpNoDelay {
   return [underlyingSocket getTcpNoDelay];
 }
 
@@ -649,23 +649,23 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
   return [underlyingSocket getTrafficClass];
 }
 
-- (jboolean)isBound {
+- (bool)isBound {
   return [underlyingSocket isBound];
 }
 
-- (jboolean)isClosed {
+- (bool)isClosed {
   return [underlyingSocket isClosed];
 }
 
-- (jboolean)isConnected {
+- (bool)isConnected {
   return [underlyingSocket isConnected];
 }
 
-- (jboolean)isInputShutdown {
+- (bool)isInputShutdown {
   return [underlyingSocket isInputShutdown];
 }
 
-- (jboolean)isOutputShutdown {
+- (bool)isOutputShutdown {
   return [underlyingSocket isOutputShutdown];
 }
 
@@ -673,11 +673,11 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
   [underlyingSocket sendUrgentDataWithInt:data];
 }
 
-- (void)setKeepAliveWithBoolean:(jboolean)on {
+- (void)setKeepAliveWithBoolean:(bool)on {
   [underlyingSocket setKeepAliveWithBoolean:on];
 }
 
-- (void)setOOBInlineWithBoolean:(jboolean)on {
+- (void)setOOBInlineWithBoolean:(bool)on {
   [underlyingSocket setOOBInlineWithBoolean:on];
 }
 
@@ -693,7 +693,7 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
   [underlyingSocket setReceiveBufferSizeWithInt:size];
 }
 
-- (void)setReuseAddressWithBoolean:(jboolean)on {
+- (void)setReuseAddressWithBoolean:(bool)on {
   [underlyingSocket setReuseAddressWithBoolean:on];
 }
 
@@ -701,8 +701,7 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
   [underlyingSocket setSendBufferSizeWithInt:size];
 }
 
-- (void)setSoLingerWithBoolean:(jboolean)on
-                       withInt:(jint)linger {
+- (void)setSoLingerWithBoolean:(bool)on withInt:(jint)linger {
   [underlyingSocket setSoLingerWithBoolean:on withInt:linger];
 }
 
@@ -710,7 +709,7 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
   [underlyingSocket setSoTimeoutWithInt:timeout];
 }
 
-- (void)setTcpNoDelayWithBoolean:(jboolean)on {
+- (void)setTcpNoDelayWithBoolean:(bool)on {
   [underlyingSocket setTcpNoDelayWithBoolean:on];
 }
 
@@ -730,7 +729,7 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
   return [underlyingSocket description];
 }
 
-- (void)createImplWithBoolean:(jboolean)stream {
+- (void)createImplWithBoolean:(bool)stream {
   [underlyingSocket createImplWithBoolean:stream];
 }
 
@@ -762,7 +761,7 @@ ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSslIosSslSocket_init
 
 // public IosSslSocket(Socket s, String host, int port, boolean autoClose)
 void WrapperSocket_initWithJavaNetSocket_initWithNSString_withInt_withBoolean_(
-    WrapperSocket *self, JavaNetSocket *socket, NSString *host, jint port, jboolean autoClose) {
+    WrapperSocket *self, JavaNetSocket *socket, NSString *host, jint port, bool autoClose) {
   if (![nil_chk(socket) isConnected]) {
     J2ObjCThrowByName(JavaNetSocketException, @"socket is not connected.");
   }
@@ -774,17 +773,16 @@ void WrapperSocket_initWithJavaNetSocket_initWithNSString_withInt_withBoolean_(
 
 ComGoogleJ2objcNetSslIosSslSocket *
 new_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetSocket_withNSString_withInt_withBoolean_(
-    JavaNetSocket *socket, NSString *host, jint port, jboolean autoClose) {
-  J2OBJC_NEW_IMPL(WrapperSocket, initWithJavaNetSocket_initWithNSString_withInt_withBoolean_,
-                  socket, host, port, autoClose)
-}
+    JavaNetSocket *socket, NSString *host, jint port, bool autoClose){
+    J2OBJC_NEW_IMPL(WrapperSocket, initWithJavaNetSocket_initWithNSString_withInt_withBoolean_,
+                    socket, host, port, autoClose)}
 
-ComGoogleJ2objcNetSslIosSslSocket *
-create_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetSocket_withNSString_withInt_withBoolean_(
-    JavaNetSocket *socket, NSString *host, jint port, jboolean autoClose) {
-  J2OBJC_CREATE_IMPL(WrapperSocket, initWithJavaNetSocket_initWithNSString_withInt_withBoolean_,
-                     socket, host, port, autoClose)
-}
+ComGoogleJ2objcNetSslIosSslSocket
+    *create_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetSocket_withNSString_withInt_withBoolean_(
+        JavaNetSocket *socket, NSString *host, jint port, bool autoClose){
+        J2OBJC_CREATE_IMPL(WrapperSocket,
+                           initWithJavaNetSocket_initWithNSString_withInt_withBoolean_, socket,
+                           host, port, autoClose)}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleJ2objcNetSslIosSslSocket)
 

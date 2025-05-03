@@ -54,8 +54,8 @@ extern "C" {
  * Method:    getEntry
  * Signature: (J[BZ)J
  */
-JNIEXPORT jlong JNICALL ZipFile_getEntry
-  (JNIEnv *, jclass, jlong, jbyteArray, jboolean);
+JNIEXPORT jlong JNICALL ZipFile_getEntry(JNIEnv *, jclass, jlong, jbyteArray,
+                                         bool);
 
 /*
  * Class:     java_util_zip_ZipFile
@@ -86,8 +86,8 @@ JNIEXPORT void JNICALL ZipFile_close
  * Method:    open
  * Signature: (Ljava/lang/String;IJZ)J
  */
-JNIEXPORT jlong JNICALL ZipFile_open
-  (JNIEnv *, jclass, jstring, jint, jlong, jboolean);
+JNIEXPORT jlong JNICALL ZipFile_open(JNIEnv *, jclass, jstring, jint, jlong,
+                                     bool);
 
 /*
  * Class:     java_util_zip_ZipFile
@@ -102,8 +102,7 @@ JNIEXPORT jint JNICALL ZipFile_getTotal
  * Method:    startsWithLOC
  * Signature: (J)Z
  */
-JNIEXPORT jboolean JNICALL ZipFile_startsWithLOC
-  (JNIEnv *, jclass, jlong);
+JNIEXPORT bool JNICALL ZipFile_startsWithLOC(JNIEnv *, jclass, jlong);
 
 /*
  * Class:     java_util_zip_ZipFile

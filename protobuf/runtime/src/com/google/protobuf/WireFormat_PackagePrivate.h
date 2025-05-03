@@ -143,7 +143,7 @@ CGP_ALWAYS_INLINE inline BOOL CGPReadFixed64(CGPCodedInputStream *input, jlong *
   return input->ReadLittleEndian64((uint64_t *)value);
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPReadBool(CGPCodedInputStream *input, jboolean *value) {
+CGP_ALWAYS_INLINE inline BOOL CGPReadBool(CGPCodedInputStream *input, bool *value) {
   uint32_t temp;
   if (!input->ReadVarint32(&temp)) return false;
   *value = temp != 0;
@@ -225,7 +225,7 @@ CGP_ALWAYS_INLINE inline void CGPWriteFixed64(jlong value, CGPCodedOutputStream 
   output->WriteLittleEndian64(value);
 }
 
-CGP_ALWAYS_INLINE inline void CGPWriteBool(jboolean value, CGPCodedOutputStream *output) {
+CGP_ALWAYS_INLINE inline void CGPWriteBool(bool value, CGPCodedOutputStream *output) {
   output->WriteVarint32(value ? 1 : 0);
 }
 

@@ -105,12 +105,12 @@ static jclass socketExceptionCls;
  * Method:    socketCreate
  * Signature: (Z)V */
 JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketCreate(JNIEnv *env, jobject this,
-                                           jboolean stream) {
-    JavaNetPlainSocketImpl *plainSocketImpl = (JavaNetPlainSocketImpl *)this;
-    JavaIoFileDescriptor *fdObj;
-    jobject ssObj;
-    int fd;
-    int type = (stream ? SOCK_STREAM : SOCK_DGRAM);
+                                                                  bool stream) {
+  JavaNetPlainSocketImpl *plainSocketImpl = (JavaNetPlainSocketImpl *)this;
+  JavaIoFileDescriptor *fdObj;
+  jobject ssObj;
+  int fd;
+  int type = (stream ? SOCK_STREAM : SOCK_DGRAM);
 #ifdef AF_INET6
     int domain = ipv6_available() ? AF_INET6 : AF_INET;
 #else
@@ -815,73 +815,70 @@ JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketShutdown(JNIEnv *env,
  * Signature: (IZLjava/lang/Object;)V
  */
 JNIEXPORT void JNICALL Java_java_net_PlainSocketImpl_socketSetOption(JNIEnv *env, jobject this,
-                                              jint cmd, jboolean on,
-                                              jobject value) {
-    JavaNetPlainSocketImpl *plainSocketImpl = (JavaNetPlainSocketImpl *)this;
-    int fd;
-    int level, optname, optlen;
-    union {
-        int i;
-        struct linger ling;
-    } optval;
+                                                                     jint cmd, bool on,
+                                                                     jobject value) {
+  JavaNetPlainSocketImpl *plainSocketImpl = (JavaNetPlainSocketImpl *)this;
+  int fd;
+  int level, optname, optlen;
+  union {
+    int i;
+    struct linger ling;
+  } optval;
 
-    /*
-     * Check that socket hasn't been closed
-     */
-    fd = getFD(plainSocketImpl);
-    if (fd < 0) {
-        JNU_ThrowByName(env, JNU_JAVANETPKG "SocketException",
-                        "Socket closed");
-        return;
+  /*
+   * Check that socket hasn't been closed
+   */
+  fd = getFD(plainSocketImpl);
+  if (fd < 0) {
+    JNU_ThrowByName(env, JNU_JAVANETPKG "SocketException", "Socket closed");
+    return;
+  }
+
+  /*
+   * SO_TIMEOUT is a no-op on Solaris/Linux
+   */
+  if (cmd == java_net_SocketOptions_SO_TIMEOUT) {
+    return;
+  }
+
+  /*
+   * Map the Java level socket option to the platform specific
+   * level and option name.
+   */
+  if (NET_MapSocketOption(cmd, &level, &optname)) {
+    JNU_ThrowByName(env, JNU_JAVANETPKG "SocketException", "Invalid option");
+    return;
+  }
+
+  switch (cmd) {
+    case java_net_SocketOptions_SO_SNDBUF:
+    case java_net_SocketOptions_SO_RCVBUF:
+    case java_net_SocketOptions_SO_LINGER:
+    case java_net_SocketOptions_IP_TOS: {
+      if (cmd == java_net_SocketOptions_SO_LINGER) {
+        if (on) {
+          optval.ling.l_onoff = 1;
+          optval.ling.l_linger = [((JavaLangInteger *)value) intValue];
+        } else {
+          optval.ling.l_onoff = 0;
+          optval.ling.l_linger = 0;
+        }
+        optlen = sizeof(optval.ling);
+      } else {
+        optval.i = [((JavaLangInteger *)value) intValue];
+        optlen = sizeof(optval.i);
+      }
+
+      break;
     }
 
-    /*
-     * SO_TIMEOUT is a no-op on Solaris/Linux
-     */
-    if (cmd == java_net_SocketOptions_SO_TIMEOUT) {
-        return;
-    }
+    /* Boolean -> int */
+    default:
+      optval.i = (on ? 1 : 0);
+      optlen = sizeof(optval.i);
+  }
 
-    /*
-     * Map the Java level socket option to the platform specific
-     * level and option name.
-     */
-    if (NET_MapSocketOption(cmd, &level, &optname)) {
-        JNU_ThrowByName(env, JNU_JAVANETPKG "SocketException", "Invalid option");
-        return;
-    }
-
-    switch (cmd) {
-        case java_net_SocketOptions_SO_SNDBUF :
-        case java_net_SocketOptions_SO_RCVBUF :
-        case java_net_SocketOptions_SO_LINGER :
-        case java_net_SocketOptions_IP_TOS :
-            {
-                if (cmd == java_net_SocketOptions_SO_LINGER) {
-                    if (on) {
-                        optval.ling.l_onoff = 1;
-                        optval.ling.l_linger = [((JavaLangInteger *)value) intValue];
-                    } else {
-                        optval.ling.l_onoff = 0;
-                        optval.ling.l_linger = 0;
-                    }
-                    optlen = sizeof(optval.ling);
-                } else {
-                    optval.i = [((JavaLangInteger *)value) intValue];
-                    optlen = sizeof(optval.i);
-                }
-
-                break;
-            }
-
-        /* Boolean -> int */
-        default :
-            optval.i = (on ? 1 : 0);
-            optlen = sizeof(optval.i);
-
-    }
-
-    if (NET_SetSockOpt(fd, level, optname, (const void *)&optval, optlen) < 0) {
+  if (NET_SetSockOpt(fd, level, optname, (const void *)&optval, optlen) < 0) {
 #ifdef __solaris__
         if (errno == EINVAL) {
             // On Solaris setsockopt will set errno to EINVAL if the socket

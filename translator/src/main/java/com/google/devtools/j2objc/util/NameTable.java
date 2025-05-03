@@ -60,6 +60,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import org.jspecify.annotations.Nullable;
@@ -731,8 +732,15 @@ public class NameTable {
    * Converts a Java type to an equivalent Objective-C type, returning "id" for an object type.
    */
   public static String getPrimitiveObjCType(TypeMirror type) {
-    return TypeUtil.isVoid(type) ? "void"
-        : type.getKind().isPrimitive() ? "j" + TypeUtil.getName(type) : "id";
+    if (TypeUtil.isVoid(type)) {
+      return "void";
+    } else if (type.getKind() == TypeKind.BOOLEAN) {
+      return "bool";
+    } else if (type.getKind().isPrimitive()) {
+      return "j" + TypeUtil.getName(type);
+    } else {
+      return "id";
+    }
   }
 
   /**

@@ -20,43 +20,36 @@
 #include "java/lang/IndexOutOfBoundsException.h"
 #include "jni.h"
 
-JNIEXPORT jboolean Java_java_lang_Character_isLowerCaseImpl(
-    JNIEnv *env, jclass cls, jint codePoint) {
+JNIEXPORT bool Java_java_lang_Character_isLowerCaseImpl(JNIEnv *env, jclass cls, jint codePoint) {
   return u_islower(codePoint);
 }
 
-JNIEXPORT jboolean Java_java_lang_Character_isUpperCaseImpl(
-    JNIEnv *env, jclass cls, jint codePoint) {
+JNIEXPORT bool Java_java_lang_Character_isUpperCaseImpl(JNIEnv *env, jclass cls, jint codePoint) {
   return u_isupper(codePoint);
 }
 
-JNIEXPORT jboolean Java_java_lang_Character_isTitleCaseImpl(
-    JNIEnv *env, jclass cls, jint codePoint) {
+JNIEXPORT bool Java_java_lang_Character_isTitleCaseImpl(JNIEnv *env, jclass cls, jint codePoint) {
   return u_istitle(codePoint);
 }
 
-JNIEXPORT jboolean Java_java_lang_Character_isDigitImpl(
-    JNIEnv *env, jclass cls, jint codePoint) {
+JNIEXPORT bool Java_java_lang_Character_isDigitImpl(JNIEnv *env, jclass cls, jint codePoint) {
   return u_isdigit(codePoint);
 }
 
-JNIEXPORT jboolean Java_java_lang_Character_isDefinedImpl(
-    JNIEnv *env, jclass cls, jint codePoint) {
+JNIEXPORT bool Java_java_lang_Character_isDefinedImpl(JNIEnv *env, jclass cls, jint codePoint) {
   return u_isdefined(codePoint);
 }
 
-JNIEXPORT jboolean Java_java_lang_Character_isLetterImpl(
-    JNIEnv *env, jclass cls, jint codePoint) {
+JNIEXPORT bool Java_java_lang_Character_isLetterImpl(JNIEnv *env, jclass cls, jint codePoint) {
   return u_isalpha(codePoint);
 }
 
-JNIEXPORT jboolean Java_java_lang_Character_isLetterOrDigitImpl(
-    JNIEnv *env, jclass cls, jint codePoint) {
+JNIEXPORT bool Java_java_lang_Character_isLetterOrDigitImpl(JNIEnv *env, jclass cls,
+                                                            jint codePoint) {
   return u_isalnum(codePoint);
 }
 
-JNIEXPORT jboolean Java_java_lang_Character_isAlphabeticImpl(
-    JNIEnv *env, jclass cls, jint codePoint) {
+JNIEXPORT bool Java_java_lang_Character_isAlphabeticImpl(JNIEnv *env, jclass cls, jint codePoint) {
   // iOS only supports 16-bit characters.
   if (codePoint >= 0x8000) {
     return false;
@@ -64,23 +57,22 @@ JNIEXPORT jboolean Java_java_lang_Character_isAlphabeticImpl(
   return [[NSCharacterSet letterCharacterSet] characterIsMember:(unichar) codePoint];
 }
 
-JNIEXPORT jboolean Java_java_lang_Character_isIdeographicImpl(
-    JNIEnv *env, jclass cls, jint codePoint) {
+JNIEXPORT bool Java_java_lang_Character_isIdeographicImpl(JNIEnv *env, jclass cls, jint codePoint) {
   return u_getIntPropertyValue(codePoint, UCHAR_IDEOGRAPHIC);
 }
 
-JNIEXPORT jboolean Java_java_lang_Character_isUnicodeIdentifierStartImpl(
-    JNIEnv *env, jclass cls, jint codePoint) {
+JNIEXPORT bool Java_java_lang_Character_isUnicodeIdentifierStartImpl(JNIEnv *env, jclass cls,
+                                                                     jint codePoint) {
   return u_isIDStart(codePoint);
 }
 
-JNIEXPORT jboolean Java_java_lang_Character_isUnicodeIdentifierPartImpl(
-    JNIEnv *env, jclass cls, jint codePoint) {
+JNIEXPORT bool Java_java_lang_Character_isUnicodeIdentifierPartImpl(JNIEnv *env, jclass cls,
+                                                                    jint codePoint) {
   return u_isIDPart(codePoint);
 }
 
-JNIEXPORT jboolean Java_java_lang_Character_isIdentifierIgnorableImpl(
-    JNIEnv *env, jclass cls, jint codePoint) {
+JNIEXPORT bool Java_java_lang_Character_isIdentifierIgnorableImpl(JNIEnv *env, jclass cls,
+                                                                  jint codePoint) {
   return u_isIDIgnorable(codePoint);
 }
 
@@ -130,13 +122,11 @@ JNIEXPORT jint Java_java_lang_Character_getNumericValueImpl(
   return -1;
 }
 
-JNIEXPORT jboolean Java_java_lang_Character_isSpaceCharImpl(
-    JNIEnv *env, jclass cls, jint codePoint) {
+JNIEXPORT bool Java_java_lang_Character_isSpaceCharImpl(JNIEnv *env, jclass cls, jint codePoint) {
   return u_isJavaSpaceChar(codePoint);
 }
 
-JNIEXPORT jboolean Java_java_lang_Character_isWhitespaceImpl(
-    JNIEnv *env, jclass cls, jint codePoint) {
+JNIEXPORT bool Java_java_lang_Character_isWhitespaceImpl(JNIEnv *env, jclass cls, jint codePoint) {
   return u_isWhitespace(codePoint);
 }
 
@@ -149,8 +139,7 @@ JNIEXPORT jbyte Java_java_lang_Character_getDirectionalityImpl(
   return u_charDirection(codePoint);
 }
 
-JNIEXPORT jboolean Java_java_lang_Character_isMirroredImpl(
-    JNIEnv *env, jclass cls, jint codePoint) {
+JNIEXPORT bool Java_java_lang_Character_isMirroredImpl(JNIEnv *env, jclass cls, jint codePoint) {
   return u_isMirrored(codePoint);
 }
 

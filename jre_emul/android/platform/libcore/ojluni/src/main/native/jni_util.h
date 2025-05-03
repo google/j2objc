@@ -119,14 +119,12 @@ JNU_ThrowIOExceptionWithLastError(JNIEnv *env, const char *defaultDetail);
 JNIEXPORT jstring
 NewStringPlatform(JNIEnv *env, const char *str);
 
-JNIEXPORT const char *
-GetStringPlatformChars(JNIEnv *env, jstring jstr, jboolean *isCopy);
+JNIEXPORT const char *GetStringPlatformChars(JNIEnv *env, jstring jstr, bool *isCopy);
 
 JNIEXPORT jstring JNICALL
 JNU_NewStringPlatform(JNIEnv *env, const char *str);
 
-JNIEXPORT const char * JNICALL
-JNU_GetStringPlatformChars(JNIEnv *env, jstring jstr, jboolean *isCopy);
+JNIEXPORT const char *JNICALL JNU_GetStringPlatformChars(JNIEnv *env, jstring jstr, bool *isCopy);
 
 JNIEXPORT void JNICALL
 JNU_ReleaseStringPlatformChars(JNIEnv *env, jstring jstr, const char *str);
@@ -158,31 +156,18 @@ JNU_CopyObjectArray(JNIEnv *env, jobjectArray dst, jobjectArray src,
  * argument. If the caller is not interested in whether an exception
  * has occurred, pass in NULL.
  */
-JNIEXPORT jvalue JNICALL
-JNU_CallStaticMethodByName(JNIEnv *env,
-                           jboolean *hasException,
-                           const char *class_name,
-                           const char *name,
-                           const char *signature,
-                           ...);
+JNIEXPORT jvalue JNICALL JNU_CallStaticMethodByName(JNIEnv *env, bool *hasException,
+                                                    const char *class_name, const char *name,
+                                                    const char *signature, ...);
 
 /* Invoke an instance method by name.
  */
-JNIEXPORT jvalue JNICALL
-JNU_CallMethodByName(JNIEnv *env,
-                     jboolean *hasException,
-                     jobject obj,
-                     const char *name,
-                     const char *signature,
-                     ...);
+JNIEXPORT jvalue JNICALL JNU_CallMethodByName(JNIEnv *env, bool *hasException, jobject obj,
+                                              const char *name, const char *signature, ...);
 
-JNIEXPORT jvalue JNICALL
-JNU_CallMethodByNameV(JNIEnv *env,
-                      jboolean *hasException,
-                      jobject obj,
-                      const char *name,
-                      const char *signature,
-                      va_list args);
+JNIEXPORT jvalue JNICALL JNU_CallMethodByNameV(JNIEnv *env, bool *hasException, jobject obj,
+                                               const char *name, const char *signature,
+                                               va_list args);
 
 /* Construct a new object of class, specifying the class by name,
  * and specififying which constructor to run and what arguments to
@@ -222,41 +207,22 @@ JNU_IsInstanceOfByName(JNIEnv *env, jobject object, char *classname);
  * argument. If the caller is not interested in whether an exception
  * has occurred, pass in NULL.
  */
-JNIEXPORT jvalue JNICALL
-JNU_GetFieldByName(JNIEnv *env,
-                   jboolean *hasException,
-                   jobject obj,
-                   const char *name,
-                   const char *sig);
-JNIEXPORT void JNICALL
-JNU_SetFieldByName(JNIEnv *env,
-                   jboolean *hasException,
-                   jobject obj,
-                   const char *name,
-                   const char *sig,
-                   ...);
+JNIEXPORT jvalue JNICALL JNU_GetFieldByName(JNIEnv *env, bool *hasException, jobject obj,
+                                            const char *name, const char *sig);
+JNIEXPORT void JNICALL JNU_SetFieldByName(JNIEnv *env, bool *hasException, jobject obj,
+                                          const char *name, const char *sig, ...);
 
-JNIEXPORT jvalue JNICALL
-JNU_GetStaticFieldByName(JNIEnv *env,
-                         jboolean *hasException,
-                         const char *classname,
-                         const char *name,
-                         const char *sig);
-JNIEXPORT void JNICALL
-JNU_SetStaticFieldByName(JNIEnv *env,
-                         jboolean *hasException,
-                         const char *classname,
-                         const char *name,
-                         const char *sig,
-                         ...);
-
+JNIEXPORT jvalue JNICALL JNU_GetStaticFieldByName(JNIEnv *env, bool *hasException,
+                                                  const char *classname, const char *name,
+                                                  const char *sig);
+JNIEXPORT void JNICALL JNU_SetStaticFieldByName(JNIEnv *env, bool *hasException,
+                                                const char *classname, const char *name,
+                                                const char *sig, ...);
 
 /*
  * Calls the .equals method.
  */
-JNIEXPORT jboolean JNICALL
-JNU_Equals(JNIEnv *env, jobject object1, jobject object2);
-
+JNIEXPORT bool JNICALL JNU_Equals(JNIEnv *env, jobject object1, jobject object2);
 
 /************************************************************************
  * Thread calls
@@ -355,7 +321,7 @@ enum {
 
 jstring nativeNewStringPlatform(JNIEnv *env, const char *str);
 
-const char* nativeGetStringPlatformChars(JNIEnv *env, jstring jstr, jboolean *isCopy);
+const char *nativeGetStringPlatformChars(JNIEnv *env, jstring jstr, bool *isCopy);
 
 // Android added : Faster method to convert strings to / from their platform
 // representation.

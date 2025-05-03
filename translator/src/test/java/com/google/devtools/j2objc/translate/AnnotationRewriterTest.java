@@ -80,9 +80,8 @@ public class AnnotationRewriterTest extends GenerationTest {
         "import java.lang.annotation.*;\n"
         + "@Retention(RetentionPolicy.RUNTIME) @interface Test { String value(); }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "- (jboolean)isEqual:(id)obj {",
-        "return JreAnnotationEquals(self, obj);");
+    assertTranslatedLines(
+        translation, "- (bool)isEqual:(id)obj {", "return JreAnnotationEquals(self, obj);");
   }
 
   public void testHashCodeMethodAdded() throws IOException {

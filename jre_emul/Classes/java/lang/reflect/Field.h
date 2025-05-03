@@ -54,7 +54,7 @@
 
 // Field.get(Object), etc.
 - (id)getWithId:(id)object;
-- (jboolean)getBooleanWithId:(id)object;
+- (bool)getBooleanWithId:(id)object;
 - (jbyte)getByteWithId:(id)object;
 - (jchar)getCharWithId:(id)object;
 - (jdouble)getDoubleWithId:(id)object;
@@ -65,7 +65,7 @@
 
 // Field.set(Object, Object), etc.
 - (void)setWithId:(id)object withId:(id)value;
-- (void)setBooleanWithId:(id)object withBoolean:(jboolean)value;
+- (void)setBooleanWithId:(id)object withBoolean:(bool)value;
 - (void)setByteWithId:(id)object withByte:(jbyte)value;
 - (void)setCharWithId:(id)object withChar:(jchar)value;
 - (void)setDoubleWithId:(id)object withDouble:(jdouble)value;
@@ -77,7 +77,7 @@
 - (IOSClass *)getDeclaringClass;
 - (jint)getModifiers;
 - (IOSClass *)getType;
-- (jboolean)isEnumConstant;
+- (bool)isEnumConstant;
 
 // Returns type.
 - (id<JavaLangReflectType>)getGenericType;

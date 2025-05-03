@@ -52,8 +52,9 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "class Test { boolean test(int i) { "
         + "return i == 0 || i == 1 || ++i + i == 2 || i++ + i == 3 || i == 4; } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "jboolean unseq$1;",
+    assertTranslatedLines(
+        translation,
+        "bool unseq$1;",
         "if (!(unseq$1 = (i == 0 || i == 1))) {",
         "  jint unseq$2 = ++i;",
         "  if (!(unseq$1 = (unseq$2 + i == 2))) {",
@@ -70,12 +71,13 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         + " boolean test(int i) {  return i == 0 ? i++ + i == 0 || i++ + i == 0 : ++i == 1; }"
         + " boolean test2(int i) { return i == 0 ? ++i == 1 : i++ + i == 0 || i++ + i == 0; } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "- (jboolean)testWithInt:(jint)i {",
-        "  jboolean unseq$1;",
+    assertTranslatedLines(
+        translation,
+        "- (bool)testWithInt:(jint)i {",
+        "  bool unseq$1;",
         "  if (i == 0) {",
         "    jint unseq$2 = i++;",
-        "    jboolean unseq$3;",
+        "    bool unseq$3;",
         "    if (!(unseq$3 = (unseq$2 + i == 0))) {",
         "      jint unseq$4 = i++;",
         "      unseq$3 = (unseq$3 || unseq$4 + i == 0);",
@@ -87,15 +89,16 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "  }",
         "  return unseq$1;",
         "}");
-    assertTranslatedLines(translation,
-        "- (jboolean)test2WithInt:(jint)i {",
-        "  jboolean unseq$1;",
+    assertTranslatedLines(
+        translation,
+        "- (bool)test2WithInt:(jint)i {",
+        "  bool unseq$1;",
         "  if (i == 0) {",
         "    unseq$1 = (++i == 1);",
         "  }",
         "  else {",
         "    jint unseq$2 = i++;",
-        "    jboolean unseq$3;",
+        "    bool unseq$3;",
         "    if (!(unseq$3 = (unseq$2 + i == 0))) {",
         "      jint unseq$4 = i++;",
         "      unseq$3 = (unseq$3 || unseq$4 + i == 0);",
@@ -179,9 +182,10 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test(int i) { assert i++ + i++ == 0 : \"foo\" + i++ + i++; } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "jint unseq$1 = i++;",
-        "jboolean unseq$2 = unseq$1 + i++ == 0;",
+        "bool unseq$2 = unseq$1 + i++ == 0;",
         "jint unseq$3 = i++;",
         "JreAssert(unseq$2, JreStrcat(\"$II\", @\"foo\", unseq$3, i++));");
   }
@@ -273,16 +277,18 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         + " boolean test2(boolean b, int i) { return b ? foo(i, i++) : false; } }",
         "Test", "Test.m");
     // test1
-    assertTranslatedLines(translation,
-        "jboolean unseq$1;",
+    assertTranslatedLines(
+        translation,
+        "bool unseq$1;",
         "if (!(unseq$1 = b)) {",
         "  jint unseq$2 = i;",
         "  unseq$1 = (unseq$1 || [self fooWithInt:unseq$2 withInt:i++]);",
         "}",
         "return unseq$1;");
     // test2
-    assertTranslatedLines(translation,
-        "jboolean unseq$1;",
+    assertTranslatedLines(
+        translation,
+        "bool unseq$1;",
         "if (b) {",
         "  jint unseq$2 = i;",
         "  unseq$1 = [self fooWithInt:unseq$2 withInt:i++];",

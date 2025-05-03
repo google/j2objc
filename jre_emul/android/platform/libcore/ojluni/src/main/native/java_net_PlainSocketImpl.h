@@ -43,8 +43,7 @@ extern "C" {
  * Method:    socketCreate
  * Signature: (Z)V
  */
-JNIEXPORT void JNICALL PlainSocketImpl_socketCreate
-  (JNIEnv *, jobject, jboolean);
+JNIEXPORT void JNICALL PlainSocketImpl_socketCreate(JNIEnv *, jobject, bool);
 
 /*
  * Class:     java_net_PlainSocketImpl
@@ -108,8 +107,8 @@ JNIEXPORT void JNICALL PlainSocketImpl_socketShutdown
  * Method:    socketSetOption
  * Signature: (IZLjava/lang/Object;)V
  */
-JNIEXPORT void JNICALL PlainSocketImpl_socketSetOption
-  (JNIEnv *, jobject, jint, jboolean, jobject);
+JNIEXPORT void JNICALL PlainSocketImpl_socketSetOption(JNIEnv *, jobject, jint,
+                                                       bool, jobject);
 
 /*
  * Class:     java_net_PlainSocketImpl

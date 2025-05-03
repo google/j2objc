@@ -149,7 +149,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "  public boolean foo() { return true; } "
             + "}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
-    assertTranslation(translation, "- (jboolean)foo;");
+    assertTranslation(translation, "- (bool)foo;");
   }
 
   // Verify that visiting a constructor does not affect the generated code.

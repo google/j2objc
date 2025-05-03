@@ -59,11 +59,11 @@ void Java_java_util_regex_Matcher_closeImpl(JNIEnv *env, jclass cls, jlong addre
   uregex_close((URegularExpression *)address);
 }
 
-jboolean Java_java_util_regex_Matcher_findImpl(
-    JNIEnv *env, jclass cls, jlong addr, jint startIndex, IOSIntArray *offsets) {
+bool Java_java_util_regex_Matcher_findImpl(JNIEnv *env, jclass cls, jlong addr, jint startIndex,
+                                           IOSIntArray *offsets) {
   URegularExpression *regex = (URegularExpression *)addr;
   UErrorCode status = U_ZERO_ERROR;
-  jboolean result = uregex_find(regex, startIndex, &status);
+  bool result = uregex_find(regex, startIndex, &status);
   if (result) {
     updateOffsets(regex, offsets, &status);
   }
@@ -71,11 +71,11 @@ jboolean Java_java_util_regex_Matcher_findImpl(
   return result;
 }
 
-jboolean Java_java_util_regex_Matcher_findNextImpl(
-    JNIEnv *env, jclass cls, jlong addr, IOSIntArray *offsets) {
+bool Java_java_util_regex_Matcher_findNextImpl(JNIEnv *env, jclass cls, jlong addr,
+                                               IOSIntArray *offsets) {
   URegularExpression *regex = (URegularExpression *)addr;
   UErrorCode status = U_ZERO_ERROR;
-  jboolean result = uregex_findNext(regex, &status);
+  bool result = uregex_findNext(regex, &status);
   if (result) {
     updateOffsets(regex, offsets, &status);
   }
@@ -90,18 +90,18 @@ jint Java_java_util_regex_Matcher_groupCountImpl(JNIEnv *env, jclass cls, jlong 
   return result;
 }
 
-jboolean Java_java_util_regex_Matcher_hitEndImpl(JNIEnv *env, jclass cls, jlong addr) {
+bool Java_java_util_regex_Matcher_hitEndImpl(JNIEnv *env, jclass cls, jlong addr) {
   UErrorCode status = U_ZERO_ERROR;
-  jboolean result = uregex_hitEnd((URegularExpression *)addr, &status);
+  bool result = uregex_hitEnd((URegularExpression *)addr, &status);
   maybeThrowIcuException("uregex_hitEnd", status);
   return result;
 }
 
-jboolean Java_java_util_regex_Matcher_lookingAtImpl(
-    JNIEnv *env, jclass cls, jlong addr, IOSIntArray *offsets) {
+bool Java_java_util_regex_Matcher_lookingAtImpl(JNIEnv *env, jclass cls, jlong addr,
+                                                IOSIntArray *offsets) {
   URegularExpression *regex = (URegularExpression *)addr;
   UErrorCode status = U_ZERO_ERROR;
-  jboolean result = uregex_lookingAt(regex, -1, &status);
+  bool result = uregex_lookingAt(regex, -1, &status);
   if (result) {
     updateOffsets(regex, offsets, &status);
   }
@@ -109,11 +109,11 @@ jboolean Java_java_util_regex_Matcher_lookingAtImpl(
   return result;
 }
 
-jboolean Java_java_util_regex_Matcher_matchesImpl(
-    JNIEnv *env, jclass cls, jlong addr, IOSIntArray *offsets) {
+bool Java_java_util_regex_Matcher_matchesImpl(JNIEnv *env, jclass cls, jlong addr,
+                                              IOSIntArray *offsets) {
   URegularExpression *regex = (URegularExpression *)addr;
   UErrorCode status = U_ZERO_ERROR;
-  jboolean result = uregex_matches(regex, -1, &status);
+  bool result = uregex_matches(regex, -1, &status);
   if (result) {
     updateOffsets(regex, offsets, &status);
   }
@@ -144,30 +144,30 @@ jint Java_java_util_regex_Matcher_getMatchedGroupIndexImpl(
   return -1;
 }
 
-jboolean Java_java_util_regex_Matcher_requireEndImpl(JNIEnv *env, jclass cls, jlong addr) {
+bool Java_java_util_regex_Matcher_requireEndImpl(JNIEnv *env, jclass cls, jlong addr) {
   UErrorCode status = U_ZERO_ERROR;
-  jboolean result = uregex_requireEnd((URegularExpression *)addr, &status);
+  bool result = uregex_requireEnd((URegularExpression *)addr, &status);
   maybeThrowIcuException("uregex_requireEnd", status);
   return result;
 }
 
-void Java_java_util_regex_Matcher_useAnchoringBoundsImpl(
-    JNIEnv *env, jclass cls, jlong addr, jboolean value) {
+void Java_java_util_regex_Matcher_useAnchoringBoundsImpl(JNIEnv *env, jclass cls, jlong addr,
+                                                         bool value) {
   UErrorCode status = U_ZERO_ERROR;
   uregex_useAnchoringBounds((URegularExpression *)addr, value, &status);
   maybeThrowIcuException("uregex_useAnchoringBounds", status);
 }
 
-void Java_java_util_regex_Matcher_useTransparentBoundsImpl(
-    JNIEnv *env, jclass cls, jlong addr, jboolean value) {
+void Java_java_util_regex_Matcher_useTransparentBoundsImpl(JNIEnv *env, jclass cls, jlong addr,
+                                                           bool value) {
   UErrorCode status = U_ZERO_ERROR;
   uregex_useTransparentBounds((URegularExpression *)addr, value, &status);
   maybeThrowIcuException("uregex_useTransparentBounds", status);
 }
 
-void Java_java_util_regex_Matcher_setInputImpl(
-    JNIEnv *env, jclass cls, jlong addr, IOSCharArray *javaText, jint start, jint end,
-    jboolean anchoringBounds, jboolean transparentBounds) {
+void Java_java_util_regex_Matcher_setInputImpl(JNIEnv *env, jclass cls, jlong addr,
+                                               IOSCharArray *javaText, jint start, jint end,
+                                               bool anchoringBounds, bool transparentBounds) {
   URegularExpression *regex = (URegularExpression *)addr;
   UErrorCode status = U_ZERO_ERROR;
   uregex_setText(regex, javaText->buffer_, javaText->size_, &status);

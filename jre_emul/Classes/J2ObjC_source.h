@@ -352,7 +352,7 @@ SHIFT_ASSIGN_OPERATORS_DEFN(Long, jlong, uint64_t, 0x3f)
   BIT_OPERATOR_DEFN(NAME, TYPE, Or, |) \
   BIT_OPERATOR_DEFN(NAME, TYPE, Xor, ^)
 
-BIT_OPERATORS_DEFN(Boolean, jboolean)
+BIT_OPERATORS_DEFN(Boolean, bool)
 BIT_OPERATORS_DEFN(Char, jchar)
 BIT_OPERATORS_DEFN(Byte, jbyte)
 BIT_OPERATORS_DEFN(Short, jshort)
@@ -380,13 +380,12 @@ JRE_HANDLE_DIV_BY_ZERO(LongMod, jlong, %);
 // Support for the "==" and "!=" operators. Objective C coalescing of
 // string literals only happens with linked bundles, so the same literal string in
 // an app and an app extention or dynamic library will have different addresses.
-__attribute__((always_inline)) inline jboolean JreObjectEqualsEquals(id objA, id objB) {
+__attribute__((always_inline)) inline bool JreObjectEqualsEquals(id objA, id objB) {
   return objA == objB ||
          ([objA isKindOfClass:[NSString class]] ? [(NSString *)objA isEqual:objB] : false);
 }
 
-__attribute__((always_inline)) inline jboolean JreStringEqualsEquals(NSString *strA,
-                                                                     NSString *strB) {
+__attribute__((always_inline)) inline bool JreStringEqualsEquals(NSString *strA, NSString *strB) {
   return strA == strB || [strA isEqualToString:strB];
 }
 

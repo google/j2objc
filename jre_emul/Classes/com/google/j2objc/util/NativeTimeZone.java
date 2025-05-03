@@ -92,7 +92,7 @@ public final class NativeTimeZone extends TimeZone {
 
     NSDate *nextTransition = [tz nextDaylightSavingTimeTransitionAfterDate:now];
     jint dstSavings;
-    jboolean useDaylightTime;
+    bool useDaylightTime;
     if (nextTransition) {
       NSTimeInterval nextDstOffset = [tz daylightSavingTimeOffsetForDate:nextTransition];
 

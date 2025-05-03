@@ -74,7 +74,7 @@ withComGoogleProtobufGeneratedMessageLite_ExtensionDescriptor:
   return defaultValue_;
 }
 
-- (jboolean)isRepeated {
+- (bool)isRepeated {
   return ((ComGoogleProtobufGeneratedMessageLite_ExtensionDescriptor *)nil_chk(descriptor_))
       ->isRepeated_;
 }
@@ -98,8 +98,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessageLite_Generated
                                                       withInt:(jint)number
                     withComGoogleProtobufWireFormat_FieldType:
                         (ComGoogleProtobufWireFormat_FieldType *)type
-                                                  withBoolean:(jboolean)isRepeated
-                                                  withBoolean:(jboolean)isPacked {
+                                                  withBoolean:(bool)isRepeated
+                                                  withBoolean:(bool)isPacked {
   NSObject_init(self);
   self->number_ = number;
   JreStrongAssign(&self->type_, type);
@@ -116,11 +116,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessageLite_Generated
   return type_;
 }
 
-- (jboolean)isRepeated {
+- (bool)isRepeated {
   return isRepeated_;
 }
 
-- (jboolean)isPacked {
+- (bool)isPacked {
   return isPacked_;
 }
 

@@ -35,14 +35,13 @@
 #define NATIVE_METHOD(className, functionName, signature) \
 { #functionName, signature, (void*)(Java_java_nio_ ## className ## _ ## functionName) }
 
-JNIEXPORT jboolean JNICALL
-Java_java_nio_MappedByteBuffer_isLoaded0(JNIEnv *env, jobject obj, jlong address,
-                                         jlong len, jint numPages)
-{
-    jboolean loaded = JNI_TRUE;
-    int result = 0;
-    int i = 0;
-    void *a = (void *) jlong_to_ptr(address);
+JNIEXPORT bool JNICALL Java_java_nio_MappedByteBuffer_isLoaded0(JNIEnv *env, jobject obj,
+                                                                jlong address, jlong len,
+                                                                jint numPages) {
+  bool loaded = JNI_TRUE;
+  int result = 0;
+  int i = 0;
+  void *a = (void *)jlong_to_ptr(address);
 #ifdef __linux__
     unsigned char *vec = (unsigned char *)malloc(numPages * sizeof(char));
 #else
@@ -70,7 +69,6 @@ Java_java_nio_MappedByteBuffer_isLoaded0(JNIEnv *env, jobject obj, jlong address
     free(vec);
     return loaded;
 }
-
 
 JNIEXPORT void JNICALL
 Java_java_nio_MappedByteBuffer_load0(JNIEnv *env, jobject obj, jlong address,

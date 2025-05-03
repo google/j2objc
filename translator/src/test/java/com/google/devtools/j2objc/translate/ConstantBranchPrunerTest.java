@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -178,8 +177,9 @@ public class ConstantBranchPrunerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { boolean getB() { return true; } int test(boolean b) { "
         + "while (b && (getB() && false)) { return 1; } return 0; } }", "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "- (jint)testWithBoolean:(jboolean)b {",
+    assertTranslatedLines(
+        translation,
+        "- (jint)testWithBoolean:(bool)b {",
         "  b && ([self getB]);",
         "  return 0;",
         "}");
@@ -196,8 +196,8 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         // DEBUG and TEST constants should be pruned.
         + "  if (DEBUG && TEST && nonConstant) return false; "
         + "  return true; }}", "A", "A.m");
-    assertTranslatedLines(translation,
-        "- (jboolean)test {", "if (A_nonConstant) return false;", "return true;", "}");
+    assertTranslatedLines(
+        translation, "- (bool)test {", "if (A_nonConstant) return false;", "return true;", "}");
   }
 
   // Verify that volatile loads aren't pruned because they provide a memory

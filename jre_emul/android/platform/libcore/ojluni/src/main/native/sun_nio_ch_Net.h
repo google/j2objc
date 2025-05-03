@@ -45,8 +45,7 @@ extern "C" {
  * Method:    isIPv6Available0
  * Signature: ()Z
  */
-JNIEXPORT jboolean JNICALL Java_sun_nio_ch_Net_isIPv6Available0
-  (JNIEnv *, jclass);
+JNIEXPORT bool JNICALL Java_sun_nio_ch_Net_isIPv6Available0(JNIEnv *, jclass);
 
 /*
  * Class:     sun_nio_ch_Net
@@ -61,32 +60,32 @@ JNIEXPORT jint JNICALL Java_sun_nio_ch_Net_isExclusiveBindAvailable
  * Method:    canIPv6SocketJoinIPv4Group0
  * Signature: ()Z
  */
-JNIEXPORT jboolean JNICALL Java_sun_nio_ch_Net_canIPv6SocketJoinIPv4Group0
-  (JNIEnv *, jclass);
+JNIEXPORT bool JNICALL Java_sun_nio_ch_Net_canIPv6SocketJoinIPv4Group0(JNIEnv *,
+                                                                       jclass);
 
 /*
  * Class:     sun_nio_ch_Net
  * Method:    canJoin6WithIPv4Group0
  * Signature: ()Z
  */
-JNIEXPORT jboolean JNICALL Java_sun_nio_ch_Net_canJoin6WithIPv4Group0
-  (JNIEnv *, jclass);
+JNIEXPORT bool JNICALL Java_sun_nio_ch_Net_canJoin6WithIPv4Group0(JNIEnv *,
+                                                                  jclass);
 
 /*
  * Class:     sun_nio_ch_Net
  * Method:    socket0
  * Signature: (ZZZ)I
  */
-JNIEXPORT jint JNICALL Java_sun_nio_ch_Net_socket0
-  (JNIEnv *, jclass, jboolean, jboolean, jboolean);
+JNIEXPORT jint JNICALL Java_sun_nio_ch_Net_socket0(JNIEnv *, jclass, bool, bool,
+                                                   bool);
 
 /*
  * Class:     sun_nio_ch_Net
  * Method:    bind0
  * Signature: (Ljava/io/FileDescriptor;ZZLjava/net/InetAddress;I)V
  */
-JNIEXPORT void JNICALL Java_sun_nio_ch_Net_bind0
-  (JNIEnv *, jclass, jobject, jboolean, jboolean, jobject, jint);
+JNIEXPORT void JNICALL Java_sun_nio_ch_Net_bind0(JNIEnv *, jclass, jobject,
+                                                 bool, bool, jobject, jint);
 
 /*
  * Class:     sun_nio_ch_Net
@@ -101,8 +100,8 @@ JNIEXPORT void JNICALL Java_sun_nio_ch_Net_listen
  * Method:    connect0
  * Signature: (ZLjava/io/FileDescriptor;Ljava/net/InetAddress;I)I
  */
-JNIEXPORT jint JNICALL Java_sun_nio_ch_Net_connect0
-  (JNIEnv *, jclass, jboolean, jobject, jobject, jint);
+JNIEXPORT jint JNICALL Java_sun_nio_ch_Net_connect0(JNIEnv *, jclass, bool,
+                                                    jobject, jobject, jint);
 
 /*
  * Class:     sun_nio_ch_Net
@@ -149,48 +148,55 @@ JNIEXPORT jobject JNICALL Java_sun_nio_ch_Net_remoteInetAddress
  * Method:    getIntOption0
  * Signature: (Ljava/io/FileDescriptor;ZII)I
  */
-JNIEXPORT jint JNICALL Java_sun_nio_ch_Net_getIntOption0
-  (JNIEnv *, jclass, jobject, jboolean, jint, jint);
+JNIEXPORT jint JNICALL Java_sun_nio_ch_Net_getIntOption0(JNIEnv *, jclass,
+                                                         jobject, bool, jint,
+                                                         jint);
 
 /*
  * Class:     sun_nio_ch_Net
  * Method:    setIntOption0
  * Signature: (Ljava/io/FileDescriptor;ZIII)V
  */
-JNIEXPORT void JNICALL Java_sun_nio_ch_Net_setIntOption0
-  (JNIEnv *, jclass, jobject, jboolean, jint, jint, jint);
+JNIEXPORT void JNICALL Java_sun_nio_ch_Net_setIntOption0(JNIEnv *, jclass,
+                                                         jobject, bool, jint,
+                                                         jint, jint);
 
 /*
  * Class:     sun_nio_ch_Net
  * Method:    joinOrDrop4
  * Signature: (ZLjava/io/FileDescriptor;III)I
  */
-JNIEXPORT jint JNICALL Java_sun_nio_ch_Net_joinOrDrop4
-  (JNIEnv *, jclass, jboolean, jobject, jint, jint, jint);
+JNIEXPORT jint JNICALL Java_sun_nio_ch_Net_joinOrDrop4(JNIEnv *, jclass, bool,
+                                                       jobject, jint, jint,
+                                                       jint);
 
 /*
  * Class:     sun_nio_ch_Net
  * Method:    blockOrUnblock4
  * Signature: (ZLjava/io/FileDescriptor;III)I
  */
-JNIEXPORT jint JNICALL Java_sun_nio_ch_Net_blockOrUnblock4
-  (JNIEnv *, jclass, jboolean, jobject, jint, jint, jint);
+JNIEXPORT jint JNICALL Java_sun_nio_ch_Net_blockOrUnblock4(JNIEnv *, jclass,
+                                                           bool, jobject, jint,
+                                                           jint, jint);
 
 /*
  * Class:     sun_nio_ch_Net
  * Method:    joinOrDrop6
  * Signature: (ZLjava/io/FileDescriptor;[BI[B)I
  */
-JNIEXPORT jint JNICALL Java_sun_nio_ch_Net_joinOrDrop6
-  (JNIEnv *, jclass, jboolean, jobject, jbyteArray, jint, jbyteArray);
+JNIEXPORT jint JNICALL Java_sun_nio_ch_Net_joinOrDrop6(JNIEnv *, jclass, bool,
+                                                       jobject, jbyteArray,
+                                                       jint, jbyteArray);
 
 /*
  * Class:     sun_nio_ch_Net
  * Method:    blockOrUnblock6
  * Signature: (ZLjava/io/FileDescriptor;[BI[B)I
  */
-JNIEXPORT jint JNICALL Java_sun_nio_ch_Net_blockOrUnblock6
-  (JNIEnv *, jclass, jboolean, jobject, jbyteArray, jint, jbyteArray);
+JNIEXPORT jint JNICALL Java_sun_nio_ch_Net_blockOrUnblock6(JNIEnv *, jclass,
+                                                           bool, jobject,
+                                                           jbyteArray, jint,
+                                                           jbyteArray);
 
 /*
  * Class:     sun_nio_ch_Net

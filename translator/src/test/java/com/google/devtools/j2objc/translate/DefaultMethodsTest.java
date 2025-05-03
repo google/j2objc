@@ -148,12 +148,13 @@ public class DefaultMethodsTest extends GenerationTest {
 
     // Make sure we base the non-capturing lambda on interface A's companion class that has the
     // default method shim.
-    assertTranslatedLines(impl,
+    assertTranslatedLines(
+        impl,
         "- (NSString *)underscorePrefixWithNSString:(NSString *)arg0 {",
         "  return A_underscorePrefixWithNSString_(self, arg0);",
         "}",
         "",
-        "- (jboolean)unrelated {",
+        "- (bool)unrelated {",
         "  return Unrelated_unrelated(self);",
         "}");
   }

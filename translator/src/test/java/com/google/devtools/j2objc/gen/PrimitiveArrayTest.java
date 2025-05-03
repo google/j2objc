@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.Statement;
-
 import java.util.List;
 
 /**
@@ -85,7 +84,7 @@ public class PrimitiveArrayTest extends GenerationTest {
         translateStatements("boolean[] foo = new boolean[3]; boolean b = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("jboolean b = IOSBooleanArray_Get(foo, 1);", result);
+    assertEquals("bool b = IOSBooleanArray_Get(foo, 1);", result);
   }
 
   public void testByteArrayAccess() {

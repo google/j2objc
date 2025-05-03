@@ -90,11 +90,11 @@ static void checkBounds(jint length, jint offset, jint count) {
 
 NSString *NSString_java_valueOf_(id obj) { return obj ? [obj description] : @"null"; }
 
-+ (NSString *)java_valueOfBool:(jboolean)value {
++ (NSString *)java_valueOfBool:(bool)value {
   return NSString_java_valueOfBool_(value);
 }
 
-NSString *NSString_java_valueOfBool_(jboolean value) { return value ? @"true" : @"false"; }
+NSString *NSString_java_valueOfBool_(bool value) { return value ? @"true" : @"false"; }
 
 + (NSString *)java_valueOfChar:(jchar)value {
   return NSString_java_valueOfChar_(value);
@@ -287,11 +287,11 @@ static NSString *StringFromCharArray(IOSCharArray *value, jint offset, jint coun
 }
 
 // Wrapper method for backwards compatibility.
-- (jboolean)isEmpty {
+- (bool)isEmpty {
   return [self java_isEmpty];
 }
 
-- (jboolean)java_isEmpty {
+- (bool)java_isEmpty {
   return [self length] == 0;
 }
 
@@ -515,7 +515,7 @@ static IOSByteArray *GetBytesWithEncoding(NSString *self, CFStringEncoding encod
   CFStringRef cfStr = (CFStringRef)self;
   CFIndex strLength = CFStringGetLength(cfStr);
   CFIndex max_length = CFStringGetMaximumSizeForEncoding(strLength, encoding);
-  jboolean includeBOM = (encoding == kCFStringEncodingUTF16);
+  bool includeBOM = (encoding == kCFStringEncodingUTF16);
   if (includeBOM) {
     max_length += 2;
     encoding = kCFStringEncodingUTF16BE;  // Java uses big-endian.
@@ -631,7 +631,7 @@ NSString *NSString_java_formatWithJavaUtilLocale_withNSString_withNSObjectArray_
                                                                                 args);
 }
 
-static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
+static bool RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
   NSUInteger selfLen = [self length];
   NSUInteger rangeLen = [other length];
   if (startIdx < 0 || startIdx + rangeLen > selfLen) {
@@ -641,17 +641,17 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
   return [self compare:other options:NSLiteralSearch range:range] == NSOrderedSame;
 }
 
-- (jboolean)java_hasPrefix:(NSString *)prefix {
+- (bool)java_hasPrefix:(NSString *)prefix {
   (void)nil_chk(prefix);
   return RangeIsEqual(self, prefix, 0);
 }
 
-- (jboolean)java_hasPrefix:(NSString *)prefix offset:(jint)offset {
+- (bool)java_hasPrefix:(NSString *)prefix offset:(jint)offset {
   (void)nil_chk(prefix);
   return RangeIsEqual(self, prefix, offset);
 }
 
-- (jboolean)java_hasSuffix:(NSString *)suffix {
+- (bool)java_hasSuffix:(NSString *)suffix {
   (void)nil_chk(suffix);
   return RangeIsEqual(self, suffix, (jint)[self length] - (jint)[suffix length]);
 }
@@ -681,7 +681,7 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
   return AUTORELEASE(result);
 }
 
-- (jboolean)java_equalsIgnoreCase:(NSString *)aString {
+- (bool)java_equalsIgnoreCase:(NSString *)aString {
   NSComparisonResult result = [self compare:aString options:NSCaseInsensitiveSearch];
   return result == NSOrderedSame;
 }
@@ -724,10 +724,10 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
   return result;
 }
 
-- (jboolean)java_regionMatches:(jint)thisOffset
-                       aString:(NSString *)aString
-                   otherOffset:(jint)otherOffset
-                         count:(jint)count {
+- (bool)java_regionMatches:(jint)thisOffset
+                   aString:(NSString *)aString
+               otherOffset:(jint)otherOffset
+                     count:(jint)count {
   return [self java_regionMatches:false
                        thisOffset:thisOffset
                           aString:aString
@@ -735,11 +735,11 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
                             count:count];
 }
 
-- (jboolean)java_regionMatches:(jboolean)caseInsensitive
-                    thisOffset:(jint)thisOffset
-                       aString:(NSString *)aString
-                   otherOffset:(jint)otherOffset
-                         count:(jint)count {
+- (bool)java_regionMatches:(bool)caseInsensitive
+                thisOffset:(jint)thisOffset
+                   aString:(NSString *)aString
+               otherOffset:(jint)otherOffset
+                     count:(jint)count {
   if (thisOffset < 0 || count > (jint)[self length] - thisOffset) {
     return false;
   }
@@ -776,7 +776,7 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
   return [self stringByAppendingString:string];
 }
 
-- (jboolean)java_contains:(id<JavaLangCharSequence>)sequence {
+- (bool)java_contains:(id<JavaLangCharSequence>)sequence {
   if (!sequence) {
     @throw makeException([JavaLangNullPointerException class]);
   }
@@ -805,15 +805,15 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
                                                                                        offset);
 }
 
-- (jboolean)java_matches:(NSString *)regex {
+- (bool)java_matches:(NSString *)regex {
   return JavaUtilRegexPattern_matchesWithNSString_withNSString_(regex, self);
 }
 
-- (jboolean)java_contentEqualsCharSequence:(id<JavaLangCharSequence>)seq {
+- (bool)java_contentEqualsCharSequence:(id<JavaLangCharSequence>)seq {
   return [self isEqualToString:[(id)seq description]];
 }
 
-- (jboolean)java_contentEqualsStringBuffer:(JavaLangStringBuffer *)sb {
+- (bool)java_contentEqualsStringBuffer:(JavaLangStringBuffer *)sb {
   return [self isEqualToString:[sb description]];
 }
 
@@ -872,7 +872,7 @@ static jboolean RangeIsEqual(NSString *self, NSString *other, jint startIdx) {
   return ret == nil ? self : ret;
 }
 
-- (jboolean)java_isBlank {
+- (bool)java_isBlank {
   NSUInteger length = [self length];
   jint left = 0;
   while (left < length) {

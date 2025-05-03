@@ -218,9 +218,9 @@ typedef struct jzfile {   /* Zip file */
     jlong mlen;           /* length (in bytes) mmaped */
     jlong offset;         /* offset of the mmapped region from the
                              start of the file. */
-    jboolean usemmap;     /* if mmap is used. */
+    bool usemmap;         /* if mmap is used. */
 #endif
-    jboolean locsig;      /* if zip file starts with LOCSIG */
+    bool locsig;          /* if zip file starts with LOCSIG */
     cencache cencache;    /* CEN header cache */
     ZFILE zfd;            /* open file descriptor */
     void *lock;           /* read lock */
@@ -249,8 +249,8 @@ typedef struct jzfile {   /* Zip file */
 jzentry * JNICALL
 ZIP_FindEntry(jzfile *zip, char *name, jint *sizeP, jint *nameLenP);
 
-jboolean JNICALL
-ZIP_ReadEntry(jzfile *zip, jzentry *entry, unsigned char *buf, char *entrynm);
+bool JNICALL ZIP_ReadEntry(jzfile *zip, jzentry *entry, unsigned char *buf,
+                           char *entrynm);
 
 jzentry * JNICALL
 ZIP_GetNextEntry(jzfile *zip, jint n);
@@ -267,8 +267,8 @@ ZIP_Get_From_Cache(const char *name, char **pmsg, jlong lastModified);
 jzfile *
 ZIP_Put_In_Cache(const char *name, ZFILE zfd, char **pmsg, jlong lastModified);
 
-jzfile *
-ZIP_Put_In_Cache0(const char *name, ZFILE zfd, char **pmsg, jlong lastModified, jboolean usemmap);
+jzfile *ZIP_Put_In_Cache0(const char *name, ZFILE zfd, char **pmsg,
+                          jlong lastModified, bool usemmap);
 
 void JNICALL
 ZIP_Close(jzfile *zip);

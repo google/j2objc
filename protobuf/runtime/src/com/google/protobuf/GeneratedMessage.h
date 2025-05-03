@@ -91,10 +91,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_Builder)
 @protocol ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder
     <ComGoogleProtobufMessageOrBuilder, JavaObject>
 
-- (jboolean)hasExtensionWithComGoogleProtobufExtensionLite:
-    (ComGoogleProtobufExtensionLite *)extension;
-- (jboolean)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
-- (jboolean)hasExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+- (bool)hasExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension;
+- (bool)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
+- (bool)hasExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
     (CGPGeneratedExtension *)extension;
 
 - (id)getExtensionWithComGoogleProtobufExtensionLite:

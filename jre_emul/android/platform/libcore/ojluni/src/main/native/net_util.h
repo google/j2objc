@@ -117,8 +117,9 @@ JNIEXPORT jint JNICALL ipv6_available(void);
 void
 NET_AllocSockaddr(struct sockaddr **him, int *len);
 
-JNIEXPORT int JNICALL
-NET_InetAddressToSockaddr(JNIEnv *env, jobject iaObj, int port, struct sockaddr *him, int *len, jboolean v4MappedAddress);
+JNIEXPORT int JNICALL NET_InetAddressToSockaddr(JNIEnv *env, jobject iaObj,
+                                                int port, struct sockaddr *him,
+                                                int *len, bool v4MappedAddress);
 
 JNIEXPORT jobject JNICALL
 NET_SockaddrToInetAddress(JNIEnv *env, struct sockaddr *him, int *port);

@@ -93,7 +93,7 @@ static CFMutableSetRef referent_subclasses;
 // the runtime is notified of a low memory condition.
 static CFMutableSetRef soft_references;
 
-static jboolean in_low_memory_cleanup;
+static bool in_low_memory_cleanup;
 
 + (void)initReferent:(JavaLangRefReference *)reference {
   WhileLocked(^{
@@ -196,14 +196,13 @@ static Class GetReferentSubclass(id obj) {
 // and classes; since constants as reference referents do nothing in Java
 // (since they are never GC'd), with this test they will do nothing in
 // iOS as well.
-static jboolean IsConstantObject(id obj) {
+static bool IsConstantObject(id obj) {
   if ([obj isKindOfClass:[IOSClass class]]) {
     return true;
   }
   NSUInteger retainCount = [obj retainCount];
   return retainCount == UINT_MAX || retainCount == INT_MAX;
 }
-
 
 // Create a custom subclass for specified referent class.
 static Class CreateReferentSubclass(Class cls) {

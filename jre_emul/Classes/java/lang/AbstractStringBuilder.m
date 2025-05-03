@@ -447,17 +447,17 @@ void JreStringBuilder_reverse(JreStringBuilder *sb) {
   jint end = sb->count_ - 1;
   jchar frontHigh = buf[0];
   jchar endLow = buf[end];
-  jboolean allowFrontSur = true, allowEndSur = true;
+  bool allowFrontSur = true, allowEndSur = true;
   for (jint i = 0, mid = sb->count_ / 2; i < mid; i++, --end) {
     jchar frontLow = buf[i + 1];
     jchar endHigh = buf[end - 1];
-    jboolean surAtFront = allowFrontSur && frontLow >= (jint)0xdc00 && frontLow <= (jint)0xdfff
-        && frontHigh >= (jint)0xd800 && frontHigh <= (jint)0xdbff;
+    bool surAtFront = allowFrontSur && frontLow >= (jint)0xdc00 && frontLow <= (jint)0xdfff &&
+                      frontHigh >= (jint)0xd800 && frontHigh <= (jint)0xdbff;
     if (surAtFront && (sb->count_ < 3)) {
       return;
     }
-    jboolean surAtEnd = allowEndSur && endHigh >= (jint)0xd800 && endHigh <= (jint)0xdbff
-        && endLow >= (jint)0xdc00 && endLow <= (jint)0xdfff;
+    bool surAtEnd = allowEndSur && endHigh >= (jint)0xd800 && endHigh <= (jint)0xdbff &&
+                    endLow >= (jint)0xdc00 && endLow <= (jint)0xdfff;
     allowFrontSur = allowEndSur = true;
     if (surAtFront == surAtEnd) {
       if (surAtFront) {
@@ -591,7 +591,7 @@ NSString *JreStringBuilder_toStringAndDealloc(JreStringBuilder *sb) {
     jchar firstChar = [subString characterAtIndex:0];
     while (true) {
       jint i = start;
-      jboolean found = false;
+      bool found = false;
       for (; i < delegate_.count_; i++) {
         if (delegate_.buffer_[i] == firstChar) {
           found = true;
@@ -629,7 +629,7 @@ NSString *JreStringBuilder_toStringAndDealloc(JreStringBuilder *sb) {
       jchar firstChar = [subString characterAtIndex:0];
       while (true) {
         jint i = start;
-        jboolean found = false;
+        bool found = false;
         for (; i >= 0; --i) {
           if (delegate_.buffer_[i] == firstChar) {
             found = true;

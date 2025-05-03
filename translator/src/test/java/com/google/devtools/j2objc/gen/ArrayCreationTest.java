@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.Statement;
-
 import java.util.List;
 
 /**
@@ -98,8 +97,10 @@ public class ArrayCreationTest extends GenerationTest {
     List<Statement> stmts = translateStatements("boolean[] foo = { true, false };");
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("IOSBooleanArray *foo = "
-        + "[IOSBooleanArray arrayWithBooleans:(jboolean[]){ true, false } count:2];", result);
+    assertEquals(
+        "IOSBooleanArray *foo = "
+            + "[IOSBooleanArray arrayWithBooleans:(bool[]){ true, false } count:2];",
+        result);
   }
 
   public void testByteArrayCreationNoDimension() {
@@ -165,8 +166,10 @@ public class ArrayCreationTest extends GenerationTest {
     List<Statement> stmts = translateStatements("boolean[] foo = new boolean[] { true, false };");
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("IOSBooleanArray *foo = "
-        + "[IOSBooleanArray arrayWithBooleans:(jboolean[]){ true, false } count:2];", result);
+    assertEquals(
+        "IOSBooleanArray *foo = "
+            + "[IOSBooleanArray arrayWithBooleans:(bool[]){ true, false } count:2];",
+        result);
   }
 
   public void testByteArrayCreation() {

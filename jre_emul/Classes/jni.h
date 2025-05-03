@@ -61,7 +61,7 @@ typedef IOSClass*        jclass;
 typedef NSString*        jstring;
 typedef IOSArray*        jarray;
 typedef IOSObjectArray*  jobjectArray;
-typedef IOSBooleanArray* jbooleanArray;
+typedef IOSBooleanArray *boolArray;
 typedef IOSByteArray*    jbyteArray;
 typedef IOSCharArray*    jcharArray;
 typedef IOSShortArray*   jshortArray;
@@ -72,6 +72,8 @@ typedef IOSDoubleArray*  jdoubleArray;
 typedef jobject          jthrowable;
 typedef jobject          jweak;
 
+typedef boolArray jboolArray;
+
 #elif defined(__cplusplus)
 /*
  * Reference types, in C++
@@ -81,7 +83,7 @@ class _jclass : public _jobject {};
 class _jstring : public _jobject {};
 class _jarray : public _jobject {};
 class _jobjectArray : public _jarray {};
-class _jbooleanArray : public _jarray {};
+class _jboolArray : public _jarray {};
 class _jbyteArray : public _jarray {};
 class _jcharArray : public _jarray {};
 class _jshortArray : public _jarray {};
@@ -91,12 +93,14 @@ class _jfloatArray : public _jarray {};
 class _jdoubleArray : public _jarray {};
 class _jthrowable : public _jobject {};
 
+class _boolArray : public _jarray {};
+
 typedef _jobject*       jobject;
 typedef _jclass*        jclass;
 typedef _jstring*       jstring;
 typedef _jarray*        jarray;
 typedef _jobjectArray*  jobjectArray;
-typedef _jbooleanArray* jbooleanArray;
+typedef _jboolArray *jboolArray;
 typedef _jbyteArray*    jbyteArray;
 typedef _jcharArray*    jcharArray;
 typedef _jshortArray*   jshortArray;
@@ -107,6 +111,7 @@ typedef _jdoubleArray*  jdoubleArray;
 typedef _jthrowable*    jthrowable;
 typedef _jobject*       jweak;
 
+typedef _boolArray *boolArray;
 
 #else /* not __cplusplus */
 
@@ -118,7 +123,7 @@ typedef jobject         jclass;
 typedef jobject         jstring;
 typedef jobject         jarray;
 typedef jarray          jobjectArray;
-typedef jarray          jbooleanArray;
+typedef jarray boolArray;
 typedef jarray          jbyteArray;
 typedef jarray          jcharArray;
 typedef jarray          jshortArray;
@@ -129,17 +134,19 @@ typedef jarray          jdoubleArray;
 typedef jobject         jthrowable;
 typedef jobject         jweak;
 
+typedef jarray jboolArray;
+
 #endif /* not __cplusplus */
 
 typedef union jvalue {
-    jboolean z;
-    jbyte    b;
-    jchar    c;
-    jshort   s;
-    jint     i;
-    jlong    j;
-    jfloat   f;
-    jdouble  d;
+  bool z;
+  jbyte b;
+  jchar c;
+  jshort s;
+  jint i;
+  jlong j;
+  jfloat f;
+  jdouble d;
 #if __has_feature(objc_arc)
     __unsafe_unretained jobject  l;
 #else
@@ -183,7 +190,7 @@ struct JNINativeInterface {
 
   jclass        (*FindClass)(JNIEnv*, const char*);
   jclass        (*GetSuperclass)(JNIEnv*, jclass);
-  jboolean      (*IsAssignableFrom)(JNIEnv*, jclass, jclass);
+  bool (*IsAssignableFrom)(JNIEnv *, jclass, jclass);
   jint          (*Throw)(JNIEnv*, jthrowable);
   jint          (*ThrowNew)(JNIEnv *, jclass, const char *);
   jint          (*EnsureLocalCapacity)(JNIEnv *, jint);
@@ -193,17 +200,17 @@ struct JNINativeInterface {
   jobject       (*NewLocalRef)(JNIEnv*, jobject);
   void          (*DeleteGlobalRef)(JNIEnv*, jobject);
   void          (*DeleteLocalRef)(JNIEnv*, jobject);
-  jboolean      (*IsSameObject)(JNIEnv*, jobject, jobject);
+  bool (*IsSameObject)(JNIEnv *, jobject, jobject);
   jclass        (*GetObjectClass)(JNIEnv*, jobject);
-  jboolean      (*IsInstanceOf)(JNIEnv*, jobject, jclass);
+  bool (*IsInstanceOf)(JNIEnv *, jobject, jclass);
 
   jstring       (*NewString)(JNIEnv*, const jchar*, jsize);
   jsize         (*GetStringLength)(JNIEnv*, jstring);
-  const jchar*  (*GetStringChars)(JNIEnv*, jstring, jboolean*);
+  const jchar *(*GetStringChars)(JNIEnv *, jstring, bool *);
   void          (*ReleaseStringChars)(JNIEnv*, jstring, const jchar*);
   jstring       (*NewStringUTF)(JNIEnv*, const char*);
   jsize         (*GetStringUTFLength)(JNIEnv*, jstring);
-  const char*   (*GetStringUTFChars)(JNIEnv*, jstring, jboolean*);
+  const char *(*GetStringUTFChars)(JNIEnv *, jstring, bool *);
   void          (*ReleaseStringUTFChars)(JNIEnv*, jstring, const char*);
 
   jsize         (*GetArrayLength)(JNIEnv*, jarray);
@@ -211,7 +218,7 @@ struct JNINativeInterface {
   jobject       (*GetObjectArrayElement)(JNIEnv*, jobjectArray, jsize);
   void          (*SetObjectArrayElement)(JNIEnv*, jobjectArray, jsize, jobject);
 
-  jbooleanArray (*NewBooleanArray)(JNIEnv*, jsize);
+  boolArray (*NewBooleanArray)(JNIEnv *, jsize);
   jbyteArray    (*NewByteArray)(JNIEnv*, jsize);
   jcharArray    (*NewCharArray)(JNIEnv*, jsize);
   jshortArray   (*NewShortArray)(JNIEnv*, jsize);
@@ -220,16 +227,16 @@ struct JNINativeInterface {
   jfloatArray   (*NewFloatArray)(JNIEnv*, jsize);
   jdoubleArray  (*NewDoubleArray)(JNIEnv*, jsize);
 
-  jboolean*     (*GetBooleanArrayElements)(JNIEnv*, jbooleanArray, jboolean*);
-  jbyte*        (*GetByteArrayElements)(JNIEnv*, jbyteArray, jboolean*);
-  jchar*        (*GetCharArrayElements)(JNIEnv*, jcharArray, jboolean*);
-  jshort*       (*GetShortArrayElements)(JNIEnv*, jshortArray, jboolean*);
-  jint*         (*GetIntArrayElements)(JNIEnv*, jintArray, jboolean*);
-  jlong*        (*GetLongArrayElements)(JNIEnv*, jlongArray, jboolean*);
-  jfloat*       (*GetFloatArrayElements)(JNIEnv*, jfloatArray, jboolean*);
-  jdouble*      (*GetDoubleArrayElements)(JNIEnv*, jdoubleArray, jboolean*);
+  bool *(*GetBooleanArrayElements)(JNIEnv *, boolArray, bool *);
+  jbyte *(*GetByteArrayElements)(JNIEnv *, jbyteArray, bool *);
+  jchar *(*GetCharArrayElements)(JNIEnv *, jcharArray, bool *);
+  jshort *(*GetShortArrayElements)(JNIEnv *, jshortArray, bool *);
+  jint *(*GetIntArrayElements)(JNIEnv *, jintArray, bool *);
+  jlong *(*GetLongArrayElements)(JNIEnv *, jlongArray, bool *);
+  jfloat *(*GetFloatArrayElements)(JNIEnv *, jfloatArray, bool *);
+  jdouble *(*GetDoubleArrayElements)(JNIEnv *, jdoubleArray, bool *);
 
-  void          (*ReleaseBooleanArrayElements)(JNIEnv*, jbooleanArray, jboolean*, jint);
+  void (*ReleaseBooleanArrayElements)(JNIEnv *, boolArray, bool *, jint);
   void          (*ReleaseByteArrayElements)(JNIEnv*, jbyteArray, jbyte*, jint);
   void          (*ReleaseCharArrayElements)(JNIEnv*, jcharArray, jchar*, jint);
   void          (*ReleaseShortArrayElements)(JNIEnv*, jshortArray, jshort*, jint);
@@ -238,7 +245,7 @@ struct JNINativeInterface {
   void          (*ReleaseFloatArrayElements)(JNIEnv*, jfloatArray, jfloat*, jint);
   void          (*ReleaseDoubleArrayElements)(JNIEnv*, jdoubleArray, jdouble*, jint);
 
-  void          (*GetBooleanArrayRegion)(JNIEnv*, jbooleanArray, jsize, jsize, jboolean*);
+  void (*GetBooleanArrayRegion)(JNIEnv *, boolArray, jsize, jsize, bool *);
   void          (*GetByteArrayRegion)(JNIEnv*, jbyteArray, jsize, jsize, jbyte*);
   void          (*GetCharArrayRegion)(JNIEnv*, jcharArray, jsize, jsize, jchar*);
   void          (*GetShortArrayRegion)(JNIEnv*, jshortArray, jsize, jsize, jshort*);
@@ -247,7 +254,8 @@ struct JNINativeInterface {
   void          (*GetFloatArrayRegion)(JNIEnv*, jfloatArray, jsize, jsize, jfloat*);
   void          (*GetDoubleArrayRegion)(JNIEnv*, jdoubleArray, jsize, jsize, jdouble*);
 
-  void          (*SetBooleanArrayRegion)(JNIEnv*, jbooleanArray, jsize, jsize, const jboolean*);
+  void (*SetBooleanArrayRegion)(JNIEnv *, boolArray, jsize, jsize,
+                                const bool *);
   void          (*SetByteArrayRegion)(JNIEnv*, jbyteArray, jsize, jsize, const jbyte*);
   void          (*SetCharArrayRegion)(JNIEnv*, jcharArray, jsize, jsize, const jchar*);
   void          (*SetShortArrayRegion)(JNIEnv*, jshortArray, jsize, jsize, const jshort*);
@@ -258,9 +266,9 @@ struct JNINativeInterface {
 
   void          (*GetStringRegion)(JNIEnv*, jstring, jsize, jsize, jchar*);
   void          (*GetStringUTFRegion)(JNIEnv*, jstring, jsize, jsize, char*);
-  void*         (*GetPrimitiveArrayCritical)(JNIEnv*, jarray, jboolean*);
+  void *(*GetPrimitiveArrayCritical)(JNIEnv *, jarray, bool *);
   void          (*ReleasePrimitiveArrayCritical)(JNIEnv*, jarray, void*, jint);
-  const jchar*  (*GetStringCritical)(JNIEnv*, jstring, jboolean*);
+  const jchar *(*GetStringCritical)(JNIEnv *, jstring, bool *);
   void          (*ReleaseStringCritical)(JNIEnv*, jstring, const jchar*);
 
   jobject       (*NewDirectByteBuffer)(JNIEnv*, void*, jlong);
@@ -284,12 +292,11 @@ struct JNINativeInterface {
   jobject (*CallObjectMethodA)
     (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue * args);
 
-  jboolean (*CallBooleanMethod)
-    (JNIEnv *env, jobject obj, jmethodID methodID, ...);
-  jboolean (*CallBooleanMethodV)
-    (JNIEnv *env, jobject obj, jmethodID methodID, va_list args);
-  jboolean (*CallBooleanMethodA)
-    (JNIEnv *env, jobject obj, jmethodID methodID, const jvalue * args);
+  bool (*CallBooleanMethod)(JNIEnv *env, jobject obj, jmethodID methodID, ...);
+  bool (*CallBooleanMethodV)(JNIEnv *env, jobject obj, jmethodID methodID,
+                             va_list args);
+  bool (*CallBooleanMethodA)(JNIEnv *env, jobject obj, jmethodID methodID,
+                             const jvalue *args);
 
   jbyte (*CallByteMethod)
     (JNIEnv *env, jobject obj, jmethodID methodID, ...);
@@ -349,8 +356,7 @@ struct JNINativeInterface {
 
   jobject (*GetObjectField)
     (JNIEnv *env, jobject obj, jfieldID fieldID);
-  jboolean (*GetBooleanField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID);
+  bool (*GetBooleanField)(JNIEnv *env, jobject obj, jfieldID fieldID);
   jbyte (*GetByteField)
     (JNIEnv *env, jobject obj, jfieldID fieldID);
   jchar (*GetCharField)
@@ -368,8 +374,7 @@ struct JNINativeInterface {
 
   void (*SetObjectField)
     (JNIEnv *env, jobject obj, jfieldID fieldID, jobject val);
-  void (*SetBooleanField)
-    (JNIEnv *env, jobject obj, jfieldID fieldID, jboolean val);
+  void (*SetBooleanField)(JNIEnv *env, jobject obj, jfieldID fieldID, bool val);
   void (*SetByteField)
     (JNIEnv *env, jobject obj, jfieldID fieldID, jbyte val);
   void (*SetCharField)
@@ -392,12 +397,12 @@ struct JNINativeInterface {
   jobject (*CallStaticObjectMethodA)
     (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args);
 
-  jboolean (*CallStaticBooleanMethod)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, ...);
-  jboolean (*CallStaticBooleanMethodV)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, va_list args);
-  jboolean (*CallStaticBooleanMethodA)
-    (JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args);
+  bool (*CallStaticBooleanMethod)(JNIEnv *env, jclass clazz, jmethodID methodID,
+                                  ...);
+  bool (*CallStaticBooleanMethodV)(JNIEnv *env, jclass clazz,
+                                   jmethodID methodID, va_list args);
+  bool (*CallStaticBooleanMethodA)(JNIEnv *env, jclass clazz,
+                                   jmethodID methodID, const jvalue *args);
 
   jbyte (*CallStaticByteMethod)
     (JNIEnv *env, jclass clazz, jmethodID methodID, ...);
@@ -457,8 +462,7 @@ struct JNINativeInterface {
 
   jobject (*GetStaticObjectField)
     (JNIEnv *env, jclass clazz, jfieldID fieldID);
-  jboolean (*GetStaticBooleanField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID);
+  bool (*GetStaticBooleanField)(JNIEnv *env, jclass clazz, jfieldID fieldID);
   jbyte (*GetStaticByteField)
     (JNIEnv *env, jclass clazz, jfieldID fieldID);
   jchar (*GetStaticCharField)
@@ -476,8 +480,8 @@ struct JNINativeInterface {
 
   void (*SetStaticObjectField)
     (JNIEnv *env, jclass clazz, jfieldID fieldID, jobject value);
-  void (*SetStaticBooleanField)
-    (JNIEnv *env, jclass clazz, jfieldID fieldID, jboolean value);
+  void (*SetStaticBooleanField)(JNIEnv *env, jclass clazz, jfieldID fieldID,
+                                bool value);
   void (*SetStaticByteField)
     (JNIEnv *env, jclass clazz, jfieldID fieldID, jbyte value);
   void (*SetStaticCharField)
@@ -517,8 +521,9 @@ struct _JNIEnv {
     jclass GetSuperclass(jclass clazz)
     { return functions->GetSuperclass(this, clazz); }
 
-    jboolean IsAssignableFrom(jclass clazz1, jclass clazz2)
-    { return functions->IsAssignableFrom(this, clazz1, clazz2); }
+    bool IsAssignableFrom(jclass clazz1, jclass clazz2) {
+      return functions->IsAssignableFrom(this, clazz1, clazz2);
+    }
 
     jint Throw(jthrowable obj)
     { return functions->Throw(this, obj); }
@@ -544,14 +549,16 @@ struct _JNIEnv {
     void DeleteLocalRef(jobject localRef)
     { functions->DeleteLocalRef(this, localRef); }
 
-    jboolean IsSameObject(jobject ref1, jobject ref2)
-    { return functions->IsSameObject(this, ref1, ref2); }
+    bool IsSameObject(jobject ref1, jobject ref2) {
+      return functions->IsSameObject(this, ref1, ref2);
+    }
 
     jclass GetObjectClass(jobject obj)
     { return functions->GetObjectClass(this, obj); }
 
-    jboolean IsInstanceOf(jobject obj, jclass clazz)
-    { return functions->IsInstanceOf(this, obj, clazz); }
+    bool IsInstanceOf(jobject obj, jclass clazz) {
+      return functions->IsInstanceOf(this, obj, clazz);
+    }
 
     jstring NewString(const jchar* unicodeChars, jsize len)
     { return functions->NewString(this, unicodeChars, len); }
@@ -559,8 +566,9 @@ struct _JNIEnv {
     jsize GetStringLength(jstring string)
     { return functions->GetStringLength(this, string); }
 
-    const jchar* GetStringChars(jstring string, jboolean* isCopy)
-    { return functions->GetStringChars(this, string, isCopy); }
+    const jchar *GetStringChars(jstring string, bool *isCopy) {
+      return functions->GetStringChars(this, string, isCopy);
+    }
 
     void ReleaseStringChars(jstring string, const jchar* chars)
     { functions->ReleaseStringChars(this, string, chars); }
@@ -571,8 +579,9 @@ struct _JNIEnv {
     jsize GetStringUTFLength(jstring string)
     { return functions->GetStringUTFLength(this, string); }
 
-    const char* GetStringUTFChars(jstring string, jboolean* isCopy)
-    { return functions->GetStringUTFChars(this, string, isCopy); }
+    const char *GetStringUTFChars(jstring string, bool *isCopy) {
+      return functions->GetStringUTFChars(this, string, isCopy);
+    }
 
     void ReleaseStringUTFChars(jstring string, const char* utf)
     { functions->ReleaseStringUTFChars(this, string, utf); }
@@ -591,8 +600,9 @@ struct _JNIEnv {
     void SetObjectArrayElement(jobjectArray array, jsize index, jobject value)
     { functions->SetObjectArrayElement(this, array, index, value); }
 
-    jbooleanArray NewBooleanArray(jsize length)
-    { return functions->NewBooleanArray(this, length); }
+    boolArray NewBooleanArray(jsize length) {
+      return functions->NewBooleanArray(this, length);
+    }
     jbyteArray NewByteArray(jsize length)
     { return functions->NewByteArray(this, length); }
     jcharArray NewCharArray(jsize length)
@@ -608,26 +618,34 @@ struct _JNIEnv {
     jdoubleArray NewDoubleArray(jsize length)
     { return functions->NewDoubleArray(this, length); }
 
-    jboolean* GetBooleanArrayElements(jbooleanArray array, jboolean* isCopy)
-    { return functions->GetBooleanArrayElements(this, array, isCopy); }
-    jbyte* GetByteArrayElements(jbyteArray array, jboolean* isCopy)
-    { return functions->GetByteArrayElements(this, array, isCopy); }
-    jchar* GetCharArrayElements(jcharArray array, jboolean* isCopy)
-    { return functions->GetCharArrayElements(this, array, isCopy); }
-    jshort* GetShortArrayElements(jshortArray array, jboolean* isCopy)
-    { return functions->GetShortArrayElements(this, array, isCopy); }
-    jint* GetIntArrayElements(jintArray array, jboolean* isCopy)
-    { return functions->GetIntArrayElements(this, array, isCopy); }
-    jlong* GetLongArrayElements(jlongArray array, jboolean* isCopy)
-    { return functions->GetLongArrayElements(this, array, isCopy); }
-    jfloat* GetFloatArrayElements(jfloatArray array, jboolean* isCopy)
-    { return functions->GetFloatArrayElements(this, array, isCopy); }
-    jdouble* GetDoubleArrayElements(jdoubleArray array, jboolean* isCopy)
-    { return functions->GetDoubleArrayElements(this, array, isCopy); }
+    bool *GetBooleanArrayElements(boolArray array, bool *isCopy) {
+      return functions->GetBooleanArrayElements(this, array, isCopy);
+    }
+    jbyte *GetByteArrayElements(jbyteArray array, bool *isCopy) {
+      return functions->GetByteArrayElements(this, array, isCopy);
+    }
+    jchar *GetCharArrayElements(jcharArray array, bool *isCopy) {
+      return functions->GetCharArrayElements(this, array, isCopy);
+    }
+    jshort *GetShortArrayElements(jshortArray array, bool *isCopy) {
+      return functions->GetShortArrayElements(this, array, isCopy);
+    }
+    jint *GetIntArrayElements(jintArray array, bool *isCopy) {
+      return functions->GetIntArrayElements(this, array, isCopy);
+    }
+    jlong *GetLongArrayElements(jlongArray array, bool *isCopy) {
+      return functions->GetLongArrayElements(this, array, isCopy);
+    }
+    jfloat *GetFloatArrayElements(jfloatArray array, bool *isCopy) {
+      return functions->GetFloatArrayElements(this, array, isCopy);
+    }
+    jdouble *GetDoubleArrayElements(jdoubleArray array, bool *isCopy) {
+      return functions->GetDoubleArrayElements(this, array, isCopy);
+    }
 
-    void ReleaseBooleanArrayElements(jbooleanArray array, jboolean* elems,
-        jint mode)
-    { functions->ReleaseBooleanArrayElements(this, array, elems, mode); }
+    void ReleaseBooleanArrayElements(boolArray array, bool *elems, jint mode) {
+      functions->ReleaseBooleanArrayElements(this, array, elems, mode);
+    }
     void ReleaseByteArrayElements(jbyteArray array, jbyte* elems,
         jint mode)
     { functions->ReleaseByteArrayElements(this, array, elems, mode); }
@@ -650,9 +668,10 @@ struct _JNIEnv {
         jint mode)
     { functions->ReleaseDoubleArrayElements(this, array, elems, mode); }
 
-    void GetBooleanArrayRegion(jbooleanArray array, jsize start, jsize len,
-        jboolean* buf)
-    { functions->GetBooleanArrayRegion(this, array, start, len, buf); }
+    void GetBooleanArrayRegion(boolArray array, jsize start, jsize len,
+                               bool *buf) {
+      functions->GetBooleanArrayRegion(this, array, start, len, buf);
+    }
     void GetByteArrayRegion(jbyteArray array, jsize start, jsize len,
         jbyte* buf)
     { functions->GetByteArrayRegion(this, array, start, len, buf); }
@@ -675,9 +694,10 @@ struct _JNIEnv {
         jdouble* buf)
     { functions->GetDoubleArrayRegion(this, array, start, len, buf); }
 
-    void SetBooleanArrayRegion(jbooleanArray array, jsize start, jsize len,
-        const jboolean* buf)
-    { functions->SetBooleanArrayRegion(this, array, start, len, buf); }
+    void SetBooleanArrayRegion(boolArray array, jsize start, jsize len,
+                               const bool *buf) {
+      functions->SetBooleanArrayRegion(this, array, start, len, buf);
+    }
     void SetByteArrayRegion(jbyteArray array, jsize start, jsize len,
         const jbyte* buf)
     { functions->SetByteArrayRegion(this, array, start, len, buf); }
@@ -706,14 +726,16 @@ struct _JNIEnv {
     void GetStringUTFRegion(jstring str, jsize start, jsize len, char* buf)
     { return functions->GetStringUTFRegion(this, str, start, len, buf); }
 
-    void* GetPrimitiveArrayCritical(jarray array, jboolean* isCopy)
-    { return functions->GetPrimitiveArrayCritical(this, array, isCopy); }
+    void *GetPrimitiveArrayCritical(jarray array, bool *isCopy) {
+      return functions->GetPrimitiveArrayCritical(this, array, isCopy);
+    }
 
     void ReleasePrimitiveArrayCritical(jarray array, void* carray, jint mode)
     { functions->ReleasePrimitiveArrayCritical(this, array, carray, mode); }
 
-    const jchar* GetStringCritical(jstring string, jboolean* isCopy)
-    { return functions->GetStringCritical(this, string, isCopy); }
+    const jchar *GetStringCritical(jstring string, bool *isCopy) {
+      return functions->GetStringCritical(this, string, isCopy);
+    }
 
     void ReleaseStringCritical(jstring string, const jchar* carray)
     { functions->ReleaseStringCritical(this, string, carray); }
@@ -776,22 +798,20 @@ struct _JNIEnv {
         return functions->CallObjectMethodA(this,obj,methodID,args);
     }
 
-    jboolean CallBooleanMethod(jobject obj,
-                               jmethodID methodID, ...) {
-        va_list args;
-        jboolean result;
-        va_start(args,methodID);
-        result = functions->CallBooleanMethodV(this,obj,methodID,args);
-        va_end(args);
-        return result;
+    bool CallBooleanMethod(jobject obj, jmethodID methodID, ...) {
+      va_list args;
+      bool result;
+      va_start(args, methodID);
+      result = functions->CallBooleanMethodV(this, obj, methodID, args);
+      va_end(args);
+      return result;
     }
-    jboolean CallBooleanMethodV(jobject obj, jmethodID methodID,
-                                va_list args) {
-        return functions->CallBooleanMethodV(this,obj,methodID,args);
+    bool CallBooleanMethodV(jobject obj, jmethodID methodID, va_list args) {
+      return functions->CallBooleanMethodV(this, obj, methodID, args);
     }
-    jboolean CallBooleanMethodA(jobject obj, jmethodID methodID,
-                                const jvalue * args) {
-        return functions->CallBooleanMethodA(this,obj,methodID, args);
+    bool CallBooleanMethodA(jobject obj, jmethodID methodID,
+                            const jvalue *args) {
+      return functions->CallBooleanMethodA(this, obj, methodID, args);
     }
 
     jbyte CallByteMethod(jobject obj, jmethodID methodID, ...) {
@@ -931,8 +951,8 @@ struct _JNIEnv {
     jobject GetObjectField(jobject obj, jfieldID fieldID) {
         return functions->GetObjectField(this,obj,fieldID);
     }
-    jboolean GetBooleanField(jobject obj, jfieldID fieldID) {
-        return functions->GetBooleanField(this,obj,fieldID);
+    bool GetBooleanField(jobject obj, jfieldID fieldID) {
+      return functions->GetBooleanField(this, obj, fieldID);
     }
     jbyte GetByteField(jobject obj, jfieldID fieldID) {
         return functions->GetByteField(this,obj,fieldID);
@@ -959,9 +979,8 @@ struct _JNIEnv {
     void SetObjectField(jobject obj, jfieldID fieldID, jobject val) {
         functions->SetObjectField(this,obj,fieldID,val);
     }
-    void SetBooleanField(jobject obj, jfieldID fieldID,
-                         jboolean val) {
-        functions->SetBooleanField(this,obj,fieldID,val);
+    void SetBooleanField(jobject obj, jfieldID fieldID, bool val) {
+      functions->SetBooleanField(this, obj, fieldID, val);
     }
     void SetByteField(jobject obj, jfieldID fieldID,
                       jbyte val) {
@@ -1010,22 +1029,21 @@ struct _JNIEnv {
         return functions->CallStaticObjectMethodA(this,clazz,methodID,args);
     }
 
-    jboolean CallStaticBooleanMethod(jclass clazz,
-                                     jmethodID methodID, ...) {
-        va_list args;
-        jboolean result;
-        va_start(args,methodID);
-        result = functions->CallStaticBooleanMethodV(this,clazz,methodID,args);
-        va_end(args);
-        return result;
+    bool CallStaticBooleanMethod(jclass clazz, jmethodID methodID, ...) {
+      va_list args;
+      bool result;
+      va_start(args, methodID);
+      result = functions->CallStaticBooleanMethodV(this, clazz, methodID, args);
+      va_end(args);
+      return result;
     }
-    jboolean CallStaticBooleanMethodV(jclass clazz,
-                                      jmethodID methodID, va_list args) {
-        return functions->CallStaticBooleanMethodV(this,clazz,methodID,args);
+    bool CallStaticBooleanMethodV(jclass clazz, jmethodID methodID,
+                                  va_list args) {
+      return functions->CallStaticBooleanMethodV(this, clazz, methodID, args);
     }
-    jboolean CallStaticBooleanMethodA(jclass clazz,
-                                      jmethodID methodID, const jvalue *args) {
-        return functions->CallStaticBooleanMethodA(this,clazz,methodID,args);
+    bool CallStaticBooleanMethodA(jclass clazz, jmethodID methodID,
+                                  const jvalue *args) {
+      return functions->CallStaticBooleanMethodA(this, clazz, methodID, args);
     }
 
     jbyte CallStaticByteMethod(jclass clazz,
@@ -1172,8 +1190,8 @@ struct _JNIEnv {
     jobject GetStaticObjectField(jclass clazz, jfieldID fieldID) {
         return functions->GetStaticObjectField(this,clazz,fieldID);
     }
-    jboolean GetStaticBooleanField(jclass clazz, jfieldID fieldID) {
-        return functions->GetStaticBooleanField(this,clazz,fieldID);
+    bool GetStaticBooleanField(jclass clazz, jfieldID fieldID) {
+      return functions->GetStaticBooleanField(this, clazz, fieldID);
     }
     jbyte GetStaticByteField(jclass clazz, jfieldID fieldID) {
         return functions->GetStaticByteField(this,clazz,fieldID);
@@ -1201,8 +1219,7 @@ struct _JNIEnv {
                         jobject value) {
       functions->SetStaticObjectField(this,clazz,fieldID,value);
     }
-    void SetStaticBooleanField(jclass clazz, jfieldID fieldID,
-                        jboolean value) {
+    void SetStaticBooleanField(jclass clazz, jfieldID fieldID, bool value) {
       functions->SetStaticBooleanField(this,clazz,fieldID,value);
     }
     void SetStaticByteField(jclass clazz, jfieldID fieldID,

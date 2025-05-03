@@ -147,11 +147,9 @@ JVM_GC(void);
 JNIEXPORT jlong JNICALL
 JVM_MaxObjectInspectionAge(void);
 
-JNIEXPORT void JNICALL
-JVM_TraceInstructions(jboolean on);
+JNIEXPORT void JNICALL JVM_TraceInstructions(bool on);
 
-JNIEXPORT void JNICALL
-JVM_TraceMethodCalls(jboolean on);
+JNIEXPORT void JNICALL JVM_TraceMethodCalls(bool on);
 
 JNIEXPORT jlong JNICALL
 JVM_TotalMemory(void);
@@ -177,14 +175,12 @@ JVM_UnloadLibrary(void * handle);
 JNIEXPORT void * JNICALL
 JVM_FindLibraryEntry(void *handle, const char *name);
 
-JNIEXPORT jboolean JNICALL
-JVM_IsSupportedJNIVersion(jint version);
+JNIEXPORT bool JNICALL JVM_IsSupportedJNIVersion(jint version);
 
 /*
  * java.lang.Float and java.lang.Double
  */
-JNIEXPORT jboolean JNICALL
-JVM_IsNaN(jdouble d);
+JNIEXPORT bool JNICALL JVM_IsNaN(jdouble d);
 
 /*
  * java.lang.Throwable
@@ -207,14 +203,13 @@ JVM_GetStackTraceElement(JNIEnv *env, jobject throwable, jint index);
 JNIEXPORT void JNICALL
 JVM_InitializeCompiler (JNIEnv *env, jclass compCls);
 
-JNIEXPORT jboolean JNICALL
-JVM_IsSilentCompiler(JNIEnv *env, jclass compCls);
+JNIEXPORT bool JNICALL JVM_IsSilentCompiler(JNIEnv *env, jclass compCls);
 
-JNIEXPORT jboolean JNICALL
-JVM_CompileClass(JNIEnv *env, jclass compCls, jclass cls);
+JNIEXPORT bool JNICALL JVM_CompileClass(JNIEnv *env, jclass compCls,
+                                        jclass cls);
 
-JNIEXPORT jboolean JNICALL
-JVM_CompileClasses(JNIEnv *env, jclass cls, jstring jname);
+JNIEXPORT bool JNICALL JVM_CompileClasses(JNIEnv *env, jclass cls,
+                                          jstring jname);
 
 JNIEXPORT jobject JNICALL
 JVM_CompilerCommand(JNIEnv *env, jclass compCls, jobject arg);
@@ -228,14 +223,13 @@ JVM_DisableCompiler(JNIEnv *env, jclass compCls);
 /*
  * java.lang.Thread
  */
-JNIEXPORT void JNICALL
-JVM_StartThread(JNIEnv *env, jobject thread, jlong stack_size, jboolean daemon);
+JNIEXPORT void JNICALL JVM_StartThread(JNIEnv *env, jobject thread,
+                                       jlong stack_size, bool daemon);
 
 JNIEXPORT void JNICALL
 JVM_StopThread(JNIEnv *env, jobject thread, jobject exception);
 
-JNIEXPORT jboolean JNICALL
-JVM_IsThreadAlive(JNIEnv *env, jobject thread);
+JNIEXPORT bool JNICALL JVM_IsThreadAlive(JNIEnv *env, jobject thread);
 
 JNIEXPORT void JNICALL
 JVM_SuspendThread(JNIEnv *env, jobject thread);
@@ -261,11 +255,11 @@ JVM_CountStackFrames(JNIEnv *env, jobject thread);
 JNIEXPORT void JNICALL
 JVM_Interrupt(JNIEnv *env, jobject thread);
 
-JNIEXPORT jboolean JNICALL
-JVM_IsInterrupted(JNIEnv *env, jobject thread, jboolean clearInterrupted);
+JNIEXPORT bool JNICALL JVM_IsInterrupted(JNIEnv *env, jobject thread,
+                                         bool clearInterrupted);
 
-JNIEXPORT jboolean JNICALL
-JVM_HoldsLock(JNIEnv *env, jclass threadClass, jobject obj);
+JNIEXPORT bool JNICALL JVM_HoldsLock(JNIEnv *env, jclass threadClass,
+                                     jobject obj);
 
 JNIEXPORT void JNICALL
 JVM_DumpAllStacks(JNIEnv *env, jclass unused);
@@ -392,16 +386,16 @@ JVM_FindClassFromBootLoader(JNIEnv *env, const char *name);
  * or NoClassDefFoundError depending on the value of the last
  * argument.
  */
-JNIEXPORT jclass JNICALL
-JVM_FindClassFromClassLoader(JNIEnv *env, const char *name, jboolean init,
-                             jobject loader, jboolean throwError);
+JNIEXPORT jclass JNICALL JVM_FindClassFromClassLoader(JNIEnv *env,
+                                                      const char *name,
+                                                      bool init, jobject loader,
+                                                      bool throwError);
 
 /*
  * Find a class from a given class.
  */
-JNIEXPORT jclass JNICALL
-JVM_FindClassFromClass(JNIEnv *env, const char *name, jboolean init,
-                             jclass from);
+JNIEXPORT jclass JNICALL JVM_FindClassFromClass(JNIEnv *env, const char *name,
+                                                bool init, jclass from);
 
 /* Find a loaded class cached by the VM */
 JNIEXPORT jclass JNICALL
@@ -431,8 +425,7 @@ JVM_GetClassInterfaces(JNIEnv *env, jclass cls);
 JNIEXPORT jobject JNICALL
 JVM_GetClassLoader(JNIEnv *env, jclass cls);
 
-JNIEXPORT jboolean JNICALL
-JVM_IsInterface(JNIEnv *env, jclass cls);
+JNIEXPORT bool JNICALL JVM_IsInterface(JNIEnv *env, jclass cls);
 
 JNIEXPORT jobjectArray JNICALL
 JVM_GetClassSigners(JNIEnv *env, jclass cls);
@@ -446,11 +439,9 @@ JVM_GetProtectionDomain(JNIEnv *env, jclass cls);
 JNIEXPORT void JNICALL
 JVM_SetProtectionDomain(JNIEnv *env, jclass cls, jobject protection_domain);
 
-JNIEXPORT jboolean JNICALL
-JVM_IsArrayClass(JNIEnv *env, jclass cls);
+JNIEXPORT bool JNICALL JVM_IsArrayClass(JNIEnv *env, jclass cls);
 
-JNIEXPORT jboolean JNICALL
-JVM_IsPrimitiveClass(JNIEnv *env, jclass cls);
+JNIEXPORT bool JNICALL JVM_IsPrimitiveClass(JNIEnv *env, jclass cls);
 
 JNIEXPORT jclass JNICALL
 JVM_GetComponentType(JNIEnv *env, jclass cls);
@@ -476,14 +467,16 @@ JVM_GetClassAnnotations(JNIEnv *env, jclass cls);
  * New (JDK 1.4) reflection implementation
  */
 
-JNIEXPORT jobjectArray JNICALL
-JVM_GetClassDeclaredMethods(JNIEnv *env, jclass ofClass, jboolean publicOnly);
+JNIEXPORT jobjectArray JNICALL JVM_GetClassDeclaredMethods(JNIEnv *env,
+                                                           jclass ofClass,
+                                                           bool publicOnly);
+
+JNIEXPORT jobjectArray JNICALL JVM_GetClassDeclaredFields(JNIEnv *env,
+                                                          jclass ofClass,
+                                                          bool publicOnly);
 
 JNIEXPORT jobjectArray JNICALL
-JVM_GetClassDeclaredFields(JNIEnv *env, jclass ofClass, jboolean publicOnly);
-
-JNIEXPORT jobjectArray JNICALL
-JVM_GetClassDeclaredConstructors(JNIEnv *env, jclass ofClass, jboolean publicOnly);
+JVM_GetClassDeclaredConstructors(JNIEnv *env, jclass ofClass, bool publicOnly);
 
 /* Differs from JVM_GetClassModifiers in treatment of inner classes.
    This returns the access flags for the class as specified in the
@@ -560,9 +553,9 @@ JNIEXPORT jstring JNICALL JVM_ConstantPoolGetUTF8At
  * java.security.*
  */
 
-JNIEXPORT jobject JNICALL
-JVM_DoPrivileged(JNIEnv *env, jclass cls,
-                 jobject action, jobject context, jboolean wrapException);
+JNIEXPORT jobject JNICALL JVM_DoPrivileged(JNIEnv *env, jclass cls,
+                                           jobject action, jobject context,
+                                           bool wrapException);
 
 JNIEXPORT jobject JNICALL
 JVM_GetInheritedAccessControlContext(JNIEnv *env, jclass cls);
@@ -580,8 +573,7 @@ JVM_GetStackAccessControlContext(JNIEnv *env, jclass cls);
 JNIEXPORT void * JNICALL
 JVM_RegisterSignal(jint sig, void *handler);
 
-JNIEXPORT jboolean JNICALL
-JVM_RaiseSignal(jint sig);
+JNIEXPORT bool JNICALL JVM_RaiseSignal(jint sig);
 
 JNIEXPORT jint JNICALL
 JVM_FindSignal(const char *name);
@@ -589,8 +581,8 @@ JVM_FindSignal(const char *name);
 /*
  * Retrieve the assertion directives for the specified class.
  */
-JNIEXPORT jboolean JNICALL
-JVM_DesiredAssertionStatus(JNIEnv *env, jclass unused, jclass cls);
+JNIEXPORT bool JNICALL JVM_DesiredAssertionStatus(JNIEnv *env, jclass unused,
+                                                  jclass cls);
 
 /*
  * Retrieve the assertion directives from the VM.
@@ -601,8 +593,7 @@ JVM_AssertionStatusDirectives(JNIEnv *env, jclass unused);
 /*
  * java.util.concurrent.AtomicLong
  */
-JNIEXPORT jboolean JNICALL
-JVM_SupportsCX8(void);
+JNIEXPORT bool JNICALL JVM_SupportsCX8(void);
 
 /*
  * com.sun.dtrace.jsdt support
@@ -663,8 +654,7 @@ JVM_DTraceActivate(JNIEnv* env, jint version, jstring module_name,
 /*
  * Check JSDT probe
  */
-JNIEXPORT jboolean JNICALL
-JVM_DTraceIsProbeEnabled(JNIEnv* env, jmethodID method);
+JNIEXPORT bool JNICALL JVM_DTraceIsProbeEnabled(JNIEnv *env, jmethodID method);
 
 /*
  * Destroy custom DOF
@@ -675,8 +665,7 @@ JVM_DTraceDispose(JNIEnv* env, jlong activation_handle);
 /*
  * Check to see if DTrace is supported by OS
  */
-JNIEXPORT jboolean JNICALL
-JVM_DTraceIsSupported(JNIEnv* env);
+JNIEXPORT bool JNICALL JVM_DTraceIsSupported(JNIEnv *env);
 
 /*************************************************************************
  PART 2: Support for the Verifier and Class File Format Checker
@@ -812,8 +801,7 @@ JVM_GetMethodIxMaxStack(JNIEnv *env, jclass cb, int index);
  * Is a given method a constructor.
  * The method is identified by method_index.
  */
-JNIEXPORT jboolean JNICALL
-JVM_IsConstructorIx(JNIEnv *env, jclass cb, int index);
+JNIEXPORT bool JNICALL JVM_IsConstructorIx(JNIEnv *env, jclass cb, int index);
 
 /*
  * Returns the name of a given method in UTF format.
@@ -958,8 +946,8 @@ JVM_ReleaseUTF(const char *utf);
 /*
  * Compare if two classes are in the same package.
  */
-JNIEXPORT jboolean JNICALL
-JVM_IsSameClassPackage(JNIEnv *env, jclass class1, jclass class2);
+JNIEXPORT bool JNICALL JVM_IsSameClassPackage(JNIEnv *env, jclass class1,
+                                              jclass class2);
 
 /* Get classfile constants */
 /* J2ObjC: Removed, not needed.
@@ -972,11 +960,8 @@ JVM_IsSameClassPackage(JNIEnv *env, jclass class1, jclass class2);
  * Returns JNI_FALSE if verification fails. A detailed error message
  * will be places in msg_buf, whose length is specified by buf_len.
  */
-typedef jboolean (*verifier_fn_t)(JNIEnv *env,
-                                  jclass cb,
-                                  char * msg_buf,
-                                  jint buf_len);
-
+typedef bool (*verifier_fn_t)(JNIEnv *env, jclass cb, char *msg_buf,
+                              jint buf_len);
 
 /*
  * Support for a VM-independent class format checker.
@@ -1008,7 +993,7 @@ typedef struct {
 
 typedef jstring (*to_java_string_fn_t)(JNIEnv *env, char *str);
 
-typedef char *(*to_c_string_fn_t)(JNIEnv *env, jstring s, jboolean *b);
+typedef char *(*to_c_string_fn_t)(JNIEnv *env, jstring s, bool *b);
 
 /* This is the function defined in libjava.so that performs class
  * format checks. This functions fills in size information about
@@ -1021,14 +1006,11 @@ typedef char *(*to_c_string_fn_t)(JNIEnv *env, jstring s, jboolean *b);
  *  -4: bad class name
  */
 
-typedef jint (*check_format_fn_t)(char *class_name,
-                                  unsigned char *data,
+typedef jint (*check_format_fn_t)(char *class_name, unsigned char *data,
                                   unsigned int data_size,
                                   class_size_info *class_size,
-                                  char *message_buffer,
-                                  jint buffer_length,
-                                  jboolean measure_only,
-                                  jboolean check_relaxed);
+                                  char *message_buffer, jint buffer_length,
+                                  bool measure_only, bool check_relaxed);
 
 #define JVM_RECOGNIZED_CLASS_MODIFIERS (JVM_ACC_PUBLIC | \
                                         JVM_ACC_FINAL | \
@@ -1471,7 +1453,7 @@ typedef struct JDK1_1InitArgs {
     jint enableVerboseGC;
     jint disableAsyncGC;
     jint verbose;
-    jboolean debugging;
+    bool debugging;
     jint debugPort;
 } JDK1_1InitArgs;
 

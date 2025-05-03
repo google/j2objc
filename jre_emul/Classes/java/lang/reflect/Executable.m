@@ -157,7 +157,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
       getMethodOrConstructorGenericInfo(self)->genericExceptionTypes_, false);
 }
 
-- (jboolean)isSynthetic {
+- (bool)isSynthetic {
   return (metadata_->modifiers & JavaLangReflectModifier_SYNTHETIC) > 0;
 }
 
@@ -242,7 +242,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
   return [sb description];
 }
 
-- (jboolean)isVarArgs {
+- (bool)isVarArgs {
   return (metadata_->modifiers & JavaLangReflectModifier_VARARGS) > 0;
 }
 
@@ -250,7 +250,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
   return JreMethodSelector(metadata_);
 }
 
-- (jboolean)hasRealParameterData {
+- (bool)hasRealParameterData {
   return metadata_ != nil;
 }
 
@@ -355,7 +355,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable 
 GenericInfo *getMethodOrConstructorGenericInfo(JavaLangReflectExecutable *self) {
   const J2ObjcMethodInfo *metadata = self->metadata_;
   NSString *signatureAttribute = JreMethodGenericString(metadata, self->ptrTable_);
-  jboolean isMethod = [self isKindOfClass:[JavaLangReflectMethod class]];
+  bool isMethod = [self isKindOfClass:[JavaLangReflectMethod class]];
   IOSObjectArray *exceptionTypes = JreParseClassList(
       JrePtrAtIndex(self->ptrTable_, metadata->exceptionsIdx));
   LibcoreReflectGenericSignatureParser *parser =

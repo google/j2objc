@@ -91,11 +91,11 @@ FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *create_ComGoogleJ2objcNetSs
 // public IosSslSocket(Socket s, String host, int port, boolean autoClose)
 FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
 new_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetSocket_withNSString_withInt_withBoolean_(
-    JavaNetSocket *socket, NSString *host, jint port, jboolean autoClose) NS_RETURNS_RETAINED;
+    JavaNetSocket *socket, NSString *host, jint port, bool autoClose) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT ComGoogleJ2objcNetSslIosSslSocket *
 create_ComGoogleJ2objcNetSslIosSslSocket_initWithJavaNetSocket_withNSString_withInt_withBoolean_(
-    JavaNetSocket *socket, NSString *host, jint port, jboolean autoClose);
+    JavaNetSocket *socket, NSString *host, jint port, bool autoClose);
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleJ2objcNetSslIosSslSocket)
 

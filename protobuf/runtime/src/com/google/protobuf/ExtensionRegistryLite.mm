@@ -64,7 +64,7 @@ static CGPExtensionRegistryLite *CGPExtensionRegistryLite_EMPTY_;
   return self;
 }
 
-- (instancetype)initWithBoolean:(jboolean)empty {
+- (instancetype)initWithBoolean:(bool)empty {
   ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(self, empty);
   return self;
 }
@@ -95,12 +95,12 @@ void CGPExtensionRegistryAdd(CGPExtensionRegistryLite *registry, CGPExtensionLit
 }
 
 void ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(
-    ComGoogleProtobufExtensionRegistryLite *self, jboolean empty) {
+    ComGoogleProtobufExtensionRegistryLite *self, bool empty) {
   NSObject_init(self);
 }
 
-ComGoogleProtobufExtensionRegistryLite *
-new_ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(jboolean empty) {
+ComGoogleProtobufExtensionRegistryLite *new_ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(
+    bool empty) {
   ComGoogleProtobufExtensionRegistryLite *self = [ComGoogleProtobufExtensionRegistryLite alloc];
   ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(self, empty);
   return [self autorelease];

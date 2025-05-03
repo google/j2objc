@@ -26,29 +26,14 @@
 
 package java.lang.reflect;
 
-import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.security.Permission;
-import java.security.PrivilegedAction;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
-import libcore.util.EmptyArray;
 import sun.reflect.CallerSensitive;
-import sun.reflect.misc.ReflectUtil;
-import sun.security.util.SecurityConstants;
 
 /*-[
 #include "IOSClass.h"
@@ -1088,8 +1073,8 @@ public class Proxy implements java.io.Serializable {
       return JavaLangSystem_identityHashCodeWithId_(self);
     ]-*/;
 
-    @Override
-    public native boolean equals(Object obj) /*-[
+  @Override
+  public native boolean equals(Object obj) /*-[
       SEL sel = @selector(proxy_equalsWithId:);
       NSMethodSignature *signature = [self methodSignatureForSelector:sel];
       NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
@@ -1097,7 +1082,7 @@ public class Proxy implements java.io.Serializable {
       invocation.selector = sel;
       [invocation setArgument:&obj atIndex:2];  // 2 is first parameter.
       [self forwardInvocation:invocation];
-      jboolean result;
+      bool result;
       [invocation getReturnValue:&result];
       return result;
     ]-*/;

@@ -409,11 +409,11 @@ static BOOL AddGetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
 
 static BOOL AddHasMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   CGPHasLocator loc = GetHasLocator(cls, field);
-  IMP imp = imp_implementationWithBlock(^jboolean(id msg) {
+  IMP imp = imp_implementationWithBlock(^bool(id msg) {
     return GetHas(msg, loc);
   });
   char encoding[64];
-  strcpy(encoding, @encode(jboolean));
+  strcpy(encoding, @encode(bool));
   strcat(encoding, "@:");
   return class_addMethod(cls, sel, imp, encoding);
 }
@@ -653,14 +653,14 @@ static BOOL AddAddAllMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   return class_addMethod(cls, sel, imp, "@@:@");
 }
 
-#define GET_CONTAINS_IMP(NAME) \
-  static IMP GetContainsImp##NAME( \
-      size_t offset, CGPFieldJavaType keyType, CGPFieldJavaType valueType) { \
-    return imp_implementationWithBlock(^jboolean(id msg, TYPE_##NAME pKey) { \
-      CGPValue key; \
-      key.CGPValueField_##NAME = pKey; \
+#define GET_CONTAINS_IMP(NAME)                                                                  \
+  static IMP GetContainsImp##NAME(size_t offset, CGPFieldJavaType keyType,                      \
+                                  CGPFieldJavaType valueType) {                                 \
+    return imp_implementationWithBlock(^bool(id msg, TYPE_##NAME pKey) {                        \
+      CGPValue key;                                                                             \
+      key.CGPValueField_##NAME = pKey;                                                          \
       return CGPMapFieldGetWithKey(MAP_FIELD_PTR(msg, offset), key, keyType, valueType) != nil; \
-    }); \
+    });                                                                                         \
   }
 
 GET_CONTAINS_IMP(Int)
@@ -673,7 +673,7 @@ GET_CONTAINS_IMP(Id)
 static BOOL AddContainsMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   IMP imp = NULL;
   char encoding[64];
-  strcpy(encoding, @encode(jboolean));
+  strcpy(encoding, @encode(bool));
   strcat(encoding, "@:");
   size_t offset = CGPFieldGetOffset(field, cls);
   CGPFieldJavaType keyType = CGPFieldGetJavaType(CGPFieldMapKey(field));
@@ -1333,7 +1333,7 @@ static id GetField(id msg, CGPFieldDescriptor *field) {
   }
 }
 
-static jboolean HasField(id msg, CGPFieldDescriptor *descriptor) {
+static bool HasField(id msg, CGPFieldDescriptor *descriptor) {
   if (CGPFieldIsRepeated(nil_chk(descriptor))) {
     @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc]
         initWithNSString:@"hasField() called on a repeated field."]);
@@ -3584,8 +3584,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   return GetField(self, descriptor);
 }
 
-- (jboolean)hasFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
-    (CGPFieldDescriptor *)descriptor {
+- (bool)hasFieldWithComGoogleProtobufDescriptors_FieldDescriptor:(CGPFieldDescriptor *)descriptor {
   return HasField(self, descriptor);
 }
 
@@ -3714,8 +3713,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   return GetField(self, descriptor);
 }
 
-- (jboolean)hasFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
-    (CGPFieldDescriptor *)descriptor {
+- (bool)hasFieldWithComGoogleProtobufDescriptors_FieldDescriptor:(CGPFieldDescriptor *)descriptor {
   return HasField(self, descriptor);
 }
 
@@ -3842,13 +3840,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   return self;
 }
 
-- (jboolean)mergeDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input {
+- (bool)mergeDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input {
   return [self mergeDelimitedFromWithJavaIoInputStream:input
             withComGoogleProtobufExtensionRegistryLite:nil];
 }
 
-- (jboolean)mergeDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input
-    withComGoogleProtobufExtensionRegistryLite:(CGPExtensionRegistryLite *)extensionRegistry {
+- (bool)mergeDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input
+     withComGoogleProtobufExtensionRegistryLite:(CGPExtensionRegistryLite *)extensionRegistry {
   int firstByte = [input read];
   if (firstByte == -1) {
     return false;
@@ -4085,14 +4083,13 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_Extendabl
   return GetExtensionCount(extension, &extensionMap_);
 }
 
-- (jboolean)hasExtensionWithComGoogleProtobufExtensionLite:
-    (ComGoogleProtobufExtensionLite *)extension {
+- (bool)hasExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension {
   return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
 }
-- (jboolean)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
+- (bool)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
   return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
 }
-- (jboolean)hasExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+- (bool)hasExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
     (CGPGeneratedExtension *)extension {
   return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
 }
@@ -4150,14 +4147,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMes
   return GetExtensionCount(extension, &extensionMap_);
 }
 
-- (jboolean)hasExtensionWithComGoogleProtobufExtensionLite:
-    (ComGoogleProtobufExtensionLite *)extension {
+- (bool)hasExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension {
   return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
 }
-- (jboolean)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
+- (bool)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
   return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
 }
-- (jboolean)hasExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+- (bool)hasExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
     (CGPGeneratedExtension *)extension {
   return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
 }

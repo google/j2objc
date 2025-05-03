@@ -95,8 +95,9 @@ JNIEXPORT jlong JNICALL Java_sun_nio_ch_FileDispatcherImpl_writev0
  * Method:    force0
  * Signature: (Ljava/io/FileDescriptor;Z)I
  */
-JNIEXPORT jint JNICALL Java_sun_nio_ch_FileDispatcherImpl_force0
-  (JNIEnv *, jclass, jobject, jboolean);
+JNIEXPORT jint JNICALL Java_sun_nio_ch_FileDispatcherImpl_force0(JNIEnv *,
+                                                                 jclass,
+                                                                 jobject, bool);
 
 /*
  * Class:     sun_nio_ch_FileDispatcherImpl
@@ -119,8 +120,10 @@ JNIEXPORT jlong JNICALL Java_sun_nio_ch_FileDispatcherImpl_size0
  * Method:    lock0
  * Signature: (Ljava/io/FileDescriptor;ZJJZ)I
  */
-JNIEXPORT jint JNICALL Java_sun_nio_ch_FileDispatcherImpl_lock0
-  (JNIEnv *, jclass, jobject, jboolean, jlong, jlong, jboolean);
+JNIEXPORT jint JNICALL Java_sun_nio_ch_FileDispatcherImpl_lock0(JNIEnv *,
+                                                                jclass, jobject,
+                                                                bool, jlong,
+                                                                jlong, bool);
 
 /*
  * Class:     sun_nio_ch_FileDispatcherImpl

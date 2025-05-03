@@ -139,21 +139,20 @@ Java_java_net_Inet6AddressImpl_getHostByAddr0(JNIEnv *env, jobject this,
 }
 
 #ifdef AF_INET6
-static jboolean
-ping6(JNIEnv *env, jint fd, struct sockaddr_in6* him, jint timeout,
-      struct sockaddr_in6* netif, jint ttl) {
-    jint size;
-    jint n;
-    socklen_t len;
-    char sendbuf[1500];
-    unsigned char recvbuf[1500];
-    struct icmp6_hdr *icmp6;
-    struct sockaddr_in6 sa_recv;
-    jbyte *caddr, *recv_caddr;
-    jchar pid;
-    jint tmout2, seq = 1;
-    struct timeval tv;
-    size_t plen;
+static bool ping6(JNIEnv *env, jint fd, struct sockaddr_in6 *him, jint timeout,
+                  struct sockaddr_in6 *netif, jint ttl) {
+  jint size;
+  jint n;
+  socklen_t len;
+  char sendbuf[1500];
+  unsigned char recvbuf[1500];
+  struct icmp6_hdr *icmp6;
+  struct sockaddr_in6 sa_recv;
+  jbyte *caddr, *recv_caddr;
+  jchar pid;
+  jint tmout2, seq = 1;
+  struct timeval tv;
+  size_t plen;
 
 #ifdef __linux__
     {
@@ -256,13 +255,10 @@ ping6(JNIEnv *env, jint fd, struct sockaddr_in6* him, jint timeout,
  * Method:    isReachable0
  * Signature: ([bII[bI)Z
  */
-JNIEXPORT jboolean JNICALL
-Java_java_net_Inet6AddressImpl_isReachable0(JNIEnv *env, jobject this,
-                                           jbyteArray addrArray,
-                                           jint scope,
-                                           jint timeout,
-                                           jbyteArray ifArray,
-                                           jint ttl, jint if_scope) {
+JNIEXPORT bool JNICALL Java_java_net_Inet6AddressImpl_isReachable0(JNIEnv *env, jobject this,
+                                                                   jbyteArray addrArray, jint scope,
+                                                                   jint timeout, jbyteArray ifArray,
+                                                                   jint ttl, jint if_scope) {
 #ifdef AF_INET6
     jbyte caddr[16];
     jint fd, sz;

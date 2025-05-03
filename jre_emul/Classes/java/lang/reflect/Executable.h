@@ -70,10 +70,10 @@
 - (IOSObjectArray *)getTypeParameters;
 
 // Returns true if this method has variable arguments.
-- (jboolean)isVarArgs;
+- (bool)isVarArgs;
 
 // Returns true if this method was added by j2objc.
-- (jboolean)isSynthetic;
+- (bool)isSynthetic;
 
 // Annotation accessors.
 - (IOSObjectArray *)getAnnotationsByTypeWithIOSClass:(IOSClass *)cls;
@@ -90,7 +90,7 @@
 // Internal methods.
 - (IOSObjectArray *)getParameterTypesInternal;
 - (SEL)getSelector;
-- (jboolean)hasRealParameterData;
+- (bool)hasRealParameterData;
 
 @end
 

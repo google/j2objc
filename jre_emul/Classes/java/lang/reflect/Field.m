@@ -83,11 +83,11 @@
           [[self getDeclaringClass] getName], [self getName]];
 }
 
-static jboolean IsStatic(JavaLangReflectField *field) {
+static bool IsStatic(JavaLangReflectField *field) {
   return (field->metadata_->modifiers & JavaLangReflectModifier_STATIC) > 0;
 }
 
-static jboolean IsFinal(JavaLangReflectField *field) {
+static bool IsFinal(JavaLangReflectField *field) {
   return (field->metadata_->modifiers & JavaLangReflectModifier_FINAL) > 0;
 }
 
@@ -173,7 +173,7 @@ static void SetWithRawValue(
   return [fieldType __boxValue:&rawValue];
 }
 
-- (jboolean)getBooleanWithId:(id)object {
+- (bool)getBooleanWithId:(id)object {
   J2ObjcRawValue rawValue;
   ReadRawValue(&rawValue, self, object, [IOSClass booleanClass]);
   return rawValue.asBOOL;
@@ -226,7 +226,7 @@ static void SetWithRawValue(
   IOSClass *fieldType = [self getType];
   // If ivar_ is NULL and the field is not static then the field is a mapped
   // class "virtual" field.
-  jboolean needsRetain = ![fieldType isPrimitive] && (ivar_ || IsStatic(self));
+  bool needsRetain = ![fieldType isPrimitive] && (ivar_ || IsStatic(self));
   if (needsRetain) {
     AUTORELEASE([self getWithId:object]);
   }
@@ -241,7 +241,7 @@ static void SetWithRawValue(
   }
 }
 
-- (void)setBooleanWithId:(id)object withBoolean:(jboolean)value {
+- (void)setBooleanWithId:(id)object withBoolean:(bool)value {
   J2ObjcRawValue rawValue = { .asBOOL = value };
   SetWithRawValue(&rawValue, self, object, [IOSClass booleanClass]);
 }
@@ -315,11 +315,11 @@ static void SetWithRawValue(
   return declaringClass_;
 }
 
-- (jboolean)isSynthetic {
+- (bool)isSynthetic {
   return (metadata_->modifiers & JavaLangReflectModifier_SYNTHETIC) > 0;
 }
 
-- (jboolean)isEnumConstant {
+- (bool)isEnumConstant {
   return (metadata_->modifiers & JavaLangReflectModifier_ENUM) > 0;
 }
 

@@ -49,10 +49,10 @@ extern jfieldID IO_handle_fdID;
 jint readSingle(JNIEnv *env, jobject this_, jfieldID fid);
 jint readBytes(JNIEnv *env, jobject this_, jbyteArray bytes, jint off, jint len,
                jfieldID fid);
-void writeSingle(JNIEnv *env, jobject this_, jint byte, jboolean append,
+void writeSingle(JNIEnv *env, jobject this_, jint byte, bool append,
                  jfieldID fid);
 void writeBytes(JNIEnv *env, jobject this_, jbyteArray bytes, jint off,
-                jint len, jboolean append, jfieldID fid);
+                jint len, bool append, jfieldID fid);
 void fileOpen(JNIEnv *env, jobject this_, jstring path, jfieldID fid,
               int flags);
 void throwFileNotFoundException(JNIEnv *env, jstring path);

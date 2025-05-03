@@ -92,8 +92,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufExtensionRegistry_ExtensionInfo)
 
 CF_EXTERN_C_BEGIN
 
-void ComGoogleProtobufExtensionRegistry_initWithBoolean_(
-    ComGoogleProtobufExtensionRegistry *self, jboolean empty);
+void ComGoogleProtobufExtensionRegistry_initWithBoolean_(ComGoogleProtobufExtensionRegistry *self,
+                                                         bool empty);
 
 ComGoogleProtobufExtensionRegistry *ComGoogleProtobufExtensionRegistry_newInstance();
 

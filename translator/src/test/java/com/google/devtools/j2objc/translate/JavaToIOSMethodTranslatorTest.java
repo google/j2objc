@@ -65,8 +65,9 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { public String toString(boolean value) { return String.valueOf(value); } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "- (NSString *)toStringWithBoolean:(jboolean)value {",
+    assertTranslatedLines(
+        translation,
+        "- (NSString *)toStringWithBoolean:(bool)value {",
         "return NSString_java_valueOfBool_(value);");
   }
 

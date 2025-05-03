@@ -42,37 +42,34 @@
 
 #define DEF_MEM_LEVEL 8
 
-JNIEXPORT jlong JNICALL
-Java_java_util_zip_Deflater_init(JNIEnv *env, jclass cls, jint level,
-                                 jint strategy, jboolean nowrap)
-{
-    z_stream *strm = calloc(1, sizeof(z_stream));
+JNIEXPORT jlong JNICALL Java_java_util_zip_Deflater_init(JNIEnv *env, jclass cls, jint level,
+                                                         jint strategy, bool nowrap) {
+  z_stream *strm = calloc(1, sizeof(z_stream));
 
-    if (strm == 0) {
+  if (strm == 0) {
+    JNU_ThrowOutOfMemoryError(env, 0);
+    return jlong_zero;
+  } else {
+    char *msg;
+    switch (deflateInit2(strm, level, Z_DEFLATED, nowrap ? -MAX_WBITS : MAX_WBITS, DEF_MEM_LEVEL,
+                         strategy)) {
+      case Z_OK:
+        return ptr_to_jlong(strm);
+      case Z_MEM_ERROR:
+        free(strm);
         JNU_ThrowOutOfMemoryError(env, 0);
         return jlong_zero;
-    } else {
-        char *msg;
-        switch (deflateInit2(strm, level, Z_DEFLATED,
-                             nowrap ? -MAX_WBITS : MAX_WBITS,
-                             DEF_MEM_LEVEL, strategy)) {
-          case Z_OK:
-            return ptr_to_jlong(strm);
-          case Z_MEM_ERROR:
-            free(strm);
-            JNU_ThrowOutOfMemoryError(env, 0);
-            return jlong_zero;
-          case Z_STREAM_ERROR:
-            free(strm);
-            JNU_ThrowIllegalArgumentException(env, 0);
-            return jlong_zero;
-          default:
-            msg = strm->msg;
-            free(strm);
-            JNU_ThrowInternalError(env, msg);
-            return jlong_zero;
-        }
+      case Z_STREAM_ERROR:
+        free(strm);
+        JNU_ThrowIllegalArgumentException(env, 0);
+        return jlong_zero;
+      default:
+        msg = strm->msg;
+        free(strm);
+        JNU_ThrowInternalError(env, msg);
+        return jlong_zero;
     }
+  }
 }
 
 JNIEXPORT void JNICALL
@@ -147,13 +144,12 @@ Java_java_util_zip_Deflater_deflateBytes(JNIEnv *env, JavaUtilZipDeflater *this,
             return 0;
         }
     } else {
-        jboolean finish = this->finish_;
-        in_buf = this_buf->buffer_;
-        if (in_buf == NULL) {
-            if (this_len != 0)
-                JNU_ThrowOutOfMemoryError(env, 0);
-            return 0;
-        }
+      bool finish = this->finish_;
+      in_buf = this_buf->buffer_;
+      if (in_buf == NULL) {
+        if (this_len != 0) JNU_ThrowOutOfMemoryError(env, 0);
+        return 0;
+      }
         out_buf = b->buffer_;
         if (out_buf == NULL) {
             if (len != 0)

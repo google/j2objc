@@ -91,11 +91,11 @@
   [dictionary_ removeAllObjects];
 }
 
-- (jboolean)containsKeyWithId:(id)key {
+- (bool)containsKeyWithId:(id)key {
   return [dictionary_ objectForKey:key] != nil;
 }
 
-- (jboolean)containsValueWithId:(id)value {
+- (bool)containsValueWithId:(id)value {
   return [[dictionary_ allValues] containsObject:value];
 }
 
@@ -111,7 +111,7 @@
   return set;
 }
 
-- (jboolean)isEqual:(id)object {
+- (bool)isEqual:(id)object {
   if (!object) {
     return false;
   }
@@ -137,7 +137,7 @@
   return [dictionary_ hash];
 }
 
-- (jboolean)isEmpty {
+- (bool)isEmpty {
   return [dictionary_ count] == 0;
 }
 

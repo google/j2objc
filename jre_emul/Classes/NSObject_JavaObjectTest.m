@@ -42,9 +42,8 @@
   // Test with class.
   JavaUtilArrayList *one = AUTORELEASE([[JavaUtilArrayList alloc] init]);
   IOSClass *clazz = [one java_getClass];
-  jboolean result =
-      ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
-          [clazz getName], @"java.util.ArrayList");
+  bool result = ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
+      [clazz getName], @"java.util.ArrayList");
   XCTAssertTrue(result, @"incorrect class name");
 
   // Now with a protocol.

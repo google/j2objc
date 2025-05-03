@@ -48,30 +48,28 @@ static void ThrowDataFormatException(JNIEnv *env, const char *msg) {
       msg ? [NSString stringWithUTF8String:msg] : nil);
 }
 
-JNIEXPORT jlong JNICALL
-Java_java_util_zip_Inflater_init(JNIEnv *env, jclass cls, jboolean nowrap)
-{
-    z_stream *strm = calloc(1, sizeof(z_stream));
+JNIEXPORT jlong JNICALL Java_java_util_zip_Inflater_init(JNIEnv *env, jclass cls, bool nowrap) {
+  z_stream *strm = calloc(1, sizeof(z_stream));
 
-    if (strm == 0) {
+  if (strm == 0) {
+    JNU_ThrowOutOfMemoryError(env, 0);
+    return jlong_zero;
+  } else {
+    char *msg;
+    switch (inflateInit2(strm, nowrap ? -MAX_WBITS : MAX_WBITS)) {
+      case Z_OK:
+        return ptr_to_jlong(strm);
+      case Z_MEM_ERROR:
+        free(strm);
         JNU_ThrowOutOfMemoryError(env, 0);
         return jlong_zero;
-    } else {
-        char *msg;
-        switch (inflateInit2(strm, nowrap ? -MAX_WBITS : MAX_WBITS)) {
-          case Z_OK:
-            return ptr_to_jlong(strm);
-          case Z_MEM_ERROR:
-            free(strm);
-            JNU_ThrowOutOfMemoryError(env, 0);
-            return jlong_zero;
-          default:
-            msg = strm->msg;
-            free(strm);
-            JNU_ThrowInternalError(env, msg);
-            return jlong_zero;
-        }
+      default:
+        msg = strm->msg;
+        free(strm);
+        JNU_ThrowInternalError(env, msg);
+        return jlong_zero;
     }
+  }
 }
 
 JNIEXPORT void JNICALL

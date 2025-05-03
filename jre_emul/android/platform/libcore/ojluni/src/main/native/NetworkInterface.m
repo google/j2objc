@@ -179,7 +179,7 @@ JNIEXPORT jobject JNICALL Java_java_net_NetworkInterface_getByName0
     (JNIEnv *env, jclass cls, jstring name) {
 
     netif *ifs, *curr;
-    jboolean isCopy;
+    bool isCopy;
     const char* name_utf;
     jobject obj = NULL;
 
@@ -267,7 +267,7 @@ JNIEXPORT jobject JNICALL Java_java_net_NetworkInterface_getByInetAddress0
     int family = (getInetAddress_family(env, iaObj) == IPv4) ? AF_INET : AF_INET6;
 
     jobject obj = NULL;
-    jboolean match = JNI_FALSE;
+    bool match = JNI_FALSE;
 
     ifs = enumInterfaces(env);
     if (ifs == NULL) {
@@ -401,9 +401,10 @@ JNIEXPORT jobjectArray JNICALL Java_java_net_NetworkInterface_getAll
  * Method:    isUp0
  * Signature: (Ljava/lang/String;I)Z
  */
-JNIEXPORT jboolean JNICALL Java_java_net_NetworkInterface_isUp0(JNIEnv *env, jclass cls, jstring name, jint index) {
-    int ret = getFlags0(env, name);
-    return ((ret & IFF_UP) && (ret & IFF_RUNNING)) ? JNI_TRUE :  JNI_FALSE;
+JNIEXPORT bool JNICALL Java_java_net_NetworkInterface_isUp0(JNIEnv *env, jclass cls, jstring name,
+                                                            jint index) {
+  int ret = getFlags0(env, name);
+  return ((ret & IFF_UP) && (ret & IFF_RUNNING)) ? JNI_TRUE : JNI_FALSE;
 }
 
 /*
@@ -411,9 +412,10 @@ JNIEXPORT jboolean JNICALL Java_java_net_NetworkInterface_isUp0(JNIEnv *env, jcl
  * Method:    isP2P0
  * Signature: (Ljava/lang/String;I)Z
  */
-JNIEXPORT jboolean JNICALL Java_java_net_NetworkInterface_isP2P0(JNIEnv *env, jclass cls, jstring name, jint index) {
-    int ret = getFlags0(env, name);
-    return (ret & IFF_POINTOPOINT) ? JNI_TRUE :  JNI_FALSE;
+JNIEXPORT bool JNICALL Java_java_net_NetworkInterface_isP2P0(JNIEnv *env, jclass cls, jstring name,
+                                                             jint index) {
+  int ret = getFlags0(env, name);
+  return (ret & IFF_POINTOPOINT) ? JNI_TRUE : JNI_FALSE;
 }
 
 /*
@@ -421,7 +423,8 @@ JNIEXPORT jboolean JNICALL Java_java_net_NetworkInterface_isP2P0(JNIEnv *env, jc
  * Method:    isLoopback0
  * Signature: (Ljava/lang/String;I)Z
  */
-JNIEXPORT jboolean JNICALL Java_java_net_NetworkInterface_isLoopback0(JNIEnv *env, jclass cls, jstring name, jint index) {
+JNIEXPORT bool JNICALL Java_java_net_NetworkInterface_isLoopback0(JNIEnv *env, jclass cls,
+                                                                  jstring name, jint index) {
   int ret = getFlags0(env, name);
   return (ret & IFF_LOOPBACK) ? JNI_TRUE :  JNI_FALSE;
 }
@@ -431,7 +434,8 @@ JNIEXPORT jboolean JNICALL Java_java_net_NetworkInterface_isLoopback0(JNIEnv *en
  * Method:    supportsMulticast0
  * Signature: (Ljava/lang/String;I)Z
  */
-JNIEXPORT jboolean JNICALL Java_java_net_NetworkInterface_supportsMulticast0(JNIEnv *env, jclass cls, jstring name, jint index) {
+JNIEXPORT bool JNICALL Java_java_net_NetworkInterface_supportsMulticast0(JNIEnv *env, jclass cls,
+                                                                         jstring name, jint index) {
   int ret = getFlags0(env, name);
   return (ret & IFF_MULTICAST) ? JNI_TRUE :  JNI_FALSE;
 }
@@ -443,7 +447,7 @@ JNIEXPORT jboolean JNICALL Java_java_net_NetworkInterface_supportsMulticast0(JNI
  */
 
 JNIEXPORT jint JNICALL Java_java_net_NetworkInterface_getMTU0(JNIEnv *env, jclass class, jstring name, jint index) {
-  jboolean isCopy;
+  bool isCopy;
   int ret = -1;
   int sock;
   const char* name_utf;
@@ -467,7 +471,7 @@ JNIEXPORT jint JNICALL Java_java_net_NetworkInterface_getMTU0(JNIEnv *env, jclas
 /*** Private methods definitions ****/
 
 static int getFlags0(JNIEnv *env, jstring name) {
-  jboolean isCopy;
+  bool isCopy;
   int ret, sock;
   const char* name_utf;
   int flags = 0;

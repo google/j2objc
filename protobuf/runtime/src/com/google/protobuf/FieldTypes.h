@@ -50,7 +50,7 @@
 #define TYPE_Long jlong
 #define TYPE_Float jfloat
 #define TYPE_Double jdouble
-#define TYPE_Bool jboolean
+#define TYPE_Bool bool
 #define TYPE_Enum id
 #define TYPE_Id id
 #define TYPE_Retainable id

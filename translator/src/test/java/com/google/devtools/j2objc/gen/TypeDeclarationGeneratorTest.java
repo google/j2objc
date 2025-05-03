@@ -75,8 +75,8 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "+ (NSString *)ID;");
     assertTranslation(translation, "+ (void)setID:(NSString *)value;");
     assertTranslation(translation, "+ (Test *)DEFAULT;");
-    assertTranslation(translation, "+ (jboolean)DEBUG_;");
-    assertTranslation(translation, "+ (void)setDEBUG_:(jboolean)value");
+    assertTranslation(translation, "+ (bool)DEBUG_;");
+    assertTranslation(translation, "+ (void)setDEBUG_:(bool)value");
     assertNotInTranslation(translation, "+ (jint)i");
     assertNotInTranslation(translation, "+ (void)setI:(jint)value");
     assertNotInTranslation(translation, "+ (void)setDEFAULT:(Test *)value");
@@ -284,7 +284,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "",
         "@interface Test : NSObject",
         "",
-        "+ (jboolean)FOO;");
+        "+ (bool)FOO;");
   }
 
   public void testProperties() throws IOException {
@@ -316,8 +316,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "@property (copy) NSString *fieldCopy;");
 
     // Test boolean getter.
-    assertTranslation(translation,
-        "@property (nonatomic, getter=isFieldBool) jboolean fieldBool;");
+    assertTranslation(translation, "@property (nonatomic, getter=isFieldBool) bool fieldBool;");
 
     // Reorder property attributes and pass setter through.
     assertTranslation(translation,
@@ -442,10 +441,11 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "@Property static int test; "
         + "@Property(\"nonatomic\") static double d; "
         + "@Property static final boolean flag = true; }", "Test", "Test.h");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "@property (class) jint test;",
         "@property (nonatomic, class) jdouble d;",
-        "@property (readonly, class) jboolean flag;");
+        "@property (readonly, class) bool flag;");
 
     // Verify class attributes aren't assigned to instance fields.
     translateSourceFile(
@@ -494,7 +494,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         translation,
         "@property (class) jint test NS_SWIFT_NAME(test);",
         "@property (class) jdouble d NS_SWIFT_NAME(d);",
-        "@property (readonly, class) jboolean flag NS_SWIFT_NAME(flag);",
+        "@property (readonly, class) bool flag NS_SWIFT_NAME(flag);",
         "@property (copy, class) NSString *TRUE_ NS_SWIFT_NAME(TRUE_);");
     assertTranslation(translation, "- (jint)getTest;");
     assertNotInTranslation(translation, "+ (jint)test;");
@@ -517,7 +517,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "@end",
         "",
         "@interface Test : NSObject",
-        "@property (readonly, class) jboolean FOO NS_SWIFT_NAME(FOO);");
+        "@property (readonly, class) bool FOO NS_SWIFT_NAME(FOO);");
   }
 
   public void testNullabilityAttributes() throws IOException {
@@ -1089,7 +1089,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation, "- (Test_TestEnum_Enum)toNSEnum J2OBJC_TEXT_SEGMENT;");
 
     // Automatically generated annotation methods.
-    assertTranslatedLines(translation, "- (jboolean)isEqual:(id)obj J2OBJC_TEXT_SEGMENT;");
+    assertTranslatedLines(translation, "- (bool)isEqual:(id)obj J2OBJC_TEXT_SEGMENT;");
     assertTranslatedLines(translation, "- (NSUInteger)hash J2OBJC_TEXT_SEGMENT;");
   }
 }

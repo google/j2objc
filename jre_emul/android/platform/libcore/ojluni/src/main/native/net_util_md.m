@@ -777,11 +777,11 @@ void parseExclusiveBindProperty(JNIEnv *env) {
  * IPv4 mapped address where IPv6 is available and v4MappedAddress is TRUE.
  * Otherwise it will return a sockaddr_in structure for an IPv4 InetAddress.
 */
-JNIEXPORT int JNICALL
-NET_InetAddressToSockaddr(JNIEnv *env, jobject iaObj, int port, struct sockaddr *him,
-                          int *len, jboolean v4MappedAddress) {
-    jint family;
-    family = getInetAddress_family(env, iaObj);
+JNIEXPORT int JNICALL NET_InetAddressToSockaddr(JNIEnv *env, jobject iaObj, int port,
+                                                struct sockaddr *him, int *len,
+                                                bool v4MappedAddress) {
+  jint family;
+  family = getInetAddress_family(env, iaObj);
 #ifdef AF_INET6
     /* needs work. 1. family 2. clean up him6 etc deallocate memory */
     if (ipv6_available() && !(family == IPv4 && v4MappedAddress == JNI_FALSE)) {
@@ -905,9 +905,7 @@ NET_IsEqual(jbyte* caddr1, jbyte* caddr2) {
     return 1;
 }
 
-jboolean NET_addrtransAvailable() {
-    return JNI_TRUE;
-}
+bool NET_addrtransAvailable() { return JNI_TRUE; }
 
 int NET_IsZeroAddr(jbyte* caddr) {
     int i;

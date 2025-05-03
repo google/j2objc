@@ -295,7 +295,7 @@ NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata) {
   return BuildQualifiedName(metadata);
 }
 
-JavaLangReflectField *FindDeclaredField(IOSClass *iosClass, NSString *name, jboolean publicOnly) {
+JavaLangReflectField *FindDeclaredField(IOSClass *iosClass, NSString *name, bool publicOnly) {
   const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
   const J2ObjcFieldInfo *fieldMeta = JreFindFieldInfo(metadata, [name UTF8String]);
   if (fieldMeta && (!publicOnly || (fieldMeta->modifiers & JavaLangReflectModifier_PUBLIC) != 0)) {
@@ -307,7 +307,7 @@ JavaLangReflectField *FindDeclaredField(IOSClass *iosClass, NSString *name, jboo
   return nil;
 }
 
-JavaLangReflectField *FindField(IOSClass *iosClass, NSString *name, jboolean publicOnly) {
+JavaLangReflectField *FindField(IOSClass *iosClass, NSString *name, bool publicOnly) {
   while (iosClass) {
     JavaLangReflectField *field = FindDeclaredField(iosClass, name, publicOnly);
     if (field) {

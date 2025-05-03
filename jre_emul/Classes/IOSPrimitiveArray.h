@@ -56,7 +56,7 @@
   /**
    * The elements of this array.
    */
-  jboolean buffer_[0];
+  bool buffer_[0];
 }
 
 /**
@@ -72,12 +72,12 @@
 /**
  * Create a new array of a specified length, setting the elements to the values in buf.
  */
-+ (instancetype)newArrayWithBooleans:(const jboolean *)buf count:(NSUInteger)count;
++ (instancetype)newArrayWithBooleans:(const bool *)buf count:(NSUInteger)count;
 
 /**
  * Create a new autoreleased array of a specified length, setting the elements to the values in buf.
  */
-+ (instancetype)arrayWithBooleans:(const jboolean *)buf count:(NSUInteger)count;
++ (instancetype)arrayWithBooleans:(const bool *)buf count:(NSUInteger)count;
 
 /**
  * Create a new multi-dimensional array of booleans.
@@ -93,22 +93,22 @@
 /**
  * Return the boolean at the specified index.
  */
-- (jboolean)booleanAtIndex:(NSUInteger)index;
+- (bool)booleanAtIndex:(NSUInteger)index;
 
 /**
  * Return a pointer to the boolean at the specified index.
  */
-- (jboolean *)booleanRefAtIndex:(NSUInteger)index;
+- (bool *)booleanRefAtIndex:(NSUInteger)index;
 
 /**
  * Replace the boolean at the specified index. Return the new value.
  */
-- (jboolean)replaceBooleanAtIndex:(NSUInteger)index withBoolean:(jboolean)value;
+- (bool)replaceBooleanAtIndex:(NSUInteger)index withBoolean:(bool)value;
 
 /**
  * Copy this array's booleans to a buffer.
  */
-- (void)getBooleans:(jboolean *)buffer length:(NSUInteger)length;
+- (void)getBooleans:(bool *)buffer length:(NSUInteger)length;
 
 @end
 
@@ -116,7 +116,7 @@
  * @brief Return the boolean at the specified index.
  * Equivalent to booleanAtIndex:.
  */
-__attribute__((always_inline)) inline jboolean IOSBooleanArray_Get(
+__attribute__((always_inline)) inline bool IOSBooleanArray_Get(
     __unsafe_unretained IOSBooleanArray *array, jint index) {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
@@ -126,12 +126,11 @@ __attribute__((always_inline)) inline jboolean IOSBooleanArray_Get(
  * @brief Return a pointer to the boolean at the specified index.
  * Equivalent to booleanRefAtIndex:.
  */
-__attribute__((always_inline)) inline jboolean *IOSBooleanArray_GetRef(
+__attribute__((always_inline)) inline bool *IOSBooleanArray_GetRef(
     __unsafe_unretained IOSBooleanArray *array, jint index) {
   IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
-
 
 // ********** IOSCharArray **********
 

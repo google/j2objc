@@ -32,7 +32,7 @@ public class NumberMethodRewriterTest extends GenerationTest {
       + "  public float floatValue() { return 0.0f; }"
       + "  public int intValue() { return 0; }"
       + "  public long longValue() { return 0L; }}", "A", "A.m");
-    assertTranslatedLines(translation, "- (jboolean)isEqual:(id)obj {", "return self == obj;");
+    assertTranslatedLines(translation, "- (bool)isEqual:(id)obj {", "return self == obj;");
     assertTranslatedLines(translation, "- (NSUInteger)hash {", "return (NSUInteger)self;");
   }
 
@@ -46,7 +46,7 @@ public class NumberMethodRewriterTest extends GenerationTest {
       + "  public long longValue() { return 0L; }"
       + "  public boolean equals(Object obj) { return this == obj; }"
       + "  public int hashCode() { return 0; }}", "A", "A.m");
-    assertOccurrences(translation, "- (jboolean)isEqual:(id)obj", 1);
+    assertOccurrences(translation, "- (bool)isEqual:(id)obj", 1);
     assertOccurrences(translation, "- (NSUInteger)hash", 1);
   }
 
@@ -65,10 +65,10 @@ public class NumberMethodRewriterTest extends GenerationTest {
       + "  public long longValue() { return 0L; }}", "A.java");
     runPipeline(testNumberTypeSource, aSource);
     String testNumberGen = getTranslatedFile("TestNumberType.m");
-    assertOccurrences(testNumberGen, "- (jboolean)isEqual:(id)obj", 1);
+    assertOccurrences(testNumberGen, "- (bool)isEqual:(id)obj", 1);
     assertOccurrences(testNumberGen, "- (NSUInteger)hash", 1);
     String subClassGen = getTranslatedFile("A.m");
-    assertNotInTranslation(subClassGen, "- (jboolean)isEqual:(id)obj");
+    assertNotInTranslation(subClassGen, "- (bool)isEqual:(id)obj");
     assertNotInTranslation(subClassGen, "- (NSUInteger)hash");
   }
 

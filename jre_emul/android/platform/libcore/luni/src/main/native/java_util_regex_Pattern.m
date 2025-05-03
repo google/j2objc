@@ -94,8 +94,8 @@ jlong Java_java_util_regex_Pattern_compileImpl(
 
 extern bool maybeThrowIcuException(const char* function, UErrorCode error);
 
-jboolean Java_java_util_regex_Pattern_matches(
-    JNIEnv *env, jclass cls, NSString *regex, NSString *input) {
+bool Java_java_util_regex_Pattern_matches(JNIEnv *env, jclass cls, NSString *regex,
+                                          NSString *input) {
   J2ObjC_icu_init();
 
   URegularExpression *pattern = (URegularExpression *)
@@ -108,7 +108,7 @@ jboolean Java_java_util_regex_Pattern_matches(
   uregex_setText(pattern, chars, len, &status);
   uregex_setRegion(pattern, 0, len, &status);
   maybeThrowIcuException("uregex_setText", status);
-  jboolean result = uregex_matches(pattern, -1, &status);
+  bool result = uregex_matches(pattern, -1, &status);
   free(chars);
   uregex_close(pattern);
   maybeThrowIcuException("uregex_matches", status);

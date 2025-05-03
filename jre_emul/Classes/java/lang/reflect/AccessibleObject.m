@@ -38,16 +38,16 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
   self->accessible_ = false;
 }
 
-- (jboolean)isAccessible {
+- (bool)isAccessible {
   return accessible_;
 }
 
-- (void)setAccessibleWithBoolean:(jboolean)b {
+- (void)setAccessibleWithBoolean:(bool)b {
   accessible_ = b;
 }
 
 + (void)setAccessibleWithJavaLangReflectAccessibleObjectArray:(IOSObjectArray *)objects
-                                                  withBoolean:(jboolean)b {
+                                                  withBoolean:(bool)b {
   JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleObjectArray_withBoolean_(
     objects, b);
 }
@@ -76,7 +76,7 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
   return [self getDeclaredAnnotations];
 }
 
-- (jboolean)isAnnotationPresentWithIOSClass:(IOSClass *)annotationType {
+- (bool)isAnnotationPresentWithIOSClass:(IOSClass *)annotationType {
   return [self getAnnotationWithIOSClass:annotationType] != nil;
 }
 
@@ -153,7 +153,7 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
 @end
 
 void JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleObjectArray_withBoolean_(
-    IOSObjectArray *objects, jboolean b) {
+    IOSObjectArray *objects, bool b) {
   for (JavaLangReflectAccessibleObject *o in objects) {
     [o setAccessibleWithBoolean:b];
   }

@@ -107,7 +107,7 @@ jstring Java_java_lang_Integer_toString__II(JNIEnv *env, jclass cls, jint i, jin
   }
 
   jchar buf[33];
-  jboolean negative = (i < 0);
+  bool negative = (i < 0);
   jint charPos = 32;
 
   if (!negative) {
@@ -146,8 +146,8 @@ jstring Java_java_lang_Integer_toString__I(JNIEnv *env, jclass cls, jint i) {
     return @"-2147483648";
 
   // Android-changed: cache the string literal for small values.
-  jboolean negative = i < 0;
-  jboolean small = negative ? i > -100 : i < 100;
+  bool negative = i < 0;
+  bool small = negative ? i > -100 : i < 100;
   if (small) {
     NSString **smallValues = negative ? SMALL_NEG_VALUES : SMALL_NONNEG_VALUES;
 

@@ -42,9 +42,8 @@
 
 - (void)testBooleanType {
   NSString *objectTypeName = [[JavaLangBoolean_get_TRUE() java_getClass] getName];
-  jboolean result =
-      ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
-          objectTypeName, @"java.lang.Boolean");
+  bool result = ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
+      objectTypeName, @"java.lang.Boolean");
   XCTAssertTrue(result, @"incorrect object type name");
   NSString *primitiveTypeName = [JavaLangBoolean_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"boolean",
@@ -56,9 +55,8 @@
 - (void)testByteType {
   IOSClass *javaByteClass = [[JavaLangByte valueOfWithByte:42] java_getClass];
   NSString *objectTypeName = [javaByteClass getName];
-  jboolean result =
-      ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
-          objectTypeName, @"java.lang.Byte");
+  bool result = ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
+      objectTypeName, @"java.lang.Byte");
   XCTAssertTrue(result, @"incorrect object type name");
   NSString *primitiveTypeName = [JavaLangByte_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"byte",
@@ -71,9 +69,8 @@
 - (void)testCharType {
   JavaLangCharacter *javaCharacter = [JavaLangCharacter valueOfWithChar:'x'];
   NSString *objectTypeName = [[javaCharacter java_getClass] getName];
-  jboolean result =
-      ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
-          objectTypeName, @"java.lang.Character");
+  bool result = ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
+      objectTypeName, @"java.lang.Character");
   XCTAssertTrue(result, @"incorrect object type name");
   NSString *primitiveTypeName = [JavaLangCharacter_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"char",
@@ -86,9 +83,8 @@
 - (void)testDoubleType {
   JavaLangDouble *javaDouble = [JavaLangDouble valueOfWithDouble:1.2];
   NSString *objectTypeName = [[javaDouble java_getClass] getName];
-  jboolean result =
-      ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
-          objectTypeName, @"java.lang.Double");
+  bool result = ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
+      objectTypeName, @"java.lang.Double");
   XCTAssertTrue(result, @"incorrect object type name");
   NSString *primitiveTypeName = [JavaLangDouble_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"double",
@@ -101,9 +97,8 @@
 - (void)testFloatType {
   JavaLangFloat *javaFloat = [JavaLangFloat valueOfWithFloat:3.4f];
   NSString *objectTypeName = [[javaFloat java_getClass] getName];
-  jboolean result =
-      ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
-          objectTypeName, @"java.lang.Float");
+  bool result = ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
+      objectTypeName, @"java.lang.Float");
   XCTAssertTrue(result, @"incorrect object type name");
   NSString *primitiveTypeName = [JavaLangFloat_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"float",
@@ -116,9 +111,8 @@
 - (void)testIntType {
   JavaLangInteger *javaInteger = [JavaLangInteger valueOfWithInt:42];
   NSString *objectTypeName = [[javaInteger java_getClass] getName];
-  jboolean result =
-      ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
-          objectTypeName, @"java.lang.Integer");
+  bool result = ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
+      objectTypeName, @"java.lang.Integer");
   XCTAssertTrue(result, @"incorrect object type name");
   NSString *primitiveTypeName = [JavaLangInteger_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"int",
@@ -131,9 +125,8 @@
 - (void)testLongType {
   JavaLangLong *javaLong = [JavaLangLong valueOfWithLong:42LL];
   NSString *objectTypeName = [[javaLong java_getClass] getName];
-  jboolean result =
-      ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
-          objectTypeName, @"java.lang.Long");
+  bool result = ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
+      objectTypeName, @"java.lang.Long");
   XCTAssertTrue(result, @"incorrect object type name");
   NSString *primitiveTypeName = [JavaLangLong_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"long",
@@ -146,9 +139,8 @@
 - (void)testShortType {
   JavaLangShort *javaShort = [JavaLangShort valueOfWithShort:42];
   NSString *objectTypeName = [[javaShort java_getClass] getName];
-  jboolean result =
-      ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
-          objectTypeName, @"java.lang.Short");
+  bool result = ComGoogleJ2objcUtilReflectionUtil_matchClassNamePrefixWithNSString_withNSString_(
+      objectTypeName, @"java.lang.Short");
   XCTAssertTrue(result, @"incorrect object type name");
   NSString *primitiveTypeName = [JavaLangShort_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"short",

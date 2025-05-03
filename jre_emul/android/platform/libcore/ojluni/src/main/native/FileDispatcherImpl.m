@@ -124,19 +124,17 @@ handle(JNIEnv *env, jlong rv, char *msg)
     return IOS_THROWN;
 }
 
-JNIEXPORT jint JNICALL
-Java_sun_nio_ch_FileDispatcherImpl_force0(JNIEnv *env, jobject this,
-                                          jobject fdo, jboolean md)
-{
-    jint fd = fdval(env, fdo);
-    int result = 0;
+JNIEXPORT jint JNICALL Java_sun_nio_ch_FileDispatcherImpl_force0(JNIEnv *env, jobject this,
+                                                                 jobject fdo, bool md) {
+  jint fd = fdval(env, fdo);
+  int result = 0;
 
-    if (md == JNI_FALSE) {
-        result = fdatasync(fd);
-    } else {
-        result = fsync(fd);
-    }
-    return (int)handle(env, result, "Force failed");
+  if (md == JNI_FALSE) {
+    result = fdatasync(fd);
+  } else {
+    result = fsync(fd);
+  }
+  return (int)handle(env, result, "Force failed");
 }
 
 JNIEXPORT jint JNICALL
@@ -158,42 +156,39 @@ Java_sun_nio_ch_FileDispatcherImpl_size0(JNIEnv *env, jobject this, jobject fdo)
     return fbuf.st_size;
 }
 
-JNIEXPORT jint JNICALL
-Java_sun_nio_ch_FileDispatcherImpl_lock0(JNIEnv *env, jobject this, jobject fdo,
-                                      jboolean block, jlong pos, jlong size,
-                                      jboolean shared)
-{
-    jint fd = fdval(env, fdo);
-    jint lockResult = 0;
-    int cmd = 0;
-    struct flock64 fl;
+JNIEXPORT jint JNICALL Java_sun_nio_ch_FileDispatcherImpl_lock0(JNIEnv *env, jobject this,
+                                                                jobject fdo, bool block, jlong pos,
+                                                                jlong size, bool shared) {
+  jint fd = fdval(env, fdo);
+  jint lockResult = 0;
+  int cmd = 0;
+  struct flock64 fl;
 
-    fl.l_whence = SEEK_SET;
-    if (size == (jlong)java_lang_Long_MAX_VALUE) {
-        fl.l_len = (off64_t)0;
-    } else {
-        fl.l_len = (off64_t)size;
-    }
-    fl.l_start = (off64_t)pos;
-    if (shared == JNI_TRUE) {
-        fl.l_type = F_RDLCK;
-    } else {
-        fl.l_type = F_WRLCK;
-    }
-    if (block == JNI_TRUE) {
-        cmd = F_SETLKW64;
-    } else {
-        cmd = F_SETLK64;
-    }
-    lockResult = fcntl(fd, cmd, &fl);
-    if (lockResult < 0) {
-        if ((cmd == F_SETLK64) && (errno == EAGAIN || errno == EACCES))
-            return sun_nio_ch_FileDispatcherImpl_NO_LOCK;
-        if (errno == EINTR)
-            return sun_nio_ch_FileDispatcherImpl_INTERRUPTED;
-        JNU_ThrowIOExceptionWithLastError(env, "Lock failed");
-    }
-    return 0;
+  fl.l_whence = SEEK_SET;
+  if (size == (jlong)java_lang_Long_MAX_VALUE) {
+    fl.l_len = (off64_t)0;
+  } else {
+    fl.l_len = (off64_t)size;
+  }
+  fl.l_start = (off64_t)pos;
+  if (shared == JNI_TRUE) {
+    fl.l_type = F_RDLCK;
+  } else {
+    fl.l_type = F_WRLCK;
+  }
+  if (block == JNI_TRUE) {
+    cmd = F_SETLKW64;
+  } else {
+    cmd = F_SETLK64;
+  }
+  lockResult = fcntl(fd, cmd, &fl);
+  if (lockResult < 0) {
+    if ((cmd == F_SETLK64) && (errno == EAGAIN || errno == EACCES))
+      return sun_nio_ch_FileDispatcherImpl_NO_LOCK;
+    if (errno == EINTR) return sun_nio_ch_FileDispatcherImpl_INTERRUPTED;
+    JNU_ThrowIOExceptionWithLastError(env, "Lock failed");
+  }
+  return 0;
 }
 
 JNIEXPORT void JNICALL

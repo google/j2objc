@@ -64,8 +64,9 @@ JNIEXPORT jstring JNICALL Inet4AddressImpl_getHostByAddr
  * Method:    isReachable0
  * Signature: ([BI[BI)Z
  */
-JNIEXPORT jboolean JNICALL Inet4AddressImpl_isReachable0
-  (JNIEnv *, jobject, jbyteArray, jint, jbyteArray, jint);
+JNIEXPORT bool JNICALL Inet4AddressImpl_isReachable0(JNIEnv *, jobject,
+                                                     jbyteArray, jint,
+                                                     jbyteArray, jint);
 
 #ifdef __cplusplus
 }

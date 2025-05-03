@@ -578,13 +578,14 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "Color", "Color.h");
     assertTranslation(translation, "@interface Color : JavaLangEnum");
     translation = getTranslatedFile("Color.m");
-    assertTranslation(translation, "jboolean primary_;");
+    assertTranslation(translation, "bool primary_;");
     assertTranslation(translation,
         "Color_initWithInt_withBoolean_withNSString_withInt_("
         + "self, rgb, true, __name, __ordinal);");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "void Color_initWithInt_withBoolean_withNSString_withInt_("
-          + "Color *self, jint rgb, jboolean primary, NSString *__name, jint __ordinal) {",
+            + "Color *self, jint rgb, bool primary, NSString *__name, jint __ordinal) {",
         "  JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);",
         "  self->rgb_ = rgb;",
         "  self->primary_ = primary;",
@@ -642,16 +643,16 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@interface FooCompatible : NSObject < FooCompatible >");
 
     // Verify that the value is defined as a property instead of a method.
-    assertTranslation(translation, "@public\n  jboolean fooable_;");
-    assertTranslation(translation, "@property (readonly) jboolean fooable;");
+    assertTranslation(translation, "@public\n  bool fooable_;");
+    assertTranslation(translation, "@property (readonly) bool fooable;");
 
     // Check that constructor was created with the property as parameter.
-    assertTranslation(translation,
-        "FOUNDATION_EXPORT id<FooCompatible> create_FooCompatible(jboolean fooable);");
+    assertTranslation(
+        translation, "FOUNDATION_EXPORT id<FooCompatible> create_FooCompatible(bool fooable);");
 
     translation = getTranslatedFile("foo/Compatible.m");
     // Verify default value accessor is generated for property.
-    assertTranslation(translation, "+ (jboolean)fooableDefault {");
+    assertTranslation(translation, "+ (bool)fooableDefault {");
   }
 
   public void testCharacterEdgeValues() throws IOException {
@@ -1428,11 +1429,12 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "- (instancetype)initWithNSString:(NSString *)arg0",
         "withJavaLangThrowable:(JavaLangThrowable *)arg1 NS_UNAVAILABLE;");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "- (instancetype)initWithNSString:(NSString *)arg0",
         "withJavaLangThrowable:(JavaLangThrowable *)arg1",
-        "withBoolean:(jboolean)arg2",
-        "withBoolean:(jboolean)arg3 NS_UNAVAILABLE;");
+        "withBoolean:(bool)arg2",
+        "withBoolean:(bool)arg3 NS_UNAVAILABLE;");
   }
 
   public void testStaticInterfaceMethodDeclaredInCompanionClass() throws IOException {

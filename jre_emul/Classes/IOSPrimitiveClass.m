@@ -71,11 +71,11 @@
   return name_;
 }
 
-- (jboolean)isAssignableFrom:(IOSClass *)cls {
+- (bool)isAssignableFrom:(IOSClass *)cls {
   return [self isEqual:cls];
 }
 
-- (jboolean)isInstance:(id)object {
+- (bool)isInstance:(id)object {
   return false;  // Objects can't be primitives.
 }
 
@@ -84,7 +84,7 @@
       JavaLangReflectModifier_ABSTRACT;
 }
 
-- (jboolean)isPrimitive {
+- (bool)isPrimitive {
   return true;
 }
 
@@ -162,7 +162,8 @@
     case 'I': return sizeof(jint);
     case 'J': return sizeof(jlong);
     case 'S': return sizeof(jshort);
-    case 'Z': return sizeof(jboolean);
+    case 'Z':
+      return sizeof(bool);
   }
   return 0;
 }
@@ -195,7 +196,7 @@
   return nil;
 }
 
-- (jboolean)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
+- (bool)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
   IOSClass *fromType = nil;
   if ([value isKindOfClass:[JavaLangByte class]]) {
     rawValue->asChar = [(JavaLangByte *) value charValue];
@@ -238,7 +239,9 @@
     case 'I': rawValue->asInt = *(int *)addr; return;
     case 'J': rawValue->asLong = *(long long *)addr; return;
     case 'S': rawValue->asShort = *(short *)addr; return;
-    case 'Z': rawValue->asBOOL = *(jboolean *)addr; return;
+    case 'Z':
+      rawValue->asBOOL = *(bool *)addr;
+      return;
   }
 }
 
@@ -251,11 +254,13 @@
     case 'I': *(int *)addr = rawValue->asInt; return;
     case 'J': *(long long *)addr = rawValue->asLong; return;
     case 'S': *(short *)addr = rawValue->asShort; return;
-    case 'Z': *(jboolean *)addr = rawValue->asBOOL; return;
+    case 'Z':
+      *(bool *)addr = rawValue->asBOOL;
+      return;
   }
 }
 
-- (jboolean)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)toType {
+- (bool)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)toType {
   if (![toType isPrimitive]) {
     return false;
   }

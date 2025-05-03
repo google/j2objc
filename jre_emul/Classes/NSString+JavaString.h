@@ -51,7 +51,7 @@
 + (nonnull NSString *)java_valueOf:(id<NSObject>)obj;
 
 // String.valueOf(boolean)
-+ (nonnull NSString *)java_valueOfBool:(jboolean)value;
++ (nonnull NSString *)java_valueOfBool:(bool)value;
 
 // String.valueOf(char)
 + (nonnull NSString *)java_valueOfChar:(jchar)value;
@@ -158,7 +158,7 @@
 - (jint)java_indexOfString:(NSString *)s fromIndex:(jint)index;
 
 // String.isEmpty()
-- (jboolean)java_isEmpty;
+- (bool)java_isEmpty;
 
 // String.lastIndexOf(int)
 - (jint)java_lastIndexOf:(jint)ch;
@@ -185,7 +185,7 @@
 - (jchar)charAtWithInt:(jint)index;
 
 // CharSequence.isEmpty()
-- (jboolean)isEmpty;
+- (bool)isEmpty;
 
 // CharSequence.subSequence(int, int)
 - (nonnull id<JavaLangCharSequence>)subSequenceFrom:(jint)start
@@ -232,9 +232,9 @@
                                   withNSObjectArray:(IOSObjectArray *)args;
 
 // String.startsWith(String), String.startsWith(String, int), String.endsWith(String)
-- (jboolean)java_hasPrefix:(NSString *)prefix;
-- (jboolean)java_hasPrefix:(NSString *)prefix offset:(jint)offset;
-- (jboolean)java_hasSuffix:(NSString *)suffix;
+- (bool)java_hasPrefix:(NSString *)prefix;
+- (bool)java_hasPrefix:(NSString *)prefix offset:(jint)offset;
+- (bool)java_hasSuffix:(NSString *)suffix;
 
 // String.trim()
 - (nonnull NSString *)java_trim;
@@ -243,23 +243,23 @@
 - (nonnull IOSObjectArray *)java_split:(NSString *)str;
 
 // String equalsIgnoreCase(String)
-- (jboolean)java_equalsIgnoreCase:(NSString *)aString;
+- (bool)java_equalsIgnoreCase:(NSString *)aString;
 
 // String.toLowerCase(Locale), toUpperCase(Locale)
 - (nonnull NSString *)java_lowercaseStringWithJRELocale:(JavaUtilLocale *)locale;
 - (nonnull NSString *)java_uppercaseStringWithJRELocale:(JavaUtilLocale *)locale;
 
 // String.regionMatches(...)
-- (jboolean)java_regionMatches:(jint)thisOffset
-                       aString:(NSString *)aString
-                   otherOffset:(jint)otherOffset
-                         count:(jint)count;
+- (bool)java_regionMatches:(jint)thisOffset
+                   aString:(NSString *)aString
+               otherOffset:(jint)otherOffset
+                     count:(jint)count;
 
-- (jboolean)java_regionMatches:(jboolean)caseInsensitive
-                    thisOffset:(jint)thisOffset
-                       aString:(NSString *)aString
-                   otherOffset:(jint)otherOffset
-                         count:(jint)count;
+- (bool)java_regionMatches:(bool)caseInsensitive
+                thisOffset:(jint)thisOffset
+                   aString:(NSString *)aString
+               otherOffset:(jint)otherOffset
+                     count:(jint)count;
 
 // String.intern()
 - (nonnull NSString *)java_intern;
@@ -268,7 +268,7 @@
 - (nonnull NSString *)java_concat:string;
 
 // String.contains(CharSequence)
-- (jboolean)java_contains:(id<JavaLangCharSequence>)sequence;
+- (bool)java_contains:(id<JavaLangCharSequence>)sequence;
 
 // String.codePointAt(int), codePointBefore(int), codePointCount(int, int)
 - (jint)java_codePointAt:(jint)index;
@@ -276,12 +276,12 @@
 - (jint)java_codePointCount:(jint)beginIndex endIndex:(jint)endIndex;
 
 // String.matches(), split(String, int)
-- (jboolean)java_matches:(NSString *)regex;
+- (bool)java_matches:(NSString *)regex;
 - (nonnull IOSObjectArray *)java_split:(NSString *)regex limit:(jint)limit;
 
 // String.contentEquals(CharSequence), contentEquals(StringBuffer)
-- (jboolean)java_contentEqualsCharSequence:(id<JavaLangCharSequence>)seq;
-- (jboolean)java_contentEqualsStringBuffer:(JavaLangStringBuffer *)sb;
+- (bool)java_contentEqualsCharSequence:(id<JavaLangCharSequence>)seq;
+- (bool)java_contentEqualsStringBuffer:(JavaLangStringBuffer *)sb;
 
 // String.offsetByCodePoints(int, int)
 - (jint)java_offsetByCodePoints:(jint)index codePointOffset:(jint)offset;
@@ -307,7 +307,7 @@
 - (nonnull NSString *)java_stripTrailing;
 
 // String.isBlank()
-- (jboolean)java_isBlank;
+- (bool)java_isBlank;
 
 // String.lines()
 - (id<JavaUtilStreamStream>)java_lines;
@@ -335,7 +335,7 @@ FOUNDATION_EXPORT NSString *NSString_java_formatWithJavaUtilLocale_withNSString_
 FOUNDATION_EXPORT NSString *NSString_java_formatWithNSString_withNSObjectArray_(
     NSString *s, IOSObjectArray *objs);
 // String.valueOf(boolean)
-FOUNDATION_EXPORT NSString *NSString_java_valueOfBool_(jboolean b);
+FOUNDATION_EXPORT NSString *NSString_java_valueOfBool_(bool b);
 // String.valueOf(char)
 FOUNDATION_EXPORT NSString *NSString_java_valueOfChar_(jchar c);
 // String.valueOf(char[])
@@ -368,7 +368,7 @@ FOUNDATION_EXPORT NSString *NSString_java_joinWithJavaLangCharSequence_withJavaL
 @end
 
 // Use the category dummy to initialize static variables for the String class.
-FOUNDATION_EXPORT _Atomic(jboolean) NSString__initialized;
+FOUNDATION_EXPORT _Atomic(bool) NSString__initialized;
 __attribute__((always_inline)) inline void NSString_initialize(void) {
   if (__builtin_expect(!__c11_atomic_load(&NSString__initialized, __ATOMIC_ACQUIRE), 0)) {
     [JreStringCategoryDummy class];

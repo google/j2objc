@@ -144,7 +144,7 @@ void JreStrictFieldStrongRelease(__strong id *pIvar);
 id JreLoadVolatileId(volatile_id *pVar);
 id JreAssignVolatileId(volatile_id *pVar, id value);
 id JreVolatileStrongAssign(volatile_id *pIvar, id value);
-jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id newValue);
+bool JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id newValue);
 id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue);
 void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);
 void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
@@ -159,7 +159,7 @@ void JreStrictFieldRetainedWithRelease(id parent, id *pVar);
 
 NSString *JreStrcat(const char *types, ...);
 
-jboolean JreAnnotationEquals(id a1, id a2);
+bool JreAnnotationEquals(id a1, id a2);
 jint JreAnnotationHashCode(id a);
 
 NSUInteger JreDefaultFastEnumeration(
@@ -199,7 +199,7 @@ __attribute__((always_inline)) inline id JreAutoreleasedAssign(
     return value; \
   }
 
-J2OBJC_VOLATILE_ACCESS_DEFN(Boolean, jboolean)
+J2OBJC_VOLATILE_ACCESS_DEFN(Boolean, bool)
 J2OBJC_VOLATILE_ACCESS_DEFN(Char, jchar)
 J2OBJC_VOLATILE_ACCESS_DEFN(Byte, jbyte)
 J2OBJC_VOLATILE_ACCESS_DEFN(Short, jshort)
@@ -215,8 +215,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @define J2OBJC_INITIALIZED_DEFN
  * @param CLASS The class for which the initialized flag is defined.
  */
-#define J2OBJC_INITIALIZED_DEFN(CLASS) \
-  _Atomic(jboolean) CLASS##__initialized = false;
+#define J2OBJC_INITIALIZED_DEFN(CLASS) _Atomic(bool) CLASS##__initialized = false;
 
 /*!
  * Defines the code to set a class's initialized flag. This should be used at
@@ -237,7 +236,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param CLASS The class to declare the init function for.
  */
 #define J2OBJC_STATIC_INIT(CLASS)                                                           \
-  FOUNDATION_EXPORT _Atomic(jboolean) CLASS##__initialized;                                 \
+  FOUNDATION_EXPORT _Atomic(bool) CLASS##__initialized;                                     \
   __attribute__((always_inline)) inline void CLASS##_initialize(void) {                     \
     if (__builtin_expect(!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE), 0)) { \
       [CLASS class];                                                                        \

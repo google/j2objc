@@ -44,9 +44,8 @@
 
 jint fdval(JNIEnv *env, jobject fdo);
 
-jint convertReturnVal(JNIEnv *env, jint n, jboolean reading);
-jlong convertLongReturnVal(JNIEnv *env, jlong n, jboolean reading);
-
+jint convertReturnVal(JNIEnv *env, jint n, bool reading);
+jlong convertLongReturnVal(JNIEnv *env, jlong n, bool reading);
 
 /* Defined in Net.c */
 

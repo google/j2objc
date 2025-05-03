@@ -137,7 +137,7 @@ CGPDescriptor *NewMapEntryDescriptor(CGPFieldData *fieldData) {
 
 CGPEnumDescriptor *CGPInitializeEnumType(
     Class enumClass, jint valuesCount, JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *values[],
-    NSString **names, jint *intValues, jboolean is_closed) {
+    NSString **names, jint *intValues, bool is_closed) {
   Ivar valueIvar = class_getInstanceVariable(enumClass, "value_");
   ptrdiff_t valueOffset = ivar_getOffset(valueIvar);
 
@@ -471,7 +471,7 @@ CGPEnumValueDescriptor *CGPEnumValueDescriptorFromInt(CGPEnumDescriptor *enumTyp
 
 - (instancetype)initWithValueOffset:(ptrdiff_t)valueOffset
                      retainedValues:(IOSObjectArray *)values
-                          is_closed:(jboolean)is_closed {
+                          is_closed:(bool)is_closed {
   if (self = [super init]) {
     valueOffset_ = valueOffset;
     values_ = values; // Already retained.

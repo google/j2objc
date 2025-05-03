@@ -130,7 +130,7 @@ static void doWait(id obj, long long timeout) {
     javaThread->blocker_ = nil;
   }
   // Check if the thread was interrupted after the wait and also clears the interrupted bit.
-  jboolean wasInterrupted = [JavaLangThread interrupted];
+  bool wasInterrupted = [JavaLangThread interrupted];
   if (wasInterrupted) {
     @throw AUTORELEASE([[JavaLangInterruptedException alloc] init]);
   }

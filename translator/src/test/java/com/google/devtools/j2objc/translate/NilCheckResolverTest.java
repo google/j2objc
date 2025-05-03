@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -120,10 +119,11 @@ public class NilCheckResolverTest extends GenerationTest {
         "abstract class Test { abstract boolean foo(); void test(Test t1, Test t2, boolean b) { "
         + "boolean b1 = b && t1.foo(); t1.foo(); boolean b2 = b || t2.foo(); t2.foo(); } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "jboolean b1 = b && [((Test *) nil_chk(t1)) foo];",
+    assertTranslatedLines(
+        translation,
+        "bool b1 = b && [((Test *) nil_chk(t1)) foo];",
         "[((Test *) nil_chk(t1)) foo];",
-        "jboolean b2 = b || [((Test *) nil_chk(t2)) foo];",
+        "bool b2 = b || [((Test *) nil_chk(t2)) foo];",
         "[((Test *) nil_chk(t2)) foo];");
   }
 

@@ -44,7 +44,7 @@
   return componentType_;
 }
 
-- (jboolean)isArray {
+- (bool)isArray {
   return true;
 }
 
@@ -52,12 +52,12 @@
   return NSObject_class_();
 }
 
-- (jboolean)isInstance:(id)object {
+- (bool)isInstance:(id)object {
   IOSClass *objClass = [object java_getClass];
   return [objClass isArray] && [componentType_ isAssignableFrom:[objClass getComponentType]];
 }
 
-- (jboolean)isAssignableFrom:(IOSClass *)cls {
+- (bool)isAssignableFrom:(IOSClass *)cls {
   return [cls isArray] && [componentType_ isAssignableFrom:[cls getComponentType]];
 }
 

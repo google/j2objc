@@ -73,12 +73,10 @@ Java_sun_nio_ch_DatagramChannelImpl_initIDs(JNIEnv *env, jclass clazz)
     [(id)dci_senderPortID retain];
 }
 
-JNIEXPORT void JNICALL
-Java_sun_nio_ch_DatagramChannelImpl_disconnect0(JNIEnv *env, jobject this,
-                                                jobject fdo, jboolean isIPv6)
-{
-    jint fd = fdval(env, fdo);
-    int rv = 0;
+JNIEXPORT void JNICALL Java_sun_nio_ch_DatagramChannelImpl_disconnect0(JNIEnv *env, jobject this,
+                                                                       jobject fdo, bool isIPv6) {
+  jint fd = fdval(env, fdo);
+  int rv = 0;
 
 #ifdef __solaris__
     rv = connect(fd, 0, 0);
@@ -123,136 +121,130 @@ Java_sun_nio_ch_DatagramChannelImpl_disconnect0(JNIEnv *env, jobject this,
 
     if (rv < 0)
         handleSocketError(env, errno);
-
 }
 
-JNIEXPORT jint JNICALL
-Java_sun_nio_ch_DatagramChannelImpl_receive0(JNIEnv *env, jobject this,
-                                             jobject fdo, jlong address,
-                                             jint len, jboolean connected)
-{
-    jint fd = fdval(env, fdo);
-    void *buf = (void *)jlong_to_ptr(address);
-    SOCKADDR sa;
-    socklen_t sa_len = SOCKADDR_LEN;
-    jboolean retry = JNI_FALSE;
-    jint n = 0;
-    jobject senderAddr;
+JNIEXPORT jint JNICALL Java_sun_nio_ch_DatagramChannelImpl_receive0(JNIEnv *env, jobject this,
+                                                                    jobject fdo, jlong address,
+                                                                    jint len, bool connected) {
+  jint fd = fdval(env, fdo);
+  void *buf = (void *)jlong_to_ptr(address);
+  SOCKADDR sa;
+  socklen_t sa_len = SOCKADDR_LEN;
+  bool retry = JNI_FALSE;
+  jint n = 0;
+  jobject senderAddr;
 
-    if (len > MAX_PACKET_LEN) {
-        len = MAX_PACKET_LEN;
-    }
+  if (len > MAX_PACKET_LEN) {
+    len = MAX_PACKET_LEN;
+  }
 
-    memset(&sa, 0, sa_len);
+  memset(&sa, 0, sa_len);
 
-    do {
-        retry = JNI_FALSE;
-        n = (int)recvfrom(fd, buf, len, 0, (struct sockaddr *)&sa, &sa_len);
-        if (n < 0) {
-            if (errno == EWOULDBLOCK) {
-                return IOS_UNAVAILABLE;
-            }
-            if (errno == EINTR) {
-                return IOS_INTERRUPTED;
-            }
-            if (errno == ECONNREFUSED) {
-                if (connected == JNI_FALSE) {
-                    retry = JNI_TRUE;
-                } else {
-                    J2ObjCThrowByName(JavaNetPortUnreachableException, nil);
-                    return IOS_THROWN;
-                }
-            } else {
-                return handleSocketError(env, errno);
-            }
-        }
-    } while (retry == JNI_TRUE);
-
-    // Peer (or other thread) has performed an orderly shutdown, sockaddr will be
-    // invalid.
-    if (n == 0 && ((struct sockaddr *)&sa)->sa_family == 0) {
-        // zero the sender field, so receive() returns null and not
-        // random garbage
-        (*env)->SetObjectField(env, this, dci_senderID, NULL);
-        return n;
-    }
-
-    /*
-     * If the source address and port match the cached address
-     * and port in DatagramChannelImpl then we don't need to
-     * create InetAddress and InetSocketAddress objects.
-     */
-    senderAddr = (*env)->GetObjectField(env, this, dci_senderAddrID);
-    if (senderAddr != NULL) {
-        if (!NET_SockaddrEqualsInetAddress(env, (struct sockaddr *)&sa,
-                                           senderAddr)) {
-            senderAddr = NULL;
+  do {
+    retry = JNI_FALSE;
+    n = (int)recvfrom(fd, buf, len, 0, (struct sockaddr *)&sa, &sa_len);
+    if (n < 0) {
+      if (errno == EWOULDBLOCK) {
+        return IOS_UNAVAILABLE;
+      }
+      if (errno == EINTR) {
+        return IOS_INTERRUPTED;
+      }
+      if (errno == ECONNREFUSED) {
+        if (connected == JNI_FALSE) {
+          retry = JNI_TRUE;
         } else {
-            jint port = (*env)->GetIntField(env, this, dci_senderPortID);
-            if (port != NET_GetPortFromSockaddr((struct sockaddr *)&sa)) {
-                senderAddr = NULL;
-            }
+          J2ObjCThrowByName(JavaNetPortUnreachableException, nil);
+          return IOS_THROWN;
         }
+      } else {
+        return handleSocketError(env, errno);
+      }
     }
-    if (senderAddr == NULL) {
-        jobject isa = NULL;
-        int port;
-        jobject ia = NET_SockaddrToInetAddress(env, (struct sockaddr *)&sa,
-                                               &port);
+  } while (retry == JNI_TRUE);
 
-        if (ia != NULL) {
-            isa = (*env)->NewObject(env, isa_class, isa_ctorID, ia, port);
-        }
-
-        if (isa == NULL) {
-            JNU_ThrowOutOfMemoryError(env, "heap allocation failed");
-            return IOS_THROWN;
-        }
-
-        (*env)->SetObjectField(env, this, dci_senderAddrID, ia);
-        (*env)->SetIntField(env, this, dci_senderPortID,
-                            NET_GetPortFromSockaddr((struct sockaddr *)&sa));
-        (*env)->SetObjectField(env, this, dci_senderID, isa);
-    }
+  // Peer (or other thread) has performed an orderly shutdown, sockaddr will be
+  // invalid.
+  if (n == 0 && ((struct sockaddr *)&sa)->sa_family == 0) {
+    // zero the sender field, so receive() returns null and not
+    // random garbage
+    (*env)->SetObjectField(env, this, dci_senderID, NULL);
     return n;
-}
+  }
 
-JNIEXPORT jint JNICALL
-Java_sun_nio_ch_DatagramChannelImpl_send0(JNIEnv *env, jobject this,
-                                          jboolean preferIPv6, jobject fdo, jlong address,
-                                          jint len, jobject destAddress, jint destPort)
-{
-    jint fd = fdval(env, fdo);
-    void *buf = (void *)jlong_to_ptr(address);
-    SOCKADDR sa;
-    int sa_len = SOCKADDR_LEN;
-    jint n = 0;
+  /*
+   * If the source address and port match the cached address
+   * and port in DatagramChannelImpl then we don't need to
+   * create InetAddress and InetSocketAddress objects.
+   */
+  senderAddr = (*env)->GetObjectField(env, this, dci_senderAddrID);
+  if (senderAddr != NULL) {
+    if (!NET_SockaddrEqualsInetAddress(env, (struct sockaddr *)&sa, senderAddr)) {
+      senderAddr = NULL;
+    } else {
+      jint port = (*env)->GetIntField(env, this, dci_senderPortID);
+      if (port != NET_GetPortFromSockaddr((struct sockaddr *)&sa)) {
+        senderAddr = NULL;
+      }
+    }
+  }
+  if (senderAddr == NULL) {
+    jobject isa = NULL;
+    int port;
+    jobject ia = NET_SockaddrToInetAddress(env, (struct sockaddr *)&sa, &port);
 
-    if (len > MAX_PACKET_LEN) {
-        len = MAX_PACKET_LEN;
+    if (ia != NULL) {
+      isa = (*env)->NewObject(env, isa_class, isa_ctorID, ia, port);
     }
 
-    if (NET_InetAddressToSockaddr(env, destAddress, destPort,
-                                  (struct sockaddr *)&sa,
-                                  &sa_len, preferIPv6) != 0) {
+    if (isa == NULL) {
+      JNU_ThrowOutOfMemoryError(env, "heap allocation failed");
       return IOS_THROWN;
     }
 
-    n = (int)sendto(fd, buf, len, 0, (struct sockaddr *)&sa, sa_len);
-    if (n < 0) {
-        if (errno == EAGAIN) {
-            return IOS_UNAVAILABLE;
-        }
-        if (errno == EINTR) {
-            return IOS_INTERRUPTED;
-        }
-        if (errno == ECONNREFUSED) {
-            J2ObjCThrowByName(JavaNetPortUnreachableException, nil);
-            return IOS_THROWN;
-        }
-        return handleSocketError(env, errno);
+    (*env)->SetObjectField(env, this, dci_senderAddrID, ia);
+    (*env)->SetIntField(env, this, dci_senderPortID,
+                        NET_GetPortFromSockaddr((struct sockaddr *)&sa));
+    (*env)->SetObjectField(env, this, dci_senderID, isa);
+  }
+  return n;
+}
+
+JNIEXPORT jint JNICALL Java_sun_nio_ch_DatagramChannelImpl_send0(JNIEnv *env, jobject this,
+                                                                 bool preferIPv6, jobject fdo,
+                                                                 jlong address, jint len,
+                                                                 jobject destAddress,
+                                                                 jint destPort) {
+  jint fd = fdval(env, fdo);
+  void *buf = (void *)jlong_to_ptr(address);
+  SOCKADDR sa;
+  int sa_len = SOCKADDR_LEN;
+  jint n = 0;
+
+  if (len > MAX_PACKET_LEN) {
+    len = MAX_PACKET_LEN;
+  }
+
+  if (NET_InetAddressToSockaddr(env, destAddress, destPort, (struct sockaddr *)&sa, &sa_len,
+                                preferIPv6) != 0) {
+    return IOS_THROWN;
+  }
+
+  n = (int)sendto(fd, buf, len, 0, (struct sockaddr *)&sa, sa_len);
+  if (n < 0) {
+    if (errno == EAGAIN) {
+      return IOS_UNAVAILABLE;
     }
-    return n;
+    if (errno == EINTR) {
+      return IOS_INTERRUPTED;
+    }
+    if (errno == ECONNREFUSED) {
+      J2ObjCThrowByName(JavaNetPortUnreachableException, nil);
+      return IOS_THROWN;
+    }
+    return handleSocketError(env, errno);
+  }
+  return n;
 }
 /* J2ObjC: unused.
 static JNINativeMethod gMethods[] = {

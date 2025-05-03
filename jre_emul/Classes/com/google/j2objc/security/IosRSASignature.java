@@ -161,7 +161,7 @@ public abstract class IosRSASignature extends SignatureSpi {
     return result;
   }
 
-  - (jboolean)nativeEngineVerify:(SecKeyRef)publicKey
+  - (bool)nativeEngineVerify:(SecKeyRef)publicKey
                        signature:(IOSByteArray *)signature
                        hashBytes:(uint8_t *)hashBytes
                             size:(size_t)hashBytesSize
@@ -388,7 +388,7 @@ public abstract class IosRSASignature extends SignatureSpi {
       if (!CC_SHA512([plainData bytes], (CC_LONG)[plainData length], hashBytes)) {
         return false;
       }
-      jboolean result = [self nativeEngineVerify:(SecKeyRef)nativeKey
+      bool result = [self nativeEngineVerify:(SecKeyRef)nativeKey
                                        signature:sigBytes
                                        hashBytes:hashBytes
                                             size:hashBytesSize

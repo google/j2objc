@@ -26,7 +26,7 @@
 #endif
 
 // Typedefs for each of Java's primitive types. (as originally defined in jni.h)
-// jboolean and jbyte are modified from the original jni.h to integrate better
+// bool and jbyte are modified from the original jni.h to integrate better
 // with Objective-C code.
 typedef int8_t          jbyte;          /* signed 8 bits */
 typedef uint16_t        jchar;          /* unsigned 16 bits */
@@ -36,11 +36,9 @@ typedef int64_t         jlong;          /* signed 64 bits */
 typedef float           jfloat;         /* 32-bit IEEE 754 */
 typedef double          jdouble;        /* 64-bit IEEE 754 */
 
-#if defined(__OBJC__) || defined(__cplusplus__)
+// The translator doesn't generate jboolean anymore, nor is it used in jre_emul.
+// This typedef is for backwards-compatibility with other projects' native code.
 typedef bool            jboolean;
-#else
-typedef uint8_t         jboolean;
-#endif
 
 // Typedefs for Java types declared as volatile.
 typedef _Atomic(jbyte)     volatile_jbyte;
@@ -50,7 +48,9 @@ typedef _Atomic(jint)      volatile_jint;
 typedef _Atomic(jlong)     volatile_jlong;
 typedef _Atomic(jfloat)    volatile_jfloat;
 typedef _Atomic(jdouble)   volatile_jdouble;
-typedef _Atomic(jboolean)  volatile_jboolean;
+typedef _Atomic(bool) volatile_bool;
+// bool is a macro that expands to _Bool, so add typedef for use by macros.
+typedef volatile_bool volatile__Bool;
 // Volatile object access is guarded by spin locks because of reference counting
 // so we don't use an atomic type. uintptr_t is used for the typedef mainly to
 // prevent accidental usage as a regular id type.

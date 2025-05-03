@@ -236,7 +236,7 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
   return nil;
 }
 
-- (jboolean)isDefault {
+- (bool)isDefault {
   // Default methods are public, non-abstract instance methods declared in an interface.
   BOOL isPublicNonAbstractInstance =
       ((metadata_->modifiers & (JavaLangReflectModifier_ABSTRACT
@@ -246,7 +246,7 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
   return isPublicNonAbstractInstance && [self->class_ isInterface];
 }
 
-- (jboolean)isBridge {
+- (bool)isBridge {
   return false;
 }
 

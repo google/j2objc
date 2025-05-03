@@ -135,8 +135,7 @@ JNU_NewStringPlatform(JNIEnv *env, const char *str) {
   return [NSString stringWithUTF8String:str];
 }
 
-JNIEXPORT const char *
-JNU_GetStringPlatformChars(JNIEnv *env, jstring jstr, jboolean *isCopy) {
+JNIEXPORT const char *JNU_GetStringPlatformChars(JNIEnv *env, jstring jstr, bool *isCopy) {
   (void)nil_chk(jstr);
   if (isCopy) {
     *isCopy = false;

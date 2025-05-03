@@ -71,10 +71,10 @@ ComGoogleProtobufDescriptors_FieldDescriptor *CGPExtensionRegistryFind(
     jint fieldNumber);
 
 void ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(
-    ComGoogleProtobufExtensionRegistryLite *self, jboolean empty);
+    ComGoogleProtobufExtensionRegistryLite *self, bool empty);
 
 ComGoogleProtobufExtensionRegistryLite *new_ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(
-    jboolean empty) NS_RETURNS_RETAINED;
+    bool empty) NS_RETURNS_RETAINED;
 
 CF_EXTERN_C_END
 

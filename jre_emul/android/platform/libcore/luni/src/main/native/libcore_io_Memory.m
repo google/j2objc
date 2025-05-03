@@ -135,28 +135,35 @@ void Java_libcore_io_Memory_peekByteArray(JNIEnv* env, jclass c, jlong srcAddres
     memmove(IOS ## NAME ## Array_GetRef(dst, dstOffset), src, count * sizeof(SCALAR_TYPE)); \
   }
 
-void Java_libcore_io_Memory_peekCharArray(JNIEnv* env, jclass c, jlong srcAddress, jcharArray dst, jint dstOffset, jint count, jboolean swap) {
-    PEEKER(jchar, Char, jshort, swapShorts);
+void Java_libcore_io_Memory_peekCharArray(JNIEnv *env, jclass c, jlong srcAddress, jcharArray dst,
+                                          jint dstOffset, jint count, bool swap) {
+  PEEKER(jchar, Char, jshort, swapShorts);
 }
 
-void Java_libcore_io_Memory_peekDoubleArray(JNIEnv* env, jclass c, jlong srcAddress, jdoubleArray dst, jint dstOffset, jint count, jboolean swap) {
-    PEEKER(jdouble, Double, jlong, swapLongs);
+void Java_libcore_io_Memory_peekDoubleArray(JNIEnv *env, jclass c, jlong srcAddress,
+                                            jdoubleArray dst, jint dstOffset, jint count,
+                                            bool swap) {
+  PEEKER(jdouble, Double, jlong, swapLongs);
 }
 
-void Java_libcore_io_Memory_peekFloatArray(JNIEnv* env, jclass c, jlong srcAddress, jfloatArray dst, jint dstOffset, jint count, jboolean swap) {
-    PEEKER(jfloat, Float, jint, swapInts);
+void Java_libcore_io_Memory_peekFloatArray(JNIEnv *env, jclass c, jlong srcAddress, jfloatArray dst,
+                                           jint dstOffset, jint count, bool swap) {
+  PEEKER(jfloat, Float, jint, swapInts);
 }
 
-void Java_libcore_io_Memory_peekIntArray(JNIEnv* env, jclass c, jlong srcAddress, jintArray dst, jint dstOffset, jint count, jboolean swap) {
-    PEEKER(jint, Int, jint, swapInts);
+void Java_libcore_io_Memory_peekIntArray(JNIEnv *env, jclass c, jlong srcAddress, jintArray dst,
+                                         jint dstOffset, jint count, bool swap) {
+  PEEKER(jint, Int, jint, swapInts);
 }
 
-void Java_libcore_io_Memory_peekLongArray(JNIEnv* env, jclass c, jlong srcAddress, jlongArray dst, jint dstOffset, jint count, jboolean swap) {
-    PEEKER(jlong, Long, jlong, swapLongs);
+void Java_libcore_io_Memory_peekLongArray(JNIEnv *env, jclass c, jlong srcAddress, jlongArray dst,
+                                          jint dstOffset, jint count, bool swap) {
+  PEEKER(jlong, Long, jlong, swapLongs);
 }
 
-void Java_libcore_io_Memory_peekShortArray(JNIEnv* env, jclass c, jlong srcAddress, jshortArray dst, jint dstOffset, jint count, jboolean swap) {
-    PEEKER(jshort, Short, jshort, swapShorts);
+void Java_libcore_io_Memory_peekShortArray(JNIEnv *env, jclass c, jlong srcAddress, jshortArray dst,
+                                           jint dstOffset, jint count, bool swap) {
+  PEEKER(jshort, Short, jshort, swapShorts);
 }
 
 void Java_libcore_io_Memory_pokeByte(JNIEnv* env, jclass c, jlong dstAddress, jbyte value) {
@@ -183,28 +190,35 @@ void Java_libcore_io_Memory_pokeByteArray(JNIEnv* env, jclass c, jlong dstAddres
     memmove(dst, IOS ## NAME ## Array_GetRef(src, srcOffset), count * sizeof(SCALAR_TYPE)); \
   }
 
-void Java_libcore_io_Memory_pokeCharArray(JNIEnv* env, jclass c, jlong dstAddress, jcharArray src, jint srcOffset, jint count, jboolean swap) {
-    POKER(jchar, Char, jshort, swapShorts);
+void Java_libcore_io_Memory_pokeCharArray(JNIEnv *env, jclass c, jlong dstAddress, jcharArray src,
+                                          jint srcOffset, jint count, bool swap) {
+  POKER(jchar, Char, jshort, swapShorts);
 }
 
-void Java_libcore_io_Memory_pokeDoubleArray(JNIEnv* env, jclass c, jlong dstAddress, jdoubleArray src, jint srcOffset, jint count, jboolean swap) {
-    POKER(jdouble, Double, jlong, swapLongs);
+void Java_libcore_io_Memory_pokeDoubleArray(JNIEnv *env, jclass c, jlong dstAddress,
+                                            jdoubleArray src, jint srcOffset, jint count,
+                                            bool swap) {
+  POKER(jdouble, Double, jlong, swapLongs);
 }
 
-void Java_libcore_io_Memory_pokeFloatArray(JNIEnv* env, jclass c, jlong dstAddress, jfloatArray src, jint srcOffset, jint count, jboolean swap) {
-    POKER(jfloat, Float, jint, swapInts);
+void Java_libcore_io_Memory_pokeFloatArray(JNIEnv *env, jclass c, jlong dstAddress, jfloatArray src,
+                                           jint srcOffset, jint count, bool swap) {
+  POKER(jfloat, Float, jint, swapInts);
 }
 
-void Java_libcore_io_Memory_pokeIntArray(JNIEnv* env, jclass c, jlong dstAddress, jintArray src, jint srcOffset, jint count, jboolean swap) {
-    POKER(jint, Int, jint, swapInts);
+void Java_libcore_io_Memory_pokeIntArray(JNIEnv *env, jclass c, jlong dstAddress, jintArray src,
+                                         jint srcOffset, jint count, bool swap) {
+  POKER(jint, Int, jint, swapInts);
 }
 
-void Java_libcore_io_Memory_pokeLongArray(JNIEnv* env, jclass c, jlong dstAddress, jlongArray src, jint srcOffset, jint count, jboolean swap) {
-    POKER(jlong, Long, jlong, swapLongs);
+void Java_libcore_io_Memory_pokeLongArray(JNIEnv *env, jclass c, jlong dstAddress, jlongArray src,
+                                          jint srcOffset, jint count, bool swap) {
+  POKER(jlong, Long, jlong, swapLongs);
 }
 
-void Java_libcore_io_Memory_pokeShortArray(JNIEnv* env, jclass c, jlong dstAddress, jshortArray src, jint srcOffset, jint count, jboolean swap) {
-    POKER(jshort, Short, jshort, swapShorts);
+void Java_libcore_io_Memory_pokeShortArray(JNIEnv *env, jclass c, jlong dstAddress, jshortArray src,
+                                           jint srcOffset, jint count, bool swap) {
+  POKER(jshort, Short, jshort, swapShorts);
 }
 
 jshort Java_libcore_io_Memory_peekShortNative(JNIEnv* env, jclass c, jlong srcAddress) {
@@ -246,34 +260,36 @@ static void unsafeBulkCopy(char *dst, const char *src, int byteCount, int sizeof
   }
 }
 
-void Java_libcore_io_Memory_unsafeBulkGet(JNIEnv* env, jclass c, jobject dstObject, jint dstOffset,
-        jint byteCount, jbyteArray srcArray, jint srcOffset, jint sizeofElement, jboolean swap) {
-    const char *srcBytes = (const char *)srcArray->buffer_;
-    if (srcBytes == NULL) {
-        return;
-    }
-    jbyte* dstBytes = (jbyte*) BytesRW(dstObject);
-    if (dstBytes == NULL) {
-        return;
-    }
-    jbyte* dst = dstBytes + dstOffset*sizeofElement;
-    const char* src = srcBytes + srcOffset;
-    unsafeBulkCopy((char *)dst, src, byteCount, sizeofElement, swap);
+void Java_libcore_io_Memory_unsafeBulkGet(JNIEnv *env, jclass c, jobject dstObject, jint dstOffset,
+                                          jint byteCount, jbyteArray srcArray, jint srcOffset,
+                                          jint sizeofElement, bool swap) {
+  const char *srcBytes = (const char *)srcArray->buffer_;
+  if (srcBytes == NULL) {
+    return;
+  }
+  jbyte *dstBytes = (jbyte *)BytesRW(dstObject);
+  if (dstBytes == NULL) {
+    return;
+  }
+  jbyte *dst = dstBytes + dstOffset * sizeofElement;
+  const char *src = srcBytes + srcOffset;
+  unsafeBulkCopy((char *)dst, src, byteCount, sizeofElement, swap);
 }
 
-void Java_libcore_io_Memory_unsafeBulkPut(JNIEnv* env, jclass c, jbyteArray dstArray, jint dstOffset,
-        jint byteCount, jobject srcObject, jint srcOffset, jint sizeofElement, jboolean swap) {
-    char *dstBytes = (char *)dstArray->buffer_;
-    if (dstBytes == NULL) {
-        return;
-    }
-    jbyte* srcBytes = (jbyte *) BytesRO(srcObject);
-    if (srcBytes == NULL) {
-        return;
-    }
-    char *dst = dstBytes + dstOffset;
-    const jbyte *src = srcBytes + srcOffset*sizeofElement;
-    unsafeBulkCopy(dst, (const char *)src, byteCount, sizeofElement, swap);
+void Java_libcore_io_Memory_unsafeBulkPut(JNIEnv *env, jclass c, jbyteArray dstArray,
+                                          jint dstOffset, jint byteCount, jobject srcObject,
+                                          jint srcOffset, jint sizeofElement, bool swap) {
+  char *dstBytes = (char *)dstArray->buffer_;
+  if (dstBytes == NULL) {
+    return;
+  }
+  jbyte *srcBytes = (jbyte *)BytesRO(srcObject);
+  if (srcBytes == NULL) {
+    return;
+  }
+  char *dst = dstBytes + dstOffset;
+  const jbyte *src = srcBytes + srcOffset * sizeofElement;
+  unsafeBulkCopy(dst, (const char *)src, byteCount, sizeofElement, swap);
 }
 
 /* J2ObjC: unused.

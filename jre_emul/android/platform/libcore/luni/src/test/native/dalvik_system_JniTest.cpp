@@ -52,12 +52,10 @@ extern "C" jobject Java_dalvik_system_JniTest_returnObjectArgFrom16(
   }
 }
 
-extern "C" jboolean Java_dalvik_system_JniTest_returnBooleanArgFrom16(
-    JNIEnv*, jobject, int arg_no,
-    jboolean o1,  jboolean o2,  jboolean o3,  jboolean o4,  jboolean o5,
-    jboolean o6,  jboolean o7,  jboolean o8,  jboolean o9,  jboolean o10,
-    jboolean o11, jboolean o12, jboolean o13, jboolean o14, jboolean o15,
-    jboolean o16) {
+extern "C" bool Java_dalvik_system_JniTest_returnBooleanArgFrom16(
+    JNIEnv*, jobject, int arg_no, bool o1, bool o2, bool o3, bool o4, bool o5,
+    bool o6, bool o7, bool o8, bool o9, bool o10, bool o11, bool o12, bool o13,
+    bool o14, bool o15, bool o16) {
   switch(arg_no){
   case 0:  return o1;
   case 1:  return o2;

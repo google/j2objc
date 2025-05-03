@@ -60,10 +60,10 @@ FileDescriptor_sync(JNIEnv *env, jobject this) {
 }
 */
 
-JNIEXPORT jboolean JNICALL Java_java_io_FileDescriptor_isSocket(JNIEnv *env, jclass ignored, jint fd) {
-    int error;
-    socklen_t error_length = sizeof(error);
-    return TEMP_FAILURE_RETRY(getsockopt(fd, SOL_SOCKET, SO_ERROR, &error, &error_length)) == 0;
+JNIEXPORT bool JNICALL Java_java_io_FileDescriptor_isSocket(JNIEnv *env, jclass ignored, jint fd) {
+  int error;
+  socklen_t error_length = sizeof(error);
+  return TEMP_FAILURE_RETRY(getsockopt(fd, SOL_SOCKET, SO_ERROR, &error, &error_length)) == 0;
 }
 
 /* J2ObjC unused.

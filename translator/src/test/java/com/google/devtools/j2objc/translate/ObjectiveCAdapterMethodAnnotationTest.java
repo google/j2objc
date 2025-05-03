@@ -208,7 +208,7 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertNoWarnings();
     assertNoErrors();
 
-    assertTranslation(testHeader, "- (NSArray * _Nullable)rewrittenReturnObject:(jboolean)flag;");
+    assertTranslation(testHeader, "- (NSArray * _Nullable)rewrittenReturnObject:(bool)flag;");
     assertTranslation(testHeader, "- (id<JavaUtilList> _Nullable)returnObject:(BOOL)flag;");
     assertTranslation(testHeader, "- (id<NativeProtocol> _Nullable)returnAdapterProtocol;");
     // In the future when we support written object arguments add here to make sure their
@@ -314,10 +314,10 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "  return NO; ",
         "}");
 
-    assertTranslation(testHeader, "- (jboolean)isItTrueWithError:(NSError **)nativeError;");
+    assertTranslation(testHeader, "- (bool)isItTrueWithError:(NSError **)nativeError;");
     assertTranslatedLines(
         testSource,
-        "- (jboolean)isItTrueWithError:(NSError **)nativeError {",
+        "- (bool)isItTrueWithError:(NSError **)nativeError {",
         "@try {",
         "  return [self _getTrue];",
         "} @catch (NSException *e) {",
@@ -540,17 +540,17 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertTranslatedLines(
         testSource, "+ (enum Color_Enum)red {", "  return [[EnumMethods _getRed] toNSEnum];", "}");
 
-    assertTranslation(testHeader, "- (jboolean)isBlue:(enum Color_Enum)color;");
+    assertTranslation(testHeader, "- (bool)isBlue:(enum Color_Enum)color;");
     assertTranslatedLines(
         testSource,
-        "- (jboolean)isBlue:(enum Color_Enum)color {",
+        "- (bool)isBlue:(enum Color_Enum)color {",
         "  return [self _isBlueWithColor:[Color fromNSEnum:color]];",
         "}");
 
-    assertTranslation(testHeader, "+ (jboolean)isRed:(enum Color_Enum)color;");
+    assertTranslation(testHeader, "+ (bool)isRed:(enum Color_Enum)color;");
     assertTranslatedLines(
         testSource,
-        "+ (jboolean)isRed:(enum Color_Enum)color {",
+        "+ (bool)isRed:(enum Color_Enum)color {",
         "  return [EnumMethods _isRedWithColor:[Color fromNSEnum:color]];",
         "}");
   }

@@ -142,7 +142,7 @@ outOfBounds(JNIEnv *env, jint off, jint len, jbyteArray array) {
 
 /* J2ObjC: unused.
 void
-writeSingle(JNIEnv *env, jobject this, jint byte, jboolean append, jfieldID fid) {
+writeSingle(JNIEnv *env, jobject this, jint byte, bool append, jfieldID fid) {
     // Discard the 24 high-order bits of byte. See OutputStream#write(int)
     char c = (char) byte;
     jint n;
@@ -166,7 +166,7 @@ writeSingle(JNIEnv *env, jobject this, jint byte, jboolean append, jfieldID fid)
 /* J2ObjC: unused.
 void
 writeBytes(JNIEnv *env, jobject this, jbyteArray bytes,
-           jint off, jint len, jboolean append, jfieldID fid)
+           jint off, jint len, bool append, jfieldID fid)
 {
     jint n;
     char stackBuf[BUF_SIZE];

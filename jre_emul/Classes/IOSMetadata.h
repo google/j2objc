@@ -37,7 +37,7 @@ typedef union {
   long long asLong;
   float asFloat;
   double asDouble;
-  jboolean asBOOL;
+  bool asBOOL;
 } J2ObjcRawValue;
 
 // C data structures that hold "raw" metadata for use by the methods that

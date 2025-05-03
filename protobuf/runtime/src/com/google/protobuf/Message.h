@@ -104,11 +104,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessage)
     withComGoogleProtobufExtensionRegistryLite:
         (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
 
-- (jboolean)mergeDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input;
+- (bool)mergeDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input;
 
-- (jboolean)mergeDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input
-    withComGoogleProtobufExtensionRegistryLite:
-        (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
+- (bool)mergeDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input
+     withComGoogleProtobufExtensionRegistryLite:
+         (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
 
 - (id<ComGoogleProtobufMessage>)build;
 

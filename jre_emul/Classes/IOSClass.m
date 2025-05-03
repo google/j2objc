@@ -227,7 +227,7 @@ static LibcoreReflectGenericSignatureParser *NewParsedClassSignature(IOSClass *c
 }
 
 // Returns true if an object is an instance of this class.
-- (jboolean)isInstance:(id)object {
+- (bool)isInstance:(id)object {
   return false;
 }
 
@@ -380,7 +380,7 @@ static NSString *Capitalize(NSString *s) {
   @throw create_JavaLangNoSuchMethodException_init();
 }
 
-- (jboolean)isAssignableFrom:(IOSClass *)cls {
+- (bool)isAssignableFrom:(IOSClass *)cls {
   @throw create_JavaLangAssertionError_initWithId_(@"abstract method not overridden");
 }
 
@@ -426,7 +426,7 @@ static NSString *Capitalize(NSString *s) {
     [sb appendWithNSString:[self getName]];
     IOSObjectArray *typeparms = [self getTypeParameters];
     if (((IOSObjectArray *) nil_chk(typeparms))->size_ > 0) {
-      jboolean first = true;
+      bool first = true;
       [sb appendWithChar:'<'];
       for (id<JavaLangReflectTypeVariable> typeparm in typeparms) {
         if (!first) {
@@ -683,14 +683,14 @@ IOSClass *IOSClass_forName_(NSString *className) {
   return IOSClass_forName_(className);
 }
 
-IOSClass *IOSClass_forName_initialize_classLoader_(
-    NSString *className, jboolean load, JavaLangClassLoader *loader) {
+IOSClass *IOSClass_forName_initialize_classLoader_(NSString *className, bool load,
+                                                   JavaLangClassLoader *loader) {
   IOSClass_initialize();
   return IOSClass_forName_(className);
 }
 
 + (IOSClass *)forName:(NSString *)className
-           initialize:(jboolean)load
+           initialize:(bool)load
           classLoader:(JavaLangClassLoader *)loader {
   return IOSClass_forName_initialize_classLoader_(className, load, loader);
 }
@@ -710,44 +710,44 @@ IOSClass *IOSClass_forName_initialize_classLoader_(
   return enclosingClass ? JreClassForString(enclosingClass) : nil;
 }
 
-- (jboolean)isArray {
+- (bool)isArray {
   return false;
 }
 
-- (jboolean)isEnum {
+- (bool)isEnum {
   return false;
 }
 
-- (jboolean)isRecord{
+- (bool)isRecord {
   return [self getSuperclass] == JavaLangRecord_class_();
 }
 
-- (jboolean)isInterface {
+- (bool)isInterface {
   return false;
 }
 
-- (jboolean)isPrimitive {
+- (bool)isPrimitive {
   return false;  // Overridden by IOSPrimitiveClass.
 }
 
-static jboolean hasModifier(IOSClass *cls, int flag) {
+static bool hasModifier(IOSClass *cls, int flag) {
   return cls->metadata_ ? (cls->metadata_->modifiers & flag) > 0 : false;
 }
 
-- (jboolean)isAnnotation {
+- (bool)isAnnotation {
   return hasModifier(self, JavaLangReflectModifier_ANNOTATION);
 }
 
-- (jboolean)isMemberClass {
+- (bool)isMemberClass {
   return metadata_ && JrePtrAtIndex(metadata_->ptrTable, metadata_->enclosingClassIdx)
       && ![self isAnonymousClass];
 }
 
-- (jboolean)isLocalClass {
+- (bool)isLocalClass {
   return [self getEnclosingMethod] && ![self isAnonymousClass];
 }
 
-- (jboolean)isSynthetic {
+- (bool)isSynthetic {
   return hasModifier(self, JavaLangReflectModifier_SYNTHETIC);
 }
 
@@ -835,7 +835,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
   return nil;
 }
 
-- (jboolean)isAnnotationPresentWithIOSClass:(IOSClass *)annotationClass {
+- (bool)isAnnotationPresentWithIOSClass:(IOSClass *)annotationClass {
   return [self getAnnotationWithIOSClass:annotationClass] != nil;
 }
 
@@ -937,8 +937,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(
 }
 
 // Adds all the fields for a specified class to a specified dictionary.
-static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
-    jboolean publicOnly) {
+static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields, bool publicOnly) {
   const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
   for (int i = 0; i < metadata->fieldCount; i++) {
     const J2ObjcFieldInfo *fieldInfo = &metadata->fields[i];
@@ -1038,8 +1037,8 @@ static void getAllFields(IOSClass *cls, NSMutableDictionary *fieldMap) {
 
 
 // Adds all the inner classes for a specified class to a specified dictionary.
-static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes,
-    jboolean publicOnly, jboolean includeInterfaces) {
+static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes, bool publicOnly,
+                            bool includeInterfaces) {
   const J2ObjcClassInfo *metadata = iosClass->metadata_;
   if (metadata) {
     IOSObjectArray *innerClasses = JreParseClassList(
@@ -1082,11 +1081,11 @@ static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes,
   return result;
 }
 
-- (jboolean)isAnonymousClass {
+- (bool)isAnonymousClass {
   return false;
 }
 
-- (jboolean)desiredAssertionStatus {
+- (bool)desiredAssertionStatus {
   return false;
 }
 
@@ -1182,7 +1181,7 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
   return (id)rawValue->asId;
 }
 
-- (jboolean)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
+- (bool)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
   rawValue->asId = value;
   return true;
 }
@@ -1195,7 +1194,7 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
   *(id *)addr = (id)rawValue->asId;
 }
 
-- (jboolean)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)type {
+- (bool)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)type {
   // No conversion necessary if both types are ids.
   return ![type isPrimitive];
 }
@@ -1210,7 +1209,7 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
   return IOSClass_class_();
 }
 
-static jboolean IsStringType(Class cls) {
+static bool IsStringType(Class cls) {
   // We can't trigger class initialization because that might recursively enter
   // FetchClass and result in deadlock within the FastPointerLookup. Therefore,
   // we can't use [cls isSubclassOfClass:[NSString class]].

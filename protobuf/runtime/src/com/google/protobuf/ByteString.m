@@ -90,7 +90,7 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSStrin
 }
 
 - (instancetype)initWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)byteString;
-- (jboolean)hasNext;
+- (bool)hasNext;
 - (JavaLangByte *)next;
 - (jbyte)nextByte;
 - (void)remove;
@@ -133,7 +133,7 @@ static ByteStringIterator *create_ByteStringIterator_initWithComGoogleProtobufBy
   return size_;
 }
 
-- (jboolean)isEmpty {
+- (bool)isEmpty {
   return size_ == 0;
 }
 
@@ -402,7 +402,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufByteString)
   return self;
 }
 
-- (jboolean)hasNext {
+- (bool)hasNext {
   return position_ < limit_;
 }
 

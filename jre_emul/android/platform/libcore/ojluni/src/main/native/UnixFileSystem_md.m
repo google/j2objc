@@ -108,18 +108,14 @@ Java_java_io_UnixFileSystem_canonicalize0(JNIEnv *env, jobject this,
 
 /* -- Attribute accessors -- */
 
-
-static jboolean
-statMode(const char *path, int *mode)
-{
-    struct stat64 sb;
-    if (stat64(path, &sb) == 0) {
-        *mode = sb.st_mode;
-        return JNI_TRUE;
-    }
-    return JNI_FALSE;
+static bool statMode(const char *path, int *mode) {
+  struct stat64 sb;
+  if (stat64(path, &sb) == 0) {
+    *mode = sb.st_mode;
+    return JNI_TRUE;
+  }
+  return JNI_FALSE;
 }
-
 
 JNIEXPORT jint JNICALL
 Java_java_io_UnixFileSystem_getBooleanAttributes0(JNIEnv *env, jobject this,
@@ -144,11 +140,11 @@ Java_java_io_UnixFileSystem_getBooleanAttributes0(JNIEnv *env, jobject this,
 
 // BEGIN Android-removed: Access files through common interface.
 /*
-JNIEXPORT jboolean JNICALL
+JNIEXPORT bool JNICALL
 Java_java_io_UnixFileSystem_checkAccess(JNIEnv *env, jobject this,
                                         jobject file, jint a)
 {
-    jboolean rv = JNI_FALSE;
+    bool rv = JNI_FALSE;
     int mode = 0;
     switch (a) {
     case java_io_FileSystem_ACCESS_READ:
@@ -173,19 +169,15 @@ Java_java_io_UnixFileSystem_checkAccess(JNIEnv *env, jobject this,
 // END Android-removed: Access files through common interface.
 
 // Android-changed: Name changed because of added thread policy check
-JNIEXPORT jboolean JNICALL
-Java_java_io_UnixFileSystem_setPermission0(JNIEnv *env, jobject this,
-                                           jobject file,
-                                           jint access,
-                                           jboolean enable,
-                                           jboolean owneronly)
-{
-    jboolean rv = JNI_FALSE;
+JNIEXPORT bool JNICALL Java_java_io_UnixFileSystem_setPermission0(JNIEnv *env, jobject this,
+                                                                  jobject file, jint access,
+                                                                  bool enable, bool owneronly) {
+  bool rv = JNI_FALSE;
 
-    // WITH_FIELD_PLATFORM_STRING(env, file, ids.path, path) {
-    int amode = 0;
-    int mode;
-    switch (access) {
+  // WITH_FIELD_PLATFORM_STRING(env, file, ids.path, path) {
+  int amode = 0;
+  int mode;
+  switch (access) {
     case JavaIoFileSystem_ACCESS_READ:
         if (owneronly)
             amode = S_IRUSR;
@@ -261,39 +253,34 @@ Java_java_io_UnixFileSystem_getLength(JNIEnv *env, jobject this,
 /* -- File operations -- */
 
 // Android-changed: Name changed because of added thread policy check
-JNIEXPORT jboolean JNICALL
-Java_java_io_UnixFileSystem_createFileExclusively0(JNIEnv *env, jclass cls,
-                                                   jstring pathname)
-{
-    jboolean rv = JNI_FALSE;
+JNIEXPORT bool JNICALL Java_java_io_UnixFileSystem_createFileExclusively0(JNIEnv *env, jclass cls,
+                                                                          jstring pathname) {
+  bool rv = JNI_FALSE;
 
-    // WITH_PLATFORM_STRING(env, pathname, path) {
-    const char *path = pathname.UTF8String;
-    FD fd;
-    /* The root directory always exists */
-    if (strcmp (path, "/")) {
-        fd = handleOpen(path, O_RDWR | O_CREAT | O_EXCL, 0666);
-        if (fd < 0) {
-            if (errno != EEXIST)
-                JNU_ThrowIOExceptionWithLastError(env, path);
-        } else {
-            if (close(fd) == -1)
-                JNU_ThrowIOExceptionWithLastError(env, path);
-            rv = JNI_TRUE;
-        }
+  // WITH_PLATFORM_STRING(env, pathname, path) {
+  const char *path = pathname.UTF8String;
+  FD fd;
+  /* The root directory always exists */
+  if (strcmp(path, "/")) {
+    fd = handleOpen(path, O_RDWR | O_CREAT | O_EXCL, 0666);
+    if (fd < 0) {
+      if (errno != EEXIST) JNU_ThrowIOExceptionWithLastError(env, path);
+    } else {
+      if (close(fd) == -1) JNU_ThrowIOExceptionWithLastError(env, path);
+      rv = JNI_TRUE;
     }
-    // } END_PLATFORM_STRING(env, path);
-    return rv;
+  }
+  // } END_PLATFORM_STRING(env, path);
+  return rv;
 }
-
 
 // BEGIN Android-removed: Access files through common interface.
 /*
-JNIEXPORT jboolean JNICALL
+JNIEXPORT bool JNICALL
 Java_java_io_UnixFileSystem_delete0(JNIEnv *env, jobject this,
                                     jobject file)
 {
-    jboolean rv = JNI_FALSE;
+    bool rv = JNI_FALSE;
 
     WITH_FIELD_PLATFORM_STRING(env, file, ids.path, path) {
         if (remove(path) == 0) {
@@ -389,28 +376,25 @@ Java_java_io_UnixFileSystem_list0(JNIEnv *env, jobject this,
 }
 
 // Android-changed: Name changed because of added thread policy check
-JNIEXPORT jboolean JNICALL
-Java_java_io_UnixFileSystem_createDirectory0(JNIEnv *env, jobject this,
-                                             jobject file)
-{
-    jboolean rv = JNI_FALSE;
+JNIEXPORT bool JNICALL Java_java_io_UnixFileSystem_createDirectory0(JNIEnv *env, jobject this,
+                                                                    jobject file) {
+  bool rv = JNI_FALSE;
 
-    // WITH_FIELD_PLATFORM_STRING(env, file, ids.path, path) {
-    if (mkdir([(JavaIoFile *)file getPath].UTF8String, 0777) == 0) {
-        rv = JNI_TRUE;
-    }
-    // } END_PLATFORM_STRING(env, path);
-    return rv;
+  // WITH_FIELD_PLATFORM_STRING(env, file, ids.path, path) {
+  if (mkdir([(JavaIoFile *)file getPath].UTF8String, 0777) == 0) {
+    rv = JNI_TRUE;
+  }
+  // } END_PLATFORM_STRING(env, path);
+  return rv;
 }
-
 
 // BEGIN Android-removed: Access files through common interface.
 /*
-JNIEXPORT jboolean JNICALL
+JNIEXPORT bool JNICALL
 Java_java_io_UnixFileSystem_rename0(JNIEnv *env, jobject this,
                                     jobject from, jobject to)
 {
-    jboolean rv = JNI_FALSE;
+    bool rv = JNI_FALSE;
 
     WITH_FIELD_PLATFORM_STRING(env, from, ids.path, fromPath) {
         WITH_FIELD_PLATFORM_STRING(env, to, ids.path, toPath) {
@@ -425,54 +409,49 @@ Java_java_io_UnixFileSystem_rename0(JNIEnv *env, jobject this,
 // END Android-removed: Access files through common interface.
 
 // Android-changed: Name changed because of added thread policy check
-JNIEXPORT jboolean JNICALL
-Java_java_io_UnixFileSystem_setLastModifiedTime0(JNIEnv *env, jobject this,
-                                                 jobject file, jlong time)
-{
-    jboolean rv = JNI_FALSE;
+JNIEXPORT bool JNICALL Java_java_io_UnixFileSystem_setLastModifiedTime0(JNIEnv *env, jobject this,
+                                                                        jobject file, jlong time) {
+  bool rv = JNI_FALSE;
 
-    // WITH_FIELD_PLATFORM_STRING(env, file, ids.path, path) {
-    NSString *path = RETAIN_([(JavaIoFile *)file getPath]);
-    struct stat64 sb;
+  // WITH_FIELD_PLATFORM_STRING(env, file, ids.path, path) {
+  NSString *path = RETAIN_([(JavaIoFile *)file getPath]);
+  struct stat64 sb;
 
-    if (stat64(path.UTF8String, &sb) == 0) {
-        struct timeval tv[2];
+  if (stat64(path.UTF8String, &sb) == 0) {
+    struct timeval tv[2];
 
-        /* Preserve access time */
-        tv[0].tv_sec = sb.st_atime;
-        tv[0].tv_usec = 0;
+    /* Preserve access time */
+    tv[0].tv_sec = sb.st_atime;
+    tv[0].tv_usec = 0;
 
-        /* Change last-modified time */
-        tv[1].tv_sec = (time_t) (time / 1000);
-        tv[1].tv_usec = (time % 1000) * 1000;
+    /* Change last-modified time */
+    tv[1].tv_sec = (time_t)(time / 1000);
+    tv[1].tv_usec = (time % 1000) * 1000;
 
-        if (utimes(path.UTF8String, tv) == 0)
-            rv = JNI_TRUE;
-    }
-    RELEASE_(path);
-    // } END_PLATFORM_STRING(env, path);
+    if (utimes(path.UTF8String, tv) == 0) rv = JNI_TRUE;
+  }
+  RELEASE_(path);
+  // } END_PLATFORM_STRING(env, path);
 
-    return rv;
+  return rv;
 }
 
 // Android-changed: Name changed because of added thread policy check
-JNIEXPORT jboolean JNICALL
-Java_java_io_UnixFileSystem_setReadOnly0(JNIEnv *env, jobject this,
-                                         jobject file)
-{
-    jboolean rv = JNI_FALSE;
+JNIEXPORT bool JNICALL Java_java_io_UnixFileSystem_setReadOnly0(JNIEnv *env, jobject this,
+                                                                jobject file) {
+  bool rv = JNI_FALSE;
 
-    // WITH_FIELD_PLATFORM_STRING(env, file, ids.path, path) {
-    NSString *path = RETAIN_([(JavaIoFile *)file getPath]);
-    int mode;
-    if (statMode(path.UTF8String, &mode)) {
-        if (chmod(path.UTF8String, mode & ~(S_IWUSR | S_IWGRP | S_IWOTH)) >= 0) {
-            rv = JNI_TRUE;
-        }
+  // WITH_FIELD_PLATFORM_STRING(env, file, ids.path, path) {
+  NSString *path = RETAIN_([(JavaIoFile *)file getPath]);
+  int mode;
+  if (statMode(path.UTF8String, &mode)) {
+    if (chmod(path.UTF8String, mode & ~(S_IWUSR | S_IWGRP | S_IWOTH)) >= 0) {
+      rv = JNI_TRUE;
     }
-    RELEASE_(path);
-    // } END_PLATFORM_STRING(env, path);
-    return rv;
+  }
+  RELEASE_(path);
+  // } END_PLATFORM_STRING(env, path);
+  return rv;
 }
 
 // Android-changed: Name changed because of added thread policy check

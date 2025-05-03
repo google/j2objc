@@ -73,7 +73,7 @@
 }
 
 - (void)testBooleanArrayCopy {
-  const jboolean *bools = (jboolean[]){ TRUE, FALSE, TRUE, FALSE };
+  const bool *bools = (bool[]){TRUE, FALSE, TRUE, FALSE};
   IOSBooleanArray *a1 = [IOSBooleanArray arrayWithBooleans:bools count:4];
   IOSBooleanArray *a2 = AUTORELEASE([a1 copy]);
   XCTAssertEqual([a1 length], [a2 length], @"bad array size");

@@ -40,7 +40,7 @@ jstring Java_java_lang_Long_toString(JNIEnv *env, jclass cls, jlong i, jint radi
     return JavaLangLong_toStringWithLong_(i);
   jchar buf[65];
   jint charPos = 64;
-  jboolean negative = (i < 0);
+  bool negative = (i < 0);
 
   if (!negative) {
     i = -i;

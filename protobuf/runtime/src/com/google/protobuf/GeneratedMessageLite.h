@@ -79,7 +79,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessageLite)
 
 - (jint)getNumber;
 
-- (jboolean)isRepeated;
+- (bool)isRepeated;
 
 #pragma mark Package-Private
 
@@ -114,8 +114,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessageLite_GeneratedExtens
  @public
   jint number_;
   ComGoogleProtobufWireFormat_FieldType *type_;
-  jboolean isRepeated_;
-  jboolean isPacked_;
+  bool isRepeated_;
+  bool isPacked_;
 }
 
 #pragma mark Public
@@ -124,9 +124,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessageLite_GeneratedExtens
 
 - (jint)getNumber;
 
-- (jboolean)isPacked;
+- (bool)isPacked;
 
-- (jboolean)isRepeated;
+- (bool)isRepeated;
 
 #pragma mark Package-Private
 
@@ -135,8 +135,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessageLite_GeneratedExtens
                                                       withInt:(jint)number
                     withComGoogleProtobufWireFormat_FieldType:
                         (ComGoogleProtobufWireFormat_FieldType *)type
-                                                  withBoolean:(jboolean)isRepeated
-                                                  withBoolean:(jboolean)isPacked;
+                                                  withBoolean:(bool)isRepeated
+                                                  withBoolean:(bool)isPacked;
 
 // Disallowed inherited constructors, do not use.
 - (instancetype)init NS_UNAVAILABLE;

@@ -52,7 +52,7 @@
 
 - (id<JavaUtilMap>)getAllFields;
 
-- (jboolean)hasFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
+- (bool)hasFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
     (ComGoogleProtobufDescriptors_FieldDescriptor *)descriptor;
 
 - (id)getFieldWithComGoogleProtobufDescriptors_FieldDescriptor:

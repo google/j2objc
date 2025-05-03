@@ -177,7 +177,7 @@ static void ThrowArrayStoreException(Class expectedType, Class actualType) {
 
 @implementation IOSBooleanArray
 
-PRIMITIVE_ARRAY_IMPLEMENTATION(boolean, Boolean, jboolean, Boolean, booleanValue)
+PRIMITIVE_ARRAY_IMPLEMENTATION(boolean, Boolean, bool, Boolean, booleanValue)
 
 - (NSString *)descriptionOfElementAtIndex:(jint)index {
   return [NSString stringWithFormat:@"%@", (buffer_[index] ? @"true" : @"false")];

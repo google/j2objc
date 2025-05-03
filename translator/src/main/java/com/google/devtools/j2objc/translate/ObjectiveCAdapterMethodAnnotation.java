@@ -289,7 +289,7 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
       }
       atLeastOneBoolean = true;
 
-      // All BOOL values are valid jbooleans, regardless of OBJC_BOOL_IS_BOOL
+      // All BOOL values are now defined as bool, regardless of OBJC_BOOL_IS_BOOL
       GeneratedVariableElement nativeParam =
           GeneratedVariableElement.newParameter(
               param.getSimpleName().toString(), TypeUtil.BOOL_TYPE, param.getEnclosingElement());

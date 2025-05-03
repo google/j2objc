@@ -100,8 +100,8 @@ ComGoogleProtobufExtensionRegistry *ComGoogleProtobufExtensionRegistry_getEmptyR
   return CGPExtensionRegistry_EMPTY_;
 }
 
-void ComGoogleProtobufExtensionRegistry_initWithBoolean_(
-    ComGoogleProtobufExtensionRegistry *self, jboolean empty) {
+void ComGoogleProtobufExtensionRegistry_initWithBoolean_(ComGoogleProtobufExtensionRegistry *self,
+                                                         bool empty) {
   ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(self, empty);
 }
 
