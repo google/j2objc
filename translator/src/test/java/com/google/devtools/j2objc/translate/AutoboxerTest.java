@@ -426,7 +426,7 @@ public class AutoboxerTest extends GenerationTest {
         + "void test(Entry<? extends Long> entry) { long l = entry.getValue(); } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "jlong l = [((JavaLangLong *) nil_chk([((id<Test_Entry>) nil_chk(entry_)) "
+        "int64_t l = [((JavaLangLong *) nil_chk([((id<Test_Entry>) nil_chk(entry_)) "
         + "getValue])) longLongValue];");
   }
 
@@ -459,11 +459,11 @@ public class AutoboxerTest extends GenerationTest {
     assertTranslation(
         translation, "return (jint) [((JavaLangCharacter *) nil_chk(toInt)) charValue];");
     assertTranslation(
-        translation, "return (jlong) [((JavaLangCharacter *) nil_chk(toLong)) charValue];");
+        translation, "return (int64_t) [((JavaLangCharacter *) nil_chk(toLong)) charValue];");
     assertTranslation(
-        translation, "return (jfloat) [((JavaLangCharacter *) nil_chk(toFlt)) charValue];");
+        translation, "return (float) [((JavaLangCharacter *) nil_chk(toFlt)) charValue];");
     assertTranslation(
-        translation, "return (jdouble) [((JavaLangCharacter *) nil_chk(toDbl)) charValue];");
+        translation, "return (double) [((JavaLangCharacter *) nil_chk(toDbl)) charValue];");
   }
 
   public void testCharacterUnboxingAutoReboxing() throws IOException {
@@ -482,9 +482,9 @@ public class AutoboxerTest extends GenerationTest {
         "IOSObjectArray *arr = [IOSObjectArray arrayWithObjects:(id[]){ "
             + "JavaLangCharacter_valueOfWithChar_([toChar charValue]), "
             + "JavaLangInteger_valueOfWithInt_((jint) [toInt charValue]), "
-            + "JavaLangLong_valueOfWithLong_((jlong) [toLong charValue]), "
-            + "JavaLangFloat_valueOfWithFloat_((jfloat) [toFlt charValue]),"
-            + " JavaLangDouble_valueOfWithDouble_((jdouble) [toDbl charValue]) }"
+            + "JavaLangLong_valueOfWithLong_((int64_t) [toLong charValue]), "
+            + "JavaLangFloat_valueOfWithFloat_((float) [toFlt charValue]),"
+            + " JavaLangDouble_valueOfWithDouble_((double) [toDbl charValue]) }"
             + " count:5 type:NSObject_class_()];");
   }
 
@@ -511,13 +511,13 @@ public class AutoboxerTest extends GenerationTest {
         translation, "[self fWithInt:(jint) [((JavaLangCharacter *) nil_chk(toInt)) charValue]];");
     assertTranslation(
         translation,
-        "[self fWithLong:(jlong) [((JavaLangCharacter *) nil_chk(toLong)) charValue]];");
+        "[self fWithLong:(int64_t) [((JavaLangCharacter *) nil_chk(toLong)) charValue]];");
     assertTranslation(
         translation,
-        "[self fWithFloat:(jfloat) [((JavaLangCharacter *) nil_chk(toFlt)) charValue]];");
+        "[self fWithFloat:(float) [((JavaLangCharacter *) nil_chk(toFlt)) charValue]];");
     assertTranslation(
         translation,
-        "[self fWithDouble:(jdouble) [((JavaLangCharacter *) nil_chk(toDbl)) charValue]];");
+        "[self fWithDouble:(double) [((JavaLangCharacter *) nil_chk(toDbl)) charValue]];");
   }
 
   public void testNonWrapperObjectTypeCastToPrimitive() throws IOException {
@@ -572,7 +572,7 @@ public class AutoboxerTest extends GenerationTest {
         + "void test() { "
         + "  Integer tmp_int = new Integer(100); "
         + "  long tmp_long = (long)tmp_int; }}", "Test", "Test.m");
-    assertTranslation(translation, "jlong tmp_long = [tmp_int longLongValue];");
+    assertTranslation(translation, "int64_t tmp_long = [tmp_int longLongValue];");
   }
 
   // https://github.com/google/j2objc/issues/1031
@@ -602,7 +602,7 @@ public class AutoboxerTest extends GenerationTest {
     assertTranslatedLines(translation,
         "@implementation Test_$Lambda$1",
         "",
-        "- (jlong)nowMillis {",
+        "- (int64_t)nowMillis {",
         "return [nil_chk([target$_ get]) longLongValue];");
   }
 }

@@ -83,12 +83,12 @@ public class NumberMethodRewriterTest extends GenerationTest {
             + "  public int intValue() { return 0; }"
             + "  public long longValue() { return 0L; }}", "A", "A.m");
 
-    assertTranslation(translation, "- (instancetype)initWithLongLong:(jlong)value {");
-    assertTranslation(translation, "void A_initWithLongLong_(A *self, jlong value) {");
-    assertTranslation(translation, "A *new_A_initWithLongLong_(jlong value) {");
-    assertTranslation(translation, "A *create_A_initWithLongLong_(jlong value) {");
+    assertTranslation(translation, "- (instancetype)initWithLongLong:(int64_t)value {");
+    assertTranslation(translation, "void A_initWithLongLong_(A *self, int64_t value) {");
+    assertTranslation(translation, "A *new_A_initWithLongLong_(int64_t value) {");
+    assertTranslation(translation, "A *create_A_initWithLongLong_(int64_t value) {");
     assertTranslatedLines(translation,
-        "- (A *)valueOfWithLong:(jlong)value {",
+        "- (A *)valueOfWithLong:(int64_t)value {",
         "return create_A_initWithLongLong_(value);",
         "}");
   }
@@ -107,27 +107,27 @@ public class NumberMethodRewriterTest extends GenerationTest {
     // Verify that long constructor uses longlong type.
     assertTranslatedLines(
         translation,
-        "- (instancetype)initWithLongLong:(jlong)value {",
+        "- (instancetype)initWithLongLong:(int64_t)value {",
         "  A_initWithLongLong_(self, value);",
         "  return self;",
         "}");
     assertTranslatedLines(
         translation,
-        "void A_initWithLongLong_(A *self, jlong value) {",
+        "void A_initWithLongLong_(A *self, int64_t value) {",
         "  JavaMathBigDecimal_initWithLongLong_(self, value);",
         "}");
 
     // Verify that the other constructor is not affected (long used instead of longlong).
     assertTranslatedLines(
         translation,
-        "- (instancetype)initWithLong:(jlong)value",
+        "- (instancetype)initWithLong:(int64_t)value",
         "    withJavaMathMathContext:(JavaMathMathContext *)context {",
         "  A_initWithLong_withJavaMathMathContext_(self, value, context);",
         "  return self;",
         "}");
     assertTranslatedLines(
         translation,
-        "void A_initWithLong_withJavaMathMathContext_(A *self, jlong value, JavaMathMathContext"
+        "void A_initWithLong_withJavaMathMathContext_(A *self, int64_t value, JavaMathMathContext"
             + " *context) {",
         "  JavaMathBigDecimal_initWithLong_withJavaMathMathContext_(self, value, context);",
         "}");

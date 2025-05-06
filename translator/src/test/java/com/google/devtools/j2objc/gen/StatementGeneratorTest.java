@@ -602,7 +602,7 @@ public class StatementGeneratorTest extends GenerationTest {
             "public class Test { " + "public static void testLong() { long l1 = 1L; }}",
             "Test",
             "Test.m");
-    assertTranslation(translation, "jlong l1 = 1LL");
+    assertTranslation(translation, "int64_t l1 = 1LL");
   }
 
   public void testStringLiteralEscaping() throws IOException {
@@ -643,7 +643,7 @@ public class StatementGeneratorTest extends GenerationTest {
         result);
     result = generateStatement(stmts.get(1));
     assertEquals(
-        "IOSCharArray *b = " + "[IOSCharArray arrayWithChars:(jchar[]){ '4', '5' } count:2];",
+        "IOSCharArray *b = " + "[IOSCharArray arrayWithChars:(unichar[]){ '4', '5' } count:2];",
         result);
   }
 
@@ -661,7 +661,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(
         translation,
         "JreStrongAssignAndConsume(&Test_b, "
-            + "[IOSCharArray newArrayWithChars:(jchar[]){ '4', '5' } count:2]);");
+            + "[IOSCharArray newArrayWithChars:(unichar[]){ '4', '5' } count:2]);");
   }
 
   public void testLocalArrayCreation() throws IOException {
@@ -674,7 +674,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(
         translation,
         "return [IOSCharArray "
-            + "arrayWithChars:(jchar[]){ (jchar) high, (jchar) low } count:2];");
+            + "arrayWithChars:(unichar[]){ (unichar) high, (unichar) low } count:2];");
   }
 
   // Regression test: "case:" was output instead of "case".
@@ -914,9 +914,9 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(0)).trim();
-    assertEquals("jfloat f = JavaLangFloat_NaN;", result);
+    assertEquals("float f = JavaLangFloat_NaN;", result);
     result = generateStatement(stmts.get(1)).trim();
-    assertEquals("jdouble d = JavaLangDouble_POSITIVE_INFINITY;", result);
+    assertEquals("double d = JavaLangDouble_POSITIVE_INFINITY;", result);
   }
 
   public void testInstanceStaticConstants() throws IOException {
@@ -1526,8 +1526,8 @@ public class StatementGeneratorTest extends GenerationTest {
                 + " 0b1010000101000101101000010100010110100001010001011010000101000101L; }",
             "A",
             "A.m");
-    assertTranslation(translation, "aByte_ = (jbyte) 0b00100001;");
-    assertTranslation(translation, "aShort_ = (jshort) 0b1010000101000101;");
+    assertTranslation(translation, "aByte_ = (int8_t) 0b00100001;");
+    assertTranslation(translation, "aShort_ = (int16_t) 0b1010000101000101;");
     assertTranslation(translation, "anInt1_ = 0b10100001010001011010000101000101;");
     assertTranslation(translation, "anInt2_ = 0b101;");
     assertTranslation(translation, "anInt3_ = 0B101;");
@@ -1554,7 +1554,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "pi_ = 3.1415f;");
     assertTranslation(translation, "hexBytes_ = (jint) 0xFFECDE5E;");
     assertTranslation(translation, "hexWords_ = (jint) 0xCAFEBABE;");
-    assertTranslation(translation, "maxLong_ = (jlong) 0x7fffffffffffffffLL;");
+    assertTranslation(translation, "maxLong_ = (int64_t) 0x7fffffffffffffffLL;");
     assertTranslation(translation, "nybbles_ = 0b00100101;");
     assertTranslation(translation, "bytes_ = 0b11010010011010011001010010010010;");
   }
@@ -1813,25 +1813,25 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test.m");
     // Verify referenced return value is cast.
     assertTranslatedLines(
-        translation, "- (jbyte)testByteWithFloat:(jfloat)f {", "return JreFpToByte(f);");
+        translation, "- (int8_t)testByteWithFloat:(float)f {", "return JreFpToByte(f);");
     assertTranslatedLines(translation,
-        "- (jchar)testCharWithFloat:(jfloat)f {", "return JreFpToChar(f);");
+        "- (unichar)testCharWithFloat:(float)f {", "return JreFpToChar(f);");
     assertTranslatedLines(
-        translation, "- (jshort)testShortWithFloat:(jfloat)f {", "return JreFpToShort(f);");
+        translation, "- (int16_t)testShortWithFloat:(float)f {", "return JreFpToShort(f);");
     assertTranslatedLines(translation,
-        "- (jint)testIntWithFloat:(jfloat)f {", "return JreFpToInt(f);");
+        "- (jint)testIntWithFloat:(float)f {", "return JreFpToInt(f);");
     assertTranslatedLines(translation,
-        "- (jlong)testLongWithFloat:(jfloat)f {", "return JreFpToLong(f);");
+        "- (int64_t)testLongWithFloat:(float)f {", "return JreFpToLong(f);");
     assertTranslatedLines(
-        translation, "- (jbyte)testByteWithDouble:(jdouble)d {", "return JreFpToByte(d);");
+        translation, "- (int8_t)testByteWithDouble:(double)d {", "return JreFpToByte(d);");
     assertTranslatedLines(translation,
-        "- (jchar)testCharWithDouble:(jdouble)d {", "return JreFpToChar(d);");
+        "- (unichar)testCharWithDouble:(double)d {", "return JreFpToChar(d);");
     assertTranslatedLines(
-        translation, "- (jshort)testShortWithDouble:(jdouble)d {", "return JreFpToShort(d);");
+        translation, "- (int16_t)testShortWithDouble:(double)d {", "return JreFpToShort(d);");
     assertTranslatedLines(translation,
-        "- (jint)testIntWithDouble:(jdouble)d {", "return JreFpToInt(d);");
+        "- (jint)testIntWithDouble:(double)d {", "return JreFpToInt(d);");
     assertTranslatedLines(translation,
-        "- (jlong)testLongWithDouble:(jdouble)d {", "return JreFpToLong(d);");
+        "- (int64_t)testLongWithDouble:(double)d {", "return JreFpToLong(d);");
   }
 
   // Verify that string constants used in switch statements can be generated after functionizing.

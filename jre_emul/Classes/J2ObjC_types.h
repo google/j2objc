@@ -25,9 +25,9 @@
 #error C11 or higher language standard must be used for Java volatile support.
 #endif
 
-// Typedefs for each of Java's primitive types. (as originally defined in jni.h)
-// bool and jbyte are modified from the original jni.h to integrate better
-// with Objective-C code.
+// Typedefs for each of Java's primitive types. The translator no longer
+// generates these types, but they are defined for backwards compatibility
+// native Objective-C code that uses these types.
 typedef int8_t          jbyte;          /* signed 8 bits */
 typedef uint16_t        jchar;          /* unsigned 16 bits */
 typedef int16_t         jshort;         /* signed 16 bits */
@@ -41,16 +41,28 @@ typedef double          jdouble;        /* 64-bit IEEE 754 */
 typedef bool            jboolean;
 
 // Typedefs for Java types declared as volatile.
-typedef _Atomic(jbyte)     volatile_jbyte;
-typedef _Atomic(jchar)     volatile_jchar;
-typedef _Atomic(jshort)    volatile_jshort;
-typedef _Atomic(jint)      volatile_jint;
-typedef _Atomic(jlong)     volatile_jlong;
-typedef _Atomic(jfloat)    volatile_jfloat;
-typedef _Atomic(jdouble)   volatile_jdouble;
-typedef _Atomic(bool) volatile_bool;
+typedef _Atomic(int8_t)   volatile_int8_t;
+typedef _Atomic(uint16_t) volatile_uint16_t;
+typedef _Atomic(int16_t)  volatile_int16_t;
+typedef _Atomic(int32_t)  volatile_jint;
+typedef _Atomic(int64_t)  volatile_int64_t;
+typedef _Atomic(float)    volatile_float;
+typedef _Atomic(double)   volatile_double;
+typedef _Atomic(bool)     volatile_bool;
+
+// Aliases for native references to volatile types.
+typedef volatile_bool     volatile_jboolean;
+typedef volatile_int8_t   volatile_jbyte;
+typedef volatile_uint16_t volatile_jchar;
+typedef volatile_int16_t  volatile_jshort;
+typedef volatile_int64_t  volatile_jlong;
+//typedef volatile_int32_t  volatile_jint;
+typedef volatile_float    volatile_jfloat;
+typedef volatile_double   volatile_jdouble;
+
 // bool is a macro that expands to _Bool, so add typedef for use by macros.
-typedef volatile_bool volatile__Bool;
+typedef volatile_bool     volatile__Bool;
+
 // Volatile object access is guarded by spin locks because of reference counting
 // so we don't use an atomic type. uintptr_t is used for the typedef mainly to
 // prevent accidental usage as a regular id type.

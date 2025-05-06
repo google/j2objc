@@ -54,7 +54,7 @@
 + (nonnull NSString *)java_valueOfBool:(bool)value;
 
 // String.valueOf(char)
-+ (nonnull NSString *)java_valueOfChar:(jchar)value;
++ (nonnull NSString *)java_valueOfChar:(uint16_t)value;
 
 // String.valueOf(char[])
 + (nonnull NSString *)java_valueOfChars:(IOSCharArray *)data;
@@ -65,16 +65,16 @@
                                   count:(jint)count;
 
 // String.valueOf(double)
-+ (nonnull NSString *)java_valueOfDouble:(jdouble)value;
++ (nonnull NSString *)java_valueOfDouble:(double)value;
 
 // String.valueOf(float)
-+ (nonnull NSString *)java_valueOfFloat:(jfloat)value;
++ (nonnull NSString *)java_valueOfFloat:(float)value;
 
 // String.valueOf(int)
 + (nonnull NSString *)java_valueOfInt:(jint)value;
 
 // String.valueOf(long)
-+ (nonnull NSString *)java_valueOfLong:(jlong)value;
++ (nonnull NSString *)java_valueOfLong:(int64_t)value;
 
 // String.getChars(int, int, char[], int)
 - (void)java_getChars:(jint)sourceBegin
@@ -182,7 +182,7 @@
 - (jint)compareToWithId:(id)another;
 
 // CharSequence.charAt(int)
-- (jchar)charAtWithInt:(jint)index;
+- (uint16_t)charAtWithInt:(jint)index;
 
 // CharSequence.isEmpty()
 - (bool)isEmpty;
@@ -195,7 +195,7 @@
 - (jint)java_compareToIgnoreCase:(NSString *)another;
 
 // String.replace(char, char)
-- (nonnull NSString *)java_replace:(jchar)oldchar withChar:(jchar)newchar;
+- (nonnull NSString *)java_replace:(uint16_t)oldchar withChar:(uint16_t)newchar;
 
 // String.replace(CharSequence, CharSequence)
 - (nonnull NSString *)java_replace:(id<JavaLangCharSequence>)oldSequence
@@ -337,7 +337,7 @@ FOUNDATION_EXPORT NSString *NSString_java_formatWithNSString_withNSObjectArray_(
 // String.valueOf(boolean)
 FOUNDATION_EXPORT NSString *NSString_java_valueOfBool_(bool b);
 // String.valueOf(char)
-FOUNDATION_EXPORT NSString *NSString_java_valueOfChar_(jchar c);
+FOUNDATION_EXPORT NSString *NSString_java_valueOfChar_(uint16_t c);
 // String.valueOf(char[])
 // String.copyValueOf(char[])
 FOUNDATION_EXPORT NSString *NSString_java_valueOfChars_(IOSCharArray *chars);
@@ -346,13 +346,13 @@ FOUNDATION_EXPORT NSString *NSString_java_valueOfChars_(IOSCharArray *chars);
 FOUNDATION_EXPORT NSString *NSString_java_valueOfChars_offset_count_(
     IOSCharArray *chars, jint i, jint j);
 // String.valueOf(double)
-FOUNDATION_EXPORT NSString *NSString_java_valueOfDouble_(jdouble d);
+FOUNDATION_EXPORT NSString *NSString_java_valueOfDouble_(double d);
 // String.valueOf(float)
-FOUNDATION_EXPORT NSString *NSString_java_valueOfFloat_(jfloat f);
+FOUNDATION_EXPORT NSString *NSString_java_valueOfFloat_(float f);
 // String.valueOf(int)
 FOUNDATION_EXPORT NSString *NSString_java_valueOfInt_(jint i);
 // String.valueOf(long)
-FOUNDATION_EXPORT NSString *NSString_java_valueOfLong_(jlong l);
+FOUNDATION_EXPORT NSString *NSString_java_valueOfLong_(int64_t l);
 // String.valueOf(Object)
 FOUNDATION_EXPORT NSString *NSString_java_valueOf_(id o);
 // String.join(CharSequence, CharSequence...)

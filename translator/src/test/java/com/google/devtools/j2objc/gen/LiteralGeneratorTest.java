@@ -27,7 +27,7 @@ public class LiteralGeneratorTest extends TestCase {
     String s = "a\uffffz";
     String result = LiteralGenerator.buildStringFromChars(s);
     assertEquals(
-        "[NSString stringWithCharacters:(jchar[]) "
+        "[NSString stringWithCharacters:(unichar[]) "
             + "{ (int) 0x61, (int) 0xffff, (int) 0x7a } length:3]",
         result);
   }

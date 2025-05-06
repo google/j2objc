@@ -133,7 +133,7 @@ public class RewriterTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "IOSIntArray *a = [IOSIntArray arrayWithInts:(jint[]){ 1, 2, 3 } count:3];",
-        "IOSCharArray *b = [IOSCharArray arrayWithChars:(jchar[]){ '4', '5' } count:2];");
+        "IOSCharArray *b = [IOSCharArray arrayWithChars:(unichar[]){ '4', '5' } count:2];");
   }
 
   /**
@@ -149,7 +149,7 @@ public class RewriterTest extends GenerationTest {
         "JreStrongAssignAndConsume(&Test_a, "
             + "[IOSIntArray newArrayWithInts:(jint[]){ 1, 2, 3 } count:3]);",
         "JreStrongAssignAndConsume(&Test_b, "
-            + "[IOSCharArray newArrayWithChars:(jchar[]){ '4', '5' } count:2]);");
+            + "[IOSCharArray newArrayWithChars:(unichar[]){ '4', '5' } count:2]);");
   }
 
   public void testNonStaticMultiDimArrayInitializer() throws IOException {
@@ -257,8 +257,8 @@ public class RewriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "IOSObjectArray *c1;",
         "IOSCharArray *c2;",
-        "jchar c3;",
-        "jchar c4;",
+        "unichar c3;",
+        "unichar c4;",
         "IOSObjectArray *c5;");
   }
 

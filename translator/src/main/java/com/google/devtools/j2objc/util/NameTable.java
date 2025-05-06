@@ -60,7 +60,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import org.jspecify.annotations.Nullable;
@@ -734,13 +733,33 @@ public class NameTable {
   public static String getPrimitiveObjCType(TypeMirror type) {
     if (TypeUtil.isVoid(type)) {
       return "void";
-    } else if (type.getKind() == TypeKind.BOOLEAN) {
-      return "bool";
-    } else if (type.getKind().isPrimitive()) {
-      return "j" + TypeUtil.getName(type);
-    } else {
+    }
+    if (!type.getKind().isPrimitive()) {
       return "id";
     }
+    if (type.getKind().isPrimitive()) {
+      switch (type.getKind()) {
+        case BOOLEAN:
+          return "bool";
+        case BYTE:
+          return "int8_t";
+        case SHORT:
+          return "int16_t";
+        case INT:
+          return "jint";
+        case LONG:
+          return "int64_t";
+        case CHAR:
+          return "unichar"; // AKA uint16_t.
+        case FLOAT:
+          return "float";
+        case DOUBLE:
+          return "double";
+        default:
+          return "j" + TypeUtil.getName(type);
+      }
+    }
+    return "id";
   }
 
   /**

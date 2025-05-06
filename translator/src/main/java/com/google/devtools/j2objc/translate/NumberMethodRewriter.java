@@ -144,7 +144,7 @@ public class NumberMethodRewriter extends UnitTreeVisitor {
     return false;
   }
 
-  // Fix selector so constructor overrides NSNumber.initWithLongLong(), to match jlong type.
+  // Fix selector so constructor overrides NSNumber.initWithLongLong(), to match long long type.
   private ExecutableElement updateNumberLongConstructor(ExecutableElement constructor) {
     return GeneratedExecutableElement.mutableCopy("initWithLongLong:", constructor);
   }

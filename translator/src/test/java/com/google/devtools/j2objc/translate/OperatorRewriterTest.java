@@ -56,8 +56,8 @@ public class OperatorRewriterTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(4, stmts.size());
     assertEquals("jint i = JreIntDiv(3, s);", generateStatement(stmts.get(1)));
-    assertEquals("jlong l = JreLongDiv(7LL, s);", generateStatement(stmts.get(2)));
-    assertEquals("jdouble d = 9.0 / s;", generateStatement(stmts.get(3)));
+    assertEquals("int64_t l = JreLongDiv(7LL, s);", generateStatement(stmts.get(2)));
+    assertEquals("double d = 9.0 / s;", generateStatement(stmts.get(3)));
   }
 
   public void testModuloOperator() {
@@ -65,8 +65,8 @@ public class OperatorRewriterTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(4, stmts.size());
     assertEquals("jint i = JreIntMod(3, s);", generateStatement(stmts.get(1)));
-    assertEquals("jlong l = JreLongMod(7LL, s);", generateStatement(stmts.get(2)));
-    assertEquals("jdouble d = fmod(9.0, s);", generateStatement(stmts.get(3)));
+    assertEquals("int64_t l = JreLongMod(7LL, s);", generateStatement(stmts.get(2)));
+    assertEquals("double d = fmod(9.0, s);", generateStatement(stmts.get(3)));
   }
 
   public void testModAssignOperator() {

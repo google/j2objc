@@ -97,7 +97,7 @@ typedef struct J2ObjcNameMapping {
  */
 typedef struct J2ObjcResourceDefinition {
   const char * const full_name;
-  const jbyte * const data;
+  const int8_t * const data;
   const jint length;
   const jint name_hash;
 } J2ObjcResourceDefinition;
@@ -195,31 +195,31 @@ FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordina
  */
 __attribute__((always_inline))
 __attribute__((no_sanitize("float-cast-overflow")))
-inline jint JreFpToInt(jdouble d) {
+inline jint JreFpToInt(double d) {
   jint tmp = (jint)d;
   return tmp == (jint)0x80000000 ? (d != d ? 0 : (d >= 0 ? 0x7FFFFFFF : tmp)) : tmp;
 }
 __attribute__((always_inline))
 __attribute__((no_sanitize("float-cast-overflow")))
-inline jlong JreFpToLong(jdouble d) {
-  jlong tmp = (jlong)d;
-  return tmp == (jlong)0x8000000000000000LL
+inline int64_t JreFpToLong(double d) {
+  int64_t tmp = (int64_t)d;
+  return tmp == (int64_t)0x8000000000000000LL
       ? (d != d ? 0 : (d >= 0 ? 0x7FFFFFFFFFFFFFFFL : tmp)) : tmp;
 }
 __attribute__((always_inline))
 __attribute__((no_sanitize("float-cast-overflow")))
-inline jchar JreFpToChar(jdouble d) {
+inline uint16_t JreFpToChar(double d) {
   unsigned tmp = (unsigned)d;
-  return tmp > 0xFFFF || (tmp == 0 && d > 0) ? 0xFFFF : (jchar)tmp;
+  return tmp > 0xFFFF || (tmp == 0 && d > 0) ? 0xFFFF : (uint16_t)tmp;
 }
 __attribute__((always_inline))
-inline jshort JreFpToShort(jdouble d) {
-  return (jshort)JreFpToInt(d);
+inline int16_t JreFpToShort(double d) {
+  return (int16_t)JreFpToInt(d);
 }
 __attribute__((always_inline))
 __attribute__((no_sanitize("float-cast-overflow")))
-inline jbyte JreFpToByte(jdouble d) {
-  return (jbyte)JreFpToInt(d);
+inline int8_t JreFpToByte(double d) {
+  return (int8_t)JreFpToInt(d);
 }
 
 #define ARITHMETIC_OPERATOR_DEFN(NAME, TYPE, OPNAME, OP, PNAME, PTYPE, CAST) \
@@ -261,28 +261,28 @@ inline jbyte JreFpToByte(jdouble d) {
   ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Divide, /, PNAME, PTYPE, CAST) \
   MOD_ASSIGN_FP_DEFN(NAME, TYPE, MODFUNC, PNAME, PTYPE, CAST)
 
-ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Char, jchar, I, jint)
-ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Char, jchar, J, jlong)
-ARITHMETIC_FP_OPERATORS_DEFN(Char, jchar, F, jfloat, fmodf, JreFpToChar)
-ARITHMETIC_FP_OPERATORS_DEFN(Char, jchar, D, jdouble, fmod, JreFpToChar)
-ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Byte, jbyte, I, jint)
-ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Byte, jbyte, J, jlong)
-ARITHMETIC_FP_OPERATORS_DEFN(Byte, jbyte, F, jfloat, fmodf, JreFpToByte)
-ARITHMETIC_FP_OPERATORS_DEFN(Byte, jbyte, D, jdouble, fmod, JreFpToByte)
-ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Short, jshort, I, jint)
-ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Short, jshort, J, jlong)
-ARITHMETIC_FP_OPERATORS_DEFN(Short, jshort, F, jfloat, fmodf, JreFpToShort)
-ARITHMETIC_FP_OPERATORS_DEFN(Short, jshort, D, jdouble, fmod, JreFpToShort)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Char, uint16_t, I, jint)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Char, uint16_t, J, int64_t)
+ARITHMETIC_FP_OPERATORS_DEFN(Char, uint16_t, F, float, fmodf, JreFpToChar)
+ARITHMETIC_FP_OPERATORS_DEFN(Char, uint16_t, D, double, fmod, JreFpToChar)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Byte, int8_t, I, jint)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Byte, int8_t, J, int64_t)
+ARITHMETIC_FP_OPERATORS_DEFN(Byte, int8_t, F, float, fmodf, JreFpToByte)
+ARITHMETIC_FP_OPERATORS_DEFN(Byte, int8_t, D, double, fmod, JreFpToByte)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Short, int16_t, I, jint)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Short, int16_t, J, int64_t)
+ARITHMETIC_FP_OPERATORS_DEFN(Short, int16_t, F, float, fmodf, JreFpToShort)
+ARITHMETIC_FP_OPERATORS_DEFN(Short, int16_t, D, double, fmod, JreFpToShort)
 ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Int, jint, I, jint)
-ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Int, jint, J, jlong)
-ARITHMETIC_FP_OPERATORS_DEFN(Int, jint, F, jfloat, fmodf, JreFpToInt)
-ARITHMETIC_FP_OPERATORS_DEFN(Int, jint, D, jdouble, fmod, JreFpToInt)
-ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Long, jlong, J, jlong)
-ARITHMETIC_FP_OPERATORS_DEFN(Long, jlong, F, jfloat, fmodf, JreFpToLong)
-ARITHMETIC_FP_OPERATORS_DEFN(Long, jlong, D, jdouble, fmod, JreFpToLong)
-ARITHMETIC_FP_OPERATORS_DEFN(Float, jfloat, F, jfloat, fmodf, (jfloat))
-ARITHMETIC_FP_OPERATORS_DEFN(Float, jfloat, D, jdouble, fmod, (jfloat))
-ARITHMETIC_FP_OPERATORS_DEFN(Double, jdouble, D, jdouble, fmod, (jdouble))
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Int, jint, J, int64_t)
+ARITHMETIC_FP_OPERATORS_DEFN(Int, jint, F, float, fmodf, JreFpToInt)
+ARITHMETIC_FP_OPERATORS_DEFN(Int, jint, D, double, fmod, JreFpToInt)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Long, int64_t, J, int64_t)
+ARITHMETIC_FP_OPERATORS_DEFN(Long, int64_t, F, float, fmodf, JreFpToLong)
+ARITHMETIC_FP_OPERATORS_DEFN(Long, int64_t, D, double, fmod, JreFpToLong)
+ARITHMETIC_FP_OPERATORS_DEFN(Float, float, F, float, fmodf, (float))
+ARITHMETIC_FP_OPERATORS_DEFN(Float, float, D, double, fmod, (float))
+ARITHMETIC_FP_OPERATORS_DEFN(Double, double, D, double, fmod, (double))
 #undef ARITHMETIC_OPERATOR_DEFN
 #undef ARITHMETIC_VOLATILE_OPERATOR_DEFN
 #undef MOD_ASSIGN_FP_DEFN
@@ -290,40 +290,40 @@ ARITHMETIC_FP_OPERATORS_DEFN(Double, jdouble, D, jdouble, fmod, (jdouble))
 #undef ARITHMETIC_FP_OPERATORS_DEFN
 
 #define SHIFT_OPERATORS_DEFN(NAME, TYPE, UTYPE, MASK) \
-  __attribute__((always_inline)) inline TYPE JreLShift##NAME(TYPE lhs, jlong rhs) { \
+  __attribute__((always_inline)) inline TYPE JreLShift##NAME(TYPE lhs, int64_t rhs) { \
     return lhs << (rhs & MASK); \
   } \
-  __attribute__((always_inline)) inline TYPE JreRShift##NAME(TYPE lhs, jlong rhs) { \
+  __attribute__((always_inline)) inline TYPE JreRShift##NAME(TYPE lhs, int64_t rhs) { \
     return lhs >> (rhs & MASK); \
   } \
-  __attribute__((always_inline)) inline TYPE JreURShift##NAME(TYPE lhs, jlong rhs) { \
+  __attribute__((always_inline)) inline TYPE JreURShift##NAME(TYPE lhs, int64_t rhs) { \
     return (TYPE) (((UTYPE) lhs) >> (rhs & MASK)); \
   }
 
 #define SHIFT_ASSIGN_OPERATORS_DEFN(NAME, TYPE, UTYPE, MASK) \
-  __attribute__((always_inline)) inline TYPE JreLShiftAssign##NAME(TYPE *pLhs, jlong rhs) { \
+  __attribute__((always_inline)) inline TYPE JreLShiftAssign##NAME(TYPE *pLhs, int64_t rhs) { \
     return *pLhs = (TYPE) (*pLhs << (rhs & MASK)); \
   } \
-  __attribute__((always_inline)) inline TYPE JreRShiftAssign##NAME(TYPE *pLhs, jlong rhs) { \
+  __attribute__((always_inline)) inline TYPE JreRShiftAssign##NAME(TYPE *pLhs, int64_t rhs) { \
     return *pLhs = (TYPE) (*pLhs >> (rhs & MASK)); \
   } \
-  __attribute__((always_inline)) inline TYPE JreURShiftAssign##NAME(TYPE *pLhs, jlong rhs) { \
+  __attribute__((always_inline)) inline TYPE JreURShiftAssign##NAME(TYPE *pLhs, int64_t rhs) { \
     return *pLhs = (TYPE) (((UTYPE) *pLhs) >> (rhs & MASK)); \
   } \
   __attribute__((always_inline)) inline TYPE JreLShiftAssignVolatile##NAME( \
-      volatile_##TYPE *pLhs, jlong rhs) { \
+      volatile_##TYPE *pLhs, int64_t rhs) { \
     TYPE result = (TYPE)(__c11_atomic_load(pLhs, __ATOMIC_SEQ_CST) << (rhs & MASK)); \
     __c11_atomic_store(pLhs, result, __ATOMIC_SEQ_CST); \
     return result; \
   } \
   __attribute__((always_inline)) inline TYPE JreRShiftAssignVolatile##NAME( \
-      volatile_##TYPE *pLhs, jlong rhs) { \
+      volatile_##TYPE *pLhs, int64_t rhs) { \
     TYPE result = __c11_atomic_load(pLhs, __ATOMIC_SEQ_CST) >> (rhs & MASK); \
     __c11_atomic_store(pLhs, result, __ATOMIC_SEQ_CST); \
     return result; \
   } \
   __attribute__((always_inline)) inline TYPE JreURShiftAssignVolatile##NAME( \
-      volatile_##TYPE *pLhs, jlong rhs) { \
+      volatile_##TYPE *pLhs, int64_t rhs) { \
     TYPE result = (TYPE)(((UTYPE)__c11_atomic_load(pLhs, __ATOMIC_SEQ_CST)) >> (rhs & MASK)); \
     __c11_atomic_store(pLhs, result, __ATOMIC_SEQ_CST); \
     return result; \
@@ -331,12 +331,12 @@ ARITHMETIC_FP_OPERATORS_DEFN(Double, jdouble, D, jdouble, fmod, (jdouble))
 
 // Shift masks are determined by the JLS spec, section 15.19.
 SHIFT_OPERATORS_DEFN(32, jint, uint32_t, 0x1f)
-SHIFT_OPERATORS_DEFN(64, jlong, uint64_t, 0x3f)
-SHIFT_ASSIGN_OPERATORS_DEFN(Char, jchar, uint32_t, 0x1f)
-SHIFT_ASSIGN_OPERATORS_DEFN(Byte, jbyte, uint32_t, 0x1f)
-SHIFT_ASSIGN_OPERATORS_DEFN(Short, jshort, uint32_t, 0x1f)
+SHIFT_OPERATORS_DEFN(64, int64_t, uint64_t, 0x3f)
+SHIFT_ASSIGN_OPERATORS_DEFN(Char, uint16_t, uint32_t, 0x1f)
+SHIFT_ASSIGN_OPERATORS_DEFN(Byte, int8_t, uint32_t, 0x1f)
+SHIFT_ASSIGN_OPERATORS_DEFN(Short, int16_t, uint32_t, 0x1f)
 SHIFT_ASSIGN_OPERATORS_DEFN(Int, jint, uint32_t, 0x1f)
-SHIFT_ASSIGN_OPERATORS_DEFN(Long, jlong, uint64_t, 0x3f)
+SHIFT_ASSIGN_OPERATORS_DEFN(Long, int64_t, uint64_t, 0x3f)
 #undef SHIFT_OPERATORS_DEFN
 #undef SHIFT_ASSIGN_OPERATORS_DEFN
 
@@ -353,11 +353,11 @@ SHIFT_ASSIGN_OPERATORS_DEFN(Long, jlong, uint64_t, 0x3f)
   BIT_OPERATOR_DEFN(NAME, TYPE, Xor, ^)
 
 BIT_OPERATORS_DEFN(Boolean, bool)
-BIT_OPERATORS_DEFN(Char, jchar)
-BIT_OPERATORS_DEFN(Byte, jbyte)
-BIT_OPERATORS_DEFN(Short, jshort)
+BIT_OPERATORS_DEFN(Char, uint16_t)
+BIT_OPERATORS_DEFN(Byte, int8_t)
+BIT_OPERATORS_DEFN(Short, int16_t)
 BIT_OPERATORS_DEFN(Int, jint)
-BIT_OPERATORS_DEFN(Long, jlong)
+BIT_OPERATORS_DEFN(Long, int64_t)
 #undef BIT_OPERATOR_DEFN
 #undef BIT_OPERATORS_DEFN
 
@@ -370,9 +370,9 @@ BIT_OPERATORS_DEFN(Long, jlong)
   }
 
 JRE_HANDLE_DIV_BY_ZERO(IntDiv, jint, /);
-JRE_HANDLE_DIV_BY_ZERO(LongDiv, jlong, /);
+JRE_HANDLE_DIV_BY_ZERO(LongDiv, int64_t, /);
 JRE_HANDLE_DIV_BY_ZERO(IntMod, jint, %);
-JRE_HANDLE_DIV_BY_ZERO(LongMod, jlong, %);
+JRE_HANDLE_DIV_BY_ZERO(LongMod, int64_t, %);
 
 // Support for the "==" and "!=" operators. Objective C coalescing of
 // string literals only happens with linked bundles, so the same literal string in

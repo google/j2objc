@@ -16,9 +16,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.devtools.j2objc.util.UnicodeUtils;
-
 import java.util.regex.Pattern;
-
 import javax.lang.model.type.TypeKind;
 
 /**
@@ -57,7 +55,7 @@ public class LiteralGenerator {
     int length = s.length();
     StringBuilder buffer = new StringBuilder();
     buffer.append(
-        "[NSString stringWithCharacters:(jchar[]) { ");
+        "[NSString stringWithCharacters:(unichar[]) { ");
     int i = 0;
     while (i < length) {
       char c = s.charAt(i);
@@ -116,9 +114,9 @@ public class LiteralGenerator {
       // Convert min long literal to an expression
       token = "-0x7fffffffffffffffLL - 1";
     } else {
-      // Convert Java long literals to jlong for Obj-C
+      // Convert Java long literals to long long for Obj-C
       if (token.startsWith("0x")) {
-        token = "(jlong) " + token;  // Ensure constant is treated as signed.
+        token = "(int64_t) " + token;  // Ensure constant is treated as signed.
       }
       int pos = token.length() - 1;
       int numLs = 0;
@@ -172,7 +170,7 @@ public class LiteralGenerator {
 
   public static String generate(Long value) {
     if (value.longValue() == Long.MIN_VALUE) {
-      return "((jlong) 0x8000000000000000LL)";
+      return "((int64_t) 0x8000000000000000LL)";
     } else {
       return value.toString() + "LL";
     }
@@ -221,4 +219,7 @@ public class LiteralGenerator {
       return value.toString();
     }
   }
+
+  // Do not instantiate.
+  private LiteralGenerator() {}
 }

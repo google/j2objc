@@ -68,11 +68,11 @@ public class AnnotationTest extends GenerationTest {
         "  return ((jint) 0x80000000);",
         "}");
     assertTranslatedLines(translation,
-        "+ (jfloat)bDefault {",
+        "+ (float)bDefault {",
         "  return -INFINITY;",
         "}");
     assertTranslatedLines(translation,
-        "+ (jdouble)cDefault {",
+        "+ (double)cDefault {",
         "  return NAN;",
         "}");
   }

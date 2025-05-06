@@ -261,7 +261,7 @@ public class FunctionizerTest extends GenerationTest {
     translation = getTranslatedFile("A.m");
     assertTranslation(translation, functionHeader + " {");
     assertTranslation(translation, "return A_strcharsWithCharArray_("
-        + "[IOSCharArray arrayWithChars:(jchar[]){ 'a', 'b', 'c' } count:3]);");
+        + "[IOSCharArray arrayWithChars:(unichar[]){ 'a', 'b', 'c' } count:3]);");
   }
 
   public void testSynchronizedFunction() throws IOException {

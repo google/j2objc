@@ -150,7 +150,7 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "  jbyte unseq$1;",
+        "  int8_t unseq$1;",
         "if (tailLen > 1) {",
         "jint unseq$2 = t++;",
         "unseq$1 = IOSByteArray_Get(nil_chk(tail), unseq$2);",

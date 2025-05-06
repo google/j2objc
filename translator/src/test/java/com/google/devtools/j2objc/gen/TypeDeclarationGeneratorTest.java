@@ -444,7 +444,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         "@property (class) jint test;",
-        "@property (nonatomic, class) jdouble d;",
+        "@property (nonatomic, class) double d;",
         "@property (readonly, class) bool flag;");
 
     // Verify class attributes aren't assigned to instance fields.
@@ -493,7 +493,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         "@property (class) jint test NS_SWIFT_NAME(test);",
-        "@property (class) jdouble d NS_SWIFT_NAME(d);",
+        "@property (class) double d NS_SWIFT_NAME(d);",
         "@property (readonly, class) bool flag NS_SWIFT_NAME(flag);",
         "@property (copy, class) NSString *TRUE_ NS_SWIFT_NAME(TRUE_);");
     assertTranslation(translation, "- (jint)getTest;");
@@ -686,7 +686,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     // Verify primitive properties don't have nullability parameters.
     assertTranslatedLines(translation,
         "@property jint test7;",
-        "@property (readonly, nonatomic) jdouble test8;");
+        "@property (readonly, nonatomic) double test8;");
   }
 
   // Verify that constructors are always nonnull (issue #960).

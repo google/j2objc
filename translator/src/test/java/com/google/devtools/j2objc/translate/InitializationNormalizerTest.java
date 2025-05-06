@@ -164,7 +164,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation, "NSString *Test_foo;");
     assertTranslation(translation,
-        "JreStrongAssign(&Test_foo, [NSString stringWithCharacters:(jchar[]) { "
+        "JreStrongAssign(&Test_foo, [NSString stringWithCharacters:(unichar[]) { "
         + "(int) 0xdfff } length:1]);");
   }
 
@@ -175,7 +175,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTranslation(translation, "NSString *Test_foo;");
     assertTranslation(translation,
         "JreStrongAssign(&Test_foo, JreStrcat(\"$$\", @\"hello1\", "
-        + "[NSString stringWithCharacters:(jchar[]) { (int) 0xdfff } length:1]));");
+        + "[NSString stringWithCharacters:(unichar[]) { (int) 0xdfff } length:1]));");
   }
 
   public void testInitializersPlacedAfterOuterAssignments() throws IOException {
@@ -275,7 +275,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "+ (void)initialize {",
         "  if (self == [Test class]) {",
         // Initialization of the constant FOO must come before initialization of non-constants.
-        "    JreStrongAssign(&Test_FOO, [NSString stringWithCharacters:(jchar[]) { "
+        "    JreStrongAssign(&Test_FOO, [NSString stringWithCharacters:(unichar[]) { "
           + "(int) 0xda6e } length:1]);",
         "    Test_CODE_POINT = Test_getCodePoint();");
   }

@@ -23,7 +23,7 @@
 // Defines a string builder struct so that J2ObjC string concatenation does not
 // need to allocate a new ObjC string builder object.
 typedef struct JreStringBuilder {
-  jchar *buffer_;
+  uint16_t *buffer_;
   jint bufferSize_;
   jint count_;
 } JreStringBuilder;
@@ -43,7 +43,7 @@ typedef struct JreStringBuilder {
 
 - (jint)capacity;
 
-- (jchar)charAtWithInt:(jint)index;
+- (uint16_t)charAtWithInt:(jint)index;
 
 - (void)ensureCapacityWithInt:(jint)min;
 
@@ -55,7 +55,7 @@ typedef struct JreStringBuilder {
 - (jint)java_length;
 
 - (void)setCharAtWithInt:(jint)index
-                withChar:(jchar)ch;
+                withChar:(uint16_t)ch;
 
 - (void)setLengthWithInt:(jint)length;
 
@@ -111,15 +111,15 @@ void JreStringBuilder_appendStringBuffer(JreStringBuilder *sb, JavaLangStringBuf
 void JreStringBuilder_appendCharArray(JreStringBuilder *sb, IOSCharArray *chars);
 void JreStringBuilder_appendCharArraySubset(
     JreStringBuilder *sb, IOSCharArray *chars, jint offset, jint length);
-void JreStringBuilder_appendChar(JreStringBuilder *sb, jchar ch);
+void JreStringBuilder_appendChar(JreStringBuilder *sb, uint16_t ch);
 void JreStringBuilder_appendString(JreStringBuilder *sb, NSString *string);
 void JreStringBuilder_appendCharSequence(JreStringBuilder *sb, id<JavaLangCharSequence> s);
 void JreStringBuilder_appendCharSequenceSubset(
     JreStringBuilder *sb, id<JavaLangCharSequence> s, jint start, jint end);
 void JreStringBuilder_appendInt(JreStringBuilder *sb, jint i);
-void JreStringBuilder_appendLong(JreStringBuilder *sb, jlong l);
-void JreStringBuilder_appendDouble(JreStringBuilder *sb, jdouble d);
-void JreStringBuilder_appendFloat(JreStringBuilder *sb, jfloat f);
+void JreStringBuilder_appendLong(JreStringBuilder *sb, int64_t l);
+void JreStringBuilder_appendDouble(JreStringBuilder *sb, double d);
+void JreStringBuilder_appendFloat(JreStringBuilder *sb, float f);
 
 void JreStringBuilder_delete(JreStringBuilder *sb, jint start, jint end);
 void JreStringBuilder_deleteCharAt(JreStringBuilder *sb, jint index);
@@ -127,7 +127,7 @@ void JreStringBuilder_deleteCharAt(JreStringBuilder *sb, jint index);
 void JreStringBuilder_insertCharArray(JreStringBuilder *sb, jint index, IOSCharArray *chars);
 void JreStringBuilder_insertCharArraySubset(
     JreStringBuilder *sb, jint index, IOSCharArray *chars, jint start, jint length);
-void JreStringBuilder_insertChar(JreStringBuilder *sb, jint index, jchar ch);
+void JreStringBuilder_insertChar(JreStringBuilder *sb, jint index, uint16_t ch);
 void JreStringBuilder_insertString(JreStringBuilder *sb, jint index, NSString *string);
 void JreStringBuilder_insertCharSequence(
     JreStringBuilder *sb, jint index, id<JavaLangCharSequence> s, jint start, jint end);

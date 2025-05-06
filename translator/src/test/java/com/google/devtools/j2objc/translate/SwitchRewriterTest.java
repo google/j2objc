@@ -294,7 +294,7 @@ public class SwitchRewriterTest extends GenerationTest {
                   "Test.m");
           assertTranslatedLines(
               translation,
-              "- (bool)matchesWithChar:(jchar)c {",
+              "- (bool)matchesWithChar:(unichar)c {",
               "  switch (c) {",
               "    case 0x0009:",
               "    case 0x000a:",

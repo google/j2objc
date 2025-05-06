@@ -55,24 +55,24 @@
 // Field.get(Object), etc.
 - (id)getWithId:(id)object;
 - (bool)getBooleanWithId:(id)object;
-- (jbyte)getByteWithId:(id)object;
-- (jchar)getCharWithId:(id)object;
-- (jdouble)getDoubleWithId:(id)object;
-- (jfloat)getFloatWithId:(id)object;
+- (int8_t)getByteWithId:(id)object;
+- (uint16_t)getCharWithId:(id)object;
+- (double)getDoubleWithId:(id)object;
+- (float)getFloatWithId:(id)object;
 - (jint)getIntWithId:(id)object;
-- (jlong)getLongWithId:(id)object;
-- (jshort)getShortWithId:(id)object;
+- (int64_t)getLongWithId:(id)object;
+- (int16_t)getShortWithId:(id)object;
 
 // Field.set(Object, Object), etc.
 - (void)setWithId:(id)object withId:(id)value;
 - (void)setBooleanWithId:(id)object withBoolean:(bool)value;
-- (void)setByteWithId:(id)object withByte:(jbyte)value;
-- (void)setCharWithId:(id)object withChar:(jchar)value;
-- (void)setDoubleWithId:(id)object withDouble:(jdouble)value;
-- (void)setFloatWithId:(id)object withFloat:(jfloat)value;
+- (void)setByteWithId:(id)object withByte:(int8_t)value;
+- (void)setCharWithId:(id)object withChar:(uint16_t)value;
+- (void)setDoubleWithId:(id)object withDouble:(double)value;
+- (void)setFloatWithId:(id)object withFloat:(float)value;
 - (void)setIntWithId:(id)object withInt:(jint)value;
-- (void)setLongWithId:(id)object withLong:(jlong)value;
-- (void)setShortWithId:(id)object withShort:(jshort)value;
+- (void)setLongWithId:(id)object withLong:(int64_t)value;
+- (void)setShortWithId:(id)object withShort:(int16_t)value;
 
 - (IOSClass *)getDeclaringClass;
 - (jint)getModifiers;
@@ -83,7 +83,7 @@
 - (id<JavaLangReflectType>)getGenericType;
 
 // Should only be used by sun.misc.Unsafe.
-- (jlong)unsafeOffset;
+- (int64_t)unsafeOffset;
 
 @end
 

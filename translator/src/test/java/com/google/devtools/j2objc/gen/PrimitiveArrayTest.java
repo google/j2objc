@@ -91,14 +91,14 @@ public class PrimitiveArrayTest extends GenerationTest {
     List<Statement> stmts = translateStatements("byte[] foo = new byte[3]; byte b = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("jbyte b = IOSByteArray_Get(foo, 1);", result);
+    assertEquals("int8_t b = IOSByteArray_Get(foo, 1);", result);
   }
 
   public void testCharArrayAccess() {
     List<Statement> stmts = translateStatements("char[] foo = new char[3]; char c = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("jchar c = IOSCharArray_Get(foo, 1);", result);
+    assertEquals("unichar c = IOSCharArray_Get(foo, 1);", result);
   }
 
   public void testDoubleArrayAccess() {
@@ -106,14 +106,14 @@ public class PrimitiveArrayTest extends GenerationTest {
         "double[] foo = new double[3]; double d = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("jdouble d = IOSDoubleArray_Get(foo, 1);", result);
+    assertEquals("double d = IOSDoubleArray_Get(foo, 1);", result);
   }
 
   public void testFloatArrayAccess() {
     List<Statement> stmts = translateStatements("float[] foo = new float[3]; float f = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("jfloat f = IOSFloatArray_Get(foo, 1);", result);
+    assertEquals("float f = IOSFloatArray_Get(foo, 1);", result);
   }
 
   public void testIntArrayAccess() {
@@ -127,14 +127,14 @@ public class PrimitiveArrayTest extends GenerationTest {
     List<Statement> stmts = translateStatements("long[] foo = new long[3]; long l = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("jlong l = IOSLongArray_Get(foo, 1);", result);
+    assertEquals("int64_t l = IOSLongArray_Get(foo, 1);", result);
   }
 
   public void testShortArrayAccess() {
     List<Statement> stmts = translateStatements("short[] foo = new short[3]; short s = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("jshort s = IOSShortArray_Get(foo, 1);", result);
+    assertEquals("int16_t s = IOSShortArray_Get(foo, 1);", result);
   }
 
   public void testObjectArrayAccess() {
