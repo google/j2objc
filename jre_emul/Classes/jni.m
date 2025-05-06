@@ -151,35 +151,35 @@ static jlong GetDirectBufferCapacity(JNIEnv *env, jobject buf) {
   } \
   return ARRAY->buffer_;
 
-static bool *GetBooleanArrayElements(JNIEnv *env, boolArray array, bool *isCopy) {
+static jboolean *GetBooleanArrayElements(JNIEnv *env, jbooleanArray array, jboolean *isCopy) {
   GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
 }
 
-static jbyte *GetByteArrayElements(JNIEnv *env, jbyteArray array, bool *isCopy) {
+static jbyte *GetByteArrayElements(JNIEnv *env, jbyteArray array, jboolean *isCopy) {
   GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
 }
 
-static jchar *GetCharArrayElements(JNIEnv *env, jcharArray array, bool *isCopy) {
+static jchar *GetCharArrayElements(JNIEnv *env, jcharArray array, jboolean *isCopy) {
   GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
 }
 
-static jshort *GetShortArrayElements(JNIEnv *env, jshortArray array, bool *isCopy) {
+static jshort *GetShortArrayElements(JNIEnv *env, jshortArray array, jboolean *isCopy) {
   GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
 }
 
-static jdouble *GetDoubleArrayElements(JNIEnv *env, jdoubleArray array, bool *isCopy) {
+static jdouble *GetDoubleArrayElements(JNIEnv *env, jdoubleArray array, jboolean *isCopy) {
   GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
 }
 
-static jfloat *GetFloatArrayElements(JNIEnv *env, jfloatArray array, bool *isCopy) {
+static jfloat *GetFloatArrayElements(JNIEnv *env, jfloatArray array, jboolean *isCopy) {
   GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
 }
 
-static jint *GetIntArrayElements(JNIEnv *env, jintArray array, bool *isCopy) {
+static jint *GetIntArrayElements(JNIEnv *env, jintArray array, jboolean *isCopy) {
   GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
 }
 
-static jlong *GetLongArrayElements(JNIEnv *env, jlongArray array, bool *isCopy) {
+static jlong *GetLongArrayElements(JNIEnv *env, jlongArray array, jboolean *isCopy) {
   GET_ARRAY_BUFFER_ELEMENTS(array, isCopy)
 }
 
@@ -192,7 +192,7 @@ static jclass GetObjectClass(JNIEnv *env, jobject obj) {
   return [(id<JavaObject>) obj java_getClass];
 }
 
-static void *GetPrimitiveArrayCritical(JNIEnv *env, jarray array, bool *isCopy) {
+static void *GetPrimitiveArrayCritical(JNIEnv *env, jarray array, jboolean *isCopy) {
   (void)nil_chk(array);
   if (isCopy) {
     *isCopy = false;
@@ -205,7 +205,7 @@ static void *GetPrimitiveArrayCritical(JNIEnv *env, jarray array, bool *isCopy) 
   return (void *) ((IOSByteArray *) array)->buffer_;
 }
 
-static const jchar *GetStringChars(JNIEnv *env, jstring s, bool *isCopy) {
+static const jchar *GetStringChars(JNIEnv *env, jstring s, jboolean *isCopy) {
   (void)nil_chk(s);
   if (isCopy) {
     *isCopy = true;
@@ -213,7 +213,7 @@ static const jchar *GetStringChars(JNIEnv *env, jstring s, bool *isCopy) {
   return [IOSCharArray arrayWithNSString:(NSString *) s]->buffer_;
 }
 
-static const jchar *GetStringCritical(JNIEnv *env, jstring s, bool *isCopy) {
+static const jchar *GetStringCritical(JNIEnv *env, jstring s, jboolean *isCopy) {
   (void)nil_chk(s);
   if (isCopy) {
     *isCopy = true;
@@ -232,7 +232,7 @@ static void GetStringRegion(JNIEnv *env, jstring s, jsize offset, jsize length, 
   [(NSString *) s getCharacters:(unichar *)buffer range:range];
 }
 
-static const char *GetStringUTFChars(JNIEnv *env, jstring s, bool *isCopy) {
+static const char *GetStringUTFChars(JNIEnv *env, jstring s, jboolean *isCopy) {
   (void)nil_chk(s);
   if (isCopy) {
     *isCopy = false;
@@ -260,11 +260,11 @@ static jint GetVersion(JNIEnv *env) {
   return JNI_VERSION_1_6;
 }
 
-static bool IsAssignableFrom(JNIEnv *env, jclass clazz1, jclass clazz2) {
+static jboolean IsAssignableFrom(JNIEnv *env, jclass clazz1, jclass clazz2) {
   return [(IOSClass *) clazz2 isAssignableFrom:clazz1];
 }
 
-static bool IsInstanceOf(JNIEnv *env, jobject obj, jclass clazz) {
+static jboolean IsInstanceOf(JNIEnv *env, jobject obj, jclass clazz) {
   return [(IOSClass *) clazz isInstance:obj];
 }
 
@@ -284,9 +284,11 @@ static void DeleteLocalRef(JNIEnv *env, jobject localRef) {
   // no-op
 }
 
-static bool IsSameObject(JNIEnv *env, jobject obj1, jobject obj2) { return obj1 == obj2; }
+static jboolean IsSameObject(JNIEnv *env, jobject obj1, jobject obj2) {
+  return obj1 == obj2;
+}
 
-static boolArray NewBooleanArray(JNIEnv *env, jsize length) {
+static jbooleanArray NewBooleanArray(JNIEnv *env, jsize length) {
   return [IOSBooleanArray arrayWithLength:length];
 }
 
@@ -346,7 +348,8 @@ static jstring NewStringUTF(JNIEnv *env, const char *bytes) {
   return [NSString stringWithUTF8String:bytes];
 }
 
-static void ReleaseBooleanArrayElements(JNIEnv *env, boolArray array, bool *elems, jint mode) {
+static void ReleaseBooleanArrayElements(
+    JNIEnv *env, jbooleanArray array, jboolean *elems, jint mode) {
   // no-op
 }
 
@@ -407,7 +410,7 @@ static void SetObjectArrayElement(JNIEnv *env, jobjectArray array, jsize index, 
     memcpy(buffer, array->buffer_ + offset, length * sizeof(JNI_TYPE)); \
   }
 
-GET_ARRAY_REGION_IMPL(Boolean, bool)
+GET_ARRAY_REGION_IMPL(Boolean, jboolean)
 GET_ARRAY_REGION_IMPL(Byte, jbyte)
 GET_ARRAY_REGION_IMPL(Char, jchar)
 GET_ARRAY_REGION_IMPL(Short, jshort)
@@ -427,7 +430,7 @@ GET_ARRAY_REGION_IMPL(Double, jdouble)
     memcpy(array->buffer_ + offset, buffer, length * sizeof(JNI_TYPE)); \
   }
 
-SET_ARRAY_REGION_IMPL(Boolean, bool)
+SET_ARRAY_REGION_IMPL(Boolean, jboolean)
 SET_ARRAY_REGION_IMPL(Byte, jbyte)
 SET_ARRAY_REGION_IMPL(Char, jchar)
 SET_ARRAY_REGION_IMPL(Short, jshort)
@@ -492,7 +495,7 @@ static jmethodID GetStaticMethodID(JNIEnv *env, jclass clazz, const char *name, 
   const size_t _max_stack_args = 16;           \
   jvalue _stack_args[_max_stack_args];         \
   jvalue *JARGS;                               \
-  bool _free_jargs = false;                    \
+  jboolean _free_jargs = false;                \
   if (NUM_ARGS <= _max_stack_args) {           \
     JARGS = _stack_args;                       \
   } else {                                     \
@@ -528,9 +531,7 @@ static void ToArgsArray(IOSObjectArray *paramTypes, jvalue *jargs, va_list args)
       case 'J': value->j = (jlong) va_arg(args, jlong); break;
       case 'F': value->f = (jfloat) va_arg(args, double); break;
       case 'D': value->d = (jdouble) va_arg(args, double); break;
-      case 'Z':
-        value->z = (bool)va_arg(args, int);
-        break;
+      case 'Z': value->z = (jboolean) va_arg(args, int); break;
       default: value->l = (jobject) va_arg(args, jobject); break;
     }
     value++;
@@ -618,7 +619,7 @@ jobject CallObjectMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...) {
     FORWARD_VARGS(RESULT_TYPE, Call##RESULT_NAME##MethodV(env, obj, methodID, args)); \
   }
 
-DEFINE_CALL_METHOD_VARIANTS(Boolean, bool, z)
+DEFINE_CALL_METHOD_VARIANTS(Boolean, jboolean, z)
 DEFINE_CALL_METHOD_VARIANTS(Byte, jbyte, b)
 DEFINE_CALL_METHOD_VARIANTS(Char, jchar, c)
 DEFINE_CALL_METHOD_VARIANTS(Short, jshort, s)
@@ -646,7 +647,7 @@ jobject GetObjectField(JNIEnv *env, jobject obj, jfieldID fieldID) {
   return [(JavaLangReflectField *)fieldID getWithId:obj];
 }
 
-bool GetBooleanField(JNIEnv *env, jobject obj, jfieldID fieldID) {
+jboolean GetBooleanField(JNIEnv *env, jobject obj, jfieldID fieldID) {
   return [(JavaLangReflectField *)fieldID getBooleanWithId:obj];
 }
 
@@ -682,7 +683,7 @@ void SetObjectField(JNIEnv *env, jobject obj, jfieldID fieldID, jobject value) {
   [(JavaLangReflectField *)fieldID setWithId:obj withId:value];
 }
 
-void SetBooleanField(JNIEnv *env, jobject obj, jfieldID fieldID, bool value) {
+void SetBooleanField(JNIEnv *env, jobject obj, jfieldID fieldID, jboolean value) {
   [(JavaLangReflectField *)fieldID setBooleanWithId:obj withBoolean:value];
 }
 
@@ -749,7 +750,7 @@ jobject CallStaticObjectMethod(JNIEnv *env, jclass clazz, jmethodID methodID, ..
     FORWARD_VARGS(RESULT_TYPE, Call##RESULT_NAME##MethodV(env, nil, methodID, args)); \
   }
 
-DEFINE_CALL_STATIC_METHOD_VARIANTS(Boolean, bool, z)
+DEFINE_CALL_STATIC_METHOD_VARIANTS(Boolean, jboolean, z)
 DEFINE_CALL_STATIC_METHOD_VARIANTS(Byte, jbyte, b)
 DEFINE_CALL_STATIC_METHOD_VARIANTS(Char, jchar, c)
 DEFINE_CALL_STATIC_METHOD_VARIANTS(Short, jshort, s)
@@ -777,7 +778,7 @@ jobject GetStaticObjectField(JNIEnv *env, jclass clazz, jfieldID fieldID) {
   return [(JavaLangReflectField *)fieldID getWithId:nil];
 }
 
-bool GetStaticBooleanField(JNIEnv *env, jclass clazz, jfieldID fieldID) {
+jboolean GetStaticBooleanField(JNIEnv *env, jclass clazz, jfieldID fieldID) {
   return [(JavaLangReflectField *)fieldID getBooleanWithId:nil];
 }
 
@@ -813,7 +814,7 @@ void SetStaticObjectField(JNIEnv *env, jclass clazz, jfieldID fieldID, jobject v
   [(JavaLangReflectField *)fieldID setWithId:nil withId:value];
 }
 
-void SetStaticBooleanField(JNIEnv *env, jclass clazz, jfieldID fieldID, bool value) {
+void SetStaticBooleanField(JNIEnv *env, jclass clazz, jfieldID fieldID, jboolean value) {
   [(JavaLangReflectField *)fieldID setBooleanWithId:nil withBoolean:value];
 }
 

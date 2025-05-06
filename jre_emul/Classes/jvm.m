@@ -142,4 +142,6 @@ jint JVM_Timeout(int fd, long timeout) {
   return rc;
 }
 
-bool JVM_IsNaN(jdouble d) { return isnan(d); }
+jboolean JVM_IsNaN(jdouble d) {
+    return isnan(d);
+}
