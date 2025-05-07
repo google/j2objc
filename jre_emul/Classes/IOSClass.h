@@ -89,7 +89,7 @@
 - (NSString *)getCanonicalName;
 
 // Class.getModifiers()
-- (jint)getModifiers;
+- (int32_t)getModifiers;
 
 // Class.getDeclaredConstructors()
 - (IOSObjectArray *)getDeclaredConstructors;
@@ -226,7 +226,7 @@ IOSClass *IOSClass_fromClass(Class cls);
 IOSClass *IOSClass_fromProtocol(Protocol *protocol);
 IOSClass *IOSClass_arrayOf(IOSClass *componentType);
 // Same as "arrayOf" but allows dimensions to be specified.
-IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions);
+IOSClass *IOSClass_arrayType(IOSClass *componentType, int32_t dimensions);
 
 // Primitive array type literals.
 #define IOSClass_byteArray(DIM) IOSClass_arrayType([IOSClass byteClass], DIM)

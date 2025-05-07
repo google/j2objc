@@ -52,7 +52,7 @@ public class OuterReferenceFixerTest extends GenerationTest {
         + "class A { int sum() { return i + j; } }; class B extends A {} } }", "Test", "Test.m");
     // Local class B must also capture the locals and pass them to A's constructor.
     assertTranslatedLines(translation,
-        "void Test_1B_initWithInt_withInt_(Test_1B *self, jint capture$0, jint capture$1) {",
+        "void Test_1B_initWithInt_withInt_(Test_1B *self, int32_t capture$0, int32_t capture$1) {",
         "  Test_1A_initWithInt_withInt_(self, capture$0, capture$1);",
         "}");
   }

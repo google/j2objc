@@ -58,7 +58,7 @@ public class DefaultMethodsTest extends GenerationTest {
         + "  public int f(int y) { return Foo.super.f(y) + 1; }"
         + "}", "Test", "Test.m");
 
-    assertTranslation(translation, "jint i = Foo_fWithInt_(self, x);");
+    assertTranslation(translation, "int32_t i = Foo_fWithInt_(self, x);");
     assertTranslation(translation, "return Foo_fWithInt_(self, y) + 1;");
   }
 
@@ -100,17 +100,17 @@ public class DefaultMethodsTest extends GenerationTest {
     String impl = getTranslatedFile("Test.m");
 
     assertTranslation(header, "void A_f(id<A> self)");
-    assertTranslation(header, "jint A_g(id<A> self)");
+    assertTranslation(header, "int32_t A_g(id<A> self)");
     assertTranslation(header, "void A_q(void)");
-    assertTranslation(header, "id A_rWithInt_withA_(id<A> self, jint x, id<A> b)");
+    assertTranslation(header, "id A_rWithInt_withA_(id<A> self, int32_t x, id<A> b)");
 
     // This is an illegal value for JVM's access_flags field and should never show up in metadata.
     assertNotInTranslation(impl, "0x10001");
 
     assertTranslatedLines(impl, "- (void)f {", "A_f(self);", "}");
-    assertTranslatedLines(impl, "- (jint)g {", "return A_g(self);", "}");
+    assertTranslatedLines(impl, "- (int32_t)g {", "return A_g(self);", "}");
     assertTranslatedLines(impl, "- (void)p {", "}");
-    assertTranslatedLines(impl, "- (id)rWithInt:(jint)arg0", "withA:(id<A>)arg1 {",
+    assertTranslatedLines(impl, "- (id)rWithInt:(int32_t)arg0", "withA:(id<A>)arg1 {",
         "return A_rWithInt_withA_(self, arg0, arg1);", "}");
   }
 
@@ -420,15 +420,15 @@ public class DefaultMethodsTest extends GenerationTest {
     String translation = translateSourceFile(
         "class B extends A<String> implements I { public int foo(String t) { return 7; } }",
         "B", "B.h");
-    assertTranslation(translation, "- (jint)fooWithId:(NSString *)t;");
+    assertTranslation(translation, "- (int32_t)fooWithId:(NSString *)t;");
 
     translation = getTranslatedFile("B.m");
     assertTranslatedLines(translation,
-        "- (jint)fooWithId:(NSString *)t {",
+        "- (int32_t)fooWithId:(NSString *)t {",
         "  return 7;",
         "}");
     assertTranslatedLines(translation,
-        "- (jint)fooWithNSString:(NSString *)arg0 {",
+        "- (int32_t)fooWithNSString:(NSString *)arg0 {",
         "  return [self fooWithId:arg0];",
         "}");
   }

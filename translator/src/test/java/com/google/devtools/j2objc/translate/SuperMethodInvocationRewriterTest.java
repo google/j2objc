@@ -32,10 +32,10 @@ public class SuperMethodInvocationRewriterTest extends GenerationTest {
         + "public void run() { Test.super.foo(1); } }; } }", "Test", "Test.m");
     // Declaration of the super function.
     assertTranslation(translation,
-        "static double (*Test_super$_fooWithInt_)(id, SEL, jint);");
+        "static double (*Test_super$_fooWithInt_)(id, SEL, int32_t);");
     // Initialization of the super function.
     assertTranslation(translation,
-        "Test_super$_fooWithInt_ = (double (*)(id, SEL, jint))"
+        "Test_super$_fooWithInt_ = (double (*)(id, SEL, int32_t))"
         + "[SuperClass instanceMethodForSelector:@selector(fooWithInt:)];");
     // Invocation of the super function.
     assertTranslation(translation,

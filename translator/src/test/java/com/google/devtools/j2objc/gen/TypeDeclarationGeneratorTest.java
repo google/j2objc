@@ -60,7 +60,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { static final int FOO = 1; }", "Test", "Test.h");
     assertTranslation(translation, "#define Test_FOO 1");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_CONSTANT(Test, FOO, jint)");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_CONSTANT(Test, FOO, int32_t)");
   }
 
   // Verify that accessor methods for static vars and constants are generated on request.
@@ -77,8 +77,8 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "+ (Test *)DEFAULT;");
     assertTranslation(translation, "+ (bool)DEBUG_;");
     assertTranslation(translation, "+ (void)setDEBUG_:(bool)value");
-    assertNotInTranslation(translation, "+ (jint)i");
-    assertNotInTranslation(translation, "+ (void)setI:(jint)value");
+    assertNotInTranslation(translation, "+ (int32_t)i");
+    assertNotInTranslation(translation, "+ (void)setI:(int32_t)value");
     assertNotInTranslation(translation, "+ (void)setDEFAULT:(Test *)value");
   }
 
@@ -138,8 +138,8 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation, "+ (NSString *)ID");
     assertNotInTranslation(translation, "+ (void)setID:(NSString *)value");
     assertNotInTranslation(translation, "+ (Test *)DEFAULT");
-    assertNotInTranslation(translation, "+ (jint)i");
-    assertNotInTranslation(translation, "+ (void)setI:(jint)value");
+    assertNotInTranslation(translation, "+ (int32_t)i");
+    assertNotInTranslation(translation, "+ (void)setI:(int32_t)value");
     assertNotInTranslation(translation, "+ (void)setDEFAULT:(Test *)value");
   }
 
@@ -305,11 +305,11 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
             + "  public void setAGenericProperty(T value) { }"
             + "}";
     String translation = translateSourceFile(source, "FooBar", "FooBar.h");
-    assertTranslation(translation, "@property (readonly, nonatomic) jint fieldBar;");
+    assertTranslation(translation, "@property (readonly, nonatomic) int32_t fieldBar;");
 
     // Should split out fieldBaz and include the declared getter.
     assertTranslation(translation,
-        "@property (readonly, nonatomic, getter=getFieldBaz) jint fieldBaz;");
+        "@property (readonly, nonatomic, getter=getFieldBaz) int32_t fieldBaz;");
 
     // Set copy for strings and drop readwrite.
     assertTranslation(translation,
@@ -320,7 +320,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
 
     // Reorder property attributes and pass setter through.
     assertTranslation(translation,
-        "@property (weak, readonly, nonatomic) jint fieldReorder;");
+        "@property (weak, readonly, nonatomic) int32_t fieldReorder;");
 
     // Test generic property.
     assertTranslation(
@@ -330,7 +330,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
             + "JavaLangThrowable *aGenericProperty;");
 
     // Test readonly property.
-    assertTranslation(translation, "@property (readonly) jint fieldFinal;");
+    assertTranslation(translation, "@property (readonly) int32_t fieldFinal;");
   }
 
   public void testSynchronizedPropertyGetter() throws IOException {
@@ -340,7 +340,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "  public synchronized int getFieldBar() { return fieldBar; }"
         + "}";
     String translation = translateSourceFile(source, "FooBar", "FooBar.h");
-    assertTranslation(translation, "@property (getter=getFieldBar) jint fieldBar;");
+    assertTranslation(translation, "@property (getter=getFieldBar) int32_t fieldBar;");
   }
 
   public void testBadPropertyAttribute() throws IOException {
@@ -443,7 +443,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "@Property static final boolean flag = true; }", "Test", "Test.h");
     assertTranslatedLines(
         translation,
-        "@property (class) jint test;",
+        "@property (class) int32_t test;",
         "@property (nonatomic, class) double d;",
         "@property (readonly, class) bool flag;");
 
@@ -492,16 +492,16 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
             "Test.h");
     assertTranslatedLines(
         translation,
-        "@property (class) jint test NS_SWIFT_NAME(test);",
+        "@property (class) int32_t test NS_SWIFT_NAME(test);",
         "@property (class) double d NS_SWIFT_NAME(d);",
         "@property (readonly, class) bool flag NS_SWIFT_NAME(flag);",
         "@property (copy, class) NSString *TRUE_ NS_SWIFT_NAME(TRUE_);");
-    assertTranslation(translation, "- (jint)getTest;");
-    assertNotInTranslation(translation, "+ (jint)test;");
+    assertTranslation(translation, "- (int32_t)getTest;");
+    assertNotInTranslation(translation, "+ (int32_t)test;");
     assertNotInTranslation(translation, "@property (copy, class) NSString *s NS_SWIFT_NAME(s);");
 
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "+ (jint)test {");
+    assertTranslation(translation, "+ (int32_t)test {");
   }
 
   public void testPropertiesInInterfaceType() throws IOException {
@@ -564,7 +564,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         // Verify default nonnull is specified.
         "withId:(id _Nonnull)var",
         // Default should not apply to primitive type.
-        "withInt:(jint)count;");
+        "withInt:(int32_t)count;");
   }
 
   // Verify a ParametersAreNonnullByDefault package annotation sets unspecified
@@ -587,7 +587,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         // Verify default nonnull is specified.
         "withId:(id _Nonnull)var",
         // Default should not apply to primitive type.
-        "withInt:(jint)count;");
+        "withInt:(int32_t)count;");
   }
 
   public void testNullabilityPragmas() throws IOException {
@@ -685,7 +685,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
 
     // Verify primitive properties don't have nullability parameters.
     assertTranslatedLines(translation,
-        "@property jint test7;",
+        "@property int32_t test7;",
         "@property (readonly, nonatomic) double test8;");
   }
 
@@ -699,7 +699,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "  private Test(int i) { this.i = i; }}", "Test", "Test.h");
     assertTranslation(translation, "- (instancetype _Nonnull)init;");
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "- (instancetype)initWithInt:(jint)i;");
+    assertTranslation(translation, "- (instancetype)initWithInt:(int32_t)i;");
   }
 
   // Verify type nullability annotations.
@@ -782,13 +782,13 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "- (NSString * _Nullable)testNullableInstanceMethodWithNSString:(NSString *"
             + " _Nullable)msg",
         "withId:(id)var",
-        "withInt:(jint)count;");
+        "withInt:(int32_t)count;");
     assertTranslatedLines(
         translation,
         "+ (NSString * _Nullable)testNullableStaticMethodWithNSString:(NSString *"
             + " _Nullable)firstArg",
         "withId:(id)var",
-        "withInt:(jint)count;");
+        "withInt:(int32_t)count;");
     assertTranslatedLines(
         translation, "J2OBJC_TYPE_LITERAL_HEADER(FooBarTest)", "", "NS_ASSUME_NONNULL_END");
   }
@@ -1058,8 +1058,8 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "    public static final int anotherState=2;\n"
         + "}\n", "State", "State.h");
     // Should have trailing underscore, to avoid class with class initialize function name.
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_CONSTANT(State, initialize_, jint)");
-    assertTranslation(translation, "inline jint State_get_initialize_(void);");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_CONSTANT(State, initialize_, int32_t)");
+    assertTranslation(translation, "inline int32_t State_get_initialize_(void);");
     assertTranslation(translation, "State_initialize_");
   }
 

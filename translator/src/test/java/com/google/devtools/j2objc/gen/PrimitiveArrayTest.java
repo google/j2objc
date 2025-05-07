@@ -120,7 +120,7 @@ public class PrimitiveArrayTest extends GenerationTest {
     List<Statement> stmts = translateStatements("int[] foo = new int[3]; int i = foo[1];");
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("jint i = IOSIntArray_Get(foo, 1);", result);
+    assertEquals("int32_t i = IOSIntArray_Get(foo, 1);", result);
   }
 
   public void testLongArrayAccess() {

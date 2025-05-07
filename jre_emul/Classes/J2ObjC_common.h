@@ -160,7 +160,7 @@ void JreStrictFieldRetainedWithRelease(id parent, id *pVar);
 NSString *JreStrcat(const char *types, ...);
 
 bool JreAnnotationEquals(id a1, id a2);
-jint JreAnnotationHashCode(id a);
+int32_t JreAnnotationHashCode(id a);
 
 NSUInteger JreDefaultFastEnumeration(
     id<JavaLangIterable> obj, NSFastEnumerationState *state, id __unsafe_unretained *stackbuf);
@@ -203,7 +203,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Boolean, bool)
 J2OBJC_VOLATILE_ACCESS_DEFN(Char, uint16_t)
 J2OBJC_VOLATILE_ACCESS_DEFN(Byte, int8_t)
 J2OBJC_VOLATILE_ACCESS_DEFN(Short, int16_t)
-J2OBJC_VOLATILE_ACCESS_DEFN(Int, jint)
+J2OBJC_VOLATILE_ACCESS_DEFN(Int, int32_t)
 J2OBJC_VOLATILE_ACCESS_DEFN(Long, int64_t)
 J2OBJC_VOLATILE_ACCESS_DEFN(Float, float)
 J2OBJC_VOLATILE_ACCESS_DEFN(Double, double)

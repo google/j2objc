@@ -49,28 +49,28 @@ public class VarargsRewriterTest extends GenerationTest {
     // EnumConstantDeclaration
     assertTranslation(translation,
         "E_initWithIntArray_withNSString_withInt_(e, [IOSIntArray arrayWithInts:"
-        + "(jint[]){ 1 } count:1], @\"VALUE1\", 0);");
+        + "(int32_t[]){ 1 } count:1], @\"VALUE1\", 0);");
     // ConstructorInvocation
     assertTranslatedLines(translation,
         "void A_init(A *self) {",
-        "  A_initWithIntArray_(self, [IOSIntArray arrayWithInts:(jint[]){ 2 } count:1]);",
+        "  A_initWithIntArray_(self, [IOSIntArray arrayWithInts:(int32_t[]){ 2 } count:1]);",
         "}");
     // SuperConstructorInvocation
     assertTranslatedLines(translation,
         "void Test_init(Test *self) {",
-        "  A_initWithIntArray_(self, [IOSIntArray arrayWithInts:(jint[]){ 3 } count:1]);",
+        "  A_initWithIntArray_(self, [IOSIntArray arrayWithInts:(int32_t[]){ 3 } count:1]);",
         "}");
     assertTranslatedLines(translation,
         // ClassInstanceCreation
-        "A *a = create_A_initWithIntArray_([IOSIntArray arrayWithInts:(jint[]){ 4 } count:1]);",
+        "A *a = create_A_initWithIntArray_([IOSIntArray arrayWithInts:(int32_t[]){ 4 } count:1]);",
         // MethodInvocation
-        "[self fooWithIntArray:[IOSIntArray arrayWithInts:(jint[]){ 5 } count:1]];",
+        "[self fooWithIntArray:[IOSIntArray arrayWithInts:(int32_t[]){ 5 } count:1]];",
         // SuperMethodInvocation
-        "A_fooWithIntArray_(self, [IOSIntArray arrayWithInts:(jint[]){ 6 } count:1]);");
+        "A_fooWithIntArray_(self, [IOSIntArray arrayWithInts:(int32_t[]){ 6 } count:1]);");
     // MethodReference
     assertTranslatedLines(translation,
-        "- (void)fooWithInt:(jint)a {",
-        "  [target$_ fooWithIntArray:[IOSIntArray arrayWithInts:(jint[]){ a } count:1]];",
+        "- (void)fooWithInt:(int32_t)a {",
+        "  [target$_ fooWithIntArray:[IOSIntArray arrayWithInts:(int32_t[]){ a } count:1]];",
         "}");
   }
 
@@ -90,7 +90,7 @@ public class VarargsRewriterTest extends GenerationTest {
         "E_initWithNSObjectArray_withNSString_withInt_(e, [IOSObjectArray arrayWithObjects:"
         + "(id[]){  } count:0 type:NSObject_class_()], @\"A\", 0);");
     assertTranslatedLines(translation,
-        "void Bar_initWithInt_withNSObjectArray_(Bar *self, jint i, IOSObjectArray *array) {",
+        "void Bar_initWithInt_withNSObjectArray_(Bar *self, int32_t i, IOSObjectArray *array) {",
         "  Bar_initWithNSObjectArray_(self, array);",
         "}");
     assertTranslatedLines(translation,

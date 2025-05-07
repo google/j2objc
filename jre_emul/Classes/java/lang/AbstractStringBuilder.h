@@ -24,8 +24,8 @@
 // need to allocate a new ObjC string builder object.
 typedef struct JreStringBuilder {
   uint16_t *buffer_;
-  jint bufferSize_;
-  jint count_;
+  int32_t bufferSize_;
+  int32_t count_;
 } JreStringBuilder;
 
 @interface JavaLangAbstractStringBuilder : NSObject < JavaLangAppendable, JavaLangCharSequence > {
@@ -37,61 +37,61 @@ typedef struct JreStringBuilder {
 
 - (instancetype)initPackagePrivate;
 
-- (instancetype)initPackagePrivateWithInt:(jint)capacity;
+- (instancetype)initPackagePrivateWithInt:(int32_t)capacity;
 
 - (instancetype)initWithNSString:(NSString *)string;
 
-- (jint)capacity;
+- (int32_t)capacity;
 
-- (uint16_t)charAtWithInt:(jint)index;
+- (uint16_t)charAtWithInt:(int32_t)index;
 
-- (void)ensureCapacityWithInt:(jint)min;
+- (void)ensureCapacityWithInt:(int32_t)min;
 
-- (void)getCharsWithInt:(jint)start
-                withInt:(jint)end
+- (void)getCharsWithInt:(int32_t)start
+                withInt:(int32_t)end
           withCharArray:(IOSCharArray *)dst
-                withInt:(jint)dstStart;
+                withInt:(int32_t)dstStart;
 
-- (jint)java_length;
+- (int32_t)java_length;
 
-- (void)setCharAtWithInt:(jint)index
+- (void)setCharAtWithInt:(int32_t)index
                 withChar:(uint16_t)ch;
 
-- (void)setLengthWithInt:(jint)length;
+- (void)setLengthWithInt:(int32_t)length;
 
-- (NSString *)substringWithInt:(jint)start;
+- (NSString *)substringWithInt:(int32_t)start;
 
-- (NSString *)substringWithInt:(jint)start
-                       withInt:(jint)end;
+- (NSString *)substringWithInt:(int32_t)start
+                       withInt:(int32_t)end;
 
 - (NSString *)description;
 
-- (id<JavaLangCharSequence>)subSequenceFrom:(jint)start
-                                         to:(jint)end;
+- (id<JavaLangCharSequence>)subSequenceFrom:(int32_t)start
+                                         to:(int32_t)end;
 
-- (jint)indexOfWithNSString:(NSString *)string;
+- (int32_t)indexOfWithNSString:(NSString *)string;
 
-- (jint)indexOfWithNSString:(NSString *)subString
-                    withInt:(jint)start;
+- (int32_t)indexOfWithNSString:(NSString *)subString
+                    withInt:(int32_t)start;
 
-- (jint)lastIndexOfWithNSString:(NSString *)string;
+- (int32_t)lastIndexOfWithNSString:(NSString *)string;
 
-- (jint)lastIndexOfWithNSString:(NSString *)subString
-                        withInt:(jint)start;
+- (int32_t)lastIndexOfWithNSString:(NSString *)subString
+                        withInt:(int32_t)start;
 
 - (void)trimToSize;
 
-- (jint)codePointAtWithInt:(jint)index;
+- (int32_t)codePointAtWithInt:(int32_t)index;
 
-- (jint)codePointBeforeWithInt:(jint)index;
+- (int32_t)codePointBeforeWithInt:(int32_t)index;
 
-- (jint)codePointCountWithInt:(jint)start
-                      withInt:(jint)end;
+- (int32_t)codePointCountWithInt:(int32_t)start
+                      withInt:(int32_t)end;
 
-- (jint)offsetByCodePointsWithInt:(jint)index
-                          withInt:(jint)codePointOffset;
+- (int32_t)offsetByCodePointsWithInt:(int32_t)index
+                          withInt:(int32_t)codePointOffset;
 
-- (jint)compareToWithJavaLangAbstractStringBuilder:(JavaLangAbstractStringBuilder *)other;
+- (int32_t)compareToWithJavaLangAbstractStringBuilder:(JavaLangAbstractStringBuilder *)other;
 
 @end
 
@@ -99,40 +99,40 @@ CF_EXTERN_C_BEGIN
 
 void JavaLangAbstractStringBuilder_initPackagePrivate(JavaLangAbstractStringBuilder *self);
 void JavaLangAbstractStringBuilder_initPackagePrivateWithInt_(
-    JavaLangAbstractStringBuilder *self, jint capacity);
+    JavaLangAbstractStringBuilder *self, int32_t capacity);
 void JavaLangAbstractStringBuilder_initWithNSString_(
     JavaLangAbstractStringBuilder *self, NSString *string);
 
-void JreStringBuilder_initWithCapacity(JreStringBuilder *sb, jint capacity);
+void JreStringBuilder_initWithCapacity(JreStringBuilder *sb, int32_t capacity);
 
 void JreStringBuilder_appendNull(JreStringBuilder *sb);
 void JreStringBuilder_appendBuffer(JreStringBuilder *sb, const unichar *buffer, int length);
 void JreStringBuilder_appendStringBuffer(JreStringBuilder *sb, JavaLangStringBuffer *toAppend);
 void JreStringBuilder_appendCharArray(JreStringBuilder *sb, IOSCharArray *chars);
 void JreStringBuilder_appendCharArraySubset(
-    JreStringBuilder *sb, IOSCharArray *chars, jint offset, jint length);
+    JreStringBuilder *sb, IOSCharArray *chars, int32_t offset, int32_t length);
 void JreStringBuilder_appendChar(JreStringBuilder *sb, uint16_t ch);
 void JreStringBuilder_appendString(JreStringBuilder *sb, NSString *string);
 void JreStringBuilder_appendCharSequence(JreStringBuilder *sb, id<JavaLangCharSequence> s);
 void JreStringBuilder_appendCharSequenceSubset(
-    JreStringBuilder *sb, id<JavaLangCharSequence> s, jint start, jint end);
-void JreStringBuilder_appendInt(JreStringBuilder *sb, jint i);
+    JreStringBuilder *sb, id<JavaLangCharSequence> s, int32_t start, int32_t end);
+void JreStringBuilder_appendInt(JreStringBuilder *sb, int32_t i);
 void JreStringBuilder_appendLong(JreStringBuilder *sb, int64_t l);
 void JreStringBuilder_appendDouble(JreStringBuilder *sb, double d);
 void JreStringBuilder_appendFloat(JreStringBuilder *sb, float f);
 
-void JreStringBuilder_delete(JreStringBuilder *sb, jint start, jint end);
-void JreStringBuilder_deleteCharAt(JreStringBuilder *sb, jint index);
+void JreStringBuilder_delete(JreStringBuilder *sb, int32_t start, int32_t end);
+void JreStringBuilder_deleteCharAt(JreStringBuilder *sb, int32_t index);
 
-void JreStringBuilder_insertCharArray(JreStringBuilder *sb, jint index, IOSCharArray *chars);
+void JreStringBuilder_insertCharArray(JreStringBuilder *sb, int32_t index, IOSCharArray *chars);
 void JreStringBuilder_insertCharArraySubset(
-    JreStringBuilder *sb, jint index, IOSCharArray *chars, jint start, jint length);
-void JreStringBuilder_insertChar(JreStringBuilder *sb, jint index, uint16_t ch);
-void JreStringBuilder_insertString(JreStringBuilder *sb, jint index, NSString *string);
+    JreStringBuilder *sb, int32_t index, IOSCharArray *chars, int32_t start, int32_t length);
+void JreStringBuilder_insertChar(JreStringBuilder *sb, int32_t index, uint16_t ch);
+void JreStringBuilder_insertString(JreStringBuilder *sb, int32_t index, NSString *string);
 void JreStringBuilder_insertCharSequence(
-    JreStringBuilder *sb, jint index, id<JavaLangCharSequence> s, jint start, jint end);
+    JreStringBuilder *sb, int32_t index, id<JavaLangCharSequence> s, int32_t start, int32_t end);
 
-void JreStringBuilder_replace(JreStringBuilder *sb, jint start, jint end, NSString *string);
+void JreStringBuilder_replace(JreStringBuilder *sb, int32_t start, int32_t end, NSString *string);
 
 void JreStringBuilder_reverse(JreStringBuilder *sb);
 

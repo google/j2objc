@@ -44,7 +44,7 @@ typedef bool            jboolean;
 typedef _Atomic(int8_t)   volatile_int8_t;
 typedef _Atomic(uint16_t) volatile_uint16_t;
 typedef _Atomic(int16_t)  volatile_int16_t;
-typedef _Atomic(int32_t)  volatile_jint;
+typedef _Atomic(int32_t)  volatile_int32_t;
 typedef _Atomic(int64_t)  volatile_int64_t;
 typedef _Atomic(float)    volatile_float;
 typedef _Atomic(double)   volatile_double;
@@ -56,7 +56,7 @@ typedef volatile_int8_t   volatile_jbyte;
 typedef volatile_uint16_t volatile_jchar;
 typedef volatile_int16_t  volatile_jshort;
 typedef volatile_int64_t  volatile_jlong;
-//typedef volatile_int32_t  volatile_jint;
+typedef volatile_int32_t  volatile_jint;
 typedef volatile_float    volatile_jfloat;
 typedef volatile_double   volatile_jdouble;
 

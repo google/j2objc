@@ -50,13 +50,13 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         "class Test { int test() { foo: do { return 1; } while (false); }}",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (jint)test {", "foo: do {", "return 1;", "}", "while (false);", "}");
+        "- (int32_t)test {", "foo: do {", "return 1;", "}", "while (false);", "}");
     translation = translateSourceFile(
         "class Test { static final boolean debug = false;"
             + "  int test() { foo: do { return 1; } while (debug); }}",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (jint)test {", "foo: do {", "return 1;", "}", "while (Test_debug);", "}");
+        "- (int32_t)test {", "foo: do {", "return 1;", "}", "while (Test_debug);", "}");
     // Can't remove loop construct while it contains a break statement.
     translation = translateSourceFile(
         "class Test { void test(int i) { do { if (i == 5) break; } while (false); } }",
@@ -69,12 +69,12 @@ public class ConstantBranchPrunerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { int test() { if (true) { return 1; } else { return 0; } }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (jint)test {", "{", "return 1;", "}", "}");
+    assertTranslatedLines(translation, "- (int32_t)test {", "{", "return 1;", "}", "}");
     translation = translateSourceFile(
         "class Test { static final boolean debug = true;"
         + "  int test() { if (debug) { return 1; } else { return 0; } }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (jint)test {", "{", "return 1;", "}", "}");
+    assertTranslatedLines(translation, "- (int32_t)test {", "{", "return 1;", "}", "}");
   }
 
   // Verify else block replaces if statement when false.
@@ -82,12 +82,12 @@ public class ConstantBranchPrunerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { int test() { if (false) { return 1; } else { return 0; } }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (jint)test {", "{", "return 0;", "}", "}");
+    assertTranslatedLines(translation, "- (int32_t)test {", "{", "return 0;", "}", "}");
     translation = translateSourceFile(
         "class Test { static final boolean debug = false;"
         + "  int test() { if (debug) { return 1; } else { return 0; } }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (jint)test {", "{", "return 0;", "}", "}");
+    assertTranslatedLines(translation, "- (int32_t)test {", "{", "return 0;", "}", "}");
   }
 
   // Verify parentheses surround boolean constants are removed.
@@ -95,7 +95,7 @@ public class ConstantBranchPrunerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { int test() { if (((false))) { return 1; } else { return 0; } }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (jint)test {", "{", "return 0;", "}", "}");
+    assertTranslatedLines(translation, "- (int32_t)test {", "{", "return 0;", "}", "}");
   }
 
   // Verify ! boolean constant is inverted.
@@ -104,7 +104,7 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         "class Test { static final boolean debug = true;"
         + "  int test() { if (!(debug)) { return 1; } else { return 0; } }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (jint)test {", "{", "return 0;", "}", "}");
+    assertTranslatedLines(translation, "- (int32_t)test {", "{", "return 0;", "}", "}");
   }
 
   // Verify && expressions are pruned correctly.
@@ -179,7 +179,7 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         + "while (b && (getB() && false)) { return 1; } return 0; } }", "Test", "Test.m");
     assertTranslatedLines(
         translation,
-        "- (jint)testWithBoolean:(bool)b {",
+        "- (int32_t)testWithBoolean:(bool)b {",
         "  b && ([self getB]);",
         "  return 0;",
         "}");
@@ -218,7 +218,7 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         + "class Foo {}; return new Foo().hashCode(); } }", "Test", "Test.m");
     assertNotInTranslation(translation, "Foo");
     assertTranslatedLines(translation,
-        "- (jint)test {",
+        "- (int32_t)test {",
         "  {",
         "    return 5;",
         "  }",

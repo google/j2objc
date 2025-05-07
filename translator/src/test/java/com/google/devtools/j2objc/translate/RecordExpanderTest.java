@@ -31,24 +31,24 @@ public class RecordExpanderTest extends GenerationTest {
               translateSourceFile("public record Point(int x, int y) {}", "Point", "Point.h");
           assertTranslation(translation, "@interface Point : JavaLangRecord");
           assertTranslatedLines(
-              translation, "- (instancetype)initWithInt:(jint)x", "withInt:(jint)y;");
+              translation, "- (instancetype)initWithInt:(int32_t)x", "withInt:(int32_t)y;");
           assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
           assertTranslation(
-              translation, "void Point_initWithInt_withInt_(Point *self, jint x, jint y);");
+              translation, "void Point_initWithInt_withInt_(Point *self, int32_t x, int32_t y);");
 
           // Verify accessors declared for record's members.
-          assertTranslation(translation, "- (jint)x;");
-          assertTranslation(translation, "- (jint)y;");
+          assertTranslation(translation, "- (int32_t)x;");
+          assertTranslation(translation, "- (int32_t)y;");
 
           // Verify implementation.
           translation = getTranslatedFile("Point.m");
-          assertTranslatedLines(translation, "- (jint)x {", "return x_;", "}");
-          assertTranslatedLines(translation, "- (jint)y {", "return y_;", "}");
+          assertTranslatedLines(translation, "- (int32_t)x {", "return x_;", "}");
+          assertTranslatedLines(translation, "- (int32_t)y {", "return y_;", "}");
 
           // Verify constructor contains the record's field assignments.
           assertTranslatedLines(
               translation,
-              "void Point_initWithInt_withInt_(Point *self, jint x, jint y) {",
+              "void Point_initWithInt_withInt_(Point *self, int32_t x, int32_t y) {",
               "JavaLangRecord_init(self);",
               "self->x_ = x;",
               "self->y_ = y;");
@@ -105,16 +105,16 @@ public class RecordExpanderTest extends GenerationTest {
                   "Point",
                   "Point.h");
           assertTranslation(translation, "@interface Point : JavaLangRecord");
-          assertTranslation(translation, "- (jint)x;");
-          assertTranslation(translation, "- (jint)y;");
+          assertTranslation(translation, "- (int32_t)x;");
+          assertTranslation(translation, "- (int32_t)y;");
           assertTranslation(translation, "- (bool)isEqual:(id)o;");
           assertTranslation(translation, "- (NSUInteger)hash;");
           assertTranslation(translation, "- (NSString *)description;");
           assertTranslatedLines(
-              translation, "- (instancetype)initWithInt:(jint)x", "withInt:(jint)y;");
+              translation, "- (instancetype)initWithInt:(int32_t)x", "withInt:(int32_t)y;");
           assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
           assertTranslation(
-              translation, "void Point_initWithInt_withInt_(Point *self, jint x, jint y);");
+              translation, "void Point_initWithInt_withInt_(Point *self, int32_t x, int32_t y);");
 
           // Verify implementation.
           translation = getTranslatedFile("Point.m");
@@ -123,7 +123,7 @@ public class RecordExpanderTest extends GenerationTest {
           // assignments.
           assertTranslatedLines(
               translation,
-              "void Point_initWithInt_withInt_(Point *self, jint x, jint y) {",
+              "void Point_initWithInt_withInt_(Point *self, int32_t x, int32_t y) {",
               "JavaLangRecord_init(self);",
               "if (x > 100) {",
               "x = 100;",

@@ -41,13 +41,13 @@ public class MethodReferenceTest extends GenerationTest {
     String oneArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { FunInt<I> iInit2 = I::new; }", "Test", "Test.m");
     assertTranslatedLines(oneArgumentTranslation,
-        "- (id)applyWithInt:(jint)a {",
+        "- (id)applyWithInt:(int32_t)a {",
         "  return create_I_initWithInt_(a);",
         "}");
     String mixedArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { FunInt4<I> iInit3 = I::new; }", "Test", "Test.m");
     assertTranslatedLines(mixedArgumentTranslation,
-        "- (id)applyWithInt:(jint)a",
+        "- (id)applyWithInt:(int32_t)a",
         "             withI:(I *)b",
         "      withNSString:(NSString *)c",
         "            withId:(id)d {",
@@ -143,14 +143,14 @@ public class MethodReferenceTest extends GenerationTest {
         varArgsHeader + "class Test { I i = Y::m; I2 i2 = Y::m; }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (void)fooWithInt:(jint)a",
+        "- (void)fooWithInt:(int32_t)a",
         "      withNSString:(NSString *)b",
         "      withNSString:(NSString *)c {",
         "  Y_mWithInt_withNSStringArray_(a, [IOSObjectArray arrayWithObjects:(id[]){ b, c } "
             + "count:2 type:NSString_class_()]);",
         "}");
     assertTranslatedLines(translation,
-        "- (void)fooWithInt:(jint)a",
+        "- (void)fooWithInt:(int32_t)a",
         "      withNSString:(NSString *)b",
         "      withNSString:(NSString *)c",
         "      withNSString:(NSString *)d {",
@@ -201,7 +201,7 @@ public class MethodReferenceTest extends GenerationTest {
         + "class Test { static void foo(Integer x) {}; static void bar(int x) {};"
         + "IntFun f = Test::foo; IntegerFun f2 = Test::bar; }", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (void)applyWithInt:(jint)a {",
+        "- (void)applyWithInt:(int32_t)a {",
         "  Test_fooWithJavaLangInteger_(JavaLangInteger_valueOfWithInt_(a));",
         "}");
     assertTranslatedLines(translation,
@@ -221,7 +221,7 @@ public class MethodReferenceTest extends GenerationTest {
         "  return JavaLangInteger_valueOfWithInt_([target$_ size]);",
         "}");
     assertTranslatedLines(translation,
-        "- (jint)a {",
+        "- (int32_t)a {",
         "  return [((JavaLangInteger *) nil_chk([target$_ size2])) intValue];",
         "}");
   }
@@ -254,7 +254,7 @@ public class MethodReferenceTest extends GenerationTest {
         + "}", "Test", "Test.m");
     assertNotInTranslation(translation, "return create_IntFunction_initWithIntArray_");
     assertTranslatedLines(translation,
-        "- (id)applyWithInt:(jint)a {",
+        "- (id)applyWithInt:(int32_t)a {",
         "  return JreRetainedLocalValue([IOSIntArray arrayWithLength:a]);",
         "}");
   }

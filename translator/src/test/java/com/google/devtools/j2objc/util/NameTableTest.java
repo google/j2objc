@@ -160,12 +160,12 @@ public class NameTableTest extends GenerationTest {
     String translation = translateSourceFile("A", "A.h");
     assertTranslatedLines(translation,
         "- (void)test:(NSString *)s",
-        "offset:(jint)n;");
+        "offset:(int32_t)n;");
     assertNotInTranslation(translation, "testWithNSString:");
     translation = getTranslatedFile("A.m");
     assertTranslatedLines(translation,
         "- (void)test:(NSString *)s",
-        "offset:(jint)n {");
+        "offset:(int32_t)n {");
     assertNotInTranslation(translation, "testWithNSString:");
 
     // Test invocation of renamed method.
@@ -180,16 +180,16 @@ public class NameTableTest extends GenerationTest {
         + "static void test(String s, int n) {}}", "Test", "Test.h");
     assertTranslatedLines(translation,
         "+ (void)fooWithNSString:(NSString *)s",
-        "                withInt:(jint)n;");
-    assertTranslation(translation, "FOUNDATION_EXPORT void Test_foo(NSString *s, jint n);");
+        "                withInt:(int32_t)n;");
+    assertTranslation(translation, "FOUNDATION_EXPORT void Test_foo(NSString *s, int32_t n);");
     translation = getTranslatedFile("Test.m");
     assertTranslatedLines(translation,
         "+ (void)fooWithNSString:(NSString *)s",
-        "                withInt:(jint)n {",
+        "                withInt:(int32_t)n {",
         "  Test_foo(s, n);",
         "}");
     assertTranslatedLines(translation,
-        "t_foo(NSString *s, jint n) {",
+        "t_foo(NSString *s, int32_t n) {",
         "  Test_initialize();",
         "}");
   }
@@ -202,12 +202,12 @@ public class NameTableTest extends GenerationTest {
     String translation = translateSourceFile("A", "A.h");
     assertTranslatedLines(translation,
         "- (instancetype)init:(NSString *)s",
-        "offset:(jint)n;");
+        "offset:(int32_t)n;");
     assertNotInTranslation(translation, "testWithNSString");
     translation = getTranslatedFile("A.m");
     assertTranslatedLines(translation,
         "- (instancetype)init:(NSString *)s",
-        "offset:(jint)n {");
+        "offset:(int32_t)n {");
     assertNotInTranslation(translation, "testWithNSString");
 
     // Test invocation of renamed constructor.
@@ -274,7 +274,7 @@ public class NameTableTest extends GenerationTest {
     String translation = translateSourceFile("foo.bar.Test", "foo/bar/Test.h");
     assertTranslatedLines(
         translation,
-        "typedef NS_ENUM(jint, FBTest_Enum) {",
+        "typedef NS_ENUM(int32_t, FBTest_Enum) {",
         "  FBTest_Enum_FOO NS_SWIFT_NAME(foo) = 0,",
         "  FBTest_Enum_BAR NS_SWIFT_NAME(bar) = 1,",
         "};");
@@ -327,9 +327,9 @@ public class NameTableTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.h");
     assertTranslation(translation, "- (void)aReservedMethodName__;");
     assertTranslatedLines(translation,
-        "- (void)testWithInt:(jint)noReserved",
-        "            withInt:(jint)stdin_",
-        "            withInt:(jint)aReservedParamName_;");
+        "- (void)testWithInt:(int32_t)noReserved",
+        "            withInt:(int32_t)stdin_",
+        "            withInt:(int32_t)aReservedParamName_;");
   }
 
   public void testNativeCamelCaseName() {

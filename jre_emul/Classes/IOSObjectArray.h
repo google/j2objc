@@ -70,12 +70,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 /** Create an autoreleased empty multidimensional array. */
 + (instancetype)arrayWithDimensions:(NSUInteger)dimensionCount
-                            lengths:(const jint *)dimensionLengths
+                            lengths:(const int32_t *)dimensionLengths
                                type:(IOSClass *)type;
 
 /** Create an empty multidimensional array. */
 + (instancetype)newArrayWithDimensions:(NSUInteger)dimensionCount
-                               lengths:(const jint *)dimensionLengths
+                               lengths:(const int32_t *)dimensionLengths
                                   type:(IOSClass *)type;
 
 /** Create an autoreleased array with the elements from an NSArray. */
@@ -116,7 +116,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @return the element at index.
  */
 __attribute__((always_inline)) inline id _Nullable IOSObjectArray_Get(
-    __unsafe_unretained IOSObjectArray *_Nonnull array, jint index) {
+    __unsafe_unretained IOSObjectArray *_Nonnull array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return ALWAYS_RETAINED_AUTORELEASED_RETURN_VALUE(array->buffer_[index]);
 }
@@ -151,7 +151,7 @@ typedef struct JreArrayRef {
 
 // Internal only functions.
 __attribute__((always_inline)) inline JreArrayRef IOSObjectArray_GetRef(
-    __unsafe_unretained IOSObjectArray *_Nonnull array, jint index) {
+    __unsafe_unretained IOSObjectArray *_Nonnull array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return (JreArrayRef){.arr = array, .pValue = &array->buffer_[index]};
 }

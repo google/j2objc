@@ -176,7 +176,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     // C enum declaration and generate the type declaration.
     if (!constants.isEmpty()) {
       newline();
-      printf("typedef NS_ENUM(jint, %s) {\n", nativeName);
+      printf("typedef NS_ENUM(int32_t, %s) {\n", nativeName);
 
       // Print C enum typedef.
       indent();
@@ -212,17 +212,17 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       }
       print("\n");
 
-      // Use different types for transpiled Java ordinals (which expects ordinals to be jint) and
+      // Use different types for transpiled Java ordinals (which expects ordinals to be int32_t) and
       // native code using the enum (where stricter ordinal types help clang warnings).
       printf(
           "#if J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION\n"
-              + "#define %s jint\n"
+              + "#define %s int32_t\n"
               + "#else\n"
               + "#define %s %s\n"
               + "#endif\n\n",
           ordinalName, ordinalName, nativeName);
     } else {
-      printf("#define %s jint\n", ordinalName);
+      printf("#define %s int32_t\n", ordinalName);
     }
   }
 

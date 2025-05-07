@@ -148,7 +148,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "Object test() { return new Object() { "
         + "int getCount() { return Test.this.getCount(); } }; } }", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (jint)getCount {",
+        "- (int32_t)getCount {",
         "return [this$0_ getCount];");
   }
 
@@ -193,7 +193,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
       + "    Runnable run = new Runnable() { public void run() { int j = foo.i; } }; } }",
       "Test", "Test.m");
 
-    assertTranslation(translation, "int j = ((Test_Foo *) nil_chk(val$foo_))->i_");
+    assertTranslation(translation, "int32_t j = ((Test_Foo *) nil_chk(val$foo_))->i_");
   }
 
   public void testMultipleReferencesToSameVar() throws IOException {
@@ -366,7 +366,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
             + "self, c, create_Test_B_initWithTest_(this$0_), 1)");
     assertTranslatedLines(translation,
         "void Test_A_1_initWithTest_A_withTest_C_withTest_B_withInt_("
-            + "Test_A_1 *self, Test_A *outer$, Test_C *capture$0, Test_B *x0, jint i) {",
+            + "Test_A_1 *self, Test_A *outer$, Test_C *capture$0, Test_B *x0, int32_t i) {",
         "  JreStrongAssign(&self->this$1_, outer$);",
         "  JreStrongAssign(&self->val$c_, capture$0);",
         "  Test_B_Inner_initWithTest_B_withInt_(self, nil_chk(x0), i);",
@@ -406,14 +406,14 @@ public class AnonymousClassConverterTest extends GenerationTest {
     // Verify Color constructor.
     assertTranslatedLines(impl,
         "void Color_initWithInt_withNSString_withInt_("
-          + "Color *self, jint n, NSString *__name, jint __ordinal) {",
+          + "Color *self, int32_t n, NSString *__name, int32_t __ordinal) {",
         "  JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);",
         "}");
 
     // Verify Color_1 constructor.
     assertTranslatedLines(impl,
         "void Color_1_initWithInt_withNSString_withInt_("
-          + "Color_1 *self, jint n, NSString *__name, jint __ordinal) {",
+          + "Color_1 *self, int32_t n, NSString *__name, int32_t __ordinal) {",
         "  Color_initWithInt_withNSString_withInt_(self, n, __name, __ordinal);",
         "}");
 
@@ -462,7 +462,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "class Test { void test(final int i) { Runnable r = new Runnable() { "
         + "public void run() { Runnable r2 = new Runnable() { public void run() { "
         + "int i2 = i; } }; } }; } }", "Test", "Test.m");
-    assertTranslation(impl, "int i2 = this$0_->val$i_;");
+    assertTranslation(impl, "int32_t i2 = this$0_->val$i_;");
   }
 
   // Verify that an anonymous class can be defined with a null constructor
@@ -523,7 +523,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation,
         "static Test_B_1 *create_Test_B_1_initWithTest_B_withInt_withTest_("
-        + "Test_B *outer$, jint capture$0, Test *x0);");
+        + "Test_B *outer$, int32_t capture$0, Test *x0);");
     assertTranslation(translation,
         "return create_Test_B_1_initWithTest_B_withInt_withTest_(this$0_, val$i_, val$t_);");
     // The super outer must be nil_chk'ed in the anonymous constructor.
@@ -536,7 +536,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "return new Local() { int bar() { return i; } }; } }", "Test", "Test.m");
     // Test that the anonymous class captures i and passes it to Local's constructor.
     assertTranslatedLines(translation,
-        "void Test_1_initWithInt_(Test_1 *self, jint capture$0) {",
+        "void Test_1_initWithInt_(Test_1 *self, int32_t capture$0) {",
         "  self->val1$i_ = capture$0;",
         "  Test_1Local_initWithInt_(self, capture$0);",
         "}");
@@ -568,7 +568,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
               + "} ",
           "Test", "Test.m");
       assertTranslation(translation, "@interface Test_1 : NSObject < JavaLangComparable >");
-      assertTranslation(translation, "- (jint)compareToWithId:(id<JavaLangRunnable>)r;");
+      assertTranslation(translation, "- (int32_t)compareToWithId:(id<JavaLangRunnable>)r;");
     });
   }
 }

@@ -55,7 +55,7 @@ public class OperatorRewriterTest extends GenerationTest {
     String source = "short s = 0; int i = 3 / s; long l = 7L / s; double d = 9.0 / s;";
     List<Statement> stmts = translateStatements(source);
     assertEquals(4, stmts.size());
-    assertEquals("jint i = JreIntDiv(3, s);", generateStatement(stmts.get(1)));
+    assertEquals("int32_t i = JreIntDiv(3, s);", generateStatement(stmts.get(1)));
     assertEquals("int64_t l = JreLongDiv(7LL, s);", generateStatement(stmts.get(2)));
     assertEquals("double d = 9.0 / s;", generateStatement(stmts.get(3)));
   }
@@ -64,7 +64,7 @@ public class OperatorRewriterTest extends GenerationTest {
     String source = "short s = 0; int i = 3 % s; long l = 7L % s; double d = 9.0 % s;";
     List<Statement> stmts = translateStatements(source);
     assertEquals(4, stmts.size());
-    assertEquals("jint i = JreIntMod(3, s);", generateStatement(stmts.get(1)));
+    assertEquals("int32_t i = JreIntMod(3, s);", generateStatement(stmts.get(1)));
     assertEquals("int64_t l = JreLongMod(7LL, s);", generateStatement(stmts.get(2)));
     assertEquals("double d = fmod(9.0, s);", generateStatement(stmts.get(3)));
   }
@@ -170,7 +170,7 @@ public class OperatorRewriterTest extends GenerationTest {
         + " void test() { int li = i; i = 2; li = si; si = 3; String ls = s; s = \"foo\";"
         + " ls = vs; vs = \"foo\"; ls = ws; ws = \"foo\"; } }", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "jint li = JreLoadVolatileInt(&i_);",
+        "int32_t li = JreLoadVolatileInt(&i_);",
         "JreAssignVolatileInt(&i_, 2);",
         "li = JreLoadVolatileInt(&Test_si);",
         "JreAssignVolatileInt(&Test_si, 3);",

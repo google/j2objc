@@ -327,11 +327,11 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
 
     assertTranslatedLines(
         testHeader,
-        "- (id<JavaUtilList>)someList:(jint)somenumber",
+        "- (id<JavaUtilList>)someList:(int32_t)somenumber",
         "error:(NSError **)nativeError;");
     assertTranslatedLines(
         testSource,
-        "- (id<JavaUtilList>)someList:(jint)somenumber",
+        "- (id<JavaUtilList>)someList:(int32_t)somenumber",
         "error:(NSError **)nativeError {",
         "@try {",
         "  return [self _getSomeListWithInt:somenumber];",
@@ -342,11 +342,11 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
 
     assertTranslatedLines(
         testHeader,
-        "- (JavaUtilArrayList *)someArrayList:(jint)somenumber",
+        "- (JavaUtilArrayList *)someArrayList:(int32_t)somenumber",
         "error:(NSError **)nativeError;");
     assertTranslatedLines(
         testSource,
-        "- (JavaUtilArrayList *)someArrayList:(jint)somenumber",
+        "- (JavaUtilArrayList *)someArrayList:(int32_t)somenumber",
         "error:(NSError **)nativeError {",
         "@try {",
         "  return [self _getSomeArrayListWithInt:somenumber];",
@@ -357,11 +357,11 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
 
     assertTranslatedLines(
         testHeader,
-        "- (NSArray *)someListAsNativeArray:(jint)somenumber",
+        "- (NSArray *)someListAsNativeArray:(int32_t)somenumber",
         "error:(NSError **)nativeError;");
     assertTranslatedLines(
         testSource,
-        "- (NSArray *)someListAsNativeArray:(jint)somenumber",
+        "- (NSArray *)someListAsNativeArray:(int32_t)somenumber",
         "error:(NSError **)nativeError {",
         "@try {",
         "  return JREAdaptedArrayFromJavaList([self _getSomeNativeArrayWithInt:somenumber]);",
@@ -489,7 +489,7 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
 
     String testHeader = translateSourceFile("EnumMethods", "EnumMethods.h");
     String testSource = translateSourceFile("EnumMethods", "EnumMethods.m");
-    assertTranslation(testHeader, "enum Color_Enum : jint;");
+    assertTranslation(testHeader, "enum Color_Enum : int32_t;");
     assertTranslation(testSource, "#include \"Color.h\"");
   }
 
@@ -504,7 +504,7 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "EnumMethods.java");
 
     String testHeader = translateSourceFile("EnumMethods", "EnumMethods.h");
-    assertTranslation(testHeader, "enum EnumMethods_SomeInnerEnum_Enum : jint;");
+    assertTranslation(testHeader, "enum EnumMethods_SomeInnerEnum_Enum : int32_t;");
   }
 
   public void testEnumAnnotation() throws IOException {

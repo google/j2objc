@@ -69,7 +69,7 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
         + " public long longValue() { return 0; }}", "Test", "Test.m");
     assertTranslatedLines(translation,
         "J2OBJC_IGNORE_DESIGNATED_BEGIN",
-        "- (instancetype)initWithInt:(jint)i {",
+        "- (instancetype)initWithInt:(int32_t)i {",
         "  Test_initWithInt_(self, i);",
         "  return self;",
         "}",
@@ -87,11 +87,11 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation, "+ (NSString *)ID {", "return Test_ID;");
     assertTranslatedLines(translation,
         "+ (void)setID:(NSString *)value {", "JreStrongAssign(&Test_ID, value);");
-    assertTranslatedLines(translation, "+ (jint)VERSION {", "return Test_VERSION;");
+    assertTranslatedLines(translation, "+ (int32_t)VERSION {", "return Test_VERSION;");
     assertTranslatedLines(translation, "+ (Test *)DEFAULT {", "return Test_DEFAULT;");
     assertNotInTranslation(translation, "+ (void)setDEFAULT:(Test *)value"); // Read-only
-    assertNotInTranslation(translation, "+ (jint)i");                        // Private
-    assertNotInTranslation(translation, "+ (void)setI:(jint)value");         // Private
+    assertNotInTranslation(translation, "+ (int32_t)i");                        // Private
+    assertNotInTranslation(translation, "+ (void)setI:(int32_t)value");         // Private
   }
 
   private void staticFieldAccessorMethodValidationStrictFieldAssign() throws IOException {
@@ -107,11 +107,11 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
         translation,
         "+ (void)setID:(NSString *)value {",
         "JreStrictFieldStrongAssign(&Test_ID, value);");
-    assertTranslatedLines(translation, "+ (jint)VERSION {", "return Test_VERSION;");
+    assertTranslatedLines(translation, "+ (int32_t)VERSION {", "return Test_VERSION;");
     assertTranslatedLines(translation, "+ (Test *)DEFAULT {", "return Test_DEFAULT;");
     assertNotInTranslation(translation, "+ (void)setDEFAULT:(Test *)value"); // Read-only
-    assertNotInTranslation(translation, "+ (jint)i"); // Private
-    assertNotInTranslation(translation, "+ (void)setI:(jint)value"); // Private
+    assertNotInTranslation(translation, "+ (int32_t)i"); // Private
+    assertNotInTranslation(translation, "+ (void)setI:(int32_t)value"); // Private
   }
 
   private void staticFieldAccessorMethodValidationStrictFieldLoad() throws IOException {
@@ -128,12 +128,12 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
         translation,
         "+ (void)setID:(NSString *)value {",
         "JreStrictFieldStrongAssign(&Test_ID, value);");
-    assertTranslatedLines(translation, "+ (jint)VERSION {", "return Test_VERSION;");
+    assertTranslatedLines(translation, "+ (int32_t)VERSION {", "return Test_VERSION;");
     assertTranslatedLines(
         translation, "+ (Test *)DEFAULT {", "return JreStrictFieldStrongLoad(&Test_DEFAULT);");
     assertNotInTranslation(translation, "+ (void)setDEFAULT:(Test *)value"); // Read-only
-    assertNotInTranslation(translation, "+ (jint)i"); // Private
-    assertNotInTranslation(translation, "+ (void)setI:(jint)value"); // Private
+    assertNotInTranslation(translation, "+ (int32_t)i"); // Private
+    assertNotInTranslation(translation, "+ (void)setI:(int32_t)value"); // Private
   }
 
   public void testStaticFieldsWithStaticAccessorMethodsFlag() throws IOException {
@@ -164,8 +164,8 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertNotInTranslation(translation, "+ (NSString *)ID");
     assertNotInTranslation(translation, "+ (void)setID:(NSString *)value");
-    assertNotInTranslation(translation, "+ (void)setI:(jint)value");
-    assertNotInTranslation(translation, "+ (jint)VERSION");
+    assertNotInTranslation(translation, "+ (void)setI:(int32_t)value");
+    assertNotInTranslation(translation, "+ (int32_t)VERSION");
     assertNotInTranslation(translation, "+ (Test *)DEFAULT");
   }
 

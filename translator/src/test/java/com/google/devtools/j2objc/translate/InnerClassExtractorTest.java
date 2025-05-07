@@ -112,12 +112,12 @@ public class InnerClassExtractorTest extends GenerationTest {
     translation = getTranslatedFile("A.m");
     assertTranslatedLines(translation,
         "- (instancetype)initWithA_B:(A_B *)outer$",
-        "withInt:(jint)capture$0;");
+        "withInt:(int32_t)capture$0;");
     assertTranslation(translation, "A *this$0_;");
     assertTranslation(translation, "A_B *this$1_;");
-    assertTranslation(translation, "jint val$j_;");
+    assertTranslation(translation, "int32_t val$j_;");
     assertTranslatedLines(translation,
-        "void A_B_1_initWithA_B_withInt_(A_B_1 *self, A_B *outer$, jint capture$0) {",
+        "void A_B_1_initWithA_B_withInt_(A_B_1 *self, A_B *outer$, int32_t capture$0) {",
         "  JreStrongAssign(&self->this$1_, outer$);",
         "  self->val$j_ = capture$0;",
         "  A_C_initWithA_(self, outer$->this$0_);",
@@ -135,7 +135,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "@interface Test_Foo : NSObject {",
         "@public",
-        "jint i_;",
+        "int32_t i_;",
         "}");
 
     translation = getTranslatedFile("Test.m");
@@ -144,7 +144,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "  Test_Foo_initWithInt_(self, 0);",
         "}");
     assertTranslatedLines(translation,
-        "void Test_Foo_initWithInt_(Test_Foo *self, jint i) {",
+        "void Test_Foo_initWithInt_(Test_Foo *self, int32_t i) {",
         "  NSObject_init(self);",
         "  self->i_ = i;",
         "}");
@@ -318,7 +318,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
         "- (instancetype)initWithTest:(Test *)outer$\n"
-        + "                     withInt:(jint)i");
+        + "                     withInt:(int32_t)i");
   }
 
   public void testInnerSubClassOfOtherInnerWithOuterRefs() throws IOException {
@@ -351,8 +351,8 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "    void bar() { int j = i; } } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
 
-    assertTranslation(translation, "- (void)fooWithInt:(jint)i {\n  this$0_->i_ =");
-    assertTranslation(translation, "- (void)bar {\n  jint j = this$0_->i_");
+    assertTranslation(translation, "- (void)fooWithInt:(int32_t)i {\n  this$0_->i_ =");
+    assertTranslation(translation, "- (void)bar {\n  int32_t j = this$0_->i_");
   }
 
   public void testInnerClassExtendsAnotherInner() throws IOException {
@@ -669,7 +669,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation,
         "create_Test_Inner_initWithTest_withIntArray_(self, "
-        + "[IOSIntArray arrayWithInts:(jint[]){ 1, 2, 3 } count:3])");
+        + "[IOSIntArray arrayWithInts:(int32_t[]){ 1, 2, 3 } count:3])");
   }
 
   public void testInnerClassConstructedInSuperConstructorInvocation() throws IOException {
@@ -770,7 +770,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "}");
     assertTranslatedLines(translation,
         "void Test_1Inner_initWithNSString_withInt_("
-          + "Test_1Inner *self, NSString *capture$0, jint i) {",
+          + "Test_1Inner *self, NSString *capture$0, int32_t i) {",
         "  JreStrongAssign(&self->val$s_, capture$0);",
         "  NSObject_init(self);",
         "}");
@@ -794,6 +794,6 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "[IOSObjectArray arrayWithObjects:(id[]){ o } count:1 type:NSObject_class_()])");
     assertTranslation(translation,
         "void Test_1Inner_initWithInt_withNSObjectArray_("
-        + "Test_1Inner *self, jint capture$0, IOSObjectArray *o)");
+        + "Test_1Inner *self, int32_t capture$0, IOSObjectArray *o)");
   }
 }

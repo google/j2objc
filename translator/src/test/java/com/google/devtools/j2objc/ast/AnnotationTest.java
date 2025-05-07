@@ -64,8 +64,8 @@ public class AnnotationTest extends GenerationTest {
             + "} ",
         "Bar", "foo/Bar.m");
     assertTranslatedLines(translation,
-        "+ (jint)aDefault {",
-        "  return ((jint) 0x80000000);",
+        "+ (int32_t)aDefault {",
+        "  return ((int32_t) 0x80000000);",
         "}");
     assertTranslatedLines(translation,
         "+ (float)bDefault {",

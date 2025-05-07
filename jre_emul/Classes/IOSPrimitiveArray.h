@@ -82,12 +82,12 @@
 /**
  * Create a new multi-dimensional array of booleans.
  */
-+ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths;
 
 /**
  * Create a new autoreleased multi-dimensional array of booleans.
  */
-+ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths
     __attribute__((objc_method_family(none), ns_returns_retained));
 
 /**
@@ -117,7 +117,7 @@
  * Equivalent to booleanAtIndex:.
  */
 __attribute__((always_inline)) inline bool IOSBooleanArray_Get(
-    __unsafe_unretained IOSBooleanArray *array, jint index) {
+    __unsafe_unretained IOSBooleanArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
@@ -127,7 +127,7 @@ __attribute__((always_inline)) inline bool IOSBooleanArray_Get(
  * Equivalent to booleanRefAtIndex:.
  */
 __attribute__((always_inline)) inline bool *IOSBooleanArray_GetRef(
-    __unsafe_unretained IOSBooleanArray *array, jint index) {
+    __unsafe_unretained IOSBooleanArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
@@ -169,12 +169,12 @@ __attribute__((always_inline)) inline bool *IOSBooleanArray_GetRef(
 /**
  * Create a new multi-dimensional array of chars.
  */
-+ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths;
 
 /**
  * Create a new autoreleased multi-dimensional array of chars.
  */
-+ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths
     __attribute__((objc_method_family(none), ns_returns_retained));
 
 /**
@@ -209,7 +209,7 @@ __attribute__((always_inline)) inline bool *IOSBooleanArray_GetRef(
  * Equivalent to charAtIndex:.
  */
 __attribute__((always_inline)) inline uint16_t IOSCharArray_Get(
-    __unsafe_unretained IOSCharArray *array, jint index) {
+    __unsafe_unretained IOSCharArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
@@ -219,7 +219,7 @@ __attribute__((always_inline)) inline uint16_t IOSCharArray_Get(
  * Equivalent to charRefAtIndex:.
  */
 __attribute__((always_inline)) inline uint16_t *IOSCharArray_GetRef(
-    __unsafe_unretained IOSCharArray *array, jint index) {
+    __unsafe_unretained IOSCharArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
@@ -262,12 +262,12 @@ __attribute__((always_inline)) inline uint16_t *IOSCharArray_GetRef(
 /**
  * Create a new multi-dimensional array of bytes.
  */
-+ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths;
 
 /**
  * Create a new autoreleased multi-dimensional array of bytes.
  */
-+ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths
     __attribute__((objc_method_family(none), ns_returns_retained));
 
 /**
@@ -297,13 +297,13 @@ __attribute__((always_inline)) inline uint16_t *IOSCharArray_GetRef(
 // length.  An IndexOutOfBoundsException is thrown if the specified length
 // is greater than the array size.
 - (void)getBytes:(int8_t *)buffer
-          offset:(jint)offset
-          length:(jint)length;
+          offset:(int32_t)offset
+          length:(int32_t)length;
 
 // Copies the specified native buffer into this array at the specified offset.
 - (void)replaceBytes:(const int8_t *)source
-              length:(jint)length
-              offset:(jint)destOffset;
+              length:(int32_t)length
+              offset:(int32_t)destOffset;
 
 // Returns the bytes of the array encapsulated in an NSData *. Copies the
 // underlying data.
@@ -316,7 +316,7 @@ __attribute__((always_inline)) inline uint16_t *IOSCharArray_GetRef(
  * Equivalent to byteAtIndex:.
  */
 __attribute__((always_inline)) inline int8_t IOSByteArray_Get(
-    __unsafe_unretained IOSByteArray *array, jint index) {
+    __unsafe_unretained IOSByteArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
@@ -326,7 +326,7 @@ __attribute__((always_inline)) inline int8_t IOSByteArray_Get(
  * Equivalent to byteRefAtIndex:.
  */
 __attribute__((always_inline)) inline int8_t *IOSByteArray_GetRef(
-    __unsafe_unretained IOSByteArray *array, jint index) {
+    __unsafe_unretained IOSByteArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
@@ -369,12 +369,12 @@ __attribute__((always_inline)) inline int8_t *IOSByteArray_GetRef(
 /**
  * Create a new multi-dimensional array of shorts.
  */
-+ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths;
 
 /**
  * Create a new autoreleased multi-dimensional array of shorts.
  */
-+ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths
     __attribute__((objc_method_family(none), ns_returns_retained));
 
 /**
@@ -404,7 +404,7 @@ __attribute__((always_inline)) inline int8_t *IOSByteArray_GetRef(
  * Equivalent to shortAtIndex:.
  */
 __attribute__((always_inline)) inline int16_t IOSShortArray_Get(
-    __unsafe_unretained IOSShortArray *array, jint index) {
+    __unsafe_unretained IOSShortArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
@@ -414,7 +414,7 @@ __attribute__((always_inline)) inline int16_t IOSShortArray_Get(
  * Equivalent to shortRefAtIndex:.
  */
 __attribute__((always_inline)) inline int16_t *IOSShortArray_GetRef(
-    __unsafe_unretained IOSShortArray *array, jint index) {
+    __unsafe_unretained IOSShortArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
@@ -432,7 +432,7 @@ __attribute__((always_inline)) inline int16_t *IOSShortArray_GetRef(
    * The elements of this array.
    */
   // Ensure alignment for java.util.concurrent.atomic.AtomicIntegerArray.
-  jint buffer_[0] __attribute__((aligned(__alignof__(volatile_jint))));
+  int32_t buffer_[0] __attribute__((aligned(__alignof__(volatile_int32_t))));
 }
 
 /**
@@ -448,43 +448,43 @@ __attribute__((always_inline)) inline int16_t *IOSShortArray_GetRef(
 /**
  * Create a new array of a specified length, setting the elements to the values in buf.
  */
-+ (instancetype)newArrayWithInts:(const jint *)buf count:(NSUInteger)count;
++ (instancetype)newArrayWithInts:(const int32_t *)buf count:(NSUInteger)count;
 
 /**
  * Create a new autoreleased array of a specified length, setting the elements to the values in buf.
  */
-+ (instancetype)arrayWithInts:(const jint *)buf count:(NSUInteger)count;
++ (instancetype)arrayWithInts:(const int32_t *)buf count:(NSUInteger)count;
 
 /**
  * Create a new multi-dimensional array of ints.
  */
-+ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths;
 
 /**
  * Create a new autoreleased multi-dimensional array of ints.
  */
-+ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths
     __attribute__((objc_method_family(none), ns_returns_retained));
 
 /**
  * Return the int at the specified index.
  */
-- (jint)intAtIndex:(NSUInteger)index;
+- (int32_t)intAtIndex:(NSUInteger)index;
 
 /**
  * Return a pointer to the int at the specified index.
  */
-- (jint *)intRefAtIndex:(NSUInteger)index;
+- (int32_t *)intRefAtIndex:(NSUInteger)index;
 
 /**
  * Replace the int at the specified index. Return the new value.
  */
-- (jint)replaceIntAtIndex:(NSUInteger)index withInt:(jint)value;
+- (int32_t)replaceIntAtIndex:(NSUInteger)index withInt:(int32_t)value;
 
 /**
  * Copy this array's ints to a buffer.
  */
-- (void)getInts:(jint *)buffer length:(NSUInteger)length;
+- (void)getInts:(int32_t *)buffer length:(NSUInteger)length;
 
 @end
 
@@ -492,8 +492,8 @@ __attribute__((always_inline)) inline int16_t *IOSShortArray_GetRef(
  * @brief Return the int at the specified index.
  * Equivalent to shortAtIndex:.
  */
-__attribute__((always_inline)) inline jint IOSIntArray_Get(
-    __unsafe_unretained IOSIntArray *array, jint index) {
+__attribute__((always_inline)) inline int32_t IOSIntArray_Get(
+    __unsafe_unretained IOSIntArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
@@ -502,8 +502,8 @@ __attribute__((always_inline)) inline jint IOSIntArray_Get(
  * @brief Return a pointer to the int at the specified index.
  * Equivalent to shortRefAtIndex:.
  */
-__attribute__((always_inline)) inline jint *IOSIntArray_GetRef(
-    __unsafe_unretained IOSIntArray *array, jint index) {
+__attribute__((always_inline)) inline int32_t *IOSIntArray_GetRef(
+    __unsafe_unretained IOSIntArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
@@ -547,12 +547,12 @@ __attribute__((always_inline)) inline jint *IOSIntArray_GetRef(
 /**
  * Create a new multi-dimensional array of longs.
  */
-+ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths;
 
 /**
  * Create a new autoreleased multi-dimensional array of longs.
  */
-+ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths
     __attribute__((objc_method_family(none), ns_returns_retained));
 
 /**
@@ -582,7 +582,7 @@ __attribute__((always_inline)) inline jint *IOSIntArray_GetRef(
  * Equivalent to longAtIndex:.
  */
 __attribute__((always_inline)) inline int64_t IOSLongArray_Get(
-    __unsafe_unretained IOSLongArray *array, jint index) {
+    __unsafe_unretained IOSLongArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
@@ -592,7 +592,7 @@ __attribute__((always_inline)) inline int64_t IOSLongArray_Get(
  * Equivalent to longRefAtIndex:.
  */
 __attribute__((always_inline)) inline int64_t *IOSLongArray_GetRef(
-    __unsafe_unretained IOSLongArray *array, jint index) {
+    __unsafe_unretained IOSLongArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
@@ -635,12 +635,12 @@ __attribute__((always_inline)) inline int64_t *IOSLongArray_GetRef(
 /**
  * Create a new multi-dimensional array of floats.
  */
-+ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths;
 
 /**
  * Create a new autoreleased multi-dimensional array of floats.
  */
-+ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths
     __attribute__((objc_method_family(none), ns_returns_retained));
 
 /**
@@ -670,7 +670,7 @@ __attribute__((always_inline)) inline int64_t *IOSLongArray_GetRef(
  * Equivalent to floatAtIndex:.
  */
 __attribute__((always_inline)) inline float IOSFloatArray_Get(
-    __unsafe_unretained IOSFloatArray *array, jint index) {
+    __unsafe_unretained IOSFloatArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
@@ -680,7 +680,7 @@ __attribute__((always_inline)) inline float IOSFloatArray_Get(
  * Equivalent to floatRefAtIndex:.
  */
 __attribute__((always_inline)) inline float *IOSFloatArray_GetRef(
-    __unsafe_unretained IOSFloatArray *array, jint index) {
+    __unsafe_unretained IOSFloatArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
@@ -723,12 +723,12 @@ __attribute__((always_inline)) inline float *IOSFloatArray_GetRef(
 /**
  * Create a new multi-dimensional array of doubles.
  */
-+ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths;
 
 /**
  * Create a new autoreleased multi-dimensional array of doubles.
  */
-+ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const int32_t *)dimensionLengths
     __attribute__((objc_method_family(none), ns_returns_retained));
 
 /**
@@ -758,7 +758,7 @@ __attribute__((always_inline)) inline float *IOSFloatArray_GetRef(
  * Equivalent to doubleAtIndex:.
  */
 __attribute__((always_inline)) inline double IOSDoubleArray_Get(
-    __unsafe_unretained IOSDoubleArray *array, jint index) {
+    __unsafe_unretained IOSDoubleArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
@@ -768,7 +768,7 @@ __attribute__((always_inline)) inline double IOSDoubleArray_Get(
  * Equivalent to doubleRefAtIndex:.
  */
 __attribute__((always_inline)) inline double *IOSDoubleArray_GetRef(
-    __unsafe_unretained IOSDoubleArray *array, jint index) {
+    __unsafe_unretained IOSDoubleArray *array, int32_t index) {
   IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }

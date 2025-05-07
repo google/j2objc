@@ -331,7 +331,7 @@ public class EnumRewriter extends UnitTreeVisitor {
     String ordinalName = NameTable.getNativeOrdinalPreprocessorName(typeName);
     int numConstants = node.getEnumConstants().size();
 
-    String ordinalArgType = (numConstants > 0) ? ordinalName : "jint";
+    String ordinalArgType = (numConstants > 0) ? ordinalName : "int32_t";
     String segmentName = options.addTextSegmentAttribute() ? " J2OBJC_TEXT_SEGMENT" : "";
 
     // The native type is not declared for an empty enum.

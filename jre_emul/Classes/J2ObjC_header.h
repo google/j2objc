@@ -264,7 +264,7 @@ CF_EXTERN_C_END
  * @define BOXED_COMPOUND_ASSIGN
  * @param CNAME The capitalized name of the primitive type (eg. "Int").
  * @param VALUE_METHOD The method on the boxed type that returns the value.
- * @param TYPE The primitive type name (eg. "jint").
+ * @param TYPE The primitive type name (eg. "int32_t").
  * @param BOXED_TYPE The boxed type name (eg. "JavaLangInteger").
  * @param RTYPE The type of the right hand side of the assignment.
  * @param OPNAME The name of the operator, used to construct the function name.
@@ -322,9 +322,9 @@ CF_EXTERN_C_END
     BOXED_COMPOUND_ASSIGN(CNAME, VALUE_METHOD, TYPE, BOXED_TYPE, TYPE, BitXor, BITXOR_OP, TYPE)
 #define BOXED_SHIFT_ASSIGN_32(CNAME, VALUE_METHOD, TYPE, BOXED_TYPE) \
     BOXED_COMPOUND_ASSIGN( \
-        CNAME, VALUE_METHOD, TYPE, BOXED_TYPE, int64_t, LShift, LSHIFT_32_OP, jint) \
+        CNAME, VALUE_METHOD, TYPE, BOXED_TYPE, int64_t, LShift, LSHIFT_32_OP, int32_t) \
     BOXED_COMPOUND_ASSIGN( \
-        CNAME, VALUE_METHOD, TYPE, BOXED_TYPE, int64_t, RShift, RSHIFT_32_OP, jint) \
+        CNAME, VALUE_METHOD, TYPE, BOXED_TYPE, int64_t, RShift, RSHIFT_32_OP, int32_t) \
     BOXED_COMPOUND_ASSIGN( \
         CNAME, VALUE_METHOD, TYPE, BOXED_TYPE, int64_t, URShift, RSHIFT_32_OP, uint32_t)
 #define BOXED_SHIFT_ASSIGN_64(CNAME, VALUE_METHOD, TYPE, BOXED_TYPE) \

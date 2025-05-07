@@ -104,14 +104,14 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
         + " }", "Test", "Test.h");
     // finalFoo
     assertTranslation(header, "#define Test_finalFoo 12");
-    assertTranslation(header, "jint Test_get_finalFoo(void);");
-    assertTranslation(header, "J2OBJC_STATIC_FIELD_CONSTANT(Test, finalFoo, jint)");
+    assertTranslation(header, "int32_t Test_get_finalFoo(void);");
+    assertTranslation(header, "J2OBJC_STATIC_FIELD_CONSTANT(Test, finalFoo, int32_t)");
     // foo
-    assertTranslation(header, "jint Test_get_foo(void);");
-    assertTranslation(header, "jint Test_set_foo(jint value);");
-    assertTranslation(header, "jint *Test_getRef_foo(void);");
-    assertTranslation(header, "FOUNDATION_EXPORT jint Test_foo;");
-    assertTranslation(header, "J2OBJC_STATIC_FIELD_PRIMITIVE(Test, foo, jint)");
+    assertTranslation(header, "int32_t Test_get_foo(void);");
+    assertTranslation(header, "int32_t Test_set_foo(int32_t value);");
+    assertTranslation(header, "int32_t *Test_getRef_foo(void);");
+    assertTranslation(header, "FOUNDATION_EXPORT int32_t Test_foo;");
+    assertTranslation(header, "J2OBJC_STATIC_FIELD_PRIMITIVE(Test, foo, int32_t)");
     // bar
     assertTranslation(header, "NSString *Test_get_bar(void);");
     assertTranslation(header, "NSString *Test_set_bar(NSString *value);");
@@ -131,7 +131,7 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
         + " private static final String finalBar = \"test\";"
         + " }", "Test", "Test.m");
     assertTranslation(translation, "#define Test_finalFoo 12");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_PRIMITIVE(Test, foo, jint)");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_PRIMITIVE(Test, foo, int32_t)");
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ(Test, bar, NSString *)");
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Test, finalBar, NSString *)");
   }
@@ -139,7 +139,7 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
   public void testStaticReaderAddedWhenSameMethodNameExists() throws IOException {
     String translation = translateSourceFile(
         "class Test { static int foo; void foo(String s) {}}", "Test", "Test.h");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_PRIMITIVE(Test, foo, jint)");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_PRIMITIVE(Test, foo, int32_t)");
     assertTranslation(translation, "- (void)fooWithNSString:(NSString *)s;");
   }
 
@@ -151,7 +151,7 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { private static int foo; public static int foo() { return foo; }}", "Test",
         "Test.h");
-    assertOccurrences(translation, "+ (jint)foo;", 1);
+    assertOccurrences(translation, "+ (int32_t)foo;", 1);
   }
 
   public void testTypeVariableReturnType() throws IOException {

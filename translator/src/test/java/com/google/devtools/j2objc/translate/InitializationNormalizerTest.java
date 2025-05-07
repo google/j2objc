@@ -128,7 +128,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "}");
     // test that initializer statement was added to second constructor
     assertTranslatedLines(translation,
-        "void Test_initWithInt_(Test *self, jint i) {",
+        "void Test_initWithInt_(Test *self, int32_t i) {",
         "  NSObject_init(self);",
         "  {",
         "    JreStrongAssignAndConsume(&self->date_, new_JavaUtilDate_init());",

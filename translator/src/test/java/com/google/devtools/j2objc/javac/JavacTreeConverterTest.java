@@ -59,7 +59,7 @@ public class JavacTreeConverterTest extends GenerationTest {
         "import static foo.B.*; class Test { void test() { int i = FOO; bar(); } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "jint i = FooA_FOO;",
+        "int32_t i = FooA_FOO;",
         "FooA_bar();");
   }
 
@@ -75,7 +75,7 @@ public class JavacTreeConverterTest extends GenerationTest {
                 + "class Test { void test() { int i = FOO; bar(); } }",
             "Test",
             "Test.m");
-    assertTranslatedLines(translation, "jint i = FooA_FOO;", "FooA_bar();");
+    assertTranslatedLines(translation, "int32_t i = FooA_FOO;", "FooA_bar();");
   }
 
   // The source file was generating:

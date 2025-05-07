@@ -194,7 +194,7 @@ public class LambdaExpressionTest extends GenerationTest {
         header + "class Test { int f = 1234; void foo() { I i = () -> f; } }", "Test",
         "Test.m");
     assertTranslatedLines(translation,
-        "- (jint)foo {",
+        "- (int32_t)foo {",
         "  return this$0_->f_;",
         "}");
   }
@@ -229,9 +229,9 @@ public class LambdaExpressionTest extends GenerationTest {
         "  id<FooBarComparator> val$other_;",
         "}");
     assertTranslatedLines(translation,
-        "- (jint)compareWithId:(id)c1",
+        "- (int32_t)compareWithId:(id)c1",
         "               withId:(id)c2 {",
-        "  jint res = [this$0_ compareWithId:c1 withId:c2];",
+        "  int32_t res = [this$0_ compareWithId:c1 withId:c2];",
         "  return (res != 0) ? res : [((id<FooBarComparator>) nil_chk(val$other_)) "
             + "compareWithId:c1 withId:c2];",
         "}");

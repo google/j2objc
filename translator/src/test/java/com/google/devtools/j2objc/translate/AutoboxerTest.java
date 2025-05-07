@@ -149,14 +149,14 @@ public class AutoboxerTest extends GenerationTest {
     String source = "Integer test = new Integer(5); int result = test + 3;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(1));
-    assertEquals("jint result = [test intValue] + 3;", result);
+    assertEquals("int32_t result = [test intValue] + 3;", result);
   }
 
   public void testInfixRightOperand() throws IOException {
     String source = "Integer test = new Integer(5); int result = 3 + test;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(1));
-    assertEquals("jint result = 3 + [test intValue];", result);
+    assertEquals("int32_t result = 3 + [test intValue];", result);
   }
 
   public void testInfixBothOperands() throws IOException {
@@ -164,7 +164,7 @@ public class AutoboxerTest extends GenerationTest {
         + "int result = foo + bar;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(2));
-    assertEquals("jint result = [foo intValue] + [bar intValue];", result);
+    assertEquals("int32_t result = [foo intValue] + [bar intValue];", result);
   }
 
   public void testInfixNeitherOperand() throws IOException {
@@ -172,7 +172,7 @@ public class AutoboxerTest extends GenerationTest {
     String source = "int result = 3 + 5;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(0));
-    assertEquals("jint result = 3 + 5;", result);
+    assertEquals("int32_t result = 3 + 5;", result);
   }
 
   public void testVariableDeclaration() throws IOException {
@@ -219,7 +219,7 @@ public class AutoboxerTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Test { public int values[] = new int[] { 1, 2, 3 }; }",
         "Test", "Test.m");
-    assertTranslation(translation, "[IOSIntArray newArrayWithInts:(jint[]){ 1, 2, 3 } count:3]");
+    assertTranslation(translation, "[IOSIntArray newArrayWithInts:(int32_t[]){ 1, 2, 3 } count:3]");
     translation = translateSourceFile(
         "public class Test { private Integer i = 1; private Integer j = 2; private Integer k = 3;"
         + "  public Integer values[] = new Integer[] { i, j, k }; }",
@@ -249,7 +249,7 @@ public class AutoboxerTest extends GenerationTest {
         + "  public void test() { int values[] = new int[] { i, j, 3 }; }}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[IOSIntArray arrayWithInts:(jint[]){ [((JavaLangInteger *) nil_chk(i_)) intValue], "
+        "[IOSIntArray arrayWithInts:(int32_t[]){ [((JavaLangInteger *) nil_chk(i_)) intValue], "
         + "[((JavaLangInteger *) nil_chk(j_)) intValue], 3 } count:3]");
   }
 
@@ -273,7 +273,7 @@ public class AutoboxerTest extends GenerationTest {
         + "  public int values[] = new int[] { i, j, 3 }; }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[IOSIntArray newArrayWithInts:(jint[]){ "
+        "[IOSIntArray newArrayWithInts:(int32_t[]){ "
         + "[self->i_ intValue], [self->j_ intValue], 3 } count:3]");
   }
 
@@ -374,7 +374,7 @@ public class AutoboxerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test() { Integer i1 = new Integer(2); Integer i2 = new Integer(3); "
         + "int i3 = 1 + 2 + i1 + i2; } }", "Test", "Test.m");
-    assertTranslation(translation, "int i3 = 1 + 2 + [i1 intValue] + [i2 intValue]");
+    assertTranslation(translation, "int32_t i3 = 1 + 2 + [i1 intValue] + [i2 intValue]");
   }
 
   public void testUnboxOfSwitchStatementExpression() throws IOException {
@@ -457,7 +457,7 @@ public class AutoboxerTest extends GenerationTest {
 
     assertTranslation(translation, "return [((JavaLangCharacter *) nil_chk(toChar)) charValue];");
     assertTranslation(
-        translation, "return (jint) [((JavaLangCharacter *) nil_chk(toInt)) charValue];");
+        translation, "return (int32_t) [((JavaLangCharacter *) nil_chk(toInt)) charValue];");
     assertTranslation(
         translation, "return (int64_t) [((JavaLangCharacter *) nil_chk(toLong)) charValue];");
     assertTranslation(
@@ -481,7 +481,7 @@ public class AutoboxerTest extends GenerationTest {
         translation,
         "IOSObjectArray *arr = [IOSObjectArray arrayWithObjects:(id[]){ "
             + "JavaLangCharacter_valueOfWithChar_([toChar charValue]), "
-            + "JavaLangInteger_valueOfWithInt_((jint) [toInt charValue]), "
+            + "JavaLangInteger_valueOfWithInt_((int32_t) [toInt charValue]), "
             + "JavaLangLong_valueOfWithLong_((int64_t) [toLong charValue]), "
             + "JavaLangFloat_valueOfWithFloat_((float) [toFlt charValue]),"
             + " JavaLangDouble_valueOfWithDouble_((double) [toDbl charValue]) }"
@@ -508,7 +508,7 @@ public class AutoboxerTest extends GenerationTest {
     assertTranslation(
         translation, "[self fWithChar:[((JavaLangCharacter *) nil_chk(toChar2)) charValue]];");
     assertTranslation(
-        translation, "[self fWithInt:(jint) [((JavaLangCharacter *) nil_chk(toInt)) charValue]];");
+        translation, "[self fWithInt:(int32_t) [((JavaLangCharacter *) nil_chk(toInt)) charValue]];");
     assertTranslation(
         translation,
         "[self fWithLong:(int64_t) [((JavaLangCharacter *) nil_chk(toLong)) charValue]];");

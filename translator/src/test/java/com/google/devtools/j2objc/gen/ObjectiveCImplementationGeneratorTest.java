@@ -182,7 +182,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "    static int foo = 1; "
         + "    final int myFoo = foo++; }}",
         "Example", "Example.m");
-    assertTranslation(translation, "int Example_Inner_foo = 1");
+    assertTranslation(translation, "int32_t Example_Inner_foo = 1");
     assertTranslation(translation, "myFoo_ = Example_Inner_foo++");
   }
 
@@ -200,7 +200,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile("public class Example { "
         + "void test() { Bar.FOO=2; } } class Bar { public static int FOO=1; }",
        "Example", "Example.m");
-    assertTranslation(translation, "jint Bar_FOO = 1;");
+    assertTranslation(translation, "int32_t Bar_FOO = 1;");
     assertTranslation(translation, "*JreLoadStaticRef(Bar, FOO) = 2;");
   }
 
@@ -208,7 +208,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Example { int load() { return 1; } int test() { return load(); }}",
         "Example", "Example.m");
-    assertTranslation(translation, "- (jint)load__ {");
+    assertTranslation(translation, "- (int32_t)load__ {");
     assertTranslation(translation, "return [self load__];");
   }
 
@@ -258,7 +258,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       "Color", "Color.m");
     assertTranslation(translation, "Color *Color_values_[3];");
     assertTranslation(translation, "@implementation Color");
-    assertTranslation(translation, "for (int i = 0; i < 3; i++) {");
+    assertTranslation(translation, "for (int32_t i = 0; i < 3; i++) {");
     assertTranslation(translation, "Color *e = Color_values_[i];");
     assertTranslation(translation,
         "Color_initWithNSString_withInt_(e, JreEnumConstantName(Color_class_(), i), i);");
@@ -278,14 +278,14 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "Color", "Color.m");
     assertTranslation(translation, "@implementation Color");
     assertTranslation(translation,
-        "Color_initWithInt_withNSString_withInt_(e, (jint) 0xff0000, @\"RED\", 0);");
+        "Color_initWithInt_withNSString_withInt_(e, (int32_t) 0xff0000, @\"RED\", 0);");
     assertTranslation(translation,
-        "Color_initWithInt_withNSString_withInt_(e, (jint) 0xffffff, @\"WHITE\", 1);");
+        "Color_initWithInt_withNSString_withInt_(e, (int32_t) 0xffffff, @\"WHITE\", 1);");
     assertTranslation(translation,
-        "Color_initWithInt_withNSString_withInt_(e, (jint) 0x0000ff, @\"BLUE\", 2);");
-    assertTranslation(translation, "- (jint)getRgb {");
+        "Color_initWithInt_withNSString_withInt_(e, (int32_t) 0x0000ff, @\"BLUE\", 2);");
+    assertTranslation(translation, "- (int32_t)getRgb {");
     assertTranslation(translation, "return rgb_;");
-    assertTranslation(translation, "jint newValue_;");
+    assertTranslation(translation, "int32_t newValue_;");
   }
 
   public void testClassField() throws IOException {
@@ -298,15 +298,15 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
             + "private int newFieldBar;"
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.m");
-    assertTranslation(translation, "int FooBar_fieldPhi;");
+    assertTranslation(translation, "int32_t FooBar_fieldPhi;");
     assertTranslation(translation, "RELEASE_(fieldFoo_);");
     assertTranslation(translation, "id fieldFoo_;");
     assertTranslation(translation, "id fieldJar_;");
-    assertTranslation(translation, "int newFieldBar_;");
+    assertTranslation(translation, "int32_t newFieldBar_;");
     assertTranslation(translation, "id fieldFoo_;");
     assertTranslation(translation, "WEAK_ id fieldJar_;");
-    assertTranslation(translation, "int newFieldBar_;");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_PRIMITIVE(FooBar, fieldPhi, jint)");
+    assertTranslation(translation, "int32_t newFieldBar_;");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_PRIMITIVE(FooBar, fieldPhi, int32_t)");
   }
 
   public void testClassFieldStrictFieldAssign() throws IOException {
@@ -320,15 +320,15 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
             + "private int newFieldBar;"
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.m");
-    assertTranslation(translation, "int FooBar_fieldPhi;");
+    assertTranslation(translation, "int32_t FooBar_fieldPhi;");
     assertTranslation(translation, "JreStrictFieldStrongRelease(&fieldFoo_);");
     assertTranslation(translation, "id fieldFoo_;");
     assertTranslation(translation, "id fieldJar_;");
-    assertTranslation(translation, "int newFieldBar_;");
+    assertTranslation(translation, "int32_t newFieldBar_;");
     assertTranslation(translation, "id fieldFoo_;");
     assertTranslation(translation, "WEAK_ id fieldJar_;");
-    assertTranslation(translation, "int newFieldBar_;");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_PRIMITIVE(FooBar, fieldPhi, jint)");
+    assertTranslation(translation, "int32_t newFieldBar_;");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_PRIMITIVE(FooBar, fieldPhi, int32_t)");
   }
 
   public void testEmptyInterfaceGenerationNoMetadata() throws IOException {
@@ -406,7 +406,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         initializeOffset + initializeSignature.length());
     assertTrue(initializeOffset == -1);
 
-    assertTranslation(translation, "int Example_foo = 42;");
+    assertTranslation(translation, "int32_t Example_foo = 42;");
   }
 
   public void testNativeCodeBlock() throws IOException {
@@ -517,7 +517,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "  return self;",
         "}");
     assertTranslatedLines(translation,
-        "- (instancetype)initWithInt:(jint)i {",
+        "- (instancetype)initWithInt:(int32_t)i {",
         "  Test_initWithInt_(self, i);",
         "  return self;",
         "}");
@@ -526,7 +526,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "  Test_initWithInt_(self, 42);",
         "}");
     assertTranslatedLines(translation,
-        "void Test_initWithInt_(Test *self, jint i) {",
+        "void Test_initWithInt_(Test *self, int32_t i) {",
         "  NSObject_init(self);",
         "}");
 
@@ -546,7 +546,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "}");
     assertTranslatedLines(translation,
         "- (instancetype)initWithTest:(Test *)outer$",
-        "                     withInt:(jint)i {",
+        "                     withInt:(int32_t)i {",
         "  Test_Inner_initWithTest_withInt_(self, outer$, i);",
         "  return self;",
         "}");
@@ -555,7 +555,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "  Test_Inner_initWithTest_withInt_(self, outer$, 42);",
         "}");
     assertTranslatedLines(translation,
-        "void Test_Inner_initWithTest_withInt_(Test_Inner *self, Test *outer$, jint i) {",
+        "void Test_Inner_initWithTest_withInt_(Test_Inner *self, Test *outer$, int32_t i) {",
         "  NSObject_init(self);",
         "}");
   }

@@ -41,15 +41,15 @@ public class SwitchRewriterTest extends GenerationTest {
       + "case 3: log(i); int k = i, l = 42; break; }}"
       + "private void log(int i) {}}",
       "A", "A.m");
-    assertTranslation(translation, "jint j;");
-    assertTranslation(translation, "jint k;");
-    assertTranslation(translation, "jint l;");
+    assertTranslation(translation, "int32_t j;");
+    assertTranslation(translation, "int32_t k;");
+    assertTranslation(translation, "int32_t l;");
     assertTranslation(translation, "case 1:");
-    assertTrue(translation.indexOf("jint j;") < translation.indexOf("case 1:"));
-    assertTrue(translation.indexOf("jint k;") < translation.indexOf("case 1:"));
-    assertTrue(translation.indexOf("jint l;") < translation.indexOf("case 1:"));
-    assertTrue(translation.indexOf("jint j;") < translation.indexOf("jint k;"));
-    assertTrue(translation.indexOf("jint k;") < translation.indexOf("jint l;"));
+    assertTrue(translation.indexOf("int32_t j;") < translation.indexOf("case 1:"));
+    assertTrue(translation.indexOf("int32_t k;") < translation.indexOf("case 1:"));
+    assertTrue(translation.indexOf("int32_t l;") < translation.indexOf("case 1:"));
+    assertTrue(translation.indexOf("int32_t j;") < translation.indexOf("int32_t k;"));
+    assertTrue(translation.indexOf("int32_t k;") < translation.indexOf("int32_t l;"));
     assertTranslation(translation, "j = i * 2;");
     assertTranslation(translation, "k = i;");
     assertTranslation(translation, "l = 42;");
@@ -83,12 +83,12 @@ public class SwitchRewriterTest extends GenerationTest {
       + "case 1: int i; int j = 2; }}"
       + "private void log(int i) {}}",
       "A", "A.m");
-    int index = translation.indexOf("jint i;");
+    int index = translation.indexOf("int32_t i;");
     assertTrue(index >= 0 && index < translation.indexOf("switch (n)"));
-    index = translation.indexOf("jint j;");
+    index = translation.indexOf("int32_t j;");
     assertTrue(index >= 0 && index < translation.indexOf("switch (n)"));
-    assertOccurrences(translation, "jint i;", 1);
-    assertFalse(translation.contains("jint j = 2;"));
+    assertOccurrences(translation, "int32_t i;", 1);
+    assertFalse(translation.contains("int32_t j = 2;"));
   }
 
   public void testEnumConstantsInSwitchStatement() throws IOException {
@@ -247,7 +247,7 @@ public class SwitchRewriterTest extends GenerationTest {
                   "Test.m");
           assertTranslatedLines(
               translation,
-              "- (id)getWithInt:(jint)index {",
+              "- (id)getWithInt:(int32_t)index {",
               "  switch (index) {",
               "    case 0:",
               "    return first_;",
@@ -413,7 +413,7 @@ public class SwitchRewriterTest extends GenerationTest {
                   "Test.m");
           assertTranslatedLines(
               translation,
-              "  switch ((jint) b) {",
+              "  switch ((int32_t) b) {",
               "    case 2:",
               "    return JreLShift64(1LL, k);",
               "    default:",
@@ -532,7 +532,7 @@ public class SwitchRewriterTest extends GenerationTest {
                   "Test.m");
           assertTranslatedLines(
               translation,
-              "- (NSString *)testWithInt:(jint)choice {",
+              "- (NSString *)testWithInt:(int32_t)choice {",
               "  NSString *foo = @\"foo\";",
               "  NSString *result;",
               "  switch (choice) {",

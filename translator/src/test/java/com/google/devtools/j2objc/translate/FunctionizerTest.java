@@ -140,7 +140,7 @@ public class FunctionizerTest extends GenerationTest {
         "- (NSString *)test {",
         "return A_strWithInt_(self, 0);");
     assertTranslatedLines(translation,
-        "NSString *A_strWithInt_(A *self, jint i) {",
+        "NSString *A_strWithInt_(A *self, int32_t i) {",
         "return A_str(self);");
     assertTranslatedLines(translation,
         "NSString *A_str(A *self) {",
@@ -165,16 +165,16 @@ public class FunctionizerTest extends GenerationTest {
         + "    private int test3() { return A.this.outerN; }}}",
         "A", "A.m");
     assertTranslatedLines(translation,
-        "int A_str(A *self) {",
+        "int32_t A_str(A *self) {",
         "return 0;");
     assertTranslatedLines(translation,
-        "jint A_B_test1(A_B *self) {",
+        "int32_t A_B_test1(A_B *self) {",
         "return A_str(self->this$0_);");
     assertTranslatedLines(translation,
-        "jint A_B_test2(A_B *self) {",
+        "int32_t A_B_test2(A_B *self) {",
         "return A_str(self->this$0_);");
     assertTranslatedLines(translation,
-        "jint A_B_test3(A_B *self) {",
+        "int32_t A_B_test3(A_B *self) {",
         "return self->this$0_->outerN_;");
   }
 
@@ -405,28 +405,28 @@ public class FunctionizerTest extends GenerationTest {
         "Test", "Test.h");
 
     // Public declaration for "foo" instance method, within "NativeMethods" category.
-    assertTranslation(translation, "- (void)fooWithInt:(jint)i;");
+    assertTranslation(translation, "- (void)fooWithInt:(int32_t)i;");
     // Public declaration for "bar". both the class method and c-function.
     assertTranslation(translation, "+ (void)fooWithNSString:(NSString *)s;");
     assertTranslation(translation, "FOUNDATION_EXPORT void Test_fooWithNSString_(NSString *s);");
 
     translation = getTranslatedFile("Test.m");
     // Implementation for "foo" is functionized.
-    assertTranslation(translation, "void Test_fooWithInt_(Test *self, jint i);");
+    assertTranslation(translation, "void Test_fooWithInt_(Test *self, int32_t i);");
     assertTranslatedLines(translation,
-        "- (void)fooWithInt:(jint)i {", "Test_fooWithInt_(self, i);", "}");
+        "- (void)fooWithInt:(int32_t)i {", "Test_fooWithInt_(self, i);", "}");
     // class method wrapper for "bar".
     assertTranslatedLines(translation,
         "+ (void)fooWithNSString:(NSString *)s {", "Test_fooWithNSString_(s);", "}");
     // JNI external function declarations
     assertTranslation(translation,
-        "JNIEXPORT void Java_Test_foo__I(JNIEnv *_env_, jobject self, jint i);");
+        "JNIEXPORT void Java_Test_foo__I(JNIEnv *_env_, jobject self, int32_t i);");
     assertTranslation(translation,
         "JNIEXPORT void Java_Test_foo__Ljava_lang_String_2("
         + "JNIEnv *_env_, jclass _cls_, jstring s);");
     // JNI wrapper functions
     assertTranslatedLines(translation,
-        "void Test_fooWithInt_(Test *self, jint i) {",
+        "void Test_fooWithInt_(Test *self, int32_t i) {",
         "Java_Test_foo__I(&J2ObjC_JNIEnv, self, i);",
         "}");
     assertTranslatedLines(translation,
@@ -468,11 +468,11 @@ public class FunctionizerTest extends GenerationTest {
     translation = getTranslatedFile("Test.m");
     // Declarations for the private constructor.
     assertTranslation(translation,
-        "__attribute__((unused)) static void Test_initWithInt_(Test *self, jint i);");
+        "__attribute__((unused)) static void Test_initWithInt_(Test *self, int32_t i);");
     assertTranslation(translation,
-        "__attribute__((unused)) static Test *new_Test_initWithInt_(jint i) NS_RETURNS_RETAINED;");
+        "__attribute__((unused)) static Test *new_Test_initWithInt_(int32_t i) NS_RETURNS_RETAINED;");
     assertTranslation(translation,
-        "__attribute__((unused)) static Test *create_Test_initWithInt_(jint i);");
+        "__attribute__((unused)) static Test *create_Test_initWithInt_(int32_t i);");
     // Implementations.
     assertTranslatedLines(translation,
         "void Test_init(Test *self) {",
@@ -483,12 +483,12 @@ public class FunctionizerTest extends GenerationTest {
         "  J2OBJC_NEW_IMPL(Test, init)",
         "}");
     assertTranslatedLines(translation,
-        "void Test_initWithInt_(Test *self, jint i) {",
+        "void Test_initWithInt_(Test *self, int32_t i) {",
         "  NSObject_init(self);",
         "  self->i_ = i;",
         "}");
     assertTranslatedLines(translation,
-        "Test *new_Test_initWithInt_(jint i) {",
+        "Test *new_Test_initWithInt_(int32_t i) {",
         "  J2OBJC_NEW_IMPL(Test, initWithInt_, i)",
         "}");
     assertTranslatedLines(translation,
@@ -496,7 +496,7 @@ public class FunctionizerTest extends GenerationTest {
         "  J2OBJC_CREATE_IMPL(Test, init)",
         "}");
     assertTranslatedLines(translation,
-        "Test *create_Test_initWithInt_(jint i) {",
+        "Test *create_Test_initWithInt_(int32_t i) {",
         "  J2OBJC_CREATE_IMPL(Test, initWithInt_, i)",
         "}");
     return translation;

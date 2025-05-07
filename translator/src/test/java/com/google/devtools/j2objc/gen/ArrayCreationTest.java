@@ -140,7 +140,7 @@ public class ArrayCreationTest extends GenerationTest {
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
     assertEquals(
-        "IOSIntArray *foo = [IOSIntArray arrayWithInts:(jint[]){ -123, 1280000 } count:2];",
+        "IOSIntArray *foo = [IOSIntArray arrayWithInts:(int32_t[]){ -123, 1280000 } count:2];",
         result);
   }
 
@@ -211,7 +211,7 @@ public class ArrayCreationTest extends GenerationTest {
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
     assertEquals(
-        "IOSIntArray *foo = [IOSIntArray arrayWithInts:(jint[]){ -123, 1280000 } count:2];",
+        "IOSIntArray *foo = [IOSIntArray arrayWithInts:(int32_t[]){ -123, 1280000 } count:2];",
         result);
   }
 
@@ -238,7 +238,7 @@ public class ArrayCreationTest extends GenerationTest {
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
     assertEquals(
-        "IOSObjectArray *foo = [IOSIntArray arrayWithDimensions:3 lengths:(jint[]){ 2, 3, 4 }];",
+        "IOSObjectArray *foo = [IOSIntArray arrayWithDimensions:3 lengths:(int32_t[]){ 2, 3, 4 }];",
         result);
   }
 }

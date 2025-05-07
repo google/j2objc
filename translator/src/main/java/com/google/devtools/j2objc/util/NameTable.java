@@ -746,7 +746,7 @@ public class NameTable {
         case SHORT:
           return "int16_t";
         case INT:
-          return "jint";
+          return "int32_t";
         case LONG:
           return "int64_t";
         case CHAR:

@@ -38,7 +38,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "class MyClass {}", "Example", "mypackage/Example.h");
     assertTranslation(translation, "@interface MypackageExample");
     // enum declaration
-    assertTranslation(translation, "typedef NS_ENUM(jint, MypackageAbcd_Enum) {");
+    assertTranslation(translation, "typedef NS_ENUM(int32_t, MypackageAbcd_Enum) {");
     assertTranslation(translation, "@interface MypackageAbcd");
     assertTranslation(translation, "@interface MypackageMyClass");
     assertTranslation(translation, "MypackageMyClass *myclass_;");
@@ -446,7 +446,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "public class Example { int one, two, three; }",
       "Example", "Example.h");
     assertTranslatedLines(translation,
-        "jint one_;", "jint two_;", "jint three_;");
+        "int32_t one_;", "int32_t two_;", "int32_t three_;");
   }
 
   public void testMultipleInterfaceDeclaration() throws IOException {
@@ -490,7 +490,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "Color", "Color.h");
     assertTranslatedLines(
         translation,
-        "typedef NS_ENUM(jint, Color_Enum) {",
+        "typedef NS_ENUM(int32_t, Color_Enum) {",
         "  Color_Enum_RED NS_SWIFT_NAME(red) = 0,",
         "  Color_Enum_WHITE NS_SWIFT_NAME(white) = 1,",
         "  Color_Enum_BLUE NS_SWIFT_NAME(blue) = 2,",
@@ -514,7 +514,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         translateSourceFile("public enum Color { RED, WHITE, BLUE }", "Color", "Color.h");
     assertTranslatedLines(
         translation,
-        "typedef NS_ENUM(jint, Color_Enum) {",
+        "typedef NS_ENUM(int32_t, Color_Enum) {",
         "  Color_Enum_RED = 0,",
         "  Color_Enum_WHITE = 1,",
         "  Color_Enum_BLUE = 2,",
@@ -543,7 +543,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         translation, "NS_ASSUME_NONNULL_BEGIN", "@interface Color : JavaLangEnum");
     assertTranslatedLines(
         translation,
-        "typedef NS_ENUM(jint, Color_Enum) {",
+        "typedef NS_ENUM(int32_t, Color_Enum) {",
         "  Color_Enum_RED NS_SWIFT_NAME(red) = 0,",
         "  Color_Enum_WHITE NS_SWIFT_NAME(white) = 1,",
         "  Color_Enum_BLUE NS_SWIFT_NAME(blue) = 2,",
@@ -561,10 +561,10 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "Color", "Color.h");
     assertTranslation(translation, "@interface Color : JavaLangEnum");
     translation = getTranslatedFile("Color.m");
-    assertTranslation(translation, "int rgb_;");
+    assertTranslation(translation, "int32_t rgb_;");
     assertTranslatedLines(translation,
         "void Color_initWithInt_withNSString_withInt_("
-        + "Color *self, jint rgb, NSString *__name, jint __ordinal) {");
+        + "Color *self, int32_t rgb, NSString *__name, int32_t __ordinal) {");
   }
 
   public void testEnumWithMultipleConstructors() throws IOException {
@@ -585,22 +585,22 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         "void Color_initWithInt_withBoolean_withNSString_withInt_("
-            + "Color *self, jint rgb, bool primary, NSString *__name, jint __ordinal) {",
+            + "Color *self, int32_t rgb, bool primary, NSString *__name, int32_t __ordinal) {",
         "  JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);",
         "  self->rgb_ = rgb;",
         "  self->primary_ = primary;",
         "}");
     assertTranslatedLines(translation,
         "void Color_initWithInt_withNSString_withInt_("
-          + "Color *self, jint rgb, NSString *__name, jint __ordinal) {",
+          + "Color *self, int32_t rgb, NSString *__name, int32_t __ordinal) {",
         "  Color_initWithInt_withBoolean_withNSString_withInt_("
           + "self, rgb, true, __name, __ordinal);",
         "}");
     assertTranslation(translation,
         "Color_initWithInt_withBoolean_withNSString_withInt_("
-          + "e, (jint) 0xffffff, false, @\"WHITE\", 1);");
+          + "e, (int32_t) 0xffffff, false, @\"WHITE\", 1);");
     assertTranslation(translation,
-        "Color_initWithInt_withNSString_withInt_(e, (jint) 0x0000ff, @\"BLUE\", 2);");
+        "Color_initWithInt_withNSString_withInt_(e, (int32_t) 0x0000ff, @\"BLUE\", 2);");
   }
 
   public void testEnumInitialization() throws IOException {
@@ -669,7 +669,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public enum MyEnum { ONE, TWO, THREE }",
         "MyEnum", "MyEnum.h");
-    assertTranslation(translation, "typedef NS_ENUM(jint, MyEnum_Enum) {");
+    assertTranslation(translation, "typedef NS_ENUM(int32_t, MyEnum_Enum) {");
     assertTranslation(translation, "@interface MyEnum : JavaLangEnum");
     assertTranslation(translation, "FOUNDATION_EXPORT MyEnum *MyEnum_values_[];");
     assertTranslation(translation, "inline MyEnum *MyEnum_get_ONE(void);");
@@ -1020,10 +1020,10 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@interface Test : JavaLangEnum");
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "NSString *name_Test_;");
-    assertTranslation(translation, "int ordinal_Test_;");
+    assertTranslation(translation, "int32_t ordinal_Test_;");
     assertTranslation(translation,
         "void Test_initWithNSString_withInt_withNSString_withInt_("
-        + "Test *self, NSString *name, jint ordinal, NSString *__name, jint __ordinal) {");
+        + "Test *self, NSString *name, int32_t ordinal, NSString *__name, int32_t __ordinal) {");
   }
 
   public void testDeprecatedEnumType() throws IOException {
@@ -1207,11 +1207,11 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String barHeader = translateCombinedFiles("com/Bar", ".h", "bar/BarFoo.java");
     assertTranslatedLines(
         barHeader,
-        "- (NSString *)getElementByIndexWithInt:(jint)index"
+        "- (NSString *)getElementByIndexWithInt:(int32_t)index"
             + " NS_SWIFT_NAME(getElementByInt(index:));");
     assertTranslatedLines(
         fooHeader,
-        "- (id)getElementByIndexWithInt:(jint)index NS_SWIFT_NAME(getElementBy(index:));");
+        "- (id)getElementByIndexWithInt:(int32_t)index NS_SWIFT_NAME(getElementBy(index:));");
   }
 
   public void testSwiftNameAbnormalArgumentNames() throws IOException {
@@ -1372,12 +1372,12 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "#pragma mark Public",
         "",
-        "- (instancetype)initWithInt:(jint)i;",
+        "- (instancetype)initWithInt:(int32_t)i;",
         "",
         "#pragma mark Protected",
         "",
         "- (void)gnuWithNSString:(NSString *)s",
-                        "withInt:(jint)i",
+                        "withInt:(int32_t)i",
            "withJavaLangRunnable:(id<JavaLangRunnable>)r;",
         "",
         "#pragma mark Package-Private",
@@ -1412,7 +1412,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   public void testDefaultConstructorDisallowed() throws IOException {
     options.setDisallowInheritedConstructors(true);
     String translation = translateSourceFile("class Test { Test(int i) {} }", "Test", "Test.h");
-    assertTranslation(translation, "- (instancetype)initWithInt:(jint)i;");
+    assertTranslation(translation, "- (instancetype)initWithInt:(int32_t)i;");
     assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
   }
 
@@ -1529,7 +1529,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
     String innerHeader = getTranslatedFile("foo/Test_Inner.h");
     assertTranslation(innerHeader, "@class FooTest;");
-    assertTranslation(innerHeader, "- (jint)answerToEverything;");
+    assertTranslation(innerHeader, "- (int32_t)answerToEverything;");
     assertNotInTranslation(innerHeader, "Bar");
     assertNotInTranslation(innerHeader, "Mumble");
 

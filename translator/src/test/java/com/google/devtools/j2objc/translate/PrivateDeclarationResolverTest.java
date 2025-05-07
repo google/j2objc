@@ -53,7 +53,7 @@ public class PrivateDeclarationResolverTest extends GenerationTest {
         "class Test { private static class Base { protected int field; protected void method() {}"
         + " protected static void staticMethod() {} } public static class Foo extends Base {} }",
         "Test", "Test.h");
-    assertTranslation(translation, "jint field_");
+    assertTranslation(translation, "int32_t field_");
     assertTranslation(translation, "- (void)method;");
     assertTranslation(translation, "+ (void)staticMethod;");
     assertTranslation(translation, "FOUNDATION_EXPORT void Test_Base_staticMethod(void);");

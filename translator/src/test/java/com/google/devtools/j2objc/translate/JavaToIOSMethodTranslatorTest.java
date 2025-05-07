@@ -92,7 +92,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("jint test = ((jint) [@\"foo\" hash]);", result);
+    assertEquals("int32_t test = ((int32_t) [@\"foo\" hash]);", result);
   }
 
   public void testClassGetSuperclass() throws IOException {
@@ -143,7 +143,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(9, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("jint idx = [s java_indexOf:'g'];", result);
+    assertEquals("int32_t idx = [s java_indexOf:'g'];", result);
     result = generateStatement(stmts.get(2));
     assertEquals("idx = [s java_indexOfString:@\"brillig\"];", result);
     result = generateStatement(stmts.get(3));

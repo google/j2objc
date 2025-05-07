@@ -98,8 +98,8 @@ typedef struct J2ObjcNameMapping {
 typedef struct J2ObjcResourceDefinition {
   const char * const full_name;
   const int8_t * const data;
-  const jint length;
-  const jint name_hash;
+  const int32_t length;
+  const int32_t name_hash;
 } J2ObjcResourceDefinition;
 
 // Preprocessor trick to add quotes to a macro arg:
@@ -115,8 +115,8 @@ typedef struct J2ObjcResourceDefinition {
   static J2ObjcResourceDefinition BUF##_resource __attribute__((used, no_sanitize("address"), \
   section("__DATA,__j2objcresource"))) = { QUOTE(BUF), BUF, LEN, HASH };
 
-FOUNDATION_EXPORT jint JreIndexOfStr(NSString *str, NSString **values, jint size);
-FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordinal);
+FOUNDATION_EXPORT int32_t JreIndexOfStr(NSString *str, NSString **values, int32_t size);
+FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, int32_t ordinal);
 
 /*!
  * Macros that simplify the syntax for loading of static fields.
@@ -195,9 +195,9 @@ FOUNDATION_EXPORT NSString *JreEnumConstantName(IOSClass *enumClass, jint ordina
  */
 __attribute__((always_inline))
 __attribute__((no_sanitize("float-cast-overflow")))
-inline jint JreFpToInt(double d) {
-  jint tmp = (jint)d;
-  return tmp == (jint)0x80000000 ? (d != d ? 0 : (d >= 0 ? 0x7FFFFFFF : tmp)) : tmp;
+inline int32_t JreFpToInt(double d) {
+  int32_t tmp = (int32_t)d;
+  return tmp == (int32_t)0x80000000 ? (d != d ? 0 : (d >= 0 ? 0x7FFFFFFF : tmp)) : tmp;
 }
 __attribute__((always_inline))
 __attribute__((no_sanitize("float-cast-overflow")))
@@ -261,22 +261,22 @@ inline int8_t JreFpToByte(double d) {
   ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Divide, /, PNAME, PTYPE, CAST) \
   MOD_ASSIGN_FP_DEFN(NAME, TYPE, MODFUNC, PNAME, PTYPE, CAST)
 
-ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Char, uint16_t, I, jint)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Char, uint16_t, I, int32_t)
 ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Char, uint16_t, J, int64_t)
 ARITHMETIC_FP_OPERATORS_DEFN(Char, uint16_t, F, float, fmodf, JreFpToChar)
 ARITHMETIC_FP_OPERATORS_DEFN(Char, uint16_t, D, double, fmod, JreFpToChar)
-ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Byte, int8_t, I, jint)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Byte, int8_t, I, int32_t)
 ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Byte, int8_t, J, int64_t)
 ARITHMETIC_FP_OPERATORS_DEFN(Byte, int8_t, F, float, fmodf, JreFpToByte)
 ARITHMETIC_FP_OPERATORS_DEFN(Byte, int8_t, D, double, fmod, JreFpToByte)
-ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Short, int16_t, I, jint)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Short, int16_t, I, int32_t)
 ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Short, int16_t, J, int64_t)
 ARITHMETIC_FP_OPERATORS_DEFN(Short, int16_t, F, float, fmodf, JreFpToShort)
 ARITHMETIC_FP_OPERATORS_DEFN(Short, int16_t, D, double, fmod, JreFpToShort)
-ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Int, jint, I, jint)
-ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Int, jint, J, int64_t)
-ARITHMETIC_FP_OPERATORS_DEFN(Int, jint, F, float, fmodf, JreFpToInt)
-ARITHMETIC_FP_OPERATORS_DEFN(Int, jint, D, double, fmod, JreFpToInt)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Int, int32_t, I, int32_t)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Int, int32_t, J, int64_t)
+ARITHMETIC_FP_OPERATORS_DEFN(Int, int32_t, F, float, fmodf, JreFpToInt)
+ARITHMETIC_FP_OPERATORS_DEFN(Int, int32_t, D, double, fmod, JreFpToInt)
 ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Long, int64_t, J, int64_t)
 ARITHMETIC_FP_OPERATORS_DEFN(Long, int64_t, F, float, fmodf, JreFpToLong)
 ARITHMETIC_FP_OPERATORS_DEFN(Long, int64_t, D, double, fmod, JreFpToLong)
@@ -330,12 +330,12 @@ ARITHMETIC_FP_OPERATORS_DEFN(Double, double, D, double, fmod, (double))
   }
 
 // Shift masks are determined by the JLS spec, section 15.19.
-SHIFT_OPERATORS_DEFN(32, jint, uint32_t, 0x1f)
+SHIFT_OPERATORS_DEFN(32, int32_t, uint32_t, 0x1f)
 SHIFT_OPERATORS_DEFN(64, int64_t, uint64_t, 0x3f)
 SHIFT_ASSIGN_OPERATORS_DEFN(Char, uint16_t, uint32_t, 0x1f)
 SHIFT_ASSIGN_OPERATORS_DEFN(Byte, int8_t, uint32_t, 0x1f)
 SHIFT_ASSIGN_OPERATORS_DEFN(Short, int16_t, uint32_t, 0x1f)
-SHIFT_ASSIGN_OPERATORS_DEFN(Int, jint, uint32_t, 0x1f)
+SHIFT_ASSIGN_OPERATORS_DEFN(Int, int32_t, uint32_t, 0x1f)
 SHIFT_ASSIGN_OPERATORS_DEFN(Long, int64_t, uint64_t, 0x3f)
 #undef SHIFT_OPERATORS_DEFN
 #undef SHIFT_ASSIGN_OPERATORS_DEFN
@@ -356,7 +356,7 @@ BIT_OPERATORS_DEFN(Boolean, bool)
 BIT_OPERATORS_DEFN(Char, uint16_t)
 BIT_OPERATORS_DEFN(Byte, int8_t)
 BIT_OPERATORS_DEFN(Short, int16_t)
-BIT_OPERATORS_DEFN(Int, jint)
+BIT_OPERATORS_DEFN(Int, int32_t)
 BIT_OPERATORS_DEFN(Long, int64_t)
 #undef BIT_OPERATOR_DEFN
 #undef BIT_OPERATORS_DEFN
@@ -369,9 +369,9 @@ BIT_OPERATORS_DEFN(Long, int64_t)
     return op1 OP op2; \
   }
 
-JRE_HANDLE_DIV_BY_ZERO(IntDiv, jint, /);
+JRE_HANDLE_DIV_BY_ZERO(IntDiv, int32_t, /);
 JRE_HANDLE_DIV_BY_ZERO(LongDiv, int64_t, /);
-JRE_HANDLE_DIV_BY_ZERO(IntMod, jint, %);
+JRE_HANDLE_DIV_BY_ZERO(IntMod, int32_t, %);
 JRE_HANDLE_DIV_BY_ZERO(LongMod, int64_t, %);
 
 // Support for the "==" and "!=" operators. Objective C coalescing of

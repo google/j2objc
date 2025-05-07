@@ -59,7 +59,7 @@
 - (uint16_t)getCharWithId:(id)object;
 - (double)getDoubleWithId:(id)object;
 - (float)getFloatWithId:(id)object;
-- (jint)getIntWithId:(id)object;
+- (int32_t)getIntWithId:(id)object;
 - (int64_t)getLongWithId:(id)object;
 - (int16_t)getShortWithId:(id)object;
 
@@ -70,12 +70,12 @@
 - (void)setCharWithId:(id)object withChar:(uint16_t)value;
 - (void)setDoubleWithId:(id)object withDouble:(double)value;
 - (void)setFloatWithId:(id)object withFloat:(float)value;
-- (void)setIntWithId:(id)object withInt:(jint)value;
+- (void)setIntWithId:(id)object withInt:(int32_t)value;
 - (void)setLongWithId:(id)object withLong:(int64_t)value;
 - (void)setShortWithId:(id)object withShort:(int16_t)value;
 
 - (IOSClass *)getDeclaringClass;
-- (jint)getModifiers;
+- (int32_t)getModifiers;
 - (IOSClass *)getType;
 - (bool)isEnumConstant;
 

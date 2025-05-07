@@ -43,11 +43,11 @@ public class RewriterTest extends GenerationTest {
         + "if (n == 5) continue outer; "
         + "else break outer; } } } }", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "jint i = 0;",
+        "int32_t i = 0;",
         "for (; i < 10; i++) {",
         "{",
-        "for (jint j = 0; j < 10; j++) {",
-        "jint n = i + j;",
+        "for (int32_t j = 0; j < 10; j++) {",
+        "int32_t n = i + j;",
         "if (n == 5) goto continue_outer;",
         "else goto break_outer;",
         "}",
@@ -132,7 +132,7 @@ public class RewriterTest extends GenerationTest {
         "public class Test { void test() { int[] a = { 1, 2, 3 }; char b[] = { '4', '5' }; } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "IOSIntArray *a = [IOSIntArray arrayWithInts:(jint[]){ 1, 2, 3 } count:3];",
+        "IOSIntArray *a = [IOSIntArray arrayWithInts:(int32_t[]){ 1, 2, 3 } count:3];",
         "IOSCharArray *b = [IOSCharArray arrayWithChars:(unichar[]){ '4', '5' } count:2];");
   }
 
@@ -147,7 +147,7 @@ public class RewriterTest extends GenerationTest {
         "+ (void)initialize {",
         "if (self == [Test class]) {",
         "JreStrongAssignAndConsume(&Test_a, "
-            + "[IOSIntArray newArrayWithInts:(jint[]){ 1, 2, 3 } count:3]);",
+            + "[IOSIntArray newArrayWithInts:(int32_t[]){ 1, 2, 3 } count:3]);",
         "JreStrongAssignAndConsume(&Test_b, "
             + "[IOSCharArray newArrayWithChars:(unichar[]){ '4', '5' } count:2]);");
   }
@@ -157,7 +157,7 @@ public class RewriterTest extends GenerationTest {
         "class Test { int[][] a = { { 1, 2, 3 } }; }", "Test", "Test.m");
     assertTranslation(translation,
         "[IOSObjectArray newArrayWithObjects:(id[]){"
-        + " [IOSIntArray arrayWithInts:(jint[]){ 1, 2, 3 } count:3] } count:1"
+        + " [IOSIntArray arrayWithInts:(int32_t[]){ 1, 2, 3 } count:3] } count:1"
         + " type:IOSClass_intArray(1)]");
   }
 
@@ -165,7 +165,7 @@ public class RewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { Test(int[] i) {} Test() { this(new int[] {}); } }", "Test", "Test.m");
     assertTranslation(translation,
-        "Test_initWithIntArray_(self, [IOSIntArray arrayWithInts:(jint[]){  } count:0]);");
+        "Test_initWithIntArray_(self, [IOSIntArray arrayWithInts:(int32_t[]){  } count:0]);");
   }
 
   public void testInterfaceFieldsAreStaticFinal() throws IOException {
@@ -201,7 +201,7 @@ public class RewriterTest extends GenerationTest {
         "class Test implements Comparable<Test> { int i; "
         + "  public int compareTo(Test t) { return i - t.i; } }", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (jint)compareToWithId:(Test *)t {",
+        "- (int32_t)compareToWithId:(Test *)t {",
         "cast_chk(t, [Test class]);");
   }
 
@@ -243,12 +243,12 @@ public class RewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { int i1, i2[], i3[][], i4[][][], i5[][], i6; }", "Test", "Test.h");
     assertTranslatedLines(translation,
-        "jint i1_;",
+        "int32_t i1_;",
         "IOSIntArray *i2_;",
         "IOSObjectArray *i3_;",
         "IOSObjectArray *i4_;",
         "IOSObjectArray *i5_;",
-        "jint i6_;");
+        "int32_t i6_;");
   }
 
   public void testExtraDimensionsInVariableDeclarationStatement() throws IOException {

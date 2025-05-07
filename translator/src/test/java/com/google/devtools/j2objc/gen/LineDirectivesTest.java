@@ -75,7 +75,7 @@ public class LineDirectivesTest extends GenerationTest {
         "A", "A.m");
     assertTranslation(translation, "#line 1 \"A.java\"");
     assertTranslation(translation, "#line 2\n- (NSString *)test");
-    assertTranslation(translation, "#line 4\n  jint i = 0;");
+    assertTranslation(translation, "#line 4\n  int32_t i = 0;");
     assertTranslation(translation, "#line 7\n  return JavaLangInteger_toStringWithInt_(i);");
   }
 
@@ -96,16 +96,16 @@ public class LineDirectivesTest extends GenerationTest {
         + "  }}",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "for (jint i = 0; i < 10; i++)",
+        "for (int32_t i = 0; i < 10; i++)",
         "#line 4",
         "if ((JreIntMod(n, 2)) == 0)",
         "#line 5",
         "n += i;",
         "",
         "#line 7",
-        "for (jint j = 0; j < 100; j++)",
+        "for (int32_t j = 0; j < 100; j++)",
         "#line 8",
-        "for (jint k = 0; k < 1000; k++)",
+        "for (int32_t k = 0; k < 1000; k++)",
         "#line 9",
         "n += j + k;",
         "",
@@ -173,10 +173,10 @@ public class LineDirectivesTest extends GenerationTest {
     // make sure lines get re-synced when files are interwoven
     assertTranslatedLines(translation,
         "#line 3",
-        "- (NSString *)DummyWithInt:(jint)i {");
+        "- (NSString *)DummyWithInt:(int32_t)i {");
     assertTranslatedLines(translation,
         "#line 9",
-        "- (NSString *)DummyTwoWithInt:(jint)i {");
+        "- (NSString *)DummyTwoWithInt:(int32_t)i {");
   }
 
   public void testSyncAfterMultilineMethodSignature() throws IOException {
@@ -189,9 +189,9 @@ public class LineDirectivesTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "#line 2",
-        "- (jint)sumWithInt:(jint)a",
-        "           withInt:(jint)b",
-        "           withInt:(jint)c {",
+        "- (int32_t)sumWithInt:(int32_t)a",
+        "           withInt:(int32_t)b",
+        "           withInt:(int32_t)c {",
         "",
         "#line 3",
         "  return a + b + c;",

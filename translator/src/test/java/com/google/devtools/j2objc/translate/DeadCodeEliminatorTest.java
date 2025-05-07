@@ -179,9 +179,9 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     String translation = translateSourceFile(source, "Foo", "Foo.h");
     assertTranslation(translation, "#define Foo_y 0");
     translation = getTranslatedFile("Foo.m");
-    assertNotInTranslation(translation, "jint Foo_x_");
+    assertNotInTranslation(translation, "int32_t Foo_x_");
     assertNotInTranslation(translation, "Foo_x_ = Foo_f()");
-    assertNotInTranslation(translation, "+ (jint)f");
+    assertNotInTranslation(translation, "+ (int32_t)f");
     assertNotInTranslation(translation, "bar");
   }
 
@@ -263,7 +263,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertNotInTranslation(translation, "Foo *this$0_;");
     assertNotInTranslation(translation, "JreStrongAssign(&self->this$0_, outer$");
     assertNotInTranslation(translation, "self->z_ = x;");
-    assertNotInTranslation(translation, "- (jint)f");
+    assertNotInTranslation(translation, "- (int32_t)f");
   }
 
   public void testDeadClass_supertypeRemoval() throws IOException {

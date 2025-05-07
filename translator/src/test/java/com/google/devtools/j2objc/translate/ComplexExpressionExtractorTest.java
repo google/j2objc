@@ -71,8 +71,8 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { int test() { return 1 + 2 - 3 + 4 - 5 + 6 - 7 + 8 - 9; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "int complex$1 = 1 + 2 - 3 + 4;");
-    assertTranslation(translation, "int complex$2 = complex$1 - 5 + 6 - 7;");
+    assertTranslation(translation, "int32_t complex$1 = 1 + 2 - 3 + 4;");
+    assertTranslation(translation, "int32_t complex$2 = complex$1 - 5 + 6 - 7;");
     assertTranslation(translation, "return complex$2 + 8 - 9;");
   }
 

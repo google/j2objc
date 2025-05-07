@@ -43,7 +43,7 @@ public class ObjectiveCNativeEnumNameTest extends GenerationTest {
         "Color.java");
     String testHeader = translateSourceFile("Color", "Color.h");
 
-    assertTranslation(testHeader, "typedef NS_ENUM(jint, RenamedColor) {");
+    assertTranslation(testHeader, "typedef NS_ENUM(int32_t, RenamedColor) {");
     assertTranslation(testHeader, "RenamedColorRed NS_SWIFT_NAME(red) = 0");
     assertTranslation(testHeader, "RenamedColorWhite NS_SWIFT_NAME(white) = 1");
     assertTranslation(testHeader, "RenamedColorBlue NS_SWIFT_NAME(blue) = 2");

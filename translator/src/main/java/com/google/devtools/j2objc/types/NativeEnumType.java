@@ -45,7 +45,7 @@ public class NativeEnumType extends NativeType {
 
   @Override
   public String getForwardDeclaration() {
-    return UnicodeUtils.format("%s : jint", getName());
+    return UnicodeUtils.format("%s : int32_t", getName());
   }
 
   @Override

@@ -43,9 +43,9 @@ public class VariableRenamerTest extends GenerationTest {
         + "class Subclass extends Example { int size; }"
         + "class Subsubclass extends Subclass { int size; }",
         "Example", "Example.h");
-    assertTranslation(translation, "int size_;");
-    assertTranslation(translation, "int size_Subclass_;");
-    assertTranslation(translation, "int size_Subsubclass_;");
+    assertTranslation(translation, "int32_t size_;");
+    assertTranslation(translation, "int32_t size_Subclass_;");
+    assertTranslation(translation, "int32_t size_Subsubclass_;");
   }
 
   public void testOverriddenGenericClass() throws IOException {
@@ -54,7 +54,7 @@ public class VariableRenamerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class B<T> extends A { int foo; int test() { return C.I; } }", "B", "B.h");
     // Make sure that "C" does not cause "foo" to ge renamed to "foo_B<Object>_".
-    assertTranslation(translation, "int foo_B_;");
+    assertTranslation(translation, "int32_t foo_B_;");
   }
 
   public void testStaticFieldAndMethodCollision() throws IOException {
@@ -64,11 +64,11 @@ public class VariableRenamerTest extends GenerationTest {
     String impl = getTranslatedFile("Test.m");
     // The variable is renamed.
     assertTranslation(header, "#define Test_foo_ 3");
-    assertTranslation(header, "J2OBJC_STATIC_FIELD_CONSTANT(Test, foo_, jint)");
+    assertTranslation(header, "J2OBJC_STATIC_FIELD_CONSTANT(Test, foo_, int32_t)");
     // The functionized static method is unchanged.
     assertTranslation(header, "void Test_foo(void);");
     // Test static field and non-static method collision.
-    assertTranslation(impl, "jint Test_bar_");
+    assertTranslation(impl, "int32_t Test_bar_");
     assertTranslation(impl, "void Test_bar(Test *self)");
   }
 

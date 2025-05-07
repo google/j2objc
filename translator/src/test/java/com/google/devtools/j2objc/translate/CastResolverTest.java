@@ -41,7 +41,7 @@ public class CastResolverTest extends GenerationTest {
         + "  String b = \"foo\" + a.hashCode() + \"bar\" + a.hashCode() + \"baz\"; } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "JreStrcat(\"$I$I$\", @\"foo\", ((jint) [a hash]), @\"bar\", ((jint) [a hash]),"
+        "JreStrcat(\"$I$I$\", @\"foo\", ((int32_t) [a hash]), @\"bar\", ((int32_t) [a hash]),"
           + " @\"baz\")");
   }
 
@@ -50,7 +50,7 @@ public class CastResolverTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("jint i = ((jint) [create_JavaLangThrowable_init() hash]);", result);
+    assertEquals("int32_t i = ((int32_t) [create_JavaLangThrowable_init() hash]);", result);
   }
 
   // b/5872710: generic return type needs to be cast if chaining invocations.
@@ -60,7 +60,7 @@ public class CastResolverTest extends GenerationTest {
       + "  int length; static ArrayList<String> strings = new ArrayList<String>();"
       + "  public static void main(String[] args) { int n = strings.get(1).hashCode(); }}",
       "Test", "Test.m");
-    assertTranslation(translation, "((jint) [((NSString *) "
+    assertTranslation(translation, "((int32_t) [((NSString *) "
       + "nil_chk([((JavaUtilArrayList *) nil_chk(Test_strings)) getWithInt:1])) hash]);");
   }
 
@@ -76,7 +76,7 @@ public class CastResolverTest extends GenerationTest {
     // Verify unused return value isn't.
     assertTranslation(translation, "[nil_chk(o) hash];");
     // Verify that super call to hashCode() is cast.
-    assertTranslation(translation, "return ((jint) [super hash]);");
+    assertTranslation(translation, "return ((int32_t) [super hash]);");
   }
 
   public void testDerivedTypeVariableInvocation() throws IOException {
