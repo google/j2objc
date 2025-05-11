@@ -97,7 +97,7 @@ public class OutputStreamWriter extends Writer {
         super(out);
         if (charsetName == null)
             throw new NullPointerException("charsetName");
-        se = StreamEncoder.forOutputStreamWriter(out, this, charsetName);
+        se = StreamEncoder.forOutputStreamWriter(out, this.lock, charsetName);
     }
 
     /**
@@ -108,7 +108,7 @@ public class OutputStreamWriter extends Writer {
     public OutputStreamWriter(OutputStream out) {
         super(out);
         try {
-            se = StreamEncoder.forOutputStreamWriter(out, this, (String)null);
+            se = StreamEncoder.forOutputStreamWriter(out, this.lock, (String)null);
         } catch (UnsupportedEncodingException e) {
             throw new Error(e);
         }
@@ -130,7 +130,7 @@ public class OutputStreamWriter extends Writer {
         super(out);
         if (cs == null)
             throw new NullPointerException("charset");
-        se = StreamEncoder.forOutputStreamWriter(out, this, cs);
+        se = StreamEncoder.forOutputStreamWriter(out, this.lock, cs);
     }
 
     /**
@@ -149,7 +149,7 @@ public class OutputStreamWriter extends Writer {
         super(out);
         if (enc == null)
             throw new NullPointerException("charset encoder");
-        se = StreamEncoder.forOutputStreamWriter(out, this, enc);
+        se = StreamEncoder.forOutputStreamWriter(out, this.lock, enc);
     }
 
     /**
