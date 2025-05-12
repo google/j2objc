@@ -606,7 +606,7 @@ public abstract class GenerationTest extends TestCase {
     GenerationUnit genUnit = new GenerationUnit(unit.getSourceFilePath(), options);
     genUnit.incrementInputs();
     genUnit.addCompilationUnit(unit);
-    TranslationProcessor.generateObjectiveCSource(genUnit);
+    TranslationProcessor.generateObjectiveCSource(genUnit, (headerFile, include) -> {});
     return getTranslatedFile(filename);
   }
 

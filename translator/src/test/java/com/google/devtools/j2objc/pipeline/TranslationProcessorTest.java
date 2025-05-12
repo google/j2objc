@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.pipeline;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.file.RegularInputFile;
@@ -87,5 +89,65 @@ public class TranslationProcessorTest extends GenerationTest {
 
     // Verify A.java wasn't compiled; it has a B reference, but B doesn't depend on it.
     assertFalse(new File(tempDir, "A.m").exists());
+  }
+
+  public void testProcessIncludeCycleWithSegmentedHeaders() throws IOException {
+    options.load(new String[] {"--segmented-headers"});
+    // Should not fail.
+    doProcessIncludeCycle();
+
+    assertTrue(new File(tempDir, "A.m").exists());
+    assertTrue(new File(tempDir, "B.m").exists());
+  }
+
+  public void testProcessIncludeCycleWithoutSegmentedHeaders() throws IOException {
+    options.load(new String[] {"--no-segmented-headers"});
+    try {
+      doProcessIncludeCycle();
+      fail("Processing a cycle with segmented headers disabled should fail.");
+    } catch (IllegalArgumentException e) {
+      // Expected.
+    }
+  }
+
+  private void doProcessIncludeCycle() throws IOException {
+    String fileA = addSourceFile("interface A {} class BI implements B {}", "A.java");
+    String fileB = addSourceFile("interface B {} class AI implements A {}", "B.java");
+
+    GenerationBatch batch = new GenerationBatch(options);
+    batch.addSource(new RegularInputFile(fileA, "A.java"));
+    batch.addSource(new RegularInputFile(fileB, "B.java"));
+
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(options), null);
+    processor.processInputs(batch.getInputs());
+  }
+
+  public void testCheckNoCyclesWithoutCycles() {
+    TranslationProcessor.checkNoCycles(
+        ImmutableMap.of(
+            "A.h",
+            ImmutableSet.of("B.h", "C.h", "D.h"),
+            "B.h",
+            ImmutableSet.of("C.h", "D.h"),
+            "C.h",
+            ImmutableSet.of("D.h")));
+  }
+
+  public void testCheckNoCyclesWithCycles() {
+    try {
+      TranslationProcessor.checkNoCycles(
+          ImmutableMap.of(
+              "A.h",
+              ImmutableSet.of("B.h", "E.h"),
+              "B.h",
+              ImmutableSet.of("C.h", "E.h"),
+              "C.h",
+              ImmutableSet.of("D.h"),
+              "D.h",
+              ImmutableSet.of("A.h")));
+      fail("The cycle should be detected and an exception should be thrown.");
+    } catch (IllegalArgumentException e) {
+      // Expected.
+    }
   }
 }

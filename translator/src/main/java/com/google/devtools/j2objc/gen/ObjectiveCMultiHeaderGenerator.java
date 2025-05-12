@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.Import;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * Generates independent Objective-C header files for each type of a compilation unit. These headers
@@ -46,7 +47,7 @@ public class ObjectiveCMultiHeaderGenerator extends ObjectiveCHeaderGenerator {
 
   /** Generates the file header for the outer type. */
   @Override
-  protected void generateFileHeader() {
+  protected void generateFileHeader(Consumer<String> unused) {
     Iterator<GeneratedType> typeIterator = getOrderedTypes().iterator();
     if (typeIterator.hasNext()) {
       GeneratedType outerType = typeIterator.next();
