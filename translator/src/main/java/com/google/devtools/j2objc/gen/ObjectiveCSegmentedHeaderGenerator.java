@@ -40,7 +40,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   }
 
   @Override
-  protected void generateFileHeader() {
+  protected Set<String> generateFileHeader() {
     println("#import <Foundation/Foundation.h>");
     println("#include \"J2ObjC_header.h\"");
     newline();
@@ -69,6 +69,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
       }
       printf("\n#endif // %s_H\n", varPrefix);
     }
+    return Sets.newHashSet();
   }
 
   /**

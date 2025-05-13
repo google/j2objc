@@ -64,6 +64,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -606,7 +607,7 @@ public abstract class GenerationTest extends TestCase {
     GenerationUnit genUnit = new GenerationUnit(unit.getSourceFilePath(), options);
     genUnit.incrementInputs();
     genUnit.addCompilationUnit(unit);
-    TranslationProcessor.generateObjectiveCSource(genUnit);
+    TranslationProcessor.generateObjectiveCSource(genUnit, new HashMap<>());
     return getTranslatedFile(filename);
   }
 

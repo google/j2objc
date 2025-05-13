@@ -46,7 +46,7 @@ public class ObjectiveCMultiHeaderGenerator extends ObjectiveCHeaderGenerator {
 
   /** Generates the file header for the outer type. */
   @Override
-  protected void generateFileHeader() {
+  protected Set<String> generateFileHeader() {
     Iterator<GeneratedType> typeIterator = getOrderedTypes().iterator();
     if (typeIterator.hasNext()) {
       GeneratedType outerType = typeIterator.next();
@@ -59,6 +59,7 @@ public class ObjectiveCMultiHeaderGenerator extends ObjectiveCHeaderGenerator {
         generateInnerHeader(innerType, outputPath, getGenerationUnit(), options);
       }
     }
+    return Sets.newHashSet();
   }
 
   @Override
