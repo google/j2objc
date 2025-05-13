@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.types.Import;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * Generates segmented Objective-C header files from compilation units. In a
@@ -40,7 +41,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   }
 
   @Override
-  protected void generateFileHeader() {
+  protected void generateFileHeader(Consumer<String> unused) {
     println("#import <Foundation/Foundation.h>");
     println("#include \"J2ObjC_header.h\"");
     newline();

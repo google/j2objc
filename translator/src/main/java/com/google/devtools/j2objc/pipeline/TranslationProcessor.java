@@ -15,6 +15,8 @@
 package com.google.devtools.j2objc.pipeline;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Joiner;
+import com.google.common.collect.HashMultimap;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.DebugASTDump;
 import com.google.devtools.j2objc.gen.GenerationUnit;
@@ -74,8 +76,12 @@ import com.google.devtools.j2objc.util.ExternalAnnotations;
 import com.google.devtools.j2objc.util.Parser;
 import com.google.devtools.j2objc.util.TimeTracker;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -127,9 +133,11 @@ public class TranslationProcessor extends FileProcessor {
 
   @Override
   protected void processOutputs(Iterable<ProcessingContext> outputs) {
+    HashMultimap<String, String> headerIncludesMap = HashMultimap.create();
     for (ProcessingContext output : outputs) {
-      generateObjectiveCSource(output.getGenerationUnit());
+      generateObjectiveCSource(output.getGenerationUnit(), headerIncludesMap::put);
     }
+    checkNoCycles(headerIncludesMap.asMap());
   }
 
   /**
@@ -353,7 +361,8 @@ public class TranslationProcessor extends FileProcessor {
   }
 
   @VisibleForTesting
-  public static void generateObjectiveCSource(GenerationUnit unit) {
+  public static void generateObjectiveCSource(
+      GenerationUnit unit, BiConsumer<String, String> headerIncludeCollector) {
     assert unit.getOutputPath() != null;
     assert unit.isFullyParsed();
     TimeTracker ticker = TimeTracker.getTicker(unit.getSourceName(), unit.options().timingLevel());
@@ -370,7 +379,9 @@ public class TranslationProcessor extends FileProcessor {
     } else if (unit.options().generateSegmentedHeaders()) {
       ObjectiveCSegmentedHeaderGenerator.generate(unit);
     } else {
-      ObjectiveCHeaderGenerator.generate(unit);
+      // Only need to populate headerIncludesMap in this case, since segmented or separate headers
+      // cannot produce include cycles.
+      ObjectiveCHeaderGenerator.generate(unit, headerIncludeCollector);
     }
     ticker.tick("Header generation");
 
@@ -415,5 +426,64 @@ public class TranslationProcessor extends FileProcessor {
         closureQueue.addName(qualifiedName);
       }
     }
+  }
+
+  @VisibleForTesting
+  static void checkNoCycles(Map<String, Collection<String>> headerIncludesMap) {
+    List<String> cycle = findCycle(headerIncludesMap);
+    if (!cycle.isEmpty()) {
+      ErrorUtil.error(
+          "This target contains an include cycle, but segmented headers are disabled. Enable"
+              + " segmented headers and try again. Cycle:\n"
+              + Joiner.on("\n").join(cycle));
+    }
+  }
+
+  /**
+   * Looks for a cycle in the map. If a cycle is found, the path argument is populated with the path
+   * that found the cycle (in reverse order).
+   */
+  private static List<String> findCycle(Map<String, Collection<String>> headerIncludesMap) {
+    HashSet<String> finished = new HashSet<>();
+    HashSet<String> visited = new HashSet<>();
+    ArrayList<String> path = new ArrayList<>();
+    for (String header : headerIncludesMap.keySet()) {
+      if (findCycle(headerIncludesMap, header, finished, visited, path)) {
+        String cycleHead = path.get(0);
+        return path.subList(0, path.lastIndexOf(cycleHead) + 1);
+      }
+    }
+    return new ArrayList<>();
+  }
+
+  /**
+   * Looks for a cycle in the map, starting at currentPath. If a cycle is found, the path argument
+   * is populated with the path that found the cycle (in reverse order).
+   */
+  private static boolean findCycle(
+      Map<String, Collection<String>> headerIncludesMap,
+      String currentPath,
+      Set<String> finished,
+      Set<String> visited,
+      List<String> path) {
+    if (finished.contains(currentPath)) {
+      return false;
+    }
+    if (visited.contains(currentPath)) {
+      path.add(currentPath);
+      return true;
+    }
+    visited.add(currentPath);
+    Collection<String> includes = headerIncludesMap.get(currentPath);
+    if (includes != null) {
+      for (String include : includes) {
+        if (findCycle(headerIncludesMap, include, finished, visited, path)) {
+          path.add(currentPath);
+          return true;
+        }
+      }
+    }
+    finished.add(currentPath);
+    return false;
   }
 }
