@@ -21,6 +21,7 @@
 //
 
 #include "jni.h"
+#import <Foundation/Foundation.h>
 
 #include "IOSArray.h"
 #include "IOSClass.h"
@@ -28,6 +29,7 @@
 #include "IOSPrimitiveArray.h"
 #include "IOSReflection.h"
 #include "java/lang/ClassNotFoundException.h"
+#include "java/lang/Error.h"
 #include "java/lang/InstantiationException.h"
 #include "java/lang/Throwable.h"
 #include "java/lang/reflect/Constructor.h"
@@ -38,6 +40,8 @@
 #include "java/nio/DirectByteBuffer.h"
 
 #define null_chk(p) (void)nil_chk(p)
+
+static NSString *JNI_EXCEPTION_KEY = @"JNI_EXCEPTION_KEY";
 
 static IOSClass *IOSClass_forName(const char *name) {
   NSString *nameString = [NSString stringWithUTF8String:name];
@@ -123,6 +127,16 @@ NSString *JNIFormatMethodSignature(JNIMethodSignature sig) {
   }
   result = [result stringByAppendingString:@")"];
   return result;
+}
+
+static jthrowable JNIGetCurrentThreadException(JNIEnv *env) {
+  NSMutableDictionary *threadDictionary = [[NSThread currentThread] threadDictionary];
+  return threadDictionary[JNI_EXCEPTION_KEY];
+}
+
+static void JNISetCurrentThreadException(JNIEnv *env, jthrowable exception) {
+  NSMutableDictionary *threadDictionary = [[NSThread currentThread] threadDictionary];
+  threadDictionary[JNI_EXCEPTION_KEY] = exception;
 }
 
 static jclass FindClass(JNIEnv *env, const char *name) {
@@ -306,6 +320,10 @@ static jobject NewDirectByteBuffer(JNIEnv *env, void *address, jlong capacity) {
                                                         withInt:(jint)capacity]);
 }
 
+static jboolean ExceptionCheck(JNIEnv *env) {
+  return JNIGetCurrentThreadException(env) ? JNI_TRUE : JNI_FALSE;
+}
+
 static jdoubleArray NewDoubleArray(JNIEnv *env, jsize length) {
   return [IOSDoubleArray arrayWithLength:length];
 }
@@ -443,6 +461,7 @@ SET_ARRAY_REGION_IMPL(Double, jdouble)
 
 static jint Throw(JNIEnv *env, jthrowable obj) {
   (void)nil_chk(obj);
+  JNISetCurrentThreadException(env, obj);
   @throw obj;
   return 0;
 }
@@ -451,7 +470,7 @@ static jint ThrowNew(JNIEnv *env, jclass clazz, const char *message) {
   (void)nil_chk(clazz);
   NSString *msg = [NSString stringWithUTF8String:message];
   id exc = [(JavaLangThrowable *) [((IOSClass *) clazz).objcClass alloc] initWithNSString:msg];
-  @throw AUTORELEASE(exc);
+  Throw(env, AUTORELEASE(exc));
   return 0;
 }
 
@@ -460,8 +479,24 @@ static jint EnsureLocalCapacity(JNIEnv *env, jint capacity) {
   return 0;
 }
 
+static jthrowable ExceptionOccurred(JNIEnv *env) {
+  return JNIGetCurrentThreadException(env);
+}
+
+static void ExceptionDescribe(JNIEnv *env) {
+  jthrowable exception = JNIGetCurrentThreadException(env);
+  if (exception) {
+    [exception printStackTrace];
+  }
+}
+
 static void ExceptionClear(JNIEnv *env) {
-  // no-op
+  NSMutableDictionary *threadDictionary = [[NSThread currentThread] threadDictionary];
+  [threadDictionary removeObjectForKey:JNI_EXCEPTION_KEY];
+}
+
+static void FatalError(JNIEnv *env, const char *msg) {
+  ThrowNew(env, JavaLangError_class_(), msg);
 }
 
 static jfieldID GetFieldID(JNIEnv *env, jclass clazz, const char *name, const char *sig) {
@@ -570,8 +605,13 @@ static jobject NewObject(JNIEnv *env, jclass clazz, jmethodID methodID, ...) {
 }
 
 static void CallMethodA(JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args, jvalue *result) {
-  [(JavaLangReflectMethod *)methodID
-      jniInvokeWithId:obj args:(const J2ObjcRawValue *)args result:(J2ObjcRawValue *)result];
+  @try {
+    [(JavaLangReflectMethod *)methodID
+        jniInvokeWithId:obj args:(const J2ObjcRawValue *)args result:(J2ObjcRawValue *)result];
+  } @catch (JavaLangThrowable *e) {
+    // Throw() saves the exception to the current thread's exception table.
+    Throw(env, e);
+  }
 }
 
 static void CallMethodV(JNIEnv *env, jobject obj, jmethodID methodID, va_list args, jvalue *result) {
@@ -856,7 +896,10 @@ static struct JNINativeInterface JNI_JNIEnvTable = {
   &Throw,
   &ThrowNew,
   &EnsureLocalCapacity,
+  &ExceptionOccurred,
+  &ExceptionDescribe,
   &ExceptionClear,
+  &FatalError,
   &NewGlobalRef,
   &NewLocalRef,
   &DeleteGlobalRef,
@@ -922,6 +965,7 @@ static struct JNINativeInterface JNI_JNIEnvTable = {
   &ReleasePrimitiveArrayCritical,
   &GetStringCritical,
   &ReleaseStringCritical,
+  &ExceptionCheck,
   &NewDirectByteBuffer,
   &GetDirectBufferAddress,
   &GetDirectBufferCapacity,
