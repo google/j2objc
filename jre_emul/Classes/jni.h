@@ -187,7 +187,10 @@ struct JNINativeInterface {
   jint          (*Throw)(JNIEnv*, jthrowable);
   jint          (*ThrowNew)(JNIEnv *, jclass, const char *);
   jint          (*EnsureLocalCapacity)(JNIEnv *, jint);
-  void          (*ExceptionClear)(JNIEnv *);
+  jthrowable    (*ExceptionOccurred)(JNIEnv*);
+  void          (*ExceptionDescribe)(JNIEnv*);
+  void          (*ExceptionClear)(JNIEnv*);
+  void          (*FatalError)(JNIEnv*, const char*);
 
   jobject       (*NewGlobalRef)(JNIEnv*, jobject);
   jobject       (*NewLocalRef)(JNIEnv*, jobject);
@@ -262,6 +265,8 @@ struct JNINativeInterface {
   void          (*ReleasePrimitiveArrayCritical)(JNIEnv*, jarray, void*, jint);
   const jchar*  (*GetStringCritical)(JNIEnv*, jstring, jboolean*);
   void          (*ReleaseStringCritical)(JNIEnv*, jstring, const jchar*);
+
+  jboolean      (*ExceptionCheck)(JNIEnv*);
 
   jobject       (*NewDirectByteBuffer)(JNIEnv*, void*, jlong);
   void*         (*GetDirectBufferAddress)(JNIEnv*, jobject);
@@ -529,8 +534,17 @@ struct _JNIEnv {
     jint EnsureLocalCapacity(jint capacity)
     { return functions->EnsureLocalCapacity(this, capacity); }
 
+    jthrowable ExceptionOccurred()
+    { return functions->ExceptionOccurred(this); }
+
+    void ExceptionDescribe()
+    { functions->ExceptionDescribe(this); }
+
     void ExceptionClear()
     { functions->ExceptionClear(this); }
+
+    void FatalError(const char* msg)
+    { functions->FatalError(this, msg); }
 
     jobject NewGlobalRef(jobject obj)
     { return functions->NewGlobalRef(this, obj); }
@@ -717,6 +731,9 @@ struct _JNIEnv {
 
     void ReleaseStringCritical(jstring string, const jchar* carray)
     { functions->ReleaseStringCritical(this, string, carray); }
+
+    jboolean ExceptionCheck()
+    { return functions->ExceptionCheck(this); }
 
     jobject NewDirectByteBuffer(void* address, jlong capacity)
     { return functions->NewDirectByteBuffer(this, address, capacity); }
