@@ -31,6 +31,7 @@ import com.google.protobuf.Message;
 import com.google.protobuf.MessageLite;
 import com.google.protobuf.ProtocolMessageEnum;
 import com.google.protobuf.ProtocolStringList;
+import com.google.protobuf.TextFormat;
 import foo.bar.baz.PrefixDummy2;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -958,7 +959,7 @@ public class CompatibilityTest extends ProtobufTest {
     // Using the Message type to ensure translation of toString compiles on the
     // interface type.
     Message data = TypicalData.newBuilder().setMyInt(31).build();
-    String result = data.toString();
+    String result = TextFormat.printer().printToString(data);
     assertTrue("Unexpected toString result: " + result,
                // Java and ObjC results are not identical.
                result.contains("my_int: 31") || result.contains("myInt: 31"));
