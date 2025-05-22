@@ -1,0 +1,1 @@
+Source: https://github.com/google/xplat/blob/main/j2kt/annotations/java/com/google/j2kt/annotations/Throws.java

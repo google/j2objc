@@ -39,6 +39,21 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertError("ObjectiveCAdapterMethod must specify a selector.");
   }
 
+  public void testSelectorNotRequired() throws IOException {
+    addSourceFile(
+        "import com.google.j2kt.annotations.Throws; "
+            + "public class NoSelector {"
+            + "  @Throws"
+            + "  public boolean getFalse() { "
+            + "    return false; "
+            + "  }"
+            + "}",
+        "NoSelector.java");
+    @SuppressWarnings("unused")
+    String testHeader = translateSourceFile("NoSelector", "NoSelector.h");
+    assertNoErrors();
+  }
+
   public void testSelectorToArgMatch() throws IOException {
     addSourceFile(
         "import com.google.j2objc.annotations.ObjectiveCAdapterMethod; "
@@ -67,6 +82,21 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     @SuppressWarnings("unused")
     String testHeader = translateSourceFile("NoAdaptations", "NoAdaptations.h");
     assertError("ObjectiveCAdapterMethod must specify at least one adaptation.");
+  }
+
+  public void testAdaptationsNotRequired() throws IOException {
+    addSourceFile(
+        "import com.google.j2kt.annotations.Throws; "
+            + "public class NoAdaptations {"
+            + "  @Throws"
+            + "  public boolean getFalse() { "
+            + "    return false; "
+            + "  }"
+            + "}",
+        "NoAdaptations.java");
+    @SuppressWarnings("unused")
+    String testHeader = translateSourceFile("NoAdaptations", "NoAdaptations.h");
+    assertNoErrors();
   }
 
   public void testVarArgsUnsupported() throws IOException {
@@ -108,9 +138,9 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
             + "}",
         "C.java");
     String testAHeader = translateSourceFile("A", "A.h");
-    String testASource = translateSourceFile("A", "A.m");
+    String testASource = getTranslatedFile("A.m");
     String testCHeader = translateSourceFile("C", "C.h");
-    String testCSource = translateSourceFile("C", "C.m");
+    String testCSource = getTranslatedFile("C.m");
 
     assertNoWarnings();
     assertNoErrors();
@@ -151,7 +181,7 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "C.java");
     String testIHeader = translateSourceFile("I", "I.h");
     String testCHeader = translateSourceFile("C", "C.h");
-    String testCSource = translateSourceFile("C", "C.m");
+    String testCSource = getTranslatedFile("C.m");
 
     assertNoWarnings();
     assertNoErrors();
@@ -209,7 +239,7 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertNoErrors();
 
     assertTranslation(testHeader, "- (NSArray * _Nullable)rewrittenReturnObject:(bool)flag;");
-    assertTranslation(testHeader, "- (id<JavaUtilList> _Nullable)returnObject:(BOOL)flag;");
+    assertTranslation(testHeader, "- (id<JavaUtilList> _Nullable)returnObject:(bool)flag;");
     assertTranslation(testHeader, "- (id<NativeProtocol> _Nullable)returnAdapterProtocol;");
     // In the future when we support written object arguments add here to make sure their
     // nullability is translated.
@@ -230,10 +260,11 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     @SuppressWarnings("unused")
     String testHeader = translateSourceFile("ErrorMethod", "ErrorMethod.h");
     @SuppressWarnings("unused")
-    String testSource = translateSourceFile("ErrorMethod", "ErrorMethod.m");
+    String testSource = getTranslatedFile("ErrorMethod.m");
 
     assertNoWarnings();
-    assertError("ObjectiveCAdapterMethod handling exceptions requires a \"WithError:\" selector.");
+    assertError(
+        "ObjectiveCAdapterMethod handling exceptions requires a \"AndReturnError:\" selector.");
   }
 
   public void testExceptionAsErrorMultiArgNaming() throws IOException {
@@ -251,7 +282,7 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     @SuppressWarnings("unused")
     String testHeader = translateSourceFile("ErrorMethod", "ErrorMethod.h");
     @SuppressWarnings("unused")
-    String testSource = translateSourceFile("ErrorMethod", "ErrorMethod.m");
+    String testSource = getTranslatedFile("ErrorMethod.m");
 
     assertNoWarnings();
     assertError(
@@ -266,11 +297,11 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
             + "import java.util.ArrayList; "
             + "import java.util.List; "
             + "public class ExceptionsAsErrorMethods {"
-            + "  @ObjectiveCAdapterMethod(selector=\"doSomethingWithError:\", "
+            + "  @ObjectiveCAdapterMethod(selector=\"doSomethingAndReturnError:\", "
             + "                           adaptations={Adaptation.EXCEPTIONS_AS_ERRORS})"
             + "  public void doSomething() { "
             + "  }"
-            + "  @ObjectiveCAdapterMethod(selector=\"isItTrueWithError:\", "
+            + "  @ObjectiveCAdapterMethod(selector=\"isItTrueAndReturnError:\", "
             + "                           adaptations={Adaptation.EXCEPTIONS_AS_ERRORS})"
             + "  public boolean getTrue() { "
             + "    return true; "
@@ -296,77 +327,74 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
 
     String testHeader =
         translateSourceFile("ExceptionsAsErrorMethods", "ExceptionsAsErrorMethods.h");
-    String testSource =
-        translateSourceFile("ExceptionsAsErrorMethods", "ExceptionsAsErrorMethods.m");
+    String testSource = getTranslatedFile("ExceptionsAsErrorMethods.m");
 
     assertNoWarnings();
     assertNoErrors();
 
-    assertTranslation(testHeader, "- (BOOL)doSomethingWithError:(NSError **)nativeError;");
+    assertTranslation(testHeader, "- (bool)doSomethingAndReturnError:(NSError **)error;");
     assertTranslatedLines(
         testSource,
-        "- (BOOL)doSomethingWithError:(NSError **)nativeError {",
+        "- (bool)doSomethingAndReturnError:(NSError **)error {",
         "@try {",
         "  [self _doSomething]; ",
         "  return YES; ",
         "} @catch (NSException *e) {",
-        "  if (nativeError) { *nativeError = JREErrorFromException(e); } ",
+        "  if (error) { *error = JREErrorFromException(e); } ",
         "  return NO; ",
         "}");
 
-    assertTranslation(testHeader, "- (bool)isItTrueWithError:(NSError **)nativeError;");
+    assertTranslation(testHeader, "- (bool)isItTrueAndReturnError:(NSError **)error;");
     assertTranslatedLines(
         testSource,
-        "- (bool)isItTrueWithError:(NSError **)nativeError {",
+        "- (bool)isItTrueAndReturnError:(NSError **)error {",
         "@try {",
         "  return [self _getTrue];",
         "} @catch (NSException *e) {",
-        "  if (nativeError) { *nativeError = JREErrorFromException(e); } ",
+        "  if (error) { *error = JREErrorFromException(e); } ",
         "  return 0; ",
         "}");
 
     assertTranslatedLines(
-        testHeader,
-        "- (id<JavaUtilList>)someList:(int32_t)somenumber",
-        "error:(NSError **)nativeError;");
+        testHeader, "- (id<JavaUtilList>)someList:(int32_t)somenumber", "error:(NSError **)error;");
     assertTranslatedLines(
         testSource,
         "- (id<JavaUtilList>)someList:(int32_t)somenumber",
-        "error:(NSError **)nativeError {",
+        "error:(NSError **)error {",
         "@try {",
         "  return [self _getSomeListWithInt:somenumber];",
         "} @catch (NSException *e) {",
-        "  if (nativeError) { *nativeError = JREErrorFromException(e); } ",
+        "  if (error) { *error = JREErrorFromException(e); } ",
         "  return nil; ",
         "}");
 
     assertTranslatedLines(
         testHeader,
         "- (JavaUtilArrayList *)someArrayList:(int32_t)somenumber",
-        "error:(NSError **)nativeError;");
+        "error:(NSError **)error;");
     assertTranslatedLines(
         testSource,
         "- (JavaUtilArrayList *)someArrayList:(int32_t)somenumber",
-        "error:(NSError **)nativeError {",
+        "error:(NSError **)error {",
         "@try {",
         "  return [self _getSomeArrayListWithInt:somenumber];",
         "} @catch (NSException *e) {",
-        "  if (nativeError) { *nativeError = JREErrorFromException(e); } ",
+        "  if (error) { *error = JREErrorFromException(e); } ",
         "  return nil; ",
         "}");
 
     assertTranslatedLines(
         testHeader,
         "- (NSArray *)someListAsNativeArray:(int32_t)somenumber",
-        "error:(NSError **)nativeError;");
+        "error:(NSError **)error;");
     assertTranslatedLines(
         testSource,
         "- (NSArray *)someListAsNativeArray:(int32_t)somenumber",
-        "error:(NSError **)nativeError {",
+        "error:(NSError **)error {",
         "@try {",
         "  return JREAdaptedArrayFromJavaList([self _getSomeNativeArrayWithInt:somenumber]);",
         "} @catch (NSException *e) {",
-        "  if (nativeError) { *nativeError = JREErrorFromException(e); } ",
+        "  if (error) { *error = JREErrorFromException(e); } ",
         "  return nil; ",
         "}");
   }
@@ -382,7 +410,7 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     @SuppressWarnings("unused")
     String testHeader = translateSourceFile("NoBoolMethod", "NoBoolMethod.h");
     assertWarning(
-        "ObjectiveCAdapterMethod native BOOL return type adaptation used on a method without a"
+        "ObjectiveCAdapterMethod native bool return type adaptation used on a method without a"
             + " boolean return.");
   }
 
@@ -418,30 +446,30 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "BooleanMethods.java");
 
     String testHeader = translateSourceFile("BooleanMethods", "BooleanMethods.h");
-    String testSource = translateSourceFile("BooleanMethods", "BooleanMethods.m");
+    String testSource = getTranslatedFile("BooleanMethods.m");
 
     assertNoWarnings();
     assertNoErrors();
 
-    assertTranslation(testHeader, "- (BOOL)isItTrue;");
+    assertTranslation(testHeader, "- (bool)isItTrue;");
     assertTranslatedLines(
-        testSource, "- (BOOL)isItTrue {", "  return [self _getTrue] ? YES : NO;", "}");
+        testSource, "- (bool)isItTrue {", "  return [self _getTrue] ? YES : NO;", "}");
 
-    assertTranslation(testHeader, "+ (BOOL)isSomethingElse;");
+    assertTranslation(testHeader, "+ (bool)isSomethingElse;");
     assertTranslatedLines(
         testSource,
-        "+ (BOOL)isSomethingElse {",
+        "+ (bool)isSomethingElse {",
         "  return [BooleanMethods _getSomethingElse] ? YES : NO;",
         "}");
 
-    assertTranslation(testHeader, "- (void)makeIt:(BOOL)value;");
+    assertTranslation(testHeader, "- (void)makeIt:(bool)value;");
     assertTranslatedLines(
-        testSource, "- (void)makeIt:(BOOL)value {", "  [self _setValueWithBoolean:value];", "}");
+        testSource, "- (void)makeIt:(bool)value {", "  [self _setValueWithBoolean:value];", "}");
 
-    assertTranslation(testHeader, "+ (void)makeSomethingElse:(BOOL)value;");
+    assertTranslation(testHeader, "+ (void)makeSomethingElse:(bool)value;");
     assertTranslatedLines(
         testSource,
-        "+ (void)makeSomethingElse:(BOOL)value {",
+        "+ (void)makeSomethingElse:(bool)value {",
         "  [BooleanMethods _setOtherValueWithBoolean:value];",
         "}");
   }
@@ -488,7 +516,7 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "EnumMethods.java");
 
     String testHeader = translateSourceFile("EnumMethods", "EnumMethods.h");
-    String testSource = translateSourceFile("EnumMethods", "EnumMethods.m");
+    String testSource = getTranslatedFile("EnumMethods.m");
     assertTranslation(testHeader, "enum Color_Enum : int32_t;");
     assertTranslation(testSource, "#include \"Color.h\"");
   }
@@ -527,7 +555,7 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "EnumMethods.java");
 
     String testHeader = translateSourceFile("EnumMethods", "EnumMethods.h");
-    String testSource = translateSourceFile("EnumMethods", "EnumMethods.m");
+    String testSource = getTranslatedFile("EnumMethods.m");
 
     assertNoWarnings();
     assertNoErrors();
@@ -567,11 +595,11 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     @SuppressWarnings("unused")
     String testAHeader = translateSourceFile("A", "A.h");
     @SuppressWarnings("unused")
-    String testASource = translateSourceFile("A", "A.m");
+    String testASource = getTranslatedFile("A.m");
     @SuppressWarnings("unused")
     String testBHeader = translateSourceFile("B", "B.h");
     @SuppressWarnings("unused")
-    String testBSource = translateSourceFile("B", "B.m");
+    String testBSource = getTranslatedFile("B.m");
 
     assertWarning(
         "ObjectiveCAdapterMethod protocol return type adaptation used on a return type not"
@@ -604,11 +632,11 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     @SuppressWarnings("unused")
     String testAHeader = translateSourceFile("A", "A.h");
     @SuppressWarnings("unused")
-    String testASource = translateSourceFile("A", "A.m");
+    String testASource = getTranslatedFile("A.m");
     @SuppressWarnings("unused")
     String testBHeader = translateSourceFile("B", "B.h");
     @SuppressWarnings("unused")
-    String testBSource = translateSourceFile("B", "B.m");
+    String testBSource = getTranslatedFile("B.m");
 
     assertNoWarnings();
     assertNoErrors();
@@ -655,7 +683,7 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "A.java");
 
     String testHeader = translateSourceFile("A", "A.h");
-    String testSource = translateSourceFile("A", "A.m");
+    String testSource = getTranslatedFile("A.m");
 
     assertNoWarnings();
     assertNoErrors();
@@ -686,6 +714,59 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         testSource,
         "- (NSArray *)stringArrayList {",
         "  return JREAdaptedArrayFromJavaList([self _getStringArrayList]);",
+        "}");
+  }
+
+  public void testThrowsAsErrorSingleArgNaming() throws IOException {
+    addSourceFile(
+        "import com.google.j2kt.annotations.Throws; "
+            + "public class ErrorMethod {"
+            + "  @Throws"
+            + "  public void doSomething() { "
+            + "  }"
+            + "}",
+        "ErrorMethod.java");
+
+    String testHeader = translateSourceFile("ErrorMethod", "ErrorMethod.h");
+    String testSource = getTranslatedFile("ErrorMethod.m");
+    assertNoWarnings();
+    assertNoErrors();
+
+    assertTranslation(testHeader, "- (bool)doSomethingAndReturnError:(NSError **)error;");
+    assertTranslation(testSource, "- (bool)doSomethingAndReturnError:(NSError **)error {");
+  }
+
+  public void testThrowsAsErrorMultiArgNaming() throws IOException {
+    addSourceFile(
+        "import com.google.j2kt.annotations.Throws; "
+            + "public class ErrorMethod {"
+            + "  @Throws"
+            + "  public void doSomething(int somenumber) { "
+            + "  }"
+            + "}",
+        "ErrorMethod.java");
+
+    @SuppressWarnings("unused")
+    String testHeader = translateSourceFile("ErrorMethod", "ErrorMethod.h");
+    @SuppressWarnings("unused")
+    String testSource = getTranslatedFile("ErrorMethod.m");
+
+    assertNoWarnings();
+    assertNoErrors();
+
+    assertTranslatedLines(
+        testHeader, "- (bool)doSomethingWithInt:(int32_t)somenumber", "error:(NSError **)error;");
+    assertTranslatedLines(
+        testSource,
+        "- (bool)doSomethingWithInt:(int32_t)somenumber",
+        "error:(NSError **)error {",
+        "@try {",
+        "[self doSomethingWithInt:somenumber];",
+        "return YES;",
+        "} @catch (NSException *e) {",
+        "if (error) { *error = JREErrorFromException(e); }",
+        "return NO;",
+        "}",
         "}");
   }
 }

@@ -60,13 +60,15 @@ import javax.lang.model.util.Types;
  */
 public final class TypeUtil {
 
-  public static final TypeMirror BOOL_TYPE = new NativeType("BOOL");
+  public static final TypeMirror BOOL_TYPE = new NativeType("bool");
   public static final TypeMirror ID_TYPE = new NativeType("id");
   public static final TypeMirror ID_PTR_TYPE = new PointerType(ID_TYPE);
   public static final TypeElement NS_OBJECT =
       GeneratedTypeElement.newIosClass("NSObject", null, "");
   public static final TypeElement NS_STRING =
       GeneratedTypeElement.newIosClass("NSString", NS_OBJECT, "");
+  public static final TypeElement NS_ERROR =
+      GeneratedTypeElement.newIosClass("NSError", NS_OBJECT, "");
   public static final TypeElement NS_EXCEPTION =
       GeneratedTypeElement.newIosClass("NSException", NS_OBJECT, "");
   public static final TypeElement NS_NUMBER =
@@ -809,6 +811,9 @@ public final class TypeUtil {
   }
 
   public static String getName(TypeMirror t) {
+    if (t instanceof NativeType) {
+      return ((NativeType) t).getName();
+    }
     switch (t.getKind()) {
       case ARRAY:
         return getName(((ArrayType) t).getComponentType()) + "[]";
