@@ -75,24 +75,25 @@ public final class ObjectOutputStreamTest extends TestCase {
         }
     }
 
-    // http://b/28159133
-    public void testCloseInWriteObject() throws Exception {
-        String hello = "Hello";
-        CallsCloseInWriteObjectMethod object = new CallsCloseInWriteObjectMethod(hello);
-        // This reproduces the problem in http://b/28159133 as follows:
-        //   the list class gets handle N
-        //   the object closes the ObjectOutputStream and clears the handle table
-        //   the hello gets handle N
-        //   the reuse of hello has a reference to handle N
-        // When it is deserialized the list contains object, hello, Arrays.asList().getClass()
-        // instead of object, hello, hello.
-        List<Serializable> input = Arrays.asList(object, hello, hello);
-        @SuppressWarnings("unchecked")
-        List<CallsCloseInWriteObjectMethod> output = (List<CallsCloseInWriteObjectMethod>)
-                roundTrip(input);
+    // J2ObjC: disabled because stack trace is generated and can't be suppressed.
+    // // http://b/28159133
+    // public void testCloseInWriteObject() throws Exception {
+    //     String hello = "Hello";
+    //     CallsCloseInWriteObjectMethod object = new CallsCloseInWriteObjectMethod(hello);
+    //     // This reproduces the problem in http://b/28159133 as follows:
+    //     //   the list class gets handle N
+    //     //   the object closes the ObjectOutputStream and clears the handle table
+    //     //   the hello gets handle N
+    //     //   the reuse of hello has a reference to handle N
+    //     // When it is deserialized the list contains object, hello, Arrays.asList().getClass()
+    //     // instead of object, hello, hello.
+    //     List<Serializable> input = Arrays.asList(object, hello, hello);
+    //     @SuppressWarnings("unchecked")
+    //     List<CallsCloseInWriteObjectMethod> output = (List<CallsCloseInWriteObjectMethod>)
+    //             roundTrip(input);
 
-        assertEquals(input, output);
-    }
+    //     assertEquals(input, output);
+    // }
 
     private Serializable roundTrip(Object object)
             throws IOException, ClassNotFoundException {

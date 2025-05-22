@@ -497,6 +497,7 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
 
     private void verifyFormatTimezone(String timeZoneId, String expected1, String expected2,
             Date date) {
+        System.out.println("verifyFormatTimezone(" + timeZoneId + ", " + expected1 + ", " + expected2 + ")");
         SimpleDateFormat format = new SimpleDateFormat("", Locale.ENGLISH);
         format.setTimeZone(SimpleTimeZone.getTimeZone(timeZoneId));
         format.applyPattern("z, zzzz");

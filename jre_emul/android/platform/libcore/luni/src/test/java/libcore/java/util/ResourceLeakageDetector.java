@@ -41,9 +41,9 @@ public class ResourceLeakageDetector {
       clazz = classLoader.loadClass("dalvik.system.CloseGuardMonitor");
 
     } catch (ClassNotFoundException e) {
-      System.err.println("Resource leakage will not be detected; "
-          + "this is expected in the reference implementation");
-      e.printStackTrace(System.err);
+      // System.err.println("Resource leakage will not be detected; "
+      //     + "this is expected in the reference implementation");
+      // e.printStackTrace(System.err);
 
       // Ignore, probably running in reference implementation.
       clazz = null;
