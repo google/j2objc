@@ -26,12 +26,8 @@
 
 package java.util;
 
-import com.google.j2objc.LibraryNotLinkedError;
-import com.google.j2objc.util.XmlLoader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -39,9 +35,6 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.nio.charset.Charset;
-import java.nio.charset.IllegalCharsetNameException;
-import java.nio.charset.UnsupportedCharsetException;
 
 // Android-removed: Dead native2ascii links.
 // These links are also gone in OpenJDK 9.
@@ -910,21 +903,16 @@ class Properties extends Hashtable<Object,Object> {
      */
     public synchronized void loadFromXML(InputStream in)
         throws IOException, InvalidPropertiesFormatException {
-      XmlLoader loader = getXmlLoader();
-      if (loader == null) {
-        throw new LibraryNotLinkedError(
-            "XML support", "jre_xml", "ComGoogleJ2objcUtilPropertiesXmlLoader");
-      }
-      loader.load(this, in);
-    }
-
-    private static XmlLoader getXmlLoader() {
-      try {
-        Class<?> loaderClass = Class.forName("com.google.j2objc.util.PropertiesXmlLoader");
-        return (XmlLoader) loaderClass.newInstance();
-      } catch (Exception e) {
-        return null;
-      }
+        // Android-changed: Keep OpenJDK7u40's XmlUtils.
+        // XmlSupport's system property based XmlPropertiesProvider
+        // selection does not make sense on Android and has too many
+        // dependencies on classes that are not available on Android.
+        //
+        // Objects.requireNonNull(in);
+        // PropertiesDefaultHandler handler = new PropertiesDefaultHandler();
+        // handler.load(this, in);
+        XMLUtils.load(this, Objects.requireNonNull(in));
+        in.close();
     }
 
     /**
@@ -994,72 +982,23 @@ class Properties extends Hashtable<Object,Object> {
      */
     public void storeToXML(OutputStream os, String comment, String encoding)
         throws IOException {
-        if (os == null) {
-            throw new NullPointerException("os == null");
-        } else if (encoding == null) {
-            throw new NullPointerException("encoding == null");
-        }
-
+        // Android-changed: Keep OpenJDK7u40's XmlUtils.
+        // XmlSupport's system property based XmlPropertiesProvider
+        // selection does not make sense on Android and has too many
+        // dependencies on classes that are not available on Android.
         /*
-         * We can write to XML file using encoding parameter but note that some
-         * aliases for encodings are not supported by the XML parser. Thus we
-         * have to know canonical name for encoding used to store data in XML
-         * since the XML parser must recognize encoding name used to store data.
-         */
+        Objects.requireNonNull(os);
+        Objects.requireNonNull(encoding);
 
-        String encodingCanonicalName;
         try {
-            encodingCanonicalName = Charset.forName(encoding).name();
-        } catch (IllegalCharsetNameException e) {
-            System.out.println("Warning: encoding name " + encoding
-                    + " is illegal, using UTF-8 as default encoding");
-            encodingCanonicalName = "UTF-8";
-        } catch (UnsupportedCharsetException e) {
-            System.out.println("Warning: encoding " + encoding
-                    + " is not supported, using UTF-8 as default encoding");
-            encodingCanonicalName = "UTF-8";
+            Charset charset = Charset.forName(encoding);
+            storeToXML(os, comment, charset);
+        } catch (IllegalCharsetNameException | UnsupportedCharsetException e) {
+            throw new UnsupportedEncodingException(encoding);
         }
-
-        PrintStream printStream = new PrintStream(os, false,
-                encodingCanonicalName);
-
-        printStream.print("<?xml version=\"1.0\" encoding=\"");
-        printStream.print(encodingCanonicalName);
-        printStream.println("\"?>");
-
-        printStream.print("<!DOCTYPE properties SYSTEM \"");
-        printStream.print(PROP_DTD_NAME);
-        printStream.println("\">");
-
-        printStream.println("<properties>");
-
-        if (comment != null) {
-            printStream.print("<comment>");
-            printStream.print(substitutePredefinedEntries(comment));
-            printStream.println("</comment>");
-        }
-
-        for (Map.Entry<Object, Object> entry : entrySet()) {
-            String keyValue = (String) entry.getKey();
-            String entryValue = (String) entry.getValue();
-            printStream.print("<entry key=\"");
-            printStream.print(substitutePredefinedEntries(keyValue));
-            printStream.print("\">");
-            printStream.print(substitutePredefinedEntries(entryValue));
-            printStream.println("</entry>");
-        }
-        printStream.println("</properties>");
-        printStream.flush();
-    }
-
-    private String substitutePredefinedEntries(String s) {
-        // substitution for predefined character entities to use them safely in XML.
-        s = s.replaceAll("&", "&amp;");
-        s = s.replaceAll("<", "&lt;");
-        s = s.replaceAll(">", "&gt;");
-        s = s.replaceAll("'", "&apos;");
-        s = s.replaceAll("\"", "&quot;");
-        return s;
+        */
+        XMLUtils.save(this, Objects.requireNonNull(os), comment,
+                       Objects.requireNonNull(encoding));
     }
 
     /**
