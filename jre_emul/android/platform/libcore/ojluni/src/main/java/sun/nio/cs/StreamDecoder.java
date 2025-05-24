@@ -233,14 +233,14 @@ public class StreamDecoder extends Reader
     private InputStream in;
     private ReadableByteChannel ch;
 
-    StreamDecoder(InputStream in, Object lock, Charset cs) {
+  private StreamDecoder(InputStream in, Object lock, Charset cs) {
         this(in, lock,
          cs.newDecoder()
          .onMalformedInput(CodingErrorAction.REPLACE)
          .onUnmappableCharacter(CodingErrorAction.REPLACE));
     }
 
-    StreamDecoder(InputStream in, Object lock, CharsetDecoder dec) {
+  private StreamDecoder(InputStream in, Object lock, CharsetDecoder dec) {
         super(lock);
         this.cs = dec.charset();
         this.decoder = dec;
@@ -260,7 +260,7 @@ public class StreamDecoder extends Reader
         bb.flip();                      // So that bb is initially empty
     }
 
-    StreamDecoder(ReadableByteChannel ch, CharsetDecoder dec, int mbc) {
+  private StreamDecoder(ReadableByteChannel ch, CharsetDecoder dec, int mbc) {
         this.in = null;
         this.ch = ch;
         this.decoder = dec;
