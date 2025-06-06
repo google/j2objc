@@ -491,7 +491,7 @@ MapFieldGenerator::MapFieldGenerator(
   value_field_ = entry_message->FindFieldByName("value");
 
   variables_["key_storage_type"] = GetStorageType(key_field_);
-  variables_["key_generic_type"] = GetStorageType(key_field_);
+  variables_["key_generic_type"] = GetGenericType(key_field_);
   variables_["key_parameter_type"] = GetParameterType(key_field_);
   variables_["key_descriptor_type"] = GetFieldTypeEnumValue(key_field_);
   variables_["value_generic_type"] = GetGenericType(value_field_);
