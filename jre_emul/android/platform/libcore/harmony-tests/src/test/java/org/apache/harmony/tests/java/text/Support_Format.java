@@ -56,7 +56,6 @@ public class Support_Format extends TestCase {
   }
 
   protected void t_Format(int count, Object object, Format format, Vector<FieldContainer> expectedResults) {
-    System.out.println("t_Format(" + count + ", " + object + ", " + format + ", " + expectedResults + ")");
     Vector<FieldContainer> results = findFields(format.formatToCharacterIterator(object));
     assertEquals("size mismatch\n" +
                  format.format(object) + "\n" +
