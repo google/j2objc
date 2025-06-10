@@ -34,11 +34,12 @@
 
 #include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
 
+#include <cctype>
 #include <cstdint>
 #include <fstream>
 #include <map>
 #include <set>
-#include <sstream>
+#include <string>
 
 namespace google {
 namespace protobuf {
@@ -89,6 +90,7 @@ const std::set<absl::string_view> kKeywords = {
     "YES",
     "auto",
     "class",
+    "default",
     "delete",
     "description",
     "do",
@@ -108,9 +110,11 @@ const std::set<absl::string_view> kKeywords = {
     "protected",
     "public",
     "specialCalendars",
+    "static",
     "template",
     "text",
     "virtual",
+    "while",
 };
 
 absl::string_view FieldName(const FieldDescriptor *field) {
@@ -703,9 +707,22 @@ std::string PropertyName(const FieldDescriptor *descriptor) {
 }
 
 std::string PropertyName(const EnumValueDescriptor *descriptor) {
+  std::string lowercase_name = std::string(descriptor->name());
+  absl::AsciiStrToLower(&lowercase_name);
+  std::string camel_name = UnderscoresToCamelCase(lowercase_name, true);
+  std::string type_name = std::string(descriptor->type()->name());
+  if (camel_name.starts_with(type_name) &&
+      camel_name.size() > type_name.size()) {
+    camel_name = camel_name.substr(type_name.size());
+  }
+  if (std::isdigit(camel_name[0])) {
+    camel_name = absl::StrCat("_", camel_name);
+  } else {
+    camel_name[0] = absl::ascii_tolower(camel_name[0]);
+  }
   return absl::StrCat(
-      descriptor->name(),
-      kKeywords.find(descriptor->name()) == kKeywords.end() ? "" : "_");
+      camel_name,
+      kKeywords.find(camel_name) == kKeywords.end() ? "" : "_");
 }
 
 void ParsePrefixLine(std::string line) {

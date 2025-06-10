@@ -75,5 +75,6 @@ using namespace google::protobuf::compiler;
 #define SimpleItoa absl::StrCat
 #define ToUpper absl::AsciiStrToUpper
 #define UpperString absl::AsciiStrToUpper
+#define LowerString absl::AsciiStrToLower
 
 #endif  // GOOGLE_PROTOBUF_COMPILER_J2OBJC_COMMON_H__
