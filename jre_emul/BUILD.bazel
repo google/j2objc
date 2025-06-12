@@ -1,0 +1,67 @@
+# This file builds the JRE emulation library (jre_emul.jar).
+
+load("@rules_java//java:defs.bzl", "java_library")
+load(
+    ":constants.bzl",
+    "JRE_ANDROID_SRCS_PUBLIC_QUALIFIED",
+    "JRE_JAVA_SRCS_NO_TRANSLATE_QUALIFIED",
+    "JRE_JAVA_SRCS_PRIVATE_QUALIFIED",
+    "JRE_JAVA_SRCS_PUBLIC_JRE_QUALIFIED",
+    "JRE_SRC_ROOTS",
+)
+
+# Step 1: Collect all JRE source files into a single, logical group.
+filegroup(
+    name = "jre_emul_sources",
+    srcs = (
+        JRE_ANDROID_SRCS_PUBLIC_QUALIFIED +
+        JRE_JAVA_SRCS_NO_TRANSLATE_QUALIFIED +
+        JRE_JAVA_SRCS_PRIVATE_QUALIFIED +
+        JRE_JAVA_SRCS_PUBLIC_JRE_QUALIFIED
+    ),
+)
+
+# Step 2: Run the helper script to arrange all sources from the filegroup
+# into a modular source JAR.
+genrule(
+    name = "jre_emul_modular_srcjar",
+    srcs = [
+        ":jre_emul_sources",
+        ":package_module_sources.py",
+        "java.base/module-info.java",
+    ],
+    outs = ["jre_emul.srcjar"],
+    # Pass the JRE_SRC_ROOTS list to the script as command-line arguments.
+    cmd = "python3 $(location :package_module_sources.py) " +
+          "--output=$@ " +
+          "--module_info=$(location java.base/module-info.java) " +
+          " ".join(["--source-root %s" % r for r in JRE_SRC_ROOTS]) +
+          " --srcs $(locations :jre_emul_sources)",
+)
+
+# Step 3: Compile the final jre_emul.jar from the modular source jar
+# created by the genrule.
+java_library(
+    name = "jre_emul",
+    srcs = [":jre_emul_modular_srcjar"],
+    javacopts = [
+        "-XepDisableAllChecks",
+        "-Xlint:-rawtypes,-unchecked",
+        "-source",
+        "11",
+        "-target",
+        "11",
+        "--system",
+        "none",
+        "--patch-module=java.base=.",
+        # disable invokedynamic string concatenation, since StringConcatFactory isn't available
+        "-XDstringConcat=inline",
+        # So that JRE classes are allowed to depend on the j2objc annotations
+        "--add-reads",
+        "java.base=ALL-UNNAMED",
+    ],
+    deps = [
+        "//annotations:annotations-lib",
+    ],
+    visibility = ["//visibility:public"],
+)

@@ -1,0 +1,21 @@
+# This file defines build rules for third-party Java dependencies.
+
+# This genrule extracts specific class files from a "fat jar"
+# within the annotation-tools archive and repackages them into scenelib.jar.
+# This mirrors the complex logic from the original Makefile.
+genrule(
+    name = "scenelib",
+    srcs = ["@annotation-tools//:annotation-file-utilities/annotation-file-utilities-all.jar"],
+    outs = ["scenelib.jar"],
+    # This command performs a multi-step process:
+    # 1. Create a temporary directory 'unzipped_files'.
+    # 2. Unzip *only* the required scenelib and asm class files from the source jar into the temp directory.
+    # 3. Create a new jar file from the contents of the temp directory.
+    cmd = """
+        set -e
+        mkdir -p unzipped_files
+        unzip -d unzipped_files $(location @annotation-tools//:annotation-file-utilities/annotation-file-utilities-all.jar) "org/checkerframework/afu/scenelib/*" "org/objectweb/asm/*"
+        jar cMf $(location scenelib.jar) -C unzipped_files .
+    """,
+    visibility = ["//visibility:public"],
+)
