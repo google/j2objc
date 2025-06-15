@@ -1,0 +1,9 @@
+# Defines the j2objc-annotations library.
+
+load("@rules_java//java:defs.bzl", "java_library")
+
+java_library(
+    name = "annotations-lib",
+    srcs = glob(["src/main/java/com/google/j2objc/annotations/*.java"]),
+    visibility = ["//visibility:public"],
+)
