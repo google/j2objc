@@ -527,7 +527,7 @@ static jmethodID GetStaticMethodID(JNIEnv *env, jclass clazz, const char *name, 
 }
 
 #define ALLOC_JARGS(JARGS, NUM_ARGS)           \
-  const size_t _max_stack_args = 16;           \
+  enum { _max_stack_args = 16 };               \
   jvalue _stack_args[_max_stack_args];         \
   jvalue *JARGS;                               \
   jboolean _free_jargs = false;                \
