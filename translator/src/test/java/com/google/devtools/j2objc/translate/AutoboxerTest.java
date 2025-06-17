@@ -605,4 +605,23 @@ public class AutoboxerTest extends GenerationTest {
         "- (int64_t)nowMillis {",
         "return [nil_chk([target$_ get]) longLongValue];");
   }
+  
+  // Verify that the correct unboxing method is used for a boxed type.
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testUnboxingMethodWithDifferentReturnType() throws IOException {
+    String translation = translateSourceFile(
+        "class Test {\n"
+        + "  static long test(Object o) {\n"
+        + "    if (o instanceof Character) {\n"
+        + "      return (Character) o;\n"
+        + "    } else if (o instanceof Number) {\n"
+        + "      return ((Number) o).longValue();\n"
+        + "    } else {\n"
+        + "      throw new AssertionError(o + \" must be either a Character or a Number.\");\n"
+        + "    }\n"
+        + "  }\n"
+        + "}", "Test", "Test.m");
+    assertTranslation(translation,
+        "return [((JavaLangCharacter *) nil_chk((JavaLangCharacter *) o)) charValue];");
+  }
 }

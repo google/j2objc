@@ -132,6 +132,11 @@ public class Autoboxer extends UnitTreeVisitor {
     }
     ExecutableElement valueMethod = ElementUtil.findMethod(
         boxedClass, TypeUtil.getName(primitiveType) + VALUE_METHOD);
+    if (valueMethod == null) {
+      primitiveType = typeUtil.unboxedType(boxedClass.asType());
+      valueMethod = ElementUtil.findMethod(
+          boxedClass, TypeUtil.getName(primitiveType) + VALUE_METHOD);
+    }
     assert valueMethod != null : "could not find value method for " + boxedClass;
     MethodInvocation invocation = new MethodInvocation(new ExecutablePair(valueMethod), null);
     expr.replaceWith(invocation);
