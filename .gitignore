@@ -1,6 +1,9 @@
 # Temp Files
 *~
 
+# Bazel generated files
+/bazel-*
+
 # Bundler
 Gemfile.lock
 

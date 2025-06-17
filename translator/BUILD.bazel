@@ -1,0 +1,81 @@
+# Description:
+#   The Java to Objective C translator, aka "j2objc".
+
+load("@rules_java//java:defs.bzl", "java_binary", "java_library", "java_test")
+
+JDK_COMPILER_ADD_EXPORTS = [
+    # The javac packages that are used by the translator.
+    "jdk.compiler/com.sun.tools.javac.%s" % p
+    for p in (
+        "api",
+        "code",
+        "comp",
+        "file",
+        "main",
+        "model",
+        "parser",
+        "processing",
+        "resources",
+        "tree",
+        "util",
+    )
+]
+
+java_library(
+    name = "translator",
+    srcs = glob(
+        ["src/main/java/**/*.java"],
+        exclude = [
+            "src/main/java/com/google/devtools/j2objc/docs/*.java",
+        ],
+    ),
+    add_exports = JDK_COMPILER_ADD_EXPORTS,
+    javacopts = [
+        "-Xep:BoxedPrimitiveEquality:OFF",
+    ],
+    resources = glob(["src/main/resources/**/*"]),
+    deps = [
+        "//annotations:annotations-lib",
+        "//java_deps:scenelib",
+        # Corrected Maven dependency labels:
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_code_findbugs_jsr305",
+        "@maven//:com_google_protobuf_protobuf_java",
+        "@maven//:com_google_errorprone_error_prone_annotations",
+        "@maven//:com_google_flogger_flogger",
+        "@maven//:io_github_eisop_checker_qual",
+        "@maven//:org_jspecify_jspecify",
+        "@maven//:org_plumelib_plume_util",
+        "@maven//:org_bitbucket_mstrobel_procyon_core",
+        "@maven//:org_bitbucket_mstrobel_procyon_compilertools",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+java_test(
+    name = "tests",
+    srcs = glob(["src/test/java/**/*.java"]),
+    resources = glob(["src/test/resources/**/*"]),
+    test_class = "com.google.devtools.j2objc.SmallTests",
+    deps = [
+        "//annotations:annotations-lib",
+        "//jre_emul:jre_emul",
+        ":translator",
+        "@maven//:com_google_flogger_flogger",
+        "@maven//:com_google_flogger_google_extensions",
+        "@maven//:com_google_guava_guava",
+        "@maven//:com_google_truth_truth",
+        "@maven//:org_hamcrest_hamcrest_core",
+        "@maven//:org_mockito_mockito_core",
+    ],
+)
+
+# Creates a single, executable command-line jar containing the
+# translator and all of its dependencies.
+java_binary(
+    name = "j2objc",
+    main_class = "com.google.devtools.j2objc.J2ObjC",
+    runtime_deps = [
+        ":translator",
+    ],
+)
