@@ -711,7 +711,7 @@ std::string PropertyName(const EnumValueDescriptor *descriptor) {
   absl::AsciiStrToLower(&lowercase_name);
   std::string camel_name = UnderscoresToCamelCase(lowercase_name, true);
   std::string type_name = std::string(descriptor->type()->name());
-  if (camel_name.starts_with(type_name) &&
+  if (absl::StartsWith(camel_name, type_name) &&
       camel_name.size() > type_name.size()) {
     camel_name = camel_name.substr(type_name.size());
   }
