@@ -10,10 +10,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Makefile for building the jre_concurrent subset library as an XCFramework.
+# Makefile for building the json subset library as an XCFramework.
 #
-# To use, first run "make -j8 dist" in this directory to build the static
-# libraries and headers. Next, run "make -f jre_concurrent_framework.mk".
+# To use, first run "cd .. && make -j8 dist" to build the static
+# libraries and headers. Next, run "make -f json_framework.mk".
 
 include environment.mk
 include jre_sources.mk

@@ -110,7 +110,8 @@ DIST_LIBS = $(LIBS:$(ARCH_BUILD_DIR)/%=$(ARCH_LIB_DIR)/%)
 # supported for use by native code.
 PUBLIC_EMULATION_HEADERS = $(PUBLIC_NATIVE_HEADERS)
 PUBLIC_TRANSLATED_HEADERS = $(JAVA_PUBLIC_SOURCES:.java=.h)
-INCLUDES = $(PUBLIC_TRANSLATED_HEADERS) $(PUBLIC_EMULATION_HEADERS)
+JSON_TRANSLATED_HEADERS = $(JSON_PUBLIC_SOURCES:.java=.h)
+INCLUDES = $(PUBLIC_TRANSLATED_HEADERS) $(PUBLIC_EMULATION_HEADERS) $(JSON_TRANSLATED_HEADERS)
 DIST_INCLUDES = $(INCLUDES:%=$(DIST_INCLUDE_DIR)/%)
 
 FRAMEWORK_NAME = JRE
@@ -142,7 +143,7 @@ $(MAIN_LIB): $(MAIN_LIB_OBJS)
 	@echo $(LIBTOOL) -o $@
 	@$(LIBTOOL) -static -o $@ $^
 
-dist_includes: $(BUILD_DIR)/.jre_dist_includes
+dist_includes: $(BUILD_DIR)/.jre_dist_includes $(BUILD_DIR)/.json_dist_includes
 
 $(BUILD_DIR)/.jre_dist_includes: $(PUBLIC_TRANSLATED_HEADERS:%=$(GEN_OBJC_DIR)/%) \
     $(PUBLIC_EMULATION_HEADERS:%=$(EMULATION_CLASS_DIR)/%) | $(DIST_INCLUDE_DIR)
@@ -153,11 +154,20 @@ $(BUILD_DIR)/.jre_dist_includes: $(PUBLIC_TRANSLATED_HEADERS:%=$(GEN_OBJC_DIR)/%
 	    | tar xfp - -C $(DIST_INCLUDE_DIR)
 	@touch $@
 
+$(BUILD_DIR)/.json_dist_includes: $(JSON_TRANSLATED_HEADERS:%=$(GEN_OBJC_DIR)/%) \
+    | $(DIST_INCLUDE_DIR)
+	@echo copying json header files
+	@tar cf - -C $(GEN_OBJC_DIR) $(JSON_TRANSLATED_HEADERS) \
+	    | tar xfp - -C $(DIST_INCLUDE_DIR)
+	@touch $@
+
 $(ARCH_BUILD_DIR)/.includes: $(PUBLIC_TRANSLATED_HEADERS:%=$(GEN_OBJC_DIR)/%) \
     $(PUBLIC_EMULATION_HEADERS:%=$(EMULATION_CLASS_DIR)/%) | $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR)
 	@tar cf - -C $(EMULATION_CLASS_DIR) $(PUBLIC_EMULATION_HEADERS) \
 	    | tar xfp - -C $(ARCH_INCLUDE_DIR)
 	@tar cf - -C $(GEN_OBJC_DIR) $(PUBLIC_TRANSLATED_HEADERS) \
+	    | tar xfp - -C $(ARCH_INCLUDE_DIR)
+	@tar cf - -C $(GEN_OBJC_DIR) $(JSON_TRANSLATED_HEADERS) \
 	    | tar xfp - -C $(ARCH_INCLUDE_DIR)
 	@touch $@
 
