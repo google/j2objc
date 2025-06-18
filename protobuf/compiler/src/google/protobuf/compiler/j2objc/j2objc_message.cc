@@ -213,7 +213,7 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
         "@class $classname$;"
         "\n"
         "@protocol $classname$_Companion\n"
-        "- (nonnull $classname$_Builder *)doNewBuilder;\n"
+        "- (nonnull $classname$_Builder *)newBuilder OBJC_METHOD_FAMILY_NONE;\n"
         "- (nonnull $classname$ *)getDefaultInstance;\n"
         "- (nonnull $classname$ *)parseFromWithByteString:"
         "(nonnull ComGoogleProtobufByteString *)data"
@@ -224,8 +224,7 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
         "// in j2objc_message.cc \n"
         "@interface $classname$ : $superclassname$<$classname$OrBuilder>\n\n"
         "@property (nonnull, readonly, class)"
-        " id<$classname$_Companion> companion;\n"
-        "+ (nonnull $classname$_Builder *)doNewBuilder;\n",
+        " id<$classname$_Companion> companion;\n",
         "classname", ClassName(descriptor_), "superclassname", superclassName);
   } else {
     printer->Print(
@@ -442,9 +441,6 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
     printer->Print(
         "+ (nonnull id<$classname$_Companion>)companion {\n"
         "  return (id<$classname$_Companion>) [self class];\n"
-        "}\n"
-        "+ (nonnull $classname$_Builder *)doNewBuilder {\n"
-        "  return [$classname$ newBuilder];\n"
         "}\n",
         "classname", ClassName(descriptor_));
     for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
