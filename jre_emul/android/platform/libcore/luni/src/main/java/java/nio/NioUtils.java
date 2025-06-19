@@ -16,23 +16,14 @@
 
 package java.nio;
 
-import dalvik.annotation.compat.UnsupportedAppUsage;
-
-import com.google.j2objc.LibraryNotLinkedError;
-import java.io.Closeable;
-import java.io.FileDescriptor;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
-import java.util.Set;
-
-import sun.misc.Cleaner;
-import sun.nio.ch.DirectBuffer;
-import sun.nio.ch.FileChannelImpl;
-
 import static libcore.io.OsConstants.O_ACCMODE;
-import static libcore.io.OsConstants.O_APPEND;
 import static libcore.io.OsConstants.O_RDONLY;
 import static libcore.io.OsConstants.O_WRONLY;
+
+import dalvik.annotation.compat.UnsupportedAppUsage;
+import java.io.FileDescriptor;
+import java.nio.channels.FileChannel;
+import sun.nio.ch.FileChannelImpl;
 
 /**
  * @hide internal use only
@@ -64,42 +55,11 @@ public final class NioUtils {
     }
     */
 
-    /**
-     * Helps bridge between io and nio.
-     */
-    public static FileChannel newFileChannel(Closeable ioObject, FileDescriptor fd, int mode) {
-      ChannelFactory factory = ChannelFactory.INSTANCE;
-      if (factory == null) {
-        throw new LibraryNotLinkedError("Channel support", "jre_channels",
-            "JavaNioChannelFactoryImpl");
-      }
-      return factory.newFileChannel(ioObject, fd, mode);
+    public FileChannel newFileChannel(Object ioObject, FileDescriptor fd, int mode) {
+        boolean readable = (mode & O_ACCMODE) != O_WRONLY;
+        boolean writable = (mode & O_ACCMODE) != O_RDONLY;
+        return FileChannelImpl.open(fd, null, readable, writable, ioObject);
     }
-
-    public static FileChannel newFileChannelSafe(Object stream, FileDescriptor fd, int mode) {
-      ChannelFactory factory = ChannelFactory.INSTANCE;
-      if (factory != null) {
-        return factory.newFileChannel(stream, fd, mode);
-      } else {
-        return null;
-      }
-    }
-
-    static interface ChannelFactory {
-      FileChannel newFileChannel(Object stream, FileDescriptor fd, int mode);
-
-      static final ChannelFactory INSTANCE = getChannelFactory();
-    }
-
-    // Native implementation avoids the use of Class.forName(). This code might end up invoked from
-    // within the internals of Class.forName(), and re-invoking it causes deadlock.
-    private static native ChannelFactory getChannelFactory() /*-[
-      Class cls = NSClassFromString(@"JavaNioChannelFactoryImpl");
-      if (cls) {
-        return AUTORELEASE([[cls alloc] init]);
-      }
-      return nil;
-    ]-*/;
 
     /**
      * Exposes the array backing a non-direct ByteBuffer, even if the ByteBuffer is read-only.
