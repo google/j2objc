@@ -130,8 +130,8 @@ __attribute__((always_inline)) inline id JreRetainedAutoreleasedReturnValue(id v
 CF_EXTERN_C_BEGIN
 
 id JreThrowNullPointerException(void) __attribute__((noreturn));
-void JreThrowClassCastException(id p, Class cls) __attribute__((noreturn));
-void JreThrowClassCastExceptionWithIOSClass(id p, IOSClass *cls) __attribute__((noreturn));
+void JreThrowClassCastException(id obj, Class cls) __attribute__((noreturn));
+void JreThrowClassCastExceptionWithIOSClass(id obj, IOSClass *cls) __attribute__((noreturn));
 void JreThrowArithmeticExceptionWithNSString(NSString *msg) __attribute__((noreturn));
 
 id JreStrongAssign(__strong id *pIvar, id value);
@@ -153,7 +153,7 @@ id JreRetainedLocalValue(id value);
 
 id JreRetainedWithAssign(id parent, __strong id *pIvar, id value);
 id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, id value);
-void JreRetainedWithRelease(id parent, id child);
+void JreRetainedWithRelease(id parent, id value);
 void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar);
 void JreStrictFieldRetainedWithRelease(id parent, id *pVar);
 

@@ -137,13 +137,16 @@ id JreVolatileStrongAssign(volatile_id *pIvar, id value) {
 bool JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id newValue) {
   volatile_lock_t lock = VOLATILE_GETLOCK(pVar);
   VOLATILE_LOCK(lock);
+  [newValue retain];
   bool result = *(id *)pVar == expected;
   if (result) {
-    *(id *)pVar = [newValue retain];
+    *(id *)pVar = newValue;
+  } else {
+    [newValue release];
   }
   VOLATILE_UNLOCK(lock);
   if (result) {
-    [expected autorelease];
+    [expected release];
   }
   return result;
 }
@@ -191,7 +194,7 @@ id JreStrictFieldStrongAssign(__strong id *pIvar, id value) {
   id oldValue = *(id *)pIvar;
   *(id *)pIvar = value;
   VOLATILE_UNLOCK(lock);
-  [oldValue autorelease];
+  [oldValue release];
   return value;
 }
 
