@@ -2216,8 +2216,12 @@ public class File
                     try {
                         Class<?> fileSystemsClass = Class.forName("java.nio.file.FileSystems");
                         java.lang.reflect.Method getDefault =
-                                fileSystemsClass.getDeclaredMethod("getPath", String.class);
-                        filePath = (Path) getDefault.invoke(null, path);
+                                fileSystemsClass.getDeclaredMethod("getDefault");
+                        Object defaultFileSystem = getDefault.invoke(null);
+                        java.lang.reflect.Method getPath =
+                                defaultFileSystem.getClass().getMethod("getPath", String.class);
+                        result = (Path) getPath.invoke(defaultFileSystem, path);
+                        filePath = result;
                     } catch (Exception e) {
                         throw new LibraryNotLinkedError("java.nio.file support", "jre_file",
                                 "JavaNioFileFileSystems");
