@@ -2219,7 +2219,8 @@ public class File
                                 fileSystemsClass.getDeclaredMethod("getDefault");
                         Object defaultFileSystem = getDefault.invoke(null);
                         java.lang.reflect.Method getPath =
-                                defaultFileSystem.getClass().getMethod("getPath", String.class);
+                                defaultFileSystem.getClass().getMethod("getPath", 
+                                        String.class, String[].class);
                         result = (Path) getPath.invoke(defaultFileSystem, path);
                         filePath = result;
                     } catch (Exception e) {
