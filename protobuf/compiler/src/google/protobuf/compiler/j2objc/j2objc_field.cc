@@ -450,7 +450,7 @@ void RepeatedFieldGenerator::GenerateMessageOrBuilderProtocol(
         "@property (readonly, getter=Get$capitalized_name$Count)"
         " jint $camelcase_name$Count;\n"
         "@property (readonly, getter=Get$capitalized_name$Array)"
-        " NSArray<$generic_type$> *$camelcase_name$;\n"
+        " NSArray<$generic_type$> *$property_name$;\n"
         "- ($nonnull_type$)get$capitalized_name$Index:(int)index"
         " NS_SWIFT_NAME(get$capitalized_name$(_:));\n");
   }
@@ -462,7 +462,7 @@ void RepeatedFieldGenerator::GenerateFieldSource(io::Printer* printer) const {
         variables_,
         "\n"
         "@dynamic $camelcase_name$Count;\n"
-        "@dynamic $camelcase_name$;\n");
+        "@dynamic $property_name$;\n");
   }
 }
 
@@ -472,7 +472,7 @@ void RepeatedFieldGenerator::GenerateFieldBuilderSource(io::Printer* printer) co
       variables_,
       "\n"
       "@dynamic $camelcase_name$Count;\n"
-      "@dynamic $camelcase_name$;\n");
+      "@dynamic $property_name$;\n");
   }
 }
 
@@ -542,7 +542,7 @@ void MapFieldGenerator::GenerateFieldSource(io::Printer* printer) const {
     printer->Print(
         variables_,
         "\n"
-        "@dynamic $camelcase_name$;\n");
+        "@dynamic $property_name$;\n");
   }
 }
 
@@ -551,7 +551,7 @@ void MapFieldGenerator::GenerateFieldBuilderSource(io::Printer* printer) const {
     printer->Print(
       variables_,
       "\n"
-      "@dynamic $camelcase_name$;\n");
+      "@dynamic $property_name$;\n");
   }
 }
 
