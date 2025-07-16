@@ -50,6 +50,10 @@ import org.jspecify.annotations.Nullable;
 /**
  * Rewrites switch statements to be more compatible with Objective-C code.
  *
+ * This stage doesn't include support for Java 21 patterns or guards in
+ * switches. That is handled by the SwitchCaseRewriter, which is run after
+ * this rewriter.
+ *
  * @author Keith Stanger
  */
 public class SwitchRewriter extends UnitTreeVisitor {

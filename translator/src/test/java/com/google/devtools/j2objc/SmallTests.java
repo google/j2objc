@@ -81,6 +81,7 @@ import com.google.devtools.j2objc.translate.RewriterTest;
 import com.google.devtools.j2objc.translate.SerializationStripperTest;
 import com.google.devtools.j2objc.translate.StaticVarRewriterTest;
 import com.google.devtools.j2objc.translate.SuperMethodInvocationRewriterTest;
+import com.google.devtools.j2objc.translate.SwitchCaseRewriterTest;
 import com.google.devtools.j2objc.translate.SwitchRewriterTest;
 import com.google.devtools.j2objc.translate.TypeUseAnnotationTest;
 import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriterTest;
@@ -184,6 +185,7 @@ public class SmallTests {
         StatementGeneratorTest.class,
         StaticVarRewriterTest.class,
         SuperMethodInvocationRewriterTest.class,
+        SwitchCaseRewriterTest.class,
         SwitchRewriterTest.class,
         TypeDeclarationGeneratorTest.class,
         TypeImplementationGeneratorTest.class,

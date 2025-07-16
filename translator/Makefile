@@ -239,6 +239,7 @@ JAVA_SOURCES = \
 	translate/SerializationStripper.java \
 	translate/StaticVarRewriter.java \
 	translate/SuperMethodInvocationRewriter.java \
+	translate/SwitchCaseRewriter.java \
 	translate/SwitchRewriter.java \
 	translate/UnsequencedExpressionRewriter.java \
 	translate/VarargsRewriter.java \

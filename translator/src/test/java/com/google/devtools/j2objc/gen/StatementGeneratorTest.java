@@ -2046,15 +2046,15 @@ public class StatementGeneratorTest extends GenerationTest {
           assertTranslatedLines(
               ast,
               "java.lang.String test(  java.lang.String str){",
-              "java.lang.String msg;",
-              "switch (JreIndexOfStr(str, {}, 0)) {",
-              "  case java.lang.String s when s.length() > 10: msg=JreStrcat($$, \"Long string:"
-                  + " \", s);",
-              "  break;",
-              "  case java.lang.String s: msg=JreStrcat($$, \"Short string: \", s);",
-              "  break;",
-              "};",
-              "return msg;",
+              "  java.lang.String msg;",
+              "  if (JreIndexOfStr(str, {}, 0) instanceof java.lang.String "
+              + "&& ((java.lang.String)JreIndexOfStr(str, {}, 0)).length() > 10) {",
+              "    msg=JreStrcat($$, \"Long string: \", ((java.lang.String)JreIndexOfStr(str, {}, 0)));",
+              "  }",
+              "  else if (JreIndexOfStr(str, {}, 0) instanceof java.lang.String) {",
+              "    msg=JreStrcat($$, \"Short string: \", ((java.lang.String)JreIndexOfStr(str, {}, 0)));",
+              "  }",
+              "  return msg;",
               "}");
         });
   }
