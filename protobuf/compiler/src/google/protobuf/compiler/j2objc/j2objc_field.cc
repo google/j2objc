@@ -533,7 +533,7 @@ void MapFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer) const {
     printer->Print(
         variables_,
         "- (nonnull $classname$_Builder *)put$capitalized_name$:"
-        "($key_nonnull_type$)key value:($value_nonnull_type$)value;\n");
+        "($key_storage_type$)key value:($value_nonnull_type$)value;\n");
   }
 }
 
