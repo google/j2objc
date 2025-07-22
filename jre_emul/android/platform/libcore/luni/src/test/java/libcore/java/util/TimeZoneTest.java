@@ -164,7 +164,7 @@ public class TimeZoneTest extends TestCase {
         assertEquals("GMT", TimeZone.getTimeZone("GMT+5:005").getID());
         assertEquals("GMT", TimeZone.getTimeZone("GMT+5:000").getID());
         assertEquals("GMT", TimeZone.getTimeZone("GMT+005:00").getID());
-        assertEquals("GMT", TimeZone.getTimeZone("GMT+05:99").getID());
+        assertEquals("GMT+0639", TimeZone.getTimeZone("GMT+05:99").getID());
         assertEquals("GMT", TimeZone.getTimeZone("GMT+28:00").getID());
         assertEquals("GMT", TimeZone.getTimeZone("GMT+05:00.00").getID());
         assertEquals("GMT", TimeZone.getTimeZone("GMT+05:00:00").getID());

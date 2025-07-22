@@ -337,7 +337,7 @@ bool Java_libcore_icu_ICU_initLocaleDataNative(JNIEnv *env, jclass cls, jstring 
     languageTag = [NSString stringWithFormat:@"%@-%@", [locale languageCode], [locale countryCode]];
     locale = [[NSLocale alloc] initWithLocaleIdentifier:languageTag];
     cfLocale = (CFLocaleRef)locale;
-    nf = CFNumberFormatterCreate(kCFAllocatorDefault, cfLocale, kCFNumberFormatterNoStyle);
+    nf = CFNumberFormatterCreate(kCFAllocatorDefault, cfLocale, kCFNumberFormatterDecimalStyle);
   }
   if (nf) {
     result->zeroDigit_ = GetNumberPropChar(nf, kCFNumberFormatterZeroSymbol, '0');

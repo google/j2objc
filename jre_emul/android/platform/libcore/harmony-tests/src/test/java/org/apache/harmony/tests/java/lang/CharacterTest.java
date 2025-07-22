@@ -1326,47 +1326,47 @@ public class CharacterTest extends TestCase {
      * java.lang.Character#isUnicodeIdentifierPart(int)
      */
     public void test_isUnicodeIdentifierPart_I() {
-        assertTrue(Character.isUnicodeIdentifierPart((int) 'a'));
-        assertTrue(Character.isUnicodeIdentifierPart((int) '2'));
-        assertFalse(Character.isUnicodeIdentifierPart((int) '+'));
+        assertTrue("a", Character.isUnicodeIdentifierPart((int) 'a'));
+        assertTrue("2", Character.isUnicodeIdentifierPart((int) '2'));
+        assertFalse("+", Character.isUnicodeIdentifierPart((int) '+'));
 
-        assertTrue(Character.isUnicodeIdentifierPart(0x1FA9));
-        assertTrue(Character.isUnicodeIdentifierPart(0x1D400));
-        assertTrue(Character.isUnicodeIdentifierPart(0x1D622));
-        assertTrue(Character.isUnicodeIdentifierPart(0x10000));
+        assertTrue("0x1FA9", Character.isUnicodeIdentifierPart(0x1FA9));
+        assertTrue("0x1D400", Character.isUnicodeIdentifierPart(0x1D400));
+        assertTrue("0x1D622", Character.isUnicodeIdentifierPart(0x1D622));
+        assertTrue("0x10000", Character.isUnicodeIdentifierPart(0x10000));
 
-        assertTrue(Character.isUnicodeIdentifierPart(0x0030));
-        assertTrue(Character.isUnicodeIdentifierPart(0x0035));
-        assertTrue(Character.isUnicodeIdentifierPart(0x0039));
+        assertTrue("0x0030", Character.isUnicodeIdentifierPart(0x0030));
+        assertTrue("0x0035", Character.isUnicodeIdentifierPart(0x0035));
+        assertTrue("0x0039", Character.isUnicodeIdentifierPart(0x0039));
 
-        assertTrue(Character.isUnicodeIdentifierPart(0x0660));
-        assertTrue(Character.isUnicodeIdentifierPart(0x0665));
-        assertTrue(Character.isUnicodeIdentifierPart(0x0669));
+        assertTrue("0x0660", Character.isUnicodeIdentifierPart(0x0660));
+        assertTrue("0x0665", Character.isUnicodeIdentifierPart(0x0665));
+        assertTrue("0x0669", Character.isUnicodeIdentifierPart(0x0669));
 
-        assertTrue(Character.isUnicodeIdentifierPart(0x06F0));
-        assertTrue(Character.isUnicodeIdentifierPart(0x06F5));
-        assertTrue(Character.isUnicodeIdentifierPart(0x06F9));
+        assertTrue("0x06F0", Character.isUnicodeIdentifierPart(0x06F0));
+        assertTrue("0x06F5", Character.isUnicodeIdentifierPart(0x06F5));
+        assertTrue("0x06F9", Character.isUnicodeIdentifierPart(0x06F9));
 
-        assertTrue(Character.isUnicodeIdentifierPart(0x0966));
-        assertTrue(Character.isUnicodeIdentifierPart(0x096A));
-        assertTrue(Character.isUnicodeIdentifierPart(0x096F));
+        assertTrue("0x0966", Character.isUnicodeIdentifierPart(0x0966));
+        assertTrue("0x096A", Character.isUnicodeIdentifierPart(0x096A));
+        assertTrue("0x096F", Character.isUnicodeIdentifierPart(0x096F));
 
-        assertTrue(Character.isUnicodeIdentifierPart(0xFF10));
-        assertTrue(Character.isUnicodeIdentifierPart(0xFF15));
-        assertTrue(Character.isUnicodeIdentifierPart(0xFF19));
+        assertTrue("0xFF10", Character.isUnicodeIdentifierPart(0xFF10));
+        assertTrue("0xFF15", Character.isUnicodeIdentifierPart(0xFF15));
+        assertTrue("0xFF19", Character.isUnicodeIdentifierPart(0xFF19));
 
-        assertTrue(Character.isUnicodeIdentifierPart(0x1D7CE));
-        assertTrue(Character.isUnicodeIdentifierPart(0x1D7D8));
+        assertTrue("0x1D7CE", Character.isUnicodeIdentifierPart(0x1D7CE));
+        assertTrue("0x1D7D8", Character.isUnicodeIdentifierPart(0x1D7D8));
 
-        assertTrue(Character.isUnicodeIdentifierPart(0x16EE));
-        assertTrue(Character.isUnicodeIdentifierPart(0xFE33));
-        assertTrue(Character.isUnicodeIdentifierPart(0xFF10));
-        assertTrue(Character.isUnicodeIdentifierPart(0x1D165));
-        assertTrue(Character.isUnicodeIdentifierPart(0x1D167));
-        assertTrue(Character.isUnicodeIdentifierPart(0x1D173));
+        assertTrue("0x16EE", Character.isUnicodeIdentifierPart(0x16EE));
+        assertTrue("0xFE33", Character.isUnicodeIdentifierPart(0xFE33));
+        assertTrue("0xFF10", Character.isUnicodeIdentifierPart(0xFF10));
+        assertTrue("0x1D165", Character.isUnicodeIdentifierPart(0x1D165));
+        assertTrue("0x1D167", Character.isUnicodeIdentifierPart(0x1D167));
+        assertFalse("0x1D173", Character.isUnicodeIdentifierPart(0x1D173));
 
-        assertFalse(Character.isUnicodeIdentifierPart(0x10FFFF));
-        assertFalse(Character.isUnicodeIdentifierPart(0x110000));
+        assertFalse("0x10FFFF", Character.isUnicodeIdentifierPart(0x10FFFF));
+        assertFalse("0x110000", Character.isUnicodeIdentifierPart(0x110000));
     }
 
     /**

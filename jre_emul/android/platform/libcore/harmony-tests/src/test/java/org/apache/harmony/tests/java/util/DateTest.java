@@ -17,6 +17,7 @@
 
 package org.apache.harmony.tests.java.util;
 
+import static com.google.j2objc.TestUtil.assertI18NEquals;
 import static com.google.j2objc.util.NativeTimeZoneTest.isNativeTimeZone;
 
 import java.text.DateFormat;
@@ -496,9 +497,10 @@ public class DateTest extends junit.framework.TestCase {
         // This test assumes a default DateFormat.is24Hour setting.
         DateFormat.is24Hour = null;
         try {
-            assertEquals("Did not convert epoch to GMT string correctly", "Jan 1, 1970 12:00:00 AM",
+            assertI18NEquals("Did not convert epoch to GMT string correctly",
+                    "Jan 1, 1970 12:00:00 AM",
                     new Date(0).toLocaleString());
-            assertEquals("Did not convert epoch + 1yr to GMT string correctly",
+            assertI18NEquals("Did not convert epoch + 1yr to GMT string correctly",
                     "Jan 1, 1971 12:00:00 AM",
                     new Date((long)365 * 24 * 60 * 60 * 1000).toLocaleString());
         } finally {
