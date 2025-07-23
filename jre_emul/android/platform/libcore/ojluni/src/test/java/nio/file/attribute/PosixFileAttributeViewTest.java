@@ -52,7 +52,7 @@ public class PosixFileAttributeViewTest {
      * permissions have been updated.
      */
     static void testPermissions(Path file, String mode) throws IOException {
-        System.out.format("change mode: %s\n", mode);
+        // System.out.format("change mode: %s\n", mode);
         Set<PosixFilePermission> perms = PosixFilePermissions.fromString(mode);
 
         // change permissions and re-read them.
@@ -102,7 +102,7 @@ public class PosixFileAttributeViewTest {
         Set<PosixFilePermission> requested = PosixFilePermissions.fromString(mode);
         FileAttribute<Set<PosixFilePermission>> attr =
             PosixFilePermissions.asFileAttribute(requested);
-        System.out.format("create file with mode: %s\n", mode);
+        // System.out.format("create file with mode: %s\n", mode);
         Files.createFile(file, attr);
         try {
             checkSecure(requested,
@@ -113,7 +113,7 @@ public class PosixFileAttributeViewTest {
             Files.delete(file);
         }
 
-        System.out.format("create directory with mode: %s\n", mode);
+        // System.out.format("create directory with mode: %s\n", mode);
         Files.createDirectory(file, attr);
         try {
             checkSecure(requested,
@@ -131,11 +131,11 @@ public class PosixFileAttributeViewTest {
     static void permissionTests(Path dir)
         throws IOException
     {
-        System.out.println("-- Permission Tests  --");
+        // System.out.println("-- Permission Tests  --");
 
         // create file and test updating and reading its permissions
         Path file = dir.resolve("foo");
-        System.out.format("create %s\n", file);
+        // System.out.format("create %s\n", file);
         Files.createFile(file);
         try {
             // get initial permissions so that we can restore them later
@@ -178,7 +178,7 @@ public class PosixFileAttributeViewTest {
         // permissions
         if (TestUtil.supportsLinks(dir)) {
             Path link = dir.resolve("link");
-            System.out.format("create link %s\n", link);
+            // System.out.format("create link %s\n", link);
             Files.createSymbolicLink(link, file);
             try {
                 PosixFileAttributes attrs =
@@ -194,7 +194,7 @@ public class PosixFileAttributeViewTest {
             }
         }
 
-        System.out.println("OKAY");
+        // System.out.println("OKAY");
     }
 
     /**
@@ -203,7 +203,7 @@ public class PosixFileAttributeViewTest {
     static void createTests(Path dir)
         throws IOException
     {
-        System.out.println("-- Create Tests  --");
+        // System.out.println("-- Create Tests  --");
 
         Path file = dir.resolve("foo");
 
@@ -229,7 +229,7 @@ public class PosixFileAttributeViewTest {
         createWithPermissions(file, "r-xr-xr-x");
         createWithPermissions(file, "rwxrwxrwx");
 
-        System.out.println("OKAY");
+        // System.out.println("OKAY");
     }
 
     /**
@@ -239,10 +239,10 @@ public class PosixFileAttributeViewTest {
     static void ownerTests(Path dir)
         throws IOException
     {
-        System.out.println("-- Owner Tests  --");
+        // System.out.println("-- Owner Tests  --");
 
         Path file = dir.resolve("gus");
-        System.out.format("create %s\n", file);
+        // System.out.format("create %s\n", file);
 
         Files.createFile(file);
         try {
@@ -266,7 +266,7 @@ public class PosixFileAttributeViewTest {
             Files.delete(file);
         }
 
-        System.out.println("OKAY");
+        // System.out.println("OKAY");
     }
 
     /**
@@ -275,7 +275,7 @@ public class PosixFileAttributeViewTest {
     static void lookupPrincipalTests(Path dir)
         throws IOException
     {
-        System.out.println("-- Lookup UserPrincipal Tests --");
+        // System.out.println("-- Lookup UserPrincipal Tests --");
 
         UserPrincipalLookupService lookupService = dir.getFileSystem()
             .getUserPrincipalLookupService();
@@ -284,7 +284,7 @@ public class PosixFileAttributeViewTest {
         PosixFileAttributes attrs = Files.readAttributes(dir, PosixFileAttributes.class);
 
         // lookup owner and check it matches file's owner
-        System.out.format("lookup: %s\n", attrs.owner().getName());
+        // System.out.format("lookup: %s\n", attrs.owner().getName());
         try {
             UserPrincipal owner = lookupService.lookupPrincipalByName(attrs.owner().getName());
             if (owner instanceof GroupPrincipal)
@@ -292,34 +292,34 @@ public class PosixFileAttributeViewTest {
             if (!owner.equals(attrs.owner()))
                 throw new RuntimeException("owner different from file owner");
         } catch (UserPrincipalNotFoundException x) {
-            System.out.println("user not found - test skipped");
+            // System.out.println("user not found - test skipped");
         }
 
         // lookup group and check it matches file's group-owner
-        System.out.format("lookup group: %s\n", attrs.group().getName());
+        // System.out.format("lookup group: %s\n", attrs.group().getName());
         try {
             GroupPrincipal group = lookupService.lookupPrincipalByGroupName(attrs.group().getName());
             if (!group.equals(attrs.group()))
                 throw new RuntimeException("group different from file group-owner");
         } catch (UserPrincipalNotFoundException x) {
-            System.out.println("group not found - test skipped");
+            // System.out.println("group not found - test skipped");
         }
 
         // test that UserPrincipalNotFoundException is thrown
         String invalidPrincipal = "scumbag99";
         try {
-            System.out.format("lookup: %s\n", invalidPrincipal);
+            // System.out.format("lookup: %s\n", invalidPrincipal);
             lookupService.lookupPrincipalByName(invalidPrincipal);
             throw new RuntimeException("'" + invalidPrincipal + "' is a valid user?");
         } catch (UserPrincipalNotFoundException x) {
         }
         try {
-            System.out.format("lookup group: %s\n", invalidPrincipal);
+            // System.out.format("lookup group: %s\n", invalidPrincipal);
             lookupService.lookupPrincipalByGroupName("idonotexist");
             throw new RuntimeException("'" + invalidPrincipal + "' is a valid group?");
         } catch (UserPrincipalNotFoundException x) {
         }
-        System.out.println("OKAY");
+        // System.out.println("OKAY");
     }
 
     /**
@@ -329,7 +329,7 @@ public class PosixFileAttributeViewTest {
     static void exceptionsTests(Path dir)
         throws IOException
     {
-        System.out.println("-- Exceptions --");
+        // System.out.println("-- Exceptions --");
 
         PosixFileAttributeView view =
             Files.getFileAttributeView(dir,PosixFileAttributeView.class);
@@ -380,7 +380,7 @@ public class PosixFileAttributeViewTest {
         }  catch (ClassCastException x) {
         }
 
-        System.out.println("OKAY");
+        // System.out.println("OKAY");
     }
 
     // Android-changed: Removed args & added @Test
