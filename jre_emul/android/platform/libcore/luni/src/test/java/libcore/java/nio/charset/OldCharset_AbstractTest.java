@@ -76,8 +76,8 @@ public abstract class OldCharset_AbstractTest extends TestCase {
     public void test_dumpEncodableChars () {
         if (testChars == null) return;
         if (testChars.length > 0) return;
-        System.out.format("\ntest_dumpEncodableChars() for name %s => %s (class = %s)\n",
-                charsetName, charset.name(), getClass().getName());
+        // System.out.format("\ntest_dumpEncodableChars() for name %s => %s (class = %s)\n",
+        //         charsetName, charset.name(), getClass().getName());
         Charset_TestGenerator.Dumper out = new Charset_TestGenerator.Dumper1(16);
         int code = 0;
         while (code < 256) {
@@ -94,8 +94,8 @@ public abstract class OldCharset_AbstractTest extends TestCase {
                 code += 20;
             }
         }
-        System.out.println();
-        System.out.println("Encodable Chars dumped for Test Class " + getClass().getName());
+        // System.out.println();
+        // System.out.println("Encodable Chars dumped for Test Class " + getClass().getName());
         fail("Encodable Chars dumped for Test Class " + getClass().getName());
     }
 
@@ -103,8 +103,8 @@ public abstract class OldCharset_AbstractTest extends TestCase {
         if (testChars == null) return;
         if (testChars.length == 0) return;
         if (testBytes != null) return;
-        System.out.format("\ntest_dumpEncoded() for name %s => %s (class = %s)\n",
-                charsetName, charset.name(), getClass().getName());
+        // System.out.format("\ntest_dumpEncoded() for name %s => %s (class = %s)\n",
+        //         charsetName, charset.name(), getClass().getName());
         Charset_TestGenerator.Dumper out = new Charset_TestGenerator.Dumper1();
         CharBuffer inputCB = CharBuffer.wrap(testChars);
         ByteBuffer outputBB;
@@ -114,8 +114,8 @@ public abstract class OldCharset_AbstractTest extends TestCase {
         while (outputBB.hasRemaining()) {
             out.consume(outputBB.get() & 0xff);
         }
-        System.out.println();
-        System.out.println("Encoded Bytes dumped for Test Class " + getClass().getName());
+        // System.out.println();
+        // System.out.println("Encoded Bytes dumped for Test Class " + getClass().getName());
         fail("Encoded Bytes dumped for Test Class " + getClass().getName());
     }
 
@@ -164,7 +164,7 @@ public abstract class OldCharset_AbstractTest extends TestCase {
                             inputCB, outputCB);
                     if (code == 165) {
                         outputCB.rewind();
-                        System.out.println("WOW:" + outputCB.get());
+                        // System.out.println("WOW:" + outputCB.get());
                     }
                 } catch (CharacterCodingException e) {
                     fail("failed to decode(encode(" + code + "))");

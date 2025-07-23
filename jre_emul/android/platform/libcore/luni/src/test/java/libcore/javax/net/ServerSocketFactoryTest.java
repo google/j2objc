@@ -112,7 +112,7 @@ public class ServerSocketFactoryTest extends TestCase {
             }
         }
 
-        System.out.println("backlog peaked at " + peak);
+        // System.out.println("backlog peaked at " + peak);
 
         /*
          * In 4.5 of UNIX Network Programming, Stevens says:

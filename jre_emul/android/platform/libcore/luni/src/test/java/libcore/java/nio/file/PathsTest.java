@@ -62,7 +62,7 @@ public class PathsTest {
         List<TestData> exceptionTestCases = getPath_URI_ExceptionTestData();
         for (TestData exceptionTestCase : exceptionTestCases) {
             try {
-                System.out.println(exceptionTestCase.input);
+                // System.out.println(exceptionTestCase.input);
                 Paths.get(new URI(exceptionTestCase.input));
                 fail();
             } catch (Exception expected) {

@@ -189,7 +189,7 @@ icu_data: $(ICU_EMBEDDED_RES_DIR)/$(NATIVE_JRE_ICU_EMBEDDED_DATA)
 	@:
 
 test: libs_dist $(DIST_DIR)/j2objcc
-	$(MAKE) -f tests.mk all-tests
+	$(MAKE) -f tests.mk test
 
 clean:
 	@rm -rf $(BUILD_DIR) $(GEN_OBJC_DIR)

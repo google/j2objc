@@ -357,8 +357,8 @@ public class MacOSXPathTest {
     @Test
     public void test_toFile() {
         File file = dummyPath.toFile();
-        System.out.println(dummyPath.toAbsolutePath().toString());
-        System.out.println(file.getAbsolutePath());
+        // System.out.println(dummyPath.toAbsolutePath().toString());
+        // System.out.println(file.getAbsolutePath());
         assertEquals(dummyPath.toAbsolutePath().toString(), file.getAbsolutePath());
     }
 

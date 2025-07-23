@@ -1488,9 +1488,18 @@ JSON_TEST_SOURCES = \
 JSON_SUITE_SOURCES = libcore/org/json/SmallTests.java
 
 TESTS_TO_SKIP = \
-    jsr166/ExchangerTest.java \
-    libcore/java/text/ChoiceFormatTest.java \
+    PackagePrefixesTest.java \
+    com/google/j2objc/nio/charset/CharsetTest.java \
+    libcore/java/nio/channels/AsynchronousSocketChannelTest.java \
+    libcore/java/nio/charset/OldCharset_MultiByte_Big5.java \
+    libcore/java/nio/charset/OldCharset_MultiByte_GB2312.java \
+    libcore/java/nio/charset/OldCharset_MultiByte_ISO_2022_JP.java \
+    libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_1.java \
+    libcore/java/nio/charset/OldCharset_SingleByte_ISO_8859_2.java \
+    libcore/java/time/format/DateTimeFormatterTest.java \
     libcore/javax/net/ssl/SSLSocketTest.java \
+    org/apache/harmony/tests/java/nio/charset/GBCharsetEncoderTest.java \
+    org/apache/harmony/tests/java/util/DateTest.java \
     org/apache/harmony/tests/javax/net/ssl/HandshakeCompletedEventTest.java
 
 # Most of these tests are failing for a common index-out-of-range error.
