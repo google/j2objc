@@ -32,16 +32,15 @@
 
 package j2objc.java.lang.ref;
 
-import com.google.j2objc.annotations.AutoreleasePool;
+import static org.junit.Assert.*;
 
+import com.google.j2objc.annotations.AutoreleasePool;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import junit.framework.TestCase;
-
+import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * iOS-specific unit tests for {@link WeakReference}. The Android and
@@ -131,5 +130,23 @@ public class WeakReferenceTest extends TestCase {
     }
     // Verify that referent's hashCode() was not called
     assertEquals("referent's hashCode() was called", 0, hashCodeCount[0]);
+  }
+
+  @Ignore("b/433938552")
+  public void ignore_testConstantStringWeakReference() {
+    for (@AutoreleasePool int i = 0; i < 1; i++) {
+      weakRef = new WeakReference<>("constant-string");
+    }
+
+    assertNotNull("weakRef with constant string was cleared", weakRef.get());
+  }
+
+  @Ignore("b/433938552")
+  public void ignore_testNonConstantStringWeakReference() {
+    for (@AutoreleasePool int i = 0; i < 1; i++) {
+      weakRef = new WeakReference<>(new String("non-constant-string"));
+    }
+
+    assertNull("weakRef with non-constant string wasn't cleared", weakRef.get());
   }
 }
