@@ -31,7 +31,6 @@ import dalvik.annotation.optimization.ReachabilitySensitive;
 import dalvik.system.BlockGuard;
 import libcore.io.IoTracker;
 import libcore.io.IoUtils;
-import sun.nio.ch.FileChannelImpl;
 */
 
 import static libcore.io.OsConstants.O_APPEND;
@@ -42,6 +41,7 @@ import static libcore.io.OsConstants.O_WRONLY;
 import dalvik.system.CloseGuard;
 import java.nio.channels.FileChannel;
 import libcore.io.IoBridge;
+import sun.nio.ch.FileChannelImpl;
 
 /**
  * A file output stream is an output stream for writing data to a
@@ -486,12 +486,36 @@ class FileOutputStream extends OutputStream
      * @spec JSR-51
      */
     public FileChannel getChannel() {
-        synchronized (this) {
-            if (channel == null) {
-                channel = FileChannelOpener.open(fd, path, false, true, append, this);
+    FileChannel fc = this.channel;
+    if (fc == null) {
+      synchronized (this) {
+        fc = this.channel;
+        if (fc == null) {
+          this.channel =
+              fc =
+                  FileChannelImpl.open(
+                      fd,
+                      path,
+                      false,
+                      // Android-changed: TODO: remove patch when FileChannelImpl supports direct.
+                      // This patch should cause no behavior change as direct is off by default.
+                      // true, false, this);
+                      true,
+                      append,
+                      this);
+          if (closed) {
+            try {
+              // possible race with close(), benign since
+              // FileChannel.close is final and idempotent
+              fc.close();
+            } catch (IOException ioe) {
+              throw new InternalError(ioe); // should not happen
             }
-            return channel;
+          }
         }
+            }
+        }
+    return fc;
     }
 
     /**
