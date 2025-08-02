@@ -337,8 +337,8 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
                    ? "@property (" : "@property (nonnull, retain, ");
     printer->Print(
         variables_,
-        "getter=Get$capitalized_name$, "
-        "setter=Set$capitalized_name$With$parameter_type$:) "
+        "getter=_get$capitalized_name$, "
+        "setter=_set$capitalized_name$With$parameter_type$:) "
         "$storage_type$ $property_name$;\n");
   }
 
@@ -371,7 +371,7 @@ void SingleFieldGenerator::GenerateMessageOrBuilderProtocol(io::Printer* printer
                        : "@property (nonnull, ");
 
     printer->Print(variables_,
-                   "readonly, getter=Get$capitalized_name$) "
+                   "readonly, getter=_get$capitalized_name$) "
                    "$storage_type$ $property_name$;\n");
   }
 
@@ -447,9 +447,9 @@ void RepeatedFieldGenerator::GenerateMessageOrBuilderProtocol(
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
         variables_,
-        "@property (readonly, getter=Get$capitalized_name$Count)"
+        "@property (readonly, getter=_get$capitalized_name$Count)"
         " jint $camelcase_name$Count;\n"
-        "@property (readonly, getter=Get$capitalized_name$Array)"
+        "@property (readonly, getter=_get$capitalized_name$Array)"
         " NSArray<$generic_type$> *$property_name$;\n"
         "- ($nonnull_type$)get$capitalized_name$Index:(int)index"
         " NS_SWIFT_NAME(get$capitalized_name$(_:));\n");
@@ -574,7 +574,7 @@ void MapFieldGenerator::GenerateMessageOrBuilderProtocol(
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
         variables_,
-        "@property (readonly, getter=Get$capitalized_name$Dict)"
+        "@property (readonly, getter=_get$capitalized_name$Dict)"
         " NSDictionary<$key_generic_type$, $value_generic_type$>"
         " *$camelcase_name$;\n");
   }
