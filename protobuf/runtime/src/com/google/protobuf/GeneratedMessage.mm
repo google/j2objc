@@ -3445,11 +3445,11 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   return CGPParseFromByteArray([self getDescriptor], bytes, registry);
 }
 
-+ (id)parseFromWithByteString:(CGPByteString *)byteString {
++ (id)parseFromWithComGoogleProtobufByteString:(CGPByteString *)byteString {
   return CGPParseFromByteString([self getDescriptor], byteString, nil);
 }
 
-+ (id)parseFromWithByteString:(CGPByteString *)byteString
++ (id)parseFromWithComGoogleProtobufByteString:(CGPByteString *)byteString
     withComGoogleProtobufExtensionRegistryLite:(CGPExtensionRegistryLite *)registry {
   return CGPParseFromByteString([self getDescriptor], byteString, registry);
 }

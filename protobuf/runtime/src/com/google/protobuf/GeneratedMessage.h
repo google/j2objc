@@ -55,8 +55,8 @@ typedef ComGoogleProtobufGeneratedMessage_GeneratedExtension CGPGeneratedExtensi
 @interface ComGoogleProtobufGeneratedMessage : ComGoogleProtobufAbstractMessage
 
 + (id)getDescriptor;
-+ (id)parseFromWithByteString:(ComGoogleProtobufByteString *)byteString;
-+ (id)parseFromWithByteString:(ComGoogleProtobufByteString *)byteString
++ (id)parseFromWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)byteString;
++ (id)parseFromWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)byteString
     withComGoogleProtobufExtensionRegistryLite:(ComGoogleProtobufExtensionRegistryLite *)registry;
 + (id)parseFromNSData:(NSData *)data;
 + (id)parseFromNSData:(NSData *)data registry:(ComGoogleProtobufExtensionRegistryLite *)registry;

@@ -39,6 +39,14 @@ public class MessagesTest extends ProtobufTest {
     checkFields(msg);
   }
 
+  public void testParseFromByteString() throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.newInstance();
+    MessageFields.registerAllExtensions(registry);
+    MessageData filledMsg = getFilledMessage();
+    MessageData msg = MessageData.parseFrom(filledMsg.toByteString(), registry);
+    checkFields(msg);
+  }
+
   // b/297559868: verify invalid binary proto throws exception when parsed.
   // In this case, a Base64-encoded string was mistakenly passed as a proto,
   // causing a crash instead of a thrown exception.
