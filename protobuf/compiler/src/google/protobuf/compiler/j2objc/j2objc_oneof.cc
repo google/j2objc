@@ -375,7 +375,7 @@ void OneofGenerator::GenerateMessageOrBuilder(io::Printer* printer) {
 
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
-        "@property (readonly, getter=Get$capitalized_name$Case) "
+        "@property (readonly, getter=_get$capitalized_name$Case) "
         "$classname$ *$camelcase_name$Case;\n",
         "classname", CaseClassName(descriptor_), "capitalized_name",
         CapitalizedName(descriptor_), "camelcase_name",

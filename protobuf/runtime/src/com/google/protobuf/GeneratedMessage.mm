@@ -1266,7 +1266,7 @@ static BOOL ResolveRemoveAccessor(
 
 static BOOL ResolveAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, BOOL isBuilder) {
   const char *selName = sel_getName(sel);
-  if (Matches(&selName, "get", 3) || Matches(&selName, "Get", 3)) {
+  if (Matches(&selName, "get", 3) || Matches(&selName, "_get", 4)) {
     return ResolveGetAccessor(cls, descriptor, sel, selName);
   } else if (Matches(&selName, "has", 3)) {
     return ResolveHasAccessor(cls, descriptor, sel, selName);
@@ -1274,7 +1274,7 @@ static BOOL ResolveAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, BOOL 
     return ResolveContainsAccessor(cls, descriptor, sel, selName);
   }
   if (isBuilder) {
-    if (Matches(&selName, "set", 3) || Matches(&selName, "Set", 3)) {
+    if (Matches(&selName, "set", 3) || Matches(&selName, "_set", 4)) {
       return ResolveSetAccessor(cls, descriptor, sel, selName);
     } else if (Matches(&selName, "clear", 5)) {
       return ResolveClearAccessor(cls, descriptor, sel, selName);
