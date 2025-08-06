@@ -190,22 +190,8 @@ run-single-test: link resources $(TEST_BIN)
 run-initialization-test: resources $(TESTS_DIR)/jreinitialization
 	@$(TESTS_DIR)/jreinitialization 2>&1 | grep -v "support not implemented"
 
-run-core-size-test: $(TESTS_DIR)/core_size \
-  $(TESTS_DIR)/full_jre_size \
-  $(TESTS_DIR)/core_plus_beans \
-  $(TESTS_DIR)/core_plus_channels \
-  $(TESTS_DIR)/core_plus_file \
-  $(TESTS_DIR)/core_plus_concurrent \
-  $(TESTS_DIR)/core_plus_io \
-  $(TESTS_DIR)/core_plus_json \
-  $(TESTS_DIR)/core_plus_net \
-  $(TESTS_DIR)/core_plus_security \
-  $(TESTS_DIR)/core_plus_sql \
-  $(TESTS_DIR)/core_plus_ssl \
-  $(TESTS_DIR)/core_plus_time \
-  $(TESTS_DIR)/core_plus_util \
-  $(TESTS_DIR)/core_plus_xml \
-  $(TESTS_DIR)/core_plus_zip
+run-core-size-test: $(TESTS_DIR)/full_jre_size \
+  $(TESTS_DIR)/core_plus_json
 	@for bin in $^; do \
 	  echo Binary size for $$(basename $$bin):; \
 	  ls -l $$bin; \
@@ -318,72 +304,13 @@ $(GEN_JAVA_DIR)/com/google/j2objc/arc/%.java: $(MISC_TEST_ROOT)/com/google/j2obj
 	@echo $<
 	@sed 's/^package com\.google\.j2objc;$$/package com.google.j2objc.arc;/' $< > $@
 
-$(TESTS_DIR)/core_size:
-	@mkdir -p $(@D)
-	$(J2OBJCC) -o $@ -ObjC $(COVERAGE_FLAGS)
-
 $(TESTS_DIR)/full_jre_size:
 	@mkdir -p $(@D)
 	$(J2OBJCC) -ljre_emul -o $@ -ObjC $(COVERAGE_FLAGS)
 
-$(TESTS_DIR)/core_plus_io:
-	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_io -o $@ -ObjC $(COVERAGE_FLAGS)
-
 $(TESTS_DIR)/core_plus_json:
 	@mkdir -p $(@D)
-	$(J2OBJCC) -ljson -o $@ -ObjC $(COVERAGE_FLAGS)
-
-$(TESTS_DIR)/core_plus_net:
-	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_net -o $@ -ObjC $(COVERAGE_FLAGS)
-
-$(TESTS_DIR)/core_plus_util:
-	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_util -o $@ -ObjC $(COVERAGE_FLAGS)
-
-$(TESTS_DIR)/core_plus_concurrent:
-	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_concurrent -ljre_util -o $@ -ObjC $(COVERAGE_FLAGS)
-
-$(TESTS_DIR)/core_plus_file:
-	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_file -ljre_channels -ljre_concurrent -ljre_net \
-	    -ljre_security -ljre_util -o $@ -ObjC $(COVERAGE_FLAGS)
-
-$(TESTS_DIR)/core_plus_channels:
-	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_channels -ljre_net -ljre_security -ljre_util -ljre_concurrent \
-	    -o $@ -ObjC $(COVERAGE_FLAGS)
-
-$(TESTS_DIR)/core_plus_security:
-	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_security -ljre_net -o $@ -ObjC $(COVERAGE_FLAGS)
-
-$(TESTS_DIR)/core_plus_ssl:
-	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_ssl -ljre_security -ljre_net -ljre_util -o $@ -ObjC $(COVERAGE_FLAGS)
-
-$(TESTS_DIR)/core_plus_time:
-	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_time -ljre_icu -ljre_channels -ljre_net -ljre_util \
-	    -ljre_security -ljre_zip -ljre_io -ljre_concurrent -o $@ -ObjC $(COVERAGE_FLAGS)
-
-$(TESTS_DIR)/core_plus_xml:
-	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_xml -ljre_net -ljre_security -o $@ -ObjC $(COVERAGE_FLAGS)
-
-$(TESTS_DIR)/core_plus_zip:
-	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_zip -ljre_security -ljre_net -ljre_io -o $@ -ObjC $(COVERAGE_FLAGS)
-
-$(TESTS_DIR)/core_plus_sql:
-	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_sql -o $@ -ObjC $(COVERAGE_FLAGS)
-
-$(TESTS_DIR)/core_plus_beans:
-	@mkdir -p $(@D)
-	$(J2OBJCC) -ljre_beans -ljre_util -o $@ -ObjC $(COVERAGE_FLAGS)
+	$(J2OBJCC) -ljson -ljre_emul -o $@ -ObjC $(COVERAGE_FLAGS)
 
 no_opt_app: $(TESTS_DIR)/no_opt_app
 
