@@ -35,8 +35,8 @@ java_library(
     ],
     resources = glob(["src/main/resources/**/*"]),
     deps = [
-        "//annotations:annotations-lib",
-        "//java_deps:scenelib",
+        "//annotations:annotations_lib",
+        "//scenelib:scenelib",
         # Corrected Maven dependency labels:
         "@maven//:com_google_guava_guava",
         "@maven//:com_google_code_findbugs_jsr305",
@@ -58,7 +58,7 @@ java_test(
     resources = glob(["src/test/resources/**/*"]),
     test_class = "com.google.devtools.j2objc.SmallTests",
     deps = [
-        "//annotations:annotations-lib",
+        "//annotations:annotations_lib",
         "//jre_emul:jre_emul",
         ":translator",
         "@maven//:com_google_flogger_flogger",
