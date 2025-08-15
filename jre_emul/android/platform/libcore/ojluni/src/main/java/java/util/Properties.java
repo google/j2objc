@@ -26,12 +26,8 @@
 
 package java.util;
 
-import com.google.j2objc.LibraryNotLinkedError;
-import com.google.j2objc.util.XmlLoader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -40,8 +36,7 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.nio.charset.IllegalCharsetNameException;
-import java.nio.charset.UnsupportedCharsetException;
+import java.nio.charset.StandardCharsets;
 
 // Android-removed: Dead native2ascii links.
 // These links are also gone in OpenJDK 9.
@@ -910,21 +905,16 @@ class Properties extends Hashtable<Object,Object> {
      */
     public synchronized void loadFromXML(InputStream in)
         throws IOException, InvalidPropertiesFormatException {
-      XmlLoader loader = getXmlLoader();
-      if (loader == null) {
-        throw new LibraryNotLinkedError(
-            "XML support", "jre_xml", "ComGoogleJ2objcUtilPropertiesXmlLoader");
-      }
-      loader.load(this, in);
-    }
-
-    private static XmlLoader getXmlLoader() {
-      try {
-        Class<?> loaderClass = Class.forName("com.google.j2objc.util.PropertiesXmlLoader");
-        return (XmlLoader) loaderClass.newInstance();
-      } catch (Exception e) {
-        return null;
-      }
+    // Android-changed: Keep OpenJDK7u40's XmlUtils.
+    // XmlSupport's system property based XmlPropertiesProvider
+    // selection does not make sense on Android and has too many
+    // dependencies on classes that are not available on Android.
+    //
+    // Objects.requireNonNull(in);
+    // PropertiesDefaultHandler handler = new PropertiesDefaultHandler();
+    // handler.load(this, in);
+    XMLUtils.load(this, Objects.requireNonNull(in));
+    in.close();
     }
 
     /**
@@ -950,7 +940,7 @@ class Properties extends Hashtable<Object,Object> {
     public void storeToXML(OutputStream os, String comment)
         throws IOException
     {
-        storeToXML(os, comment, "UTF-8");
+    storeToXML(os, comment, StandardCharsets.UTF_8);
     }
 
     /**
@@ -994,62 +984,63 @@ class Properties extends Hashtable<Object,Object> {
      */
     public void storeToXML(OutputStream os, String comment, String encoding)
         throws IOException {
-        if (os == null) {
-            throw new NullPointerException("os == null");
-        } else if (encoding == null) {
-            throw new NullPointerException("encoding == null");
-        }
+    // Android-changed: Keep OpenJDK7u40's XmlUtils.
+    // XmlSupport's system property based XmlPropertiesProvider
+    // selection does not make sense on Android and has too many
+    // dependencies on classes that are not available on Android.
+    /*
+    Objects.requireNonNull(os);
+    Objects.requireNonNull(encoding);
 
-        /*
-         * We can write to XML file using encoding parameter but note that some
-         * aliases for encodings are not supported by the XML parser. Thus we
-         * have to know canonical name for encoding used to store data in XML
-         * since the XML parser must recognize encoding name used to store data.
-         */
+    try {
+        Charset charset = Charset.forName(encoding);
+        storeToXML(os, comment, charset);
+    } catch (IllegalCharsetNameException | UnsupportedCharsetException e) {
+        throw new UnsupportedEncodingException(encoding);
+    }
+    */
+    XMLUtils.save(this, Objects.requireNonNull(os), comment, Objects.requireNonNull(encoding));
+  }
 
-        String encodingCanonicalName;
-        try {
-            encodingCanonicalName = Charset.forName(encoding).name();
-        } catch (IllegalCharsetNameException e) {
-            System.out.println("Warning: encoding name " + encoding
-                    + " is illegal, using UTF-8 as default encoding");
-            encodingCanonicalName = "UTF-8";
-        } catch (UnsupportedCharsetException e) {
-            System.out.println("Warning: encoding " + encoding
-                    + " is not supported, using UTF-8 as default encoding");
-            encodingCanonicalName = "UTF-8";
-        }
-
-        PrintStream printStream = new PrintStream(os, false,
-                encodingCanonicalName);
-
-        printStream.print("<?xml version=\"1.0\" encoding=\"");
-        printStream.print(encodingCanonicalName);
-        printStream.println("\"?>");
-
-        printStream.print("<!DOCTYPE properties SYSTEM \"");
-        printStream.print(PROP_DTD_NAME);
-        printStream.println("\">");
-
-        printStream.println("<properties>");
-
-        if (comment != null) {
-            printStream.print("<comment>");
-            printStream.print(substitutePredefinedEntries(comment));
-            printStream.println("</comment>");
-        }
-
-        for (Map.Entry<Object, Object> entry : entrySet()) {
-            String keyValue = (String) entry.getKey();
-            String entryValue = (String) entry.getValue();
-            printStream.print("<entry key=\"");
-            printStream.print(substitutePredefinedEntries(keyValue));
-            printStream.print("\">");
-            printStream.print(substitutePredefinedEntries(entryValue));
-            printStream.println("</entry>");
-        }
-        printStream.println("</properties>");
-        printStream.flush();
+  /**
+   * Emits an XML document representing all of the properties contained in this table, using the
+   * specified encoding.
+   *
+   * <p>The XML document will have the following DOCTYPE declaration:
+   *
+   * <pre>
+   * &lt;!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"&gt;
+   * </pre>
+   *
+   * <p>If the specified comment is {@code null} then no comment will be stored in the document.
+   *
+   * <p>An implementation is required to support writing of XML documents that use the "{@code
+   * UTF-8}" or "{@code UTF-16}" encoding. An implementation may support additional encodings.
+   *
+   * <p>Unmappable characters for the specified charset will be encoded as numeric character
+   * references.
+   *
+   * <p>The specified stream remains open after this method returns.
+   *
+   * @param os the output stream on which to emit the XML document.
+   * @param comment a description of the property list, or {@code null} if no comment is desired.
+   * @param charset the charset
+   * @throws IOException if writing to the specified output stream results in an {@code
+   *     IOException}.
+   * @throws NullPointerException if {@code os} or {@code charset} is {@code null}.
+   * @throws ClassCastException if this {@code Properties} object contains any keys or values that
+   *     are not {@code Strings}.
+   * @see #loadFromXML(InputStream)
+   * @see <a href="http://www.w3.org/TR/REC-xml/#charencoding">Character Encoding in Entities</a>
+   * @since 10
+   */
+  public void storeToXML(OutputStream os, String comment, Charset charset) throws IOException {
+    Objects.requireNonNull(os, "OutputStream");
+    Objects.requireNonNull(charset, "Charset");
+    // Objects.requireNonNull(os, "OutputStream");
+    // PropertiesDefaultHandler handler = new PropertiesDefaultHandler();
+    // handler.store(this, os, comment, charset);
+    storeToXML(os, comment, charset.name());
     }
 
     private String substitutePredefinedEntries(String s) {
