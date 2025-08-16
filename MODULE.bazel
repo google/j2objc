@@ -1,9 +1,7 @@
-"""Bzlmod file for the project."""
-
 module(name = "j2objc")
 
 bazel_dep(name = "rules_jvm_external", version = "6.3")
-bazel_dep(name = "rules_java", version = "8.6.1")
+bazel_dep(name = "rules_java", version = "8.12.0")
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 

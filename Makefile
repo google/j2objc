@@ -38,7 +38,8 @@ install-man-pages: $(MAN_PAGES)
 	@mkdir -p $(DIST_DIR)/man/man1
 	@install -C -m 0644 $? $(DIST_DIR)/man/man1
 
-EXTRA_DIST_FILES = LICENSE WORKSPACE BUILD
+EXTRA_DIST_FILES = LICENSE BUILD.bazel MODULE.bazel MODULE.bazel.lock
+EXTRA_DIST_FILES = LICENSE
 
 $(DIST_DIR)/%: %.dist
 	@mkdir -p $(@D)

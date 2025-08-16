@@ -61,7 +61,7 @@ java_library(
         "java.base=ALL-UNNAMED",
     ],
     deps = [
-        "//annotations:annotations-lib",
+        "//annotations:annotations_lib",
     ],
     visibility = ["//visibility:public"],
 )

@@ -2,8 +2,17 @@
 
 load("@rules_java//java:defs.bzl", "java_library")
 
+package(
+    default_visibility = ["//:internal_visibility"],
+)
+
 java_library(
-    name = "annotations-lib",
+    name = "annotations_lib",
     srcs = glob(["src/main/java/com/google/j2objc/annotations/*.java"]),
+)
+
+java_library(
+    name = "annotations",
+    exports = [":annotations_lib"],
     visibility = ["//visibility:public"],
 )
