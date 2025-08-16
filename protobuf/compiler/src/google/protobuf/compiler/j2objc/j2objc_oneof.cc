@@ -170,10 +170,9 @@ void OneofGenerator::GenerateHeader(io::Printer* printer) {
   if (IsGenerateProperties(descriptor_->file())) {
     for (int i = 0; i < descriptor_->field_count(); i++) {
       printer->Print(
-          "@property(class, readonly, retain) $classname$ *$name$ "
-          "NS_SWIFT_NAME($name$);\n",
+          "@property(class, readonly, retain) $classname$ *$name$;\n",
           "classname", CaseClassName(descriptor_), "name",
-          CaseValueName(descriptor_->field(i)));
+          descriptor_->field(i)->camelcase_name());
     }
   }
 
@@ -300,11 +299,12 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
   if (IsGenerateProperties(descriptor_->file())) {
     for (int i = 0; i < descriptor_->field_count(); i++) {
       printer->Print(
-          "+ ($classname$ *) $name$ {\n"
-          "  return $classname$_get_$name$();\n"
+          "+ ($classname$ *) $camel_case_name$ {\n"
+          "  return $classname$_get_$upper_name$();\n"
           "}\n",
-          "classname", CaseClassName(descriptor_), "name",
-          CaseValueName(descriptor_->field(i)));
+          "classname", CaseClassName(descriptor_), "upper_name",
+          CaseValueName(descriptor_->field(i)), "camel_case_name",
+          descriptor_->field(i)->camelcase_name());
     }
   }
 
