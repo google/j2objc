@@ -120,7 +120,7 @@ public class DirectByteBuffer extends MappedByteBuffer implements DirectBuffer {
     @SuppressWarnings("unused")
     DirectByteBuffer(long addr, int cap) {
         super(-1, 0, cap, cap);
-        memoryRef = new MemoryRef(addr, this);
+        memoryRef = new MemoryRef(addr, null);
         address = addr;
         cleaner = null;
     }
