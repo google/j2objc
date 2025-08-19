@@ -80,8 +80,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   android/system/Int32Ref.java \
   android/system/Int64Ref.java \
   com/google/j2objc/util/AutoreleasePool.java \
-  com/google/j2objc/util/CurrencyNumericCodes.java \
-  com/google/j2objc/util/XmlLoader.java \
   com/google/j2objc/util/logging/IOSLogHandler.java \
   java/io/BufferedInputStream.java \
   java/io/BufferedOutputStream.java \
@@ -457,6 +455,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/UnsafeArrayList.java \
   java/util/Vector.java \
   java/util/WeakHashMap.java \
+  java/util/XMLUtils.java \
   java/util/concurrent/AbstractExecutorService.java \
   java/util/concurrent/BlockingQueue.java \
   java/util/concurrent/Callable.java \
@@ -602,7 +601,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/io/DefaultFileSystem.java \
   java/io/DeleteOnExitHook.java \
   java/io/ExpiringCache.java \
-  java/io/FileChannelOpener.java \
   java/io/FileSystem.java \
   java/io/SerialCallbackContext.java \
   java/io/UnixFileSystem.java \
@@ -973,7 +971,6 @@ JAVA_PUBLIC_SOURCES_CONCURRENT = \
 JAVA_PRIVATE_SOURCES_CONCURRENT =
 
 JAVA_PUBLIC_SOURCES_CHANNELS = \
-  java/nio/ChannelFactoryImpl.java \
   java/nio/channels/AcceptPendingException.java \
   java/nio/channels/AlreadyBoundException.java \
   java/nio/channels/AlreadyConnectedException.java \
@@ -1253,7 +1250,6 @@ NATIVE_JRE_SOURCES_FILE = \
   UnixNativeDispatcher.m
 
 JAVA_PUBLIC_SOURCES_SECURITY = \
-  java/io/SerialVersionUIDDigest.java \
   java/net/URLClassLoader.java \
   java/security/AccessControlException.java \
   java/security/AlgorithmConstraints.java \
@@ -1680,7 +1676,6 @@ JAVA_PRIVATE_SOURCES_SSL = \
   com/google/j2objc/net/ssl/IosSslContextSpi.java
 
 JAVA_PUBLIC_SOURCES_XML = \
-  com/google/j2objc/util/PropertiesXmlLoader.java \
   javax/xml/XMLConstants.java \
   javax/xml/datatype/DatatypeConfigurationException.java \
   javax/xml/datatype/DatatypeConstants.java \

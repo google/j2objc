@@ -26,8 +26,8 @@
 
 package java.net;
 
-import com.google.j2objc.LibraryNotLinkedError;
 import com.google.j2objc.net.IosHttpHandler;
+import com.google.j2objc.net.IosHttpsHandler;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
@@ -269,13 +269,7 @@ public final class URLImpl implements URLDelegate {
           } else if (protocol.equals("http")) {
             handler = new IosHttpHandler();
           } else if (protocol.equals("https")) {
-            try {
-              String name = "com.google.j2objc.net.IosHttpsHandler";
-              handler = (URLStreamHandler) Class.forName(name).newInstance();
-            } catch (Exception e) {
-              throw new LibraryNotLinkedError("Https support", "jre_ssl",
-                  "JavaxNetSslHttpsURLConnection");
-            }
+            handler = new IosHttpsHandler();
           }
         } catch (Exception e) {
           throw new AssertionError(e);
