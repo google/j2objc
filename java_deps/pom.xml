@@ -238,12 +238,12 @@
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
-      <version>4.27.3</version>
+      <version>4.27.5</version>
     </dependency>
     <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-javalite</artifactId>
-      <version>4.27.3</version>
+      <version>4.32.0</version>
     </dependency>
     <dependency>
       <groupId>org.bitbucket.mstrobel</groupId>
