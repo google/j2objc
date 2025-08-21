@@ -100,20 +100,20 @@ public class LogSiteInjectorTest extends GenerationTest {
     String source =
         String.join(
             "\n",
-            "package test;"
-                + "import java.util.logging.Logger;"
-                + "public class Hello3 {"
-                + "  private static final Logger logger=Logger.getLogger(Hello3.class.getName());"
-                + "  public static void f(Throwable t, String msg, Object arg, Object... args) {"
-                + "    logger.finest(msg);"
-                + "    logger.fine(msg);"
-                + "    logger.finer(msg);"
-                + "    logger.severe(msg);"
-                + "    logger.warning(msg);"
-                + "    logger.config(msg);"
-                + "    logger.info(msg);"
-                + "  }"
-                + "}");
+            "package test;",
+            "import java.util.logging.Logger;",
+            "public class Hello3 {",
+            "  private static final Logger logger=Logger.getLogger(Hello3.class.getName());",
+            "  public static void f(Throwable t, String msg, Object arg, Object... args) {",
+            "    logger.finest(msg);",
+            "    logger.fine(msg);",
+            "    logger.finer(msg);",
+            "    logger.severe(msg);",
+            "    logger.warning(msg);",
+            "    logger.config(msg);",
+            "    logger.info(msg);",
+            "  }",
+            "}");
     String translation = translateSourceFile(source, "test.Hello3", "test/Hello3.m");
     assertTranslatedLines(
         translation,
@@ -181,19 +181,19 @@ public class LogSiteInjectorTest extends GenerationTest {
     String source =
         String.join(
             "\n",
-            "package test;"
-                + "import java.util.logging.Logger;"
-                + "public class Hello4 {"
-                + "  static class MyLogger extends Logger {"
-                + "    protected MyLogger(String name, String resourceBundleName) {"
-                + "      super(name, resourceBundleName);"
-                + "    }"
-                + "    public void log() {}"
-                + "  }"
-                + "  public static void f(MyLogger l) {"
-                + "    l.log();"
-                + "  }"
-                + "}");
+            "package test;",
+            "import java.util.logging.Logger;",
+            "public class Hello4 {",
+            "  static class MyLogger extends Logger {",
+            "    protected MyLogger(String name, String resourceBundleName) {",
+            "      super(name, resourceBundleName);",
+            "    }",
+            "    public void log() {}",
+            "  }",
+            "  public static void f(MyLogger l) {",
+            "    l.log();",
+            "  }",
+            "}");
     String translation = translateSourceFile(source, "test.Hello4", "test/Hello4.m");
     assertTranslation(translation, "[((TestHello4_MyLogger *) nil_chk(l)) log];");
   }
@@ -202,17 +202,17 @@ public class LogSiteInjectorTest extends GenerationTest {
     String source =
         String.join(
             "\n",
-            "package test;"
-                + "import java.util.logging.Logger;"
-                + "import java.util.logging.Level;"
-                + "public class Hello5 {"
-                + "  private static final Logger logger = Logger.getLogger(Hello5.class.getName());"
-                + "  public static class Inner {"
-                + "    public static void f(String msg) {"
-                + "      logger.info(msg);"
-                + "    }"
-                + "  }"
-                + "}");
+            "package test;",
+            "import java.util.logging.Logger;",
+            "import java.util.logging.Level;",
+            "public class Hello5 {",
+            "  private static final Logger logger = Logger.getLogger(Hello5.class.getName());",
+            "  public static class Inner {",
+            "    public static void f(String msg) {",
+            "      logger.info(msg);",
+            "    }",
+            "  }",
+            "}");
     String translation = translateSourceFile(source, "test.Hello5", "test/Hello5.m");
     assertTranslation(
         translation,
