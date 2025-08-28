@@ -32,7 +32,6 @@ import dalvik.annotation.optimization.ReachabilitySensitive;
 import libcore.io.IoTracker;
 import libcore.io.IoUtils;
 import static android.system.OsConstants.*;
-import sun.nio.ch.FileChannelImpl;
 */
 
 import static libcore.io.OsConstants.O_CREAT;
@@ -40,12 +39,13 @@ import static libcore.io.OsConstants.O_RDONLY;
 import static libcore.io.OsConstants.O_RDWR;
 import static libcore.io.OsConstants.SEEK_CUR;
 import static libcore.io.OsConstants.SEEK_SET;
-import java.nio.channels.FileChannel;
+
 import android.system.ErrnoException;
 import dalvik.system.CloseGuard;
+import java.nio.channels.FileChannel;
 import libcore.io.IoBridge;
 import libcore.io.Libcore;
-
+import sun.nio.ch.FileChannelImpl;
 
 /**
  * Instances of this class support both reading and writing to a
@@ -359,7 +359,7 @@ public class RandomAccessFile implements DataOutput, DataInput, Closeable {
     public final FileChannel getChannel() {
         synchronized (this) {
             if (channel == null) {
-                channel = FileChannelOpener.open(fd, path, true, rw, this);
+        channel = FileChannelImpl.open(fd, path, true, rw, this);
             }
             return channel;
         }

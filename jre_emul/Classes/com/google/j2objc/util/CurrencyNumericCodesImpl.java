@@ -18,18 +18,16 @@
 package com.google.j2objc.util;
 
 /**
- * Defines a table of ISO 4217 codes and their numbers, to support
- * Currency.getNumericCode(). This class should be removed when
- * ICU currency support is available.
+ * Defines a table of ISO 4217 codes and their numbers, to support Currency.getNumericCode(). This
+ * class should be removed when ICU currency support is available.
  */
-public final class CurrencyNumericCodesImpl implements CurrencyNumericCodes {
+public final class CurrencyNumericCodesImpl {
 
   /**
-   * Returns the numeric code for a ISO 4217 currency code string.
-   * The iso4217 dictionary is extracted from the Active Codes
-   * table defined in https://en.wikipedia.org/wiki/ISO_4217.
+   * Returns the numeric code for a ISO 4217 currency code string. The iso4217 dictionary is
+   * extracted from the Active Codes table defined in https://en.wikipedia.org/wiki/ISO_4217.
    */
-  public native int getNumericCode(String currencyCode) /*-[
+  public static native int getNumericCode(String currencyCode) /*-[
     static NSDictionary *iso4217;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
