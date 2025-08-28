@@ -101,15 +101,19 @@ objc_import(
     name = "jre_emul_lib",
     archives = select(
         {
-            "//jre_emul:is_ios_device": ["build_result/iphone/libjre_core.a"],
-            "//jre_emul:is_ios_simulator": ["build_result/simulator/libjre_core.a"],
-            "//jre_emul:is_macos_platform": ["build_result/macosx/libjre_core.a"],
+            "//jre_emul:is_ios_device": ["build_result/iphone/libjre_emul.a"],
+            "//jre_emul:is_ios_simulator": ["build_result/simulator/libjre_emul.a"],
+            "//jre_emul:is_macos_platform": ["build_result/macosx/libjre_emul.a"],
         },
         no_match_error = "Apple device isn't supported.",
     ),
     includes = ["Classes", "build_result/Classes"],
     hdrs = glob(["Classes/**/*.h", "build_result/Classes/**/*.h"]),
+    sdk_frameworks = [
+        "Security",
+        "Foundation",
+    ],
     deps = [":jre_emul_sdk_libs"],
-    alwayslink = False,
+    alwayslink = True,
     visibility = ["//visibility:public"],
 )
