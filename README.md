@@ -33,10 +33,10 @@ code for their Android app, which they either own or are licensed to use.
 
 ## Requirements ##
 
-* JDK 11
+* JDK 21
 * Mac workstation or laptop
-* OS X 10.12 or higher
-* Xcode 8 or higher
+* OS X 15.6.1 or higher
+* Xcode 16.3 or higher
 
 ## License ##
 
