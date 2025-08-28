@@ -1,0 +1,4 @@
+# Makes the j2objc_library.bzl file loadable by other packages.
+package(default_visibility = ["//visibility:public"])
+
+exports_files(["j2objc_library.bzl"])

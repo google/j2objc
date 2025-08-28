@@ -14,7 +14,7 @@
 
 package org.contacts;
 
-class Contact implements Comparable<Contact> {
+public class Contact implements Comparable<Contact> {
 
   private final String name;
   private final String number;

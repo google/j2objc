@@ -23,70 +23,39 @@ import tempfile
 import zipfile
 
 
-def find_java_package_path(file_path_str, source_roots):
-  """Finds the Java package path part of a source file path.
-
-  This is done by finding which of the known source_roots is a prefix
-  of the file path and returning the remainder.
-
-  Args:
-    file_path_str: The string path to the source file, relative to the package
-      (e.g., "Classes/java/lang/Object.java").
-    source_roots: A list of known JRE source root directories (e.g., "Classes").
-
-  Returns:
-    A pathlib.Path object of the relative Java package path, or None if no
-    matching source root is found.
-  """
-  for root in source_roots:
-    # Ensure the root ends with a separator for a clean prefix check
-    root_prefix = root if root.endswith("/") else root + "/"
-    if file_path_str.startswith(root_prefix):
-      # Return the path segment after the root prefix.
-      return pathlib.Path(file_path_str[len(root_prefix) :])
-  return None
-
-
 def main():
   parser = argparse.ArgumentParser()
   parser.add_argument(
       "--output", required=True, help="The output .srcjar file path."
   )
-  parser.add_argument("--module_info", required=True)
   parser.add_argument(
-      "--source-root",
-      action="append",
-      dest="source_roots",
-      default=[],
-      help="A directory to treat as a source root for prefix stripping.",
+      "--module_info",
+      required=True,
+      help="The path to the module-info.java file.",
   )
   parser.add_argument(
-      "--srcs", nargs="+", default=[], help="List of source files."
+      "--srcjar", required=True, help="The source jar to process."
   )
   args = parser.parse_args()
 
   with tempfile.TemporaryDirectory() as tmpdir:
     stage_dir = pathlib.Path(tmpdir)
+    java_base_dir = stage_dir / "java.base"
+    java_base_dir.mkdir(parents=True, exist_ok=True)
 
-    module_info_dest = stage_dir / "java.base" / "module-info.java"
-    module_info_dest.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy(args.module_info, module_info_dest)
+    # Copy the module-info.java file to the root of the module sources.
+    shutil.copy(args.module_info, java_base_dir / "module-info.java")
 
-    for src_file in args.srcs:
-      path_for_search = src_file
-      if path_for_search.startswith("jre_emul/"):
-        path_for_search = path_for_search[len("jre_emul/") :]
+    # Unzip the source jar into the module directory.
+    with zipfile.ZipFile(args.srcjar, "r") as zf:
+      zf.extractall(java_base_dir)
 
-      relative_path = find_java_package_path(path_for_search, args.source_roots)
-      if not relative_path:
-        sys.exit(f"ERROR: Could not find a matching source root for {src_file}")
+    # Delete the META-INF directory after unzipping.
+    meta_inf_path = java_base_dir / "META-INF"
+    if meta_inf_path.exists() and meta_inf_path.is_dir():
+      shutil.rmtree(meta_inf_path)
 
-      dest_path = stage_dir / "java.base" / relative_path
-      dest_path.parent.mkdir(parents=True, exist_ok=True)
-      shutil.copy(src_file, dest_path)
-
-    # --- THIS IS THE UPDATED SECTION ---
-    # 3. Zip the staged directory into the final srcjar with sorted entries.
+    # Zip the staged directory into the final srcjar with sorted entries.
     with zipfile.ZipFile(args.output, "w", zipfile.ZIP_DEFLATED) as zf:
       # Glob all files in the staging directory and sort them to ensure
       # the zip order is deterministic.

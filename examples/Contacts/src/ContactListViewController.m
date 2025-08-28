@@ -15,8 +15,8 @@
 #import "AddContactViewController.h"
 #import "ContactDetailViewController.h"
 #include "java/util/List.h"
-#include "src/java/org/contacts/Contact.h"
-#include "src/java/org/contacts/Store.h"
+#include "org/contacts/Contact.h"
+#include "org/contacts/Store.h"
 
 @interface ContactListViewController () <UITableViewDelegate, AddContactViewDelegate>
 

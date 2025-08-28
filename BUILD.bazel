@@ -4,7 +4,7 @@
 
 package(
     default_applicable_licenses = ["//:LICENSE"],
-    default_visibility = ["//:internal_visibility"],
+    default_visibility = ["//visibility:public"],
 )
 
 exports_files(["LICENSE"])

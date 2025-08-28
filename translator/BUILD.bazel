@@ -78,4 +78,5 @@ java_binary(
     runtime_deps = [
         ":translator",
     ],
+    visibility = ["//visibility:public"],
 )

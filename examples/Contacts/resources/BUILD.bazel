@@ -10,7 +10,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@build_bazel_rules_apple//apple:resources.bzl", "apple_resource_group")
+load("@rules_apple//apple:resources.bzl", "apple_resource_group")
 
 apple_resource_group(
     name = "resources",

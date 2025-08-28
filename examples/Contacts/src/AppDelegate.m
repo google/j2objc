@@ -12,7 +12,7 @@
 
 #import "AppDelegate.h"
 #import "ContactListViewController.h"
-#include "src/java/org/contacts/Store.h"
+#include "org/contacts/Store.h"
 
 @implementation AppDelegate
 

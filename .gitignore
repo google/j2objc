@@ -2,7 +2,7 @@
 *~
 
 # Bazel generated files
-/bazel-*
+bazel-*
 
 # Bundler
 Gemfile.lock

@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-class Store {
+public class Store {
 
   private static final String STARTER_CONTACTS = "org/contacts/starter_contacts.txt";
   private final Set<Contact> contacts = new HashSet<>();
