@@ -177,9 +177,7 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
       CValuePreprocessorName(descriptor_));
 
   if (IsGenerateProperties(descriptor_->file())) {
-    printer->Print(
-        "- (BOOL)isEqual:(_Nullable id)other;\n"
-        "- ($valuepreprocessorname$)number;\n",
+    printer->Print("- ($valuepreprocessorname$)number;\n",
                    "valuepreprocessorname",
                    CValuePreprocessorName(descriptor_));
   }
@@ -330,12 +328,6 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "is_closed", SimpleItoa(descriptor_->is_closed()));
 
   if (IsGenerateProperties(descriptor_->file())) {
-      printer->Print(
-      "- (BOOL)isEqual:(_Nullable id)other {\n"
-      "  return [self class] == [other class]\n"
-      "      && [self getNumber] == [(($classname$ *)other) getNumber];\n"
-      "}\n",
-      "classname", ClassName(descriptor_));
     for (int i = 0; i < canonical_values_.size(); i++) {
       printer->Print(
           "+ ($classname$ *) $name$ {\n"
