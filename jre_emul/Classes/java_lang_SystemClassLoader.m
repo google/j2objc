@@ -13,7 +13,7 @@
  */
 
 #include "J2ObjC_source.h"
-#include "com/google/j2objc/net/ResourceDataStreamHandler.h"
+#include "com/google/j2objc/LibraryNotLinkedError.h"
 #include "java/io/BufferedInputStream.h"
 #include "java/io/ByteArrayInputStream.h"
 #include "java/io/FileInputStream.h"
@@ -49,9 +49,26 @@ static IOSByteArray *GetLinkedResource(NSString *name) {
 }
 
 static JavaNetURL *CreateResourceURL(NSString *name, IOSByteArray *data) {
-  return ComGoogleJ2objcNetResourceDataStreamHandler_createResourceDataURLWithNSString_withByteArray_(
-      name, data);
+  @try {
+    IOSClass *resourceClass =
+        IOSClass_forName_(@"com.google.j2objc.net.ResourceDataStreamHandler");
+    IOSObjectArray *paramTypes =
+        [IOSObjectArray arrayWithObjects:(id[]){ NSString_class_(), [data java_getClass]}
+                                   count:2
+                                    type:IOSClass_class_()];
+    JavaLangReflectMethod *m = [resourceClass getMethod:@"createResourceDataURL"
+                                         parameterTypes:paramTypes];
+    IOSObjectArray *args = [IOSObjectArray arrayWithObjects:(id[]){ name, data }
+                                                      count:2
+                                                       type:NSObject_class_()];
+    return (JavaNetURL *)[m invokeWithId:nil withNSObjectArray:args];
+  }
+  @catch (JavaLangException *e) {
+    @throw create_ComGoogleJ2objcLibraryNotLinkedError_initWithNSString_withNSString_withNSString_(
+         @"java.net", @"jre_net ", @"JavaLangSystemClassLoader");
+  }
 }
+
 
 JNIEXPORT jclass Java_java_lang_SystemClassLoader_findClass(
       JNIEnv *env, jobject obj, jstring name) {

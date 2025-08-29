@@ -60,8 +60,8 @@ java_library(
         "--add-reads",
         "java.base=ALL-UNNAMED",
     ],
+    visibility = ["//visibility:public"],
     deps = [
         "//annotations:annotations_lib",
     ],
-    visibility = ["//visibility:public"],
 )

@@ -34,9 +34,10 @@ java_library(
         "-Xep:BoxedPrimitiveEquality:OFF",
     ],
     resources = glob(["src/main/resources/**/*"]),
+    visibility = ["//visibility:public"],
     deps = [
         "//annotations:annotations_lib",
-        "//scenelib:scenelib",
+        "//scenelib",
         # Corrected Maven dependency labels:
         "@maven//:com_google_guava_guava",
         "@maven//:com_google_code_findbugs_jsr305",
@@ -49,7 +50,6 @@ java_library(
         "@maven//:org_bitbucket_mstrobel_procyon_core",
         "@maven//:org_bitbucket_mstrobel_procyon_compilertools",
     ],
-    visibility = ["//visibility:public"],
 )
 
 java_test(
@@ -58,9 +58,9 @@ java_test(
     resources = glob(["src/test/resources/**/*"]),
     test_class = "com.google.devtools.j2objc.SmallTests",
     deps = [
-        "//annotations:annotations_lib",
-        "//jre_emul:jre_emul",
         ":translator",
+        "//annotations:annotations_lib",
+        "//jre_emul",
         "@maven//:com_google_flogger_flogger",
         "@maven//:com_google_flogger_google_extensions",
         "@maven//:com_google_guava_guava",

@@ -26,10 +26,24 @@
 
 package java.util;
 
-import com.google.j2objc.util.CurrencyNumericCodesImpl;
+import com.google.j2objc.LibraryNotLinkedError;
+import com.google.j2objc.util.CurrencyNumericCodes;
+
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
+
+import sun.util.logging.PlatformLogger;
+
 import libcore.icu.ICU;
 import libcore.icu.LocaleData;
 
@@ -510,7 +524,14 @@ public final class Currency implements Serializable {
      * @since 1.7
      */
     public int getNumericCode() {
-    return CurrencyNumericCodesImpl.getNumericCode(currencyCode);
+        try {
+            String name = "com.google.j2objc.util.CurrencyNumericCodesImpl";
+            CurrencyNumericCodes cnc = (CurrencyNumericCodes) Class.forName(name).newInstance();
+            return cnc.getNumericCode(currencyCode);
+        } catch (Exception e) {
+            throw new LibraryNotLinkedError("java.util support", "jre_util",
+                "ComGoogleJ2objcUtilCurrencyNumericCodesImpl");
+        }
     }
 
     /**

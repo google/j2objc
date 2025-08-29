@@ -31,6 +31,7 @@ import dalvik.annotation.optimization.ReachabilitySensitive;
 import dalvik.system.BlockGuard;
 import libcore.io.IoTracker;
 import libcore.io.IoUtils;
+import sun.nio.ch.FileChannelImpl;
 */
 
 import static libcore.io.OsConstants.ESPIPE;
@@ -42,7 +43,7 @@ import dalvik.system.CloseGuard;
 import java.nio.channels.FileChannel;
 import libcore.io.IoBridge;
 import libcore.io.Libcore;
-import sun.nio.ch.FileChannelImpl;
+
 
 /**
  * A <code>FileInputStream</code> obtains input bytes
@@ -505,35 +506,12 @@ class FileInputStream extends InputStream
      * @spec JSR-51
      */
     public FileChannel getChannel() {
-    FileChannel fc = this.channel;
-    if (fc == null) {
-      synchronized (this) {
-        fc = this.channel;
-        if (fc == null) {
-          this.channel =
-              fc =
-                  FileChannelImpl.open(
-                      fd,
-                      path,
-                      true,
-                      // Android-changed: TODO: Remove this patch when direct flag is supported.
-                      // This patch should cause no behavior change as direct is off by default.
-                      // false, false, this);
-                      false,
-                      this);
-          if (closed) {
-            try {
-              // possible race with close(), benign since
-              // FileChannel.close is final and idempotent
-              fc.close();
-            } catch (IOException ioe) {
-              throw new InternalError(ioe); // should not happen
+        synchronized (this) {
+            if (channel == null) {
+                channel = FileChannelOpener.open(fd, path, true, false, this);
             }
-          }
+            return channel;
         }
-            }
-        }
-    return fc;
     }
 
     // BEGIN Android-removed: Unused code.

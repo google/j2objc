@@ -13,6 +13,6 @@ java_library(
 
 java_library(
     name = "annotations",
-    exports = [":annotations_lib"],
     visibility = ["//visibility:public"],
+    exports = [":annotations_lib"],
 )
