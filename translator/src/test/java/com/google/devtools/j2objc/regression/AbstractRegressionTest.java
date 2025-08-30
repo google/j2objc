@@ -172,7 +172,7 @@ public abstract class AbstractRegressionTest extends GenerationTest {
     }
     String executable = tempDir.getPath() + "/regressiontesting";
     List<String> command = new ArrayList<>(Arrays.asList(
-        J2OBJCC_LOCATION, "-g", "-I", tempDir.getPath(), "-ObjC", "-o", executable));
+        J2OBJCC_LOCATION, "-g", "-I", tempDir.getPath(), "-ljre_emul", "-ObjC", "-o", executable));
     command.addAll(getImplementationFileList(fileArgs));
     String compileOutput = runCommand(command);
     if (compileOutput.contains("error: ")) {
