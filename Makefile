@@ -116,6 +116,7 @@ test_all: test test_protobuf
 examples_dist: install_examples
 
 copy_examples:
+	@mkdir -p $(DIST_DIR)
 	@cp -r examples $(DIST_DIR)
 
 install_examples: copy_examples
@@ -124,8 +125,6 @@ install_examples: copy_examples
 	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/HelloSwift/config.xcconfig
 	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/HelloSwift/HelloSwift.xcodeproj/project.pbxproj
 	@sed -i '' 's/\/dist//' $(DIST_DIR)/examples/protobuf/Makefile
-	@sed -i '' 's/\<path to local j2objc distribution\>/..\/../' \
-	  $(DIST_DIR)/examples/Contacts/WORKSPACE
 
 print_environment:
 	@echo Locale: $${LANG}
