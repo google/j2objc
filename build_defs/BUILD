@@ -10,20 +10,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Description:
-#   j2objc: a Java to iOS Objective-C translator and runtime.
-#   https://developers.google.com/j2objc/
+# Starlark rules for compiling Java code to iOS using j2objc.
 
-package(
-    default_applicable_licenses = ["//:LICENSE"],
-    default_visibility = ["//visibility:public"],
-)
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 
-exports_files(["LICENSE"])
+package(default_visibility = ["//visibility:public"])
 
-package_group(
-    name = "internal_visibility",
-    packages = [
-        "//...",
+exports_files(["j2objc_library.bzl"])
+
+bzl_library(
+    name = "j2objc_library_bzl",
+    srcs = [
+        "j2objc_library.bzl",
+    ],
+    visibility = ["//visibility:private"],
+    deps = [
+        "@rules_cc//cc/common",
     ],
 )
