@@ -10,8 +10,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@build_bazel_rules_apple//apple:ios.bzl", "ios_application")
-load("@rules_java//java:defs.bzl", "java_library")
+# Build file for J2ObjC's examples/Contacts app.
+
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
+load("@j2objc//build_defs:j2objc_library.bzl", "j2objc_library")
+load("@rules_apple//apple:ios.bzl", "ios_application")
+
+licenses(["reciprocal"])
 
 ios_application(
     name = "Contacts",
@@ -21,7 +26,7 @@ ios_application(
         "ipad",
     ],
     infoplists = ["src/Info.plist"],
-    minimum_os_version = "11.4",
+    minimum_os_version = "13.0",
     deps = [":ContactsMainLib"],
 )
 
@@ -30,13 +35,21 @@ objc_library(
     srcs = glob(["src/*.m"]),
     hdrs = glob(["src/*.h"]),
     data = ["//resources"],
-    sdk_frameworks = ["CoreGraphics"],
+    sdk_frameworks = [
+        "CoreGraphics",
+        "UIKit",
+    ],
     deps = [":ContactsJava-j2objc"],
 )
 
-# TODO: Add back ContactsJava-j2objc target when the new rule is open-sourced.
-
-java_library(
-    name = "ContactsJavaLib",
+j2objc_library(
+    name = "ContactsJava-j2objc",
     srcs = glob(["src/java/org/contacts/*.java"]),
+)
+
+build_test(
+    name = "contacts_build_test",
+    targets = [
+        ":Contacts",
+    ],
 )

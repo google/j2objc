@@ -14,7 +14,10 @@
 
 package org.contacts;
 
-class Contact implements Comparable<Contact> {
+/**
+ * A contact data object.
+ */
+public class Contact implements Comparable<Contact> {
 
   private final String name;
   private final String number;

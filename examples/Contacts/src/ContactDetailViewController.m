@@ -12,7 +12,7 @@
 
 #import "ContactDetailViewController.h"
 
-#include "src/java/org/contacts/Contact.h"
+#include "org/contacts/Contact.h"
 
 @interface ContactDetailView : UIView
 
