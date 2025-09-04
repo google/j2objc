@@ -4168,6 +4168,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMes
 - (id)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value {
   return [self setExtensionWithComGoogleProtobufExtensionLite:extension withId:value];
 }
+- (id)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension
+                                         withInt:(jint)index
+                                          withId:(id)value {
+  return [self setExtensionWithComGoogleProtobufExtensionLite:extension withInt:index withId:value];
+}
 - (id)setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
     (CGPGeneratedExtension *)extension withId:(id)value {
   return [self setExtensionWithComGoogleProtobufExtensionLite:extension withId:value];
