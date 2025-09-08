@@ -38,11 +38,11 @@ PROTOBUF_LITE_SOURCE_JAR = protobuf-javalite-4.32.0-sources.jar
 ERROR_PRONE_ANNOTATIONS_JAR = error_prone_annotations-2.41.0.jar
 ERROR_PRONE_ANNOTATIONS_SOURCE_JAR = error_prone_annotations-2.41.0-sources.jar
 
-CHECKER_QUAL_JAR = checker-qual-3.50.0-eisop1.jar
-CHECKER_QUAL_SOURCE_JAR = checker-qual-3.50.0-eisop1-sources.jar
+CHECKER_QUAL_JAR = checker-qual-3.27.0-eisop1.jar
+CHECKER_QUAL_SOURCE_JAR = checker-qual-3.27.0-eisop1-sources.jar
 
-CHECKER_QUAL_ANDROID_JAR = checker-qual-android-3.50.0-eisop1.jar
-CHECKER_QUAL_ANDROID_SOURCE_JAR = checker-qual-android-3.50.0-eisop1-sources.jar
+CHECKER_QUAL_ANDROID_JAR = checker-qual-android-3.27.0-eisop1.jar
+CHECKER_QUAL_ANDROID_SOURCE_JAR = checker-qual-android-3.27.0-eisop1-sources.jar
 
 ANIMAL_SNIFFER_ANNOTATIONS_JAR = animal-sniffer-annotations-1.24.jar
 ANIMAL_SNIFFER_ANNOTATIONS_SOURCE_JAR = animal-sniffer-annotations-1.24-sources.jar
