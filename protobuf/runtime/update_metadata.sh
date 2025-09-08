@@ -21,7 +21,7 @@ function update_file {
   translated_source=$TRANSLATED_TEMP/$1
   result_source=$REPLACEMENT_TEMP/$1
 
-  CLASSPATH=build_result/protobuf-java-2.6.1.jar
+  CLASSPATH=build_result/protobuf-java-4.32.0.jar
   $J2OBJC -cp $CLASSPATH -d $TRANSLATED_TEMP $JAVA_DIR/$java_source
   $REPLACE_SCRIPT $objc_source $translated_source $result_source
 

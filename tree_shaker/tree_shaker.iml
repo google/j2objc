@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
   <component name="EclipseModuleManager">
-    <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/guava-32.0.1-jre.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/../java_deps/build_result/guava-33.4.8-jre.jar!/" />
     <src_description expected_position="0">
       <src_folder value="file://$MODULE_DIR$/src/main/java" expected_position="0" />
       <src_folder value="file://$MODULE_DIR$/src/main/resources" expected_position="1" />
@@ -34,7 +34,7 @@
     <orderEntry type="module-library">
       <library name="guava-32.0.1-jre.jar">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/guava-32.0.1-jre.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/guava-33.4.8-jre.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -43,7 +43,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/flogger-0.5.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/flogger-0.9.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -52,7 +52,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/google-extensions-0.5.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/google-extensions-0.9.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -61,7 +61,7 @@
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/truth-1.1.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/truth-1.4.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -70,7 +70,7 @@
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/flogger-system-backend-0.5.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/flogger-system-backend-0.9.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -79,7 +79,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../java_deps/build_result/protobuf-java-3.25.2.jar!/" />
+          <root url="jar://$MODULE_DIR$/../java_deps/build_result/protobuf-java-4.32.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

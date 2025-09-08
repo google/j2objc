@@ -77,28 +77,20 @@
                 <artifactItem>
                   <groupId>com.google.guava</groupId>
                   <artifactId>guava</artifactId>
-                  <version>32.0.1-jre</version>
+                  <version>33.4.8-jre</version>
                   <classifier>sources</classifier>
                 </artifactItem>
                 <artifactItem>
                   <groupId>com.google.guava</groupId>
                   <artifactId>failureaccess</artifactId>
-                  <version>1.0.1</version>
+                  <version>1.0.3</version>
                   <classifier>sources</classifier>
                </artifactItem>
                 <artifactItem>
                   <groupId>com.google.guava</groupId>
                   <artifactId>guava</artifactId>
-                  <version>32.0.1-android</version>
+                  <version>33.4.8-android</version>
                   <classifier>sources</classifier>
-                </artifactItem>
-                <artifactItem>
-                  <!-- Putting this here instead of in the dependencies section
-                       because Maven only downloads one version of a dependency
-                       and this one conflicts with 31.0.1-jre. -->
-                  <groupId>com.google.guava</groupId>
-                  <artifactId>guava</artifactId>
-                  <version>32.0.1-android</version>
                 </artifactItem>
                 <artifactItem>
                   <groupId>com.google.protobuf</groupId>
@@ -150,6 +142,11 @@
                   <artifactId>jarjar</artifactId>
                   <version>1.5</version>
                 </dependency>
+                <dependency>
+                  <groupId>com.google.code.findbugs</groupId>
+                  <artifactId>jsr305</artifactId>
+                  <classifier>sources</classifier>
+                </dependency>
               </artifactItems>
               <outputDirectory>${project.build.directory}</outputDirectory>
               <excludeTransitive>true</excludeTransitive>
@@ -164,7 +161,7 @@
     <dependency>
       <groupId>com.google.errorprone</groupId>
       <artifactId>error_prone_annotations</artifactId>
-      <version>2.11.0</version>
+      <version>2.41.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -175,30 +172,31 @@
     <dependency>
       <groupId>org.codehaus.mojo</groupId>
       <artifactId>animal-sniffer-annotations</artifactId>
-      <version>1.14</version>
+      <version>1.24</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>32.0.1-jre</version>
+      <version>33.4.8-jre</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>failureaccess</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.3</version>
       <scope>compile</scope>
-    </dependency>    <dependency>
+    </dependency>
+    <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
-      <version>3.0.0</version>
+      <version>3.0.2</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13.1</version>
+      <version>4.13.2</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -216,7 +214,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>2.23.4</version>
+      <version>5.19.0</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -258,37 +256,37 @@
     <dependency>
       <groupId>org.plumelib</groupId>
       <artifactId>plume-util</artifactId>
-      <version>1.0.6</version>
+      <version>1.11.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.flogger</groupId>
       <artifactId>flogger</artifactId>
-      <version>0.5.1</version>
+      <version>0.9</version>
     </dependency>
     <dependency>
       <groupId>com.google.flogger</groupId>
       <artifactId>google-extensions</artifactId>
-      <version>0.5.1</version>
+      <version>0.9</version>
     </dependency>
     <dependency>
       <groupId>com.google.flogger</groupId>
       <artifactId>flogger-system-backend</artifactId>
-      <version>0.5.1</version>
+      <version>0.9</version>
     </dependency>
     <dependency>
       <groupId>com.google.auto.value</groupId>
       <artifactId>auto-value</artifactId>
-      <version>1.7.4</version>
+      <version>1.11.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.auto.value</groupId>
       <artifactId>auto-value-annotations</artifactId>
-      <version>1.7.4</version>
+      <version>1.11.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
-      <version>1.1.2</version>
+      <version>1.4.4</version>
     </dependency>
     <dependency>
       <groupId>org.jspecify</groupId>

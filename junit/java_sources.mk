@@ -90,6 +90,8 @@ JUNIT_SOURCES = \
     org/junit/internal/JUnitSystem.java \
     org/junit/internal/MethodSorter.java \
     org/junit/internal/RealSystem.java \
+    org/junit/internal/SerializableMatcherDescription.java \
+    org/junit/internal/SerializableValueDescription.java \
     org/junit/internal/TextListener.java \
     org/junit/internal/Throwables.java \
     org/junit/internal/builders/AllDefaultPossibilitiesBuilder.java \
