@@ -93,6 +93,14 @@
                   <classifier>sources</classifier>
                 </artifactItem>
                 <artifactItem>
+                  <!-- Putting this here instead of in the dependencies section
+                       because Maven only downloads one version of a dependency
+                       and this one conflicts with 33.4.8-jre. -->
+                  <groupId>com.google.guava</groupId>
+                  <artifactId>guava</artifactId>
+                  <version>33.4.8-android</version>
+                </artifactItem>
+                <artifactItem>
                   <groupId>com.google.protobuf</groupId>
                   <artifactId>protobuf-java</artifactId>
                   <classifier>sources</classifier>
