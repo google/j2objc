@@ -44,12 +44,20 @@ FAILUREACCESS_SOURCES = \
     com/google/common/util/concurrent/internal/InternalFutureFailureAccess.java \
     com/google/common/util/concurrent/internal/InternalFutures.java \
 
+JSPECIFY_SOURCES = \
+    org/jspecify/annotations/NonNull.java \
+    org/jspecify/annotations/NullMarked.java \
+    org/jspecify/annotations/NullUnmarked.java \
+    org/jspecify/annotations/Nullable.java \
+    org/jspecify/annotations/package-info.java
+
 JAVA_SRC_DIR = $(BUILD_DIR)/java
 JAVA_SOURCES = $(GUAVA_SOURCES:%=$(JAVA_SRC_DIR)/%) \
     $(ERROR_PRONE_ANNOTATIONS_SOURCES:%=$(JAVA_SRC_DIR)/%) \
     $(CHECKER_QUAL_SOURCES:%=$(JAVA_SRC_DIR)/%) \
     $(ANIMAL_SNIFFER_ANNOTATIONS_SOURCES:%=$(JAVA_SRC_DIR)/%) \
-    $(FAILUREACCESS_SOURCES:%=$(JAVA_SRC_DIR)/%)
+    $(FAILUREACCESS_SOURCES:%=$(JAVA_SRC_DIR)/%) \
+    $(JSPECIFY_SOURCES:%=$(JAVA_SRC_DIR)/%)
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 CLASSPATH_LIST = \
   $(DIST_JAR_DIR)/$(JSR305_JAR) \
@@ -57,6 +65,7 @@ CLASSPATH_LIST = \
   $(JAVA_DEPS_JAR_DIR)/$(CHECKER_QUAL_JAR) \
   $(JAVA_DEPS_JAR_DIR)/$(ANIMAL_SNIFFER_ANNOTATIONS_JAR) \
   $(JAVA_DEPS_JAR_DIR)/$(FAILUREACCESS_JAR) \
+  $(JAVA_DEPS_JAR_DIR)/$(JSPECIFY_JAR) \
   $(DIST_JAR_DIR)/j2objc_annotations.jar
 CLASSPATH = $(subst $(eval) ,:,$(strip $(CLASSPATH_LIST)))
 
@@ -115,7 +124,7 @@ objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 
 $(BUILD_DIR)/.extracted: $(GUAVA_SRC_JAR) $(ERROR_PRONE_ANNOTATIONS_SRC_JAR) \
 	$(CHECKER_QUAL_SRC_JAR) $(ANIMAL_SNIFFER_ANNOTATIONS_SRC_JAR) \
-	$(FAILUREACCESS_SRC_JAR) | java_deps_dist
+	$(FAILUREACCESS_SRC_JAR) $(JSPECIFY_SRC_JAR) | java_deps_dist
 	@echo "Extracting Guava sources"
 	@mkdir -p $(JAVA_SRC_DIR)
 	@unzip -o -q -d $(JAVA_SRC_DIR) $(GUAVA_SRC_JAR) $(GUAVA_SOURCES)
@@ -126,6 +135,7 @@ $(BUILD_DIR)/.extracted: $(GUAVA_SRC_JAR) $(ERROR_PRONE_ANNOTATIONS_SRC_JAR) \
 		$(ANIMAL_SNIFFER_ANNOTATIONS_SOURCES)
 	@unzip -o -q -d $(JAVA_SRC_DIR) $(FAILUREACCESS_SRC_JAR) \
 		$(FAILUREACCESS_SOURCES)
+	@unzip -o -q -d $(JAVA_SRC_DIR) $(JSPECIFY_SRC_JAR) $(JSPECIFY_SOURCES)
 	@echo "Removing problematic imports that are only used in javadoc comments."
 	@sed -i '' -e '/import org.checkerframework.checker.nullness.AbstractNullnessChecker;/d' \
 		$(JAVA_SRC_DIR)/org/checkerframework/checker/nullness/qual/Nullable.java

@@ -27,7 +27,6 @@ GUAVA_SOURCES = \
     com/google/common/base/CommonPattern.java \
     com/google/common/base/Converter.java \
     com/google/common/base/Defaults.java \
-    com/google/common/base/ElementTypesAreNonnullByDefault.java \
     com/google/common/base/Enums.java \
     com/google/common/base/Equivalence.java \
     com/google/common/base/ExtraObjectsMethodsForWeb.java \
@@ -39,6 +38,9 @@ GUAVA_SOURCES = \
     com/google/common/base/Function.java \
     com/google/common/base/FunctionalEquivalence.java \
     com/google/common/base/Functions.java \
+    com/google/common/base/IgnoreJRERequirement.java \
+    com/google/common/base/Internal.java \
+    com/google/common/base/Java8Compatibility.java \
     com/google/common/base/JdkPattern.java \
     com/google/common/base/Joiner.java \
     com/google/common/base/MoreObjects.java \
@@ -54,6 +56,7 @@ GUAVA_SOURCES = \
     com/google/common/base/Predicates.java \
     com/google/common/base/Present.java \
     com/google/common/base/SmallCharMatcher.java \
+    com/google/common/base/SneakyThrows.java \
     com/google/common/base/Splitter.java \
     com/google/common/base/StandardSystemProperty.java \
     com/google/common/base/Stopwatch.java \
@@ -74,21 +77,19 @@ GUAVA_SOURCES = \
     com/google/common/cache/CacheBuilderSpec.java \
     com/google/common/cache/CacheLoader.java \
     com/google/common/cache/CacheStats.java \
-    com/google/common/cache/ElementTypesAreNonnullByDefault.java \
     com/google/common/cache/ForwardingCache.java \
     com/google/common/cache/ForwardingLoadingCache.java \
+    com/google/common/cache/IgnoreJRERequirement.java \
     com/google/common/cache/LoadingCache.java \
     com/google/common/cache/LocalCache.java \
     com/google/common/cache/LongAddable.java \
     com/google/common/cache/LongAddables.java \
-    com/google/common/cache/LongAdder.java \
     com/google/common/cache/ParametricNullness.java \
     com/google/common/cache/ReferenceEntry.java \
     com/google/common/cache/RemovalCause.java \
     com/google/common/cache/RemovalListener.java \
     com/google/common/cache/RemovalListeners.java \
     com/google/common/cache/RemovalNotification.java \
-    com/google/common/cache/Striped64.java \
     com/google/common/cache/Weigher.java \
     com/google/common/cache/package-info.java \
     com/google/common/collect/AbstractBiMap.java \
@@ -142,7 +143,6 @@ GUAVA_SOURCES = \
     com/google/common/collect/DescendingImmutableSortedSet.java \
     com/google/common/collect/DescendingMultiset.java \
     com/google/common/collect/DiscreteDomain.java \
-    com/google/common/collect/ElementTypesAreNonnullByDefault.java \
     com/google/common/collect/EmptyContiguousSet.java \
     com/google/common/collect/EmptyImmutableListMultimap.java \
     com/google/common/collect/EmptyImmutableSetMultimap.java \
@@ -195,9 +195,9 @@ GUAVA_SOURCES = \
     com/google/common/collect/HashMultimapGwtSerializationDependencies.java \
     com/google/common/collect/HashMultiset.java \
     com/google/common/collect/Hashing.java \
+    com/google/common/collect/IgnoreJRERequirement.java \
     com/google/common/collect/ImmutableAsList.java \
     com/google/common/collect/ImmutableBiMap.java \
-    com/google/common/collect/ImmutableBiMapFauxverideShim.java \
     com/google/common/collect/ImmutableClassToInstanceMap.java \
     com/google/common/collect/ImmutableCollection.java \
     com/google/common/collect/ImmutableEntry.java \
@@ -219,11 +219,8 @@ GUAVA_SOURCES = \
     com/google/common/collect/ImmutableSetMultimap.java \
     com/google/common/collect/ImmutableSortedAsList.java \
     com/google/common/collect/ImmutableSortedMap.java \
-    com/google/common/collect/ImmutableSortedMapFauxverideShim.java \
     com/google/common/collect/ImmutableSortedMultiset.java \
-    com/google/common/collect/ImmutableSortedMultisetFauxverideShim.java \
     com/google/common/collect/ImmutableSortedSet.java \
-    com/google/common/collect/ImmutableSortedSetFauxverideShim.java \
     com/google/common/collect/ImmutableTable.java \
     com/google/common/collect/IndexedImmutableSet.java \
     com/google/common/collect/Interner.java \
@@ -287,6 +284,7 @@ GUAVA_SOURCES = \
     com/google/common/collect/SingletonImmutableList.java \
     com/google/common/collect/SingletonImmutableSet.java \
     com/google/common/collect/SingletonImmutableTable.java \
+    com/google/common/collect/SneakyThrows.java \
     com/google/common/collect/SortedIterable.java \
     com/google/common/collect/SortedIterables.java \
     com/google/common/collect/SortedLists.java \
@@ -322,7 +320,6 @@ GUAVA_SOURCES = \
     com/google/common/escape/ArrayBasedUnicodeEscaper.java \
     com/google/common/escape/CharEscaper.java \
     com/google/common/escape/CharEscaperBuilder.java \
-    com/google/common/escape/ElementTypesAreNonnullByDefault.java \
     com/google/common/escape/Escaper.java \
     com/google/common/escape/Escapers.java \
     com/google/common/escape/ParametricNullness.java \
@@ -333,7 +330,6 @@ GUAVA_SOURCES = \
     com/google/common/eventbus/AsyncEventBus.java \
     com/google/common/eventbus/DeadEvent.java \
     com/google/common/eventbus/Dispatcher.java \
-    com/google/common/eventbus/ElementTypesAreNonnullByDefault.java \
     com/google/common/eventbus/EventBus.java \
     com/google/common/eventbus/ParametricNullness.java \
     com/google/common/eventbus/Subscribe.java \
@@ -355,7 +351,6 @@ GUAVA_SOURCES = \
     com/google/common/graph/DirectedNetworkConnections.java \
     com/google/common/graph/EdgesConnecting.java \
     com/google/common/graph/ElementOrder.java \
-    com/google/common/graph/ElementTypesAreNonnullByDefault.java \
     com/google/common/graph/EndpointPair.java \
     com/google/common/graph/EndpointPairIterator.java \
     com/google/common/graph/ForwardingGraph.java \
@@ -366,10 +361,12 @@ GUAVA_SOURCES = \
     com/google/common/graph/GraphConnections.java \
     com/google/common/graph/GraphConstants.java \
     com/google/common/graph/Graphs.java \
+    com/google/common/graph/GraphsBridgeMethods.java \
     com/google/common/graph/ImmutableGraph.java \
     com/google/common/graph/ImmutableNetwork.java \
     com/google/common/graph/ImmutableValueGraph.java \
     com/google/common/graph/IncidentEdgeSet.java \
+    com/google/common/graph/InvalidatableSet.java \
     com/google/common/graph/MapIteratorCache.java \
     com/google/common/graph/MapRetrievalCache.java \
     com/google/common/graph/MultiEdgesConnecting.java \
@@ -404,7 +401,6 @@ GUAVA_SOURCES = \
     com/google/common/hash/BloomFilterStrategies.java \
     com/google/common/hash/ChecksumHashFunction.java \
     com/google/common/hash/Crc32cHashFunction.java \
-    com/google/common/hash/ElementTypesAreNonnullByDefault.java \
     com/google/common/hash/FarmHashFingerprint64.java \
     com/google/common/hash/Fingerprint2011.java \
     com/google/common/hash/Funnel.java \
@@ -415,12 +411,10 @@ GUAVA_SOURCES = \
     com/google/common/hash/Hashing.java \
     com/google/common/hash/HashingInputStream.java \
     com/google/common/hash/HashingOutputStream.java \
+    com/google/common/hash/IgnoreJRERequirement.java \
     com/google/common/hash/ImmutableSupplier.java \
     com/google/common/hash/Java8Compatibility.java \
     com/google/common/hash/LittleEndianByteArray.java \
-    com/google/common/hash/LongAddable.java \
-    com/google/common/hash/LongAddables.java \
-    com/google/common/hash/LongAdder.java \
     com/google/common/hash/MacHashFunction.java \
     com/google/common/hash/MessageDigestHashFunction.java \
     com/google/common/hash/Murmur3_128HashFunction.java \
@@ -428,9 +422,8 @@ GUAVA_SOURCES = \
     com/google/common/hash/ParametricNullness.java \
     com/google/common/hash/PrimitiveSink.java \
     com/google/common/hash/SipHashFunction.java \
-    com/google/common/hash/Striped64.java \
+    com/google/common/hash/SneakyThrows.java \
     com/google/common/hash/package-info.java \
-    com/google/common/html/ElementTypesAreNonnullByDefault.java \
     com/google/common/html/HtmlEscapers.java \
     com/google/common/html/ParametricNullness.java \
     com/google/common/html/package-info.java \
@@ -450,11 +443,11 @@ GUAVA_SOURCES = \
     com/google/common/io/Closer.java \
     com/google/common/io/CountingInputStream.java \
     com/google/common/io/CountingOutputStream.java \
-    com/google/common/io/ElementTypesAreNonnullByDefault.java \
     com/google/common/io/FileBackedOutputStream.java \
     com/google/common/io/FileWriteMode.java \
     com/google/common/io/Files.java \
     com/google/common/io/Flushables.java \
+    com/google/common/io/IgnoreJRERequirement.java \
     com/google/common/io/InsecureRecursiveDeleteException.java \
     com/google/common/io/Java8Compatibility.java \
     com/google/common/io/LineBuffer.java \
@@ -470,12 +463,13 @@ GUAVA_SOURCES = \
     com/google/common/io/ReaderInputStream.java \
     com/google/common/io/RecursiveDeleteOption.java \
     com/google/common/io/Resources.java \
+    com/google/common/io/TempFileCreator.java \
     com/google/common/io/package-info.java \
     com/google/common/math/BigDecimalMath.java \
     com/google/common/math/BigIntegerMath.java \
     com/google/common/math/DoubleMath.java \
     com/google/common/math/DoubleUtils.java \
-    com/google/common/math/ElementTypesAreNonnullByDefault.java \
+    com/google/common/math/IgnoreJRERequirement.java \
     com/google/common/math/IntMath.java \
     com/google/common/math/LinearTransformation.java \
     com/google/common/math/LongMath.java \
@@ -488,7 +482,6 @@ GUAVA_SOURCES = \
     com/google/common/math/StatsAccumulator.java \
     com/google/common/math/ToDoubleRounder.java \
     com/google/common/math/package-info.java \
-    com/google/common/net/ElementTypesAreNonnullByDefault.java \
     com/google/common/net/HostAndPort.java \
     com/google/common/net/HostSpecifier.java \
     com/google/common/net/HttpHeaders.java \
@@ -504,9 +497,9 @@ GUAVA_SOURCES = \
     com/google/common/primitives/Chars.java \
     com/google/common/primitives/Doubles.java \
     com/google/common/primitives/DoublesMethodsForWeb.java \
-    com/google/common/primitives/ElementTypesAreNonnullByDefault.java \
     com/google/common/primitives/Floats.java \
     com/google/common/primitives/FloatsMethodsForWeb.java \
+    com/google/common/primitives/IgnoreJRERequirement.java \
     com/google/common/primitives/ImmutableDoubleArray.java \
     com/google/common/primitives/ImmutableIntArray.java \
     com/google/common/primitives/ImmutableLongArray.java \
@@ -515,7 +508,6 @@ GUAVA_SOURCES = \
     com/google/common/primitives/Longs.java \
     com/google/common/primitives/ParametricNullness.java \
     com/google/common/primitives/ParseRequest.java \
-    com/google/common/primitives/Platform.java \
     com/google/common/primitives/Primitives.java \
     com/google/common/primitives/Shorts.java \
     com/google/common/primitives/ShortsMethodsForWeb.java \
@@ -528,7 +520,6 @@ GUAVA_SOURCES = \
     com/google/common/primitives/package-info.java \
     com/google/common/reflect/AbstractInvocationHandler.java \
     com/google/common/reflect/ClassPath.java \
-    com/google/common/reflect/ElementTypesAreNonnullByDefault.java \
     com/google/common/reflect/IgnoreJRERequirement.java \
     com/google/common/reflect/ImmutableTypeToInstanceMap.java \
     com/google/common/reflect/Invokable.java \
@@ -547,6 +538,7 @@ GUAVA_SOURCES = \
     com/google/common/util/concurrent/AbstractCatchingFuture.java \
     com/google/common/util/concurrent/AbstractExecutionThreadService.java \
     com/google/common/util/concurrent/AbstractFuture.java \
+    com/google/common/util/concurrent/AbstractFutureState.java \
     com/google/common/util/concurrent/AbstractIdleService.java \
     com/google/common/util/concurrent/AbstractListeningExecutorService.java \
     com/google/common/util/concurrent/AbstractScheduledService.java \
@@ -566,7 +558,7 @@ GUAVA_SOURCES = \
     com/google/common/util/concurrent/CombinedFuture.java \
     com/google/common/util/concurrent/CycleDetectingLockFactory.java \
     com/google/common/util/concurrent/DirectExecutor.java \
-    com/google/common/util/concurrent/ElementTypesAreNonnullByDefault.java \
+    com/google/common/util/concurrent/DirectExecutorService.java \
     com/google/common/util/concurrent/ExecutionError.java \
     com/google/common/util/concurrent/ExecutionList.java \
     com/google/common/util/concurrent/ExecutionSequencer.java \
@@ -586,10 +578,12 @@ GUAVA_SOURCES = \
     com/google/common/util/concurrent/FuturesGetChecked.java \
     com/google/common/util/concurrent/GwtFluentFutureCatchingSpecialization.java \
     com/google/common/util/concurrent/GwtFuturesCatchingSpecialization.java \
+    com/google/common/util/concurrent/IgnoreJRERequirement.java \
     com/google/common/util/concurrent/ImmediateFuture.java \
     com/google/common/util/concurrent/Internal.java \
     com/google/common/util/concurrent/InterruptibleTask.java \
     com/google/common/util/concurrent/JdkFutureAdapters.java \
+    com/google/common/util/concurrent/LazyLogger.java \
     com/google/common/util/concurrent/ListenableFuture.java \
     com/google/common/util/concurrent/ListenableFutureTask.java \
     com/google/common/util/concurrent/ListenableScheduledFuture.java \
@@ -612,6 +606,7 @@ GUAVA_SOURCES = \
     com/google/common/util/concurrent/SettableFuture.java \
     com/google/common/util/concurrent/SimpleTimeLimiter.java \
     com/google/common/util/concurrent/SmoothRateLimiter.java \
+    com/google/common/util/concurrent/SneakyThrows.java \
     com/google/common/util/concurrent/Striped.java \
     com/google/common/util/concurrent/ThreadFactoryBuilder.java \
     com/google/common/util/concurrent/TimeLimiter.java \
@@ -624,13 +619,12 @@ GUAVA_SOURCES = \
     com/google/common/util/concurrent/WrappingExecutorService.java \
     com/google/common/util/concurrent/WrappingScheduledExecutorService.java \
     com/google/common/util/concurrent/package-info.java \
-    com/google/common/xml/ElementTypesAreNonnullByDefault.java \
     com/google/common/xml/ParametricNullness.java \
     com/google/common/xml/XmlEscapers.java \
     com/google/common/xml/package-info.java \
     com/google/thirdparty/publicsuffix/PublicSuffixPatterns.java \
     com/google/thirdparty/publicsuffix/PublicSuffixType.java \
-    com/google/thirdparty/publicsuffix/TrieParser.java \
+    com/google/thirdparty/publicsuffix/TrieParser.java
 
 CHECKER_QUAL_SOURCES = \
     org/checkerframework/checker/nullness/qual/EnsuresNonNull.java \
