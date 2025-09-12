@@ -50,9 +50,6 @@ RESOURCES = \
 DIST_DEPS = $(JSR305_JAR) j2objc_annotations.jar
 INTERNAL_DEPS = $(GUAVA_JAR) $(PROCYON_JARS) $(SCENELIB_JAR) $(PLUME_UTIL_JAR) \
     $(JSPECIFY_JAR) $(ERROR_PRONE_ANNOTATIONS_JAR)
-ifdef JAVA_8
-INTERNAL_DEPS += $(JAVAC_JAR)
-endif
 JAR_DEPS_DIST = $(DIST_DEPS:%=$(DIST_JAR_DIR)/%) $(INTERNAL_DEPS:%=$(JAVA_DEPS_JAR_DIR)/%)
 JAR_DEPS_PATH = $(subst $(eval) ,:,$(strip $(JAR_DEPS_DIST)))
 JUNIT_JAR_DIST = $(DIST_JAR_DIR)/$(JUNIT_JAR)
@@ -70,48 +67,12 @@ TEST_CLASSPATH = \
 
 # Files in dependent jars that aren't needed in combined jar.
 UNUSED_JAR_CONTENTS = \
-  $(CLASS_DIR)/[A-Z]* \
-  $(CLASS_DIR)/[ahp]* \
-  $(CLASS_DIR)/about_files \
-  $(CLASS_DIR)/ant_tasks \
-  $(CLASS_DIR)/compiler* \
-  $(CLASS_DIR)/hook* \
-  $(CLASS_DIR)/jdt* \
+  $(CLASS_DIR)/META-INF \
   $(CLASS_DIR)/com/google/common/cache \
   $(CLASS_DIR)/com/google/common/eventbus \
   $(CLASS_DIR)/com/google/common/[nrx]* \
   $(CLASS_DIR)/com/google/common/util \
-  $(CLASS_DIR)/com/google/third_party \
-  $(CLASS_DIR)/com/strobel \
-  $(CLASS_DIR)/com/sun/[cij]* \
-  $(CLASS_DIR)/com/sun/jvmstat \
-  $(CLASS_DIR)/com/sun/nio/file \
-  $(CLASS_DIR)/com/sun/rmi \
-  $(CLASS_DIR)/com/sun/tools/attach \
-  $(CLASS_DIR)/com/sun/tools/classfile \
-  $(CLASS_DIR)/com/sun/tools/corba \
-  $(CLASS_DIR)/com/sun/tools/doclets \
-  $(CLASS_DIR)/com/sun/tools/ex* \
-  $(CLASS_DIR)/com/sun/tools/hat \
-  $(CLASS_DIR)/com/sun/tools/internal \
-  $(CLASS_DIR)/com/sun/tools/javadoc \
-  $(CLASS_DIR)/com/sun/tools/javah \
-  $(CLASS_DIR)/com/sun/tools/javap \
-  $(CLASS_DIR)/com/sun/tools/jdeps \
-  $(CLASS_DIR)/com/sun/tools/jdi \
-  $(CLASS_DIR)/com/sun/tools/jstat \
-  $(CLASS_DIR)/com/sun/tools/script \
-  $(CLASS_DIR)/com/sun/tools/serialver \
-  $(CLASS_DIR)/com/sun/xml \
-  $(CLASS_DIR)/dalvik \
-  $(CLASS_DIR)/org/relaxng \
-  $(CLASS_DIR)/scenelib/annotations/io/classfile \
-  $(CLASS_DIR)/scenelib/annotations/t* \
-  $(CLASS_DIR)/sun/[ajrs]* \
-  $(CLASS_DIR)/sun/tools/[ans]* \
-  $(CLASS_DIR)/sun/tools/jar \
-  $(CLASS_DIR)/sun/tools/j[cimps]* \
-  $(CLASS_DIR)/sun/tools/tree \
+  $(CLASS_DIR)/com/strobel
 
 ifeq ($(shell uname), Linux)
 PRUNE_CMD = bash -O globasciiranges -c "rm -rf $(UNUSED_JAR_CONTENTS)"
@@ -151,7 +112,7 @@ $(CLASS_DIR)/%: $(RESOURCE_DIR)/%
 
 $(CLASS_DIR)/%: $(J2OBJC_ROOT)/translator/$(RESOURCE_DIR)/%
 	@mkdir -p $(@D)
-	cp -f $< $@
+	@cp -f $< $@
 
 DIRS = $(BUILD_DIR) $(CLASS_DIR) $(TEST_CLASS_DIR) $(DIST_DIR) $(DIST_JAR_DIR)
 
