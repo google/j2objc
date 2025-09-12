@@ -42,4 +42,4 @@ OBJCFLAGS := -ObjC $(CC_WARNINGS) $(DEBUGFLAGS)
 # J2ObjC settings
 J2OBJCC = $(ARCH_BIN_DIR)/j2objcc -c $(OBJCFLAGS) -I$(GEN_OBJC_DIR)
 
-vpath %.java $(JAVA_SRC_DIR)
+vpath %.java $(SUPERSOURCE_ROOT):$(JAVA_SRC_DIR)

@@ -25,25 +25,26 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/ArgumentCaptor.java \
     org/mockito/ArgumentMatcher.java \
     org/mockito/ArgumentMatchers.java \
-    org/mockito/BDDMockito.java \
     org/mockito/Captor.java \
     org/mockito/CheckReturnValue.java \
+    org/mockito/DoNotMock.java \
     org/mockito/InOrder.java \
     org/mockito/Incubating.java \
     org/mockito/InjectMocks.java \
-    org/mockito/Matchers.java \
     org/mockito/Mock.java \
+    org/mockito/MockMakers.java \
     org/mockito/MockSettings.java \
+    org/mockito/MockedConstruction.java \
+    org/mockito/MockedStatic.java \
     org/mockito/MockingDetails.java \
     org/mockito/Mockito.java \
     org/mockito/MockitoAnnotations.java \
-    org/mockito/MockitoDebugger.java \
     org/mockito/MockitoFramework.java \
     org/mockito/MockitoSession.java \
     org/mockito/NotExtensible.java \
+    org/mockito/ScopedMock.java \
     org/mockito/Spy.java \
-    org/mockito/codegen/InjectionBase.java \
-    org/mockito/configuration/AnnotationEngine.java \
+    org/mockito/ThrowingConsumer.java \
     org/mockito/configuration/DefaultMockitoConfiguration.java \
     org/mockito/configuration/IMockitoConfiguration.java \
     org/mockito/creation/instance/InstantiationException.java \
@@ -54,6 +55,8 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/exceptions/base/MockitoSerializationIssue.java \
     org/mockito/exceptions/misusing/CannotStubVoidMethodWithReturnValue.java \
     org/mockito/exceptions/misusing/CannotVerifyStubOnlyMock.java \
+    org/mockito/exceptions/misusing/DisabledMockException.java \
+    org/mockito/exceptions/misusing/DoNotMockException.java \
     org/mockito/exceptions/misusing/FriendlyReminderException.java \
     org/mockito/exceptions/misusing/InjectMocksException.java \
     org/mockito/exceptions/misusing/InvalidUseOfMatchersException.java \
@@ -74,17 +77,20 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/exceptions/verification/NeverWantedButInvoked.java \
     org/mockito/exceptions/verification/NoInteractionsWanted.java \
     org/mockito/exceptions/verification/SmartNullPointerException.java \
-    org/mockito/exceptions/verification/TooLittleActualInvocations.java \
+    org/mockito/exceptions/verification/TooFewActualInvocations.java \
     org/mockito/exceptions/verification/TooManyActualInvocations.java \
     org/mockito/exceptions/verification/VerificationInOrderFailure.java \
     org/mockito/exceptions/verification/WantedButNotInvoked.java \
     org/mockito/exceptions/verification/junit/ArgumentsAreDifferent.java \
     org/mockito/hamcrest/MockitoHamcrest.java \
     org/mockito/internal/InOrderImpl.java \
-    org/mockito/internal/InternalMockHandler.java \
+    org/mockito/internal/MockedConstructionImpl.java \
+    org/mockito/internal/MockedStaticImpl.java \
     org/mockito/internal/MockitoCore.java \
+    org/mockito/internal/SuppressSignatureCheck.java \
     org/mockito/internal/configuration/CaptorAnnotationProcessor.java \
     org/mockito/internal/configuration/ClassPathLoader.java \
+    org/mockito/internal/configuration/DefaultDoNotMockEnforcer.java \
     org/mockito/internal/configuration/DefaultInjectionEngine.java \
     org/mockito/internal/configuration/FieldAnnotationProcessor.java \
     org/mockito/internal/configuration/GlobalConfiguration.java \
@@ -116,20 +122,14 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/creation/MockSettingsImpl.java \
     org/mockito/internal/creation/SuspendMethod.java \
     org/mockito/internal/creation/instance/ConstructorInstantiator.java \
-    org/mockito/internal/creation/instance/InstantiationException.java \
-    org/mockito/internal/creation/instance/Instantiator.java \
-    org/mockito/internal/creation/instance/InstantiatorProvider2Adapter.java \
-    org/mockito/internal/creation/instance/InstantiatorProviderAdapter.java \
     org/mockito/internal/creation/settings/CreationSettings.java \
     org/mockito/internal/creation/util/MockitoMethodProxy.java \
     org/mockito/internal/debugging/FindingsListener.java \
     org/mockito/internal/debugging/InvocationsPrinter.java \
+    org/mockito/internal/debugging/Java8LocationImpl.java \
     org/mockito/internal/debugging/Localized.java \
-    org/mockito/internal/debugging/LocationImpl.java \
     org/mockito/internal/debugging/LoggingListener.java \
-    org/mockito/internal/debugging/MockitoDebuggerImpl.java \
     org/mockito/internal/debugging/VerboseMockInvocationLogger.java \
-    org/mockito/internal/debugging/WarningsCollector.java \
     org/mockito/internal/debugging/WarningsFinder.java \
     org/mockito/internal/debugging/WarningsPrinterImpl.java \
     org/mockito/internal/exceptions/ExceptionIncludingMockitoWarnings.java \
@@ -142,6 +142,7 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/exceptions/util/ScenarioPrinter.java \
     org/mockito/internal/framework/DefaultMockitoFramework.java \
     org/mockito/internal/framework/DefaultMockitoSession.java \
+    org/mockito/internal/framework/DisabledMockHandler.java \
     org/mockito/internal/hamcrest/HamcrestArgumentMatcher.java \
     org/mockito/internal/hamcrest/MatcherGenericTypeExtractor.java \
     org/mockito/internal/handler/InvocationNotifierHandler.java \
@@ -165,7 +166,6 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/invocation/SerializableMethod.java \
     org/mockito/internal/invocation/StubInfoImpl.java \
     org/mockito/internal/invocation/TypeSafeMatching.java \
-    org/mockito/internal/invocation/UnusedStubsFinder.java \
     org/mockito/internal/invocation/finder/AllInvocationsFinder.java \
     org/mockito/internal/invocation/finder/VerifiableInvocationsFinder.java \
     org/mockito/internal/invocation/mockref/MockReference.java \
@@ -174,8 +174,9 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/junit/ArgMismatchFinder.java \
     org/mockito/internal/junit/DefaultStubbingLookupListener.java \
     org/mockito/internal/junit/DefaultTestFinishedEvent.java \
-    org/mockito/internal/junit/ExceptionFactory.java \
     org/mockito/internal/junit/JUnitRule.java \
+    org/mockito/internal/junit/JUnitSessionStore.java \
+    org/mockito/internal/junit/JUnitTestRule.java \
     org/mockito/internal/junit/MismatchReportingTestListener.java \
     org/mockito/internal/junit/MockitoTestListener.java \
     org/mockito/internal/junit/NoOpTestListener.java \
@@ -188,10 +189,7 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/junit/UnusedStubbings.java \
     org/mockito/internal/junit/UnusedStubbingsFinder.java \
     org/mockito/internal/junit/VerificationCollectorImpl.java \
-    org/mockito/internal/junit/util/JUnitFailureHacker.java \
     org/mockito/internal/listeners/AutoCleanableListener.java \
-    org/mockito/internal/listeners/StubbingLookupEvent.java \
-    org/mockito/internal/listeners/StubbingLookupListener.java \
     org/mockito/internal/listeners/StubbingLookupNotifier.java \
     org/mockito/internal/listeners/VerificationStartedNotifier.java \
     org/mockito/internal/matchers/And.java \
@@ -213,7 +211,6 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/matchers/InstanceOf.java \
     org/mockito/internal/matchers/LessOrEqual.java \
     org/mockito/internal/matchers/LessThan.java \
-    org/mockito/internal/matchers/LocalizedMatcher.java \
     org/mockito/internal/matchers/Matches.java \
     org/mockito/internal/matchers/Not.java \
     org/mockito/internal/matchers/NotNull.java \
@@ -221,7 +218,6 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/matchers/Or.java \
     org/mockito/internal/matchers/Same.java \
     org/mockito/internal/matchers/StartsWith.java \
-    org/mockito/internal/matchers/VarargMatcher.java \
     org/mockito/internal/matchers/apachecommons/EqualsBuilder.java \
     org/mockito/internal/matchers/apachecommons/ReflectionEquals.java \
     org/mockito/internal/matchers/text/FormattedText.java \
@@ -259,6 +255,7 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/stubbing/StubberImpl.java \
     org/mockito/internal/stubbing/StubbingComparator.java \
     org/mockito/internal/stubbing/UnusedStubbingReporting.java \
+    org/mockito/internal/stubbing/answers/AbstractThrowsException.java \
     org/mockito/internal/stubbing/answers/AnswerFunctionalInterfaces.java \
     org/mockito/internal/stubbing/answers/AnswersWithDelay.java \
     org/mockito/internal/stubbing/answers/CallsRealMethods.java \
@@ -270,20 +267,21 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/stubbing/answers/ReturnsArgumentAt.java \
     org/mockito/internal/stubbing/answers/ReturnsElementsOf.java \
     org/mockito/internal/stubbing/answers/ThrowsException.java \
+    org/mockito/internal/stubbing/answers/ThrowsExceptionForClassType.java \
     org/mockito/internal/stubbing/defaultanswers/ForwardsInvocations.java \
     org/mockito/internal/stubbing/defaultanswers/GloballyConfiguredAnswer.java \
+    org/mockito/internal/stubbing/defaultanswers/RetrieveGenericsForDefaultAnswers.java \
     org/mockito/internal/stubbing/defaultanswers/ReturnsDeepStubs.java \
     org/mockito/internal/stubbing/defaultanswers/ReturnsEmptyValues.java \
     org/mockito/internal/stubbing/defaultanswers/ReturnsMocks.java \
     org/mockito/internal/stubbing/defaultanswers/ReturnsMoreEmptyValues.java \
-    org/mockito/internal/stubbing/defaultanswers/ReturnsSmartNulls.java \
     org/mockito/internal/stubbing/defaultanswers/TriesToReturnSelf.java \
+    org/mockito/internal/util/AndroidPlatform.java \
     org/mockito/internal/util/Checks.java \
     org/mockito/internal/util/ConsoleMockitoLogger.java \
     org/mockito/internal/util/DefaultMockingDetails.java \
-    org/mockito/internal/util/JavaEightUtil.java \
+    org/mockito/internal/util/KotlinInlineClassUtil.java \
     org/mockito/internal/util/MockCreationValidator.java \
-    org/mockito/internal/util/MockitoLogger.java \
     org/mockito/internal/util/MockNameImpl.java \
     org/mockito/internal/util/MockUtil.java \
     org/mockito/internal/util/ObjectMethodsGuru.java \
@@ -296,25 +294,21 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/util/collections/HashCodeAndEqualsSafeSet.java \
     org/mockito/internal/util/collections/IdentitySet.java \
     org/mockito/internal/util/collections/Iterables.java \
-    org/mockito/internal/util/collections/ListUtil.java \
     org/mockito/internal/util/collections/Sets.java \
     org/mockito/internal/util/concurrent/DetachedThreadLocal.java \
     org/mockito/internal/util/concurrent/WeakConcurrentMap.java \
     org/mockito/internal/util/concurrent/WeakConcurrentSet.java \
     org/mockito/internal/util/io/IOUtil.java \
-    org/mockito/internal/util/reflection/AccessibilityChanger.java \
     org/mockito/internal/util/reflection/BeanPropertySetter.java \
-    org/mockito/internal/util/reflection/FieldCopier.java \
     org/mockito/internal/util/reflection/FieldInitializationReport.java \
     org/mockito/internal/util/reflection/FieldInitializer.java \
     org/mockito/internal/util/reflection/FieldReader.java \
-    org/mockito/internal/util/reflection/FieldSetter.java \
-    org/mockito/internal/util/reflection/Fields.java \
     org/mockito/internal/util/reflection/GenericMaster.java \
     org/mockito/internal/util/reflection/GenericMetadataSupport.java \
     org/mockito/internal/util/reflection/GenericTypeExtractor.java \
     org/mockito/internal/util/reflection/InstanceField.java \
     org/mockito/internal/util/reflection/LenientCopyTool.java \
+    org/mockito/internal/util/reflection/ReflectionMemberAccessor.java \
     org/mockito/internal/util/reflection/SuperTypesLastSorter.java \
     org/mockito/internal/verification/AtLeast.java \
     org/mockito/internal/verification/AtMost.java \
@@ -324,6 +318,7 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/verification/InOrderContextImpl.java \
     org/mockito/internal/verification/InOrderWrapper.java \
     org/mockito/internal/verification/MockAwareVerificationMode.java \
+    org/mockito/internal/verification/NoInteractions.java \
     org/mockito/internal/verification/NoMoreInteractions.java \
     org/mockito/internal/verification/Only.java \
     org/mockito/internal/verification/RegisteredInvocations.java \
@@ -357,29 +352,35 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/junit/MockitoJUnit.java \
     org/mockito/junit/MockitoJUnitRunner.java \
     org/mockito/junit/MockitoRule.java \
+    org/mockito/junit/MockitoTestRule.java \
     org/mockito/junit/VerificationCollector.java \
     org/mockito/listeners/InvocationListener.java \
     org/mockito/listeners/MethodInvocationReport.java \
     org/mockito/listeners/MockCreationListener.java \
     org/mockito/listeners/MockitoListener.java \
+    org/mockito/listeners/StubbingLookupEvent.java \
+    org/mockito/listeners/StubbingLookupListener.java \
     org/mockito/listeners/VerificationListener.java \
     org/mockito/listeners/VerificationStartedEvent.java \
     org/mockito/listeners/VerificationStartedListener.java \
     org/mockito/mock/MockCreationSettings.java \
     org/mockito/mock/MockName.java \
+    org/mockito/mock/MockType.java \
     org/mockito/mock/SerializableMode.java \
     org/mockito/plugins/AnnotationEngine.java \
-    org/mockito/plugins/InstantiatorProvider.java \
+    org/mockito/plugins/DoNotMockEnforcer.java \
+    org/mockito/plugins/DoNotMockEnforcerWithType.java \
+    org/mockito/plugins/InlineMockMaker.java \
     org/mockito/plugins/InstantiatorProvider2.java \
+    org/mockito/plugins/MemberAccessor.java \
     org/mockito/plugins/MockMaker.java \
+    org/mockito/plugins/MockResolver.java \
+    org/mockito/plugins/MockitoLogger.java \
     org/mockito/plugins/MockitoPlugins.java \
     org/mockito/plugins/PluginSwitch.java \
     org/mockito/plugins/StackTraceCleanerProvider.java \
     org/mockito/quality/MockitoHint.java \
     org/mockito/quality/Strictness.java \
-    org/mockito/runners/ConsoleSpammingMockitoJUnitRunner.java \
-    org/mockito/runners/MockitoJUnitRunner.java \
-    org/mockito/runners/VerboseMockitoJUnitRunner.java \
     org/mockito/session/MockitoSessionBuilder.java \
     org/mockito/session/MockitoSessionLogger.java \
     org/mockito/stubbing/Answer.java \
@@ -388,6 +389,7 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/stubbing/Answer3.java \
     org/mockito/stubbing/Answer4.java \
     org/mockito/stubbing/Answer5.java \
+    org/mockito/stubbing/Answer6.java \
     org/mockito/stubbing/BaseStubber.java \
     org/mockito/stubbing/LenientStubber.java \
     org/mockito/stubbing/OngoingStubbing.java \
@@ -399,6 +401,7 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/stubbing/VoidAnswer3.java \
     org/mockito/stubbing/VoidAnswer4.java \
     org/mockito/stubbing/VoidAnswer5.java \
+    org/mockito/stubbing/VoidAnswer6.java \
     org/mockito/verification/After.java \
     org/mockito/verification/Timeout.java \
     org/mockito/verification/VerificationAfterDelay.java \
@@ -410,10 +413,17 @@ EXTRACTED_JAVA_SOURCES = \
 J2OBJC_PLUGIN_JAVA_SOURCES = \
     com/google/j2objc/mockito/InvocationHandlerAdapter.java \
     com/google/j2objc/mockito/IosMockMaker.java \
-    org/objenesis/ObjenesisHelper.java
+    org/objenesis/ObjenesisHelper.java \
+
+SUPERSOURCE_JAVA_SOURCES = \
+    org/mockito/internal/junit/ExceptionFactory.java \
+    org/mockito/internal/debugging/LocationFactory.java \
+    org/mockito/internal/matchers/LocalizedMatcher.java \
+    org/mockito/internal/stubbing/defaultanswers/ReturnsSmartNulls.java \
 
 EXTRACTED_JAVA = $(EXTRACTED_JAVA_SOURCES:%=$(EXTRACTED_JAVA_SRC_DIR)/%)
 J2OBJC_PLUGIN_JAVA = $(J2OBJC_PLUGIN_JAVA_SOURCES:%=$(J2OBJC_PLUGIN_SRC_DIR)/%)
+SUPERSOURCE_JAVA = $(SUPERSOURCE_JAVA_SOURCES:%=$(SUPERSOURCE_ROOT)/%)
 JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
@@ -424,8 +434,9 @@ CREATE_JAR_SOURCES = $(EXTRACTED_JAVA) $(J2OBJC_PLUGIN_JAVA)
 CREATE_JAR_JAVAC_ARGS = -classpath $(MOCKITO_CLASSPATH)
 include $(J2OBJC_ROOT)/make/create_jar.mk
 
-TRANSLATE_JAVA_RELATIVE = $(EXTRACTED_JAVA_SOURCES) $(J2OBJC_PLUGIN_JAVA_SOURCES)
-TRANSLATE_JAVA_FULL = $(EXTRACTED_JAVA) $(J2OBJC_PLUGIN_JAVA)
+TRANSLATE_JAVA_RELATIVE = $(EXTRACTED_JAVA_SOURCES) $(J2OBJC_PLUGIN_JAVA_SOURCES) \
+    $(SUPERSOURCE_JAVA_SOURCES)
+TRANSLATE_JAVA_FULL = $(EXTRACTED_JAVA) $(J2OBJC_PLUGIN_JAVA) $(SUPERSOURCE_JAVA)
 TRANSLATE_ARGS = -sourcepath $(MOCKITO_SOURCEPATH) -classpath $(MOCKITO_CLASSPATH)
 include $(J2OBJC_ROOT)/make/translate.mk
 
@@ -464,7 +475,7 @@ $(MOCKITO_LICENSE_DIST): $(MOCKITO_LICENSE)
 	@mkdir -p $(@D)
 	@install -m 0644 $< $@
 
-$(JAVA_SOURCES_MANIFEST): $(EXTRACTED_JAVA) $(J2OBJC_PLUGIN_JAVA) | $(BUILD_DIR)
+$(JAVA_SOURCES_MANIFEST): $(EXTRACTED_JAVA) $(J2OBJC_PLUGIN_JAVA) $(SUPERSOURCE_JAVA) | $(BUILD_DIR)
 	@echo "Building $$(basename $@)"
 	@if [ -e $@ ]; then rm $@; fi
 	@for i in $^; do echo $$i >> $@; done
