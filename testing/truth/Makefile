@@ -38,15 +38,23 @@ JAVA_SOURCES = \
   com/google/common/truth/FloatSubject.java \
   com/google/common/truth/GraphMatching.java \
   com/google/common/truth/GuavaOptionalSubject.java \
+  com/google/common/truth/IgnoreJRERequirement.java \
   com/google/common/truth/IntegerSubject.java \
+  com/google/common/truth/IntStreamSubject.java \
   com/google/common/truth/IterableSubject.java \
+  com/google/common/truth/J2ktIncompatible.java \
   com/google/common/truth/LazyMessage.java \
+  com/google/common/truth/LongStreamSubject.java \
   com/google/common/truth/LongSubject.java \
   com/google/common/truth/MapSubject.java \
   com/google/common/truth/MathUtil.java \
   com/google/common/truth/MultimapSubject.java \
   com/google/common/truth/MultisetSubject.java \
   com/google/common/truth/ObjectArraySubject.java \
+  com/google/common/truth/OptionalDoubleSubject.java \
+  com/google/common/truth/OptionalIntSubject.java \
+  com/google/common/truth/OptionalLongSubject.java \
+  com/google/common/truth/OptionalSubject.java \
   com/google/common/truth/Ordered.java \
   com/google/common/truth/Platform.java \
   com/google/common/truth/PrimitiveBooleanArraySubject.java \
@@ -60,6 +68,7 @@ JAVA_SOURCES = \
   com/google/common/truth/SimpleSubjectBuilder.java \
   com/google/common/truth/StackTraceCleaner.java \
   com/google/common/truth/StandardSubjectBuilder.java \
+  com/google/common/truth/StreamSubject.java \
   com/google/common/truth/StringSubject.java \
   com/google/common/truth/Subject.java \
   com/google/common/truth/SubjectUtils.java \
@@ -68,6 +77,7 @@ JAVA_SOURCES = \
   com/google/common/truth/Truth.java \
   com/google/common/truth/TruthFailureSubject.java \
   com/google/common/truth/TruthJUnit.java \
+  com/google/common/truth/UsedByReflection.java \
   com/google/common/truth/package-info.java
 
 EXTRACTED_JAVA = $(JAVA_SOURCES:%=$(JAVA_SRC_DIR)/%)
@@ -87,7 +97,8 @@ CLASSPATH_LIST = \
   $(JAVA_DEPS_JAR_DIR)/$(GUAVA_JAR) \
   $(JAVA_DEPS_JAR_DIR)/$(FAILUREACCESS_JAR) \
   $(JAVA_DEPS_JAR_DIR)/$(JUNIT_JAR) \
-  $(JAVA_DEPS_JAR_DIR)/$(HAMCREST_JAR)
+  $(JAVA_DEPS_JAR_DIR)/$(HAMCREST_JAR) \
+  $(JAVA_DEPS_JAR_DIR)/$(JSPECIFY_JAR)
 CLASSPATH = $(subst $(eval) ,:,$(strip $(CLASSPATH_LIST)))
 
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES:%=$(JAVA_SRC_DIR)/%)
