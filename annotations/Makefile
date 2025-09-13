@@ -42,7 +42,7 @@ $(JPMS_CLASS):
 
 $(JAR): $(SOURCE_JAVA_FULL) | $(BUILD_DIR) $(CLASSES_DIR) $(JAVA9_CLASSES_DIR) $(JPMS_CLASS)
 	@echo Building j2objc annotations
-	@$(JAVAC) -encoding UTF-8 -d $(CLASSES_DIR) -source 1.8 -target 1.8 \
+	@$(JAVAC) -encoding UTF-8 -d $(CLASSES_DIR) -source 11 -target 11 \
 	    -nowarn $^
 	@jar cf $(JAR) -C $(CLASSES_DIR) . --release 9 -C $(JAVA9_CLASSES_DIR) .
 

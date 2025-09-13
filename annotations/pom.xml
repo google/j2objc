@@ -69,8 +69,8 @@
           <execution>
             <id>default-compile</id>
             <configuration>
-              <source>1.8</source>
-              <target>1.8</target>
+              <source>11</source>
+              <target>11</target>
               <excludes>
                 <exclude>module-info.java</exclude>
               </excludes>

@@ -32,10 +32,7 @@ MKTEMP_DIR = j2objc-jre_emul
 clean:
 	@rm -f $(EMULATION_JAR_DIST) $(EMULATION_SRC_JAR_DIST) $(JSON_JAR_DIST)
 
-jars_dist: emul_jar_dist emul_src_jar_dist json_jar_dist
-ifndef JAVA_8
-jars_dist: emul_module_dist
-endif
+jars_dist: emul_jar_dist emul_src_jar_dist json_jar_dist emul_module_dist
 
 emul_jar_dist: $(EMULATION_JAR_DIST)
 	@:

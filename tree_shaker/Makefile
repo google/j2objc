@@ -54,9 +54,6 @@ DIST_DEPS = $(JSR305_JAR) j2objc_annotations.jar protobuf_runtime.jar
 INTERNAL_DEPS = $(GUAVA_JAR) $(PROCYON_JARS) $(SCENELIB_JAR) \
   $(AUTOVALUE_ANNOTATIONS_JAR) $(FLOGGER_JARS) $(JSPECIFY_JAR) \
   $(ERROR_PRONE_ANNOTATIONS_JAR)
-ifdef JAVA_8
-INTERNAL_DEPS += $(JAVAC_JAR)
-endif
 JAR_DEPS_DIST = $(DIST_DEPS:%=$(DIST_JAR_DIR)/%) $(INTERNAL_DEPS:%=$(JAVA_DEPS_JAR_DIR)/%)
 JAR_DEPS_PATH = $(subst $(eval) ,:,$(strip $(JAR_DEPS_DIST)))
 JUNIT_JAR_DIST = $(DIST_JAR_DIR)/$(JUNIT_JAR)
@@ -108,7 +105,7 @@ $(JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
 	    -sourcepath $(JAVA_SOURCE_DIR):$(TRANSLATOR_SOURCE_DIR):$(PROTO_JAVA_DIR) \
 	    -classpath $(JAR_DEPS_PATH):$(CLASS_DIR) \
 	    -processorpath $(JAVA_DEPS_JAR_DIR)/$(AUTOVALUE_JAR) -encoding UTF-8 \
-	    -d $(CLASS_DIR) -source 1.8 -target 1.8 -nowarn $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
+	    -d $(CLASS_DIR) -source 11 -target 11 -nowarn $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
 	@for lib in $(JAR_DEPS_DIST); do unzip -oq $$lib -d $(CLASS_DIR); done
 	@$(PRUNE_CMD)
 	@jar cfm $@ $(MANIFEST) -C $(CLASS_DIR) .
