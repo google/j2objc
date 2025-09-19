@@ -17,27 +17,24 @@ package com.google.devtools.cyclefinder;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.ExternalAnnotations;
-import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-class Options {
+class Options extends com.google.devtools.j2objc.Options {
 
-  private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
   private static String usageMessage;
   private static String helpMessage;
 
@@ -57,21 +54,10 @@ class Options {
     Preconditions.checkNotNull(helpMessage);
   }
 
-  private String sourcepath;
-  private String classpath;
-  private String bootclasspath;
   private final List<String> suppressListFiles = Lists.newArrayList();
   private final List<String> restrictToListFiles = Lists.newArrayList();
   private List<String> sourceFiles = Lists.newArrayList();
-  private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private boolean printReferenceGraph = false;
-  private SourceVersion sourceVersion = null;
-  private final ExternalAnnotations externalAnnotations = new ExternalAnnotations();
-
-  // Flags that are directly forwarded to the javac parser.
-  private static final ImmutableSet<String> PLATFORM_MODULE_SYSTEM_OPTIONS =
-      ImmutableSet.of("--patch-module", "--system", "--add-reads");
-  private final List<String> platformModuleSystemOptions = new ArrayList<>();
 
   public List<String> getSourceFiles() {
     return sourceFiles;
@@ -79,22 +65,6 @@ class Options {
 
   public void setSourceFiles(List<String> files) {
     this.sourceFiles = files;
-  }
-
-  public String getSourcepath() {
-    return sourcepath;
-  }
-
-  public String getClasspath() {
-    return classpath;
-  }
-
-  public void setClasspath(String classpath) {
-    this.classpath = classpath;
-  }
-
-  public String getBootclasspath() {
-    return bootclasspath != null ? bootclasspath : System.getProperty("sun.boot.class.path");
   }
 
   public List<String> getSuppressListFiles() {
@@ -115,29 +85,13 @@ class Options {
 
   private void addManifest(String manifestFile) throws IOException {
     try (BufferedReader in =
-        Files.newReader(new File(manifestFile), Charset.forName(fileEncoding))) {
+        Files.newReader(new File(manifestFile), fileUtil().getCharset())) {
       for (String line = in.readLine(); line != null; line = in.readLine()) {
         if (!Strings.isNullOrEmpty(line)) {
           sourceFiles.add(line.trim());
         }
       }
     }
-  }
-
-  public String fileEncoding() {
-    return fileEncoding;
-  }
-
-  public SourceVersion sourceVersion() {
-    if (sourceVersion == null) {
-      sourceVersion = SourceVersion.defaultVersion();
-    }
-    return sourceVersion;
-  }
-
-  @VisibleForTesting
-  void setSourceVersion(SourceVersion sv) {
-      sourceVersion = sv;
   }
 
   public boolean printReferenceGraph() {
@@ -149,21 +103,9 @@ class Options {
      printReferenceGraph = true;
   }
 
-  public ExternalAnnotations externalAnnotations() {
-    return externalAnnotations;
-  }
-
   @VisibleForTesting
-  public void addExternalAnnotationFile(String file) throws IOException {
-    externalAnnotations.addExternalAnnotationFile(file);
-  }
-
-  public void addPlatformModuleSystemOptions(String... flags) {
-    Collections.addAll(platformModuleSystemOptions, flags);
-  }
-
-  public List<String> getPlatformModuleSystemOptions() {
-    return platformModuleSystemOptions;
+  public void setClasspath(String classpath) {
+    fileUtil().getClassPathEntries().addAll(Arrays.asList(classpath.split(":")));
   }
 
   public static void usage(String invalidUseMsg) {
@@ -185,90 +127,55 @@ class Options {
 
   public static Options parse(String[] args) throws IOException {
     Options options = new Options();
+    // pre-scan for encoding
+    for (int i = 0; i < args.length - 1; i++) {
+      if (args[i].equals("-encoding")) {
+        try {
+          options.fileUtil().setFileEncoding(args[i + 1]);
+        } catch (UnsupportedCharsetException e) {
+          ErrorUtil.error(e.getMessage());
+        }
+        break;
+      }
+    }
 
-    int nArg = 0;
-    while (nArg < args.length) {
-      String arg = args[nArg];
-      if (arg.equals("-sourcepath")) {
-        if (++nArg == args.length) {
-          usage("-sourcepath requires an argument");
-        }
-        options.sourcepath = args[nArg];
-      } else if (arg.equals("-classpath")) {
-        if (++nArg == args.length) {
-          usage("-classpath requires an argument");
-        }
-        options.classpath = args[nArg];
-      } else if (arg.equals("--suppress-list")
+    List<String> j2objcArgs = new ArrayList<>();
+    Iterator<String> iter = Arrays.asList(args).iterator();
+    while (iter.hasNext()) {
+      String arg = iter.next();
+      if (arg.equals("--suppress-list")
           // Deprecated flag names.
           || arg.equals("--whitelist")
           || arg.equals("-w")) {
-        if (++nArg == args.length) {
+        if (!iter.hasNext()) {
           usage("--suppress-list requires an argument");
         }
-        options.suppressListFiles.add(args[nArg]);
+        options.suppressListFiles.add(iter.next());
       } else if (arg.equals("--restrict-to")
           // Deprecated flag name.
           || arg.equals("--blacklist")) {
-        if (++nArg == args.length) {
+        if (!iter.hasNext()) {
           usage("--restrict-to requires an argument");
         }
-        options.restrictToListFiles.add(args[nArg]);
+        options.restrictToListFiles.add(iter.next());
       } else if (arg.equals("--sourcefilelist") || arg.equals("-s")) {
-        if (++nArg == args.length) {
+        if (!iter.hasNext()) {
           usage("--sourcefilelist requires an argument");
         }
-        options.addManifest(args[nArg]);
-      } else if (arg.startsWith(XBOOTCLASSPATH)) {
-        options.bootclasspath = arg.substring(XBOOTCLASSPATH.length());
-      } else if (arg.equals("-encoding")) {
-        if (++nArg == args.length) {
-          usage("-encoding requires an argument");
-        }
-        options.fileEncoding = args[nArg];
-      }  else if (arg.equals("-source")) {
-        if (++nArg == args.length) {
-          usage("-source requires an argument");
-        }
-        try {
-          options.sourceVersion = SourceVersion.parse(args[nArg]);
-          SourceVersion maxVersion = SourceVersion.getMaxSupportedVersion();
-          if (options.sourceVersion.version() > maxVersion.version()) {
-            ErrorUtil.warning("Java " + options.sourceVersion.version() + " source version is not "
-                + "supported, using Java " + maxVersion.version() + ".");
-            options.sourceVersion = maxVersion;
-          }
-        } catch (IllegalArgumentException e) {
-          usage("invalid source release: " + args[nArg]);
-        }
+        options.addManifest(iter.next());
       } else if (arg.equals("--print-reference-graph")) {
         options.printReferenceGraph = true;
-      } else if (arg.equals("-external-annotation-file")) {
-        if (++nArg == args.length) {
-          usage(arg + " requires an argument");
-        }
-        options.addExternalAnnotationFile(args[nArg]);
-      } else if (PLATFORM_MODULE_SYSTEM_OPTIONS.contains(arg)) {
-        String option = arg;
-        if (++nArg == args.length) {
-          usage(option + " requires an argument");
-        }
-        options.addPlatformModuleSystemOptions(option, args[nArg]);
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
-      } else if (arg.startsWith("-")) {
-        usage("invalid flag: " + arg);
       } else {
-        break;
+        j2objcArgs.add(arg);
       }
-      ++nArg;
     }
 
-    while (nArg < args.length) {
-      options.sourceFiles.add(args[nArg++]);
-    }
+    options.sourceFiles.addAll(options.load(j2objcArgs.toArray(new String[0])));
+
     if (options.sourceFiles.isEmpty()) {
       usage("no source files");
     }

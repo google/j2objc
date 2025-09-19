@@ -102,7 +102,7 @@ public class Options {
   private boolean translateClassfiles = false;
   private String annotationsJar = null;
   private CombinedOutput globalCombinedOutput = null;
-  private String bootclasspath = null;
+  private String bootclasspath = "";
   private boolean emitKytheMappings = false;
   private boolean emitSourceHeaders = true;
   private boolean injectLogSites = false;

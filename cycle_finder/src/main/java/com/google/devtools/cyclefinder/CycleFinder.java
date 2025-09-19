@@ -14,7 +14,6 @@
 
 package com.google.devtools.cyclefinder;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
@@ -28,13 +27,14 @@ import com.google.devtools.j2objc.util.Parser;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * A tool for finding possible reference cycles in a Java program.
@@ -44,7 +44,6 @@ import java.util.Set;
 public class CycleFinder {
 
   private final Options options;
-  private final com.google.devtools.j2objc.Options j2objcOptions;
   private final NameList restrictToList;
   private final List<List<Edge>> cycles = new ArrayList<>();
 
@@ -60,26 +59,52 @@ public class CycleFinder {
 
   public CycleFinder(Options options) throws IOException {
     this.options = options;
-    j2objcOptions = new com.google.devtools.j2objc.Options();
-    List<String> list = new ArrayList<>(Arrays.asList(
-        "-sourcepath", Strings.nullToEmpty(options.getSourcepath()),
-        "-classpath", Strings.nullToEmpty(options.getClasspath()),
-        "-encoding", options.fileEncoding(),
-        "-source",   options.sourceVersion().flag()
-    ));
-    list.addAll(options.getPlatformModuleSystemOptions());
-    j2objcOptions.load(list.toArray(new String[0]));
+    expandSourceFiles();
     restrictToList = getRestrictToFiles();
   }
 
+  private void expandSourceFiles() throws IOException {
+    List<String> sourceFiles = options.getSourceFiles();
+    List<String> expandedSourceFiles = new ArrayList<>();
+    for (String sourceFile : sourceFiles) {
+      if (sourceFile.endsWith(".jar")) {
+        expandedSourceFiles.addAll(expandSourceJar(sourceFile, options.fileUtil()));
+      } else {
+        expandedSourceFiles.add(sourceFile);
+      }
+    }
+    options.setSourceFiles(expandedSourceFiles);
+  }
+
+  private static List<String> expandSourceJar(String jarFilename, FileUtil fileUtil)
+      throws IOException {
+    List<String> extractedFiles = new ArrayList<>();
+    // FileUtil.createTempDir will delete the directory on exit.
+    File tempDir = FileUtil.createTempDir("sourcejar_");
+    try (ZipFile zipFile = new ZipFile(jarFilename)) {
+      Enumeration<? extends ZipEntry> entries = zipFile.entries();
+      while (entries.hasMoreElements()) {
+        ZipEntry entry = entries.nextElement();
+        String name = entry.getName();
+        if (entry.isDirectory() || !name.endsWith(".java")) {
+          continue;
+        }
+        File outputFile = fileUtil.extractZipEntry(tempDir, zipFile, entry);
+        extractedFiles.add(outputFile.getAbsolutePath());
+      }
+    }
+    return extractedFiles;
+  }
+
   private Parser createParser() {
-    Parser parser = Parser.newParser(j2objcOptions);
-    parser.addSourcepathEntries(Strings.nullToEmpty(options.getSourcepath()));
-    parser.addClasspathEntries(Strings.nullToEmpty(options.getBootclasspath()));
-    parser.addClasspathEntries(Strings.nullToEmpty(options.getClasspath()));
+    Parser parser = Parser.newParser(options);
+    parser.addSourcepathEntries(options.fileUtil().getSourcePathEntries());
+    parser.addClasspathEntries(options.getBootClasspath());
+    parser.addClasspathEntries(options.fileUtil().getClassPathEntries());
     return parser;
   }
 
+  @SuppressWarnings("SystemExitOutsideMain")
   private static void exitOnErrors() {
     int nErrors = ErrorUtil.errorCount();
     if (nErrors > 0) {
@@ -105,7 +130,7 @@ public class CycleFinder {
     if (restrictToFiles.isEmpty()) {
       return null;
     }
-    return NameList.createFromFiles(restrictToFiles, options.fileEncoding());
+    return NameList.createFromFiles(restrictToFiles, options.fileUtil().getCharset().name());
   }
 
   private File stripIncompatible(
@@ -114,7 +139,7 @@ public class CycleFinder {
     for (int i = 0; i < sourceFileNames.size(); i++) {
       String fileName = sourceFileNames.get(i);
       RegularInputFile file = new RegularInputFile(fileName);
-      String source = j2objcOptions.fileUtil().readFile(file);
+      String source = options.fileUtil().readFile(file);
       if (!source.contains("J2ObjCIncompatible")) {
         continue;
       }
@@ -128,7 +153,7 @@ public class CycleFinder {
       String relativePath = qualifiedName.replace('.', File.separatorChar) + ".java";
       File strippedFile = new File(strippedDir, relativePath);
       Files.createParentDirs(strippedFile);
-      Files.asCharSink(strippedFile, Charset.forName(options.fileEncoding()))
+      Files.asCharSink(strippedFile, options.fileUtil().getCharset())
           .write(parseResult.getSource());
       sourceFileNames.set(i, strippedFile.getPath());
     }
@@ -138,7 +163,8 @@ public class CycleFinder {
   public void constructGraph() throws IOException {
     Parser parser = createParser();
     NameList suppressList =
-        NameList.createFromFiles(options.getSuppressListFiles(), options.fileEncoding());
+        NameList.createFromFiles(
+            options.getSuppressListFiles(), options.fileUtil().getCharset().name());
     final GraphBuilder graphBuilder =
         new GraphBuilder(suppressList, options.externalAnnotations());
 
@@ -153,7 +179,7 @@ public class CycleFinder {
         graphBuilder.visitAST(unit);
       }
     };
-    parser.parseFiles(sourceFiles, handler, options.sourceVersion());
+    parser.parseFiles(sourceFiles, handler, options.getSourceVersion());
 
     FileUtil.deleteTempDir(strippedDir);
     parser.close();
