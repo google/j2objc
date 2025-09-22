@@ -55,7 +55,17 @@ To build and run on GNU/Linux, install [the Darling project](http://www.darlingh
 
 This project publishes some artifacts through Maven Central with a `groupId` of `com.google.j2objc`.
 These artifacts are currently signed with [the following PGP/GPG key]
-(https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xeb1b3de71713c9ec2e87cc26ee92349ad86de446):
+(https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xC3259D20DAEC4ACE6D57CC83340B090F727518D8):
+
+```
+---------
+pub   ed25519 2025-08-13 [SC] [expires: 2028-08-12]
+      C3259D20DAEC4ACE6D57CC83340B090F727518D8
+uid           [ultimate] Thomas Ball <tball@google.com>
+sub   cv25519 2025-08-13 [E] [expires: 2028-08-12]
+```
+
+Older artifacts are signed with the following PGP/GPG keys:
 
 ```
 pub   rsa2048 2023-01-10 [SC] [expires: 2025-01-09]
@@ -63,8 +73,6 @@ pub   rsa2048 2023-01-10 [SC] [expires: 2025-01-09]
 uid           [ unknown] Thomas Ball <tball@google.com>
 sub   rsa2048 2023-01-10 [E] [expires: 2025-01-09]
 ```
-
-Older artifacts are signed with the following PGP/GPG key:
 
 ```
 pub   rsa2048 2015-09-25 [SC]
