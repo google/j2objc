@@ -100,22 +100,29 @@ int main( int argc, const char *argv[] ) {
       return 1;
     }
 
-    // Verify class has a main() method.
-    SEL mainSelector = sel_registerName("mainWithNSStringArray:");
-    if (!class_getClassMethod(clazz.objcClass, mainSelector)) {
-      fprintf(stderr, "Error: main method not found in class %s\n", className);
-      return 1;
-    }
-
-    // Directly invoke the method's IMP, to avoid a "performSelector may cause a
-    // leak because its selector is unknown" warning when built with ARC.
-    IMP mainImp = [clazz.objcClass methodForSelector:mainSelector];
-    void (*mainFunc)(id, SEL, IOSObjectArray *) = (void *)mainImp;
-
-    // Invoke main() with remaining command-line arguments.
     @try {
-      IOSObjectArray *mainArgs = JreEmulationMainArguments(argc - 1, &argv[1]);
-      mainFunc(clazz.objcClass, mainSelector, mainArgs);
+      // Verify class has a main() method.
+      SEL mainSelector = sel_registerName("mainWithNSStringArray:");
+      if (class_getClassMethod(clazz.objcClass, mainSelector)) {
+        // Standard main method: public static void main(String[] args).
+        // Directly invoke the method's IMP, to avoid a "performSelector may cause a
+        // leak because its selector is unknown" warning when built with ARC.
+        IMP mainImp = [clazz.objcClass methodForSelector:mainSelector];
+        void (*mainFunc)(id, SEL, IOSObjectArray *) = (void *)mainImp;
+        IOSObjectArray *mainArgs = JreEmulationMainArguments(argc - 1, &argv[1]);
+        mainFunc(clazz.objcClass, mainSelector, mainArgs);
+      } else {
+        // JEP 463: main method is an instance method that takes no arguments.
+        // https://openjdk.org/jeps/463
+        SEL instanceMainSelector = sel_registerName("main");
+        if (class_getInstanceMethod(clazz.objcClass, instanceMainSelector)) {
+          id mainInstance = AUTORELEASE([[clazz.objcClass alloc] init]);
+          [mainInstance main];
+        } else {
+          fprintf(stderr, "Error: main method not found in class %s\n", className);
+          return 1;
+        }
+      }
     }
     @catch (JavaLangThrowable *e) {
       handleUncaughtException(e);
