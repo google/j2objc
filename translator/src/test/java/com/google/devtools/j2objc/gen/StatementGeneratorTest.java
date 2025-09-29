@@ -2130,4 +2130,126 @@ public class StatementGeneratorTest extends GenerationTest {
               "}");
         });
   }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testUnnamedVariableDeclaration() throws IOException {
+      testOnJava22OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "import java.util.Date;",
+                      "class Test {",
+                      "  private Date currentDate = null;",
+                      "  Date getCurrentDate() {",
+                      "    currentDate = new Date();",
+                      "  return currentDate;",
+                      "  }",
+                      "  void test() {",
+                      "    Date _ = getCurrentDate();",
+                      "    System.out.println(\"field initialized: \" + (currentDate != null));",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          // Verify that the local variable is named "_", as javac uses an empty strings.
+          assertTranslation(translation,
+              "JavaUtilDate *_ = JreRetainedLocalValue([self getCurrentDate]);");
+        });
+  }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testUnnamedSwitchCaseVariable() throws IOException {
+      testOnJava22OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "class Test {",
+                      "  void test(Object obj) {",
+                      "    switch (obj) {",
+                      "      case Integer _ -> System.out.println(\"Is an integer\");",
+                      "      case Float _ -> System.out.println(\"Is a float\");",
+                      "      case String _ -> System.out.println(\"Is a String\");",
+                      "      default -> System.out.println(\"Default\");",
+                      "    }",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          // Verify that the local variable is named "_", as javac uses an empty strings.
+          assertTranslatedLines(translation,
+              "  if ([obj isKindOfClass:[JavaLangInteger class]]) {",
+              "    [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
+              + "printlnWithNSString:@\"Is an integer\"];",
+              "  }",
+              "  else if ([obj isKindOfClass:[JavaLangFloat class]]) {",
+              "    [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Is a float\"];",
+              "  }",
+              "  else if ([obj isKindOfClass:[NSString class]]) {",
+              "    [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Is a String\"];",
+              "  }",
+              "  else {",
+              "    [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Default\"];",
+              "  }"
+              );
+        });
+  }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testUnnamedExceptionCatch() throws IOException {
+      testOnJava22OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "import java.sql.*;",
+                      "class Test {",
+                      "  void test(String url, String user, String pwd) {",
+                      "    try {",
+                      "      Connection _ = DriverManager.getConnection(url, user, pwd);",
+                      "      System.out.println(\"DB Connection successful\");",
+                      "    } catch (SQLException e) {",
+                      "      System.err.println(\"Exception \" + e);",
+                      "    }",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          // Verify that the local variable is named "_", as javac uses an empty strings.
+          assertTranslation(translation,
+              "id<JavaSqlConnection> _ = JavaSqlDriverManager_getConnectionWithNSString_"
+              + "withNSString_withNSString_(url, user, pwd);");
+        });
+  }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testUnnamedTryVariable() throws IOException {
+      testOnJava22OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "import java.sql.*;",
+                      "class Test {",
+                      "  void test(String url, String user, String pwd) {",
+                      "    try (Connection _ = DriverManager.getConnection(url, user, pwd)) {",
+                      "      System.out.println(\"DB Connection successful\");",
+                      "    } catch (SQLException e) {",
+                      "      System.err.println(\"Exception \" + e);",
+                      "    }",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          // Verify that the local variable is named "_", as javac uses an empty strings.
+          assertTranslation(translation,
+              "id<JavaSqlConnection> _ = JavaSqlDriverManager_getConnectionWithNSString_"
+              + "withNSString_withNSString_(url, user, pwd);");
+        });
+  }
 }

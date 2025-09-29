@@ -235,6 +235,8 @@ public class NameTable {
       name += '_';
     } else if (ElementUtil.isParameter(var) && badParameterNames.contains(name)) {
       name += "Arg";
+    } else if (var.getSimpleName().toString().isEmpty()) {
+      name = "_";
     }
     return name;
   }
@@ -730,6 +732,7 @@ public class NameTable {
   /**
    * Converts a Java type to an equivalent Objective-C type, returning "id" for an object type.
    */
+  @SuppressWarnings("StatementSwitchToExpressionSwitch")
   public static String getPrimitiveObjCType(TypeMirror type) {
     if (TypeUtil.isVoid(type)) {
       return "void";
@@ -766,6 +769,7 @@ public class NameTable {
    * Converts a primitive Java type to an equivalent Objective-C type as the most inner component in
    * an array.
    */
+  @SuppressWarnings("StatementSwitchToExpressionSwitch")
   public static String getPrimitiveObjCTypeArrayComponent(TypeMirror type) {
     String typeString = "JavaLang";
     switch (type.getKind()) {

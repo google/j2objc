@@ -798,7 +798,7 @@ public abstract class GenerationTest extends TestCase {
   }
 
   /**
-   * Enables both javac and j2objc gidebugging support in a test.
+   * Enables both javac and j2objc debugging support in a test.
    */
   protected void enableDebuggingSupport() {
     javacFlags.add("-parameters");
@@ -875,6 +875,14 @@ public abstract class GenerationTest extends TestCase {
     if (onJava21OrAbove()) {
       SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_21);
       options.setSourceVersion(SourceVersion.JAVA_21);
+      test.run();
+    }
+  }
+
+  protected void testOnJava22OrAbove(TestLambda test) throws IOException {
+    if (Runtime.version().feature() >= 22) {
+      SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_22);
+      options.setSourceVersion(SourceVersion.JAVA_22);
       test.run();
     }
   }
