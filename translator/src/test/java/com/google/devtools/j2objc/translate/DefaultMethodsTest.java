@@ -446,25 +446,25 @@ public class DefaultMethodsTest extends GenerationTest {
   }
 
   public void testPrivateInterfaceMethod() throws IOException {
-    testOnJava9OrAbove(() -> {
-      String translation = translateSourceFile(
-          "public interface Test { "
-              + "  String name(); "
-              + "  default boolean isPalindrome() { "
-              + "    return name().equals(reverse(name())); "
-              + "  } "
-              + "  default boolean isPalindromeIgnoreCase() { "
-              + "    return name().equalsIgnoreCase(reverse(name())); "
-              + "  } "
-              + "  private String reverse(String s) { "
-              + "    return new StringBuilder(s).reverse().toString(); "
-              + " } "
-              + "}",
-          "Test", "Test.m");
-      assertTranslation(translation,
-          "NSString *Test_reverseWithNSString_(id<Test> self, NSString *s) {");
-      assertOccurrences(translation, "Test_reverseWithNSString_(self, [self name])", 2);
-      assertNotInTranslation(translation, "- (NSString *)reverseWithNSString:(NSString *)s {");
-    });
+    String translation =
+        translateSourceFile(
+            "public interface Test { "
+                + "  String name(); "
+                + "  default boolean isPalindrome() { "
+                + "    return name().equals(reverse(name())); "
+                + "  } "
+                + "  default boolean isPalindromeIgnoreCase() { "
+                + "    return name().equalsIgnoreCase(reverse(name())); "
+                + "  } "
+                + "  private String reverse(String s) { "
+                + "    return new StringBuilder(s).reverse().toString(); "
+                + " } "
+                + "}",
+            "Test",
+            "Test.m");
+    assertTranslation(
+        translation, "NSString *Test_reverseWithNSString_(id<Test> self, NSString *s) {");
+    assertOccurrences(translation, "Test_reverseWithNSString_(self, [self name])", 2);
+    assertNotInTranslation(translation, "- (NSString *)reverseWithNSString:(NSString *)s {");
   }
 }

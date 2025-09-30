@@ -1899,50 +1899,43 @@ public class StatementGeneratorTest extends GenerationTest {
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testVarLocalVariables() throws IOException {
-    testOnJava11OrAbove(
-        () -> {
-          String translation =
-              translateSourceFile(
-                  String.join(
-                      "\n",
-                      "import java.util.ArrayList;",
-                      "import java.util.stream.Stream;",
-                      "class Test {",
-                      "  Stream test() {",
-                      "    var list = new ArrayList<String>();",
-                      "    var stream = list.stream();",
-                      "    return stream;",
-                      "  }",
-                      "}"),
-                  "Test",
-                  "Test.m");
-          // Verify correct type inference.
-          assertTranslation(
-              translation, "JavaUtilArrayList *list = create_JavaUtilArrayList_init();");
-          assertTranslation(translation, "id<JavaUtilStreamStream> stream = [list stream];");
-        });
+    String translation =
+        translateSourceFile(
+            String.join(
+                "\n",
+                "import java.util.ArrayList;",
+                "import java.util.stream.Stream;",
+                "class Test {",
+                "  Stream test() {",
+                "    var list = new ArrayList<String>();",
+                "    var stream = list.stream();",
+                "    return stream;",
+                "  }",
+                "}"),
+            "Test",
+            "Test.m");
+    // Verify correct type inference.
+    assertTranslation(translation, "JavaUtilArrayList *list = create_JavaUtilArrayList_init();");
+    assertTranslation(translation, "id<JavaUtilStreamStream> stream = [list stream];");
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testVarLambdaExpressionParameter() throws IOException {
-    testOnJava11OrAbove(
-        () -> {
-          String translation =
-              translateSourceFile(
-                  String.join(
-                      "\n",
-                      "import java.util.function.Function;",
-                      "class Test {",
-                      "  int test(String input) {",
-                      "    Function<String, Integer> f = (var s) -> s.length();",
-                      "    return f.apply(input);",
-                      "  }",
-                      "}"),
-                  "Test",
-                  "Test.m");
-          assertTranslation(
-              translation, "@interface Test_$Lambda$1 : NSObject < JavaUtilFunctionFunction >");
-        });
+    String translation =
+        translateSourceFile(
+            String.join(
+                "\n",
+                "import java.util.function.Function;",
+                "class Test {",
+                "  int test(String input) {",
+                "    Function<String, Integer> f = (var s) -> s.length();",
+                "    return f.apply(input);",
+                "  }",
+                "}"),
+            "Test",
+            "Test.m");
+    assertTranslation(
+        translation, "@interface Test_$Lambda$1 : NSObject < JavaUtilFunctionFunction >");
   }
 
   @SuppressWarnings("StringConcatToTextBlock")

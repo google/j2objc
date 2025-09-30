@@ -421,6 +421,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(impl, "Color_1_initWithInt_withNSString_withInt_(e, 42, @\"RED\", 0)");
   }
 
+  @SuppressWarnings("StringConcatToTextBlock")
   public void testEnumWithInnerEnum() throws IOException {
     String impl = translateSourceFile(
       "public enum OuterValue {\n"
@@ -554,21 +555,21 @@ public class AnonymousClassConverterTest extends GenerationTest {
   }
 
   public void testAnonymousClassWithDiamondOperator() throws IOException {
-    testOnJava9OrAbove(() -> {
-      String translation = translateSourceFile(
-          "public class Test { "
-              + "  public void test() { "
-              + "    Comparable<Runnable> c = new Comparable<>() { "
-              + "      @Override "
-              + "      public int compareTo(Runnable r) { "
-              + "        return 17; "
-              + "      } "
-              + "    }; "
-              + "  } "
-              + "} ",
-          "Test", "Test.m");
-      assertTranslation(translation, "@interface Test_1 : NSObject < JavaLangComparable >");
-      assertTranslation(translation, "- (int32_t)compareToWithId:(id<JavaLangRunnable>)r;");
-    });
+    String translation =
+        translateSourceFile(
+            "public class Test { "
+                + "  public void test() { "
+                + "    Comparable<Runnable> c = new Comparable<>() { "
+                + "      @Override "
+                + "      public int compareTo(Runnable r) { "
+                + "        return 17; "
+                + "      } "
+                + "    }; "
+                + "  } "
+                + "} ",
+            "Test",
+            "Test.m");
+    assertTranslation(translation, "@interface Test_1 : NSObject < JavaLangComparable >");
+    assertTranslation(translation, "- (int32_t)compareToWithId:(id<JavaLangRunnable>)r;");
   }
 }

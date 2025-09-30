@@ -839,22 +839,6 @@ public abstract class GenerationTest extends TestCase {
     void run() throws IOException;
   }
 
-  protected void testOnJava9OrAbove(TestLambda test) throws IOException {
-    if (onJava9OrAbove()) {
-      SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_9);
-      options.setSourceVersion(SourceVersion.JAVA_9);
-      test.run();
-    }
-  }
-
-  protected void testOnJava11OrAbove(TestLambda test) throws IOException {
-    if (onJava11OrAbove()) {
-      SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_11);
-      options.setSourceVersion(SourceVersion.JAVA_11);
-      test.run();
-    }
-  }
-
   protected void testOnJava16OrAbove(TestLambda test) throws IOException {
     if (onJava16OrAbove()) {
       SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_16);
