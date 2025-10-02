@@ -78,21 +78,18 @@ static bool stripNonfunctionalCodegen = false;
 // collide with pre-existing code (which should be cleaned up on-demand as
 // needed)
 const std::set<absl::string_view> kKeywords = {
-    "DEBUG",       "FALSE",     "FILE",     "NO",
-    "NO_DATA",     "NULL",      "OVERFLOW", "TRUE",
-    "TYPE_BOOL",   "YES",       "and",      "auto",
-    "break",       "case",      "class",    "const",
-    "continue",    "copy",      "default",  "delete",
-    "description", "do",        "double",   "else",
-    "enum",        "for",       "float",    "hash",
-    "id",          "if",        "inline",   "int",
-    "long",        "namespace", "new",      "not",
-    "operator",    "or",        "private",  "protected",
-    "public",      "return",    "signed",   "specialCalendars",
-    "static",      "struct",    "switch",   "template",
-    "text",        "this",      "throw",    "try",
-    "union",       "unsigned",  "virtual",  "void",
-    "volatile",    "while",
+    "DEBUG",       "FALSE",    "FILE",     "NO",        "NO_DATA",
+    "NULL",        "OVERFLOW", "TRUE",     "TYPE_BOOL", "YES",
+    "and",         "auto",     "break",    "case",      "class",
+    "const",       "continue", "copy",     "default",   "delete",
+    "description", "do",       "double",   "else",      "enum",
+    "explicit",    "float",    "for",      "hash",      "id",
+    "if",          "inline",   "int",      "long",      "namespace",
+    "new",         "not",      "operator", "or",        "private",
+    "protected",   "public",   "return",   "signed",    "specialCalendars",
+    "static",      "struct",   "switch",   "template",  "text",
+    "this",        "throw",    "try",      "union",     "unsigned",
+    "virtual",     "void",     "volatile", "while",
 };
 
 absl::string_view FieldName(const FieldDescriptor *field) {
