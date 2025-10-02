@@ -1013,36 +1013,83 @@ public class TreeConverter {
   private TreeNode convertIf(IfTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
     Expression condition = convertWithoutParens(node.getCondition(), path);
-    Statement thenStatement = (Statement) convert(node.getThenStatement(), path);
-    Statement newNode = new IfStatement()
-        .setExpression(condition)
-        .setThenStatement(thenStatement)
-        .setElseStatement((Statement) convert(node.getElseStatement(), path));
+    Pattern pattern = null;
     InstanceofExpression instanceofExpr = null;
+    Expression subExpr = null;
     if (condition.getKind() == TreeNode.Kind.INSTANCEOF_EXPRESSION) {
       instanceofExpr = (InstanceofExpression) condition;
+      pattern = instanceofExpr.getPattern();
+      instanceofExpr.setPattern(null);
     } else if (condition.getKind() == TreeNode.Kind.INFIX_EXPRESSION) {
-      for (Expression operand : ((InfixExpression) condition).getOperands()) {
+      InfixExpression infixExpr = (InfixExpression) condition;
+      List<Expression> operands = infixExpr.getOperands();
+      for (int i = 0; i < operands.size(); i++) {
+        Expression operand = operands.get(i);
         if (operand.getKind() == TreeNode.Kind.INSTANCEOF_EXPRESSION) {
           instanceofExpr = (InstanceofExpression) operand;
-          break;
+          pattern = instanceofExpr.getPattern();
+          if (pattern != null) {
+            instanceofExpr.setPattern(null);
+            condition = instanceofExpr.copy();
+            List<Expression> subOperands = new ArrayList<>();
+            while (++i < operands.size()) {
+              subOperands.add(operands.get(i));
+            }
+            if (subOperands.size() == 1) {
+              subExpr = subOperands.get(0).copy();
+            } else if (subOperands.size() > 1) {
+              InfixExpression newInfix =
+                  new InfixExpression(infixExpr.getTypeMirror(), infixExpr.getOperator());
+              for (Expression subOperand : subOperands) {
+                newInfix.addOperand(subOperand.copy());
+              }
+              subExpr = newInfix;
+            }
+            break;
+          } else {
+            // No pattern, reset instanceofExpr and pattern.
+            instanceofExpr = null;
+            pattern = null;
+          }
         }
       }
     }
-    Pattern pattern = instanceofExpr != null ? instanceofExpr.getPattern() : null;
+
+    Statement thenStatement = (Statement) convert(node.getThenStatement(), path);
     if (pattern != null) {
       // Create local variable with pattern variable element.
       VariableElement localVar =
           ((Pattern.BindingPattern) pattern).getVariable().getVariableElement();
-      CastExpression castExpr = new CastExpression(localVar.asType(),
-          instanceofExpr.getLeftOperand().copy());
+      CastExpression castExpr =
+          new CastExpression(localVar.asType(), instanceofExpr.getLeftOperand().copy());
+      castExpr.setNeedsCastChk(false);
       VariableDeclarationStatement localVarDecl =
           new VariableDeclarationStatement(localVar, castExpr);
-      Block block = new Block()
-          .addStatement(localVarDecl)
-          .addStatement(newNode);
-      newNode = block;
+      Block thenBlock;
+      if (thenStatement.getKind() == TreeNode.Kind.BLOCK) {
+        thenBlock = (Block) thenStatement;
+      } else {
+        thenBlock = new Block();
+        thenBlock.addStatement(thenStatement);
+      }
+      thenBlock.addStatement(0, localVarDecl);
+      if (subExpr != null) {
+        // Move statements inside of if statement with subExpr condition.
+        IfStatement subIf = new IfStatement().setExpression(subExpr);
+        Block subIfBlock = new Block();
+        subIf.setThenStatement(subIfBlock);
+        while (thenBlock.getStatements().size() > 1) {
+          subIfBlock.addStatement(thenBlock.getStatements().remove(1));
+        }
+        thenBlock.addStatement(subIf);
+      }
+      thenStatement = thenBlock;
     }
+    Statement newNode =
+        new IfStatement()
+            .setExpression(condition)
+            .setThenStatement(thenStatement)
+            .setElseStatement((Statement) convert(node.getElseStatement(), path));
     return newNode;
   }
 
@@ -1201,6 +1248,7 @@ public class TreeConverter {
     }
   }
 
+  @SuppressWarnings("StatementSwitchToExpressionSwitch")
   private static String getMemberName(ExpressionTree node) {
     switch (node.getKind().name()) {
       case "IDENTIFIER":
@@ -1883,6 +1931,7 @@ public class TreeConverter {
     return comment != null && comment.isDocComment() ? comment : null;
   }
 
+  @SuppressWarnings("StatementSwitchToExpressionSwitch")
   private Comment convertAssociatedComment(Tree node, TreePath path) {
     boolean docCommentsEnabled = newUnit.getEnv().options().docCommentsEnabled();
     DocCommentTable docComments = ((JCCompilationUnit) unit).docComments;

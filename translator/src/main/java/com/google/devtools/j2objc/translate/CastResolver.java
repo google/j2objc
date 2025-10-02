@@ -111,9 +111,11 @@ public class CastResolver extends UnitTreeVisitor {
         return;
       }
 
-      FunctionInvocation castCheck = createCastCheck(type, expr);
-      if (castCheck != null) {
-        node.setExpression(castCheck);
+      if (node.needsCastChk()) {
+        FunctionInvocation castCheck = createCastCheck(type, expr);
+        if (castCheck != null) {
+          node.setExpression(castCheck);
+        }
       }
     }
   }

@@ -23,11 +23,13 @@ public class CastExpression extends Expression {
 
   private ChildLink<Type> type = ChildLink.create(Type.class, this);
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private boolean needsCastChk = true;
 
   public CastExpression(CastExpression other) {
     super(other);
     type.copyFrom(other.getType());
     expression.copyFrom(other.getExpression());
+    needsCastChk = other.needsCastChk;
   }
 
   public CastExpression(TypeMirror typeMirror, Expression expression) {
@@ -64,6 +66,14 @@ public class CastExpression extends Expression {
   public CastExpression setExpression(Expression newExpression) {
     expression.set(newExpression);
     return this;
+  }
+
+  public boolean needsCastChk() {
+    return needsCastChk;
+  }
+
+  public void setNeedsCastChk(boolean value) {
+    needsCastChk = value;
   }
 
   @Override
