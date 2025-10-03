@@ -99,4 +99,34 @@ public class SwitchCaseRewriterTest extends GenerationTest {
               "}");
         });
   }
+
+  // Verify a switch expression case can have one or more statements without a block.
+  public void testSwitchCaseWithStatements() throws IOException {
+    testOnJava21OrAbove(
+        () -> {
+          String source =
+              "class Test {\n"
+              + "  String typeGuardIfTrueSwitchExpression(Object o) {\n"
+              + "    Object o2 = \"\";\n"
+              + "    return switch (o) {\n"
+              + "       case Integer i when i == 0 && i < 1 && o2 instanceof String s: o = s + String.valueOf(i); yield \"true\";\n"
+              + "       case Integer i when i == 0 || i > 1: o = String.valueOf(i); yield \"second\";\n"
+              + "       case Object x: yield \"any\";\n"
+              + "    };\n"
+              + "  }\n"
+              + "}";
+          String translation = translateSourceFile(source, "Test", "Test.m");
+          assertTranslatedLines(translation,
+              "id o2 = @\"\";",
+              "if ([o isKindOfClass:[JavaLangInteger class]] && [((JavaLangInteger *) o) intValue] == 0 && [((JavaLangInteger *) o) intValue] < 1 && [o2 isKindOfClass:[NSString class]]) {",
+              "  return @\"true\";",
+              "}",
+              "else if ([o isKindOfClass:[JavaLangInteger class]] && [((JavaLangInteger *) o) intValue] == 0 || [((JavaLangInteger *) o) intValue] > 1) {",
+              "  return @\"second\";",
+              "}",
+              "else if ([o isKindOfClass:[NSObject class]]) {",
+              "  return @\"any\";",
+              "}");
+    });
+  }
 }

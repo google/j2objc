@@ -1691,11 +1691,20 @@ public class TreeConverter {
         }
       }
       Tree javacBody = (Tree) switchCase.getClass().getDeclaredField("body").get(switchCase);
-      TreeNode body = convert(javacBody, parent);
-      if (body instanceof Expression) {
-        body = new YieldStatement((Expression) body);
+      if (javacBody != null) {
+        TreeNode body = convert(javacBody, parent);
+        if (body instanceof Expression) {
+          body = new YieldStatement((Expression) body);
+        }
+        switchExprCase.setBody(body);
+      } else {
+        Block body = new Block();
+        List<Tree> javacStats = (List<Tree>) switchCase.getClass().getDeclaredField("stats").get(switchCase);
+        for (Tree tree : javacStats) {
+          body.addStatement((Statement) convert(tree, parent));
+        }
+        switchExprCase.setBody(body);
       }
-      switchExprCase.setBody(body);
     } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException e) {
       switchExprCase = new SwitchExpressionCase();
     }

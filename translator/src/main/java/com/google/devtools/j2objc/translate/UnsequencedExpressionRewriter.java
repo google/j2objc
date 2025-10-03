@@ -389,7 +389,7 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
 
   private Set<TreeNode> getAncestors(TreeNode node) {
     Set<TreeNode> ancestors = Sets.newHashSet();
-    while (node != currentTopNode) {
+    while (node != null && node != currentTopNode) {
       ancestors.add(node);
       node = node.getParent();
     }
@@ -400,7 +400,7 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
       VariableAccess modification, Set<TreeNode> modificationAncestors, VariableAccess access) {
     TreeNode commonAncestor = currentTopNode;
     TreeNode node = access.expression;
-    while (node != currentTopNode) {
+    while (node != null && node != currentTopNode) {
       if (modificationAncestors.contains(node)) {
         commonAncestor = node;
         break;
