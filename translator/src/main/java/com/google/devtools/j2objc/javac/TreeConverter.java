@@ -225,6 +225,7 @@ public class TreeConverter {
   private CompilationUnit newUnit;
   private final Trees trees;
   private final SourcePositions sourcePositions;
+  private VariableDeclarationStatement trailingPatternDeclaration = null;
 
   // Note: due to new constants added to the Tree.Kind and ElementKind enums between supported
   // JDK versions, we need to reference those constants by name.
@@ -636,6 +637,10 @@ public class TreeConverter {
         tree = new TypeDeclarationStatement().setDeclaration((AbstractTypeDeclaration) tree);
       }
       newNode.addStatement((Statement) tree);
+      if (trailingPatternDeclaration != null) {
+        newNode.addStatement(trailingPatternDeclaration);
+        trailingPatternDeclaration = null;
+      }
     }
     maybeAddUnreachableDirective(newNode);
     return newNode;
@@ -1016,10 +1021,23 @@ public class TreeConverter {
     Pattern pattern = null;
     InstanceofExpression instanceofExpr = null;
     Expression subExpr = null;
+    boolean negate = false;
     if (condition.getKind() == TreeNode.Kind.INSTANCEOF_EXPRESSION) {
       instanceofExpr = (InstanceofExpression) condition;
       pattern = instanceofExpr.getPattern();
       instanceofExpr.setPattern(null);
+    } else if (condition.getKind() == TreeNode.Kind.PREFIX_EXPRESSION) {
+      PrefixExpression prefixExpr = (PrefixExpression) condition;
+      Expression operand = prefixExpr.getOperand();
+      if (operand.getKind() == TreeNode.Kind.PARENTHESIZED_EXPRESSION) {
+        operand = ((ParenthesizedExpression) operand).getExpression();
+      }
+      if (operand.getKind() == TreeNode.Kind.INSTANCEOF_EXPRESSION) {
+        instanceofExpr = (InstanceofExpression) operand;
+        pattern = instanceofExpr.getPattern();
+        instanceofExpr.setPattern(null);
+        negate = true;
+      }
     } else if (condition.getKind() == TreeNode.Kind.INFIX_EXPRESSION) {
       InfixExpression infixExpr = (InfixExpression) condition;
       List<Expression> operands = infixExpr.getOperands();
@@ -1072,7 +1090,11 @@ public class TreeConverter {
         thenBlock = new Block();
         thenBlock.addStatement(thenStatement);
       }
-      thenBlock.addStatement(0, localVarDecl);
+      if (negate) {
+        trailingPatternDeclaration = localVarDecl;
+      } else {
+        thenBlock.addStatement(0, localVarDecl);
+      }
       if (subExpr != null) {
         // Move statements inside of if statement with subExpr condition.
         IfStatement subIf = new IfStatement().setExpression(subExpr);
@@ -1699,7 +1721,8 @@ public class TreeConverter {
         switchExprCase.setBody(body);
       } else {
         Block body = new Block();
-        List<Tree> javacStats = (List<Tree>) switchCase.getClass().getDeclaredField("stats").get(switchCase);
+        List<Tree> javacStats =
+            (List<Tree>) switchCase.getClass().getDeclaredField("stats").get(switchCase);
         for (Tree tree : javacStats) {
           body.addStatement((Statement) convert(tree, parent));
         }

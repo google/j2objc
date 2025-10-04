@@ -101,6 +101,7 @@ public class SwitchCaseRewriterTest extends GenerationTest {
   }
 
   // Verify a switch expression case can have one or more statements without a block.
+  @SuppressWarnings("StringConcatToTextBlock")
   public void testSwitchCaseWithStatements() throws IOException {
     testOnJava21OrAbove(
         () -> {
@@ -128,5 +129,30 @@ public class SwitchCaseRewriterTest extends GenerationTest {
               "  return @\"any\";",
               "}");
     });
+  }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testNegatedInstanceOfPattern() throws IOException {
+    testOnJava21OrAbove(
+        () -> {
+          String source = String.join("\n",
+              "class Test {",
+              "  void test(Object o) {",
+              "    if (!(o instanceof String s)) {",
+              "      throw new IllegalArgumentException();",
+              "    }",
+              "    System.out.println(s.repeat(5));",
+              "  }",
+              "}");
+          String translation = translateSourceFile(source, "Test", "Test.m");
+          assertTranslatedLines(translation,
+              "if (!([o isKindOfClass:[NSString class]])) {",
+              "@throw create_JavaLangIllegalArgumentException_init();",
+              "}",
+              // "s" must be declared outside the scope of the if statement above.
+              "NSString *s = (NSString *) o;",
+              "[((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out)))"
+              + " printlnWithNSString:[s java_repeat:5]];");
+        });
   }
 }
