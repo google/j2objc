@@ -1081,7 +1081,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation, "- (void)nativeTest J2OBJC_TEXT_SEGMENT;");
     assertTranslatedLines(translation, "- (instancetype)init J2OBJC_TEXT_SEGMENT;");
 
-    // Automatically generatedn enum methods.
+    // Automatically generated enum methods.
     assertTranslatedLines(
         translation,
         "+ (Test_TestEnum *)valueOfWithNSString:(NSString *)name J2OBJC_TEXT_SEGMENT;");

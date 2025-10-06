@@ -223,6 +223,37 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation, "@synthesize bar");
   }
 
+  public void testPrivateClassesPackageSwiftName() throws IOException {
+    addSourceFile(
+        "@SwiftName " + "package bar;" + "" + "import com.google.j2objc.annotations.SwiftName;",
+        "bar/package-info.java");
+    String source =
+        "package bar;"
+            + "public class Test { "
+            + "  private class Inner { "
+            + "       public void foo() { }"
+            + "   }"
+            + "  private Inner bar; "
+            + "}";
+
+    String translation = translateSourceFile(source, "Test", "bar/Test.m");
+    assertNotInTranslation(translation, "NS_SWIFT_NAME");
+  }
+
+  public void testPrivateClassesWithSwiftName() throws IOException {
+    String source =
+        "import com.google.j2objc.annotations.SwiftName;"
+            + "@SwiftName public class Test { "
+            + "  @SwiftName private class Inner { "
+            + "       public void foo() { }"
+            + "   }"
+            + "  private Inner bar; "
+            + "}";
+
+    translateSourceFile(source, "Test", "Test.m");
+    assertError("Test.java:1: Swift name annotation on private type");
+  }
+
   public void testLinkProtocolsFunctions() throws IOException {
     options.setLinkProtocols(true);
     String source =

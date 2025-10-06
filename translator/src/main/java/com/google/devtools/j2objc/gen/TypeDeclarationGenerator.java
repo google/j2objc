@@ -184,7 +184,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       for (EnumConstantDeclaration constant : constants) {
         printIndent();
         String nativeConstantName = nameTable.getNativeEnumConstantName(typeElement, constant);
-        if (options.swiftEnums()) {
+        if (options.swiftEnums() && !printPrivateDeclarations()) {
           printf(
               "%s NS_SWIFT_NAME(%s) = %d,\n",
               nativeConstantName, nameTable.getNativeEnumSwiftConstantName(constant), ordinal++);
@@ -194,9 +194,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       }
       unindent();
       print("}");
-      String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement, true);
-      if (swiftName != null) {
-        printf(" NS_SWIFT_NAME(%s)", swiftName);
+
+      if (!printPrivateDeclarations()) {
+        String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement, true);
+        if (swiftName != null) {
+          printf(" NS_SWIFT_NAME(%s)", swiftName);
+        }
       }
       print(";\n");
 
@@ -299,6 +302,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printSwiftName() {
+    if (printPrivateDeclarations()) {
+      return;
+    }
+
     String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement, true);
 
     if (swiftName != null) {
@@ -317,9 +324,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
   }
 
-  /**
-   * Prints the list of static variable and/or enum constant accessor methods.
-   */
+  /** Prints the list of static variable and/or enum constant accessor methods. */
   protected void printStaticAccessors() {
     if (options.staticAccessorMethods() && !options.classProperties()) {
       for (VariableDeclarationFragment fragment : getStaticFields()) {
@@ -330,12 +335,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         TypeElement declaringClass = ElementUtil.getDeclaringClass(var);
         String baseName = nameTable.getVariableBaseName(var);
         ExecutableElement getter =
-            ElementUtil.findGetterMethod(baseName, type, declaringClass, /* isStatic = */ true);
+            ElementUtil.findGetterMethod(baseName, type, declaringClass, /* isStatic= */ true);
         if (getter == null) {
           printf("\n+ (%s)%s;\n", objcType, accessorName);
         }
         ExecutableElement setter =
-            ElementUtil.findSetterMethod(baseName, type, declaringClass, /* isStatic = */ true);
+            ElementUtil.findSetterMethod(baseName, type, declaringClass, /* isStatic= */ true);
         if (setter == null && !ElementUtil.isFinal(var)) {
           printf("\n+ (void)set%s:(%s)value;\n", NameTable.capitalize(accessorName), objcType);
         }
@@ -358,9 +363,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
   }
 
-  /**
-   * Prints the list of instance variables in a type.
-   */
+  /** Prints the list of instance variables in a type. */
   protected void printInstanceVariables() {
     Iterable<VariableDeclarationFragment> fields = getInstanceFields();
     if (Iterables.isEmpty(fields)) {
@@ -432,15 +435,14 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         if (options.swiftEnums()) {
           swiftName = NameTable.camelCaseName(accessorName, false);
         }
-        printf(
-            ") %s *%s NS_SWIFT_NAME(%s);",
-            typeName, accessorName, swiftName);
+        printf(") %s *%s NS_SWIFT_NAME(%s);", typeName, accessorName, swiftName);
       }
     }
   }
 
   protected void printCompanionClassDeclaration() {
-    if (!typeElement.getKind().isInterface() || !needsCompanionClass()
+    if (!typeElement.getKind().isInterface()
+        || !needsCompanionClass()
         || printPrivateDeclarations() == needsPublicCompanionClass()) {
       return;
     }
@@ -488,17 +490,18 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   private static final Predicate<VariableDeclarationFragment> NEEDS_SETTER =
       new Predicate<VariableDeclarationFragment>() {
-    @Override
-    public boolean apply(VariableDeclarationFragment fragment) {
-      VariableElement var = fragment.getVariableElement();
-      if (ElementUtil.isRetainedWithField(var)) {
-        assert !ElementUtil.isPublic(var) : "@RetainedWith fields cannot be public.";
-        return false;
-      }
-      return !var.asType().getKind().isPrimitive() && !ElementUtil.isSynthetic(var)
-          && !ElementUtil.isWeakReference(var);
-    }
-  };
+        @Override
+        public boolean apply(VariableDeclarationFragment fragment) {
+          VariableElement var = fragment.getVariableElement();
+          if (ElementUtil.isRetainedWithField(var)) {
+            assert !ElementUtil.isPublic(var) : "@RetainedWith fields cannot be public.";
+            return false;
+          }
+          return !var.asType().getKind().isPrimitive()
+              && !ElementUtil.isSynthetic(var)
+              && !ElementUtil.isWeakReference(var);
+        }
+      };
 
   protected void printFieldSetters() {
     Iterable<VariableDeclarationFragment> fields =
@@ -550,9 +553,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     boolean isFinal = ElementUtil.isFinal(var);
     boolean isPrimitive = var.asType().getKind().isPrimitive();
     boolean isConstant = ElementUtil.isPrimitiveConstant(var);
-    String qualifiers = isConstant ? "_CONSTANT"
-        : (isPrimitive ? "_PRIMITIVE" : "_OBJ") + (isVolatile ? "_VOLATILE" : "")
-        + (isFinal ? "_FINAL" : "");
+    String qualifiers =
+        isConstant
+            ? "_CONSTANT"
+            : (isPrimitive ? "_PRIMITIVE" : "_OBJ")
+                + (isVolatile ? "_VOLATILE" : "")
+                + (isFinal ? "_FINAL" : "");
     newline();
     FieldDeclaration decl = (FieldDeclaration) fragment.getParent();
     JavadocGenerator.printDocComment(getBuilder(), decl.getJavadoc());
@@ -585,8 +591,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (ElementUtil.isPrimitiveConstant(var)) {
       printf("#define %s_%s %s\n", typeName, name, LiteralGenerator.generate(value));
     } else {
-      println("FOUNDATION_EXPORT "
-          + UnicodeUtils.format("%s%s_%s", declType, typeName, name) + ";");
+      println(
+          "FOUNDATION_EXPORT " + UnicodeUtils.format("%s%s_%s", declType, typeName, name) + ";");
     }
   }
 
@@ -616,27 +622,33 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printf("BOXED_INC_AND_DEC(%s, %s, %s)\n", capName, valueMethod, typeName);
 
     if ("DFIJ".indexOf(binaryName) >= 0) {
-      printf("BOXED_COMPOUND_ASSIGN_ARITHMETIC(%s, %s, %s, %s)\n",
+      printf(
+          "BOXED_COMPOUND_ASSIGN_ARITHMETIC(%s, %s, %s, %s)\n",
           capName, valueMethod, primitiveTypeName, typeName);
     }
     if ("IJ".indexOf(binaryName) >= 0) {
-      printf("BOXED_COMPOUND_ASSIGN_MOD(%s, %s, %s, %s)\n",
+      printf(
+          "BOXED_COMPOUND_ASSIGN_MOD(%s, %s, %s, %s)\n",
           capName, valueMethod, primitiveTypeName, typeName);
     }
     if ("DF".indexOf(binaryName) >= 0) {
-      printf("BOXED_COMPOUND_ASSIGN_FPMOD(%s, %s, %s, %s)\n",
+      printf(
+          "BOXED_COMPOUND_ASSIGN_FPMOD(%s, %s, %s, %s)\n",
           capName, valueMethod, primitiveTypeName, typeName);
     }
     if ("IJ".indexOf(binaryName) >= 0) {
-      printf("BOXED_COMPOUND_ASSIGN_BITWISE(%s, %s, %s, %s)\n",
+      printf(
+          "BOXED_COMPOUND_ASSIGN_BITWISE(%s, %s, %s, %s)\n",
           capName, valueMethod, primitiveTypeName, typeName);
     }
     if ("I".indexOf(binaryName) >= 0) {
-      printf("BOXED_SHIFT_ASSIGN_32(%s, %s, %s, %s)\n",
+      printf(
+          "BOXED_SHIFT_ASSIGN_32(%s, %s, %s, %s)\n",
           capName, valueMethod, primitiveTypeName, typeName);
     }
     if ("J".indexOf(binaryName) >= 0) {
-      printf("BOXED_SHIFT_ASSIGN_64(%s, %s, %s, %s)\n",
+      printf(
+          "BOXED_SHIFT_ASSIGN_64(%s, %s, %s, %s)\n",
           capName, valueMethod, primitiveTypeName, typeName);
     }
   }
@@ -765,11 +777,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       print(" OBJC_METHOD_FAMILY_NONE");
     }
 
-    String swiftName = nameTable.getSwiftMethodNameFromAnnotation(m);
-    if (swiftName != null) {
-      print(" NS_SWIFT_NAME(" + swiftName + ")");
+    if (!printPrivateDeclarations()) {
+      String swiftName = nameTable.getSwiftMethodNameFromAnnotation(m);
+      if (swiftName != null) {
+        print(" NS_SWIFT_NAME(" + swiftName + ")");
+      }
     }
-
     if (needsDeprecatedAttribute(m.getAnnotations())) {
       print(" " + DEPRECATED_ATTRIBUTE);
     }
@@ -864,9 +877,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
   }
 
-  /**
-   * Print method declarations with #pragma mark lines documenting their scope.
-   */
+  /** Print method declarations with #pragma mark lines documenting their scope. */
   @Override
   protected void printInnerDeclarations() {
     // Everything is public in interfaces.
@@ -906,36 +917,36 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   /**
    * Method comparator, suitable for documentation and code-completion lists.
    *
-   * Sort ordering: constructors first, then alphabetical by name. If they have the
-   * same name, then compare the first parameter's simple type name, then the second, etc.
+   * <p>Sort ordering: constructors first, then alphabetical by name. If they have the same name,
+   * then compare the first parameter's simple type name, then the second, etc.
    */
   @VisibleForTesting
   static final Comparator<MethodDeclaration> METHOD_DECL_ORDER =
       new Comparator<MethodDeclaration>() {
-    @Override
-    public int compare(MethodDeclaration m1, MethodDeclaration m2) {
-      if (m1.isConstructor() && !m2.isConstructor()) {
-        return -1;
-      }
-      if (!m1.isConstructor() && m2.isConstructor()) {
-        return 1;
-      }
-      String m1Name = ElementUtil.getName(m1.getExecutableElement());
-      String m2Name = ElementUtil.getName(m2.getExecutableElement());
-      if (!m1Name.equals(m2Name)) {
-        return m1Name.compareToIgnoreCase(m2Name);
-      }
-      int nParams = m1.getParameters().size();
-      int nOtherParams = m2.getParameters().size();
-      int max = Math.min(nParams, nOtherParams);
-      for (int i = 0; i < max; i++) {
-        String paramType = TypeUtil.getName(m1.getParameter(i).getType().getTypeMirror());
-        String otherParamType = TypeUtil.getName(m2.getParameter(i).getType().getTypeMirror());
-        if (!paramType.equals(otherParamType)) {
-          return paramType.compareToIgnoreCase(otherParamType);
+        @Override
+        public int compare(MethodDeclaration m1, MethodDeclaration m2) {
+          if (m1.isConstructor() && !m2.isConstructor()) {
+            return -1;
+          }
+          if (!m1.isConstructor() && m2.isConstructor()) {
+            return 1;
+          }
+          String m1Name = ElementUtil.getName(m1.getExecutableElement());
+          String m2Name = ElementUtil.getName(m2.getExecutableElement());
+          if (!m1Name.equals(m2Name)) {
+            return m1Name.compareToIgnoreCase(m2Name);
+          }
+          int nParams = m1.getParameters().size();
+          int nOtherParams = m2.getParameters().size();
+          int max = Math.min(nParams, nOtherParams);
+          for (int i = 0; i < max; i++) {
+            String paramType = TypeUtil.getName(m1.getParameter(i).getType().getTypeMirror());
+            String otherParamType = TypeUtil.getName(m2.getParameter(i).getType().getTypeMirror());
+            if (!paramType.equals(otherParamType)) {
+              return paramType.compareToIgnoreCase(otherParamType);
+            }
+          }
+          return nParams - nOtherParams;
         }
-      }
-      return nParams - nOtherParams;
-    }
-  };
+      };
 }
