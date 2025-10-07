@@ -55,7 +55,7 @@ else
   readonly JAVA=`which java`
 fi
 
-SUPPORTED_JAVA_VERSIONS=(11 12 13 14 15 16 17 18 19 20 21 22 23 24 25)
+SUPPORTED_JAVA_VERSIONS=(17 18 19 20 21 22 23 24 25)
 JAVA_VERSION=0
 for version in ${SUPPORTED_JAVA_VERSIONS[@]}; do
   ${JAVA} -version 2>&1 | fgrep -q "build ${version}"
@@ -64,7 +64,7 @@ for version in ${SUPPORTED_JAVA_VERSIONS[@]}; do
   fi
 done
 if [ "${JAVA_VERSION}" = "0" ]; then
-  echo "JDK not supported. Please set JAVA_HOME to JDK 11 or higher."
+  echo "JDK not supported. Please set JAVA_HOME to JDK 17 or higher."
   exit 1
 fi
 
@@ -74,22 +74,17 @@ if [ x${USE_SYSTEM_BOOT_PATH} == x ]; then
   J2OBJC_ARGS+=("-Xbootclasspath:${LIB_DIR}/jre_emul.jar")
 fi
 
-${JAVA} -version 2>&1 | fgrep -q "build 1.8"
-if [ $? -ne 0 ]; then
-  J2OBJC_ARGS+=("--system" "${LIB_DIR}/jre_emul_module")
-  JAVA_ARGS=(\
-  "--add-exports" "java.compiler/javax.lang.model.element=ALL-UNNAMED" \
-  "--add-exports" "java.compiler/javax.lang.model.type=ALL-UNNAMED" \
-  "--add-exports" "java.compiler/javax.lang.model.util=ALL-UNNAMED" \
-  "--add-exports" "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED" \
-  "--add-exports" "jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED" \
-  "--add-exports" "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED" \
-  "--add-exports" "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED" \
-  "--add-exports" "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED" \
-  )
-else
-  JAVA_ARGS=()
-fi
+J2OBJC_ARGS+=("--system" "${LIB_DIR}/jre_emul_module")
+JAVA_ARGS=(\
+"--add-exports" "java.compiler/javax.lang.model.element=ALL-UNNAMED" \
+"--add-exports" "java.compiler/javax.lang.model.type=ALL-UNNAMED" \
+"--add-exports" "java.compiler/javax.lang.model.util=ALL-UNNAMED" \
+"--add-exports" "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED" \
+"--add-exports" "jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED" \
+"--add-exports" "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED" \
+"--add-exports" "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED" \
+"--add-exports" "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED" \
+)
 
 J2OBJC_ARGS+=(-Xannotations-jar "${LIB_DIR}/j2objc_annotations.jar")
 

@@ -178,23 +178,11 @@ endif
 TRANSLATOR_DEPS = $(DIST_DIR)/j2objc $(DIST_JAR_DIR)/j2objc.jar
 
 ifndef JAVA_HOME
-JAVA_HOME = $(shell /usr/libexec/java_home -v 11)
+JAVA_HOME = $(shell /usr/libexec/java_home -v 17)
 endif
 JAVA = $(JAVA_HOME)/bin/java
 JAVAC = $(JAVA_HOME)/bin/javac
-ifneq (,$(findstring build 11, $(shell $(JAVA) -version 2>&1)))
-JAVA_VERSION = 11
-else ifneq (,$(findstring build 12, $(shell $(JAVA) -version 2>&1)))
-JAVA_VERSION = 12
-else ifneq (,$(findstring build 13, $(shell $(JAVA) -version 2>&1)))
-JAVA_VERSION = 13
-else ifneq (,$(findstring build 14, $(shell $(JAVA) -version 2>&1)))
-JAVA_VERSION = 14
-else ifneq (,$(findstring build 15, $(shell $(JAVA) -version 2>&1)))
-JAVA_VERSION = 15
-else ifneq (,$(findstring build 16, $(shell $(JAVA) -version 2>&1)))
-JAVA_VERSION = 16
-else ifneq (,$(findstring build 17, $(shell $(JAVA) -version 2>&1)))
+ifneq (,$(findstring build 17, $(shell $(JAVA) -version 2>&1)))
 JAVA_VERSION = 17
 else ifneq (,$(findstring build 18, $(shell $(JAVA) -version 2>&1)))
 JAVA_VERSION = 18
@@ -213,7 +201,7 @@ JAVA_VERSION = 24
 else ifneq (,$(findstring build 25, $(shell $(JAVA) -version 2>&1)))
 JAVA_VERSION = 25
 else
-$(error JDK not supported. Please set JAVA_HOME to JDK 11 or higher.)
+$(error JDK not supported. Please set JAVA_HOME to JDK 17 or higher.)
 endif
 
 # Used to build JRE module.
