@@ -359,12 +359,11 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testNativeSuperInterfaceTranslation() throws IOException {
-    if (onJava9OrAbove()) {
-      // Allow overwriting the system java.lang.Iterable with our own.
-      options.addPlatformModuleSystemOptions("--patch-module", "java.base=" + tempDir);
-      // Allow java.base to see com.google.j2objc.
-      options.addPlatformModuleSystemOptions("--add-reads", "java.base=ALL-UNNAMED");
-    }
+    // Allow overwriting the system java.lang.Iterable with our own.
+    options.addPlatformModuleSystemOptions("--patch-module", "java.base=" + tempDir);
+    // Allow java.base to see com.google.j2objc.
+    options.addPlatformModuleSystemOptions("--add-reads", "java.base=ALL-UNNAMED");
+
     // Translate the file in the temp directory (i.e. avoid in-memory copy) because the temp
     // directory is already configured as a patch-module location.
     String filename = "java/lang/Iterable";

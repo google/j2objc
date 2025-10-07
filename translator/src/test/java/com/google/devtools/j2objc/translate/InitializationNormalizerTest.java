@@ -229,10 +229,9 @@ public class InitializationNormalizerTest extends GenerationTest {
    * Object's supertype is null.
    */
   public void testTranslateObject() throws IOException {
-    if (onJava9OrAbove()) {
-      // Allow overwriting the system java.lang.Object with our own.
-      options.addPlatformModuleSystemOptions("--patch-module", "java.base=" + tempDir);
-    }
+    // Allow overwriting the system java.lang.Object with our own.
+    options.addPlatformModuleSystemOptions("--patch-module", "java.base=" + tempDir);
+
     // Translate the file in the temp directory (i.e. avoid in-memory copy) because the temp
     // directory is already configured as a patch-module location.
     String filename = "java/lang/Object";

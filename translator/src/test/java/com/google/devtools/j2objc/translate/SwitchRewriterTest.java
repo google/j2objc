@@ -187,417 +187,390 @@ public class SwitchRewriterTest extends GenerationTest {
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testSimpleVoidSwitchNewSyntax() throws IOException {
-    testOnJava17OrAbove(
-        () -> {
-          String translation =
-              translateSourceFile(
-                  String.join(
-                      "\n",
-                      "class Test {",
-                      "  void howMany(int k) {",
-                      "    switch (k) {",
-                      "      case  1 -> System.out.println(\"one\");",
-                      "      case  2 -> System.out.println(\"two\");",
-                      "      default -> System.out.println(\"many\");",
-                      "    };",
-                      "  }",
-                      "}"),
-                  "Test",
-                  "Test.m");
-          assertTranslatedLines(
-              translation,
-              "switch (k) {",
-              "  case 1:",
-              // This first statement does a nil_check on System.out.
-              "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out)))"
-                  + " printlnWithNSString:@\"one\"];",
-              "  break;",
-              "  case 2:",
-              "  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"two\"];",
-              "  break;",
-              "  default:",
-              "  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"many\"];",
-              "  break;",
-              "}");
-        });
+    String translation =
+        translateSourceFile(
+            String.join(
+                "\n",
+                "class Test {",
+                "  void howMany(int k) {",
+                "    switch (k) {",
+                "      case  1 -> System.out.println(\"one\");",
+                "      case  2 -> System.out.println(\"two\");",
+                "      default -> System.out.println(\"many\");",
+                "    };",
+                "  }",
+                "}"),
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        "switch (k) {",
+        "  case 1:",
+        // This first statement does a nil_check on System.out.
+        "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out)))"
+            + " printlnWithNSString:@\"one\"];",
+        "  break;",
+        "  case 2:",
+        "  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"two\"];",
+        "  break;",
+        "  default:",
+        "  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"many\"];",
+        "  break;",
+        "}");
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testSimpleSwitchExpression() throws IOException {
     // Snippet from Guava's com.google.common.base.Joiner.
-    testOnJava17OrAbove(
-        () -> {
-          String translation =
-              translateSourceFile(
-                  String.join(
-                      "\n",
-                      "class Test {",
-                      "  private Object first;",
-                      "  private Object second;",
-                      "  private Object[] rest;",
-                      "  public Object get(int index) {",
-                      "    return switch (index) {",
-                      "      case  0 -> first;",
-                      "      case  1 -> second;",
-                      "      default -> rest[index - 2];",
-                      "    };",
-                      "  }",
-                      "}"),
-                  "Test",
-                  "Test.m");
-          assertTranslatedLines(
-              translation,
-              "- (id)getWithInt:(int32_t)index {",
-              "  switch (index) {",
-              "    case 0:",
-              "    return first_;",
-              "    case 1:",
-              "    return second_;",
-              "    default:",
-              "    return IOSObjectArray_Get(nil_chk(rest_), index - 2);",
-              "  };",
-              "}");
-        });
+    String translation =
+        translateSourceFile(
+            String.join(
+                "\n",
+                "class Test {",
+                "  private Object first;",
+                "  private Object second;",
+                "  private Object[] rest;",
+                "  public Object get(int index) {",
+                "    return switch (index) {",
+                "      case  0 -> first;",
+                "      case  1 -> second;",
+                "      default -> rest[index - 2];",
+                "    };",
+                "  }",
+                "}"),
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        "- (id)getWithInt:(int32_t)index {",
+        "  switch (index) {",
+        "    case 0:",
+        "    return first_;",
+        "    case 1:",
+        "    return second_;",
+        "    default:",
+        "    return IOSObjectArray_Get(nil_chk(rest_), index - 2);",
+        "  };",
+        "}");
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testMultipleCasesSwitchExpression() throws IOException {
     // Snippet from Guava's com.google.common.base.CharMatcher.
-    testOnJava17OrAbove(
-        () -> {
-          String translation =
-              translateSourceFile(
-                  String.join(
-                      "\n",
-                      "class Test {",
-                      "  public boolean matches(char c) {",
-                      "    return switch (c) {",
-                      "    case '\t',",
-                      "      '\\n',",
-                      "      '\\013',",
-                      "      '\\f',",
-                      "      '\\r',",
-                      "      ' ',",
-                      "      '\u0085',",
-                      "      '\u1680',",
-                      "      '\u2028',",
-                      "      '\u2029',",
-                      "      '\u205f',",
-                      "      '\u3000' ->",
-                      "      true;",
-                      "    case '\u2007' -> false;",
-                      "    default -> c >= '\u2000' && c <= '\u200a';",
-                      "    };",
-                      "  }",
-                      "}"),
-                  "Test",
-                  "Test.m");
-          assertTranslatedLines(
-              translation,
-              "- (bool)matchesWithChar:(unichar)c {",
-              "  switch (c) {",
-              "    case 0x0009:",
-              "    case 0x000a:",
-              "    case 0x000b:",
-              "    case 0x000c:",
-              "    case 0x000d:",
-              "    case ' ':",
-              "    case 0x0085:",
-              "    case 0x1680:",
-              "    case 0x2028:",
-              "    case 0x2029:",
-              "    case 0x205f:",
-              "    case 0x3000:",
-              "    return true;",
-              "    case 0x2007:",
-              "    return false;",
-              "    default:",
-              "    return c >= 0x2000 && c <= 0x200a;",
-              "  };",
-              "}");
-        });
+  String translation =
+    translateSourceFile(
+        String.join(
+            "\n",
+            "class Test {",
+            "  public boolean matches(char c) {",
+            "    return switch (c) {",
+            "    case '\t',",
+            "      '\\n',",
+            "      '\\013',",
+            "      '\\f',",
+            "      '\\r',",
+            "      ' ',",
+            "      '\u0085',",
+            "      '\u1680',",
+            "      '\u2028',",
+            "      '\u2029',",
+            "      '\u205f',",
+            "      '\u3000' ->",
+            "      true;",
+            "    case '\u2007' -> false;",
+            "    default -> c >= '\u2000' && c <= '\u200a';",
+            "    };",
+            "  }",
+            "}"),
+        "Test",
+        "Test.m");
+  assertTranslatedLines(
+      translation,
+      "- (bool)matchesWithChar:(unichar)c {",
+      "  switch (c) {",
+      "    case 0x0009:",
+      "    case 0x000a:",
+      "    case 0x000b:",
+      "    case 0x000c:",
+      "    case 0x000d:",
+      "    case ' ':",
+      "    case 0x0085:",
+      "    case 0x1680:",
+      "    case 0x2028:",
+      "    case 0x2029:",
+      "    case 0x205f:",
+      "    case 0x3000:",
+      "    return true;",
+      "    case 0x2007:",
+      "    return false;",
+      "    default:",
+      "    return c >= 0x2000 && c <= 0x200a;",
+      "  };",
+      "}");
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testEnumSwitchExpressionCase() throws IOException {
     // Snippet from Guava's com.google.common.collect.AbstractIterator.
-    testOnJava17OrAbove(
-        () -> {
-          String translation =
-              translateSourceFile(
-                  String.join(
-                      "\n",
-                      "abstract class Test<T> {",
-                      "  private State state = State.NOT_READY;",
-                      "  private enum State {",
-                      "    READY,",
-                      "    NOT_READY,",
-                      "    DONE,",
-                      "  }",
-                      "  private T next;",
-                      "  protected abstract T computeNext();",
-                      "  protected final T endOfData() {",
-                      "    state = State.DONE;",
-                      "    return null;",
-                      "  }",
-                      "  public final boolean hasNext() {",
-                      "    switch (state) {",
-                      "      case DONE -> {",
-                      "        return false;",
-                      "      }",
-                      "      case READY -> {",
-                      "        return true;",
-                      "      }",
-                      "      default -> {}",
-                      "    }",
-                      "    return tryToComputeNext();",
-                      "  }",
-                      "  private boolean tryToComputeNext() {",
-                      "    next = computeNext();",
-                      "    if (state != State.DONE) {",
-                      "      state = State.READY;",
-                      "      return true;",
-                      "    }",
-                      "    return false;",
-                      "  }",
-                      "}"),
-                  "Test",
-                  "Test.m");
-          assertTranslatedLines(
-              translation,
-              "- (bool)hasNext {",
-              "  switch ([state_ ordinal]) {",
-              "    case Test_State_Enum_DONE:",
-              "    {",
-              "      return false;",
+  String translation =
+      translateSourceFile(
+          String.join(
+              "\n",
+              "abstract class Test<T> {",
+              "  private State state = State.NOT_READY;",
+              "  private enum State {",
+              "    READY,",
+              "    NOT_READY,",
+              "    DONE,",
+              "  }",
+              "  private T next;",
+              "  protected abstract T computeNext();",
+              "  protected final T endOfData() {",
+              "    state = State.DONE;",
+              "    return null;",
+              "  }",
+              "  public final boolean hasNext() {",
+              "    switch (state) {",
+              "      case DONE -> {",
+              "        return false;",
+              "      }",
+              "      case READY -> {",
+              "        return true;",
+              "      }",
+              "      default -> {}",
               "    }",
-              "    break;",
-              "    case Test_State_Enum_READY:",
-              "    {",
+              "    return tryToComputeNext();",
+              "  }",
+              "  private boolean tryToComputeNext() {",
+              "    next = computeNext();",
+              "    if (state != State.DONE) {",
+              "      state = State.READY;",
               "      return true;",
               "    }",
-              "    break;",
-              "    default:",
-              "    {",
-              "    }",
-              "    break;",
+              "    return false;",
               "  }",
-              "  return Test_tryToComputeNext(self);",
-              "}");
-        });
+              "}"),
+          "Test",
+          "Test.m");
+  assertTranslatedLines(
+      translation,
+      "- (bool)hasNext {",
+      "  switch ([state_ ordinal]) {",
+      "    case Test_State_Enum_DONE:",
+      "    {",
+      "      return false;",
+      "    }",
+      "    break;",
+      "    case Test_State_Enum_READY:",
+      "    {",
+      "      return true;",
+      "    }",
+      "    break;",
+      "    default:",
+      "    {",
+      "    }",
+      "    break;",
+      "  }",
+      "  return Test_tryToComputeNext(self);",
+      "}");
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testYieldInCaseBlock() throws IOException {
     // Snippet from Guava's com.google.common.math.LongMath.
-    testOnJava17OrAbove(
-        () -> {
-          String translation =
-              translateSourceFile(
-                  String.join(
-                      "\n",
-                      "class Test<T> {",
-                      "  static void checkNoOverflow(boolean condition, String methodName, long a,"
-                          + " long b) {}",
-                      "  public static long checkedPow(long b, int k) {",
-                      "    return switch ((int) b) {",
-                      "      case 2 -> {",
-                      "        checkNoOverflow(k < Long.SIZE - 1, \"checkedPow\", b, k);",
-                      "        yield 1L << k;",
-                      "      }",
-                      "      default -> throw new AssertionError();",
-                      "    };",
-                      "  }",
-                      "}"),
-                  "Test",
-                  "Test.m");
-          assertTranslatedLines(
-              translation,
-              "  switch ((int32_t) b) {",
-              "    case 2:",
-              "    return JreLShift64(1LL, k);",
-              "    default:",
-              "    @throw create_JavaLangAssertionError_init();",
-              "  };");
-        });
+  String translation =
+    translateSourceFile(
+        String.join(
+            "\n",
+            "class Test<T> {",
+            "  static void checkNoOverflow(boolean condition, String methodName, long a,"
+                + " long b) {}",
+            "  public static long checkedPow(long b, int k) {",
+            "    return switch ((int) b) {",
+            "      case 2 -> {",
+            "        checkNoOverflow(k < Long.SIZE - 1, \"checkedPow\", b, k);",
+            "        yield 1L << k;",
+            "      }",
+            "      default -> throw new AssertionError();",
+            "    };",
+            "  }",
+            "}"),
+        "Test",
+        "Test.m");
+    assertTranslatedLines(
+        translation,
+        "  switch ((int32_t) b) {",
+        "    case 2:",
+        "    return JreLShift64(1LL, k);",
+        "    default:",
+        "    @throw create_JavaLangAssertionError_init();",
+        "  };");
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testEnumConstAsSwitchExpression() throws IOException {
     // Snippet from Guava's com.google.common.math.ToDoubleRounder.
-    testOnJava17OrAbove(
-        () -> {
-          String translation =
-              translateSourceFile(
-                  String.join(
-                      "\n",
-                      "import java.math.RoundingMode;",
-                      "class Test<T> {",
-                      "  final double roundToDouble(Double x, RoundingMode mode) {",
-                      "    if (Double.isInfinite(x)) {",
-                      "      switch (mode) {",
-                      "        case DOWN:",
-                      "          return Double.MAX_VALUE;",
-                      "        default:",
-                      "          return x;",
-                      "      }",
-                      "    }",
-                      "    return Double.MAX_VALUE;",
-                      "  }",
-                      "}"),
-                  "Test",
-                  "Test.m");
-          assertTranslatedLines(
-              translation,
-              "switch ([mode ordinal]) {",
-              "  case JavaMathRoundingMode_Enum_DOWN:",
-              "    return JavaLangDouble_MAX_VALUE;",
-              "  default:",
-              "    return [x doubleValue];",
-              "}");
-        });
+    String translation =
+        translateSourceFile(
+            String.join(
+                "\n",
+                "import java.math.RoundingMode;",
+                "class Test<T> {",
+                "  final double roundToDouble(Double x, RoundingMode mode) {",
+                "    if (Double.isInfinite(x)) {",
+                "      switch (mode) {",
+                "        case DOWN:",
+                "          return Double.MAX_VALUE;",
+                "        default:",
+                "          return x;",
+                "      }",
+                "    }",
+                "    return Double.MAX_VALUE;",
+                "  }",
+                "}"),
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        "switch ([mode ordinal]) {",
+        "  case JavaMathRoundingMode_Enum_DOWN:",
+        "    return JavaLangDouble_MAX_VALUE;",
+        "  default:",
+        "    return [x doubleValue];",
+        "}");
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testSwitchExpressionReturnForAllEnumPaths() throws IOException {
     // Snippet from Guava's com.google.common.base.Stopwatch.
     // Verifies that a switch using an enum can have all paths handled without a default case.
-    testOnJava17OrAbove(
-        () -> {
-          String translation =
-              translateSourceFile(
-                  String.join(
-                      "\n",
-                      "import java.util.concurrent.TimeUnit;",
-                      "class Test<T> {",
-                      "  static String abbreviate(TimeUnit unit) {",
-                      "    return switch (unit) {",
-                      "      case NANOSECONDS -> \"ns\";",
-                      "      case MICROSECONDS -> \"\\u03bcs\";",
-                      "      case MILLISECONDS -> \"ms\";",
-                      "      case SECONDS -> \"s\";",
-                      "      case MINUTES -> \"min\";",
-                      "      case HOURS -> \"h\";",
-                      "      case DAYS -> \"d\";",
-                      "    };",
-                      "  }",
-                      "}"),
-                  "Test",
-                  "Test.m");
-          assertTranslatedLines(
-              translation,
-              "  switch ([unit ordinal]) {",
-              "    case JavaUtilConcurrentTimeUnit_Enum_NANOSECONDS:",
-              "    return @\"ns\";",
-              "    case JavaUtilConcurrentTimeUnit_Enum_MICROSECONDS:",
-              "    return @\"\\u03bcs\";",
-              "    case JavaUtilConcurrentTimeUnit_Enum_MILLISECONDS:",
-              "    return @\"ms\";",
-              "    case JavaUtilConcurrentTimeUnit_Enum_SECONDS:",
-              "    return @\"s\";",
-              "    case JavaUtilConcurrentTimeUnit_Enum_MINUTES:",
-              "    return @\"min\";",
-              "    case JavaUtilConcurrentTimeUnit_Enum_HOURS:",
-              "    return @\"h\";",
-              "    case JavaUtilConcurrentTimeUnit_Enum_DAYS:",
-              "    return @\"d\";",
-              "  };",
-              "  __builtin_unreachable();",
-              "}");
-        });
+    String translation =
+        translateSourceFile(
+            String.join(
+                "\n",
+                "import java.util.concurrent.TimeUnit;",
+                "class Test<T> {",
+                "  static String abbreviate(TimeUnit unit) {",
+                "    return switch (unit) {",
+                "      case NANOSECONDS -> \"ns\";",
+                "      case MICROSECONDS -> \"\\u03bcs\";",
+                "      case MILLISECONDS -> \"ms\";",
+                "      case SECONDS -> \"s\";",
+                "      case MINUTES -> \"min\";",
+                "      case HOURS -> \"h\";",
+                "      case DAYS -> \"d\";",
+                "    };",
+                "  }",
+                "}"),
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        "  switch ([unit ordinal]) {",
+        "    case JavaUtilConcurrentTimeUnit_Enum_NANOSECONDS:",
+        "    return @\"ns\";",
+        "    case JavaUtilConcurrentTimeUnit_Enum_MICROSECONDS:",
+        "    return @\"\\u03bcs\";",
+        "    case JavaUtilConcurrentTimeUnit_Enum_MILLISECONDS:",
+        "    return @\"ms\";",
+        "    case JavaUtilConcurrentTimeUnit_Enum_SECONDS:",
+        "    return @\"s\";",
+        "    case JavaUtilConcurrentTimeUnit_Enum_MINUTES:",
+        "    return @\"min\";",
+        "    case JavaUtilConcurrentTimeUnit_Enum_HOURS:",
+        "    return @\"h\";",
+        "    case JavaUtilConcurrentTimeUnit_Enum_DAYS:",
+        "    return @\"d\";",
+        "  };",
+        "  __builtin_unreachable();",
+        "}");
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testSavedSwitchExpression() throws IOException {
-    testOnJava17OrAbove(
-        () -> {
-          String translation =
-              translateSourceFile(
-                  String.join(
-                      "\n",
-                      "class Test {",
-                      "  String test(int choice) {",
-                      "    String foo = \"foo\";",
-                      "    String result = switch (choice) {",
-                      "      case 1 -> null;",
-                      "      case 2 -> \"Hello\";",
-                      "      default -> {",
-                      "        yield \"World\";",
-                      "      }",
-                      "    };",
-                      "    return result;",
-                      "  }",
-                      "}"),
-                  "Test",
-                  "Test.m");
-          assertTranslatedLines(
-              translation,
-              "- (NSString *)testWithInt:(int32_t)choice {",
-              "  NSString *foo = @\"foo\";",
-              "  NSString *result;",
-              "  switch (choice) {",
-              "    case 1:",
-              "    result = nil;",
-              "    break;",
-              "    case 2:",
-              "    result = @\"Hello\";",
-              "    break;",
-              "    default:",
-              "    result = @\"World\";",
-              "    break;",
-              "  };",
-              "  return result;",
-              "}");
-        });
+    String translation =
+        translateSourceFile(
+            String.join(
+                "\n",
+                "class Test {",
+                "  String test(int choice) {",
+                "    String foo = \"foo\";",
+                "    String result = switch (choice) {",
+                "      case 1 -> null;",
+                "      case 2 -> \"Hello\";",
+                "      default -> {",
+                "        yield \"World\";",
+                "      }",
+                "    };",
+                "    return result;",
+                "  }",
+                "}"),
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        "- (NSString *)testWithInt:(int32_t)choice {",
+        "  NSString *foo = @\"foo\";",
+        "  NSString *result;",
+        "  switch (choice) {",
+        "    case 1:",
+        "    result = nil;",
+        "    break;",
+        "    case 2:",
+        "    result = @\"Hello\";",
+        "    break;",
+        "    default:",
+        "    result = @\"World\";",
+        "    break;",
+        "  };",
+        "  return result;",
+        "}");
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testStringSwitchNewSyntax() throws IOException {
     // Snippet from Guava's com.google.common.io.Files.
-    testOnJava17OrAbove(
-        () -> {
-          String translation =
-              translateSourceFile(
-                  String.join(
-                      "\n",
-                      "import java.util.*;",
-                      "class Test {",
-                      "  String simplifyPath(String pathname) {",
-                      "    String[] components = pathname.split(\"/\");",
-                      "    List<String> path = new ArrayList<>();",
-                      "    for (String component : components) {",
-                      "      switch (component) {",
-                      "        case \".\" -> {",
-                      "          continue;",
-                      "        }",
-                      "        case \"..\" -> {",
-                      "          path.add(\"..\");",
-                      "        }",
-                      "        default -> path.add(component);",
-                      "      }",
-                      "    }",
-                      "    return String.join(\"/\", path);",
-                      "  }",
-                      "}"),
-                  "Test",
-                  "Test.m");
-          assertTranslatedLines(
-              translation,
-              "switch (JreIndexOfStr(component, (id[]){ @\".\", @\"..\" }, 2)) {",
-              "  case 0:",
-              "  {",
-              "    continue;",
+  String translation =
+      translateSourceFile(
+          String.join(
+              "\n",
+              "import java.util.*;",
+              "class Test {",
+              "  String simplifyPath(String pathname) {",
+              "    String[] components = pathname.split(\"/\");",
+              "    List<String> path = new ArrayList<>();",
+              "    for (String component : components) {",
+              "      switch (component) {",
+              "        case \".\" -> {",
+              "          continue;",
+              "        }",
+              "        case \"..\" -> {",
+              "          path.add(\"..\");",
+              "        }",
+              "        default -> path.add(component);",
+              "      }",
+              "    }",
+              "    return String.join(\"/\", path);",
               "  }",
-              "  break;",
-              "  case 1:",
-              "  {",
-              "    [path addWithId:@\"..\"];",
-              "  }",
-              "  break;",
-              "  default:",
-              "  [path addWithId:component];",
-              "  break;",
-              "}");
-        });
+              "}"),
+          "Test",
+          "Test.m");
+  assertTranslatedLines(
+      translation,
+      "switch (JreIndexOfStr(component, (id[]){ @\".\", @\"..\" }, 2)) {",
+      "  case 0:",
+      "  {",
+      "    continue;",
+      "  }",
+      "  break;",
+      "  case 1:",
+      "  {",
+      "    [path addWithId:@\"..\"];",
+      "  }",
+      "  break;",
+      "  default:",
+      "  [path addWithId:component];",
+      "  break;",
+      "}");
   }
 }

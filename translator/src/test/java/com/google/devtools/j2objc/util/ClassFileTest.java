@@ -39,10 +39,6 @@ public class ClassFileTest extends GenerationTest {
   }
 
   public void testGetFullNameInnerClass() throws IOException {
-    // TODO(b/124111611)
-    if (onJava9OrAbove()) {
-      return;
-    }
     ClassFile cf =
         getClassFile("ClassFileTest$Inner.class");
     assertEquals(
@@ -50,10 +46,6 @@ public class ClassFileTest extends GenerationTest {
   }
 
   public void testGetRelativePathInnerClass() throws IOException {
-    // TODO(b/124111611)
-    if (onJava9OrAbove()) {
-      return;
-    }
     String path = "ClassFileTest$Inner.class";
     ClassFile cf = getClassFile(path);
     assertEquals("com/google/devtools/j2objc/util/" + path, cf.getRelativePath());

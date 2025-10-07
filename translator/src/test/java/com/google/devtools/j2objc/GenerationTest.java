@@ -100,9 +100,7 @@ public abstract class GenerationTest extends TestCase {
   @Override
   protected void setUp() throws IOException {
     tempDir = FileUtil.createTempDir("testout");
-    if (onJava11OrAbove()) {
-      SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_11);
-    }
+    SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_17);
     loadOptions();
     createParser();
   }
@@ -292,7 +290,7 @@ public abstract class GenerationTest extends TestCase {
     ByteArrayOutputStream errOut = new ByteArrayOutputStream();
     int numErrors = compiler.run(null, null, errOut, args.toArray(new String[0]));
     if (numErrors > 0) {
-      String errMsg = errOut.toString();
+      String errMsg = errOut.toString(Charset.defaultCharset());
       ErrorUtil.error(errMsg);
       failWithMessages("test compilation error" + (numErrors > 1 ? "s" : ""),
           Lists.newArrayList(errMsg));
@@ -315,7 +313,7 @@ public abstract class GenerationTest extends TestCase {
         try {
           classpath.add(URLDecoder.decode(urls[i].getFile(), encoding));
         } catch (UnsupportedEncodingException e) {
-          throw new AssertionError("System doesn't have the default encoding");
+          throw new AssertionError("System doesn't have the default encoding", e);
         }
       }
     } else {
@@ -431,15 +429,6 @@ public abstract class GenerationTest extends TestCase {
     for (; matcher.find(); count++) {}
     if (count != times) {
       fail("expected:\"" + expected + "\" " + times + " times in:\n" + translation);
-    }
-  }
-
-  /**
-   * Verify that two AST nodes are equal, by comparing their toString() outputs.
-   */
-  protected void assertEqualASTs(TreeNode first, TreeNode second) {
-    if (!first.toString().equals(second.toString())) {
-      fail("unmatched:\n" + first + "vs:\n" + second);
     }
   }
 
@@ -805,58 +794,13 @@ public abstract class GenerationTest extends TestCase {
     javacFlags.add("-g");
   }
 
-  protected boolean onJava9OrAbove() {
-    return supportsClass("java.lang.Module");
-  }
-
-  protected boolean onJava11OrAbove() {
-    return supportsClass("java.net.http.HttpClient");
-  }
-
-  protected boolean onJava16OrAbove() {
-    return supportsClass("java.lang.Record");
-  }
-
-  protected boolean onJava17OrAbove() {
-    return supportsClass("java.util.HexFormat");
-  }
-
-  protected boolean onJava21OrAbove() {
-    return supportsClass("java.lang.MatchException");
-  }
-
-  private boolean supportsClass(String fullyQualifiedClassName) {
-    try {
-      Class.forName(fullyQualifiedClassName);
-      return true;
-    } catch (ClassNotFoundException e) {
-      return false;
-    }
-  }
-
   @FunctionalInterface
   protected interface TestLambda {
     void run() throws IOException;
   }
 
-  protected void testOnJava16OrAbove(TestLambda test) throws IOException {
-    if (onJava16OrAbove()) {
-      SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_16);
-      options.setSourceVersion(SourceVersion.JAVA_16);
-      test.run();
-    }
-  }
-
-  protected void testOnJava17OrAbove(TestLambda test) throws IOException {
-    if (onJava17OrAbove()) {
-      SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_17);
-      options.setSourceVersion(SourceVersion.JAVA_17);
-      test.run();
-    }
-  }
-
   protected void testOnJava21OrAbove(TestLambda test) throws IOException {
-    if (onJava21OrAbove()) {
+    if (Runtime.version().feature() >= 21) {
       SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_21);
       options.setSourceVersion(SourceVersion.JAVA_21);
       test.run();

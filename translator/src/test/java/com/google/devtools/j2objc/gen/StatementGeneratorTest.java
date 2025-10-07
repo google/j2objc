@@ -1980,89 +1980,80 @@ public class StatementGeneratorTest extends GenerationTest {
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testInstanceOfPatternVariableTranslation() throws IOException {
-    testOnJava16OrAbove(
-        () -> {
-          String translation =
-              translateSourceFile(
-                  String.join(
-                      "\n",
-                      "class Test {",
-                      "  int test(Object o) {",
-                      "    if (o instanceof String s) {",
-                      "      return s.length();",
-                      "    }",
-                      "    return 0;",
-                      "  }",
-                      "}"),
-                  "Test",
-                  "Test.m");
-          assertTranslatedLines(
-              translation,
-              "if ([o isKindOfClass:[NSString class]]) {",
-              "NSString *s = (NSString *) o;",
-              "return [s java_length];",
-              "}",
-              "return 0;");
-        });
+    String translation =
+        translateSourceFile(
+            String.join(
+                "\n",
+                "class Test {",
+                "  int test(Object o) {",
+                "    if (o instanceof String s) {",
+                "      return s.length();",
+                "    }",
+                "    return 0;",
+                "  }",
+                "}"),
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        "if ([o isKindOfClass:[NSString class]]) {",
+        "NSString *s = (NSString *) o;",
+        "return [s java_length];",
+        "}",
+        "return 0;");
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testInstanceOfPatternVariableTranslationWithGuards() throws IOException {
-    testOnJava16OrAbove(
-        () -> {
-          String translation =
-              translateSourceFile(
-                  String.join(
-                      "\n",
-                      "class Point {",
-                      "  private final int x;",
-                      "  private final int y;",
-                      "  Point(int x, int y) { this.x = x; this.y = y; }",
-                      "  @Override public boolean equals(Object o) {",
-                      // Define instanceof pattern variable p with two guards.
-                      "    if (o instanceof Point p && x == p.x && y == p.y) {",
-                      "      return true;",
-                      "    } else {",
-                      "      return false;",
-                      "    }",
-                      "  }",
-                      "}"),
-                  "Test",
-                  "Test.m");
-          assertTranslatedLines(
-              translation,
-              "if ([o isKindOfClass:[Point class]]) {",
-              "Point *p = (Point *) o;",
-              "if (x_ == p->x_ && y_ == p->y_) {",
-              "return true;",
-              "}",
-              "}",
-              "else {",
-              "return false;",
-              "}",
-              "}");
-        });
+    String translation =
+        translateSourceFile(
+            String.join(
+                "\n",
+                "class Point {",
+                "  private final int x;",
+                "  private final int y;",
+                "  Point(int x, int y) { this.x = x; this.y = y; }",
+                "  @Override public boolean equals(Object o) {",
+                // Define instanceof pattern variable p with two guards.
+                "    if (o instanceof Point p && x == p.x && y == p.y) {",
+                "      return true;",
+                "    } else {",
+                "      return false;",
+                "    }",
+                "  }",
+                "}"),
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        "if ([o isKindOfClass:[Point class]]) {",
+        "Point *p = (Point *) o;",
+        "if (x_ == p->x_ && y_ == p->y_) {",
+        "return true;",
+        "}",
+        "}",
+        "else {",
+        "return false;",
+        "}",
+        "}");
   }
 
   // TODO(tball): use text blocks when minimum Java is 15 or higher.
   @SuppressWarnings("StringConcatToTextBlock")
   public void testSimpleSwitchExpression() throws IOException {
-    testOnJava17OrAbove(
-        () -> {
-          String translation = translateSourceFile(SIMPLE_SWITCH_EXPRESSION, "Test", "Test.m");
-          assertTranslatedLines(
-              translation,
-              "- (NSString *)howManyWithInt:(int32_t)k {",
-              "  switch (k) {",
-              "    case 1:",
-              "    return @\"one\";",
-              "    case 2:",
-              "    return @\"two\";",
-              "    default:",
-              "    return @\"many\";",
-              "  };",
-              "}");
-        });
+    String translation = translateSourceFile(SIMPLE_SWITCH_EXPRESSION, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        "- (NSString *)howManyWithInt:(int32_t)k {",
+        "  switch (k) {",
+        "    case 1:",
+        "    return @\"one\";",
+        "    case 2:",
+        "    return @\"two\";",
+        "    default:",
+        "    return @\"many\";",
+        "  };",
+        "}");
   }
 
   // Verify converted switch expression's AST looks correct. This isolates
