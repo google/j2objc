@@ -92,6 +92,7 @@ const std::set<absl::string_view> kKeywords = {
     "virtual",     "void",     "volatile", "while",
 };
 
+
 absl::string_view FieldName(const FieldDescriptor *field) {
   // Groups are hacky:  The name of the field is just the lower-cased name
   // of the group type.  In Java, though, we would like to retain the original
@@ -765,6 +766,7 @@ bool IsGenerateFileDirMapping() {
 }
 
 bool IsGenerateProperties(const FileDescriptor *file) {
+
   // Check for the "j2objc_package_prefix" option using unknown fields so we
   // don't have to pre-build j2objc-descriptor.pb.[h|cc].
   const UnknownField *generate_properties_field =
