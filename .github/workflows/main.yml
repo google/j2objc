@@ -14,10 +14,10 @@ jobs:
     runs-on: macos-latest
 
     env:
-      MAKE_CMD: "env TRANSLATE_GLOBAL_FLAGS=--swift-friendly ENV_J2OBJC_ARCHS=macosx_iphone64 make -j"
+      MAKE_CMD: "env TRANSLATE_GLOBAL_FLAGS=--swift-friendly ENV_J2OBJC_ARCHS=macosx_iphone64 make -j8"
 
     steps:
-      - name: java_11_env
+      - name: java_17_env
         run: echo "JAVA_17_HOME=$(/usr/libexec/java_home -v 17)" >> $GITHUB_ENV
       
       - uses: actions/checkout@v2
