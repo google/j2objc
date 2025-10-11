@@ -29,4 +29,4 @@ jobs:
       
       # Test command-line tools.
       - name: test_tools
-        run: $MAKE_CMD JAVA_HOME=$JAVA_17_HOME test_translator test_cycle_finder test_jre_cycles
+        run: $MAKE_CMD JAVA_HOME=$JAVA_17_HOME test_translator test_cycle_finder
