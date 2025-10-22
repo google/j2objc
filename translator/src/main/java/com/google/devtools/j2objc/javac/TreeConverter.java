@@ -1017,102 +1017,10 @@ public class TreeConverter {
 
   private TreeNode convertIf(IfTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
-    Expression condition = convertWithoutParens(node.getCondition(), path);
-    Pattern pattern = null;
-    InstanceofExpression instanceofExpr = null;
-    Expression subExpr = null;
-    boolean negate = false;
-    if (condition.getKind() == TreeNode.Kind.INSTANCEOF_EXPRESSION) {
-      instanceofExpr = (InstanceofExpression) condition;
-      pattern = instanceofExpr.getPattern();
-      instanceofExpr.setPattern(null);
-    } else if (condition.getKind() == TreeNode.Kind.PREFIX_EXPRESSION) {
-      PrefixExpression prefixExpr = (PrefixExpression) condition;
-      Expression operand = prefixExpr.getOperand();
-      if (operand.getKind() == TreeNode.Kind.PARENTHESIZED_EXPRESSION) {
-        operand = ((ParenthesizedExpression) operand).getExpression();
-      }
-      if (operand.getKind() == TreeNode.Kind.INSTANCEOF_EXPRESSION) {
-        instanceofExpr = (InstanceofExpression) operand;
-        pattern = instanceofExpr.getPattern();
-        instanceofExpr.setPattern(null);
-        negate = true;
-      }
-    } else if (condition.getKind() == TreeNode.Kind.INFIX_EXPRESSION) {
-      InfixExpression infixExpr = (InfixExpression) condition;
-      List<Expression> operands = infixExpr.getOperands();
-      for (int i = 0; i < operands.size(); i++) {
-        Expression operand = operands.get(i);
-        if (operand.getKind() == TreeNode.Kind.INSTANCEOF_EXPRESSION) {
-          instanceofExpr = (InstanceofExpression) operand;
-          pattern = instanceofExpr.getPattern();
-          if (pattern != null) {
-            instanceofExpr.setPattern(null);
-            condition = instanceofExpr.copy();
-            List<Expression> subOperands = new ArrayList<>();
-            while (++i < operands.size()) {
-              subOperands.add(operands.get(i));
-            }
-            if (subOperands.size() == 1) {
-              subExpr = subOperands.get(0).copy();
-            } else if (subOperands.size() > 1) {
-              InfixExpression newInfix =
-                  new InfixExpression(infixExpr.getTypeMirror(), infixExpr.getOperator());
-              for (Expression subOperand : subOperands) {
-                newInfix.addOperand(subOperand.copy());
-              }
-              subExpr = newInfix;
-            }
-            break;
-          } else {
-            // No pattern, reset instanceofExpr and pattern.
-            instanceofExpr = null;
-            pattern = null;
-          }
-        }
-      }
-    }
-
-    Statement thenStatement = (Statement) convert(node.getThenStatement(), path);
-    if (pattern != null) {
-      // Create local variable with pattern variable element.
-      VariableElement localVar =
-          ((Pattern.BindingPattern) pattern).getVariable().getVariableElement();
-      CastExpression castExpr =
-          new CastExpression(localVar.asType(), instanceofExpr.getLeftOperand().copy());
-      castExpr.setNeedsCastChk(false);
-      VariableDeclarationStatement localVarDecl =
-          new VariableDeclarationStatement(localVar, castExpr);
-      Block thenBlock;
-      if (thenStatement.getKind() == TreeNode.Kind.BLOCK) {
-        thenBlock = (Block) thenStatement;
-      } else {
-        thenBlock = new Block();
-        thenBlock.addStatement(thenStatement);
-      }
-      if (negate) {
-        trailingPatternDeclaration = localVarDecl;
-      } else {
-        thenBlock.addStatement(0, localVarDecl);
-      }
-      if (subExpr != null) {
-        // Move statements inside of if statement with subExpr condition.
-        IfStatement subIf = new IfStatement().setExpression(subExpr);
-        Block subIfBlock = new Block();
-        subIf.setThenStatement(subIfBlock);
-        while (thenBlock.getStatements().size() > 1) {
-          subIfBlock.addStatement(thenBlock.getStatements().remove(1));
-        }
-        thenBlock.addStatement(subIf);
-      }
-      thenStatement = thenBlock;
-    }
-    Statement newNode =
-        new IfStatement()
-            .setExpression(condition)
-            .setThenStatement(thenStatement)
-            .setElseStatement((Statement) convert(node.getElseStatement(), path));
-    return newNode;
+    return new IfStatement()
+        .setExpression(convertWithoutParens(node.getCondition(), path))
+        .setThenStatement((Statement) convert(node.getThenStatement(), path))
+        .setElseStatement((Statement) convert(node.getElseStatement(), path));
   }
 
   private TreeNode convertInstanceOf(InstanceOfTree node, TreePath parent) {

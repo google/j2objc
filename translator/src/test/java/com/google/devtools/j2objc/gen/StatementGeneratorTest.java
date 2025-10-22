@@ -1996,9 +1996,11 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "if ([o isKindOfClass:[NSString class]]) {",
-        "NSString *s = (NSString *) o;",
-        "return [s java_length];",
+        "NSString *s$pattern$0;",
+        "id tmp$0;",
+        "if ((tmp$0 = o, s$pattern$0 = [tmp$0 isKindOfClass:[NSString class]] ? (NSString *) tmp$0"
+            + " : nil, !JreStringEqualsEquals(s$pattern$0, nil))) {",
+        "return [s$pattern$0 java_length];",
         "}",
         "return 0;");
   }
@@ -2026,11 +2028,12 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "if ([o isKindOfClass:[Point class]]) {",
-        "Point *p = (Point *) o;",
-        "if (x_ == p->x_ && y_ == p->y_) {",
-        "return true;",
-        "}",
+        "Point *p$pattern$0;",
+        "id tmp$0;",
+        "if ((tmp$0 = o, p$pattern$0 = [tmp$0 isKindOfClass:[Point class]] ? (Point *) tmp$0 : nil,"
+            + " !JreObjectEqualsEquals(p$pattern$0, nil)) && x_ == p$pattern$0->x_ && y_ =="
+            + " p$pattern$0->y_) {",
+        "  return true;",
         "}",
         "else {",
         "return false;",

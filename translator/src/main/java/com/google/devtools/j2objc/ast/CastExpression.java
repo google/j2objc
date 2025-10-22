@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -54,6 +55,7 @@ public class CastExpression extends Expression {
     return type.get();
   }
 
+  @CanIgnoreReturnValue
   public CastExpression setType(Type newType) {
     type.set(newType);
     return this;
@@ -63,6 +65,7 @@ public class CastExpression extends Expression {
     return expression.get();
   }
 
+  @CanIgnoreReturnValue
   public CastExpression setExpression(Expression newExpression) {
     expression.set(newExpression);
     return this;
@@ -72,8 +75,10 @@ public class CastExpression extends Expression {
     return needsCastChk;
   }
 
-  public void setNeedsCastChk(boolean value) {
+  @CanIgnoreReturnValue
+  public CastExpression setNeedsCastChk(boolean value) {
     needsCastChk = value;
+    return this;
   }
 
   @Override

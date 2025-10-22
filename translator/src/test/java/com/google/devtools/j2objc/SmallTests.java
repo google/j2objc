@@ -59,6 +59,7 @@ import com.google.devtools.j2objc.translate.FunctionizerTest;
 import com.google.devtools.j2objc.translate.GwtConverterTest;
 import com.google.devtools.j2objc.translate.InitializationNormalizerTest;
 import com.google.devtools.j2objc.translate.InnerClassExtractorTest;
+import com.google.devtools.j2objc.translate.InstanceOfPatternRewriterTest;
 import com.google.devtools.j2objc.translate.JavaCloneWriterTest;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslatorTest;
 import com.google.devtools.j2objc.translate.LambdaTypeElementAdderTest;
@@ -142,6 +143,7 @@ public class SmallTests {
         InfixExpressionTest.class,
         InitializationNormalizerTest.class,
         InnerClassExtractorTest.class,
+        InstanceOfPatternRewriterTest.class,
         J2ObjCIncompatibleStripperTest.class,
         J2ObjCTest.class,
         JavaCloneWriterTest.class,

@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 
@@ -68,6 +69,7 @@ public class SimpleName extends Name {
     return identifier;
   }
 
+  @CanIgnoreReturnValue
   public SimpleName setIdentifier(String identifier) {
     this.identifier = identifier;
     return this;

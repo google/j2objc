@@ -40,6 +40,7 @@ import com.google.devtools.j2objc.translate.Functionizer;
 import com.google.devtools.j2objc.translate.GwtConverter;
 import com.google.devtools.j2objc.translate.InitializationNormalizer;
 import com.google.devtools.j2objc.translate.InnerClassExtractor;
+import com.google.devtools.j2objc.translate.InstanceOfPatternRewriter;
 import com.google.devtools.j2objc.translate.JavaCloneWriter;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslator;
 import com.google.devtools.j2objc.translate.LabelRewriter;
@@ -211,6 +212,9 @@ public class TranslationProcessor extends FileProcessor {
 
     new VariableRenamer(unit).run();
     ticker.tick("VariableRenamer");
+
+    new InstanceOfPatternRewriter(unit).run();
+    ticker.tick("InstanceOfPatternRewriter");
 
     // Rewrite enhanced for loops into correct C code.
     new EnhancedForRewriter(unit).run();

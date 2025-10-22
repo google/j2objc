@@ -107,52 +107,67 @@ public class SwitchCaseRewriterTest extends GenerationTest {
         () -> {
           String source =
               "class Test {\n"
-              + "  String typeGuardIfTrueSwitchExpression(Object o) {\n"
-              + "    Object o2 = \"\";\n"
-              + "    return switch (o) {\n"
-              + "       case Integer i when i == 0 && i < 1 && o2 instanceof String s: o = s + String.valueOf(i); yield \"true\";\n"
-              + "       case Integer i when i == 0 || i > 1: o = String.valueOf(i); yield \"second\";\n"
-              + "       case Object x: yield \"any\";\n"
-              + "    };\n"
-              + "  }\n"
-              + "}";
+                  + "  String typeGuardIfTrueSwitchExpression(Object o) {\n"
+                  + "    Object o2 = \"\";\n"
+                  + "    return switch (o) {\n"
+                  + "       case Integer i when i == 0 && i < 1 && o2 instanceof String s: o = s +"
+                  + " String.valueOf(i); yield \"true\";\n"
+                  + "       case Integer i when i == 0 || i > 1: o = String.valueOf(i); yield"
+                  + " \"second\";\n"
+                  + "       case Object x: yield \"any\";\n"
+                  + "    };\n"
+                  + "  }\n"
+                  + "}";
           String translation = translateSourceFile(source, "Test", "Test.m");
-          assertTranslatedLines(translation,
+          assertTranslatedLines(
+              translation,
+              "NSString *s$pattern$0;",
+              "id tmp$0;",
               "id o2 = @\"\";",
-              "if ([o isKindOfClass:[JavaLangInteger class]] && [((JavaLangInteger *) o) intValue] == 0 && [((JavaLangInteger *) o) intValue] < 1 && [o2 isKindOfClass:[NSString class]]) {",
+              "if ([o isKindOfClass:[JavaLangInteger class]] && [((JavaLangInteger *) o) intValue]"
+                  + " == 0 && [((JavaLangInteger *) o) intValue] < 1 && (tmp$0 = o2, s$pattern$0 ="
+                  + " [tmp$0 isKindOfClass:[NSString class]] ? (NSString *) tmp$0 : nil,"
+                  + " !JreStringEqualsEquals(s$pattern$0, nil))) {",
               "  return @\"true\";",
               "}",
-              "else if ([o isKindOfClass:[JavaLangInteger class]] && [((JavaLangInteger *) o) intValue] == 0 || [((JavaLangInteger *) o) intValue] > 1) {",
+              "else if ([o isKindOfClass:[JavaLangInteger class]] && [((JavaLangInteger *) o)"
+                  + " intValue] == 0 || [((JavaLangInteger *) o) intValue] > 1) {",
               "  return @\"second\";",
               "}",
               "else if ([o isKindOfClass:[NSObject class]]) {",
               "  return @\"any\";",
               "}");
-    });
+        });
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testNegatedInstanceOfPattern() throws IOException {
     testOnJava21OrAbove(
         () -> {
-          String source = String.join("\n",
-              "class Test {",
-              "  void test(Object o) {",
-              "    if (!(o instanceof String s)) {",
-              "      throw new IllegalArgumentException();",
-              "    }",
-              "    System.out.println(s.repeat(5));",
-              "  }",
-              "}");
+          String source =
+              String.join(
+                  "\n",
+                  "class Test {",
+                  "  void test(Object o) {",
+                  "    if (!(o instanceof String s)) {",
+                  "      throw new IllegalArgumentException();",
+                  "    }",
+                  "    System.out.println(s.repeat(5));",
+                  "  }",
+                  "}");
           String translation = translateSourceFile(source, "Test", "Test.m");
-          assertTranslatedLines(translation,
-              "if (!([o isKindOfClass:[NSString class]])) {",
+          assertTranslatedLines(
+              translation,
+              // "s" (which is renamed to s$pattern$0) must be declared outside the scope of the
+              // if statement below since it will be access outside.
+              "NSString *s$pattern$0;",
+              "id tmp$0;",
+              "if (!((tmp$0 = o, s$pattern$0 = [tmp$0 isKindOfClass:[NSString class]] ? (NSString"
+                  + " *) tmp$0 : nil, !JreStringEqualsEquals(s$pattern$0, nil)))) {",
               "@throw create_JavaLangIllegalArgumentException_init();",
               "}",
-              // "s" must be declared outside the scope of the if statement above.
-              "NSString *s = (NSString *) o;",
               "[((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out)))"
-              + " printlnWithNSString:[s java_repeat:5]];");
+                  + " printlnWithNSString:[s$pattern$0 java_repeat:5]];");
         });
   }
 }
