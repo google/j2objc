@@ -265,155 +265,10 @@ void FileGenerator::GenerateHeader(GeneratorContext* context) {
 }
 
 void FileGenerator::GenerateSource(GeneratorContext* context) {
-  std::string filename = GetFileName(".m");
+  std::string filename = GetFileName(".mm");
 
   std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
-
-  GenerateSourceBoilerplate(&printer);
-
-  std::set<std::string> headers;
-  AddSourceImports(headers);
-  headers.insert(GetFileName(".h"));
-  if (!enforce_lite_) {
-    headers.insert("com/google/protobuf/ExtensionRegistry.h");
-  }
-  headers.insert("com/google/protobuf/ExtensionRegistryLite.h");
-  if (GenerateMultipleFiles()) {
-    for (int i = 0; i < file_->message_type_count(); i++) {
-      headers.insert(GetHeader(file_->message_type(i)));
-    }
-  } else {
-    for (int i = 0; i < file_->message_type_count(); i++) {
-      if (enforce_lite_) {
-        MessageLiteGenerator(file_->message_type(i))
-            .CollectSourceImports(&headers);
-      } else {
-        MessageGenerator(file_->message_type(i)).CollectSourceImports(&headers);
-      }
-    }
-    for (int i = 0; i < file_->enum_type_count(); i++) {
-      EnumGenerator(file_->enum_type(i)).CollectSourceImports(&headers);
-    }
-  }
-  for (int i = 0; i < file_->extension_count(); i++) {
-    ExtensionGenerator(file_->extension(i)).CollectSourceImports(&headers);
-  }
-  PrintImports(&headers, &printer);
-  PrintSourcePreamble(&printer);
-
-  if (file_->extension_count() > 0) {
-    printer.Print("\nJ2OBJC_INITIALIZED_DEFN($classname$)\n", "classname",
-                  ClassName(file_));
-  }
-  for (int i = 0; i < file_->extension_count(); i++) {
-    ExtensionGenerator(file_->extension(i)).GenerateSourceDefinition(&printer);
-  }
-
-  printer.Print(
-      "\n"
-      "@implementation $classname$\n"
-      "\n",
-      "classname", ClassName(file_));
-
-  if (!enforce_lite_) {
-    printer.Print(
-        "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistry:"
-        "(ComGoogleProtobufExtensionRegistry *)extensionRegistry {\n"
-        "  $classname$_registerAllExtensionsWithComGoogleProtobuf"
-        "ExtensionRegistry_(extensionRegistry);\n"
-        "}\n"
-        "\n",
-        "classname", ClassName(file_));
-  }
-
-  printer.Print(
-      "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistryLite:"
-      "(ComGoogleProtobufExtensionRegistryLite *)extensionRegistry {\n"
-      "  $classname$_registerAllExtensionsWithComGoogleProtobuf"
-      "ExtensionRegistryLite_(extensionRegistry);\n"
-      "}\n",
-      "classname", ClassName(file_));
-
-  if (file_->extension_count() > 0) {
-    printer.Print(
-        "\n"
-        "+ (void)initialize {\n"
-        "  if (self == [$classname$ class]) {\n"
-        "    static CGPFieldData extensionFields[] = {\n",
-        "classname", ClassName(file_));
-    printer.Indent();
-    printer.Indent();
-    printer.Indent();
-    for (int i = 0; i < file_->extension_count(); i++) {
-      ExtensionGenerator(file_->extension(i)).GenerateFieldData(&printer);
-    }
-    printer.Outdent();
-    printer.Print("};\n");
-    for (int i = 0; i < file_->extension_count(); i++) {
-      ExtensionGenerator(file_->extension(i))
-          .GenerateSourceInitializer(&printer);
-    }
-    printer.Print("J2OBJC_SET_INITIALIZED($classname$)\n", "classname",
-                  ClassName(file_));
-    printer.Outdent();
-    printer.Outdent();
-    printer.Print("  }\n}\n");
-  }
-
-  printer.Print(
-      "\n"
-      "@end\n"
-      "\n"
-      "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
-      "\n",
-      "classname", ClassName(file_));
-
-  if (!enforce_lite_) {
-    printer.Print(
-        "void $classname$_registerAllExtensionsWith"
-        "ComGoogleProtobufExtensionRegistry_("
-        "ComGoogleProtobufExtensionRegistry *extensionRegistry) {\n"
-        "  $classname$_registerAllExtensionsWith"
-        "ComGoogleProtobufExtensionRegistryLite_(extensionRegistry);\n"
-        "}\n"
-        "\n",
-        "classname", ClassName(file_));
-  }
-
-  printer.Print(
-      "void $classname$_registerAllExtensionsWith"
-      "ComGoogleProtobufExtensionRegistryLite_("
-      "ComGoogleProtobufExtensionRegistryLite *extensionRegistry) {\n",
-      "classname", ClassName(file_));
-  printer.Indent();
-  for (int i = 0; i < file_->extension_count(); i++) {
-    ExtensionGenerator(file_->extension(i)).GenerateRegistrationCode(&printer);
-  }
-  for (int i = 0; i < file_->message_type_count(); i++) {
-    if (enforce_lite_) {
-      MessageLiteGenerator(file_->message_type(i))
-          .GenerateExtensionRegistrationCode(&printer);
-    } else {
-      MessageGenerator(file_->message_type(i))
-          .GenerateExtensionRegistrationCode(&printer);
-    }
-  }
-  printer.Outdent();
-  printer.Print("}\n");
-
-  if (!GenerateMultipleFiles()) {
-    for (int i = 0; i < file_->enum_type_count(); i++) {
-      EnumGenerator(file_->enum_type(i)).GenerateSource(&printer);
-    }
-    for (int i = 0; i < file_->message_type_count(); i++) {
-      if (enforce_lite_) {
-        MessageLiteGenerator(file_->message_type(i)).GenerateSource(&printer);
-      } else {
-        MessageGenerator(file_->message_type(i)).GenerateSource(&printer);
-      }
-    }
-  }
 }
 
 std::string FileGenerator::GetFileName(std::string suffix) {
@@ -425,7 +280,7 @@ std::string FileGenerator::GetFileName(std::string suffix) {
 }
 
 void FileGenerator::Generate(GeneratorContext* context) {
-  GenerateHeader(context);
+  // GenerateHeader(context);
   GenerateSource(context);
 }
 
