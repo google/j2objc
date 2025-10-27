@@ -18,6 +18,19 @@ if [ $# -eq 0 ]; then
   exit $?
 fi
 
+
+JAVA_ARGS=(\
+"-Xmx2048m" \
+"--add-exports" "java.compiler/javax.lang.model.element=ALL-UNNAMED" \
+"--add-exports" "java.compiler/javax.lang.model.type=ALL-UNNAMED" \
+"--add-exports" "java.compiler/javax.lang.model.util=ALL-UNNAMED" \
+"--add-exports" "jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED" \
+"--add-exports" "jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED" \
+"--add-exports" "jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED" \
+"--add-exports" "jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED" \
+"--add-exports" "jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED" \
+)
+
 ARGS=""
 CLASSPATH=${DIR}${LIB_DIR}/j2objc_annotations.jar
 
@@ -29,4 +42,4 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-java -Xmx2048m -jar ${JAR} -classpath ${CLASSPATH} ${ARGS}
+java ${JAVA_ARGS[*]} -jar ${JAR} -classpath ${CLASSPATH} ${ARGS}
