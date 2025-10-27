@@ -368,10 +368,17 @@ public final class ElementUtil {
   }
 
   public static boolean isVariable(Element element) {
-    ElementKind kind = element.getKind();
-    return kind == ElementKind.FIELD || kind == ElementKind.LOCAL_VARIABLE
-        || kind == ElementKind.PARAMETER || kind == ElementKind.EXCEPTION_PARAMETER
-        || kind == ElementKind.RESOURCE_VARIABLE || kind == ElementKind.ENUM_CONSTANT;
+    return switch (element.getKind()) {
+      case FIELD,
+          LOCAL_VARIABLE,
+          PARAMETER,
+          EXCEPTION_PARAMETER,
+          RESOURCE_VARIABLE,
+          ENUM_CONSTANT,
+          BINDING_VARIABLE ->
+          true;
+      default -> false;
+    };
   }
 
   public static boolean isField(Element element) {

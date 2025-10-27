@@ -2072,8 +2072,9 @@ public class StatementGeneratorTest extends GenerationTest {
               ast,
               "java.lang.String test(  java.lang.String str){",
               "  java.lang.String msg;",
-              "  if (JreIndexOfStr(str, {}, 0) instanceof java.lang.String "
-                  + "&& ((java.lang.String)JreIndexOfStr(str, {}, 0)).length() > 10) {",
+              "  if (JreIndexOfStr(str, {}, 0) instanceof java.lang.String &&"
+                  + " ((java.lang.String)nil_chk(((java.lang.String)JreIndexOfStr(str, {},"
+                  + " 0)))).length() > 10) {",
               "    msg=JreStrcat($$, \"Long string: \", ((java.lang.String)JreIndexOfStr(str, {},"
                   + " 0)));",
               "  }",
