@@ -93,11 +93,11 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
         "id y = @\"Hello\";",
         "if (x != nil && (tmp$0 = y, s$pattern$0 = [tmp$0 isKindOfClass:[NSString class]] ?"
             + " (NSString *) tmp$0 : nil, !JreStringEqualsEquals(s$pattern$0, nil))) {",
-        "int32_t i = [s$pattern$0 java_length];",
+        "int32_t i = [((NSString *) nil_chk(s$pattern$0)) java_length];",
         "}",
         "if (x != nil && ((tmp$1 = y, s$pattern$1 = [tmp$1 isKindOfClass:[NSString class]] ?"
             + " (NSString *) tmp$1 : nil, !JreStringEqualsEquals(s$pattern$1, nil)))) {",
-        " int32_t i = [s$pattern$1 java_length];",
+        " int32_t i = [((NSString *) nil_chk(s$pattern$1)) java_length];",
         "}");
   }
 }

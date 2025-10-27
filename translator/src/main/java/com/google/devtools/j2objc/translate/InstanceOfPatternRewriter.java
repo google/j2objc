@@ -31,8 +31,6 @@ import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashSet;
-import java.util.Set;
 import javax.lang.model.element.VariableElement;
 
 /**
@@ -50,8 +48,6 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
   private int tempCount;
   private int patternCount;
 
-  private Set<VariableElement> patternVariables = new HashSet<>();
-
   public InstanceOfPatternRewriter(CompilationUnit unit) {
     super(unit);
   }
@@ -68,14 +64,6 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
   }
 
   @Override
-  public void endVisit(SimpleName node) {
-    if (patternVariables.contains(node.getElement())) {
-      // Rename all existing access to the variable to the new name.
-      node.setIdentifier(nameTable.getVariableShortName((VariableElement) node.getElement()));
-    }
-  }
-
-  @Override
   public void endVisit(InstanceofExpression node) {
     if (node.getPattern() == null) {
       return;
@@ -89,7 +77,6 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
     nameTable.setVariableName(
         patternVariable,
         nameTable.getVariableShortName(patternVariable) + "$pattern$" + patternCount++);
-    patternVariables.add(patternVariable);
 
     // Generate a temporary variable to preserve evaluation semantics.
     VariableElement tempVariable =

@@ -83,6 +83,7 @@ public class InstanceofExpression extends Expression {
     if (visitor.visit(this)) {
       leftOperand.accept(visitor);
       rightOperand.accept(visitor);
+      pattern.accept(visitor);
     }
     visitor.endVisit(this);
   }
