@@ -123,12 +123,11 @@ public class SwitchCaseRewriterTest extends GenerationTest {
           assertTranslatedLines(
               translation,
               "NSString *s$pattern$0;",
-              "id tmp$0;",
               "id o2 = @\"\";",
               "if ([o isKindOfClass:[JavaLangInteger class]] && [((JavaLangInteger *)"
                   + " nil_chk(((JavaLangInteger *) o))) intValue] == 0 && [((JavaLangInteger *) o)"
-                  + " intValue] < 1 && (tmp$0 = o2, s$pattern$0 = [tmp$0 isKindOfClass:[NSString"
-                  + " class]] ? (NSString *) tmp$0 : nil, !JreStringEqualsEquals(s$pattern$0,"
+                  + " intValue] < 1 && (s$pattern$0 = [o2 isKindOfClass:[NSString"
+                  + " class]] ? (NSString *) o2 : nil, !JreStringEqualsEquals(s$pattern$0,"
                   + " nil))) {",
               "  return @\"true\";",
               "}",
@@ -164,9 +163,8 @@ public class SwitchCaseRewriterTest extends GenerationTest {
               // "s" (which is renamed to s$pattern$0) must be declared outside the scope of the
               // if statement below since it will be access outside.
               "NSString *s$pattern$0;",
-              "id tmp$0;",
-              "if (!((tmp$0 = o, s$pattern$0 = [tmp$0 isKindOfClass:[NSString class]] ? (NSString"
-                  + " *) tmp$0 : nil, !JreStringEqualsEquals(s$pattern$0, nil)))) {",
+              "if (!((s$pattern$0 = [o isKindOfClass:[NSString class]] ? (NSString"
+                  + " *) o : nil, !JreStringEqualsEquals(s$pattern$0, nil)))) {",
               "@throw create_JavaLangIllegalArgumentException_init();",
               "}",
               "[((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out)))"

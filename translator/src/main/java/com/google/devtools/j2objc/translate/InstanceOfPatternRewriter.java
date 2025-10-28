@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
+import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InfixExpression.Operator;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
@@ -69,59 +70,54 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
       return;
     }
 
+    CommaExpression replacement = new CommaExpression();
+
     VariableElement patternVariable =
         ((Pattern.BindingPattern) node.getPattern()).getVariable().getVariableElement();
-
     // TODO(b/454053746): Have a general pass that renames variables to avoid collisions.
     // Create a unique name to avoid collisions.
     nameTable.setVariableName(
         patternVariable,
         nameTable.getVariableShortName(patternVariable) + "$pattern$" + patternCount++);
-
-    // Generate a temporary variable to preserve evaluation semantics.
-    VariableElement tempVariable =
-        GeneratedVariableElement.newLocalVar(
-            "tmp$" + tempCount++,
-            node.getLeftOperand().getTypeMirror(),
-            patternVariable.getEnclosingElement());
-
-    enclosingScopes.peek().addStatement(0, new VariableDeclarationStatement(tempVariable, null));
     enclosingScopes.peek().addStatement(0, new VariableDeclarationStatement(patternVariable, null));
 
-    CommaExpression replacement =
-        new CommaExpression(
-            // tmp = expr
-            new Assignment(new SimpleName(tempVariable), node.getLeftOperand().copy()),
-            // patternVariable = tmp instanceof T ? (T) tmp : null
-            new Assignment(
-                getResolvedSimpleName(patternVariable),
-                new ConditionalExpression()
-                    .setExpression(
-                        new InstanceofExpression(node)
-                            .setLeftOperand(new SimpleName(tempVariable))
-                            .setPattern(null))
-                    .setThenExpression(
-                        new CastExpression(patternVariable.asType(), new SimpleName(tempVariable))
-                            .setNeedsCastChk(false))
-                    .setElseExpression(new NullLiteral(patternVariable.asType()))
-                    .setTypeMirror(patternVariable.asType())),
-            // patternVariable != null
-            new InfixExpression()
-                .setTypeMirror(typeUtil.getBoolean())
-                .setOperator(Operator.NOT_EQUALS)
-                .addOperand(new SimpleName(getResolvedSimpleName(patternVariable)))
-                .addOperand(new NullLiteral(patternVariable.asType())));
-    node.replaceWith(replacement);
-  }
+    Expression expression = node.getLeftOperand();
+    // No need to generate a temporary variable if it is already a SimpleName.
+    if (!(expression instanceof SimpleName)) {
+      // Generate a temporary variable to preserve evaluation semantics since we can't guarantee
+      // that the expression doesn't have side effects and can be evaluated multiple times.
+      VariableElement tempVariable =
+          GeneratedVariableElement.newLocalVar(
+              "tmp$instanceof$" + tempCount++,
+              node.getLeftOperand().getTypeMirror(),
+              patternVariable.getEnclosingElement());
+      enclosingScopes.peek().addStatement(0, new VariableDeclarationStatement(tempVariable, null));
+      // tmp = expr
+      replacement.addExpression(
+          new Assignment(new SimpleName(tempVariable), node.getLeftOperand().copy()));
+      expression = new SimpleName(tempVariable);
+    }
 
-  /**
-   * Return the unique simple name for a pattern variable.
-   *
-   * <p>Since pattern variables end up being declared in an enclosing scope, to avoid name clashes a
-   * unique name is synthesized for them.
-   */
-  private SimpleName getResolvedSimpleName(VariableElement patternVariable) {
-    return new SimpleName(patternVariable)
-        .setIdentifier(nameTable.getVariableShortName(patternVariable));
+    replacement.addExpressions(
+        // patternVariable = expr instanceof T ? (T) expr : null
+        new Assignment(
+            new SimpleName(patternVariable),
+            new ConditionalExpression()
+                .setExpression(
+                    new InstanceofExpression(node)
+                        .setLeftOperand(expression.copy())
+                        .setPattern(null))
+                .setThenExpression(
+                    new CastExpression(patternVariable.asType(), expression.copy())
+                        .setNeedsCastChk(false))
+                .setElseExpression(new NullLiteral(patternVariable.asType()))
+                .setTypeMirror(patternVariable.asType())),
+        // patternVariable != null
+        new InfixExpression()
+            .setTypeMirror(typeUtil.getBoolean())
+            .setOperator(Operator.NOT_EQUALS)
+            .addOperand(new SimpleName(patternVariable))
+            .addOperand(new NullLiteral(patternVariable.asType())));
+    node.replaceWith(replacement);
   }
 }

@@ -14,9 +14,9 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -47,6 +47,12 @@ public class CommaExpression extends Expression {
 
   public List<Expression> getExpressions() {
     return expressions;
+  }
+
+  @CanIgnoreReturnValue
+  public CommaExpression addExpressions(Expression... expressions) {
+    this.expressions.addAll(Arrays.asList(expressions));
+    return this;
   }
 
   @Override
