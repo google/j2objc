@@ -76,6 +76,7 @@ public class NameTable {
   private final CaptureInfo captureInfo;
   private final Options options;
   private final Map<VariableElement, String> variableNames = new HashMap<>();
+  private final Map<VariableElement, String> variableTypeQualifiers = new HashMap<>();
   private final Map<ExecutableElement, String> methodSelectorCache = new HashMap<>();
   private final Map<TypeElement, String> fullNameCache = new HashMap<>();
 
@@ -276,6 +277,20 @@ public class NameTable {
       return className + '_' + shortName;
     }
     return shortName;
+  }
+
+  /**
+   * Sets the qualifiers that should be added to the variable declaration. Use an asterisk ('*') to
+   * delimit qualifiers that should apply to a pointer from qualifiers that should apply to the
+   * pointee type. For example setting the qualifier as "__strong * const" on a string array will
+   * result in a declaration of "NSString * __strong * const".
+   */
+  public void setTypeQualifiers(VariableElement var, String qualifiers) {
+    variableTypeQualifiers.put(var, qualifiers);
+  }
+
+  public String getTypeQualifiers(VariableElement var) {
+    return variableTypeQualifiers.get(var);
   }
 
   /**
@@ -828,8 +843,7 @@ public class NameTable {
   }
 
   public String getObjCType(VariableElement var) {
-    return getObjcTypeInner(
-        var.asType(), ElementUtil.getTypeQualifiers(var), false, false, null);
+    return getObjcTypeInner(var.asType(), getTypeQualifiers(var), false, false, null);
   }
 
   public String getObjCTypeDeclaration(TypeMirror type) {

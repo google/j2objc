@@ -35,7 +35,6 @@ public class GeneratedVariableElement extends GeneratedElement implements Variab
   private final TypeMirror type;
   private boolean nonnull = false;
   private boolean isWeak = false;
-  private String typeQualifiers;
 
   private GeneratedVariableElement(
       String name, TypeMirror type, ElementKind kind, Element enclosingElement, boolean synthetic) {
@@ -103,22 +102,6 @@ public class GeneratedVariableElement extends GeneratedElement implements Variab
   public GeneratedVariableElement setIsWeak(boolean value) {
     isWeak = value;
     return this;
-  }
-
-  /**
-   * Sets the qualifiers that should be added to the variable declaration. Use
-   * an asterisk ('*') to delimit qualifiers that should apply to a pointer from
-   * qualifiers that should apply to the pointee type. For example setting the
-   * qualifier as "__strong * const" on a string array will result in a
-   * declaration of "NSString * __strong * const".
-   */
-  public GeneratedVariableElement setTypeQualifiers(String qualifiers) {
-    typeQualifiers = qualifiers;
-    return this;
-  }
-
-  public String getTypeQualifiers() {
-    return typeQualifiers;
   }
 
   @Override
