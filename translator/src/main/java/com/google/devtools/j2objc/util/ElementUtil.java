@@ -274,11 +274,6 @@ public final class ElementUtil {
         && ((GeneratedVariableElement) element).isNonnull();
   }
 
-  public static String getTypeQualifiers(VariableElement element) {
-    return element instanceof GeneratedVariableElement
-        ? ((GeneratedVariableElement) element).getTypeQualifiers() : null;
-  }
-
   public static boolean isAbstract(Element element) {
     return hasModifier(element, Modifier.ABSTRACT);
   }

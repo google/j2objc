@@ -78,9 +78,7 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
     } else if (loopVariable.asType().getKind().isPrimitive()) {
       boxLoopVariable(node, expressionType, loopVariable);
     } else {
-      VariableElement newLoopVariable = GeneratedVariableElement.mutableCopy(loopVariable)
-          .setTypeQualifiers("__strong");
-      node.getParameter().setVariableElement(newLoopVariable);
+      nameTable.setTypeQualifiers(loopVariable, "__strong");
     }
   }
 
@@ -93,10 +91,10 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
     TypeMirror bufferType = new PointerType(componentType);
     VariableElement arrayVariable = GeneratedVariableElement.newLocalVar(
         "a__", expressionType, null);
-    VariableElement bufferVariable = GeneratedVariableElement.newLocalVar("b__", bufferType, null)
-        .setTypeQualifiers("const*");
-    VariableElement endVariable = GeneratedVariableElement.newLocalVar("e__", bufferType, null)
-        .setTypeQualifiers("const*");
+    VariableElement bufferVariable = GeneratedVariableElement.newLocalVar("b__", bufferType, null);
+    nameTable.setTypeQualifiers(bufferVariable, "const*");
+    VariableElement endVariable = GeneratedVariableElement.newLocalVar("e__", bufferType, null);
+    nameTable.setTypeQualifiers(endVariable, "const*");
     VariableElement bufferField = GeneratedVariableElement.newField(
         "buffer", bufferType, iosArrayType)
         .addModifiers(Modifier.PUBLIC);
