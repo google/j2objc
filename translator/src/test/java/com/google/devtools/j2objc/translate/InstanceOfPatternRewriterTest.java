@@ -34,10 +34,10 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "NSString *s$pattern$0;",
+        "NSString *s;",
         "id o = @\"Hello\";",
-        "int32_t i = (s$pattern$0 = [o isKindOfClass:[NSString class]] ? (NSString"
-            + " *) o : nil, !JreStringEqualsEquals(s$pattern$0, nil)) ? [s$pattern$0"
+        "int32_t i = (s = [o isKindOfClass:[NSString class]] ? (NSString"
+            + " *) o : nil, !JreStringEqualsEquals(s, nil)) ? [s"
             + " java_length] : 0;");
   }
 
@@ -54,18 +54,18 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "NSString *s$pattern$1;",
-        "NSString *s$pattern$0;",
+        "NSString *s;",
+        "NSString *s_1;",
         "id o = @\"Hello\";",
-        "if ((s$pattern$0 = [o isKindOfClass:[NSString class]] ? (NSString *) o"
-            + " : nil, !JreStringEqualsEquals(s$pattern$0, nil))) {",
-        "    int32_t i = [s$pattern$0 java_length];",
+        "if ((s_1 = [o isKindOfClass:[NSString class]] ? (NSString *) o"
+            + " : nil, !JreStringEqualsEquals(s_1, nil))) {",
+        "    int32_t i = [s_1 java_length];",
         "}",
-        "if (!((s$pattern$1 = [o isKindOfClass:[NSString class]] ? (NSString *)"
-            + " o : nil, !JreStringEqualsEquals(s$pattern$1, nil)))) {",
+        "if (!((s = [o isKindOfClass:[NSString class]] ? (NSString *)"
+            + " o : nil, !JreStringEqualsEquals(s, nil)))) {",
         "return;",
         "}",
-        "int32_t j = [s$pattern$1 java_length];");
+        "int32_t j = [s java_length];");
   }
 
   public void testPotentialSideEffects() throws IOException {
@@ -79,12 +79,12 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "id tmp$instanceof$0;",
-        "NSString *s$pattern$0;",
-        "if ((tmp$instanceof$0 = [((id<JavaUtilList>) nil_chk(l)) getWithInt:0], s$pattern$0 = "
-            + "[tmp$instanceof$0 isKindOfClass:[NSString class]] ? (NSString *) tmp$instanceof$0"
-            + " : nil, !JreStringEqualsEquals(s$pattern$0, nil))) {",
-        "    int32_t i = [s$pattern$0 java_length];",
+        "id tmp;",
+        "NSString *s;",
+        "if ((tmp = [((id<JavaUtilList>) nil_chk(l)) getWithInt:0], s = "
+            + "[tmp isKindOfClass:[NSString class]] ? (NSString *) tmp"
+            + " : nil, !JreStringEqualsEquals(s, nil))) {",
+        "    int32_t i = [s java_length];",
         "}");
   }
 
@@ -102,17 +102,17 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "NSString *s$pattern$1;",
-        "NSString *s$pattern$0;",
+        "NSString *s;",
+        "NSString *s_1;",
         "id x = nil;",
         "id y = @\"Hello\";",
-        "if (x != nil && (s$pattern$0 = [y isKindOfClass:[NSString class]] ?"
-            + " (NSString *) y : nil, !JreStringEqualsEquals(s$pattern$0, nil))) {",
-        "int32_t i = [((NSString *) nil_chk(s$pattern$0)) java_length];",
+        "if (x != nil && (s_1 = [y isKindOfClass:[NSString class]] ?"
+            + " (NSString *) y : nil, !JreStringEqualsEquals(s_1, nil))) {",
+        "int32_t i = [((NSString *) nil_chk(s_1)) java_length];",
         "}",
-        "if (x != nil && ((s$pattern$1 = [y isKindOfClass:[NSString class]] ?"
-            + " (NSString *) y : nil, !JreStringEqualsEquals(s$pattern$1, nil)))) {",
-        " int32_t i = [((NSString *) nil_chk(s$pattern$1)) java_length];",
+        "if (x != nil && ((s = [y isKindOfClass:[NSString class]] ?"
+            + " (NSString *) y : nil, !JreStringEqualsEquals(s, nil)))) {",
+        "int32_t i = [((NSString *) nil_chk(s)) java_length];",
         "}");
   }
 }

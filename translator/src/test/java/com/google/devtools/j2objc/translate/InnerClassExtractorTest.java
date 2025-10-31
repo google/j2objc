@@ -792,8 +792,9 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation,
         "create_Test_1Inner_initWithInt_withNSObjectArray_(i, "
         + "[IOSObjectArray arrayWithObjects:(id[]){ o } count:1 type:NSObject_class_()])");
-    assertTranslation(translation,
+    assertTranslation(
+        translation,
         "void Test_1Inner_initWithInt_withNSObjectArray_("
-        + "Test_1Inner *self, int32_t capture$0, IOSObjectArray *o)");
+            + "Test_1Inner *self, int32_t capture$0, IOSObjectArray *oArg)");
   }
 }

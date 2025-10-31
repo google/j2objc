@@ -78,9 +78,7 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
     } else if (loopVariable.asType().getKind().isPrimitive()) {
       boxLoopVariable(node, expressionType, loopVariable);
     } else {
-      VariableElement newLoopVariable = GeneratedVariableElement.mutableCopy(loopVariable)
-          .setTypeQualifiers("__strong");
-      node.getParameter().setVariableElement(newLoopVariable);
+      addStrongQualifierToLoopVariable(node);
     }
   }
 
@@ -232,5 +230,24 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
     }
     block.addStatement(stmt);
     return block;
+  }
+
+  private void addStrongQualifierToLoopVariable(EnhancedForStatement node) {
+    VariableElement oldLoopVariable = node.getParameter().getVariableElement();
+    VariableElement newLoopVariable =
+        GeneratedVariableElement.mutableCopy(oldLoopVariable).setTypeQualifiers("__strong");
+    node.getParameter().setVariableElement(newLoopVariable);
+
+    // Replace variable references so that the VariableRenamer sees the link between the
+    // variable declarations and its references.
+    node.accept(
+        new UnitTreeVisitor(unit) {
+          @Override
+          public void endVisit(SimpleName node) {
+            if (oldLoopVariable == node.getElement()) {
+              node.setElement(newLoopVariable);
+            }
+          }
+        });
   }
 }

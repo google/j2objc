@@ -210,15 +210,17 @@ public class TranslationProcessor extends FileProcessor {
     new AbstractMethodRewriter(unit, deadCodeMap).run();
     ticker.tick("AbstractMethodRewriter");
 
-    new VariableRenamer(unit).run();
-    ticker.tick("VariableRenamer");
-
+    // Before: VariableRenamer - VariableRenamer renames variables in a scope-aware manner.
     new InstanceOfPatternRewriter(unit).run();
     ticker.tick("InstanceOfPatternRewriter");
 
+    // Before: VariableRenamer - VariableRenamer renames variables in a scope-aware manner.
     // Rewrite enhanced for loops into correct C code.
     new EnhancedForRewriter(unit).run();
     ticker.tick("EnhancedForRewriter");
+
+    new VariableRenamer(unit).run();
+    ticker.tick("VariableRenamer");
 
     // Before: Autoboxer - Must generate implementations so autoboxing can be applied to result.
     new LambdaRewriter(unit).run();

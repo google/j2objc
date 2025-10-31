@@ -46,8 +46,6 @@ import javax.lang.model.element.VariableElement;
 public class InstanceOfPatternRewriter extends UnitTreeVisitor {
 
   private Deque<Block> enclosingScopes = new ArrayDeque<>();
-  private int tempCount;
-  private int patternCount;
 
   public InstanceOfPatternRewriter(CompilationUnit unit) {
     super(unit);
@@ -74,11 +72,6 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
 
     VariableElement patternVariable =
         ((Pattern.BindingPattern) node.getPattern()).getVariable().getVariableElement();
-    // TODO(b/454053746): Have a general pass that renames variables to avoid collisions.
-    // Create a unique name to avoid collisions.
-    nameTable.setVariableName(
-        patternVariable,
-        nameTable.getVariableShortName(patternVariable) + "$pattern$" + patternCount++);
     enclosingScopes.peek().addStatement(0, new VariableDeclarationStatement(patternVariable, null));
 
     Expression expression = node.getLeftOperand();
@@ -88,9 +81,7 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
       // that the expression doesn't have side effects and can be evaluated multiple times.
       VariableElement tempVariable =
           GeneratedVariableElement.newLocalVar(
-              "tmp$instanceof$" + tempCount++,
-              node.getLeftOperand().getTypeMirror(),
-              patternVariable.getEnclosingElement());
+              "tmp", node.getLeftOperand().getTypeMirror(), patternVariable.getEnclosingElement());
       enclosingScopes.peek().addStatement(0, new VariableDeclarationStatement(tempVariable, null));
       // tmp = expr
       replacement.addExpression(
@@ -99,7 +90,7 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
     }
 
     replacement.addExpressions(
-        // patternVariable = expr instanceof T ? (T) expr : null
+        // patternVariable = expression instanceof T ? (T) expression : null
         new Assignment(
             new SimpleName(patternVariable),
             new ConditionalExpression()

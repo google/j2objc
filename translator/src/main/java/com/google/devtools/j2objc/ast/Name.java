@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 
@@ -50,6 +51,7 @@ public abstract class Name extends Expression {
     return element;
   }
 
+  @CanIgnoreReturnValue
   public Name setElement(Element newElement) {
     element = newElement;
     return this;
