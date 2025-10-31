@@ -80,11 +80,11 @@ public class SwitchCaseRewriterTest extends GenerationTest {
               translation,
               "- (void)checkObjectWithId:(id)obj {",
               "  if ([obj isKindOfClass:[NSString class]] && "
-                  + "[((NSString *) nil_chk(((NSString *) obj))) java_length] > 25) {",
+                  + "[((NSString *) obj) java_length] > 25) {",
               "    Test_logWithNSString_(@\"Long string\");",
               "  }",
               "  else if ([obj isKindOfClass:[NSString class]] && "
-                  + "[((NSString *) nil_chk(((NSString *) obj))) java_length] > 5) {",
+                  + "[((NSString *) obj) java_length] > 5) {",
               "    Test_logWithNSString_(@\"Medium string\");",
               "  }",
               "  else if ([obj isKindOfClass:[NSString class]]) {",
@@ -125,14 +125,14 @@ public class SwitchCaseRewriterTest extends GenerationTest {
               "NSString *s$pattern$0;",
               "id o2 = @\"\";",
               "if ([o isKindOfClass:[JavaLangInteger class]] && [((JavaLangInteger *)"
-                  + " nil_chk(((JavaLangInteger *) o))) intValue] == 0 && [((JavaLangInteger *) o)"
+                  + " o) intValue] == 0 && [((JavaLangInteger *) o)"
                   + " intValue] < 1 && (s$pattern$0 = [o2 isKindOfClass:[NSString"
                   + " class]] ? (NSString *) o2 : nil, !JreStringEqualsEquals(s$pattern$0,"
                   + " nil))) {",
               "  return @\"true\";",
               "}",
               "else if ([o isKindOfClass:[JavaLangInteger class]] && [((JavaLangInteger *)"
-                  + " nil_chk(((JavaLangInteger *) o))) intValue] == 0 || [((JavaLangInteger *) o)"
+                  + " o) intValue] == 0 || [((JavaLangInteger *) o)"
                   + " intValue] > 1) {",
               "  return @\"second\";",
               "}",

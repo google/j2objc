@@ -29,7 +29,6 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.SwitchExpression;
-import com.google.devtools.j2objc.ast.SwitchExpressionCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
@@ -89,39 +88,21 @@ public class SwitchRewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(SwitchCase node) {
-    Expression expr = node.getExpression();
-    VariableElement var = expr != null ? TreeUtil.getVariableElement(expr) : null;
-    if (var == null) {
-      return;
-    }
-    TypeMirror type = var.asType();
-    if (TypeUtil.isEnum(type)) {
-      String enumValue = nameTable.getNativeEnumConstantName(TypeUtil.asTypeElement(type), var);
-      node.setExpression(new NativeExpression(enumValue, typeUtil.getInt()));
-    } else if (type.getKind().isPrimitive() && var.getKind() == ElementKind.LOCAL_VARIABLE) {
-      Object value = var.getConstantValue();
-      if (value != null) {
-        node.setExpression(TreeUtil.newLiteral(value, typeUtil));
-      }
-    }
-  }
-
-  @Override
-  public void endVisit(SwitchExpressionCase node) {
     List<Expression> exprs = node.getExpressions();
     for (int i = 0; i < exprs.size(); i++) {
       Expression expr = exprs.get(i);
       VariableElement var = expr != null ? TreeUtil.getVariableElement(expr) : null;
-      if (var != null) {
-        TypeMirror type = var.asType();
-        if (TypeUtil.isEnum(type)) {
-          String enumValue = nameTable.getNativeEnumConstantName(TypeUtil.asTypeElement(type), var);
-          exprs.set(i, new NativeExpression(enumValue, typeUtil.getInt()));
-        } else if (type.getKind().isPrimitive() && var.getKind() == ElementKind.LOCAL_VARIABLE) {
-          Object value = var.getConstantValue();
-          if (value != null) {
-            exprs.set(i, TreeUtil.newLiteral(value, typeUtil));
-          }
+      if (var == null) {
+        continue;
+      }
+      TypeMirror type = var.asType();
+      if (TypeUtil.isEnum(type)) {
+        String enumValue = nameTable.getNativeEnumConstantName(TypeUtil.asTypeElement(type), var);
+        exprs.set(i, new NativeExpression(enumValue, typeUtil.getInt()));
+      } else if (type.getKind().isPrimitive() && var.getKind() == ElementKind.LOCAL_VARIABLE) {
+        Object value = var.getConstantValue();
+        if (value != null) {
+          exprs.set(i, TreeUtil.newLiteral(value, typeUtil));
         }
       }
     }
@@ -206,11 +187,14 @@ public class SwitchRewriter extends UnitTreeVisitor {
       if (stmt.getKind() == TreeNode.Kind.SWITCH_CASE) {
         SwitchCase caseStmt = (SwitchCase) stmt;
         if (!caseStmt.isDefault()) {
-          arrayInit.addExpression(TreeUtil.remove(caseStmt.getExpression()));
-          caseStmt.setExpression(NumberLiteral.newIntLiteral(idx++, typeUtil));
+          List<Expression> caseExprs = caseStmt.getExpressions();
+          for (int i = 0; i < caseExprs.size(); i++) {
+            arrayInit.addExpression(caseExprs.get(i).copy());
+            caseExprs.set(i, NumberLiteral.newIntLiteral(idx++, typeUtil));
+          }
         }
-      } else if (stmt.getKind() == TreeNode.Kind.SWITCH_EXPRESSION_CASE) {
-        SwitchExpressionCase caseStmt = (SwitchExpressionCase) stmt;
+      } else if (stmt.getKind() == TreeNode.Kind.SWITCH_CASE) {
+        SwitchCase caseStmt = (SwitchCase) stmt;
         if (!caseStmt.isDefault()) {
           List<Expression> caseExprs = caseStmt.getExpressions();
           for (int i = 0; i < caseExprs.size(); i++) {

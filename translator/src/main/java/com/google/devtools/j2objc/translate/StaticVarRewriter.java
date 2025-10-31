@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SwitchCase;
-import com.google.devtools.j2objc.ast.SwitchExpressionCase;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
@@ -127,12 +126,6 @@ public class StaticVarRewriter extends UnitTreeVisitor {
 
   @Override
   public boolean visit(SwitchCase node) {
-    // Avoid using an accessor method for enums in a switch case.
-    return false;
-  }
-
-  @Override
-  public boolean visit(SwitchExpressionCase node) {
     // Avoid using an accessor method for enums in the expression of a switch expression case.
     Expression guard = node.getGuard();
     if (guard != null) {

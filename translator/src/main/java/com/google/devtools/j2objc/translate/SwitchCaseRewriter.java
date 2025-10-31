@@ -25,8 +25,8 @@ import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.Pattern;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.SwitchExpression;
-import com.google.devtools.j2objc.ast.SwitchExpressionCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -69,8 +69,8 @@ public class SwitchCaseRewriter extends UnitTreeVisitor {
 
   private boolean hasPatternsOrGuards(List<Statement> stmts) {
     for (Statement stmt : stmts) {
-      if (stmt.getKind() == TreeNode.Kind.SWITCH_EXPRESSION_CASE) {
-        SwitchExpressionCase caseExprStmt = (SwitchExpressionCase) stmt;
+      if (stmt.getKind() == TreeNode.Kind.SWITCH_CASE) {
+        SwitchCase caseExprStmt = (SwitchCase) stmt;
         if (caseExprStmt.getPattern() != null || caseExprStmt.getGuard() != null) {
           return true;
         }
@@ -84,13 +84,13 @@ public class SwitchCaseRewriter extends UnitTreeVisitor {
     Statement defaultStmt = null;
     IfStatement lastCase = null;
     for (Statement stmt : cases) {
-      if (stmt.getKind() == TreeNode.Kind.SWITCH_EXPRESSION_CASE) {
-        SwitchExpressionCase switchExpressionCase = (SwitchExpressionCase) stmt;
-        if (switchExpressionCase.isDefault()) {
-          defaultStmt = (Statement) switchExpressionCase.getBody().copy();
+      if (stmt.getKind() == TreeNode.Kind.SWITCH_CASE) {
+        SwitchCase switchCase = (SwitchCase) stmt;
+        if (switchCase.isDefault()) {
+          defaultStmt = (Statement) switchCase.getBody().copy();
           continue;
         }
-        IfStatement ifCase = rewriteSwitchExpressionCase(switchExpression, switchExpressionCase);
+        IfStatement ifCase = rewriteSwitchExpressionCase(switchExpression, switchCase);
         if (result == null) {
           result = ifCase;
         } else {
@@ -124,7 +124,7 @@ public class SwitchCaseRewriter extends UnitTreeVisitor {
   }
 
   private IfStatement rewriteSwitchExpressionCase(
-      Expression switchExpression, SwitchExpressionCase switchExpressionCase) {
+      Expression switchExpression, SwitchCase switchExpressionCase) {
     IfStatement result = null;
     if (switchExpressionCase.getPattern() != null) {
       Pattern pattern = switchExpressionCase.getPattern();

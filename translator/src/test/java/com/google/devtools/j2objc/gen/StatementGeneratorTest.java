@@ -2071,8 +2071,8 @@ public class StatementGeneratorTest extends GenerationTest {
               "java.lang.String test(  java.lang.String str){",
               "  java.lang.String msg;",
               "  if (JreIndexOfStr(str, {}, 0) instanceof java.lang.String &&"
-                  + " ((java.lang.String)nil_chk(((java.lang.String)JreIndexOfStr(str, {},"
-                  + " 0)))).length() > 10) {",
+                  + " ((java.lang.String)JreIndexOfStr(str, {},"
+                  + " 0)).length() > 10) {",
               "    msg=JreStrcat($$, \"Long string: \", ((java.lang.String)JreIndexOfStr(str, {},"
                   + " 0)));",
               "  }",
@@ -2150,8 +2150,7 @@ public class StatementGeneratorTest extends GenerationTest {
               "  switch (c) {",
               "  case Coin_Enum_HEADS:",
               "  {",
-              "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out)))"
-                  + " printlnWithNSString:@\"Heads\"];",
+              "  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Heads\"];",
               "  }",
               "  break;",
               "  case Coin_Enum_TAILS:",
@@ -2216,8 +2215,7 @@ public class StatementGeneratorTest extends GenerationTest {
           assertTranslatedLines(
               translation,
               "  if ([obj isKindOfClass:[JavaLangInteger class]]) {",
-              "    [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
-                  + "printlnWithNSString:@\"Is an integer\"];",
+              "    [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Is an integer\"];",
               "  }",
               "  else if ([obj isKindOfClass:[JavaLangFloat class]]) {",
               "    [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Is a float\"];",

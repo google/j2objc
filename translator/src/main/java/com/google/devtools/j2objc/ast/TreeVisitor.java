@@ -496,12 +496,6 @@ public class TreeVisitor {
 
   public void endVisit(SwitchExpression node) {}
 
-  public boolean visit(SwitchExpressionCase node) {
-    return true;
-  }
-
-  public void endVisit(SwitchExpressionCase node) {}
-
   public boolean visit(SwitchStatement node) {
     return true;
   }

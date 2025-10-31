@@ -79,7 +79,6 @@ import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.SwitchExpression;
-import com.google.devtools.j2objc.ast.SwitchExpressionCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.SynchronizedStatement;
 import com.google.devtools.j2objc.ast.ThisExpression;
@@ -743,11 +742,26 @@ public class StatementGenerator extends UnitTreeVisitor {
   @Override
   public boolean visit(SwitchCase node) {
     if (node.isDefault()) {
-      buffer.append("  default:\n");
+      buffer.append("  default");
     } else {
       buffer.append("  case ");
-      node.getExpression().accept(this);
-      buffer.append(":\n");
+      Iterator<Expression> caseIter = node.getExpressions().iterator();
+      while (caseIter.hasNext()) {
+        caseIter.next().accept(this);
+        if (caseIter.hasNext()) {
+          buffer.println(':');
+          buffer.append("  case ");
+        }
+      }
+    }
+    buffer.append(":\n");
+
+    TreeNode body = node.getBody();
+    if (body != null) {
+      buffer.indent();
+      buffer.printIndent();
+      body.accept(this);
+      buffer.unindent();
     }
     return false;
   }
@@ -768,33 +782,6 @@ public class StatementGenerator extends UnitTreeVisitor {
     buffer.unindent();
     buffer.printIndent();
     buffer.append("}");
-    return false;
-  }
-
-  @Override
-  @SuppressWarnings("UngroupedOverloads")
-  public boolean visit(SwitchExpressionCase node) {
-    if (node.isDefault()) {
-      buffer.append("default");
-    } else {
-      buffer.append("case ");
-      Iterator<Expression> caseIter = node.getExpressions().iterator();
-      while (caseIter.hasNext()) {
-        caseIter.next().accept(this);
-        if (caseIter.hasNext()) {
-          buffer.println(':');
-          buffer.append("  case ");
-        }
-      }
-    }
-    TreeNode body = node.getBody();
-    if (body != null) {
-      buffer.println(':');
-      buffer.indent();
-      buffer.printIndent();
-      body.accept(this);
-      buffer.unindent();
-    }
     return false;
   }
 

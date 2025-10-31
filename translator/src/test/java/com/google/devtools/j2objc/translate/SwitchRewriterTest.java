@@ -206,9 +206,7 @@ public class SwitchRewriterTest extends GenerationTest {
         translation,
         "switch (k) {",
         "  case 1:",
-        // This first statement does a nil_check on System.out.
-        "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out)))"
-            + " printlnWithNSString:@\"one\"];",
+        "  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"one\"];",
         "  break;",
         "  case 2:",
         "  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"two\"];",
@@ -249,7 +247,7 @@ public class SwitchRewriterTest extends GenerationTest {
         "    case 1:",
         "    return second_;",
         "    default:",
-        "    return IOSObjectArray_Get(nil_chk(rest_), index - 2);",
+        "    return IOSObjectArray_Get(rest_, index - 2);",
         "  };",
         "}");
   }

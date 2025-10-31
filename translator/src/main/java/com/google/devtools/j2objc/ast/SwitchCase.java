@@ -14,20 +14,29 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import java.util.List;
+
 /**
  * Node type for a switch case statement.
  */
 public class SwitchCase extends Statement {
 
   private boolean isDefault = false;
-  private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
+  private final ChildLink<Pattern> pattern = ChildLink.create(Pattern.class, this);
+  private final ChildList<Expression> expressions = ChildList.create(Expression.class, this);
+  private final ChildLink<Expression> guard = ChildLink.create(Expression.class, this);
+  private final ChildLink<TreeNode> body = ChildLink.create(TreeNode.class, this);
 
   public SwitchCase() {}
 
   public SwitchCase(SwitchCase other) {
     super(other);
     isDefault = other.isDefault();
-    expression.copyFrom(other.getExpression());
+    pattern.copyFrom(other.getPattern());
+    expressions.copyFrom(other.getExpressions());
+    guard.copyFrom(other.getGuard());
+    body.copyFrom(other.getBody());
   }
 
   @Override
@@ -39,24 +48,59 @@ public class SwitchCase extends Statement {
     return isDefault;
   }
 
+  @CanIgnoreReturnValue
   public SwitchCase setIsDefault(boolean value) {
     isDefault = value;
     return this;
   }
 
-  public Expression getExpression() {
-    return expression.get();
+  public List<Expression> getExpressions() {
+    return expressions;
   }
 
-  public SwitchCase setExpression(Expression newExpression) {
-    expression.set(newExpression);
+  @CanIgnoreReturnValue
+  public SwitchCase addExpression(Expression newExpression) {
+    expressions.add(newExpression);
+    return this;
+  }
+
+  public Pattern getPattern() {
+    return pattern.get();
+  }
+
+  @CanIgnoreReturnValue
+  public SwitchCase setPattern(Pattern newPattern) {
+    pattern.set(newPattern);
+    return this;
+  }
+
+  public Expression getGuard() {
+    return guard.get();
+  }
+
+  @CanIgnoreReturnValue
+  public SwitchCase setGuard(Expression newGuard) {
+    guard.set(newGuard);
+    return this;
+  }
+
+  public TreeNode getBody() {
+    return body.get();
+  }
+
+  @CanIgnoreReturnValue
+  public SwitchCase setBody(TreeNode newBody) {
+    body.set(newBody);
     return this;
   }
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
-      expression.accept(visitor);
+      pattern.accept(visitor);
+      expressions.accept(visitor);
+      guard.accept(visitor);
+      body.accept(visitor);
     }
     visitor.endVisit(this);
   }

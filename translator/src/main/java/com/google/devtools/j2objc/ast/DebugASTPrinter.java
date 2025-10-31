@@ -948,24 +948,10 @@ public class DebugASTPrinter extends TreeVisitor {
   public boolean visit(SwitchCase node) {
     sb.printIndent();
     if (node.isDefault()) {
-      sb.println("default:");
-    } else {
-      sb.print("case ");
-      node.getExpression().accept(this);
-      sb.println(":");
-    }
-    return false;
-  }
-
-  @Override
-  public boolean visit(SwitchExpressionCase node) {
-    sb.printIndent();
-    if (node.isDefault()) {
       sb.print("default: ");
     } else {
       sb.print("case ");
-      for (Iterator<Expression> it = node.getExpressions().iterator();
-           it.hasNext(); ) {
+      for (Iterator<Expression> it = node.getExpressions().iterator(); it.hasNext(); ) {
         it.next().accept(this);
         if (it.hasNext()) {
           sb.print(", ");
