@@ -10,17 +10,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-edition = "2023";
+edition = "2024";
 
 package protos;
+
+import "google/protobuf/java_features.proto";
 
 option features.utf8_validation = NONE;
 option java_package = "protos";
 
-// The point of this .proto is to test java_multiple_files = false.
-option java_multiple_files = false;
-
 message Data1 {
+  // The point of this .proto is to test messages nested in the file.
+  option features.(pb.java).nest_in_file_class = YES;
+
   int32 int_value = 1;
 
   message Internal {

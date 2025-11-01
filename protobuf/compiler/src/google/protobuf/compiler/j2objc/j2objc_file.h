@@ -82,7 +82,8 @@ class FileGenerator {
   void GenerateMessageOrBuilder(GeneratorContext* context,
                                 const Descriptor* descriptor);
   std::string GetFileName(std::string suffix);
-  bool GenerateMultipleFiles();
+  bool GenerateMultipleFiles(const Descriptor* descriptor);
+  bool GenerateMultipleFiles(const EnumDescriptor* descriptor);
 
   const FileDescriptor* file_;
   std::string output_dir_;

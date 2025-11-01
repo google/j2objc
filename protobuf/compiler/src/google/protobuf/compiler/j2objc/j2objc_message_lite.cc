@@ -341,7 +341,7 @@ void MessageLiteGenerator::GenerateSource(io::Printer* printer) {
       "  return &_$classname$;\n"
       "}\n",
       "classname", ClassName(descriptor_), "simplename", descriptor_->name(),
-      "packagename", FileJavaPackage(descriptor_->file()));
+      "packagename", java::FileJavaPackage(descriptor_->file()));
 
   printer->Print(
       "\n"

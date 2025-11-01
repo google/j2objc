@@ -98,12 +98,12 @@ void PrintForwardDeclarations(const std::set<std::string>* declarations,
 
 FileGenerator::FileGenerator(const FileDescriptor* file, bool enforce_lite)
     : file_(file),
-      classname_(FileClassName(file)),
+      classname_(java::FileClassName(file)),
       enforce_lite_(enforce_lite) {
   if (IsGenerateFileDirMapping()) {
     output_dir_ = FileParentDir(file);
   } else {
-    output_dir_ = JavaPackageToDir(FileJavaPackage(file));
+    output_dir_ = JavaPackageToDir(java::FileJavaPackage(file));
   }
 }
 
@@ -161,20 +161,21 @@ void FileGenerator::GenerateHeader(GeneratorContext* context) {
   }
   declarations.insert("@class ComGoogleProtobufExtensionRegistryLite");
 
-  if (!GenerateMultipleFiles()) {
-    for (int i = 0; i < file_->message_type_count(); i++) {
-      std::unique_ptr<MessageGenerator> generator;
-      if (enforce_lite_) {
-        generator =
-            std::make_unique<MessageLiteGenerator>(file_->message_type(i));
-      } else {
-        generator = std::make_unique<MessageGenerator>(file_->message_type(i));
-      }
-      generator->CollectMessageOrBuilderImports(&headers);
-      generator->CollectHeaderImports(&headers);
-      generator->CollectForwardDeclarations(&declarations);
-      generator->CollectMessageOrBuilderForwardDeclarations(&declarations);
+  for (int i = 0; i < file_->message_type_count(); i++) {
+    if (GenerateMultipleFiles(file_->message_type(i))) {
+      continue;
     }
+    std::unique_ptr<MessageGenerator> generator;
+    if (enforce_lite_) {
+      generator =
+          std::make_unique<MessageLiteGenerator>(file_->message_type(i));
+    } else {
+      generator = std::make_unique<MessageGenerator>(file_->message_type(i));
+    }
+    generator->CollectMessageOrBuilderImports(&headers);
+    generator->CollectHeaderImports(&headers);
+    generator->CollectForwardDeclarations(&declarations);
+    generator->CollectMessageOrBuilderForwardDeclarations(&declarations);
   }
 
   PrintImports(&headers, &printer);
@@ -242,22 +243,26 @@ void FileGenerator::GenerateHeader(GeneratorContext* context) {
     ExtensionGenerator(file_->extension(i)).GenerateMembersHeader(&printer);
   }
 
-  if (!GenerateMultipleFiles()) {
-    for (int i = 0; i < file_->enum_type_count(); i++) {
-      EnumGenerator(file_->enum_type(i)).GenerateHeader(&printer);
+  for (int i = 0; i < file_->enum_type_count(); i++) {
+    if (GenerateMultipleFiles(file_->enum_type(i))) {
+      continue;
     }
+    EnumGenerator(file_->enum_type(i)).GenerateHeader(&printer);
+  }
 
-    for (int i = 0; i < file_->message_type_count(); i++) {
-      std::unique_ptr<MessageGenerator> generator;
-      if (enforce_lite_) {
-        generator =
-            std::make_unique<MessageLiteGenerator>(file_->message_type(i));
-      } else {
-        generator = std::make_unique<MessageGenerator>(file_->message_type(i));
-      }
-      generator->GenerateMessageOrBuilder(&printer);
-      generator->GenerateHeader(&printer);
+  for (int i = 0; i < file_->message_type_count(); i++) {
+    if (GenerateMultipleFiles(file_->message_type(i))) {
+      continue;
     }
+    std::unique_ptr<MessageGenerator> generator;
+    if (enforce_lite_) {
+      generator =
+          std::make_unique<MessageLiteGenerator>(file_->message_type(i));
+    } else {
+      generator = std::make_unique<MessageGenerator>(file_->message_type(i));
+    }
+    generator->GenerateMessageOrBuilder(&printer);
+    generator->GenerateHeader(&printer);
   }
   printer.Print(
       "\n"
@@ -279,22 +284,27 @@ void FileGenerator::GenerateSource(GeneratorContext* context) {
     headers.insert("com/google/protobuf/ExtensionRegistry.h");
   }
   headers.insert("com/google/protobuf/ExtensionRegistryLite.h");
-  if (GenerateMultipleFiles()) {
-    for (int i = 0; i < file_->message_type_count(); i++) {
+  for (int i = 0; i < file_->message_type_count(); i++) {
+    if (GenerateMultipleFiles(file_->message_type(i))) {
       headers.insert(GetHeader(file_->message_type(i)));
     }
-  } else {
-    for (int i = 0; i < file_->message_type_count(); i++) {
-      if (enforce_lite_) {
-        MessageLiteGenerator(file_->message_type(i))
-            .CollectSourceImports(&headers);
-      } else {
-        MessageGenerator(file_->message_type(i)).CollectSourceImports(&headers);
-      }
+  }
+  for (int i = 0; i < file_->message_type_count(); i++) {
+    if (GenerateMultipleFiles(file_->message_type(i))) {
+      continue;
     }
-    for (int i = 0; i < file_->enum_type_count(); i++) {
-      EnumGenerator(file_->enum_type(i)).CollectSourceImports(&headers);
+    if (enforce_lite_) {
+      MessageLiteGenerator(file_->message_type(i))
+          .CollectSourceImports(&headers);
+    } else {
+      MessageGenerator(file_->message_type(i)).CollectSourceImports(&headers);
     }
+  }
+  for (int i = 0; i < file_->enum_type_count(); i++) {
+    if (GenerateMultipleFiles(file_->enum_type(i))) {
+      continue;
+    }
+    EnumGenerator(file_->enum_type(i)).CollectSourceImports(&headers);
   }
   for (int i = 0; i < file_->extension_count(); i++) {
     ExtensionGenerator(file_->extension(i)).CollectSourceImports(&headers);
@@ -402,16 +412,20 @@ void FileGenerator::GenerateSource(GeneratorContext* context) {
   printer.Outdent();
   printer.Print("}\n");
 
-  if (!GenerateMultipleFiles()) {
-    for (int i = 0; i < file_->enum_type_count(); i++) {
-      EnumGenerator(file_->enum_type(i)).GenerateSource(&printer);
+  for (int i = 0; i < file_->enum_type_count(); i++) {
+    if (GenerateMultipleFiles(file_->enum_type(i))) {
+      continue;
     }
-    for (int i = 0; i < file_->message_type_count(); i++) {
-      if (enforce_lite_) {
-        MessageLiteGenerator(file_->message_type(i)).GenerateSource(&printer);
-      } else {
-        MessageGenerator(file_->message_type(i)).GenerateSource(&printer);
-      }
+    EnumGenerator(file_->enum_type(i)).GenerateSource(&printer);
+  }
+  for (int i = 0; i < file_->message_type_count(); i++) {
+    if (GenerateMultipleFiles(file_->message_type(i))) {
+      continue;
+    }
+    if (enforce_lite_) {
+      MessageLiteGenerator(file_->message_type(i)).GenerateSource(&printer);
+    } else {
+      MessageGenerator(file_->message_type(i)).GenerateSource(&printer);
     }
   }
 }
@@ -528,21 +542,31 @@ void FileGenerator::GenerateMessageOrBuilder(
 }
 
 void FileGenerator::GenerateSiblings(GeneratorContext* context) {
-  if (GenerateMultipleFiles()) {
-    for (int i = 0; i < file_->enum_type_count(); i++) {
-      GenerateEnumHeader(context, file_->enum_type(i));
-      GenerateEnumSource(context, file_->enum_type(i));
+  for (int i = 0; i < file_->enum_type_count(); i++) {
+    if (!GenerateMultipleFiles(file_->enum_type(i))) {
+      continue;
     }
-    for (int i = 0; i < file_->message_type_count(); i++) {
-      GenerateMessageHeader(context, file_->message_type(i));
-      GenerateMessageSource(context, file_->message_type(i));
-      GenerateMessageOrBuilder(context, file_->message_type(i));
+    GenerateEnumHeader(context, file_->enum_type(i));
+    GenerateEnumSource(context, file_->enum_type(i));
+  }
+  for (int i = 0; i < file_->message_type_count(); i++) {
+    if (!GenerateMultipleFiles(file_->message_type(i))) {
+      continue;
     }
+    GenerateMessageHeader(context, file_->message_type(i));
+    GenerateMessageSource(context, file_->message_type(i));
+    GenerateMessageOrBuilder(context, file_->message_type(i));
   }
 }
 
-bool FileGenerator::GenerateMultipleFiles() {
-  return file_->options().java_multiple_files() && !IsGenerateFileDirMapping();
+bool FileGenerator::GenerateMultipleFiles(const Descriptor* descriptor) {
+  return !java::NestedInFileClass(*descriptor, /*immutable=*/true) &&
+         !IsGenerateFileDirMapping();
+}
+
+bool FileGenerator::GenerateMultipleFiles(const EnumDescriptor* descriptor) {
+  return !java::NestedInFileClass(*descriptor, /*immutable=*/true) &&
+         !IsGenerateFileDirMapping();
 }
 
 void PrintProperty(io::Printer* printer, const std::string& key,

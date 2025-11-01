@@ -52,7 +52,7 @@ import protos.MsgWithDefaultsOrBuilder;
 import protos.MsgWithNestedExtensions;
 import protos.MsgWithRequiredFields;
 import protos.MsgWithSpecialFieldNames;
-import protos.SingleFile;
+import protos.SingleFileProto;
 import protos.Typical;
 import protos.TypicalData;
 import protos.TypicalDataMessage;
@@ -627,16 +627,14 @@ public class CompatibilityTest extends ProtobufTest {
   }
 
   public void testMessageOrBuilderInterfaceSingleFile() throws Exception {
-    SingleFile.Data1.InternalOrBuilder internalBuilder = SingleFile.Data1.Internal.newBuilder()
-        .setIntValue(24);
+    SingleFileProto.Data1.InternalOrBuilder internalBuilder =
+        SingleFileProto.Data1.Internal.newBuilder().setIntValue(24);
     assertEquals(24, internalBuilder.getIntValue());
-    SingleFile.Data1OrBuilder builder = SingleFile.Data1.newBuilder().setIntValue(42);
+    SingleFileProto.Data1OrBuilder builder = SingleFileProto.Data1.newBuilder().setIntValue(42);
     assertTrue(builder.hasIntValue());
     assertEquals(42, builder.getIntValue());
-    SingleFile.Data1OrBuilder data = SingleFile.Data1.newBuilder()
-        .setIntValue(42)
-        .addRepeatedString("foo")
-        .build();
+    SingleFileProto.Data1OrBuilder data =
+        SingleFileProto.Data1.newBuilder().setIntValue(42).addRepeatedString("foo").build();
     assertTrue(data.hasIntValue());
     assertEquals(42, data.getIntValue());
     List<String> strList = data.getRepeatedStringList();

@@ -42,8 +42,8 @@ namespace compiler {
 namespace j2objc {
 
 FileGenerator::FileGenerator(const FileDescriptor* file)
-    : file_(file), classname_(FileClassName(file)) {
-  output_dir_ = JavaPackageToDir(FileJavaPackage(file));
+    : file_(file), classname_(java::FileClassName(file)) {
+  output_dir_ = JavaPackageToDir(java::FileJavaPackage(file));
 }
 
 FileGenerator::~FileGenerator() {}

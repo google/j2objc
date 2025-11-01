@@ -48,12 +48,6 @@ namespace j2objc {
 
 namespace {
 
-const char* kDefaultPackage = "";
-
-// A suffix that will be appended to the file's outer class name if the name
-// conflicts with some other types defined in the file.
-const char *kOuterClassNameSuffix = "OuterClass";
-
 // The field number of the "j2objc_package_prefix" file option defined in
 // j2objc-descriptor.proto.
 const int kPackagePrefixFieldNumber = 102687446;
@@ -205,7 +199,7 @@ std::string GetPackagePrefix(const FileDescriptor *file) {
   }
 
   // Look for a matching prefix from the prefixes file.
-  std::string java_package = FileJavaPackage(file);
+  std::string java_package = java::FileJavaPackage(file);
   std::map<std::string, std::string>::iterator it = prefixes.find(java_package);
   if (it != prefixes.end()) {
     return it->second;
@@ -230,25 +224,13 @@ std::string GetPackagePrefix(const FileDescriptor *file) {
   return globalPrefix + CapitalizeJavaPackage(java_package);
 }
 
-std::string GetJavaClassPrefix(const FileDescriptor *file,
-                               const Descriptor *containing_type) {
-  if (containing_type != nullptr) {
-    return JavaClassName(containing_type);
-  } else {
-    if (file->options().java_multiple_files()) {
-      return FileJavaPackage(file);
-    } else {
-      return JavaClassName(file);
-    }
-  }
-}
-
-std::string GetClassPrefix(const FileDescriptor *file,
-                           const Descriptor *containing_type) {
+std::string GetClassPrefix(const FileDescriptor* file,
+                           const Descriptor* containing_type,
+                           bool is_own_file) {
   if (containing_type != nullptr) {
     return ClassName(containing_type) + "_";
   } else {
-    if (file->options().java_multiple_files()) {
+    if (is_own_file) {
       return GetPackagePrefix(file);
     } else {
       return ClassName(file) + "_";
@@ -306,19 +288,6 @@ std::string UnderscoresToCapitalizedCamelCase(const FieldDescriptor *field) {
   return UnderscoresToCamelCase(FieldName(field), true);
 }
 
-std::string FileClassName(const FileDescriptor *file) {
-  if (file->options().has_java_outer_classname()) {
-    return file->options().java_outer_classname();
-  } else {
-    std::string class_name =
-        UnderscoresToCamelCase(StripProto(FileBaseName(file)), true);
-    if (HasConflictingClassName(file, class_name)) {
-      class_name += kOuterClassNameSuffix;
-    }
-    return class_name;
-  }
-}
-
 bool HasConflictingClassName(const FileDescriptor *file,
                              const std::string &classname) {
   for (int i = 0; i < file->enum_type_count(); i++) {
@@ -350,22 +319,6 @@ std::string FileBaseName(const FileDescriptor *file) {
                                          : file->name().substr(last_slash + 1));
 }
 
-std::string FileJavaPackage(const FileDescriptor *file) {
-  std::string result;
-
-  if (file->options().has_java_package()) {
-    result = file->options().java_package();
-  } else {
-    result = kDefaultPackage;
-    if (!file->package().empty()) {
-      if (!result.empty()) result += '.';
-      result += file->package();
-    }
-  }
-
-  return result;
-}
-
 std::string JavaPackageToDir(std::string package_name) {
   std::string package_dir = absl::StrReplaceAll(package_name, {{".", "/"}});
   if (!package_dir.empty()) package_dir += "/";
@@ -373,15 +326,17 @@ std::string JavaPackageToDir(std::string package_name) {
 }
 
 std::string ClassName(const Descriptor *descriptor) {
-  return absl::StrCat(GetClassPrefix(descriptor->file(),
-                                     descriptor->containing_type()),
-                                     descriptor->name(), globalPostfix);
+  return absl::StrCat(
+      GetClassPrefix(descriptor->file(), descriptor->containing_type(),
+                     !java::NestedInFileClass(*descriptor, /*immutable=*/true)),
+      descriptor->name(), globalPostfix);
 }
 
 std::string ClassName(const EnumDescriptor *descriptor) {
-  return absl::StrCat(GetClassPrefix(descriptor->file(),
-                                     descriptor->containing_type()),
-                                     descriptor->name(), globalPostfix);
+  return absl::StrCat(
+      GetClassPrefix(descriptor->file(), descriptor->containing_type(),
+                     !java::NestedInFileClass(*descriptor, /*immutable=*/true)),
+      descriptor->name(), globalPostfix);
 }
 
 std::string COrdinalEnumName(const EnumDescriptor *descriptor) {
@@ -401,7 +356,7 @@ std::string CValuePreprocessorName(const EnumDescriptor *descriptor) {
 }
 
 std::string ClassName(const FileDescriptor *descriptor) {
-  return GetPackagePrefix(descriptor) + FileClassName(descriptor) +
+  return GetPackagePrefix(descriptor) + java::FileClassName(descriptor) +
          globalPostfix;
 }
 
@@ -422,33 +377,30 @@ std::string FieldConstantName(const FieldDescriptor *field) {
 }
 
 std::string JavaClassName(const Descriptor *descriptor) {
-  return absl::StrCat(GetJavaClassPrefix(descriptor->file(),
-                                         descriptor->containing_type()),
-                                         ".", descriptor->name());
+  return java::QualifiedClassName(descriptor);
 }
 
 std::string JavaClassName(const EnumDescriptor *descriptor) {
-  return absl::StrCat(GetJavaClassPrefix(descriptor->file(),
-                                         descriptor->containing_type()),
-                                         ".", descriptor->name());
+  return java::QualifiedClassName(descriptor);
 }
 
 std::string JavaClassName(const FileDescriptor *descriptor) {
-  return FileJavaPackage(descriptor) + "." + FileClassName(descriptor);
+  return java::FileJavaPackage(descriptor) + "." +
+         java::FileClassName(descriptor);
 }
 
 std::string GetHeader(const FileDescriptor *descriptor) {
   if (IsGenerateFileDirMapping()) {
     return StaticOutputFileName(descriptor, ".h");
   } else {
-    return JavaPackageToDir(FileJavaPackage(descriptor))
-        + FileClassName(descriptor) + ".h";
+    return JavaPackageToDir(java::FileJavaPackage(descriptor)) +
+           java::FileClassName(descriptor) + ".h";
   }
 }
 
 std::string GetHeader(const Descriptor *descriptor) {
   const FileDescriptor *file = descriptor->file();
-  if (file->options().java_multiple_files()) {
+  if (!java::NestedInFileClass(*descriptor, /*immutable=*/true)) {
     const Descriptor *containing_type = descriptor->containing_type();
     if (containing_type != nullptr) {
       return GetHeader(containing_type);
@@ -456,8 +408,8 @@ std::string GetHeader(const Descriptor *descriptor) {
       if (IsGenerateFileDirMapping()) {
         return StaticOutputFileName(file, ".h");
       } else {
-        return absl::StrCat(JavaPackageToDir(FileJavaPackage(file)),
-            descriptor->name(), ".h");
+        return absl::StrCat(JavaPackageToDir(java::FileJavaPackage(file)),
+                            descriptor->name(), ".h");
       }
     }
   } else {
@@ -467,7 +419,7 @@ std::string GetHeader(const Descriptor *descriptor) {
 
 std::string GetHeader(const EnumDescriptor *descriptor) {
   const FileDescriptor *file = descriptor->file();
-  if (file->options().java_multiple_files()) {
+  if (!java::NestedInFileClass(*descriptor, /*immutable=*/true)) {
     const Descriptor *containing_type = descriptor->containing_type();
     if (containing_type != nullptr) {
       return GetHeader(containing_type);
@@ -475,8 +427,8 @@ std::string GetHeader(const EnumDescriptor *descriptor) {
       if (IsGenerateFileDirMapping()) {
         return StaticOutputFileName(file, ".h");
       } else {
-        return absl::StrCat(JavaPackageToDir(FileJavaPackage(file)),
-            descriptor->name(), ".h");
+        return absl::StrCat(JavaPackageToDir(java::FileJavaPackage(file)),
+                            descriptor->name(), ".h");
       }
     }
   } else {

@@ -10,13 +10,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-edition = "2023";
+edition = "2024";
 
 package protos;
 
+option java_outer_classname = "StringFields";
 option features.utf8_validation = NONE;
 option java_package = "protos";
-option java_multiple_files = true;
 
 message StringMsg {
   string empty_f = 1;

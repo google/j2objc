@@ -69,17 +69,10 @@ std::string FileBaseName(const FileDescriptor *file);
 // Returns the file's parent directory.
 std::string FileParentDir(const FileDescriptor *file);
 
-// Gets the unqualified class name for the file.  Each .proto file becomes a
-// single Java class, with all its contents nested in that class.
-std::string FileClassName(const FileDescriptor *file);
-
 // Check whether there is any type defined in the proto file that has
 // the given class name.
 bool HasConflictingClassName(const FileDescriptor *file,
                              const std::string &classname);
-
-// Returns the file's Java package name.
-std::string FileJavaPackage(const FileDescriptor *file);
 
 // Returns output directory for the given package name.
 std::string JavaPackageToDir(std::string package_name);

@@ -44,6 +44,8 @@
 #include "absl/strings/str_replace.h"
 #include "absl/strings/string_view.h"
 #include "google/protobuf/compiler/code_generator.h"
+#include "google/protobuf/compiler/java/helpers.h"
+#include "google/protobuf/compiler/java/names.h"
 #include "google/protobuf/io/printer.h"
 
 using namespace google::protobuf::compiler;

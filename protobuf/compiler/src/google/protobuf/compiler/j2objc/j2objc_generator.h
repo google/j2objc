@@ -61,7 +61,7 @@ class J2ObjCGenerator : public CodeGenerator {
   }
 
   Edition GetMinimumEdition() const override { return Edition::EDITION_PROTO2; }
-  Edition GetMaximumEdition() const override { return Edition::EDITION_2023; }
+  Edition GetMaximumEdition() const override { return Edition::EDITION_2024; }
 
  private:
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(J2ObjCGenerator);
