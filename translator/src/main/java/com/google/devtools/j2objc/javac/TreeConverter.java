@@ -1422,13 +1422,9 @@ public class TreeConverter {
     for (CaseTree switchCase : node.getCases()) {
       TreePath switchCasePath = getTreePath(path, switchCase);
       if (switchCase.getCaseKind() == CaseKind.RULE) {
-        Statement switchCaseStmt = convertCaseRule(switchCase, switchCasePath);
+        SwitchCase switchCaseStmt = convertCaseRule(switchCase, switchCasePath);
         newNode.addStatement(switchCaseStmt);
-        TreeNode.Kind stmtKind = switchCaseStmt.getKind();
-        if (stmtKind != TreeNode.Kind.RETURN_STATEMENT
-            && stmtKind != TreeNode.Kind.THROW_STATEMENT) {
-          newNode.addStatement(new BreakStatement());
-        }
+        newNode.addStatement(new BreakStatement());
       } else {
         newNode.addStatement((SwitchCase) convert(switchCase, path));
         for (StatementTree s : switchCase.getStatements()) {
@@ -1439,7 +1435,7 @@ public class TreeConverter {
     return newNode;
   }
 
-  private TreeNode convertSwitchExpression(SwitchExpressionTree node, TreePath parent) {
+  private SwitchExpression convertSwitchExpression(SwitchExpressionTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
     SwitchExpression newNode =
         new SwitchExpression().setExpression(convertWithoutParens(node.getExpression(), path));
@@ -1459,8 +1455,7 @@ public class TreeConverter {
     for (CaseTree caseTree : cases) {
       TreePath switchCasePath = getTreePath(path, caseTree);
 
-      Statement stmt = convertCaseRule(caseTree, switchCasePath);
-      SwitchCase switchCase = (SwitchCase) stmt;
+      SwitchCase switchCase = convertCaseRule(caseTree, switchCasePath);
 
       // Convert any cases that have multiple expressions into a list of
       // SwitchCases for all but the last expression, remove them from
@@ -1504,7 +1499,7 @@ public class TreeConverter {
           }
         }
       }
-      newNode.addStatement(stmt);
+      newNode.addStatement(switchCase);
       if (exprSaved) {
         newNode.addStatement(new BreakStatement());
       }
@@ -1513,7 +1508,7 @@ public class TreeConverter {
     return newNode;
   }
 
-  private Statement convertCaseRule(CaseTree caseTree, TreePath parent) {
+  private SwitchCase convertCaseRule(CaseTree caseTree, TreePath parent) {
     SwitchCase switchCase = new SwitchCase();
 
     // TODO(b/456257427): Replace the use of getLabels() by getExpressions().
