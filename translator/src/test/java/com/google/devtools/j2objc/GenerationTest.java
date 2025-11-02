@@ -100,7 +100,7 @@ public abstract class GenerationTest extends TestCase {
   @Override
   protected void setUp() throws IOException {
     tempDir = FileUtil.createTempDir("testout");
-    SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_17);
+    SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_21);
     loadOptions();
     createParser();
   }
@@ -799,18 +799,18 @@ public abstract class GenerationTest extends TestCase {
     void run() throws IOException;
   }
 
-  protected void testOnJava21OrAbove(TestLambda test) throws IOException {
-    if (Runtime.version().feature() >= 21) {
-      SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_21);
-      options.setSourceVersion(SourceVersion.JAVA_21);
-      test.run();
-    }
-  }
-
   protected void testOnJava22OrAbove(TestLambda test) throws IOException {
     if (Runtime.version().feature() >= 22) {
       SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_22);
       options.setSourceVersion(SourceVersion.JAVA_22);
+      test.run();
+    }
+  }
+
+  protected void testOnJava25OrAbove(TestLambda test) throws IOException {
+    if (Runtime.version().feature() >= 25) {
+      SourceVersion.setMaxSupportedVersion(SourceVersion.JAVA_25);
+      options.setSourceVersion(SourceVersion.JAVA_25);
       test.run();
     }
   }
