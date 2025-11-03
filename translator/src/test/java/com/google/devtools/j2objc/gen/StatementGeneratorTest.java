@@ -2174,14 +2174,18 @@ public class StatementGeneratorTest extends GenerationTest {
                       "  }",
                       "  void test() {",
                       "    Date _ = getCurrentDate();",
+                      "    Number _ = null;",
                       "    System.out.println(\"field initialized: \" + (currentDate != null));",
                       "  }",
                       "}"),
                   "Test",
                   "Test.m");
-          // Verify that the local variable is named "_", as javac uses an empty strings.
-          assertTranslation(
-              translation, "JavaUtilDate *_ = JreRetainedLocalValue([self getCurrentDate]);");
+          // Verify that unnamed local variable are named "_", as javac uses an empty strings. Also
+          // verify that if there are multiple unnamed variables, they are not renamed.
+          assertTranslatedLines(
+              translation,
+              "JavaUtilDate *_ = JreRetainedLocalValue([self getCurrentDate]);",
+              "NSNumber *_ = nil;");
         });
   }
 
