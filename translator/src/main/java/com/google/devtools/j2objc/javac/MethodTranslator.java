@@ -467,9 +467,6 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
       com.strobel.decompiler.languages.java.ast.VariableDeclarationStatement node, Void data) {
     VariableDeclarationStatement varDecl =  new VariableDeclarationStatement();
     boolean isFinal = node.getModifiers().contains(Flags.Flag.FINAL);
-    if (isFinal) {
-      varDecl.setModifiers(java.lang.reflect.Modifier.FINAL);
-    }
     AstType astType = node.getType();
     Type type = (Type) astType.acceptVisitor(this, null);
     for (VariableInitializer init : node.getVariables()) {

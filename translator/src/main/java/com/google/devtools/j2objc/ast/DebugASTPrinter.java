@@ -1206,7 +1206,6 @@ public class DebugASTPrinter extends TreeVisitor {
   @Override
   public boolean visit(VariableDeclarationStatement node) {
     sb.printIndent();
-    printModifiers(node.getModifiers());
     sb.print(node.getTypeMirror().toString());
     sb.print(' ');
     for (Iterator<VariableDeclarationFragment> it = node.getFragments().iterator();
