@@ -2062,108 +2062,99 @@ public class StatementGeneratorTest extends GenerationTest {
   @SuppressWarnings("StringConcatToTextBlock")
   public void testASTConversionSimpleSwitchExpressionWithPatternAndGuard() throws IOException {
     // Switch expression patterns introduced in Java 21.
-    testOnJava21OrAbove(
-        () -> {
-          String ast =
-              translateType("Test", SIMPLE_SWITCH_EXPRESSION_WITH_PATTERN_AND_GUARD).toString();
-          assertTranslatedLines(
-              ast,
-              "java.lang.String test(  java.lang.String str){",
-              "  java.lang.String msg;",
-              "  if (JreIndexOfStr(str, {}, 0) instanceof java.lang.String &&"
-                  + " ((java.lang.String)JreIndexOfStr(str, {},"
-                  + " 0)).length() > 10) {",
-              "    msg=JreStrcat($$, \"Long string: \", ((java.lang.String)JreIndexOfStr(str, {},"
-                  + " 0)));",
-              "  }",
-              "  else if (JreIndexOfStr(str, {}, 0) instanceof java.lang.String) {",
-              "    msg=JreStrcat($$, \"Short string: \", ((java.lang.String)JreIndexOfStr(str, {},"
-                  + " 0)));",
-              "  }",
-              "  else {",
-              "    __builtin_unreachable();",
-              "  }",
-              "  return msg;",
-              "}");
-        });
+    String ast =
+        translateType("Test", SIMPLE_SWITCH_EXPRESSION_WITH_PATTERN_AND_GUARD).toString();
+    assertTranslatedLines(
+        ast,
+        "java.lang.String test(  java.lang.String str){",
+        "  java.lang.String msg;",
+        "  if (JreIndexOfStr(str, {}, 0) instanceof java.lang.String &&"
+            + " ((java.lang.String)JreIndexOfStr(str, {},"
+            + " 0)).length() > 10) {",
+        "    msg=JreStrcat($$, \"Long string: \", ((java.lang.String)JreIndexOfStr(str, {},"
+            + " 0)));",
+        "  }",
+        "  else if (JreIndexOfStr(str, {}, 0) instanceof java.lang.String) {",
+        "    msg=JreStrcat($$, \"Short string: \", ((java.lang.String)JreIndexOfStr(str, {},"
+            + " 0)));",
+        "  }",
+        "  else {",
+        "    __builtin_unreachable();",
+        "  }",
+        "  return msg;",
+        "}");
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
   public void testNullSwitchExpressionCase() throws IOException {
-    testOnJava21OrAbove(
-        () -> {
-          String translation =
-              translateSourceFile(
-                      "class Test {\n"
-                          + "  String testNullCase(String s) {\n"
-                          + "    String result = switch (s) {\n"
-                          + "      case null -> \"oops\";\n"
-                          + "      case \"Foo\", \"Bar\" -> \"great\";\n"
-                          + "      default -> \"okay\";\n"
-                          + "    };\n"
-                          + "    return result;"
-                          + "  }\n"
-                          + "}\n",
-                      "Test",
-                      "Test.m")
-                  .toString();
-          assertTranslatedLines(
-              translation,
-              "switch (JreIndexOfStr(s, (id[]){ nil, @\"Foo\", @\"Bar\" }, 3)) {",
-              "  case 0:",
-              "  result = @\"oops\";",
-              "  break;",
-              "  case 1:",
-              "  case 2:",
-              "  result = @\"great\";",
-              "  break;",
-              "  default:",
-              "  result = @\"okay\";",
-              "  break;",
-              "};");
-        });
+    String translation =
+        translateSourceFile(
+                "class Test {\n"
+                    + "  String testNullCase(String s) {\n"
+                    + "    String result = switch (s) {\n"
+                    + "      case null -> \"oops\";\n"
+                    + "      case \"Foo\", \"Bar\" -> \"great\";\n"
+                    + "      default -> \"okay\";\n"
+                    + "    };\n"
+                    + "    return result;"
+                    + "  }\n"
+                    + "}\n",
+                "Test",
+                "Test.m")
+            .toString();
+    assertTranslatedLines(
+        translation,
+        "switch (JreIndexOfStr(s, (id[]){ nil, @\"Foo\", @\"Bar\" }, 3)) {",
+        "  case 0:",
+        "  result = @\"oops\";",
+        "  break;",
+        "  case 1:",
+        "  case 2:",
+        "  result = @\"great\";",
+        "  break;",
+        "  default:",
+        "  result = @\"okay\";",
+        "  break;",
+        "};");
   }
 
   // Test from https://openjdk.org/jeps/441: Improved enum constant case labels
   @SuppressWarnings("StringConcatToTextBlock")
   public void testQualifiedEnumNamesInSwitchExpressionCase() throws IOException {
-    testOnJava21OrAbove(
-        () -> {
-          String translation =
-              translateSourceFile(
-                  "sealed interface Currency permits Coin {}\n"
-                      + "enum Coin implements Currency { HEADS, TAILS }\n"
-                      + "class Test {"
-                      + "  void goodEnumSwitch1(Currency c) {\n"
-                      + "    switch (c) {\n"
-                      + "      case Coin.HEADS -> {\n"
-                      + "        System.out.println(\"Heads\");\n"
-                      + "      }\n"
-                      + "      case Coin.TAILS -> {\n"
-                      + "        System.out.println(\"Tails\");\n"
-                      + "      }\n"
-                      + "    }\n"
-                      + "  }\n"
-                      + "}",
-                  "Test",
-                  "Test.m");
-          assertTranslatedLines(
-              translation,
-              "- (void)goodEnumSwitch1WithCurrency:(id<Currency>)c {",
-              "  switch (c) {",
-              "  case Coin_Enum_HEADS:",
-              "  {",
-              "  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Heads\"];",
-              "  }",
-              "  break;",
-              "  case Coin_Enum_TAILS:",
-              "  {",
-              "    [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Tails\"];",
-              "  }",
-              "  break;",
-              "  }",
-              "}");
-        });
+    String translation =
+        translateSourceFile(
+            "sealed interface Currency permits Coin {}\n"
+                + "enum Coin implements Currency { HEADS, TAILS }\n"
+                + "class Test {"
+                + "  void goodEnumSwitch1(Currency c) {\n"
+                + "    switch (c) {\n"
+                + "      case Coin.HEADS -> {\n"
+                + "        System.out.println(\"Heads\");\n"
+                + "      }\n"
+                + "      case Coin.TAILS -> {\n"
+                + "        System.out.println(\"Tails\");\n"
+                + "      }\n"
+                + "    }\n"
+                + "  }\n"
+                + "}",
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        "- (void)goodEnumSwitch1WithCurrency:(id<Currency>)c {",
+        "  switch (c) {",
+        "  case Coin_Enum_HEADS:",
+        "  {",
+        "  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Heads\"];",
+        "  }",
+        "  break;",
+        "  case Coin_Enum_TAILS:",
+        "  {",
+        "    [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Tails\"];",
+        "  }",
+        "  break;",
+        "  }",
+        "}");
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
