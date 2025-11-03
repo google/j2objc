@@ -155,6 +155,10 @@ public final class ElementUtil {
             && hasQualifiedNamedAnnotation(element, LAZY_INIT));
   }
 
+  public static boolean isUnnamed(VariableElement element) {
+    return element.getSimpleName().contentEquals("");
+  }
+
   public static boolean isTopLevel(TypeElement type) {
     return type.getNestingKind() == NestingKind.TOP_LEVEL;
   }

@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import javax.lang.model.element.VariableElement;
@@ -68,11 +69,17 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
       return;
     }
 
-    CommaExpression replacement = new CommaExpression();
-
     VariableElement patternVariable =
         ((Pattern.BindingPattern) node.getPattern()).getVariable().getVariableElement();
+
+    if (ElementUtil.isUnnamed(patternVariable)) {
+      // If the pattern variable is unnamed this is a regular instanceof expression.
+      node.setPattern(null);
+      return;
+    }
+
     enclosingScopes.peek().addStatement(0, new VariableDeclarationStatement(patternVariable, null));
+    CommaExpression replacement = new CommaExpression();
 
     Expression expression = node.getLeftOperand();
     // No need to generate a temporary variable if it is already a SimpleName.

@@ -2288,4 +2288,24 @@ public class StatementGeneratorTest extends GenerationTest {
                   + "withNSString_withNSString_(url, user, pwd);");
         });
   }
+
+  @SuppressWarnings("StringConcatToTextBlock")
+  public void testUnnamedInstanceofPatternVariable() throws IOException {
+    testOnJava22OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  String.join(
+                      "\n",
+                      "class Test {",
+                      "  void test(Object obj) {",
+                      "    boolean b = obj instanceof String _;",
+                      "  }",
+                      "}"),
+                  "Test",
+                  "Test.m");
+          // Verify that the local variable is named "_", as javac uses an empty strings.
+          assertTranslation(translation, "bool b = [obj isKindOfClass:[NSString class]];");
+        });
+  }
 }

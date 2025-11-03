@@ -235,7 +235,7 @@ public class NameTable {
       name += '_';
     } else if (ElementUtil.isParameter(var) && badParameterNames.contains(name)) {
       name += "Arg";
-    } else if (var.getSimpleName().toString().isEmpty()) {
+    } else if (ElementUtil.isUnnamed(var)) {
       name = "_";
     }
     return name;

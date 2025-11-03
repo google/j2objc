@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -46,6 +47,7 @@ public class InstanceofExpression extends Expression {
     return typeMirror;
   }
 
+  @CanIgnoreReturnValue
   public InstanceofExpression setTypeMirror(TypeMirror type) {
     typeMirror = type;
     return this;
@@ -55,6 +57,7 @@ public class InstanceofExpression extends Expression {
     return leftOperand.get();
   }
 
+  @CanIgnoreReturnValue
   public InstanceofExpression setLeftOperand(Expression operand) {
     leftOperand.set(operand);
     return this;
@@ -64,6 +67,7 @@ public class InstanceofExpression extends Expression {
     return rightOperand.get();
   }
 
+  @CanIgnoreReturnValue
   public InstanceofExpression setRightOperand(Type operand) {
     rightOperand.set(operand);
     return this;
@@ -73,6 +77,7 @@ public class InstanceofExpression extends Expression {
     return pattern.get(); // null if no pattern in expression.
   }
 
+  @CanIgnoreReturnValue
   public InstanceofExpression setPattern(Pattern bindingPattern) {
     pattern.set(bindingPattern);
     return this;
