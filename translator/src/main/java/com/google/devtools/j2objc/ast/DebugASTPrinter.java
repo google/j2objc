@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.ast.VariableDeclaration.ObjectiveCModifier;
 import com.google.devtools.j2objc.gen.JavadocGenerator;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -23,6 +24,8 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
@@ -872,6 +875,7 @@ public class DebugASTPrinter extends TreeVisitor {
   @Override
   public boolean visit(SingleVariableDeclaration node) {
     sb.printIndent();
+    printObjectiveCModifiers(node.getModifiers());
     printModifiers(ElementUtil.fromModifierSet(node.getVariableElement().getModifiers()));
     node.getType().accept(this);
     if (node.isVarargs()) {
@@ -1178,6 +1182,7 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(VariableDeclarationExpression node) {
+    printObjectiveCModifiers(node.getModifiers());
     node.getType().accept(this);
     sb.print(' ');
     for (Iterator<VariableDeclarationFragment> it = node.getFragments().iterator();
@@ -1188,6 +1193,18 @@ public class DebugASTPrinter extends TreeVisitor {
       }
     }
     return false;
+  }
+
+  private void printObjectiveCModifiers(Set<ObjectiveCModifier> modifiers) {
+    if (modifiers.isEmpty()) {
+      return;
+    }
+    // Print the objective-c modifiers in brackets to differentiate them from the Java modifiers.
+    sb.print(
+        modifiers.stream()
+            .map(ObjectiveCModifier::asString)
+            .collect(Collectors.joining(" ", "[", "]")));
+    sb.print(" ");
   }
 
   @Override
@@ -1206,6 +1223,7 @@ public class DebugASTPrinter extends TreeVisitor {
   @Override
   public boolean visit(VariableDeclarationStatement node) {
     sb.printIndent();
+    printObjectiveCModifiers(node.getModifiers());
     sb.print(node.getTypeMirror().toString());
     sb.print(' ');
     for (Iterator<VariableDeclarationFragment> it = node.getFragments().iterator();

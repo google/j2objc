@@ -94,6 +94,7 @@ import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.UnionType;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
+import com.google.devtools.j2objc.ast.VariableDeclaration.ObjectiveCModifier;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
@@ -104,6 +105,8 @@ import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -695,6 +698,7 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(SingleVariableDeclaration node) {
+    printObjectiveCModifiers(node.getModifiers());
     buffer.append(nameTable.getObjCType(node.getVariableElement()));
     if (node.isVarargs()) {
       buffer.append("...");
@@ -906,6 +910,7 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(VariableDeclarationExpression node) {
+    printObjectiveCModifiers(node.getModifiers());
     String typeString = nameTable.getObjCType(node.getTypeMirror());
     boolean needsAsterisk = typeString.endsWith("*");
     buffer.append(typeString);
@@ -924,6 +929,15 @@ public class StatementGenerator extends UnitTreeVisitor {
       }
     }
     return false;
+  }
+
+  private void printObjectiveCModifiers(Set<ObjectiveCModifier> modifiers) {
+    if (modifiers.isEmpty()) {
+      return;
+    }
+    buffer.append(
+        modifiers.stream().map(ObjectiveCModifier::asString).collect(Collectors.joining(" ")));
+    buffer.append(" ");
   }
 
   @Override
@@ -946,6 +960,8 @@ public class StatementGenerator extends UnitTreeVisitor {
         || ElementUtil.getName(element).startsWith("unused")) {
       buffer.append("__unused ");
     }
+
+    printObjectiveCModifiers(node.getModifiers());
     String objcType = nameTable.getObjCType(element);
     String objcTypePointers = " ";
     int idx = objcType.indexOf(" *");

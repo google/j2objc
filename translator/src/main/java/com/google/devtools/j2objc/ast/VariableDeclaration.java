@@ -15,12 +15,22 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
+import java.util.Locale;
 import javax.lang.model.element.VariableElement;
 
 /**
  * Node type for the declaration of a single local variable.
  */
 public abstract class VariableDeclaration extends TreeNode {
+
+  /** Objective-C modifiers that can be applied to a variable declaration. */
+  public enum ObjectiveCModifier {
+    BLOCK;
+
+    public String asString() {
+      return "__" + name().toLowerCase(Locale.ROOT);
+    }
+  }
 
   private VariableElement variableElement;
   private int extraDimensions = 0;

@@ -14,8 +14,11 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.ast.VariableDeclaration.ObjectiveCModifier;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -25,6 +28,8 @@ import javax.lang.model.type.TypeMirror;
 public class VariableDeclarationStatement extends Statement {
 
   protected ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
+
+  private final Set<ObjectiveCModifier> modifiers = new LinkedHashSet<>();
   private ChildList<VariableDeclarationFragment> fragments =
       ChildList.create(VariableDeclarationFragment.class, this);
 
@@ -34,6 +39,7 @@ public class VariableDeclarationStatement extends Statement {
     super(other);
     annotations.copyFrom(other.getAnnotations());
     fragments.copyFrom(other.getFragments());
+    modifiers.addAll(other.getModifiers());
   }
 
   public VariableDeclarationStatement(VariableDeclarationFragment fragment) {
@@ -56,6 +62,16 @@ public class VariableDeclarationStatement extends Statement {
   @CanIgnoreReturnValue
   public VariableDeclarationStatement addAnnotation(Annotation ann) {
     annotations.add(ann);
+    return this;
+  }
+
+  public Set<ObjectiveCModifier> getModifiers() {
+    return modifiers;
+  }
+
+  @CanIgnoreReturnValue
+  public VariableDeclarationStatement addModifier(ObjectiveCModifier modifier) {
+    modifiers.add(modifier);
     return this;
   }
 

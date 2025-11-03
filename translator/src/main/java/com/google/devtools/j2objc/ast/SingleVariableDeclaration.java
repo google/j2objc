@@ -14,7 +14,10 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import javax.lang.model.element.VariableElement;
 
 /**
@@ -23,6 +26,7 @@ import javax.lang.model.element.VariableElement;
  */
 public class SingleVariableDeclaration extends VariableDeclaration {
 
+  private final Set<ObjectiveCModifier> modifiers = new LinkedHashSet<>();
   private boolean isVarargs = false;
   private final ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
   private final ChildLink<Type> type = ChildLink.create(Type.class, this);
@@ -34,6 +38,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
     isVarargs = other.isVarargs();
     annotations.copyFrom(other.getAnnotations());
     type.copyFrom(other.getType());
+    modifiers.addAll(other.getModifiers());
   }
 
   public SingleVariableDeclaration(VariableElement variableElement) {
@@ -50,6 +55,7 @@ public class SingleVariableDeclaration extends VariableDeclaration {
     return isVarargs;
   }
 
+  @CanIgnoreReturnValue
   public SingleVariableDeclaration setIsVarargs(boolean value) {
     isVarargs = value;
     return this;
@@ -59,11 +65,13 @@ public class SingleVariableDeclaration extends VariableDeclaration {
     return annotations;
   }
 
+  @CanIgnoreReturnValue
   public SingleVariableDeclaration setAnnotations(List<Annotation> annotations) {
     this.annotations.replaceAll(annotations);
     return this;
   }
 
+  @CanIgnoreReturnValue
   public SingleVariableDeclaration addAnnotation(Annotation ann) {
     annotations.add(ann);
     return this;
@@ -73,8 +81,19 @@ public class SingleVariableDeclaration extends VariableDeclaration {
     return type.get();
   }
 
+  @CanIgnoreReturnValue
   public SingleVariableDeclaration setType(Type newType) {
     type.set(newType);
+    return this;
+  }
+
+  public Set<ObjectiveCModifier> getModifiers() {
+    return modifiers;
+  }
+
+  @CanIgnoreReturnValue
+  public SingleVariableDeclaration addModifier(ObjectiveCModifier modifier) {
+    modifiers.add(modifier);
     return this;
   }
 
