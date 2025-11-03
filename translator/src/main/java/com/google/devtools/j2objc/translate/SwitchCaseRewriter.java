@@ -87,7 +87,7 @@ public class SwitchCaseRewriter extends UnitTreeVisitor {
       if (stmt.getKind() == TreeNode.Kind.SWITCH_CASE) {
         SwitchCase switchCase = (SwitchCase) stmt;
         if (switchCase.isDefault()) {
-          defaultStmt = (Statement) switchCase.getBody().copy();
+          defaultStmt = switchCase.getBody().copy();
           continue;
         }
         IfStatement ifCase = rewriteSwitchExpressionCase(switchExpression, switchCase);
@@ -144,14 +144,16 @@ public class SwitchCaseRewriter extends UnitTreeVisitor {
               InfixExpression.Operator.CONDITIONAL_AND,
               instanceofExpression,
               (Expression) replacePatternVarWithCast(var, guard, varCast));
-          Statement thenStatement = (Statement) replacePatternVarWithCast(
-              var, blockify((Statement) switchExpressionCase.getBody().copy()), varCast);
+          Statement thenStatement =
+              (Statement)
+                  replacePatternVarWithCast(
+                      var, blockify(switchExpressionCase.getBody().copy()), varCast);
           result = new IfStatement()
               .setExpression(ifExpr)
               .setThenStatement(thenStatement);
         } else {
           Block block = new Block();
-          Statement body = (Statement) switchExpressionCase.getBody().copy();
+          Statement body = switchExpressionCase.getBody().copy();
           block.addStatement((Statement) replacePatternVarWithCast(var, body, varCast));
           result = new IfStatement()
               .setExpression(instanceofExpression.copy())

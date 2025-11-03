@@ -1534,7 +1534,7 @@ public class TreeConverter {
       if (body instanceof Expression) {
         body = new YieldStatement((Expression) body);
       }
-      switchCase.setBody(body);
+      switchCase.setBody((Statement) body);
     } else {
       Block body = new Block();
       List<? extends StatementTree> statementTrees = caseTree.getStatements();

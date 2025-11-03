@@ -26,7 +26,7 @@ public class SwitchCase extends Statement {
   private final ChildLink<Pattern> pattern = ChildLink.create(Pattern.class, this);
   private final ChildList<Expression> expressions = ChildList.create(Expression.class, this);
   private final ChildLink<Expression> guard = ChildLink.create(Expression.class, this);
-  private final ChildLink<TreeNode> body = ChildLink.create(TreeNode.class, this);
+  private final ChildLink<Statement> body = ChildLink.create(Statement.class, this);
 
   public SwitchCase() {}
 
@@ -46,6 +46,10 @@ public class SwitchCase extends Statement {
 
   public boolean isDefault() {
     return isDefault;
+  }
+
+  public boolean isRule() {
+    return getBody() != null;
   }
 
   @CanIgnoreReturnValue
@@ -84,12 +88,12 @@ public class SwitchCase extends Statement {
     return this;
   }
 
-  public TreeNode getBody() {
+  public Statement getBody() {
     return body.get();
   }
 
   @CanIgnoreReturnValue
-  public SwitchCase setBody(TreeNode newBody) {
+  public SwitchCase setBody(Statement newBody) {
     body.set(newBody);
     return this;
   }
