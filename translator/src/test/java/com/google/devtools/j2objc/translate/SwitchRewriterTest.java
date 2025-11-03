@@ -479,8 +479,9 @@ public class SwitchRewriterTest extends GenerationTest {
         "    return @\"h\";",
         "    case JavaUtilConcurrentTimeUnit_Enum_DAYS:",
         "    return @\"d\";",
+        "    default:",
+        "    __builtin_unreachable();",
         "  };",
-        "  __builtin_unreachable();",
         "}");
   }
 

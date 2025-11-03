@@ -649,7 +649,6 @@ public class TreeConverter {
         trailingPatternDeclaration = null;
       }
     }
-    maybeAddUnreachableDirective(newNode);
     return newNode;
   }
 
@@ -1131,36 +1130,6 @@ public class TreeConverter {
         .setName(name);
   }
 
-  // If method returns a switch expression that doesn't have a default case,
-  // add a function call to tell clang that all cases are handled. This can
-  // be asserted because switch expressions are checked to be exhaustive.
-  private void maybeAddUnreachableDirective(Block body) {
-    List<Statement> stmts = body.getStatements();
-    if (!stmts.isEmpty()) {
-      Statement lastStmt = stmts.get(stmts.size() - 1);
-      if (lastStmt.getKind() == TreeNode.Kind.EXPRESSION_STATEMENT) {
-        Expression expr = ((ExpressionStatement) lastStmt).getExpression();
-        if (expr.getKind() == TreeNode.Kind.SWITCH_EXPRESSION) {
-          boolean hasDefaultCase = false;
-          for (Statement switchCase : ((SwitchExpression) expr).getStatements()) {
-            if (switchCase.getKind() == TreeNode.Kind.SWITCH_CASE) {
-              if (((SwitchCase) switchCase).isDefault()) {
-                hasDefaultCase = true;
-                break;
-              }
-            }
-          }
-          if (!hasDefaultCase) {
-            TypeMirror voidType = newUnit.getEnv().typeUtil().getVoid();
-            FunctionElement element = new FunctionElement("__builtin_unreachable", voidType, null);
-            FunctionInvocation releaseInvocation = new FunctionInvocation(element, voidType);
-            stmts.add(new ExpressionStatement(releaseInvocation));
-          }
-        }
-      }
-    }
-  }
-
   @SuppressWarnings("StatementSwitchToExpressionSwitch")
   private static String getMemberName(ExpressionTree node) {
     switch (node.getKind().name()) {
@@ -1505,7 +1474,33 @@ public class TreeConverter {
       }
     }
 
+    if (!newNode.hasDefaultCase()) {
+      addUnreachableDirective(newNode);
+    }
+
     return newNode;
+  }
+
+  // If a switch expression doesn't have a default case,  add a function call to tell clang that all
+  // cases are handled. This can be asserted because switch expressions are checked to be
+  // exhaustive.
+  private void addUnreachableDirective(SwitchExpression switchExpression) {
+    // If the switch expression has no default case, add one
+    SwitchCase defaultCase = new SwitchCase().setIsDefault(true);
+    switchExpression.addStatement(defaultCase);
+
+    TypeMirror voidType = newUnit.getEnv().typeUtil().getVoid();
+    FunctionElement element = new FunctionElement("__builtin_unreachable", voidType, null);
+    FunctionInvocation unreachableInvocation = new FunctionInvocation(element, voidType);
+
+    if (switchExpression.getStatements().isEmpty()
+        || ((SwitchCase) switchExpression.getStatements().get(0)).getBody() != null) {
+      // If the switch expression has rules, add it as a rule.
+      defaultCase.setBody(new ExpressionStatement(unreachableInvocation));
+    } else {
+      // Otherwise, add it as a statement.
+      switchExpression.addStatement(new ExpressionStatement(unreachableInvocation));
+    }
   }
 
   private SwitchCase convertCaseRule(CaseTree caseTree, TreePath parent) {

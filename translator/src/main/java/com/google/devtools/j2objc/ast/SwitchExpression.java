@@ -67,6 +67,11 @@ public class SwitchExpression extends Expression {
     return this;
   }
 
+  public boolean hasDefaultCase() {
+    return statements.stream()
+        .anyMatch(stmt -> stmt instanceof SwitchCase switchCase && switchCase.isDefault());
+  }
+
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {

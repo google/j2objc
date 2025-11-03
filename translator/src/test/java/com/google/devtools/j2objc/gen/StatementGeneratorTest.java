@@ -2080,6 +2080,9 @@ public class StatementGeneratorTest extends GenerationTest {
               "    msg=JreStrcat($$, \"Short string: \", ((java.lang.String)JreIndexOfStr(str, {},"
                   + " 0)));",
               "  }",
+              "  else {",
+              "    __builtin_unreachable();",
+              "  }",
               "  return msg;",
               "}");
         });
