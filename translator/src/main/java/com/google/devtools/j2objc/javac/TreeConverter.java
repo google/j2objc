@@ -1505,8 +1505,6 @@ public class TreeConverter {
 
   private SwitchCase convertCaseRule(CaseTree caseTree, TreePath parent) {
     SwitchCase switchCase = new SwitchCase();
-
-    // TODO(b/456257427): Replace the use of getLabels() by getExpressions().
     List<? extends CaseLabelTree> caseExpressionsList = caseTree.getLabels();
     for (CaseLabelTree caseLabelTree : caseExpressionsList) {
       switch (caseLabelTree.getKind()) {
