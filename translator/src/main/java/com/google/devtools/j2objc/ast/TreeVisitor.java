@@ -182,6 +182,12 @@ public class TreeVisitor {
 
   public void endVisit(DoStatement node) {}
 
+  public boolean visit(EmbeddedStatementExpression node) {
+    return true;
+  }
+
+  public void endVisit(EmbeddedStatementExpression node) {}
+
   public boolean visit(EmptyStatement node) {
     return true;
   }

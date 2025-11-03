@@ -37,6 +37,7 @@ import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.ContinueStatement;
 import com.google.devtools.j2objc.ast.CreationReference;
 import com.google.devtools.j2objc.ast.DoStatement;
+import com.google.devtools.j2objc.ast.EmbeddedStatementExpression;
 import com.google.devtools.j2objc.ast.EmptyStatement;
 import com.google.devtools.j2objc.ast.EnhancedForStatement;
 import com.google.devtools.j2objc.ast.Expression;
@@ -352,6 +353,13 @@ public class StatementGenerator extends UnitTreeVisitor {
     return false;
   }
 
+  @Override
+  public boolean visit(EmbeddedStatementExpression node) {
+    buffer.append(String.format("^ %s (){ ", nameTable.getObjCType(node.getTypeMirror())));
+    node.getStatement().accept(this);
+    buffer.append(" }()");
+    return false;
+  }
 
   @Override
   public boolean visit(EmptyStatement node) {

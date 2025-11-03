@@ -17,16 +17,16 @@ jobs:
       MAKE_CMD: "env TRANSLATE_GLOBAL_FLAGS=--swift-friendly ENV_J2OBJC_ARCHS=macosx_iphone64 make -j32"
 
     steps:
-      - name: java_21_env
-        run: echo "JAVA_21_HOME=$(/usr/libexec/java_home -v 21)" >> $GITHUB_ENV
+      - name: java_17_env
+        run: echo "JAVA_17_HOME=$(/usr/libexec/java_home -v 17)" >> $GITHUB_ENV
       
       - uses: actions/checkout@v2
 
       # Build everything but protobuf targets, which require that the public
       # protobuf distribution be installed.
       - name: build_all
-        run: $MAKE_CMD JAVA_HOME=$JAVA_21_HOME frameworks examples_dist
+        run: $MAKE_CMD JAVA_HOME=$JAVA_17_HOME frameworks examples_dist
       
       # Test command-line tools.
       - name: test_tools
-        run: $MAKE_CMD JAVA_HOME=$JAVA_21_HOME test_translator test_cycle_finder test_jre_cycles
+        run: $MAKE_CMD JAVA_HOME=$JAVA_17_HOME test_translator test_cycle_finder test_jre_cycles

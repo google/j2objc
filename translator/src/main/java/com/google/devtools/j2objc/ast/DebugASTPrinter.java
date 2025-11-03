@@ -330,6 +330,18 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(EmbeddedStatementExpression node) {
+    sb.println("^{");
+    sb.indent();
+    sb.printIndent();
+    node.getStatement().accept(this);
+    sb.unindent();
+    sb.printIndent();
+    sb.println("}()");
+    return false;
+  }
+
+  @Override
   public boolean visit(EmptyStatement node) {
     sb.printIndent();
     sb.println(';');

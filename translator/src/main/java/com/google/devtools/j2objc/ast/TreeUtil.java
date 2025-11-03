@@ -134,15 +134,18 @@ public class TreeUtil {
     return getNearestAncestorWithType(MethodDeclaration.class, node);
   }
 
-  private static final ImmutableList<Class<?>> EXECUTABLE_DECLARATION_TYPES =
-      ImmutableList.of(MethodDeclaration.class, FunctionDeclaration.class);
+  private static final ImmutableList<Class<?>> NODES_ENCLOSING_RETURN =
+      ImmutableList.of(
+          MethodDeclaration.class, FunctionDeclaration.class, EmbeddedStatementExpression.class);
 
   public static TypeMirror getOwningReturnType(TreeNode node) {
-    TreeNode enclosingNode = getNearestAncestorWithTypeOneOf(EXECUTABLE_DECLARATION_TYPES, node);
-    if (enclosingNode instanceof MethodDeclaration) {
-      return ((MethodDeclaration) enclosingNode).getExecutableElement().getReturnType();
-    } else if (enclosingNode instanceof FunctionDeclaration) {
-      return ((FunctionDeclaration) enclosingNode).getReturnType().getTypeMirror();
+    TreeNode enclosingNode = getNearestAncestorWithTypeOneOf(NODES_ENCLOSING_RETURN, node);
+    if (enclosingNode instanceof MethodDeclaration methodDeclaration) {
+      return methodDeclaration.getExecutableElement().getReturnType();
+    } else if (enclosingNode instanceof FunctionDeclaration functionDeclaration) {
+      return functionDeclaration.getReturnType().getTypeMirror();
+    } else if (enclosingNode instanceof Expression expression) {
+      return expression.getTypeMirror();
     }
     return null;
   }

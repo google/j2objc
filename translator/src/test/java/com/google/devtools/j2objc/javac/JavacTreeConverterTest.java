@@ -83,11 +83,12 @@ public class JavacTreeConverterTest extends GenerationTest {
   // Note the ";" between the imports.
   // https://groups.google.com/forum/#!topic/j2objc-discuss/HWN0i1HsQKg
   public void testSkipTreeKindImport() throws IOException {
-    Object unused = maybeCompileType("Example",
+    String translation = translateSourceFile(
         "import java.util.Collection;"
             + ";"
             + "import java.util.Iterator;"
-            + "public class Example {}");
-    assertError("extraneous semicolon");
+            + "public class Example {}",
+        "Example", "Example.h");
+    assertTranslation(translation, "@interface Example : NSObject");
   }
 }
