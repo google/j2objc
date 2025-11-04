@@ -358,8 +358,12 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(EmbeddedStatementExpression node) {
-    buffer.append(String.format("^ %s (){ ", nameTable.getObjCType(node.getTypeMirror())));
+    buffer.append(String.format("^ %s (){\n", nameTable.getObjCType(node.getTypeMirror())));
+    buffer.indent();
+    buffer.printIndent();
     node.getStatement().accept(this);
+    buffer.unindent();
+    buffer.printIndent();
     buffer.append(" }()");
     return false;
   }
