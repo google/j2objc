@@ -14,12 +14,11 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.List;
 
-/**
- * Switch statement node type.
- */
-public class SwitchStatement extends Statement {
+/** Switch statement node type. */
+public class SwitchStatement extends Statement implements SwitchConstruct {
 
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private ChildList<Statement> statements = ChildList.create(Statement.class, this);
@@ -32,26 +31,43 @@ public class SwitchStatement extends Statement {
     statements.copyFrom(other.getStatements());
   }
 
+  public SwitchStatement(SwitchExpression other) {
+    expression.copyFrom(other.getExpression());
+    statements.copyFrom(other.getStatements());
+  }
+
   @Override
   public Kind getKind() {
     return Kind.SWITCH_STATEMENT;
   }
 
+  @Override
   public Expression getExpression() {
     return expression.get();
   }
 
+  @Override
+  @CanIgnoreReturnValue
   public SwitchStatement setExpression(Expression newExpression) {
     expression.set(newExpression);
     return this;
   }
 
+  @Override
   public List<Statement> getStatements() {
     return statements;
   }
 
+  @Override
+  @CanIgnoreReturnValue
   public SwitchStatement addStatement(Statement stmt) {
     statements.add(stmt);
+    return this;
+  }
+
+  @CanIgnoreReturnValue
+  public SwitchStatement copyStatements(List<Statement> stmts) {
+    statements.copyFrom(stmts);
     return this;
   }
 
