@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.Statement;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -37,10 +36,10 @@ public class ArrayRewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test(Object[] o) { o[0] = new Object(); o[0] = new int[1]; } }",
         "Test", "Test.m");
-    assertTranslation(translation,
-        "IOSObjectArray_SetAndConsume(nil_chk(o), 0, new_NSObject_init());");
-    assertTranslation(translation,
-        "IOSObjectArray_SetAndConsume(o, 0, [IOSIntArray newArrayWithLength:1]);");
+    assertInTranslation(
+        translation, "IOSObjectArray_SetAndConsume(nil_chk(o), 0, new_NSObject_init());");
+    assertInTranslation(
+        translation, "IOSObjectArray_SetAndConsume(o, 0, [IOSIntArray newArrayWithLength:1]);");
   }
 
   public void testPreAndPostincrementOfArrayAccess() throws IOException {
@@ -77,8 +76,8 @@ public class ArrayRewriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "IOSIntArray *ints = (IOSIntArray *) [self newIntArray];",
         "IOSObjectArray *objs = (IOSObjectArray *) [self newObjArray];");
-    assertTranslation(translation, "return (IOSIntArray *) [self newIntArray];");
-    assertTranslation(translation, "return (IOSObjectArray *) Test_newObjArray(self);");
+    assertInTranslation(translation, "return (IOSIntArray *) [self newIntArray];");
+    assertInTranslation(translation, "return (IOSObjectArray *) Test_newObjArray(self);");
   }
 
   public void testArrayNotCastFromUnusedGenericMethodReturn() throws IOException {

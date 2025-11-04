@@ -189,13 +189,14 @@ public class SignatureGeneratorTest extends GenerationTest {
         "Test", "Test.m");
 
     // Assert class metadata has generic signature.
-    assertTranslation(translation, "\"<T:Ljava/lang/Object;>Ljava/lang/Object;\"");
+    assertInTranslation(translation, "\"<T:Ljava/lang/Object;>Ljava/lang/Object;\"");
 
     // Assert method metadata has generic signature. (in pointer table)
-    assertTranslation(translation, "\"(Ljava/util/Map<Ljava/lang/Long;Ljava/util/List<TT;>;>;)V\"");
+    assertInTranslation(
+        translation, "\"(Ljava/util/Map<Ljava/lang/Long;Ljava/util/List<TT;>;>;)V\"");
 
     // Assert field metadata has generic signature. (in pointer table)
-    assertTranslation(translation, "\"Ljava/util/Set<TT;>;\"");
+    assertInTranslation(translation, "\"Ljava/util/Set<TT;>;\"");
   }
 
   public void testMethodParameterizedReturnTypeMetadata() throws IOException {
@@ -204,7 +205,7 @@ public class SignatureGeneratorTest extends GenerationTest {
         "Test", "Test.m");
 
     // Assert method metadata has generic return signature.
-    assertTranslation(translation, "\"()Ljava/util/List<Ljava/lang/String;>;\"");
+    assertInTranslation(translation, "\"()Ljava/util/List<Ljava/lang/String;>;\"");
   }
 
   public void testGenericMethodWithConcreteTypeArgument() throws IOException {
@@ -225,6 +226,6 @@ public class SignatureGeneratorTest extends GenerationTest {
         "abstract class Test extends java.util.AbstractList<String[]> {}", "Test", "Test.m");
 
     // Assert array signature is valid in class signature.
-    assertTranslation(translation, "Ljava/util/AbstractList<[Ljava/lang/String;>;");
+    assertInTranslation(translation, "Ljava/util/AbstractList<[Ljava/lang/String;>;");
   }
 }

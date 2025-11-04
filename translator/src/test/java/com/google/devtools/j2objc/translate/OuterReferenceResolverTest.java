@@ -211,7 +211,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
     addSourceFile("class A { int i; }", "A.java");
     String translation = translateSourceFile(
         "class B extends A { class C { int foo() { return B.super.i; } } }", "B", "B.m");
-    assertTranslation(translation, "return this$0_->i_;");
+    assertInTranslation(translation, "return this$0_->i_;");
   }
 
   private void resolveSource(String name, String source) {

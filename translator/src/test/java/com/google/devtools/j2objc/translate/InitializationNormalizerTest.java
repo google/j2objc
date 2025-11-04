@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -59,17 +58,18 @@ public class InitializationNormalizerTest extends GenerationTest {
         + "    new SimplexVertex() "
         + "  }; }}";
     String translation = translateSourceFile(source, "Distance", "Distance.m");
-    assertTranslation(translation,
+    assertInTranslation(
+        translation,
         "[IOSObjectArray newArrayWithObjects:(id[]){ "
-        + "create_Distance_SimplexVertex_initWithDistance_(outer$) } "
-        + "count:1 type:Distance_SimplexVertex_class_()]");
+            + "create_Distance_SimplexVertex_initWithDistance_(outer$) } "
+            + "count:1 type:Distance_SimplexVertex_class_()]");
   }
 
   public void testStaticVarInitialization() throws IOException {
     String translation = translateSourceFile(
         "class Test { static java.util.Date date = new java.util.Date(); }", "Test", "Test.m");
     // test that initializer was stripped from the declaration
-    assertTranslation(translation, "JavaUtilDate *Test_date;");
+    assertInTranslation(translation, "JavaUtilDate *Test_date;");
     // test that initializer was moved to new initialize method
     assertTranslatedLines(translation,
         "+ (void)initialize {",
@@ -156,26 +156,28 @@ public class InitializationNormalizerTest extends GenerationTest {
   public void testInterfaceConstantsIgnored() throws IOException {
     String source = "public interface Mouse { int BUTTON_LEFT = 0; }";
     String translation = translateSourceFile(source, "Mouse", "Mouse.h");
-    assertTranslation(translation, "#define Mouse_BUTTON_LEFT 0");
+    assertInTranslation(translation, "#define Mouse_BUTTON_LEFT 0");
   }
 
   public void testStringWithInvalidCppCharacters() throws IOException {
     String source = "class Test { static final String foo = \"\\udfff\"; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "NSString *Test_foo;");
-    assertTranslation(translation,
+    assertInTranslation(translation, "NSString *Test_foo;");
+    assertInTranslation(
+        translation,
         "JreStrongAssign(&Test_foo, [NSString stringWithCharacters:(unichar[]) { "
-        + "(int) 0xdfff } length:1]);");
+            + "(int) 0xdfff } length:1]);");
   }
 
   public void testStringConcatWithInvalidCppCharacters() throws IOException {
     // Include a 1 between the strings so javac's parser doesn't combine them.
     String source = "class Test { static final String foo = \"hello\" + 1 + \"\\udfff\"; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "NSString *Test_foo;");
-    assertTranslation(translation,
+    assertInTranslation(translation, "NSString *Test_foo;");
+    assertInTranslation(
+        translation,
         "JreStrongAssign(&Test_foo, JreStrcat(\"$$\", @\"hello1\", "
-        + "[NSString stringWithCharacters:(unichar[]) { (int) 0xdfff } length:1]));");
+            + "[NSString stringWithCharacters:(unichar[]) { (int) 0xdfff } length:1]));");
   }
 
   public void testInitializersPlacedAfterOuterAssignments() throws IOException {
@@ -183,8 +185,8 @@ public class InitializationNormalizerTest extends GenerationTest {
          + "  int outerVar = 1; "
          + "  class Inner { int innerVar = outerVar; void test() { outerVar++; } } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "JreStrongAssign(&self->this$0_, outer$);");
-    assertTranslation(translation, "innerVar_ = outer$->outerVar_;");
+    assertInTranslation(translation, "JreStrongAssign(&self->this$0_, outer$);");
+    assertInTranslation(translation, "innerVar_ = outer$->outerVar_;");
     assertTrue(translation.indexOf("JreStrongAssign(&self->this$0_, outer$);")
                < translation.indexOf("innerVar_ = outer$->outerVar_;"));
   }
@@ -200,9 +202,9 @@ public class InitializationNormalizerTest extends GenerationTest {
     String setInit = "JreStrongAssignAndConsume(&Test_iSet, new_JavaUtilHashSet_init())";
     String setAdd = "[Test_iSet addWithId:JavaLangInteger_valueOfWithInt_(Test_I)]";
     String setSize = "Test_iSetSize = [Test_iSet size]";
-    assertTranslation(translation, setInit);
-    assertTranslation(translation, setAdd);
-    assertTranslation(translation, setSize);
+    assertInTranslation(translation, setInit);
+    assertInTranslation(translation, setAdd);
+    assertInTranslation(translation, setSize);
     assertTrue(translation.indexOf(setInit) < translation.indexOf(setAdd));
     assertTrue(translation.indexOf(setAdd) < translation.indexOf(setSize));
   }
@@ -211,7 +213,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { static final String FOO = Inner.BAR; "
         + "class Inner { static final String BAR = \"bar\"; } }", "Test", "Test.m");
-    assertTranslation(translation, "NSString *Test_FOO = @\"bar\";");
+    assertInTranslation(translation, "NSString *Test_FOO = @\"bar\";");
   }
 
   public void testVarargConstructorCallFromSubclass() throws IOException {
@@ -219,8 +221,10 @@ public class InitializationNormalizerTest extends GenerationTest {
         "class A { A(Object ... bars) {} static class B extends A {}}",
         "A", "A.m");
     assertNotInTranslation(translation, "A_init(self);");
-    assertTranslation(translation, "A_initWithNSObjectArray_(self, "
-        + "[IOSObjectArray arrayWithLength:0 type:NSObject_class_()]);");
+    assertInTranslation(
+        translation,
+        "A_initWithNSObjectArray_(self, "
+            + "[IOSObjectArray arrayWithLength:0 type:NSObject_class_()]);");
   }
 
   /**
@@ -240,7 +244,7 @@ public class InitializationNormalizerTest extends GenerationTest {
             + "  public Object() {}}",
         filename + ".java");
     String translation = translateSourceFileNoInMemory(path, filename + ".h");
-    assertTranslation(translation, "@interface NSObject");
+    assertInTranslation(translation, "@interface NSObject");
   }
 
   // Regression test for Issue #809.
@@ -248,7 +252,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { private static final int A = 1; private static final int B = 2; "
         + "private static final int C = A < B ? A : B; }", "Test", "Test.m");
-    assertTranslation(translation, "#define Test_C 1");
+    assertInTranslation(translation, "#define Test_C 1");
   }
 
   // Verify that code in a double-brace is added to initialize method.

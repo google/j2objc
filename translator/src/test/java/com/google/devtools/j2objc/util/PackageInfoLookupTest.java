@@ -100,7 +100,7 @@ public class PackageInfoLookupTest extends GenerationTest {
         + "import com.google.j2objc.annotations.ObjectiveCName;");
     removeFile("foo/package-info.java");
     String translation = translateSourceFile("package foo; public class A {}", "foo.A", "foo/A.h");
-    assertTranslation(translation, "@interface XYZA");
+    assertInTranslation(translation, "@interface XYZA");
   }
 
   // Verify that ParametersAreNonnullByDefault is not set on packages by default.

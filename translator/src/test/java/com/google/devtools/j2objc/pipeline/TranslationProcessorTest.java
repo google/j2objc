@@ -40,7 +40,7 @@ public class TranslationProcessorTest extends GenerationTest {
     processor.processInputs(batch.getInputs());
 
     String translation = getTranslatedFile("Test.h");
-    assertTranslation(translation, "@interface Test");
+    assertInTranslation(translation, "@interface Test");
     assertNoErrors();
     assertNoWarnings();
   }
@@ -63,7 +63,7 @@ public class TranslationProcessorTest extends GenerationTest {
     processor.processInputs(batch.getInputs());
 
     String translation = getTranslatedFile("Foo.h");
-    assertTranslation(translation, "- (void)foo2;");
+    assertInTranslation(translation, "- (void)foo2;");
     assertNotInTranslation(translation, "foo1");
   }
 

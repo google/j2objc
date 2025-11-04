@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -31,15 +30,15 @@ public class SuperMethodInvocationRewriterTest extends GenerationTest {
         "class Test extends SuperClass { Runnable test() { return new Runnable() { "
         + "public void run() { Test.super.foo(1); } }; } }", "Test", "Test.m");
     // Declaration of the super function.
-    assertTranslation(translation,
-        "static double (*Test_super$_fooWithInt_)(id, SEL, int32_t);");
+    assertInTranslation(translation, "static double (*Test_super$_fooWithInt_)(id, SEL, int32_t);");
     // Initialization of the super function.
-    assertTranslation(translation,
+    assertInTranslation(
+        translation,
         "Test_super$_fooWithInt_ = (double (*)(id, SEL, int32_t))"
-        + "[SuperClass instanceMethodForSelector:@selector(fooWithInt:)];");
+            + "[SuperClass instanceMethodForSelector:@selector(fooWithInt:)];");
     // Invocation of the super function.
-    assertTranslation(translation,
-        "Test_super$_fooWithInt_(this$0_, @selector(fooWithInt:), 1);");
+    assertInTranslation(
+        translation, "Test_super$_fooWithInt_(this$0_, @selector(fooWithInt:), 1);");
   }
 
   public void testSuperFunctionInitializedBeforeStaticInit() throws IOException {

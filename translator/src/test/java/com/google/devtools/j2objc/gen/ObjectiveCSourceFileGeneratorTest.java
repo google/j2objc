@@ -64,14 +64,14 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     // Verify both methods are declared in the header. The OCNI method is
     // implemented in the source. The JSNI implementation wraps an unimplemented
     // function.
-    assertTranslation(translation, "- (void)test1;");
-    assertTranslation(translation, "- (void)test2;");
+    assertInTranslation(translation, "- (void)test1;");
+    assertInTranslation(translation, "- (void)test2;");
     translation = getTranslatedFile("Example.m");
     assertTranslatedLines(translation,
         "- (void)test1 {",
         "  ocni();",
         "}");
-    assertTranslation(translation, "void Example_test2(Example *self);");
+    assertInTranslation(translation, "void Example_test2(Example *self);");
     assertTranslatedLines(translation,
         "- (void)test2 {",
         "  Example_test2(self);",
@@ -86,11 +86,11 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     assertNoWarnings();
 
     // Verify header and source file are not affected.
-    assertTranslation(translation, "- (void)test1;");
-    assertTranslation(translation, "- (void)test2;");
+    assertInTranslation(translation, "- (void)test1;");
+    assertInTranslation(translation, "- (void)test2;");
     translation = getTranslatedFile("Example.m");
-    assertTranslation(translation, "ocni();");
-    assertTranslation(translation, "Example_test2(self);");
+    assertInTranslation(translation, "ocni();");
+    assertInTranslation(translation, "Example_test2(self);");
     assertNotInTranslation(translation, "jsni();");
     assertNotInTranslation(translation, "jsni-comment;");
   }
@@ -103,24 +103,24 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
         + " static final String finalBar = \"test\";"
         + " }", "Test", "Test.h");
     // finalFoo
-    assertTranslation(header, "#define Test_finalFoo 12");
-    assertTranslation(header, "int32_t Test_get_finalFoo(void);");
-    assertTranslation(header, "J2OBJC_STATIC_FIELD_CONSTANT(Test, finalFoo, int32_t)");
+    assertInTranslation(header, "#define Test_finalFoo 12");
+    assertInTranslation(header, "int32_t Test_get_finalFoo(void);");
+    assertInTranslation(header, "J2OBJC_STATIC_FIELD_CONSTANT(Test, finalFoo, int32_t)");
     // foo
-    assertTranslation(header, "int32_t Test_get_foo(void);");
-    assertTranslation(header, "int32_t Test_set_foo(int32_t value);");
-    assertTranslation(header, "int32_t *Test_getRef_foo(void);");
-    assertTranslation(header, "FOUNDATION_EXPORT int32_t Test_foo;");
-    assertTranslation(header, "J2OBJC_STATIC_FIELD_PRIMITIVE(Test, foo, int32_t)");
+    assertInTranslation(header, "int32_t Test_get_foo(void);");
+    assertInTranslation(header, "int32_t Test_set_foo(int32_t value);");
+    assertInTranslation(header, "int32_t *Test_getRef_foo(void);");
+    assertInTranslation(header, "FOUNDATION_EXPORT int32_t Test_foo;");
+    assertInTranslation(header, "J2OBJC_STATIC_FIELD_PRIMITIVE(Test, foo, int32_t)");
     // bar
-    assertTranslation(header, "NSString *Test_get_bar(void);");
-    assertTranslation(header, "NSString *Test_set_bar(NSString *value);");
-    assertTranslation(header, "FOUNDATION_EXPORT NSString *Test_bar;");
-    assertTranslation(header, "J2OBJC_STATIC_FIELD_OBJ(Test, bar, NSString *)");
+    assertInTranslation(header, "NSString *Test_get_bar(void);");
+    assertInTranslation(header, "NSString *Test_set_bar(NSString *value);");
+    assertInTranslation(header, "FOUNDATION_EXPORT NSString *Test_bar;");
+    assertInTranslation(header, "J2OBJC_STATIC_FIELD_OBJ(Test, bar, NSString *)");
     // finalBar
-    assertTranslation(header, "NSString *Test_get_finalBar(void);");
-    assertTranslation(header, "FOUNDATION_EXPORT NSString *Test_finalBar;");
-    assertTranslation(header, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Test, finalBar, NSString *)");
+    assertInTranslation(header, "NSString *Test_get_finalBar(void);");
+    assertInTranslation(header, "FOUNDATION_EXPORT NSString *Test_finalBar;");
+    assertInTranslation(header, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Test, finalBar, NSString *)");
   }
 
   public void testPrivateStaticAccessorsAdded() throws IOException {
@@ -130,17 +130,17 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
         + " private static String bar;"
         + " private static final String finalBar = \"test\";"
         + " }", "Test", "Test.m");
-    assertTranslation(translation, "#define Test_finalFoo 12");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_PRIMITIVE(Test, foo, int32_t)");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ(Test, bar, NSString *)");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Test, finalBar, NSString *)");
+    assertInTranslation(translation, "#define Test_finalFoo 12");
+    assertInTranslation(translation, "J2OBJC_STATIC_FIELD_PRIMITIVE(Test, foo, int32_t)");
+    assertInTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ(Test, bar, NSString *)");
+    assertInTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Test, finalBar, NSString *)");
   }
 
   public void testStaticReaderAddedWhenSameMethodNameExists() throws IOException {
     String translation = translateSourceFile(
         "class Test { static int foo; void foo(String s) {}}", "Test", "Test.h");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_PRIMITIVE(Test, foo, int32_t)");
-    assertTranslation(translation, "- (void)fooWithNSString:(NSString *)s;");
+    assertInTranslation(translation, "J2OBJC_STATIC_FIELD_PRIMITIVE(Test, foo, int32_t)");
+    assertInTranslation(translation, "- (void)fooWithNSString:(NSString *)s;");
   }
 
   /**
@@ -157,7 +157,7 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
   public void testTypeVariableReturnType() throws IOException {
     String translation = translateSourceFile(
         "interface I<T extends Runnable> { T test(); }", "Test", "Test.h");
-    assertTranslation(translation, "- (id<JavaLangRunnable>)test;");
+    assertInTranslation(translation, "- (id<JavaLangRunnable>)test;");
   }
 
   public void testOverriddenGenericConstructor() throws IOException {
@@ -165,19 +165,19 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     addSourceFile("class A<T> { A(T t) {} }", "A.java");
     String translation = translateSourceFile(
         "class B extends A<String> { B(String s) { super(s); } }", "B", "B.h");
-    assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)s;");
-    assertTranslation(translation, "initWithId:(id)arg0 NS_UNAVAILABLE;");
+    assertInTranslation(translation, "- (instancetype)initWithNSString:(NSString *)s;");
+    assertInTranslation(translation, "initWithId:(id)arg0 NS_UNAVAILABLE;");
   }
 
   public void testPrivateMethodHiding() throws IOException {
     String translation = translateSourceFile(
         "class Test  { public void test1() {} private void test2() {} }", "Test", "Test.h");
-    assertTranslation(translation, "- (void)test1;");
+    assertInTranslation(translation, "- (void)test1;");
     assertNotInTranslation(translation, "test2");
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "- (void)test2;");  // Private declaration, and
-    assertTranslation(translation, "- (void)test1 {"); // Both implementations.
-    assertTranslation(translation, "- (void)test2 {");
+    assertInTranslation(translation, "- (void)test2;"); // Private declaration, and
+    assertInTranslation(translation, "- (void)test1 {"); // Both implementations.
+    assertInTranslation(translation, "- (void)test2 {");
   }
 
   public void testPrivateFieldHiding() throws IOException {
@@ -185,13 +185,13 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
         "class Test  { public Object o1; protected Object o2; Object o3; private Object o4; }",
         "Test", "Test.h");
     assertTranslatedLines(translation, "@public", "id o1_;", "id o2_;", "id o3_;");
-    assertTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o1_, id)");
-    assertTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o2_, id)");
-    assertTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o3_, id)");
+    assertInTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o1_, id)");
+    assertInTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o2_, id)");
+    assertInTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o3_, id)");
     assertNotInTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o4_, id)");
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "id o4_;");
-    assertTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o4_, id)");
+    assertInTranslation(translation, "id o4_;");
+    assertInTranslation(translation, "J2OBJC_FIELD_SETTER(Test, o4_, id)");
   }
 
   public void testSortingOfGenericTypes() throws IOException {
@@ -200,8 +200,8 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
         "Test", "Test.h");
     String inner1 = "@interface Test_Inner1";
     String inner2 = "@interface Test_Inner2";
-    assertTranslation(translation, inner1);
-    assertTranslation(translation, inner2);
+    assertInTranslation(translation, inner1);
+    assertInTranslation(translation, inner2);
     assertTrue(translation.indexOf(inner2) < translation.indexOf(inner1));
   }
 

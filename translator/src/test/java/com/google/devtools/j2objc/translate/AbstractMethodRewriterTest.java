@@ -33,7 +33,7 @@ public class AbstractMethodRewriterTest extends GenerationTest {
         "import java.util.Iterator; public abstract class Test implements Iterator<Test> { "
             + "public boolean hasNext() { return true; } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "#pragma clang diagnostic ignored \"-Wprotocol\"");
+    assertInTranslation(translation, "#pragma clang diagnostic ignored \"-Wprotocol\"");
   }
 
   /**
@@ -46,7 +46,7 @@ public class AbstractMethodRewriterTest extends GenerationTest {
         + "  public interface I2 extends I1 { } "
         + "  public abstract class Inner implements I2 { } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "#pragma clang diagnostic ignored \"-Wprotocol\"");
+    assertInTranslation(translation, "#pragma clang diagnostic ignored \"-Wprotocol\"");
   }
 
   public void testAddsPragmaToAbstractEnum() throws IOException {
@@ -58,7 +58,7 @@ public class AbstractMethodRewriterTest extends GenerationTest {
     addSourceFile(interfaceSource, "I.java");
     addSourceFile(enumSource, "E.java");
     String translation = translateSourceFile("E", "E.m");
-    assertTranslation(translation, "#pragma clang diagnostic ignored \"-Wprotocol\"");
+    assertInTranslation(translation, "#pragma clang diagnostic ignored \"-Wprotocol\"");
   }
 
   public void testMethodAddedForSpecifiedTypeArg() throws IOException {
@@ -70,11 +70,11 @@ public class AbstractMethodRewriterTest extends GenerationTest {
     String bSource = getTranslatedFile("B.m");
     String cHeader = translateSourceFile("C", "C.h");
     String cSource = getTranslatedFile("C.m");
-    assertTranslation(aHeader, "- (id)foo;");
-    assertTranslation(bHeader, "- (NSString *)foo;");
+    assertInTranslation(aHeader, "- (id)foo;");
+    assertInTranslation(bHeader, "- (NSString *)foo;");
     // The added "foo" method should not appear in metadata.
     assertNotInTranslation(bSource, "foo");
-    assertTranslation(cHeader, "- (NSString *)foo;");
+    assertInTranslation(cHeader, "- (NSString *)foo;");
     // The added "foo" method should not appear in metadata or have an implementation.
     assertNotInTranslation(cSource, "foo");
   }
@@ -85,7 +85,7 @@ public class AbstractMethodRewriterTest extends GenerationTest {
     addSourceFile("abstract class C implements A, B {}", "C.java");
     String cHeader = translateSourceFile("C", "C.h");
     String cSource = translateSourceFile("C", "C.m");
-    assertTranslation(cHeader, "- (NSString *)foo;");
+    assertInTranslation(cHeader, "- (NSString *)foo;");
     assertNotInTranslation(cSource, "foo");
   }
 
@@ -99,7 +99,7 @@ public class AbstractMethodRewriterTest extends GenerationTest {
     String superTranslation = translateSourceFile("Super", "Super.m");
     String subTranslation = translateSourceFile("Sub", "Sub.m");
     // Super translation should contain the generic private method declaration.
-    assertTranslation(superTranslation, "- (id)returnT;");
+    assertInTranslation(superTranslation, "- (id)returnT;");
     // But Sub translation should not even though the return type is now resolved.
     assertNotInTranslation(subTranslation, "returnT");
   }
@@ -115,8 +115,8 @@ public class AbstractMethodRewriterTest extends GenerationTest {
         + "String foo(Number arg) { return arg.toString(); } }", "B.java");
     String header = translateSourceFile("B", "B.h");
     // Inherited declaration, copied from superclass because of return type narrowing.
-    assertTranslation(header, "- (NSString * _Nullable)barWithId:(id _Nullable)arg0;");
+    assertInTranslation(header, "- (NSString * _Nullable)barWithId:(id _Nullable)arg0;");
     // Overwritten method, without annotations (annotations aren't inherited).
-    assertTranslation(header, "- (NSString *)fooWithId:(NSNumber *)arg;");
+    assertInTranslation(header, "- (NSString *)fooWithId:(NSNumber *)arg;");
   }
 }

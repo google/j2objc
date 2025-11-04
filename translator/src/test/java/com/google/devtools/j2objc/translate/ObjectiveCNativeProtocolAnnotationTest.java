@@ -48,7 +48,7 @@ public class ObjectiveCNativeProtocolAnnotationTest extends GenerationTest {
     assertNoWarnings();
     assertNoErrors();
 
-    assertTranslation(testHeader, "@interface Foo : NSObject < UICollectionViewDataSource >");
+    assertInTranslation(testHeader, "@interface Foo : NSObject < UICollectionViewDataSource >");
     assertNotInTranslation(testHeader, "UICollectionViewDataSource.h");
   }
 
@@ -64,9 +64,9 @@ public class ObjectiveCNativeProtocolAnnotationTest extends GenerationTest {
     assertNoWarnings();
     assertNoErrors();
 
-    assertTranslation(testHeader, "@interface Foo : NSObject < Bar >");
+    assertInTranslation(testHeader, "@interface Foo : NSObject < Bar >");
     assertNotInTranslation(testHeader, "Bar.h");
-    assertTranslation(testHeader, "#include \"some/local/path/BarProtocol.h\"");
+    assertInTranslation(testHeader, "#include \"some/local/path/BarProtocol.h\"");
   }
 
   public void testMultipleProtocols() throws IOException {
@@ -82,9 +82,10 @@ public class ObjectiveCNativeProtocolAnnotationTest extends GenerationTest {
     assertNoWarnings();
     assertNoErrors();
 
-    assertTranslation(testHeader, "@interface Foo : NSObject < UICollectionViewDataSource, Bar >");
+    assertInTranslation(
+        testHeader, "@interface Foo : NSObject < UICollectionViewDataSource, Bar >");
     assertNotInTranslation(testHeader, "UICollectionViewDataSource.h");
     assertNotInTranslation(testHeader, "Bar.h");
-    assertTranslation(testHeader, "#include \"some/local/path/BarProtocol.h\"");
+    assertInTranslation(testHeader, "#include \"some/local/path/BarProtocol.h\"");
   }
 }

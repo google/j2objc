@@ -37,7 +37,7 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
         "#define INCLUDE_ALL_Test 1",
         "#endif",
         "#undef RESTRICT_Test");
-    assertTranslation(translation, "#pragma pop_macro(\"INCLUDE_ALL_Test\")");
+    assertInTranslation(translation, "#pragma pop_macro(\"INCLUDE_ALL_Test\")");
     assertTranslatedLines(translation,
         "#if !defined (Test_) && (INCLUDE_ALL_Test || defined(INCLUDE_Test))",
         "#define Test_");
@@ -89,9 +89,10 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
 
     String translation = translateSourceFile("class Test {}", "Test", "Test.h");
 
-    assertTranslation(translation, "#pragma clang diagnostic push");
-    assertTranslation(translation, "#pragma GCC diagnostic ignored \"-Wdeprecated-declarations\"");
-    assertTranslation(translation, "#pragma clang diagnostic pop");
+    assertInTranslation(translation, "#pragma clang diagnostic push");
+    assertInTranslation(
+        translation, "#pragma GCC diagnostic ignored \"-Wdeprecated-declarations\"");
+    assertInTranslation(translation, "#pragma clang diagnostic pop");
   }
 
   public void testForwardDeclarationForTypeInSameIncludeAsSuperclass() throws IOException {
@@ -104,7 +105,7 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
         "#include \"Foo.h\"");
     // Forward declaration for Foo_Bar is needed because the include of Foo.h
     // is restricted to only the Foo type.
-    assertTranslation(translation, "@class Foo_Bar");
+    assertInTranslation(translation, "@class Foo_Bar");
   }
 
   public void testCombinedJarVariableNames() throws IOException {

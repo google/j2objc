@@ -37,10 +37,10 @@ public class ArrayGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertTranslation(
+    assertInTranslation(
         testHeader,
         "(IOSObjectArray<A *> *)testObjectArrayGenericsWithAArray:(IOSObjectArray<A *> *)a_array");
-    assertTranslation(
+    assertInTranslation(
         testSource,
         "(IOSObjectArray *)testObjectArrayGenericsWithAArray:(IOSObjectArray *)a_array");
   }
@@ -57,12 +57,12 @@ public class ArrayGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertTranslation(
+    assertInTranslation(
         testHeader,
         "(IOSObjectArray<IOSObjectArray<A *> *>"
             + " *)testObjectArrayGenericsWithAArray2:(IOSObjectArray<IOSObjectArray<A *> *>"
             + " *)a_array");
-    assertTranslation(
+    assertInTranslation(
         testSource,
         "(IOSObjectArray *)testObjectArrayGenericsWithAArray2:(IOSObjectArray *)a_array ");
   }
@@ -80,12 +80,12 @@ public class ArrayGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertTranslation(
+    assertInTranslation(
         testHeader,
         "(IOSObjectArray<id<Test_Interface>>"
             + " *)testInterfaceArrayGenericsWithTest_InterfaceArray:(IOSObjectArray<id<Test_Interface>>"
             + " *)faces");
-    assertTranslation(
+    assertInTranslation(
         testSource,
         "(IOSObjectArray *)testInterfaceArrayGenericsWithTest_InterfaceArray:(IOSObjectArray"
             + " *)faces");
@@ -103,10 +103,10 @@ public class ArrayGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertTranslation(
+    assertInTranslation(
         testHeader, "(IOSIntArray *)testIntegerArrayGenericsWithIntArray:(IOSIntArray *)ints");
 
-    assertTranslation(
+    assertInTranslation(
         testSource, "(IOSIntArray *)testIntegerArrayGenericsWithIntArray:(IOSIntArray *)ints");
   }
 
@@ -122,11 +122,11 @@ public class ArrayGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertTranslation(
+    assertInTranslation(
         testHeader,
         "(IOSObjectArray<IOSIntArray *>"
             + " *)testObjectArrayGenericsWithIntArray2:(IOSObjectArray<IOSIntArray *> *)a_array");
-    assertTranslation(
+    assertInTranslation(
         testSource,
         "(IOSObjectArray *)testObjectArrayGenericsWithIntArray2:(IOSObjectArray *)a_array");
   }
@@ -145,7 +145,7 @@ public class ArrayGenericsTest extends GenerationTest {
             "Test",
             "Test.m");
     // Static variables will be declared in the .m file.
-    assertTranslation(translation, "IOSObjectArray *Test_array");
+    assertInTranslation(translation, "IOSObjectArray *Test_array");
   }
 
   public void testAnnotatedArrayParameter() throws IOException {
@@ -157,7 +157,7 @@ public class ArrayGenericsTest extends GenerationTest {
                 + "}",
             "Test",
             "Test.h");
-    assertTranslation(translation, "(IOSObjectArray<NSString *> *)names");
+    assertInTranslation(translation, "(IOSObjectArray<NSString *> *)names");
   }
 
   // Verify that there's a forward declaration for an array component type.
@@ -171,7 +171,7 @@ public class ArrayGenericsTest extends GenerationTest {
                 + "}",
             "Test",
             "Test.h");
-    assertTranslation(translation, "@class JavaLangStackTraceElement;");
+    assertInTranslation(translation, "@class JavaLangStackTraceElement;");
   }
 
   public void testGenericPrimitiveArrayTypeForwardDecl() throws IOException {
@@ -189,14 +189,14 @@ public class ArrayGenericsTest extends GenerationTest {
                 + "}",
             "Test",
             "Test.h");
-    assertTranslation(translation, "@class JavaLangBoolean;");
-    assertTranslation(translation, "@class JavaLangByte;");
-    assertTranslation(translation, "@class JavaLangCharacter;");
-    assertTranslation(translation, "@class JavaLangDouble;");
-    assertTranslation(translation, "@class JavaLangFloat;");
-    assertTranslation(translation, "@class JavaLangInteger;");
-    assertTranslation(translation, "@class JavaLangLong;");
-    assertTranslation(translation, "@class JavaLangShort;");
+    assertInTranslation(translation, "@class JavaLangBoolean;");
+    assertInTranslation(translation, "@class JavaLangByte;");
+    assertInTranslation(translation, "@class JavaLangCharacter;");
+    assertInTranslation(translation, "@class JavaLangDouble;");
+    assertInTranslation(translation, "@class JavaLangFloat;");
+    assertInTranslation(translation, "@class JavaLangInteger;");
+    assertInTranslation(translation, "@class JavaLangLong;");
+    assertInTranslation(translation, "@class JavaLangShort;");
   }
 
   public void testGenericArrayInterfaceOrObjectComponent() throws IOException {
@@ -208,7 +208,7 @@ public class ArrayGenericsTest extends GenerationTest {
                 + "}",
             "Test",
             "Test.h");
-    assertTranslation(translation, "(IOSObjectArray<id<JavaUtilList>> *)listArgs");
-    assertTranslation(translation, "(IOSObjectArray<id> *)objectArgs");
+    assertInTranslation(translation, "(IOSObjectArray<id<JavaUtilList>> *)listArgs");
+    assertInTranslation(translation, "(IOSObjectArray<id> *)objectArgs");
   }
 }

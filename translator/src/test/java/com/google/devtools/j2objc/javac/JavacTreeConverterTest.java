@@ -24,26 +24,47 @@ public class JavacTreeConverterTest extends GenerationTest {
 
   public void testThisDotConstant() throws IOException {
     // Verify this.CONSTANT translates without a ClassCastException thrown.
-    String translation = translateSourceFile("package foo.bar;"
-        + "class Test { static final int T_ENUM = 11;"
-        + "int test() { return this.T_ENUM; }}", "foo.bar.Test", "foo/bar/Test.h");
+    String translation =
+        translateSourceFile(
+            """
+            package foo.bar;
+            class Test {
+              static final int T_ENUM = 11;
+              int test() {
+                return this.T_ENUM;
+              }
+            }
+            """,
+            "foo.bar.Test",
+            "foo/bar/Test.h");
     assertTranslatedLines(translation, "#define FooBarTest_T_ENUM 11");
   }
 
   public void testThisDotFinal() throws IOException {
     // Verify this.finalField translates without a ClassCastException thrown.
-    String translation = translateSourceFile("class Test { final int slotsize = 4;"
-        + "Test(int slotsize) {"
-        + " if (this.slotsize < slotsize) { throw new AssertionError(); }}}",
-        "Test", "Test.m");
-    assertTranslation(translation, "if (Test_slotsize < slotsizeArg)");
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              final int slotsize = 4;
+              Test(int slotsize) {
+                if (this.slotsize < slotsize) {
+                  throw new AssertionError();
+                }
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
+    assertInTranslation(translation, "if (Test_slotsize < slotsizeArg)");
   }
 
   public void testConstantFromMethodInvocation() throws IOException {
-    String translation = translateSourceFile("class Test { "
-        + "int sizeOfInt() { return Integer.valueOf(42).SIZE; }}", "Test", "Test.m");
-    assertTranslation(translation,
-        "return (JavaLangInteger_valueOfWithInt_(42), JavaLangInteger_SIZE);");
+    String translation =
+        translateSourceFile(
+            "class Test { int sizeOfInt() { return Integer.valueOf(42).SIZE; }}", "Test", "Test.m");
+    assertInTranslation(
+        translation, "return (JavaLangInteger_valueOfWithInt_(42), JavaLangInteger_SIZE);");
   }
 
   // javac qualifies members imported via non-canonical static imports by the
@@ -52,8 +73,9 @@ public class JavacTreeConverterTest extends GenerationTest {
   // See: https://bugs.openjdk.java.net/browse/JDK-6225935.
   public void testIncorrectEnclosingElementBug_staticOnDemandImport() throws IOException {
     addSourceFile(
-        "package foo; public class A { "
-        + "public static final int FOO = 1; public static void bar() {} }", "foo/A.java");
+        "package foo; public class A { public static final int FOO = 1; public static void bar()"
+            + " {} }",
+        "foo/A.java");
     addSourceFile("package foo; public class B extends A {}", "foo/B.java");
     String translation = translateSourceFile(
         "import static foo.B.*; class Test { void test() { int i = FOO; bar(); } }",
@@ -65,14 +87,22 @@ public class JavacTreeConverterTest extends GenerationTest {
 
   public void testIncorrectEnclosingElementBug_staticNamedImport() throws IOException {
     addSourceFile(
-        "package foo; public class A { "
-            + "public static final int FOO = 1; public static void bar() {} }",
+        "package foo; public class A { public static final int FOO = 1; public static void bar()"
+            + " {} }",
         "foo/A.java");
     addSourceFile("package foo; public class B extends A {}", "foo/B.java");
     String translation =
         translateSourceFile(
-            "import static foo.B.FOO; import static foo.B.bar;"
-                + "class Test { void test() { int i = FOO; bar(); } }",
+            """
+            import static foo.B.FOO;
+            import static foo.B.bar;
+            class Test {
+              void test() {
+                int i = FOO;
+                bar();
+              }
+            }
+            """,
             "Test",
             "Test.m");
     assertTranslatedLines(translation, "int32_t i = FooA_FOO;", "FooA_bar();");
@@ -83,11 +113,15 @@ public class JavacTreeConverterTest extends GenerationTest {
   // Note the ";" between the imports.
   // https://groups.google.com/forum/#!topic/j2objc-discuss/HWN0i1HsQKg
   public void testSkipTreeKindImport() throws IOException {
-    Object unused = maybeCompileType("Example",
-        "import java.util.Collection;"
-            + ";"
-            + "import java.util.Iterator;"
-            + "public class Example {}");
+    Object unused =
+        maybeCompileType(
+            "Example",
+            """
+            import java.util.Collection;
+            ;
+            import java.util.Iterator;
+            public class Example {}
+            """);
     assertError("extraneous semicolon");
   }
 }

@@ -28,14 +28,14 @@ public class NilCheckResolverTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class A { int length(char[] s) { return s.length; } void test() { length(null);} }",
       "A", "A.m");
-    assertTranslation(translation, "return ((IOSCharArray *) nil_chk(s))->size_;");
+    assertInTranslation(translation, "return ((IOSCharArray *) nil_chk(s))->size_;");
   }
 
   public void testNilCheckOnCastExpression() throws IOException {
     String translation = translateSourceFile(
         "class Test { int i; void test(Object o) { int i = ((Test) o).i; } }", "Test", "Test.m");
-    assertTranslation(translation,
-        "((Test *) nil_chk(((Test *) cast_chk(o, [Test class]))))->i_");
+    assertInTranslation(
+        translation, "((Test *) nil_chk(((Test *) cast_chk(o, [Test class]))))->i_");
   }
 
   public void testNoNilCheckOnSecondDereference() throws IOException {
@@ -137,7 +137,7 @@ public class NilCheckResolverTest extends GenerationTest {
         + "    return false;"
         + "  }}",
         "Test", "Test.m");
-    assertTranslation(translation, "nil_chk(strings)");
+    assertInTranslation(translation, "nil_chk(strings)");
   }
 
   // Method invocations can have side-effects
@@ -339,7 +339,7 @@ public class NilCheckResolverTest extends GenerationTest {
         "class Test { class Inner {} public Inner test(Test t) { return t.new Inner(); } }",
         "Test", "Test.m");
     // "t" needs a nil_chk.
-    assertTranslation(translation, "return create_Test_Inner_initWithTest_(nil_chk(t));");
+    assertInTranslation(translation, "return create_Test_Inner_initWithTest_(nil_chk(t));");
   }
 
   // Verify "throw null" throws a null pointer exception. JLS 14.18:
@@ -351,8 +351,8 @@ public class NilCheckResolverTest extends GenerationTest {
         + "void test1() { throw null; }"
         + "void test2(RuntimeException e) { throw e; }"
         + "void test3() { throw new RuntimeException(); }}", "Test", "Test.m");
-    assertTranslation(translation, "@throw nil_chk(nil);");
-    assertTranslation(translation, "@throw nil_chk(e);");
-    assertTranslation(translation, "@throw create_JavaLangRuntimeException_init();");
+    assertInTranslation(translation, "@throw nil_chk(nil);");
+    assertInTranslation(translation, "@throw nil_chk(e);");
+    assertInTranslation(translation, "@throw create_JavaLangRuntimeException_init();");
   }
 }

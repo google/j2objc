@@ -28,15 +28,15 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "import java.lang.annotation.*; @Retention(RetentionPolicy.RUNTIME) "
         + "@interface A { @Deprecated int I = 5; }", "A", "A.m");
-    assertTranslation(translation, "IOSObjectArray *A__Annotations$0()");
-    assertTranslation(translation, "create_JavaLangDeprecated");
+    assertInTranslation(translation, "IOSObjectArray *A__Annotations$0()");
+    assertInTranslation(translation, "create_JavaLangDeprecated");
   }
 
   public void testFieldAnnotationMethodForInterfaceType() throws IOException {
     String translation = translateSourceFile(
         "interface I { @Deprecated int I = 5; }", "I", "I.m");
-    assertTranslation(translation, "IOSObjectArray *I__Annotations$0()");
-    assertTranslation(translation, "create_JavaLangDeprecated");
+    assertInTranslation(translation, "IOSObjectArray *I__Annotations$0()");
+    assertInTranslation(translation, "create_JavaLangDeprecated");
   }
 
   public void testFunctionLineNumbers() throws IOException {
@@ -57,9 +57,9 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { final int I = 1; void test(int i) { switch(i) { case I: return; } } }",
         "Test", "Test.h");
-    assertTranslation(translation, "#define Test_I 1");
+    assertInTranslation(translation, "#define Test_I 1");
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "case Test_I:");
+    assertInTranslation(translation, "case Test_I:");
   }
 
   public void testDesignatedInitializer() throws IOException {
@@ -182,8 +182,8 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertNotInTranslation(translation, "+ (NSString *)ID {");
     assertNotInTranslation(translation, "+ (void)setID:(NSString *)value {");
-    assertTranslation(translation, "+ (NSString *)getID {");
-    assertTranslation(translation, "+ (void)setIDWithNSString:(NSString *)ID {");
+    assertInTranslation(translation, "+ (NSString *)getID {");
+    assertInTranslation(translation, "+ (void)setIDWithNSString:(NSString *)ID {");
   }
 
   // Verify that accessor methods for enum constants are generated on request.
@@ -219,7 +219,7 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
         + "@Property(\"getter=getFoo\") private final Integer foo = 42;"
         + "private final Integer bar = 84; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "@synthesize foo = foo_;");
+    assertInTranslation(translation, "@synthesize foo = foo_;");
     assertNotInTranslation(translation, "@synthesize bar");
   }
 
@@ -260,8 +260,8 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
         "import java.io.Serializable;\n"
             + "class Test implements Runnable, Serializable { public void run() {} }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "+ (void)__linkProtocols {");
-    assertTranslation(translation, "JavaIoSerializable_class_();");
-    assertTranslation(translation, "JavaLangRunnable_class_();");
+    assertInTranslation(translation, "+ (void)__linkProtocols {");
+    assertInTranslation(translation, "JavaIoSerializable_class_();");
+    assertInTranslation(translation, "JavaLangRunnable_class_();");
   }
 }

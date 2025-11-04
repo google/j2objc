@@ -32,9 +32,9 @@ public class VariableRenamerTest extends GenerationTest {
         + "  public int size() { return 0; }"
         + "  public Iterator<E> iterator() { return null; }}}";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation,
-        "- (instancetype)initWithJavaUtilCollection:(id<JavaUtilCollection>)c_Arg {");
-    assertTranslation(translation, "JreStrongAssign(&self->c_, c_Arg);");
+    assertInTranslation(
+        translation, "- (instancetype)initWithJavaUtilCollection:(id<JavaUtilCollection>)c_Arg {");
+    assertInTranslation(translation, "JreStrongAssign(&self->c_, c_Arg);");
   }
 
   public void testOverriddenFieldTranslation() throws IOException {
@@ -43,9 +43,9 @@ public class VariableRenamerTest extends GenerationTest {
         + "class Subclass extends Example { int size; }"
         + "class Subsubclass extends Subclass { int size; }",
         "Example", "Example.h");
-    assertTranslation(translation, "int32_t size_;");
-    assertTranslation(translation, "int32_t size_Subclass_;");
-    assertTranslation(translation, "int32_t size_Subsubclass_;");
+    assertInTranslation(translation, "int32_t size_;");
+    assertInTranslation(translation, "int32_t size_Subclass_;");
+    assertInTranslation(translation, "int32_t size_Subsubclass_;");
   }
 
   public void testOverriddenGenericClass() throws IOException {
@@ -54,7 +54,7 @@ public class VariableRenamerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class B<T> extends A { int foo; int test() { return C.I; } }", "B", "B.h");
     // Make sure that "C" does not cause "foo" to ge renamed to "foo_B<Object>_".
-    assertTranslation(translation, "int32_t foo_B_;");
+    assertInTranslation(translation, "int32_t foo_B_;");
   }
 
   public void testStaticFieldAndMethodCollision() throws IOException {
@@ -63,13 +63,13 @@ public class VariableRenamerTest extends GenerationTest {
         + " static void foo() { new Test().bar(); } private void bar() {} }", "Test", "Test.h");
     String impl = getTranslatedFile("Test.m");
     // The variable is renamed.
-    assertTranslation(header, "#define Test_foo_ 3");
-    assertTranslation(header, "J2OBJC_STATIC_FIELD_CONSTANT(Test, foo_, int32_t)");
+    assertInTranslation(header, "#define Test_foo_ 3");
+    assertInTranslation(header, "J2OBJC_STATIC_FIELD_CONSTANT(Test, foo_, int32_t)");
     // The functionized static method is unchanged.
-    assertTranslation(header, "void Test_foo(void);");
+    assertInTranslation(header, "void Test_foo(void);");
     // Test static field and non-static method collision.
-    assertTranslation(impl, "int32_t Test_bar_");
-    assertTranslation(impl, "void Test_bar(Test *self)");
+    assertInTranslation(impl, "int32_t Test_bar_");
+    assertInTranslation(impl, "void Test_bar(Test *self)");
   }
 
   public void testErrorStaticFieldValuesInEnum() throws IOException {
@@ -77,9 +77,9 @@ public class VariableRenamerTest extends GenerationTest {
     addSourceFile(source, "Example.java");
     String translation = translateSourceFile("Example", "Example.h");
     // J2ObjC generated variable.
-    assertTranslation(translation, "FOUNDATION_EXPORT Example *Example_values_[];");
+    assertInTranslation(translation, "FOUNDATION_EXPORT Example *Example_values_[];");
     // User variable.
-    assertTranslation(translation, "FOUNDATION_EXPORT NSString *Example_values_;");
+    assertInTranslation(translation, "FOUNDATION_EXPORT NSString *Example_values_;");
     assertError(
         "\"values\" field in Example collides with the generated Enum values field. "
             + "Consider using ObjectiveCName to rename it.");

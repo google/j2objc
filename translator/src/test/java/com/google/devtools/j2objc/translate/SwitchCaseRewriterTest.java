@@ -25,15 +25,17 @@ public class SwitchCaseRewriterTest extends GenerationTest {
   @SuppressWarnings("StringConcatToTextBlock")
   public void testSwitchCaseWithInstanceOf() throws IOException {
     String source =
-        "class Test {\n"
-        + "    static String test(Object obj) {\n"
-        + "        return switch (obj) {\n"
-        + "            case String s -> \"It's a String: \" + s;\n"
-        + "            case Integer i -> \"It's an Integer: \" + i;\n"
-        + "            default -> \"It's something else.\";\n"
-        + "        };\n"
-        + "    }\n"
-        + "}";
+        """
+        class Test {
+            static String test(Object obj) {
+                return switch (obj) {
+                    case String s -> "It's a String: " + s;
+                    case Integer i -> "It's an Integer: " + i;
+                    default -> "It's something else.";
+                };
+            }
+        }
+        """;
     String translation = translateSourceFile(source, "Test", "Test.m");
 
     // In the translated code, the type-pattern switch statement should be converted to
@@ -53,23 +55,25 @@ public class SwitchCaseRewriterTest extends GenerationTest {
   @SuppressWarnings("StringConcatToTextBlock")
   public void testSwitchCaseWithOverlappingGuards() throws IOException {
     String source =
-        "class Test {\n"
-            + "  void checkObject(Object obj) {\n"
-            + "    switch (obj) {\n"
-            // The > 25 test must still be tested before > 5.
-            + "      case String s when s.length() > 25 -> log(\"Long string\");\n"
-            + "      case String s when s.length() > 5 -> log(\"Medium string\");\n"
-            // Test without guard.
-            + "      case String s -> log(\"Short string\");\n"
-            // Test with different pattern, no guard.
-            + "      case Integer i -> log(\"An integer: \" + i);\n"
-            + "      default -> log(\"Something else\");\n"
-            + "    }\n"
-            + "  }\n"
-            + "  private static void log(String s) {\n"
-            + "    System.out.println(s);\n"
-            + "  }\n"
-            + "}\n";
+"""
+        class Test {
+          void checkObject(Object obj) {
+            switch (obj) {
+              // The > 25 test must still be tested before > 5.
+              case String s when s.length() > 25 -> log("Long string");
+              case String s when s.length() > 5 -> log("Medium string");
+              // Test without guard.
+              case String s -> log("Short string");
+              // Test with different pattern, no guard.
+              case Integer i -> log("An integer: " + i);
+              default -> log("Something else");
+            }
+          }
+          private static void log(String s) {
+            System.out.println(s);
+          }
+        }
+""";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslatedLines(
         translation,
@@ -99,18 +103,18 @@ public class SwitchCaseRewriterTest extends GenerationTest {
   @SuppressWarnings("StringConcatToTextBlock")
   public void testSwitchCaseWithStatements() throws IOException {
     String source =
-        "class Test {\n"
-            + "  String typeGuardIfTrueSwitchExpression(Object o) {\n"
-            + "    Object o2 = \"\";\n"
-            + "    return switch (o) {\n"
-            + "       case Integer i when i == 0 && i < 1 && o2 instanceof String s: o = s +"
-            + " String.valueOf(i); yield \"true\";\n"
-            + "       case Integer i when i == 0 || i > 1: o = String.valueOf(i); yield"
-            + " \"second\";\n"
-            + "       case Object x: yield \"any\";\n"
-            + "    };\n"
-            + "  }\n"
-            + "}";
+        """
+        class Test {
+          String typeGuardIfTrueSwitchExpression(Object o) {
+            Object o2 = "";
+            return switch (o) {
+               case Integer i when i == 0 && i < 1 && o2 instanceof String s: o = s + String.valueOf(i); yield "true";
+               case Integer i when i == 0 || i > 1: o = String.valueOf(i); yield "second";
+               case Object x: yield "any";
+            };
+          }
+        }
+        """;
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslatedLines(
         translation,
@@ -135,16 +139,16 @@ public class SwitchCaseRewriterTest extends GenerationTest {
   @SuppressWarnings("StringConcatToTextBlock")
   public void testNegatedInstanceOfPattern() throws IOException {
     String source =
-        String.join(
-            "\n",
-            "class Test {",
-            "  void test(Object o) {",
-            "    if (!(o instanceof String s)) {",
-            "      throw new IllegalArgumentException();",
-            "    }",
-            "    System.out.println(s.repeat(5));",
-            "  }",
-            "}");
+        """
+        class Test {
+          void test(Object o) {
+            if (!(o instanceof String s)) {
+              throw new IllegalArgumentException();
+            }
+            System.out.println(s.repeat(5));
+          }
+        }
+        """;
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslatedLines(
         translation,

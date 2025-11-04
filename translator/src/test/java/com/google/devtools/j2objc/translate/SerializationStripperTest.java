@@ -50,14 +50,14 @@ public class SerializationStripperTest extends GenerationTest {
             sourceFile(/* className= */ "Test", /* implementsSerializable= */ false),
             /* typeName= */ "Test",
             /* fileName= */ "Test.m");
-    assertTranslation(translation, "serialVersionUID");
-    assertTranslation(translation, "anotherField");
-    assertTranslation(translation, "writeObject");
-    assertTranslation(translation, "readObject");
-    assertTranslation(translation, "readObjectNoData");
-    assertTranslation(translation, "writeReplace");
-    assertTranslation(translation, "readResolve");
-    assertTranslation(translation, "anotherMethod");
+    assertInTranslation(translation, "serialVersionUID");
+    assertInTranslation(translation, "anotherField");
+    assertInTranslation(translation, "writeObject");
+    assertInTranslation(translation, "readObject");
+    assertInTranslation(translation, "readObjectNoData");
+    assertInTranslation(translation, "writeReplace");
+    assertInTranslation(translation, "readResolve");
+    assertInTranslation(translation, "anotherMethod");
   }
 
   public void testSerializableTypeIsNotModifiedWhenReflectionIsNotStripped() throws IOException {
@@ -67,14 +67,14 @@ public class SerializationStripperTest extends GenerationTest {
             sourceFile(/* className= */ "Test", /* implementsSerializable= */ true),
             /* typeName= */ "Test",
             /* fileName= */ "Test.m");
-    assertTranslation(translation, "serialVersionUID");
-    assertTranslation(translation, "anotherField");
-    assertTranslation(translation, "writeObject");
-    assertTranslation(translation, "readObject");
-    assertTranslation(translation, "readObjectNoData");
-    assertTranslation(translation, "writeReplace");
-    assertTranslation(translation, "readResolve");
-    assertTranslation(translation, "anotherMethod");
+    assertInTranslation(translation, "serialVersionUID");
+    assertInTranslation(translation, "anotherField");
+    assertInTranslation(translation, "writeObject");
+    assertInTranslation(translation, "readObject");
+    assertInTranslation(translation, "readObjectNoData");
+    assertInTranslation(translation, "writeReplace");
+    assertInTranslation(translation, "readResolve");
+    assertInTranslation(translation, "anotherMethod");
   }
 
   public void testSerializableTypeIsStripped() throws IOException {
@@ -85,13 +85,13 @@ public class SerializationStripperTest extends GenerationTest {
             /* typeName= */ "Test",
             /* fileName= */ "Test.m");
     assertNotInTranslation(translation, "serialVersionUID");
-    assertTranslation(translation, "anotherField");
+    assertInTranslation(translation, "anotherField");
     assertNotInTranslation(translation, "writeObject");
     assertNotInTranslation(translation, "readObject");
     assertNotInTranslation(translation, "readObjectNoData");
     assertNotInTranslation(translation, "writeReplace");
     assertNotInTranslation(translation, "readResolve");
-    assertTranslation(translation, "anotherMethod");
+    assertInTranslation(translation, "anotherMethod");
   }
 
   public void testAnonymousSerializableTypeInsideNonSerializableTypeIsStripped()
@@ -117,8 +117,8 @@ public class SerializationStripperTest extends GenerationTest {
             /* typeName= */ "Test",
             /* fileName= */ "Test.m");
     assertNotInTranslation(translation, "serialVersionUID");
-    assertTranslation(translation, "anotherField");
+    assertInTranslation(translation, "anotherField");
     assertNotInTranslation(translation, "writeObject");
-    assertTranslation(translation, "anotherMethod");
+    assertInTranslation(translation, "anotherMethod");
   }
 }

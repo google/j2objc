@@ -14,12 +14,12 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.List;
 import javax.lang.model.type.TypeMirror;
 
 /** Switch expression node type. */
-@SuppressWarnings("CanIgnoreReturnValueSuggester")
-public class SwitchExpression extends Expression {
+public class SwitchExpression extends Expression implements SwitchConstruct {
 
   private final ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private final ChildList<Statement> statements = ChildList.create(Statement.class, this);
@@ -44,24 +44,31 @@ public class SwitchExpression extends Expression {
     return typeMirror;
   }
 
+  @CanIgnoreReturnValue
   public SwitchExpression setTypeMirror(TypeMirror newType) {
     typeMirror = newType;
     return this;
   }
 
+  @Override
   public Expression getExpression() {
     return expression.get();
   }
 
+  @Override
+  @CanIgnoreReturnValue
   public SwitchExpression setExpression(Expression newExpression) {
     expression.set(newExpression);
     return this;
   }
 
+  @Override
   public List<Statement> getStatements() {
     return statements;
   }
 
+  @Override
+  @CanIgnoreReturnValue
   public SwitchExpression addStatement(Statement stmt) {
     statements.add(stmt);
     return this;

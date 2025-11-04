@@ -28,9 +28,10 @@ public class EnumRewriterTest extends GenerationTest {
   public void testGenericEnumConstructor() throws IOException {
     String translation = translateSourceFile(
         "enum Test { A(\"foo\"); private <T> Test(T t) {} }", "Test", "Test.m");
-    assertTranslation(translation,
+    assertInTranslation(
+        translation,
         "void Test_initWithId_withNSString_withInt_("
-          + "Test *self, id t, NSString *__name, int32_t __ordinal) {");
+            + "Test *self, id t, NSString *__name, int32_t __ordinal) {");
     assertTranslatedLines(translation,
         "((void) (JreEnum(Test, A) = e = "
           + "objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
@@ -41,7 +42,7 @@ public class EnumRewriterTest extends GenerationTest {
     String translation = translateSourceFile("enum Test { A }", "Test", "Test.m");
     assertTranslatedLines(
         translation, "- (Test_ORDINAL)ordinal {", "  return (Test_ORDINAL)[super ordinal];", "}");
-    assertTranslation(translation, "Test_fromOrdinal(Test_ORDINAL ordinal)");
+    assertInTranslation(translation, "Test_fromOrdinal(Test_ORDINAL ordinal)");
   }
 
   public void testToNsEnumConversion() throws Exception {

@@ -38,8 +38,8 @@ public class StaticVarRewriterTest extends GenerationTest {
     addSourceFile("class A { static Object o; }", "A.java");
     String translation = translateSourceFile(
         "class Test { void test() { A.o = new Object(); } }", "Test", "Test.m");
-    assertTranslation(translation,
-        "JreStrongAssignAndConsume(JreLoadStaticRef(A, o), new_NSObject_init());");
+    assertInTranslation(
+        translation, "JreStrongAssignAndConsume(JreLoadStaticRef(A, o), new_NSObject_init());");
   }
 
   public void testAssignmentToNewObjectStrictFieldAssign() throws IOException {
@@ -48,7 +48,7 @@ public class StaticVarRewriterTest extends GenerationTest {
     addSourceFile("class A { static Object o; }", "A.java");
     String translation =
         translateSourceFile("class Test { void test() { A.o = new Object(); } }", "Test", "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation, "JreStrictFieldStrongAssign(JreLoadStaticRef(A, o), create_NSObject_init());");
   }
 

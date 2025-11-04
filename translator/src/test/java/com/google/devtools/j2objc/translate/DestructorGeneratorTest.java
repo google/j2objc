@@ -31,10 +31,10 @@ public class DestructorGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Test { public void finalize() { "
         + "  try { super.finalize(); } catch (Throwable t) {} }}", "Test", "Test.h");
-    assertTranslation(translation, "- (void)java_finalize;");
+    assertInTranslation(translation, "- (void)java_finalize;");
     assertFalse(translation.contains("dealloc"));
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "- (void)java_finalize {");
+    assertInTranslation(translation, "- (void)java_finalize {");
     assertTranslatedLines(translation,
         "- (void)dealloc {",
         "  JreCheckFinalize(self, [Test class]);",
@@ -52,10 +52,10 @@ public class DestructorGeneratorTest extends GenerationTest {
                 + "    try { super.finalize(); } catch (Throwable t) {} }}",
             "Test",
             "Test.h");
-    assertTranslation(translation, "- (void)java_finalize;");
+    assertInTranslation(translation, "- (void)java_finalize;");
     assertFalse(translation.contains("dealloc"));
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "- (void)java_finalize {");
+    assertInTranslation(translation, "- (void)java_finalize {");
     assertTranslatedLines(translation,
         "- (void)dealloc {",
         "  JreCheckFinalize(self, [Test class]);",
@@ -76,10 +76,10 @@ public class DestructorGeneratorTest extends GenerationTest {
                 + "    try { super.finalize(); } catch (Throwable t) {} }}",
             "Test",
             "Test.h");
-    assertTranslation(translation, "- (void)java_finalize;");
+    assertInTranslation(translation, "- (void)java_finalize;");
     assertFalse(translation.contains("dealloc"));
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "- (void)java_finalize {");
+    assertInTranslation(translation, "- (void)java_finalize {");
     assertTranslatedLines(
         translation,
         "- (void)dealloc {",
