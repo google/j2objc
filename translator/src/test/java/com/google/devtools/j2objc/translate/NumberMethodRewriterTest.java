@@ -83,10 +83,10 @@ public class NumberMethodRewriterTest extends GenerationTest {
             + "  public int intValue() { return 0; }"
             + "  public long longValue() { return 0L; }}", "A", "A.m");
 
-    assertTranslation(translation, "- (instancetype)initWithLongLong:(int64_t)value {");
-    assertTranslation(translation, "void A_initWithLongLong_(A *self, int64_t value) {");
-    assertTranslation(translation, "A *new_A_initWithLongLong_(int64_t value) {");
-    assertTranslation(translation, "A *create_A_initWithLongLong_(int64_t value) {");
+    assertInTranslation(translation, "- (instancetype)initWithLongLong:(int64_t)value {");
+    assertInTranslation(translation, "void A_initWithLongLong_(A *self, int64_t value) {");
+    assertInTranslation(translation, "A *new_A_initWithLongLong_(int64_t value) {");
+    assertInTranslation(translation, "A *create_A_initWithLongLong_(int64_t value) {");
     assertTranslatedLines(translation,
         "- (A *)valueOfWithLong:(int64_t)value {",
         "return create_A_initWithLongLong_(value);",

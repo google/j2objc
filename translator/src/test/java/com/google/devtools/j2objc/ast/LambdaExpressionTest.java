@@ -107,13 +107,13 @@ public class LambdaExpressionTest extends GenerationTest {
                 """,
             "Test",
             "Test.m");
-    assertTranslation(nonCaptureTranslation, "Test_$Lambda$1_get_instance(void);");
+    assertInTranslation(nonCaptureTranslation, "Test_$Lambda$1_get_instance(void);");
     assertTranslatedLines(captureTranslationOuter,
         "@interface Test_$Lambda$1 : NSObject < Function > {",
         " @public",
         "  Test *this$0_;",
         "}");
-    assertTranslation(captureTranslation, "Test_$Lambda$1_get_instance(void);");
+    assertInTranslation(captureTranslation, "Test_$Lambda$1_get_instance(void);");
     assertTranslatedLines(captureTranslation,
         "@interface Test_$Lambda$2 : NSObject < Function > {",
         " @public",
@@ -169,8 +169,8 @@ public class LambdaExpressionTest extends GenerationTest {
                 """,
             "Test",
             "Test.m");
-    assertTranslation(translation,
-        "JreStrongAssign(&self->outerF_, JreLoadStatic(Test_$Lambda$1, instance));");
+    assertInTranslation(
+        translation, "JreStrongAssign(&self->outerF_, JreLoadStatic(Test_$Lambda$1, instance));");
   }
 
   public void testStaticFunctions() throws IOException {
@@ -201,7 +201,7 @@ public class LambdaExpressionTest extends GenerationTest {
                 """,
             "Test",
             "Test.m");
-    assertTranslation(outerCapture, "Test_$Lambda$1_get_instance(void);");
+    assertInTranslation(outerCapture, "Test_$Lambda$1_get_instance(void);");
     assertTranslatedLines(outerCapture,
         "- (id)applyWithId:(NSString *)x {",
         "  return create_Test_$Lambda$2_initWithNSString_(x);",
@@ -225,8 +225,8 @@ public class LambdaExpressionTest extends GenerationTest {
                 """,
             "Test",
             "Test.m");
-    assertTranslation(noCapture, "Test_$Lambda$1_get_instance(void);");
-    assertTranslation(noCapture, "Test_$Lambda$2_get_instance(void);");
+    assertInTranslation(noCapture, "Test_$Lambda$1_get_instance(void);");
+    assertInTranslation(noCapture, "Test_$Lambda$2_get_instance(void);");
     assertTranslatedLines(noCapture,
         "- (id)applyWithId:(NSString *)x {",
         "  return JreRetainedLocalValue(JreLoadStatic(Test_$Lambda$2, instance));",
@@ -284,8 +284,8 @@ public class LambdaExpressionTest extends GenerationTest {
                 """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "@interface Test_Foo_Bar_$Lambda$1 : NSObject < Function >");
-    assertTranslation(translation, "@interface Test_$Lambda$1 : NSObject < Function >");
+    assertInTranslation(translation, "@interface Test_Foo_Bar_$Lambda$1 : NSObject < Function >");
+    assertInTranslation(translation, "@interface Test_$Lambda$1 : NSObject < Function >");
   }
 
   // Check that lambda captures respect reserved words.
@@ -302,7 +302,7 @@ public class LambdaExpressionTest extends GenerationTest {
                 """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "val$operator_");
+    assertInTranslation(translation, "val$operator_");
   }
 
   public void testLargeArgumentCount() throws IOException {
@@ -388,7 +388,7 @@ public class LambdaExpressionTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "#include \"java/util/Comparator.h\"");
+    assertInTranslation(translation, "#include \"java/util/Comparator.h\"");
   }
 
   public void testClassLiteralNamesInLambda() throws IOException {

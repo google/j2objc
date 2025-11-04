@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -44,8 +43,8 @@ public class JavadocGeneratorTest extends GenerationTest {
         + "  * @return always false.\n"
         + "  */\n"
         + "boolean test(int foo) { return false; } }", "Test", "Test.h");
-    assertTranslation(translation, "@brief Class javadoc for Test.");
-    assertTranslation(translation, "@brief Field javadoc.");
+    assertInTranslation(translation, "@brief Class javadoc for Test.");
+    assertInTranslation(translation, "@brief Field javadoc.");
     assertTranslatedLines(translation,
         "@brief Method javadoc.",
         "@param foo Unused.",
@@ -59,17 +58,17 @@ public class JavadocGeneratorTest extends GenerationTest {
         + " /** See {@linkplain #bar}. */ void foo2() {}"
         + " /** See {@link Test#bar(int, double)}. */ void foo3() {}"
         + " /** See {@link foo.bar.Mumble Mumble}.*/ void foo4() {}}", "Test", "Test.h");
-    assertTranslation(translation, "@brief Class javadoc for <code>Test</code>.");
-    assertTranslation(translation, "@brief See <code>bar</code>.");
-    assertTranslation(translation, "@brief See bar.");
-    assertTranslation(translation, "@brief See <code>Test.bar(int, double)</code>.");
-    assertTranslation(translation, "@brief See <code>Mumble</code>.");
+    assertInTranslation(translation, "@brief Class javadoc for <code>Test</code>.");
+    assertInTranslation(translation, "@brief See <code>bar</code>.");
+    assertInTranslation(translation, "@brief See bar.");
+    assertInTranslation(translation, "@brief See <code>Test.bar(int, double)</code>.");
+    assertInTranslation(translation, "@brief See <code>Mumble</code>.");
   }
 
   public void testLiteralTag() throws IOException {
     String translation = translateSourceFile(
         "/** Class javadoc for {@literal <Test>}. */ class Test {}", "Test", "Test.h");
-    assertTranslation(translation, "@brief Class javadoc for &lt;Test&gt;.");
+    assertInTranslation(translation, "@brief Class javadoc for &lt;Test&gt;.");
   }
 
   // Javadoc supports @param tags on classes, to document type parameters. Since there's
@@ -82,8 +81,8 @@ public class JavadocGeneratorTest extends GenerationTest {
         + "  /** Method javadoc.\n"
         + "   * @param <T> the type to be returned.\n"
         + "   */ T test() { return null; }}", "Test", "Test.h");
-    assertTranslation(translation, "@brief Class javadoc for Test.");
-    assertTranslation(translation, "@brief Method javadoc.");
+    assertInTranslation(translation, "@brief Class javadoc for Test.");
+    assertInTranslation(translation, "@brief Method javadoc.");
     assertNotInTranslation(translation, "@param");
     assertNotInTranslation(translation, "<T>");
   }
@@ -140,8 +139,8 @@ public class JavadocGeneratorTest extends GenerationTest {
         + "  * @param description Unused."
         + "  */\n"
         + "void test(int out, String description) {}}", "Test", "Test.h");
-    assertTranslation(translation, "@param outArg Unused.");
-    assertTranslation(translation, "@param description_ Unused.");
+    assertInTranslation(translation, "@param outArg Unused.");
+    assertInTranslation(translation, "@param description_ Unused.");
   }
 
   // Verify that tags without following text are skipped, such as "@param\n".
@@ -157,7 +156,7 @@ public class JavadocGeneratorTest extends GenerationTest {
         + "  * @throws\n"
         + "  */\n"
         + "boolean test(int foo) { return false; } }", "Test", "Test.h");
-    assertTranslation(translation, "@brief Class javadoc for Test.");
+    assertInTranslation(translation, "@brief Class javadoc for Test.");
     assertNotInTranslation(translation, "@see");
     assertNotInTranslation(translation, "@since");
     assertNotInTranslation(translation, "@param");
@@ -174,7 +173,7 @@ public class JavadocGeneratorTest extends GenerationTest {
         + " * }<pre>\n"
         + " */\n"
         + "class Test {}", "Test", "Test.h");
-    assertTranslation(translation, "@code");
+    assertInTranslation(translation, "@code");
   }
 
   // Verify that the formatting inside <pre>...</pre> and @{code ...} isn't reformatted.
@@ -189,8 +188,8 @@ public class JavadocGeneratorTest extends GenerationTest {
         + " *\n"           // Make sure "short" lines are handled correctly.
         + " */\n"
         + "class Test {}", "Test", "Test.h");
-    assertTranslation(translation, "  &#64;Property(\"copy, nonatomic\")\n");
-    assertTranslation(translation, "      protected String bar;\n");
+    assertInTranslation(translation, "  &#64;Property(\"copy, nonatomic\")\n");
+    assertInTranslation(translation, "      protected String bar;\n");
 
     // Same test, but without leading '*' in comment lines.
     translation = translateSourceFile(
@@ -202,8 +201,8 @@ public class JavadocGeneratorTest extends GenerationTest {
         + "}</pre>\n"
         + " */\n"
         + "class Test {}", "Test", "Test.h");
-    assertTranslation(translation, "  &#64;Property(\"copy, nonatomic\")\n");
-    assertTranslation(translation, "      protected String bar;\n");
+    assertInTranslation(translation, "  &#64;Property(\"copy, nonatomic\")\n");
+    assertInTranslation(translation, "      protected String bar;\n");
   }
 
   // Verify style tags are skipped, since Quick Help displays them.
@@ -230,10 +229,11 @@ public class JavadocGeneratorTest extends GenerationTest {
         + " * @see <a href=\"http://developers.facebook.com/docs/reference/javascript/FB.init/\">"
         + "FB.init</a>\n"
         + " */ class Test {}", "Test", "Test.h");
-    assertTranslation(translation, "@brief Class javadoc for Test.");
-    assertTranslation(translation,
+    assertInTranslation(translation, "@brief Class javadoc for Test.");
+    assertInTranslation(
+        translation,
         "- seealso: "
-        + "<a href=\"http://developers.facebook.com/docs/reference/javascript/FB.init/\">");
+            + "<a href=\"http://developers.facebook.com/docs/reference/javascript/FB.init/\">");
   }
 
   // Verify that unknown tags are not printed.
@@ -242,7 +242,7 @@ public class JavadocGeneratorTest extends GenerationTest {
         "/** Class javadoc for Test.\n"
         + " * @jls 11.2 Some JLS reference.\n"
         + " */ class Test {}", "Test", "Test.h");
-    assertTranslation(translation, "@brief Class javadoc for Test.");
+    assertInTranslation(translation, "@brief Class javadoc for Test.");
     assertNotInTranslation(translation, "11.2 Some JLS reference.");
   }
 

@@ -41,9 +41,9 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         .build();
     setDeadCodeMap(map);
     String translation = translateSourceFile(source, "A", "A.m");
-    assertTranslation(translation, "@interface A_B");
+    assertInTranslation(translation, "@interface A_B");
     assertNotInTranslation(translation, "bar");
-    assertTranslation(translation, "baz");
+    assertInTranslation(translation, "baz");
   }
 
   public void testDeadMethod_AnonymousClassMember() throws IOException {
@@ -92,14 +92,14 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         .build();
     setDeadCodeMap(map);
     String translation = translateSourceFile(source, "A", "A.h");
-    assertTranslation(translation, "#define A_pi 3.2");
-    assertTranslation(translation, "NSString *bah_;");
+    assertInTranslation(translation, "#define A_pi 3.2");
+    assertInTranslation(translation, "NSString *bah_;");
     assertNotInTranslation(translation, "baz");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "#define A_foo 1");
-    assertTranslation(translation, "NSString *A_bar = @\"bar\";");
-    assertTranslation(translation, "abc_ = 9;");
-    assertTranslation(translation, "JreStrongAssign(&self->bah_, @\"123\");");
+    assertInTranslation(translation, "#define A_foo 1");
+    assertInTranslation(translation, "NSString *A_bar = @\"bar\";");
+    assertInTranslation(translation, "abc_ = 9;");
+    assertInTranslation(translation, "JreStrongAssign(&self->bah_, @\"123\");");
     assertNotInTranslation(translation, "baz");
   }
 
@@ -113,7 +113,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  { System.out.println(\"bar\"); }\n"
         + "}\n";
     String translation = translateSourceFile(source, "A", "A.h");
-    assertTranslation(translation, "#define A_baz 9");
+    assertInTranslation(translation, "#define A_baz 9");
     translation = getTranslatedFile("A.m");
     assertNotInTranslation(translation, "println");
     assertNotInTranslation(translation, "initialize");
@@ -177,7 +177,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  static int f() { return 0; }\n"
         + "}\n";
     String translation = translateSourceFile(source, "Foo", "Foo.h");
-    assertTranslation(translation, "#define Foo_y 0");
+    assertInTranslation(translation, "#define Foo_y 0");
     translation = getTranslatedFile("Foo.m");
     assertNotInTranslation(translation, "int32_t Foo_x_");
     assertNotInTranslation(translation, "Foo_x_ = Foo_f()");
@@ -196,9 +196,9 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "class Baz extends Foo.Bar {\n"
         + "}\n";
     String translation = translateSourceFile(source, "Foo", "Foo.h");
-    assertTranslation(translation, "@interface Foo_Bar : NSObject");
+    assertInTranslation(translation, "@interface Foo_Bar : NSObject");
     translation = getTranslatedFile("Foo.m");
-    assertTranslation(translation, "Foo_Bar_init");
+    assertInTranslation(translation, "Foo_Bar_init");
   }
 
  public void testDeadClass_NestedEnum() throws IOException {
@@ -210,9 +210,9 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  enum Bar {BAZ}\n"
         + "}\n";
     String translation = translateSourceFile(source, "Foo", "Foo.h");
-    assertTranslation(translation, "@interface Foo_Bar : JavaLangEnum");
+    assertInTranslation(translation, "@interface Foo_Bar : JavaLangEnum");
     translation = getTranslatedFile("Foo.m");
-    assertTranslation(translation, "Foo_Bar *Foo_Bar_values_[1]");
+    assertInTranslation(translation, "Foo_Bar *Foo_Bar_values_[1]");
   }
 
   public void testDeadClass_DeadStaticNestedClass() throws IOException {
@@ -229,12 +229,12 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     String translation = translateSourceFile(source, "Foo", "Foo.h");
     assertNotInTranslation(translation, "@interface Foo_Bar");
     assertNotInTranslation(translation, "- (void)f");
-    assertTranslation(translation, "@interface Foo_Baz");
+    assertInTranslation(translation, "@interface Foo_Baz");
     assertNotInTranslation(translation, "- (void)g");
     translation = getTranslatedFile("Foo.m");
     assertNotInTranslation(translation, "Foo_Bar_init");
     assertNotInTranslation(translation, "- (void)f");
-    assertTranslation(translation, "Foo_Baz_init");
+    assertInTranslation(translation, "Foo_Baz_init");
     assertNotInTranslation(translation, "- (void)g");
   }
 
@@ -257,7 +257,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  }\n"
         + "}\n";
     String translation = translateSourceFile(source, "Foo", "Foo.h");
-    assertTranslation(translation, "@interface Foo_A");
+    assertInTranslation(translation, "@interface Foo_A");
     assertNotInTranslation(translation, "z_;");
     translation = getTranslatedFile("Foo.m");
     assertNotInTranslation(translation, "Foo *this$0_;");
@@ -294,7 +294,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  String value() default \"\";\n"
         + "}\n";
     String translation = translateSourceFile(source, "Foo", "Foo.h");
-    assertTranslation(translation, "@property (readonly) NSString *value;");
+    assertInTranslation(translation, "@property (readonly) NSString *value;");
   }
 
   // Verifies that RUNTIME annotations are stripped when the strip-reflection flag is on
@@ -388,7 +388,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     String header = translateSourceFile(source, "Foo", "Foo.h");
     assertNotInTranslation(header, "@interface Foo : Base");
     assertNotInTranslation(header, "@interface Foo : NSObject");
-    assertTranslation(header, "- (id)someMethod;");
+    assertInTranslation(header, "- (id)someMethod;");
     assertNotInTranslation(header, "- (NSString *)someMethod;");
   }
 
@@ -465,12 +465,12 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     String bImpl = translateSourceFile("B", "B.m");
     String iHeader = translateSourceFile("I", "I.h");
 
-    assertTranslation(aImpl, "(void)fooWithNSString:(NSString *)s");
+    assertInTranslation(aImpl, "(void)fooWithNSString:(NSString *)s");
     assertNotInTranslation(bImpl, "[self fooWithNSString:arg0];");
     assertNotInTranslation(iHeader, "(void)fooWithId:(id)t");
 
-    assertTranslation(bImpl, "[self barWithNSString:arg0];");
-    assertTranslation(iHeader, "(void)barWithId:(id)t");
+    assertInTranslation(bImpl, "[self barWithNSString:arg0];");
+    assertInTranslation(iHeader, "(void)barWithId:(id)t");
 
     assertNotInTranslation(aImpl, "(void)bazWithNSString:(NSString *)s");
     assertNotInTranslation(bImpl, "[self bazWithNSString:arg0];");
@@ -495,7 +495,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     String translation = translateSourceFile(source, "A", "A.m");
     assertNotInTranslation(translation, "bar");
     assertNotInTranslation(translation, "baz");
-    assertTranslation(translation, "mumble");
+    assertInTranslation(translation, "mumble");
   }
 
   public void testDeadClass_OCNI() throws IOException {
@@ -522,17 +522,17 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     setDeadCodeMap(map);
     String translation = translateSourceFile(source, "A", "A.h");
     assertNotInTranslation(translation, "@interface A");
-    assertTranslation(translation, "@interface B");
+    assertInTranslation(translation, "@interface B");
 
     translation = getTranslatedFile("A.m");
     assertNotInTranslation(translation, "@implementation A");
     assertNotInTranslation(translation, "bar");
     assertNotInTranslation(translation, "return @\"test\"");
     assertNotInTranslation(translation, "NSLog(@\"A\");");
-    assertTranslation(translation, "@implementation B");
-    assertTranslation(translation, "size");
-    assertTranslation(translation, "return 42");
-    assertTranslation(translation, "NSLog(@\"B\");");
+    assertInTranslation(translation, "@implementation B");
+    assertInTranslation(translation, "size");
+    assertInTranslation(translation, "return 42");
+    assertInTranslation(translation, "NSLog(@\"B\");");
   }
 
   public void testDeadInterface() throws IOException {
@@ -546,7 +546,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     setDeadCodeMap(map);
     String translation = translateSourceFile(source, "A", "A.h");
     assertNotInTranslation(translation, "JavaIoFlushable");
-    assertTranslation(translation, "JavaIoCloseable");
+    assertInTranslation(translation, "JavaIoCloseable");
   }
 
   public void testDeadClassWithConstant() throws IOException {
@@ -567,8 +567,8 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         .build();
     setDeadCodeMap(map);
     String translation = translateSourceFile(source, "A", "A.m");
-    assertTranslation(translation, "#define A_B_MEANING_OF_LIFE 42");
-    assertTranslation(translation, "#define A_B_PI_DAY 314");
+    assertInTranslation(translation, "#define A_B_MEANING_OF_LIFE 42");
+    assertInTranslation(translation, "#define A_B_PI_DAY 314");
     assertNotInTranslation(translation, "@interface A_B");
     assertNotInTranslation(translation, "@implementation A_B");
   }
@@ -588,7 +588,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
 
     translation = getTranslatedFile("A.m");
     assertNotInTranslation(translation, "@implementation A");
-    assertTranslation(translation, "#include <stdlib.h>");
+    assertInTranslation(translation, "#include <stdlib.h>");
   }
 
   public void testDeadClass_StringConstants() throws IOException {
@@ -609,12 +609,12 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     options.setStaticAccessorMethods(true);
     String translation = translateSourceFile(source, "A", "A.h");
     assertNotInTranslation(translation, "@interface A_B");
-    assertTranslation(translation, "FOUNDATION_EXPORT NSString *A_B_FOO;");
+    assertInTranslation(translation, "FOUNDATION_EXPORT NSString *A_B_FOO;");
 
     translation = getTranslatedFile("A.m");
     assertNotInTranslation(translation, "@implementation A_B");
-    assertTranslation(translation, "NSString *A_B_FOO = @\"foo\";");
-    assertTranslation(translation, "static NSString *A_B_BAR = @\"bar\";");
+    assertInTranslation(translation, "NSString *A_B_FOO = @\"foo\";");
+    assertInTranslation(translation, "static NSString *A_B_BAR = @\"bar\";");
   }
 
   public void testDeadClass_stringConstants_nullMarked() throws IOException {
@@ -640,11 +640,11 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     options.setNullMarked(true);
     options.setNullability(true);
     String translation = translateSourceFile(source, "foo.bar.A", "foo/bar/A.h");
-    assertTranslation(translation, "FOUNDATION_EXPORT NSString *_Nullable FooBarA_B_FOO;");
+    assertInTranslation(translation, "FOUNDATION_EXPORT NSString *_Nullable FooBarA_B_FOO;");
 
     translation = getTranslatedFile("foo/bar/A.m");
-    assertTranslation(translation, "NSString *FooBarA_B_FOO = @\"foo\";");
-    assertTranslation(translation, "static NSString *FooBarA_B_BAR = @\"bar\";");
+    assertInTranslation(translation, "NSString *FooBarA_B_FOO = @\"foo\";");
+    assertInTranslation(translation, "static NSString *FooBarA_B_BAR = @\"bar\";");
   }
 
   // Verify when an outer type is dead, a live inner type is still generated. b/289536498
@@ -655,13 +655,13 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     String source = "interface Foo {  public @interface Inner {} public @interface Inner2 {} }";
     String translation = translateSourceFile(source, "Foo", "Foo.h");
     assertNotInTranslation(translation, "@protocol Foo < JavaObject >");
-    assertTranslation(translation, "@protocol Foo_Inner < JavaLangAnnotationAnnotation >");
-    assertTranslation(translation, "@interface Foo_Inner : NSObject < Foo_Inner >");
+    assertInTranslation(translation, "@protocol Foo_Inner < JavaLangAnnotationAnnotation >");
+    assertInTranslation(translation, "@interface Foo_Inner : NSObject < Foo_Inner >");
     assertNotInTranslation(translation, "@protocol Foo_Inner2 < JavaObject >");
 
     translation = getTranslatedFile("Foo.m");
     assertNotInTranslation(translation, "J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(Foo)");
-    assertTranslation(translation, "J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(Foo_Inner)");
+    assertInTranslation(translation, "J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(Foo_Inner)");
     assertNotInTranslation(translation, "J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(Foo_Inner2)");
   }
 }

@@ -87,7 +87,8 @@ public class MethodReferenceTest extends GenerationTest {
         expressionReferenceHeader + "class Test { F fun = Q::o; }",
         "Test", "Test.m");
     // Should be non-capturing.
-    assertTranslation(staticTranslation,
+    assertInTranslation(
+        staticTranslation,
         "JreStrongAssign(&self->fun_, JreLoadStatic(Test_$Lambda$1, instance));");
     assertTranslatedLines(staticTranslation,
         "- (id)fWithId:(id)a {",
@@ -97,7 +98,8 @@ public class MethodReferenceTest extends GenerationTest {
         expressionReferenceHeader + "class Test { F fun = new Q()::o2; }",
         "Test", "Test.m");
     // Should be capturing.
-    assertTranslation(instanceTranslation,
+    assertInTranslation(
+        instanceTranslation,
         "JreStrongAssignAndConsume(&self->fun_, new_Test_$Lambda$1_initWithQ_(create_Q_init()));");
     assertTranslatedLines(instanceTranslation,
         "- (id)fWithId:(id)a {",
@@ -106,7 +108,8 @@ public class MethodReferenceTest extends GenerationTest {
     String staticInstanceTranslation = translateSourceFile(
         expressionReferenceHeader + "class Test { static F fun = new Q()::o2; }",
         "Test", "Test.m");
-    assertTranslation(staticInstanceTranslation,
+    assertInTranslation(
+        staticInstanceTranslation,
         "JreStrongAssignAndConsume(&Test_fun, new_Test_$Lambda$1_initWithQ_(create_Q_init()));");
     assertTranslatedLines(staticInstanceTranslation,
         "- (id)fWithId:(id)a {",
@@ -136,7 +139,7 @@ public class MethodReferenceTest extends GenerationTest {
         """;
 
     String impl = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(impl, "return [((NSString *) nil_chk(a)) compareToWithId:b];");
+    assertInTranslation(impl, "return [((NSString *) nil_chk(a)) compareToWithId:b];");
   }
 
   public void testReferenceToInstanceMethodOfGenericType() throws IOException {
@@ -156,7 +159,7 @@ public class MethodReferenceTest extends GenerationTest {
         """;
 
     String impl = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(impl, "[((id<Collection>) nil_chk(a)) addWithId:b];");
+    assertInTranslation(impl, "[((id<Collection>) nil_chk(a)) addWithId:b];");
     assertNotInTranslation(impl, "return [((id<Collection>) nil_chk(a)) addWithId:b];");
   }
 
@@ -177,7 +180,7 @@ public class MethodReferenceTest extends GenerationTest {
         """;
 
     String impl = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(impl, "return [((id<Collection>) nil_chk(a)) addWithId:b];");
+    assertInTranslation(impl, "return [((id<Collection>) nil_chk(a)) addWithId:b];");
   }
 
   public void testVarArgs() throws IOException {
@@ -525,6 +528,6 @@ public class MethodReferenceTest extends GenerationTest {
         "  id<Supplier> s = create_Test_$Lambda$1_initWithHolder_(h);",
         "}");
     // Make sure the receiver field is initialized.
-    assertTranslation(translation, "JreStrongAssign(&self->target$_, outer$);");
+    assertInTranslation(translation, "JreStrongAssign(&self->target$_, outer$);");
   }
 }

@@ -37,7 +37,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class A { void test() { "
         + "throw FooMaker.makeException().asAssertion(); }}", "A", "A.m");
-    assertTranslation(translation, "#include \"FooException.h\"");
+    assertInTranslation(translation, "#include \"FooException.h\"");
   }
 
   // http://b/7073329
@@ -67,7 +67,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     addSourceFile("class A { boolean[] b; }", "A.java");
     String translation = translateSourceFile(
         "class B { int test() { return new A().b.length; }}", "B", "B.m");
-    assertTranslation(translation, "#include \"IOSPrimitiveArray.h\"");
+    assertInTranslation(translation, "#include \"IOSPrimitiveArray.h\"");
   }
 
   public void testPrimitiveArrayAsParameterImport() throws IOException {
@@ -75,14 +75,14 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         "class B { protected char bits[]; public B(char[] bits_) { bits = bits_;} }", "B.java");
     String translation = translateSourceFile(
         "class A { public static final B test = new B(new char[]{'a', 'b'}); }", "A", "A.m");
-    assertTranslation(translation, "#include \"IOSPrimitiveArray.h\"");
+    assertInTranslation(translation, "#include \"IOSPrimitiveArray.h\"");
   }
 
   public void testObjectArrayImport() throws IOException {
     String translation = translateSourceFile(
         "import java.util.BitSet; class A { public BitSet[] test = new BitSet[3]; }", "A", "A.m");
-    assertTranslation(translation, "#include \"IOSObjectArray.h\"");
-    assertTranslation(translation, "#include \"java/util/BitSet.h\"");
+    assertInTranslation(translation, "#include \"IOSObjectArray.h\"");
+    assertInTranslation(translation, "#include \"java/util/BitSet.h\"");
   }
 
   public void testEnhancedForMethodInvocation() throws IOException {
@@ -91,7 +91,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     String translation = translateSourceFile(
         "import java.util.*; class B extends A { "
         + "void test() { for (String s : map.keySet()) {}}}", "B", "B.m");
-    assertTranslation(translation, "#include \"java/util/Map.h\"");
+    assertInTranslation(translation, "#include \"java/util/Map.h\"");
   }
 
   public void testReturnTypeOfSuperclassMethod() throws IOException {
@@ -100,7 +100,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     addSourceFile("class B { A getAnA() { return new A(); } }", "B.java");
     String translation = translateSourceFile(
         "class C extends B { void test() { I i = getAnA(); } }", "C", "C.m");
-    assertTranslation(translation, "#include \"A.h\"");
+    assertInTranslation(translation, "#include \"A.h\"");
   }
 
   // Verify that a primitive type literal has a wrapper class import.
@@ -111,7 +111,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         "import com.google.j2objc.annotations.Weak; "
         + "class Test { @Weak Object o; void test() { o = double.class; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "#include \"IOSClass.h\"");
+    assertInTranslation(translation, "#include \"IOSClass.h\"");
   }
 
   // Verify that an object array type literal imports IOSClass.
@@ -119,7 +119,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { Class arrayType() { return Object[].class; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "#include \"IOSClass.h\"");
+    assertInTranslation(translation, "#include \"IOSClass.h\"");
   }
 
   // Verify that a multi-dimensional array declaration imports IOSObjectArray.
@@ -127,7 +127,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { String[][] map = { { \"1\", \"one\" }, { \"2\", \"two\" } }; }",
         "Test", "Test.m");
-    assertTranslation(translation, "#include \"IOSObjectArray.h\"");
+    assertInTranslation(translation, "#include \"IOSObjectArray.h\"");
   }
 
   // Verify that a multi-catch clause imports are all collected.
@@ -137,10 +137,10 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         + "  try { System.out.println(); } catch (ArithmeticException | AssertionError | "
         + "      ClassCastException | SecurityException e) {} }}",
         "Test", "Test.m");
-    assertTranslation(translation, "#include \"java/lang/ArithmeticException.h\"");
-    assertTranslation(translation, "#include \"java/lang/AssertionError.h\"");
-    assertTranslation(translation, "#include \"java/lang/ClassCastException.h\"");
-    assertTranslation(translation, "#include \"java/lang/SecurityException.h\"");
+    assertInTranslation(translation, "#include \"java/lang/ArithmeticException.h\"");
+    assertInTranslation(translation, "#include \"java/lang/AssertionError.h\"");
+    assertInTranslation(translation, "#include \"java/lang/ClassCastException.h\"");
+    assertInTranslation(translation, "#include \"java/lang/SecurityException.h\"");
   }
 
   // Verify that platform class packages aren't truncated with --no-package-directories.
@@ -154,12 +154,12 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         "Test", "Test.m");
 
     // Test file's import should not have package.
-    assertTranslation(translation, "#include \"Test.h\"");
+    assertInTranslation(translation, "#include \"Test.h\"");
 
     // Platform file's imports should.
-    assertTranslation(translation, "#include \"org/xml/sax/SAXException.h\"");
-    assertTranslation(translation, "#include \"org/xml/sax/XMLReader.h\"");
-    assertTranslation(translation, "#include \"org/xml/sax/helpers/XMLReaderFactory.h\"");
+    assertInTranslation(translation, "#include \"org/xml/sax/SAXException.h\"");
+    assertInTranslation(translation, "#include \"org/xml/sax/XMLReader.h\"");
+    assertInTranslation(translation, "#include \"org/xml/sax/helpers/XMLReaderFactory.h\"");
   }
 
   // Verify that platform class packages aren't changed with --preserve-full-paths.
@@ -173,19 +173,19 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         "Test", "Test.m");
 
     // Test file's import should not have package.
-    assertTranslation(translation, "#include \"Test.h\"");
+    assertInTranslation(translation, "#include \"Test.h\"");
 
     // Platform file's imports should.
-    assertTranslation(translation, "#include \"org/xml/sax/SAXException.h\"");
-    assertTranslation(translation, "#include \"org/xml/sax/XMLReader.h\"");
-    assertTranslation(translation, "#include \"org/xml/sax/helpers/XMLReaderFactory.h\"");
+    assertInTranslation(translation, "#include \"org/xml/sax/SAXException.h\"");
+    assertInTranslation(translation, "#include \"org/xml/sax/XMLReader.h\"");
+    assertInTranslation(translation, "#include \"org/xml/sax/helpers/XMLReaderFactory.h\"");
   }
 
   public void testAddsHeaderForRenamedMainType() throws IOException {
     String translation = translateSourceFile(
         "package foo; import com.google.j2objc.annotations.ObjectiveCName;"
         + " @ObjectiveCName(\"Bar\") class Test {}", "foo.Test", "foo/Test.m");
-    assertTranslation(translation, "#include \"foo/Test.h\"");
+    assertInTranslation(translation, "#include \"foo/Test.h\"");
   }
 
   public void testImportsNativeExpressionType() throws IOException {
@@ -194,7 +194,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         + "}", "Foo.java");
     String translation = translateSourceFile("class Test { void test() { "
         + "java.util.Collection c = null; c = Foo.list; }}", "Test", "Test.m");
-    assertTranslation(translation, "#include \"java/util/List.h\"");
+    assertInTranslation(translation, "#include \"java/util/List.h\"");
   }
 
   public void testNoImportsForAbstractMethod() throws IOException {
@@ -210,7 +210,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     addSourceFile("class A { J j; }", "A.java");
     String translation = translateSourceFile(
         "class B extends A { I foo() { return j; } }", "B", "B.m");
-    assertTranslation(translation, "#include \"J.h\"");
+    assertInTranslation(translation, "#include \"J.h\"");
   }
 
   // Issue #802.
@@ -219,7 +219,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class B extends A { void foo() { if (list != null) { for (String elem : list) { "
         + "elem.hashCode(); } } } }", "B", "B.m");
-    assertTranslation(translation, "#include \"java/util/ArrayList.h\"");
+    assertInTranslation(translation, "#include \"java/util/ArrayList.h\"");
   }
 
   // Issue #924.
@@ -231,7 +231,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         "a.b.c.Bar", "a/b/c/Bar.m");
 
     // Verify that Test.h is imported, since that's what is generated from Test.java.
-    assertTranslation(translation, "#include \"a/b/c/Test.h\"");
+    assertInTranslation(translation, "#include \"a/b/c/Test.h\"");
     assertNotInTranslation(translation, "#include \"a/b/c/Foo.h\"");
   }
 }

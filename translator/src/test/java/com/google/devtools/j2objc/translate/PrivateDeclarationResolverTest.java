@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -30,7 +29,7 @@ public class PrivateDeclarationResolverTest extends GenerationTest {
         "class Test { private static class A {} public static class B extends A {} }",
         "Test", "Test.h");
     // Make sure the private superclass is still declared in the header.
-    assertTranslation(translation, "@interface Test_A");
+    assertInTranslation(translation, "@interface Test_A");
   }
 
   public void testPrivateGenericSuperclassOfPublicClass() throws IOException {
@@ -38,7 +37,7 @@ public class PrivateDeclarationResolverTest extends GenerationTest {
         "class Test { private static class A<T> {} public static class B extends A<String> {} }",
         "Test", "Test.h");
     // Make sure the private superclass is still declared in the header.
-    assertTranslation(translation, "@interface Test_A");
+    assertInTranslation(translation, "@interface Test_A");
   }
 
   public void testPublicClassInsidePrivateClass() throws IOException {
@@ -53,9 +52,9 @@ public class PrivateDeclarationResolverTest extends GenerationTest {
         "class Test { private static class Base { protected int field; protected void method() {}"
         + " protected static void staticMethod() {} } public static class Foo extends Base {} }",
         "Test", "Test.h");
-    assertTranslation(translation, "int32_t field_");
-    assertTranslation(translation, "- (void)method;");
-    assertTranslation(translation, "+ (void)staticMethod;");
-    assertTranslation(translation, "FOUNDATION_EXPORT void Test_Base_staticMethod(void);");
+    assertInTranslation(translation, "int32_t field_");
+    assertInTranslation(translation, "- (void)method;");
+    assertInTranslation(translation, "+ (void)staticMethod;");
+    assertInTranslation(translation, "FOUNDATION_EXPORT void Test_Base_staticMethod(void);");
   }
 }

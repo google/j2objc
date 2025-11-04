@@ -330,10 +330,8 @@ public abstract class GenerationTest extends TestCase {
     return StatementGenerator.generate(statement, SourceBuilder.BEGINNING_OF_FILE).trim();
   }
 
-  /**
-   * Asserts that translated source contains a specified string.
-   */
-  protected void assertTranslation(String translation, String expected) {
+  /** Asserts that translated source contains a specified string. */
+  protected void assertInTranslation(String translation, String expected) {
     if (!translation.contains(expected)) {
       fail("expected:\"" + expected + "\" in:\n" + translation);
     }
@@ -346,16 +344,25 @@ public abstract class GenerationTest extends TestCase {
   }
 
   /**
-   * Asserts that translated source contains an ordered, consecutive list of lines
-   * (each line's leading and trailing whitespace is ignored).
+   * Asserts that translated source contains a code fragment (each line's leading and trailing
+   * whitespace is ignored).
    */
-  protected void assertTranslatedLines(String translation, String... expectedLines)
+  protected void assertTranslatedLines(String translation, String code) throws IOException {
+    String[] lines = code.split("\n");
+    assertTranslatedLines(translation, lines[0], Arrays.copyOfRange(lines, 1, lines.length));
+  }
+
+  /**
+   * Asserts that translated source contains an ordered, consecutive list of lines (each line's
+   * leading and trailing whitespace is ignored).
+   */
+  // TODO(b/457746471): Inline above and simplify once all tests are written with text blocks.
+  protected void assertTranslatedLines(String translation, String first, String... rest)
       throws IOException {
-    int nLines = expectedLines.length;
-    if (nLines < 2) {
-      assertTranslation(translation, nLines == 1 ? expectedLines[0] : null);
-      return;
-    }
+    int nLines = rest.length + 1;
+    String[] expectedLines = new String[nLines];
+    expectedLines[0] = first;
+    System.arraycopy(rest, 0, expectedLines, 1, rest.length);
     int unmatchedLineIndex = unmatchedLineIndex(translation, expectedLines);
     if (unmatchedLineIndex != -1) {
       fail("unmatched:\n\"" + expectedLines[unmatchedLineIndex] + "\"\n" + "expected lines:\n\""
@@ -400,7 +407,7 @@ public abstract class GenerationTest extends TestCase {
       throws IOException {
     int nLines = expectedLines.length;
     if (nLines < 2) {
-      assertTranslation(translation, nLines == 1 ? expectedLines[0] : null);
+      assertInTranslation(translation, nLines == 1 ? expectedLines[0] : null);
       return;
     }
     String incorrectSegment = firstIncorrectSegment(translation, expectedLines);

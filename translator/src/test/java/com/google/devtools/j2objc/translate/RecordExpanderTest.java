@@ -27,16 +27,16 @@ public class RecordExpanderTest extends GenerationTest {
   public void testMinimalRecord() throws IOException {
     String translation =
         translateSourceFile("public record Point(int x, int y) {}", "Point", "Point.h");
-    assertTranslation(translation, "@interface Point : JavaLangRecord");
+    assertInTranslation(translation, "@interface Point : JavaLangRecord");
     assertTranslatedLines(
         translation, "- (instancetype)initWithInt:(int32_t)x", "withInt:(int32_t)y;");
-    assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
-    assertTranslation(
+    assertInTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
+    assertInTranslation(
         translation, "void Point_initWithInt_withInt_(Point *self, int32_t x, int32_t y);");
 
     // Verify accessors declared for record's members.
-    assertTranslation(translation, "- (int32_t)x;");
-    assertTranslation(translation, "- (int32_t)y;");
+    assertInTranslation(translation, "- (int32_t)x;");
+    assertInTranslation(translation, "- (int32_t)y;");
 
     // Verify implementation.
     translation = getTranslatedFile("Point.m");
@@ -56,7 +56,7 @@ public class RecordExpanderTest extends GenerationTest {
         "if (!([o isKindOfClass:[Point class]])) return false;",
         "Point *other = (Point *) cast_chk(o, [Point class]);",
         "return ((Point *) nil_chk(other))->x_ == x_ && other->y_ == y_;");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "return JavaUtilObjects_hash__WithNSObjectArray_([IOSObjectArray "
             + "arrayWithObjects:(id[]){ JavaLangInteger_valueOfWithInt_(x_), "
@@ -99,16 +99,16 @@ public class RecordExpanderTest extends GenerationTest {
                 "}"),
             "Point",
             "Point.h");
-    assertTranslation(translation, "@interface Point : JavaLangRecord");
-    assertTranslation(translation, "- (int32_t)x;");
-    assertTranslation(translation, "- (int32_t)y;");
-    assertTranslation(translation, "- (bool)isEqual:(id)o;");
-    assertTranslation(translation, "- (NSUInteger)hash;");
-    assertTranslation(translation, "- (NSString *)description;");
+    assertInTranslation(translation, "@interface Point : JavaLangRecord");
+    assertInTranslation(translation, "- (int32_t)x;");
+    assertInTranslation(translation, "- (int32_t)y;");
+    assertInTranslation(translation, "- (bool)isEqual:(id)o;");
+    assertInTranslation(translation, "- (NSUInteger)hash;");
+    assertInTranslation(translation, "- (NSString *)description;");
     assertTranslatedLines(
         translation, "- (instancetype)initWithInt:(int32_t)x", "withInt:(int32_t)y;");
-    assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
-    assertTranslation(
+    assertInTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
+    assertInTranslation(
         translation, "void Point_initWithInt_withInt_(Point *self, int32_t x, int32_t y);");
 
     // Verify implementation.
@@ -132,7 +132,7 @@ public class RecordExpanderTest extends GenerationTest {
         "if (!([o isKindOfClass:[Point class]])) return false;",
         "Point *other = (Point *) cast_chk(o, [Point class]);",
         "return ((Point *) nil_chk(other))->x_ == x_ && other->y_ == y_;");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "return JavaUtilObjects_hash__WithNSObjectArray_([IOSObjectArray "
             + "arrayWithObjects:(id[]){ JavaLangInteger_valueOfWithInt_(x_), "

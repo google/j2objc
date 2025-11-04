@@ -95,6 +95,6 @@ public class CompoundTypeTest extends GenerationTest {
         + "    return (res != 0) ? res : other.compare(c1, c2); }; }}";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertNotInTranslation(translation, "#include \".h\"");
-    assertTranslation(translation, "#include \"Test.h\"");
+    assertInTranslation(translation, "#include \"Test.h\"");
   }
 }

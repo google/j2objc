@@ -47,7 +47,7 @@ public class TypeUseAnnotationTest extends GenerationTest {
     String translationInterfaceWithWeak = translateSourceFile(testWeakOuterSetup
         + "void f() { o = new @WeakOuter Simple() { public int run() { return member; } }; } }",
         "Test", "Test.m");
-    assertTranslation(translationInterfaceWithWeak, "WEAK_ Test *this$0_;");
+    assertInTranslation(translationInterfaceWithWeak, "WEAK_ Test *this$0_;");
 
     String translationInterfaceWithoutWeak = translateSourceFile(testWeakOuterSetup
         + "void f() { o = new Simple() { public int run() { return member; } }; } }",
@@ -60,7 +60,7 @@ public class TypeUseAnnotationTest extends GenerationTest {
         + "void f() { o = new @WeakOuter SimpleClass() {"
         + "public int run() { return member; } }; } }",
         "Test", "Test.m");
-    assertTranslation(translationInterfaceWithWeak, "WEAK_ Test *this$0_;");
+    assertInTranslation(translationInterfaceWithWeak, "WEAK_ Test *this$0_;");
 
     String translationInterfaceWithoutWeak = translateSourceFile(testWeakOuterSetup
         + "void f() { o = new SimpleClass() { public int run() { return member; } }; } }",
@@ -73,7 +73,7 @@ public class TypeUseAnnotationTest extends GenerationTest {
         + "void f() { o = new @WeakOuter SimpleAbstractClass() {"
         + "public int run() { return member; } }; } }",
         "Test", "Test.m");
-    assertTranslation(translationInterfaceWithWeak, "WEAK_ Test *this$0_;");
+    assertInTranslation(translationInterfaceWithWeak, "WEAK_ Test *this$0_;");
 
     String translationInterfaceWithoutWeak = translateSourceFile(testWeakOuterSetup
         + "void f() { o = new SimpleAbstractClass() { public int run() { return member; } }; } }",

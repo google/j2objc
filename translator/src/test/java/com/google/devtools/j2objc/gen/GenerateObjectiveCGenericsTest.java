@@ -37,9 +37,9 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertTranslation(testHeader, "@interface Test<V> : NSObject");
-    assertTranslation(testHeader, "- (V)getWithId:(V)input;");
-    assertTranslation(testSource, "- (id)getWithId:(id)input");
+    assertInTranslation(testHeader, "@interface Test<V> : NSObject");
+    assertInTranslation(testHeader, "- (V)getWithId:(V)input;");
+    assertInTranslation(testSource, "- (id)getWithId:(id)input");
   }
 
   public void testGenericsAnnotatedClass() throws IOException {
@@ -56,9 +56,9 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertTranslation(testHeader, "@interface Test<V> : NSObject");
-    assertTranslation(testHeader, "- (V)getWithId:(V)input;");
-    assertTranslation(testSource, "- (id)getWithId:(id)input");
+    assertInTranslation(testHeader, "@interface Test<V> : NSObject");
+    assertInTranslation(testHeader, "- (V)getWithId:(V)input;");
+    assertInTranslation(testSource, "- (id)getWithId:(id)input");
   }
 
   public void testPublicDeclaration() throws IOException {
@@ -74,10 +74,10 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertTranslation(testHeader, "@interface Test<V> : NSObject");
-    assertTranslation(testHeader, "- (V)getWithId:(V)input;");
-    assertTranslation(testSource, "@implementation Test\n");
-    assertTranslation(testSource, "- (id)getWithId:(id)input");
+    assertInTranslation(testHeader, "@interface Test<V> : NSObject");
+    assertInTranslation(testHeader, "- (V)getWithId:(V)input;");
+    assertInTranslation(testSource, "@implementation Test\n");
+    assertInTranslation(testSource, "- (id)getWithId:(id)input");
   }
 
   public void testPrivateDeclaration() throws IOException {
@@ -93,12 +93,12 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertTranslation(testHeader, "@interface Test<V> : NSObject");
+    assertInTranslation(testHeader, "@interface Test<V> : NSObject");
     assertNotInTranslation(testHeader, "- (V)getWithId:(V)input;");
-    assertTranslation(testSource, "@interface Test<V> ()");
-    assertTranslation(testSource, "- (V)getWithId:(V)input;");
-    assertTranslation(testSource, "@implementation Test\n");
-    assertTranslation(testSource, "- (id)getWithId:(id)input");
+    assertInTranslation(testSource, "@interface Test<V> ()");
+    assertInTranslation(testSource, "- (V)getWithId:(V)input;");
+    assertInTranslation(testSource, "@implementation Test\n");
+    assertInTranslation(testSource, "- (id)getWithId:(id)input");
   }
 
   public void testGenericsClassForwardDeclaration() throws IOException {
@@ -113,7 +113,7 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
         "Bar.java");
 
     String forwardDeclaredHeader = translateSourceFile("Bar", "Bar.h");
-    assertTranslation(forwardDeclaredHeader, "@class Foo<K, V>;");
+    assertInTranslation(forwardDeclaredHeader, "@class Foo<K, V>;");
   }
 
   public void testGenericsAnnotatedClassForwardDeclaration() throws IOException {
@@ -135,9 +135,9 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
         "Bar.java");
 
     String forwardDeclaredHeader = translateSourceFile("Bar", "Bar.h");
-    assertTranslation(forwardDeclaredHeader, "@class Foo<K, V>;");
+    assertInTranslation(forwardDeclaredHeader, "@class Foo<K, V>;");
     // No generics because this class is not annotated.
-    assertTranslation(forwardDeclaredHeader, "@class Baz;");
+    assertInTranslation(forwardDeclaredHeader, "@class Baz;");
   }
 
   public void testGenericsInterfaceForwardDeclaration() throws IOException {
@@ -152,7 +152,7 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
         "Bar.java");
 
     String forwardDeclaredHeader = translateSourceFile("Bar", "Bar.h");
-    assertTranslation(forwardDeclaredHeader, "@protocol Foo;");
+    assertInTranslation(forwardDeclaredHeader, "@protocol Foo;");
   }
 
   public void testReturnedType() throws IOException {
@@ -182,10 +182,10 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertTranslation(testHeader, "- (Future<NSString *> *)fetchWithNSString:(NSString *)url;");
-    assertTranslation(testHeader, "- (T)getWithId:(T)input;");
-    assertTranslation(testSource, "- (Future *)fetchWithNSString:(NSString *)url");
-    assertTranslation(testSource, "- (id)getWithId:(id)input");
+    assertInTranslation(testHeader, "- (Future<NSString *> *)fetchWithNSString:(NSString *)url;");
+    assertInTranslation(testHeader, "- (T)getWithId:(T)input;");
+    assertInTranslation(testSource, "- (Future *)fetchWithNSString:(NSString *)url");
+    assertInTranslation(testSource, "- (id)getWithId:(id)input");
   }
 
   public void testAnnotatedReturnedType() throws IOException {
@@ -216,10 +216,10 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertTranslation(testHeader, "- (Future<NSString *> *)fetchWithNSString:(NSString *)url;");
-    assertTranslation(testHeader, "- (id)getWithId:(id)input;");
-    assertTranslation(testSource, "- (Future *)fetchWithNSString:(NSString *)url");
-    assertTranslation(testSource, "- (id)getWithId:(id)input");
+    assertInTranslation(testHeader, "- (Future<NSString *> *)fetchWithNSString:(NSString *)url;");
+    assertInTranslation(testHeader, "- (id)getWithId:(id)input;");
+    assertInTranslation(testSource, "- (Future *)fetchWithNSString:(NSString *)url");
+    assertInTranslation(testSource, "- (id)getWithId:(id)input");
   }
 
   public void testNestedReturnedType() throws IOException {
@@ -244,9 +244,9 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertTranslation(
+    assertInTranslation(
         testHeader, "- (List<List<NSString *> *> *)fetchWithNSString:(NSString *)url;");
-    assertTranslation(testSource, "- (List *)fetchWithNSString:(NSString *)url");
+    assertInTranslation(testSource, "- (List *)fetchWithNSString:(NSString *)url");
   }
 
   public void testMultipleGenericTypes() throws IOException {
@@ -262,9 +262,9 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
 
     String testHeader = translateSourceFile("Test", "Test.h");
 
-    assertTranslation(testHeader, "@interface Test<U, V> : NSObject");
-    assertTranslation(testHeader, "- (U)getFirst;");
-    assertTranslation(testHeader, "- (V)getSecond;");
+    assertInTranslation(testHeader, "@interface Test<U, V> : NSObject");
+    assertInTranslation(testHeader, "- (U)getFirst;");
+    assertInTranslation(testHeader, "- (V)getSecond;");
   }
 
   public void testReturnedTypeWithMultipleTypes() throws IOException {
@@ -292,7 +292,7 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
 
     String testHeader = translateSourceFile("Test", "Test.h");
 
-    assertTranslation(testHeader, "- (Map<NSString *, List<List<NSString *> *> *> *)getWithMap");
+    assertInTranslation(testHeader, "- (Map<NSString *, List<List<NSString *> *> *> *)getWithMap");
   }
 
   public void testReturnTypedInterfaces() throws IOException {
@@ -309,12 +309,12 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertTranslation(
+    assertInTranslation(
         testHeader,
         "- (id<ComGoogleCommonUtilConcurrentListenableFuture>)"
             + "getWithComGoogleCommonUtilConcurrentListenableFuture:"
             + "(id<ComGoogleCommonUtilConcurrentListenableFuture>)input;");
-    assertTranslation(
+    assertInTranslation(
         testSource,
         "- (id<ComGoogleCommonUtilConcurrentListenableFuture>)"
             + "getWithComGoogleCommonUtilConcurrentListenableFuture:"
@@ -334,9 +334,9 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertTranslation(testHeader, "@interface Test : NSObject");
-    assertTranslation(testHeader, "- (id)getWithId:(id)input;");
-    assertTranslation(testSource, "- (id)getWithId:(id)input");
+    assertInTranslation(testHeader, "@interface Test : NSObject");
+    assertInTranslation(testHeader, "- (id)getWithId:(id)input;");
+    assertInTranslation(testSource, "- (id)getWithId:(id)input");
   }
 
   // Inner class generics, which is presently unsupported.
@@ -360,12 +360,12 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
 
     String testHeader = translateSourceFile("A", "A.h");
 
-    assertTranslation(testHeader, "@interface A<X> : NSObject");
-    assertTranslation(testHeader, "- (X)getAXWithId:(X)input;");
-    assertTranslation(testHeader, "@interface A_B<Y> : NSObject");
+    assertInTranslation(testHeader, "@interface A<X> : NSObject");
+    assertInTranslation(testHeader, "- (X)getAXWithId:(X)input;");
+    assertInTranslation(testHeader, "@interface A_B<Y> : NSObject");
     // Inner classes using generics from outer class presently unsupported.
-    assertTranslation(testHeader, "- (id)getBXWithId:(id)input;");
-    assertTranslation(testHeader, "- (Y)getBYWithId:(Y)input;");
+    assertInTranslation(testHeader, "- (id)getBXWithId:(id)input;");
+    assertInTranslation(testHeader, "- (Y)getBYWithId:(Y)input;");
   }
 
   // Inner interface generics. Interfaces (ObjC protocols) cannot carry generics at all.
@@ -384,10 +384,10 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
 
     String testHeader = translateSourceFile("A", "A.h");
 
-    assertTranslation(testHeader, "@interface A<X> : NSObject");
-    assertTranslation(testHeader, "- (X)getAXWithId:(X)input;");
-    assertTranslation(testHeader, "@protocol A_B < JavaObject >");
-    assertTranslation(testHeader, "- (id)getBYWithId:(id)input;");
+    assertInTranslation(testHeader, "@interface A<X> : NSObject");
+    assertInTranslation(testHeader, "- (X)getAXWithId:(X)input;");
+    assertInTranslation(testHeader, "@protocol A_B < JavaObject >");
+    assertInTranslation(testHeader, "- (id)getBYWithId:(id)input;");
   }
 
   public void testClassGenericsIgnored() throws IOException {
@@ -401,7 +401,7 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
         "Foo.java");
 
     String header = translateSourceFile("Foo", "Foo.h");
-    assertTranslation(header, "- (IOSClass *)sameClassWithIOSClass:(IOSClass *)thing");
+    assertInTranslation(header, "- (IOSClass *)sameClassWithIOSClass:(IOSClass *)thing");
   }
 
   // Verify that generics aren't generated for a Google Protobuf class.
@@ -419,7 +419,7 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile(
         "com.google.protobuf.Test", "com/google/protobuf/Test.h");
 
-    assertTranslation(testHeader, "@interface ComGoogleProtobufTest : NSObject");
-    assertTranslation(testHeader, "- (id)getWithId:(id)input;");
+    assertInTranslation(testHeader, "@interface ComGoogleProtobufTest : NSObject");
+    assertInTranslation(testHeader, "- (id)getWithId:(id)input;");
   }
 }

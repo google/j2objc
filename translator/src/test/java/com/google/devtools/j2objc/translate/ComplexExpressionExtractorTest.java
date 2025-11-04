@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -71,37 +70,37 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { int test() { return 1 + 2 - 3 + 4 - 5 + 6 - 7 + 8 - 9; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "int32_t complex$1 = 1 + 2 - 3 + 4;");
-    assertTranslation(translation, "int32_t complex$2 = complex$1 - 5 + 6 - 7;");
-    assertTranslation(translation, "return complex$2 + 8 - 9;");
+    assertInTranslation(translation, "int32_t complex$1 = 1 + 2 - 3 + 4;");
+    assertInTranslation(translation, "int32_t complex$2 = complex$1 - 5 + 6 - 7;");
+    assertInTranslation(translation, "return complex$2 + 8 - 9;");
   }
 
   public void testAssignCompareExpression() throws IOException {
     String translation = translateSourceFile(
         "class Test { boolean b; void test(int i) { if (b = i == 0) {} } }",
         "Test", "Test.m");
-    assertTranslation(translation, "if ((b_ = (i == 0))) {");
+    assertInTranslation(translation, "if ((b_ = (i == 0))) {");
   }
 
   public void testIfAssignExpression() throws IOException {
     String translation = translateSourceFile(
         "class Test { boolean foo; void test(boolean b) { if (foo = b) {} } }",
         "Test", "Test.m");
-    assertTranslation(translation, "if ((foo_ = b)) {");
+    assertInTranslation(translation, "if ((foo_ = b)) {");
   }
 
   public void testWhileAssignExpression() throws IOException {
     String translation = translateSourceFile(
         "class Test { boolean foo; void test(boolean b) { while (foo = b) {} } }",
         "Test", "Test.m");
-    assertTranslation(translation, "while ((foo_ = b)) {");
+    assertInTranslation(translation, "while ((foo_ = b)) {");
   }
 
   public void testDoAssignExpression() throws IOException {
     String translation = translateSourceFile(
         "class Test { boolean foo; void test(boolean b) { do {} while (foo = b); } }",
         "Test", "Test.m");
-    assertTranslation(translation, "while ((foo_ = b));");
+    assertInTranslation(translation, "while ((foo_ = b));");
   }
 
   // Verify that multiple parentheses are removed from equality (==) expressions.
@@ -112,7 +111,7 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
         + "  boolean test(int b) { return (((((foo == b))))); } "
         + "  int test2(int b) { if ((bar == b)) { return 42; } else { return 666; }}}",
         "Test", "Test.m");
-    assertTranslation(translation, "return (foo_ == b);");
-    assertTranslation(translation, "if (bar_ == b) {");
+    assertInTranslation(translation, "return (foo_ == b);");
+    assertInTranslation(translation, "if (bar_ == b) {");
   }
 }

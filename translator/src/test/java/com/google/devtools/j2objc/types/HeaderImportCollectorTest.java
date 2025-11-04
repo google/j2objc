@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -29,8 +28,8 @@ public class HeaderImportCollectorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test1(double... values) {} void test2(Runnable... values) {} }",
         "Test", "Test.h");
-    assertTranslation(translation, "@class IOSDoubleArray");
-    assertTranslation(translation, "@class IOSObjectArray");
+    assertInTranslation(translation, "@class IOSDoubleArray");
+    assertInTranslation(translation, "@class IOSObjectArray");
     assertNotInTranslation(translation, "@protocol JavaLangRunnable");
   }
 

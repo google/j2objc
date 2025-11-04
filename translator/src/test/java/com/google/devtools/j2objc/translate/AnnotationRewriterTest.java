@@ -30,9 +30,10 @@ public class AnnotationRewriterTest extends GenerationTest {
         "import java.lang.annotation.*;\n"
         + "@Retention(RetentionPolicy.RUNTIME) @interface A {}", "A", "A.m");
     // Make sure we get a "JreLoadEnum" instead of "JreEnum" macro.
-    assertTranslation(translation,
+    assertInTranslation(
+        translation,
         "create_JavaLangAnnotationRetention("
-        + "JreLoadEnum(JavaLangAnnotationRetentionPolicy, RUNTIME))");
+            + "JreLoadEnum(JavaLangAnnotationRetentionPolicy, RUNTIME))");
   }
 
   public void testDeallocMethodAdded() throws IOException {
@@ -61,18 +62,19 @@ public class AnnotationRewriterTest extends GenerationTest {
         + "  long my_long() default 4L;\n"
         + "  short my_short() default 5;\n"
         + "}\n", "A", "A.m");
-    assertTranslation(translation,
+    assertInTranslation(
+        translation,
         "return [NSString stringWithFormat:@\"@A(my_str=%@, my_bool=%d, my_byte=%d, my_char=%c,"
-        + " my_double=%lf, my_float=%f, my_int=%d, my_long=%lld, my_short=%hd)\","
-        + " my_str_, my_bool_, my_byte_, my_char_, my_double_, my_float_, my_int_, my_long_,"
-        + " my_short_];");
+            + " my_double=%lf, my_float=%f, my_int=%d, my_long=%lld, my_short=%hd)\","
+            + " my_str_, my_bool_, my_byte_, my_char_, my_double_, my_float_, my_int_, my_long_,"
+            + " my_short_];");
 
     translation = translateSourceFile(
         "import java.lang.annotation.*;\n"
         + "@Retention(RetentionPolicy.RUNTIME)\n"
         + "public @interface B {\n"
         + "}\n", "B", "B.m");
-    assertTranslation(translation, "return @\"@B()\";");
+    assertInTranslation(translation, "return @\"@B()\";");
   }
 
   public void testEqualsMethodAdded() throws IOException {
@@ -102,10 +104,10 @@ public class AnnotationRewriterTest extends GenerationTest {
             "Test", "Test.m");
 
     // Verify namespace was recognized as reserved with two trailing underscores.
-    assertTranslation(translation, "@synthesize namespace__ = namespace___;");
+    assertInTranslation(translation, "@synthesize namespace__ = namespace___;");
 
     // Verify metadata for namespace() method is also marked as reserved.
-    assertTranslation(translation, "methods[0].selector = @selector(namespace__);");
+    assertInTranslation(translation, "methods[0].selector = @selector(namespace__);");
   }
 
   public void testInterfaceWithGenerateObjectiveCGenerics() throws IOException {

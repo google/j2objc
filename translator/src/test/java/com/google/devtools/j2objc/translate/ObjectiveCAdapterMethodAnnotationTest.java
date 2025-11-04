@@ -144,7 +144,7 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
 
     assertNoWarnings();
     assertNoErrors();
-    assertTranslation(testAHeader, "- (NSArray *)integerArray;");
+    assertInTranslation(testAHeader, "- (NSArray *)integerArray;");
     assertTranslatedLines(
         testASource,
         "- (NSArray *)integerArray {",
@@ -185,9 +185,9 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
 
     assertNoWarnings();
     assertNoErrors();
-    assertTranslation(testIHeader, "- (id<JavaUtilList>)_getIntegerList;");
+    assertInTranslation(testIHeader, "- (id<JavaUtilList>)_getIntegerList;");
     assertNotInTranslation(testIHeader, "integerArray");
-    assertTranslation(testCHeader, "- (NSArray *)integerArray;");
+    assertInTranslation(testCHeader, "- (NSArray *)integerArray;");
     assertTranslatedLines(
         testCSource,
         "- (NSArray *)integerArray {",
@@ -238,9 +238,9 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertNoWarnings();
     assertNoErrors();
 
-    assertTranslation(testHeader, "- (NSArray * _Nullable)rewrittenReturnObject:(bool)flag;");
-    assertTranslation(testHeader, "- (id<JavaUtilList> _Nullable)returnObject:(bool)flag;");
-    assertTranslation(testHeader, "- (id<NativeProtocol> _Nullable)returnAdapterProtocol;");
+    assertInTranslation(testHeader, "- (NSArray * _Nullable)rewrittenReturnObject:(bool)flag;");
+    assertInTranslation(testHeader, "- (id<JavaUtilList> _Nullable)returnObject:(bool)flag;");
+    assertInTranslation(testHeader, "- (id<NativeProtocol> _Nullable)returnAdapterProtocol;");
     // In the future when we support written object arguments add here to make sure their
     // nullability is translated.
   }
@@ -332,7 +332,7 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertNoWarnings();
     assertNoErrors();
 
-    assertTranslation(testHeader, "- (bool)doSomethingAndReturnError:(NSError **)error;");
+    assertInTranslation(testHeader, "- (bool)doSomethingAndReturnError:(NSError **)error;");
     assertTranslatedLines(
         testSource,
         "- (bool)doSomethingAndReturnError:(NSError **)error {",
@@ -344,7 +344,7 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "  return NO; ",
         "}");
 
-    assertTranslation(testHeader, "- (bool)isItTrueAndReturnError:(NSError **)error;");
+    assertInTranslation(testHeader, "- (bool)isItTrueAndReturnError:(NSError **)error;");
     assertTranslatedLines(
         testSource,
         "- (bool)isItTrueAndReturnError:(NSError **)error {",
@@ -451,22 +451,22 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertNoWarnings();
     assertNoErrors();
 
-    assertTranslation(testHeader, "- (bool)isItTrue;");
+    assertInTranslation(testHeader, "- (bool)isItTrue;");
     assertTranslatedLines(
         testSource, "- (bool)isItTrue {", "  return [self _getTrue] ? YES : NO;", "}");
 
-    assertTranslation(testHeader, "+ (bool)isSomethingElse;");
+    assertInTranslation(testHeader, "+ (bool)isSomethingElse;");
     assertTranslatedLines(
         testSource,
         "+ (bool)isSomethingElse {",
         "  return [BooleanMethods _getSomethingElse] ? YES : NO;",
         "}");
 
-    assertTranslation(testHeader, "- (void)makeIt:(bool)value;");
+    assertInTranslation(testHeader, "- (void)makeIt:(bool)value;");
     assertTranslatedLines(
         testSource, "- (void)makeIt:(bool)value {", "  [self _setValueWithBoolean:value];", "}");
 
-    assertTranslation(testHeader, "+ (void)makeSomethingElse:(bool)value;");
+    assertInTranslation(testHeader, "+ (void)makeSomethingElse:(bool)value;");
     assertTranslatedLines(
         testSource,
         "+ (void)makeSomethingElse:(bool)value {",
@@ -517,8 +517,8 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
 
     String testHeader = translateSourceFile("EnumMethods", "EnumMethods.h");
     String testSource = getTranslatedFile("EnumMethods.m");
-    assertTranslation(testHeader, "enum Color_Enum : int32_t;");
-    assertTranslation(testSource, "#include \"Color.h\"");
+    assertInTranslation(testHeader, "enum Color_Enum : int32_t;");
+    assertInTranslation(testSource, "#include \"Color.h\"");
   }
 
   public void testEnumLocalForwardDeclaration() throws IOException {
@@ -532,7 +532,7 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "EnumMethods.java");
 
     String testHeader = translateSourceFile("EnumMethods", "EnumMethods.h");
-    assertTranslation(testHeader, "enum EnumMethods_SomeInnerEnum_Enum : int32_t;");
+    assertInTranslation(testHeader, "enum EnumMethods_SomeInnerEnum_Enum : int32_t;");
   }
 
   public void testEnumAnnotation() throws IOException {
@@ -560,22 +560,22 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertNoWarnings();
     assertNoErrors();
 
-    assertTranslation(testHeader, "- (enum Color_Enum)blue;");
+    assertInTranslation(testHeader, "- (enum Color_Enum)blue;");
     assertTranslatedLines(
         testSource, "- (enum Color_Enum)blue {", "  return [[self _getBlue] toNSEnum];", "}");
 
-    assertTranslation(testHeader, "+ (enum Color_Enum)red;");
+    assertInTranslation(testHeader, "+ (enum Color_Enum)red;");
     assertTranslatedLines(
         testSource, "+ (enum Color_Enum)red {", "  return [[EnumMethods _getRed] toNSEnum];", "}");
 
-    assertTranslation(testHeader, "- (bool)isBlue:(enum Color_Enum)color;");
+    assertInTranslation(testHeader, "- (bool)isBlue:(enum Color_Enum)color;");
     assertTranslatedLines(
         testSource,
         "- (bool)isBlue:(enum Color_Enum)color {",
         "  return [self _isBlueWithColor:[Color fromNSEnum:color]];",
         "}");
 
-    assertTranslation(testHeader, "+ (bool)isRed:(enum Color_Enum)color;");
+    assertInTranslation(testHeader, "+ (bool)isRed:(enum Color_Enum)color;");
     assertTranslatedLines(
         testSource,
         "+ (bool)isRed:(enum Color_Enum)color {",
@@ -641,8 +641,8 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertNoWarnings();
     assertNoErrors();
 
-    assertTranslation(testBHeader, "- (id<NativeProtocol>)getA;");
-    assertTranslation(testBHeader, "- (NSArray<id<NativeProtocol>> *)getMoreA;");
+    assertInTranslation(testBHeader, "- (id<NativeProtocol>)getA;");
+    assertInTranslation(testBHeader, "- (NSArray<id<NativeProtocol>> *)getMoreA;");
 
     // No need to test source, no cast is inserted (or needed).
   }
@@ -688,28 +688,28 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertNoWarnings();
     assertNoErrors();
 
-    assertTranslation(testHeader, "- (NSArray *)plainList");
+    assertInTranslation(testHeader, "- (NSArray *)plainList");
     assertTranslatedLines(
         testSource,
         "- (NSArray *)plainList {",
         "  return JREAdaptedArrayFromJavaList([self _getPlainList]);",
         "}");
 
-    assertTranslation(testHeader, "- (NSArray<NSString *> *)stringList");
+    assertInTranslation(testHeader, "- (NSArray<NSString *> *)stringList");
     assertTranslatedLines(
         testSource,
         "- (NSArray *)stringList {",
         "  return JREAdaptedArrayFromJavaList([self _getStringList]);",
         "}");
 
-    assertTranslation(testHeader, "- (NSArray *)arrayList");
+    assertInTranslation(testHeader, "- (NSArray *)arrayList");
     assertTranslatedLines(
         testSource,
         "- (NSArray *)arrayList {",
         "  return JREAdaptedArrayFromJavaList([self _getArrayList]);",
         "}");
 
-    assertTranslation(testHeader, "- (NSArray<NSString *> *)stringArrayList");
+    assertInTranslation(testHeader, "- (NSArray<NSString *> *)stringArrayList");
     assertTranslatedLines(
         testSource,
         "- (NSArray *)stringArrayList {",
@@ -732,8 +732,8 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertNoWarnings();
     assertNoErrors();
 
-    assertTranslation(testHeader, "- (bool)doSomethingAndReturnError:(NSError **)error;");
-    assertTranslation(testSource, "- (bool)doSomethingAndReturnError:(NSError **)error {");
+    assertInTranslation(testHeader, "- (bool)doSomethingAndReturnError:(NSError **)error;");
+    assertInTranslation(testSource, "- (bool)doSomethingAndReturnError:(NSError **)error {");
   }
 
   public void testThrowsAsErrorMultiArgNaming() throws IOException {

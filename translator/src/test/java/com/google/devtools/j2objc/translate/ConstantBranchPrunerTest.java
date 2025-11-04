@@ -32,7 +32,7 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         + "String describe() { return \"is true? \" + true; }}",
         "Test", "Test.m");
     assertTranslatedLines(translation, "if (b) {", "return 1;", "}", "else {", "return 0;", "}");
-    assertTranslation(translation, "return @\"is true? true\";");
+    assertInTranslation(translation, "return @\"is true? true\";");
     translation = translateSourceFile(
         "class Test { void tick() {} void test(boolean b) { while (b) { tick(); } }}",
         "Test", "Test.m");
@@ -206,7 +206,7 @@ public class ConstantBranchPrunerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { volatile int i; boolean test() { return i == 1 && false; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "return JreLoadVolatileInt(&i_) == 1 && false;");
+    assertInTranslation(translation, "return JreLoadVolatileInt(&i_) == 1 && false;");
   }
 
   // The JDT parser provides limited type information for local types declared
@@ -232,8 +232,8 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         + "public static final int SIZE = IS_RI ? 1 : 10;"
         + "public static final int LENGTH = !IS_RI ? 42 : 666; }", "Test", "Test.h");
     // Verify true constant replaces the conditional with the then expression.
-    assertTranslation(translation, "Test_SIZE 1");
+    assertInTranslation(translation, "Test_SIZE 1");
     // Verify false constant replaces the conditional with the else expression.
-    assertTranslation(translation, "Test_LENGTH 666");
+    assertInTranslation(translation, "Test_LENGTH 666");
   }
 }

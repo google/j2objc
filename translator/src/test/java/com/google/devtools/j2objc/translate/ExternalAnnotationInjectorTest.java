@@ -68,9 +68,9 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "  public String baz() { return null; } " // no external annotation.
             + "}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
-    assertTranslation(translation, "- (NSString * _Nonnull)foo;");
-    assertTranslation(translation, "- (NSString * _Nullable)bar;");
-    assertTranslation(translation, "- (NSString *)baz;");
+    assertInTranslation(translation, "- (NSString * _Nonnull)foo;");
+    assertInTranslation(translation, "- (NSString * _Nullable)bar;");
+    assertInTranslation(translation, "- (NSString *)baz;");
     assertNotInTranslation(translation, "qux");
   }
 
@@ -83,8 +83,8 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "  public static String bar() { return null; } "
             + "}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
-    assertTranslation(translation, "+ (NSString * _Nonnull)foo;");
-    assertTranslation(translation, "+ (NSString * _Nullable)bar;");
+    assertInTranslation(translation, "+ (NSString * _Nonnull)foo;");
+    assertInTranslation(translation, "+ (NSString * _Nullable)bar;");
   }
 
   public void testInjectNullability_returnType_enumMethod() throws IOException {
@@ -97,8 +97,8 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "    public String bar() { return null; } "
             + "}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
-    assertTranslation(translation, "- (NSString * _Nonnull)foo;");
-    assertTranslation(translation, "- (NSString * _Nullable)bar;");
+    assertInTranslation(translation, "- (NSString * _Nonnull)foo;");
+    assertInTranslation(translation, "- (NSString * _Nullable)bar;");
   }
 
   public void testInjectNullability_returnType_interfaceMethod() throws IOException {
@@ -110,8 +110,8 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "    default String bar() { return null; } "
             + "}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
-    assertTranslation(translation, "- (NSString * _Nonnull)foo;");
-    assertTranslation(translation, "- (NSString * _Nullable)bar;");
+    assertInTranslation(translation, "- (NSString * _Nonnull)foo;");
+    assertInTranslation(translation, "- (NSString * _Nullable)bar;");
   }
 
   public void testInjectNullability_returnType_nestedClassMethod() throws IOException {
@@ -133,8 +133,8 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "  }"
             + "}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
-    assertTranslation(translation, "- (NSString * _Nonnull)foo;");
-    assertTranslation(translation, "- (NSString * _Nullable)bar;");
+    assertInTranslation(translation, "- (NSString * _Nonnull)foo;");
+    assertInTranslation(translation, "- (NSString * _Nullable)bar;");
   }
 
   // Nullability specifiers should not be applied to primitive types.
@@ -149,7 +149,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "  public boolean foo() { return true; } "
             + "}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
-    assertTranslation(translation, "- (bool)foo;");
+    assertInTranslation(translation, "- (bool)foo;");
   }
 
   // Verify that visiting a constructor does not affect the generated code.
@@ -164,11 +164,11 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     addSourceFile("package p; public @interface AnAnnotation {}", "p/AnAnnotation.java");
     String source = "package p; public class Test { public Test() {} }";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
-    assertTranslation(translation, "- (instancetype _Nonnull)init;");
-    assertTranslation(translation, "FOUNDATION_EXPORT void PTest_init(PTest *self);");
-    assertTranslation(
+    assertInTranslation(translation, "- (instancetype _Nonnull)init;");
+    assertInTranslation(translation, "FOUNDATION_EXPORT void PTest_init(PTest *self);");
+    assertInTranslation(
         translation, "FOUNDATION_EXPORT PTest *new_PTest_init(void) NS_RETURNS_RETAINED;");
-    assertTranslation(translation, "FOUNDATION_EXPORT PTest *create_PTest_init(void);");
+    assertInTranslation(translation, "FOUNDATION_EXPORT PTest *create_PTest_init(void);");
   }
 
   // Verify that visited methods generate the expected forward declarations.
@@ -188,8 +188,8 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "  public void bar(ThreadGroup t) {} " // no external annotation.
             + "}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.h");
-    assertTranslation(translation, "@class JavaLangThread;");
-    assertTranslation(translation, "@class JavaLangThreadGroup;");
+    assertInTranslation(translation, "@class JavaLangThread;");
+    assertInTranslation(translation, "@class JavaLangThreadGroup;");
   }
 
   public void testFunctionizer() throws IOException {
@@ -207,7 +207,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "  public void bar() { foo(); } "
             + "}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.m");
-    assertTranslation(translation, "__attribute__((unused)) static void PTest_foo(PTest *self);");
+    assertInTranslation(translation, "__attribute__((unused)) static void PTest_foo(PTest *self);");
     assertTranslatedLines(translation, "- (void)bar {", "  PTest_foo(self);", "}");
   }
 
@@ -225,7 +225,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     options.setStripReflection(true);
     String source = "package p; public class Test {}";
     String translation = translateSourceFile(source, "p.Test", "p/Test.m");
-    assertTranslation(translation, "__metadata");
+    assertInTranslation(translation, "__metadata");
   }
 
   public void testInjectReflectionSupport_type_stripReflection() throws IOException {
@@ -251,8 +251,8 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     addExternalAnnotationFileContents(externalReflectionSupportAnnotations);
     String source = "package p; public class Test { public void test() {} }";
     String translation = translateSourceFile(source, "p.Test", "p/Test.m");
-    assertTranslation(translation, "#include \"org/junit/Ignore.h\"");
-    assertTranslation(translation, "create_OrgJunitIgnore");
+    assertInTranslation(translation, "#include \"org/junit/Ignore.h\"");
+    assertInTranslation(translation, "create_OrgJunitIgnore");
   }
 
   public void testInjectToPackageInfo() throws IOException {
@@ -274,9 +274,9 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     options.setNullability(true);
     String translation = translateSourceFile("p.Test", "p/Test.h");
     // Verify @ObjectiveCName.
-    assertTranslation(translation, "@interface XYZTest");
+    assertInTranslation(translation, "@interface XYZTest");
     // Verify @ParametersAreNonnullByDefault.
-    assertTranslation(translation, "- (void)testWithNSString:(NSString * _Nonnull)s");
+    assertInTranslation(translation, "- (void)testWithNSString:(NSString * _Nonnull)s");
     // Verify @ReflectionSupport.
     translation = getTranslatedFile("p/Test.m");
     assertNotInTranslation(translation, "__metadata");
@@ -299,9 +299,9 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     String source = "package p; public class Test { public void testMethod() {} }";
     String translation = translateSourceFile(source, "p.Test", "p/Test.m");
     // The selector is renamed.
-    assertTranslation(translation, "- (void)ignoreMethod {");
+    assertInTranslation(translation, "- (void)ignoreMethod {");
     // The original name is kept in the metadata.
-    assertTranslation(translation, "\"testMethod\"");
+    assertInTranslation(translation, "\"testMethod\"");
   }
 
   public void testInjectObjectiveCName_junit3Method() throws IOException {
@@ -310,7 +310,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
         + "public class Test extends junit.framework.TestCase { public void testMethod() {} }";
     String translation = translateSourceFile(source, "p.Test", "p/Test.m");
     // The selector is renamed.
-    assertTranslation(translation, "- (void)ignoreMethod {");
+    assertInTranslation(translation, "- (void)ignoreMethod {");
     // The original name is not in the metadata. This allows to hide renamed methods from the
     // JUnit runner.
     assertNotInTranslation(translation, "\"testMethod\"");
@@ -321,7 +321,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
     String source = "package p; "
         + "public class Test { public void testMethod() { class Local {} } }";
     String translation = translateSourceFile(source, "p.Test", "p/Test.m");
-    assertTranslation(translation, "@implementation RenamedClass");
+    assertInTranslation(translation, "@implementation RenamedClass");
     assertNotInTranslation(translation, "@implementation PTest_1Local");
   }
 
@@ -341,8 +341,8 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "package p: "
             + "class A$B: @WeakOuter");
     String translation = translateSourceFile(source, "p.A", "p/A.m");
-    assertTranslation(translation, "WEAK_ PA *this$0_;");
-    assertTranslation(translation, "this$0_ = outer$;");
+    assertInTranslation(translation, "WEAK_ PA *this$0_;");
+    assertInTranslation(translation, "this$0_ = outer$;");
   }
 
   public void testWeak() throws IOException {
@@ -360,8 +360,8 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "class A:"
             + "  field t: @Weak ");
     String translation = translateSourceFile(source, "p.A", "p/A.m");
-    assertTranslation(translation, "WEAK_ JavaLangThread *t_;");
-    assertTranslation(translation, "t_ = otherT;");
+    assertInTranslation(translation, "WEAK_ JavaLangThread *t_;");
+    assertInTranslation(translation, "t_ = otherT;");
   }
 
   public void testRetainedWith() throws IOException {
@@ -377,8 +377,8 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "class A: "
             + "  field o: @RetainedWith ");
     String translation = translateSourceFile(source, "p.A", "p/A.m");
-    assertTranslation(translation, "JreRetainedWithAssign");
-    assertTranslation(translation, "JreRetainedWithRelease");
+    assertInTranslation(translation, "JreRetainedWithAssign");
+    assertInTranslation(translation, "JreRetainedWithRelease");
   }
 
   public void testAutoreleasePool() throws IOException {
@@ -393,7 +393,7 @@ public class ExternalAnnotationInjectorTest extends GenerationTest {
             + "class A: "
             + "  method test()V: @AutoreleasePool ");
     String translation = translateSourceFile(source, "p.A", "p/A.m");
-    assertTranslation(translation, "@autoreleasepool");
+    assertInTranslation(translation, "@autoreleasepool");
   }
 
   public void testAnnotationClassNotFound() throws IOException {

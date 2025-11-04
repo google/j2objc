@@ -304,6 +304,6 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
   public void testInstanceVarIsNotUnsequenced() throws IOException {
     String translation = translateSourceFile(
         "class Test { int i; void test() { this.i = this.i + this.i++; } }", "Test", "Test.m");
-    assertTranslation(translation, "self->i_ = self->i_ + self->i_++;");
+    assertInTranslation(translation, "self->i_ = self->i_ + self->i_++;");
   }
 }

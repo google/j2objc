@@ -56,15 +56,15 @@ public class JavacTreeConverterTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "if (Test_slotsize < slotsizeArg)");
+    assertInTranslation(translation, "if (Test_slotsize < slotsizeArg)");
   }
 
   public void testConstantFromMethodInvocation() throws IOException {
     String translation =
         translateSourceFile(
             "class Test { int sizeOfInt() { return Integer.valueOf(42).SIZE; }}", "Test", "Test.m");
-    assertTranslation(translation,
-        "return (JavaLangInteger_valueOfWithInt_(42), JavaLangInteger_SIZE);");
+    assertInTranslation(
+        translation, "return (JavaLangInteger_valueOfWithInt_(42), JavaLangInteger_SIZE);");
   }
 
   // javac qualifies members imported via non-canonical static imports by the

@@ -58,18 +58,18 @@ public class SwitchRewriterTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(translation, "int32_t j;");
-    assertTranslation(translation, "int32_t k;");
-    assertTranslation(translation, "int32_t l;");
-    assertTranslation(translation, "case 1:");
+    assertInTranslation(translation, "int32_t j;");
+    assertInTranslation(translation, "int32_t k;");
+    assertInTranslation(translation, "int32_t l;");
+    assertInTranslation(translation, "case 1:");
     assertTrue(translation.indexOf("int32_t j;") < translation.indexOf("case 1:"));
     assertTrue(translation.indexOf("int32_t k;") < translation.indexOf("case 1:"));
     assertTrue(translation.indexOf("int32_t l;") < translation.indexOf("case 1:"));
     assertTrue(translation.indexOf("int32_t j;") < translation.indexOf("int32_t k;"));
     assertTrue(translation.indexOf("int32_t k;") < translation.indexOf("int32_t l;"));
-    assertTranslation(translation, "j = i * 2;");
-    assertTranslation(translation, "k = i;");
-    assertTranslation(translation, "l = 42;");
+    assertInTranslation(translation, "j = i * 2;");
+    assertInTranslation(translation, "k = i;");
+    assertInTranslation(translation, "l = 42;");
     assertTrue(translation.indexOf("k = i") < translation.indexOf("l = 42"));
   }
 
@@ -157,8 +157,8 @@ public class SwitchRewriterTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(translation, "switch ([e ordinal]) {");
-    assertTranslation(translation, "case A_EnumType_Enum_ONE:");
+    assertInTranslation(translation, "switch ([e ordinal]) {");
+    assertInTranslation(translation, "case A_EnumType_Enum_ONE:");
   }
 
   public void testPrimitiveConstantInSwitchCase() throws IOException {
@@ -179,9 +179,9 @@ public class SwitchRewriterTest extends GenerationTest {
             """,
             "A",
             "A.h");
-    assertTranslation(translation, "#define A_PREFIX 'p'");
+    assertInTranslation(translation, "#define A_PREFIX 'p'");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "case A_PREFIX:");
+    assertInTranslation(translation, "case A_PREFIX:");
   }
 
   // Verify Java 7's switch statements with strings.

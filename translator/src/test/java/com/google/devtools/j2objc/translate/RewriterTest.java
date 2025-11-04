@@ -154,23 +154,25 @@ public class RewriterTest extends GenerationTest {
   public void testNonStaticMultiDimArrayInitializer() throws IOException {
     String translation = translateSourceFile(
         "class Test { int[][] a = { { 1, 2, 3 } }; }", "Test", "Test.m");
-    assertTranslation(translation,
+    assertInTranslation(
+        translation,
         "[IOSObjectArray newArrayWithObjects:(id[]){"
-        + " [IOSIntArray arrayWithInts:(int32_t[]){ 1, 2, 3 } count:3] } count:1"
-        + " type:IOSClass_intArray(1)]");
+            + " [IOSIntArray arrayWithInts:(int32_t[]){ 1, 2, 3 } count:3] } count:1"
+            + " type:IOSClass_intArray(1)]");
   }
 
   public void testArrayCreationInConstructorInvocation() throws IOException {
     String translation = translateSourceFile(
         "class Test { Test(int[] i) {} Test() { this(new int[] {}); } }", "Test", "Test.m");
-    assertTranslation(translation,
+    assertInTranslation(
+        translation,
         "Test_initWithIntArray_(self, [IOSIntArray arrayWithInts:(int32_t[]){  } count:0]);");
   }
 
   public void testInterfaceFieldsAreStaticFinal() throws IOException {
     String source = "interface Test { String foo = \"bar\"; }";
     String translation = translateSourceFile(source, "Test", "Test.h");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Test, foo, NSString *)");
+    assertInTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Test, foo, NSString *)");
   }
 
   // Regression test: the wrong method name used for "f.group()" translation.
@@ -179,7 +181,7 @@ public class RewriterTest extends GenerationTest {
         + "String group() { return \"foo\"; } "
         + "void test() { A a = new A(); System.out.println(a.group()); }}";
     String translation = translateSourceFile(source, "A", "A.m");
-    assertTranslation(translation, "printlnWithNSString:[a group]];");
+    assertInTranslation(translation, "printlnWithNSString:[a group]];");
   }
 
   public void testStaticArrayInitializerMove() throws IOException {
@@ -189,10 +191,12 @@ public class RewriterTest extends GenerationTest {
         + "0x1.7cac197cfe503p605, 0x1.1e5dfc140e1e5p716, 0x1.8ce85fadb707ep829, "
         + "0x1.95d5f3d928edep945 }; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "{ 1.0, 2.0922789888E13, 2.631308369336935E35, "
-        + "1.2413915592536073E61, 1.2688693218588417E89, 7.156945704626381E118, "
-        + "9.916779348709496E149, 1.974506857221074E182, 3.856204823625804E215, "
-        + "5.5502938327393044E249, 4.7147236359920616E284 }");
+    assertInTranslation(
+        translation,
+        "{ 1.0, 2.0922789888E13, 2.631308369336935E35, "
+            + "1.2413915592536073E61, 1.2688693218588417E89, 7.156945704626381E118, "
+            + "9.916779348709496E149, 1.974506857221074E182, 3.856204823625804E215, "
+            + "5.5502938327393044E249, 4.7147236359920616E284 }");
   }
 
   public void testTypeCheckInCompareToMethod() throws IOException {
@@ -207,14 +211,14 @@ public class RewriterTest extends GenerationTest {
   public void testAdditionWithinStringConcatenation() throws IOException {
     String translation = translateSourceFile(
         "class Test { void test() { String s = 1 + 2.3f + \"foo\"; } }", "Test", "Test.m");
-    assertTranslation(translation, "NSString *s = JreStrcat(\"F$\", 1 + 2.3f, @\"foo\");");
+    assertInTranslation(translation, "NSString *s = JreStrcat(\"F$\", 1 + 2.3f, @\"foo\");");
   }
 
   public void testMethodCollisionWithSuperclassField() throws IOException {
     addSourceFile("class A { protected int i; }", "A.java");
     String translation = translateSourceFile(
         "class B extends A { int i() { return i; } }", "B", "B.m");
-    assertTranslation(translation, "return i_;");
+    assertInTranslation(translation, "return i_;");
   }
 
   public void testMultipleLabelsWithSameName() throws IOException {
@@ -230,12 +234,12 @@ public class RewriterTest extends GenerationTest {
         + "    for (int w = 0; w < 10; w++) {"
         + "      break outer;"
         + "}}}}", "Test", "Test.m");
-    assertTranslation(translation, "break_outer:");
-    assertTranslation(translation, "goto break_outer;");
-    assertTranslation(translation, "break_outer_2:");
-    assertTranslation(translation, "goto break_outer_2;");
-    assertTranslation(translation, "break_outer_3:");
-    assertTranslation(translation, "goto break_outer_3;");
+    assertInTranslation(translation, "break_outer:");
+    assertInTranslation(translation, "goto break_outer;");
+    assertInTranslation(translation, "break_outer_2:");
+    assertInTranslation(translation, "goto break_outer_2;");
+    assertInTranslation(translation, "break_outer_3:");
+    assertInTranslation(translation, "goto break_outer_3;");
   }
 
   public void testExtraDimensionsInFieldDeclaration() throws IOException {
@@ -274,8 +278,8 @@ public class RewriterTest extends GenerationTest {
         + "boolean test4(boolean j, boolean k, boolean l, boolean m, boolean n) {"
         + "  return j || k || l && m && n; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "return a && b;");
-    assertTranslation(translation, "return c || d;");
+    assertInTranslation(translation, "return a && b;");
+    assertInTranslation(translation, "return c || d;");
     assertTranslatedLines(translation, "return (e && f) || (g && h) || i;");
     assertTranslatedLines(translation, "return j || k || (l && m && n);");
 
@@ -305,8 +309,8 @@ public class RewriterTest extends GenerationTest {
         + "int test6(int j, int k, int l, int m, int n) {"
             + "  return j ^ k ^ l & m & n; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "return a & b;");
-    assertTranslation(translation, "return c | d;");
+    assertInTranslation(translation, "return a & b;");
+    assertInTranslation(translation, "return c | d;");
     assertTranslatedLines(translation, "return (e & f) | (g & h) | i;");
     assertTranslatedLines(translation, "return (e & f) ^ (g & h) ^ i;");
     assertTranslatedLines(translation, "return j | k | (l & m & n);");
@@ -333,7 +337,7 @@ public class RewriterTest extends GenerationTest {
         "class Test { "
         + "  public static void initialize() {}}",
         "Test", "Test.m");
-    assertTranslation(translation, "+ (void)initialize__ {");
+    assertInTranslation(translation, "+ (void)initialize__ {");
   }
 
   // Verify minimal try-with-resources translation.

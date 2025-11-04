@@ -110,11 +110,10 @@ public class NameTableTest extends GenerationTest {
         + "void foo(int[] value1) {}"
         + "void foo(Integer[] value2) {}"
         + "void foo(String[] value3) {}}", "A", "A.h");
-    assertTranslation(translation, "- (void)fooWithIntArray:(IOSIntArray *)value1");
-    assertTranslation(translation,
-        "- (void)fooWithJavaLangIntegerArray:(IOSObjectArray *)value2");
-    assertTranslation(translation,
-        "- (void)fooWithNSStringArray:(IOSObjectArray *)value3");
+    assertInTranslation(translation, "- (void)fooWithIntArray:(IOSIntArray *)value1");
+    assertInTranslation(
+        translation, "- (void)fooWithJavaLangIntegerArray:(IOSObjectArray *)value2");
+    assertInTranslation(translation, "- (void)fooWithNSStringArray:(IOSObjectArray *)value3");
   }
 
   public void testMultiDimArrayName() throws IOException {
@@ -122,9 +121,9 @@ public class NameTableTest extends GenerationTest {
         + "void foo(int[] values) {}"
         + "void foo(int[][] values) {}"
         + "void foo(int[][][] values) {}}", "A", "A.h");
-    assertTranslation(translation, "- (void)fooWithIntArray:(IOSIntArray *)values");
-    assertTranslation(translation, "- (void)fooWithIntArray2:(IOSObjectArray *)values");
-    assertTranslation(translation, "- (void)fooWithIntArray3:(IOSObjectArray *)values");
+    assertInTranslation(translation, "- (void)fooWithIntArray:(IOSIntArray *)values");
+    assertInTranslation(translation, "- (void)fooWithIntArray2:(IOSObjectArray *)values");
+    assertInTranslation(translation, "- (void)fooWithIntArray3:(IOSObjectArray *)values");
   }
 
   public void testRenameClassAnnotation() throws IOException {
@@ -136,8 +135,8 @@ public class NameTableTest extends GenerationTest {
     addSourceFile(
         "public class B { void test() { foo.A.test(); foo.A.C.test2(); }}", "B.java");
     String translation = translateSourceFile("foo.A", "foo/A.h");
-    assertTranslation(translation, "@interface TestName : NSObject");
-    assertTranslation(translation, "@interface TheInner : NSObject");
+    assertInTranslation(translation, "@interface TestName : NSObject");
+    assertInTranslation(translation, "@interface TheInner : NSObject");
     translation = translateSourceFile("B", "B.m");
     assertTranslatedLines(translation, "TestName_test();", "TheInner_test2();");
   }
@@ -147,9 +146,9 @@ public class NameTableTest extends GenerationTest {
     addSourceFile("package foo.bar; public class A { static void test() {}}", "foo/bar/A.java");
     addSourceFile("package foo.bar; public class B { void test() { A.test(); }}", "foo/bar/B.java");
     String translation = translateSourceFile("foo.bar.A", "foo/bar/A.h");
-    assertTranslation(translation, "@interface Test2Name : NSObject");
+    assertInTranslation(translation, "@interface Test2Name : NSObject");
     translation = translateSourceFile("foo.bar.B", "foo/bar/B.m");
-    assertTranslation(translation, "Test2Name_test();");
+    assertInTranslation(translation, "Test2Name_test();");
   }
 
   public void testRenameMethodAnnotation() throws IOException {
@@ -171,7 +170,7 @@ public class NameTableTest extends GenerationTest {
     // Test invocation of renamed method.
     translation = translateSourceFile(
         "class Test { void test(A a) { a.test(\"foo\", 4); } }", "Test", "Test.m");
-    assertTranslation(translation, "[((A *) nil_chk(a)) test:@\"foo\" offset:4];");
+    assertInTranslation(translation, "[((A *) nil_chk(a)) test:@\"foo\" offset:4];");
   }
 
   public void testRenameStaticMethod() throws IOException {
@@ -181,7 +180,7 @@ public class NameTableTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (void)fooWithNSString:(NSString *)s",
         "                withInt:(int32_t)n;");
-    assertTranslation(translation, "FOUNDATION_EXPORT void Test_foo(NSString *s, int32_t n);");
+    assertInTranslation(translation, "FOUNDATION_EXPORT void Test_foo(NSString *s, int32_t n);");
     translation = getTranslatedFile("Test.m");
     assertTranslatedLines(translation,
         "+ (void)fooWithNSString:(NSString *)s",
@@ -213,13 +212,13 @@ public class NameTableTest extends GenerationTest {
     // Test invocation of renamed constructor.
     translation = translateSourceFile(
         "class Test { A test() { return new A(\"foo\", 5); } }", "Test", "Test.m");
-    assertTranslation(translation, "return create_A_init_offset_(@\"foo\", 5);");
+    assertInTranslation(translation, "return create_A_init_offset_(@\"foo\", 5);");
   }
 
   public void testRenamePackagePrivateClassConstructor() throws IOException {
     String translation = translateSourceFile("package foo.bar; class Test { Test(int unused) {} }",
         "foo.bar.Test", "foo/bar/Test.h");
-    assertTranslation(translation, "initPackagePrivateWithInt_");
+    assertInTranslation(translation, "initPackagePrivateWithInt_");
   }
 
   public void testSuperMethodNotNamedWarning() throws IOException {
@@ -246,7 +245,7 @@ public class NameTableTest extends GenerationTest {
   // This is necessary for compatibility with proto compiler output.
   public void testGetReservedEnumConstantName() throws IOException {
     String translation = translateSourceFile("enum E { HUGE }", "E", "E.h");
-    assertTranslation(translation, "HUGE");
+    assertInTranslation(translation, "HUGE");
     assertNotInTranslation(translation, "HUGE_");
   }
 
@@ -256,14 +255,14 @@ public class NameTableTest extends GenerationTest {
         + "package foo.bar;", "foo/bar/package-info.java");
     addSourceFile("package foo.bar; public class Test {}", "foo/bar/Test.java");
     String translation = translateSourceFile("foo.bar.Test", "foo/bar/Test.h");
-    assertTranslation(translation, "@interface FBTest : NSObject");
-    assertTranslation(translation, "J2OBJC_EMPTY_STATIC_INIT(FBTest)");
-    assertTranslation(translation, "@compatibility_alias FooBarTest FBTest;");
+    assertInTranslation(translation, "@interface FBTest : NSObject");
+    assertInTranslation(translation, "J2OBJC_EMPTY_STATIC_INIT(FBTest)");
+    assertInTranslation(translation, "@compatibility_alias FooBarTest FBTest;");
 
     translation = getTranslatedFile("foo/bar/Test.m");
-    assertTranslation(translation, "#include \"foo/bar/Test.h\""); // should be full path.
-    assertTranslation(translation, "@implementation FBTest");
-    assertTranslation(translation, "J2ObjcClassInfo _FBTest = { \"Test\", \"foo.bar\", ");
+    assertInTranslation(translation, "#include \"foo/bar/Test.h\""); // should be full path.
+    assertInTranslation(translation, "@implementation FBTest");
+    assertInTranslation(translation, "J2ObjcClassInfo _FBTest = { \"Test\", \"foo.bar\", ");
   }
 
   public void testRenamePackageAnnotationEnum() throws IOException {
@@ -278,22 +277,22 @@ public class NameTableTest extends GenerationTest {
         "  FBTest_Enum_FOO NS_SWIFT_NAME(foo) = 0,",
         "  FBTest_Enum_BAR NS_SWIFT_NAME(bar) = 1,",
         "};");
-    assertTranslation(translation, "@interface FBTest : JavaLangEnum");
-    assertTranslation(translation, "FBTest_values(void);");
-    assertTranslation(translation, "+ (FBTest *)valueOfWithNSString:(NSString *)name;");
-    assertTranslation(translation, "FBTest *FBTest_valueOfWithNSString_");
-    assertTranslation(translation, "J2OBJC_STATIC_INIT(FBTest)");
-    assertTranslation(translation, "@compatibility_alias FooBarTest FBTest;");
+    assertInTranslation(translation, "@interface FBTest : JavaLangEnum");
+    assertInTranslation(translation, "FBTest_values(void);");
+    assertInTranslation(translation, "+ (FBTest *)valueOfWithNSString:(NSString *)name;");
+    assertInTranslation(translation, "FBTest *FBTest_valueOfWithNSString_");
+    assertInTranslation(translation, "J2OBJC_STATIC_INIT(FBTest)");
+    assertInTranslation(translation, "@compatibility_alias FooBarTest FBTest;");
 
     translation = getTranslatedFile("foo/bar/Test.m");
-    assertTranslation(translation, "#include \"foo/bar/Test.h\""); // should be full path.
-    assertTranslation(translation, "@implementation FBTest");
-    assertTranslation(translation, "J2ObjcClassInfo _FBTest = { \"Test\", \"foo.bar\", ");
+    assertInTranslation(translation, "#include \"foo/bar/Test.h\""); // should be full path.
+    assertInTranslation(translation, "@implementation FBTest");
+    assertInTranslation(translation, "J2ObjcClassInfo _FBTest = { \"Test\", \"foo.bar\", ");
 
     // Make sure package-info class doesn't use prefix for its own type name.
     translation = translateSourceFile("foo.bar.package-info", "foo/bar/package-info.m");
-    assertTranslation(translation, "@interface FooBarpackage_info");
-    assertTranslation(translation, "@implementation FooBarpackage_info");
+    assertInTranslation(translation, "@interface FooBarpackage_info");
+    assertInTranslation(translation, "@implementation FooBarpackage_info");
     assertNotInTranslation(translation, "FBpackage_info");
   }
 
@@ -325,7 +324,7 @@ public class NameTableTest extends GenerationTest {
         + "  public void test(int noReserved, int stdin, int aReservedParamName) {} "
         + "} ";
     String translation = translateSourceFile(source, "Test", "Test.h");
-    assertTranslation(translation, "- (void)aReservedMethodName__;");
+    assertInTranslation(translation, "- (void)aReservedMethodName__;");
     assertTranslatedLines(translation,
         "- (void)testWithInt:(int32_t)noReserved",
         "            withInt:(int32_t)stdin_",

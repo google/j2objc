@@ -66,7 +66,7 @@ public class StatementGeneratorTest extends GenerationTest {
                 + " BOOL; }}",
             "Test",
             "Test.m");
-    assertTranslation(translation, "return Test_BOOL;");
+    assertInTranslation(translation, "return Test_BOOL;");
   }
 
   // Verify that both a class and interface type invoke getClass() correctly.
@@ -84,8 +84,8 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(translation, "[((JavaUtilArrayList *) nil_chk(one)) java_getClass]");
-    assertTranslation(translation, "[((id<JavaUtilList>) nil_chk(two)) java_getClass]");
+    assertInTranslation(translation, "[((JavaUtilArrayList *) nil_chk(one)) java_getClass]");
+    assertInTranslation(translation, "[((id<JavaUtilList>) nil_chk(two)) java_getClass]");
   }
 
   public void testEnumConstantReferences() throws IOException {
@@ -104,7 +104,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(translation, "return b ? JreEnum(A_B, ONE) : JreEnum(A_B, TWO);");
+    assertInTranslation(translation, "return b ? JreEnum(A_B, ONE) : JreEnum(A_B, TWO);");
   }
 
   public void testInnerClassFQN() throws IOException {
@@ -125,7 +125,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Foo",
             "com/example/foo/Foo.m");
-    assertTranslation(translation, "ComExampleFooFoo_Inner_doSomething();");
+    assertInTranslation(translation, "ComExampleFooFoo_Inner_doSomething();");
   }
 
   public void testLocalVariableTranslation() throws IOException {
@@ -222,7 +222,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertTranslation(translation, "return [super description];");
+    assertInTranslation(translation, "return [super description];");
   }
 
   public void testAccessPublicConstant() throws IOException {
@@ -239,7 +239,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertTranslation(translation, "foo_ = Example_FOO;");
+    assertInTranslation(translation, "foo_ = Example_FOO;");
   }
 
   public void testAccessPublicConstant2() throws IOException {
@@ -256,7 +256,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertTranslation(translation, "foo = Example_FOO;");
+    assertInTranslation(translation, "foo = Example_FOO;");
   }
 
   public void testAccessPrivateConstant() throws IOException {
@@ -273,7 +273,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertTranslation(translation, "foo = Example_FOO;");
+    assertInTranslation(translation, "foo = Example_FOO;");
   }
 
   public void testAccessExternalConstant() throws IOException {
@@ -292,10 +292,10 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertTranslation(translation, "foo_ = Example_Bar_FOO;");
+    assertInTranslation(translation, "foo_ = Example_Bar_FOO;");
     assertFalse(translation.contains("int Example_Bar_FOO_ = 1;"));
     translation = getTranslatedFile("Example.h");
-    assertTranslation(translation, "#define Example_Bar_FOO 1");
+    assertInTranslation(translation, "#define Example_Bar_FOO 1");
   }
 
   public void testAccessExternalStringConstant() throws IOException {
@@ -314,11 +314,11 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertTranslation(translation, "JreStrongAssign(&self->foo_, Example_Bar_FOO)");
-    assertTranslation(translation, "NSString *Example_Bar_FOO = @\"Mumble\";");
+    assertInTranslation(translation, "JreStrongAssign(&self->foo_, Example_Bar_FOO)");
+    assertInTranslation(translation, "NSString *Example_Bar_FOO = @\"Mumble\";");
     translation = getTranslatedFile("Example.h");
-    assertTranslation(translation, "FOUNDATION_EXPORT NSString *Example_Bar_FOO;");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Example_Bar, FOO, NSString *)");
+    assertInTranslation(translation, "FOUNDATION_EXPORT NSString *Example_Bar_FOO;");
+    assertInTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Example_Bar, FOO, NSString *)");
   }
 
   public void testObjectDeclaration() throws IOException {
@@ -336,9 +336,9 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertTranslation(
+    assertInTranslation(
         translation, "JreStrongAssign(&self->b1_, JreLoadStatic(JavaLangBoolean, TRUE))");
-    assertTranslation(
+    assertInTranslation(
         translation, "JreStrongAssign(&self->b2_, JreLoadStatic(JavaLangBoolean, FALSE))");
   }
 
@@ -354,7 +354,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertTranslation(translation, "NSString *s = @\"hello, world\"");
+    assertInTranslation(translation, "NSString *s = @\"hello, world\"");
   }
 
   public void testStringConcatenation2() throws IOException {
@@ -369,7 +369,7 @@ public class StatementGeneratorTest extends GenerationTest {
         }
         """;
     String translation = translateSourceFile(source, "A", "A.m");
-    assertTranslation(translation, "\"hello bob 3 true 11.0 false\"");
+    assertInTranslation(translation, "\"hello bob 3 true 11.0 false\"");
   }
 
   public void testStringConcatenationTypes() throws IOException {
@@ -393,7 +393,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "return JreStrcat(\"$@$Z$C$D$F$I$J$S\", @\"obj=\", obj_, @\" b=\", b_, @\" c=\", c_,"
             + " @\" d=\", d_, @\" f=\", f_, @\" i=\", i_, @\" l=\", l_, @\" s=\", s_);");
@@ -411,7 +411,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertTranslation(translation, "return @\"literals: true, c, 1.0, 3.14, 42, 123, 1\";");
+    assertInTranslation(translation, "return @\"literals: true, c, 1.0, 3.14, 42, 123, 1\";");
   }
 
   public void testStringConcatenationEscaping() throws IOException {
@@ -423,7 +423,8 @@ public class StatementGeneratorTest extends GenerationTest {
             }
             """,
             "Example", "Example.m");
-    assertTranslation(translation, "JreStrongAssign(&self->s_, @\"hello, 50% of the world\\n\");");
+    assertInTranslation(
+        translation, "JreStrongAssign(&self->s_, @\"hello, 50% of the world\\n\");");
   }
 
   public void testStringConcatenationMethodInvocation() throws IOException {
@@ -444,7 +445,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "JreStrcat(\"$$$I$\", @\"foo\", [self getStr], @\"bar\", [self getInt], @\"baz\")");
   }
@@ -464,12 +465,12 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertTranslation(translation, "[self fooWithNSObjectArray:");
-    assertTranslation(
+    assertInTranslation(translation, "[self fooWithNSObjectArray:");
+    assertInTranslation(
         translation,
         "[IOSObjectArray arrayWithObjects:(id[]){ nil, nil } count:2 type:NSObject_class_()]");
-    assertTranslation(translation, "[self barWithNSString:");
-    assertTranslation(translation, "withNSObjectArray:");
+    assertInTranslation(translation, "[self barWithNSString:");
+    assertInTranslation(translation, "withNSObjectArray:");
   }
 
   public void testVarargsMethodInvocationSingleArg() throws IOException {
@@ -485,7 +486,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "[self fooWithNSObjectArray:[IOSObjectArray arrayWithObjects:(id[]){"
             + " JavaLangInteger_valueOfWithInt_(1) } count:1 type:NSObject_class_()]];");
@@ -504,7 +505,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "[self fooWithIntArray:[IOSIntArray arrayWithInts:(int32_t[]){ 1 } count:1]];");
   }
@@ -525,7 +526,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "return JreLoadStatic(Test, FOO);");
+    assertInTranslation(translation, "return JreLoadStatic(Test, FOO);");
   }
 
   public void testStaticInnerSubclassAccessingOuterStaticVarStrictFieldLoad() throws IOException {
@@ -544,7 +545,8 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "return JreStrictFieldStrongLoad(JreLoadStaticRef(Test, FOO));");
+    assertInTranslation(
+        translation, "return JreStrictFieldStrongLoad(JreLoadStaticRef(Test, FOO));");
   }
 
   public void testReservedIdentifierReference() throws IOException {
@@ -559,8 +561,8 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "- (int32_t)testWithInt:(int32_t)id_");
-    assertTranslation(translation, "return id_;");
+    assertInTranslation(translation, "- (int32_t)testWithInt:(int32_t)id_");
+    assertInTranslation(translation, "return id_;");
   }
 
   public void testReservedTypeQualifierReference() throws IOException {
@@ -575,8 +577,8 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "- (int32_t)testWithInt:(int32_t)inArg");
-    assertTranslation(translation, "return inArg + outArg;");
+    assertInTranslation(translation, "- (int32_t)testWithInt:(int32_t)inArg");
+    assertInTranslation(translation, "return inArg + outArg;");
   }
 
   public void testFieldAccess() throws IOException {
@@ -596,8 +598,8 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "j_ = otherJ;");
-    assertTranslation(translation, "RELEASE_(i_);");
+    assertInTranslation(translation, "j_ = otherJ;");
+    assertInTranslation(translation, "RELEASE_(i_);");
   }
 
   public void testFieldAccessStrictField() throws IOException {
@@ -618,9 +620,9 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "JreStrictFieldStrongAssign(&self->i_, otherI);");
-    assertTranslation(translation, "j_ = otherJ;");
-    assertTranslation(translation, "JreStrictFieldStrongRelease(&i_);");
+    assertInTranslation(translation, "JreStrictFieldStrongAssign(&self->i_, otherI);");
+    assertInTranslation(translation, "j_ = otherJ;");
+    assertInTranslation(translation, "JreStrictFieldStrongRelease(&i_);");
   }
 
   public void testStaticFinalFieldAccessWithParenthesizedExpression() throws IOException {
@@ -637,7 +639,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "return Test_t;");
+    assertInTranslation(translation, "return Test_t;");
   }
 
   public void testInnerInnerClassFieldAccess() throws IOException {
@@ -659,9 +661,9 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation, "- (instancetype)initWithJavaLangInteger:(JavaLangInteger *)i {");
-    assertTranslation(translation, "return [((JavaLangInteger *) nil_chk(i_)) intValue];");
+    assertInTranslation(translation, "return [((JavaLangInteger *) nil_chk(i_)) intValue];");
   }
 
   public void testInnerInnerClassFieldAccessStrictField() throws IOException {
@@ -684,9 +686,9 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation, "- (instancetype)initWithJavaLangInteger:(JavaLangInteger *)i {");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "return [((JavaLangInteger *) nil_chk(JreStrictFieldStrongLoad(&i_))) intValue];");
   }
@@ -711,7 +713,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "- (instancetype)initWithInt:(int32_t)i");
+    assertInTranslation(translation, "- (instancetype)initWithInt:(int32_t)i");
     assertTranslatedLines(
         translation,
         "void Test_Two_initWithInt_(Test_Two *self, int32_t i) {",
@@ -738,9 +740,9 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "- (instancetype)init {");
-    assertTranslation(translation, "self->i_ = self->foo_;");
-    assertTranslation(translation, "return i_;");
+    assertInTranslation(translation, "- (instancetype)init {");
+    assertInTranslation(translation, "self->i_ = self->foo_;");
+    assertInTranslation(translation, "return i_;");
   }
 
   public void testMethodInvocationOfReturnedInterface() throws IOException {
@@ -757,7 +759,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "return [((id<JavaUtilMap_Entry>) "
             + "nil_chk([((id<JavaUtilIterator>) nil_chk(iterator_)) next])) getKey];");
@@ -785,8 +787,8 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "return [((id<JavaUtilIterator>) nil_chk(it_)) hasNext];");
-    assertTranslation(
+    assertInTranslation(translation, "return [((id<JavaUtilIterator>) nil_chk(it_)) hasNext];");
+    assertInTranslation(
         translation, "return JreRetainedLocalValue([((id<JavaUtilIterator>) nil_chk(it_)) next]);");
     assertFalse(translation.contains("Test *this$0;"));
   }
@@ -812,11 +814,12 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "return create_Test_1_initWithJavaUtilCollection_(collection);");
-    assertTranslation(
+    assertInTranslation(
+        translation, "return create_Test_1_initWithJavaUtilCollection_(collection);");
+    assertInTranslation(
         translation,
         "- (instancetype)initWithJavaUtilCollection:(id<JavaUtilCollection>)capture$0;");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "__attribute__((unused)) static Test_1 *new_Test_1_initWithJavaUtilCollection_("
             + "id<JavaUtilCollection> capture$0) NS_RETURNS_RETAINED;");
@@ -838,7 +841,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "return ttt == JreLoadEnum(Test_TicTacToe, X);");
+    assertInTranslation(translation, "return ttt == JreLoadEnum(Test_TicTacToe, X);");
   }
 
   public void testArrayLocalVariable() throws IOException {
@@ -868,7 +871,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "[self syncWithInt:((IOSCharArray *) nil_chk(foo))->size_ withInt:"
             + "((IOSCharArray *) nil_chk(bar))->size_];");
@@ -880,7 +883,7 @@ public class StatementGeneratorTest extends GenerationTest {
             "public class Test { public static void testLong() { long l1 = 1L; }}",
             "Test",
             "Test.m");
-    assertTranslation(translation, "int64_t l1 = 1LL");
+    assertInTranslation(translation, "int64_t l1 = 1LL");
   }
 
   public void testStringLiteralEscaping() throws IOException {
@@ -936,11 +939,11 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "JreStrongAssignAndConsume(&Test_a, "
             + "[IOSIntArray newArrayWithInts:(int32_t[]){ 1, 2, 3 } count:3]);");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "JreStrongAssignAndConsume(&Test_b, "
             + "[IOSCharArray newArrayWithChars:(unichar[]){ '4', '5' } count:2]);");
@@ -959,7 +962,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "return [IOSCharArray "
             + "arrayWithChars:(unichar[]){ (unichar) high, (unichar) low } count:2];");
@@ -1042,7 +1045,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertTranslation(translation, "switch ([[self foo] ordinal])");
+    assertInTranslation(translation, "switch ([[self foo] ordinal])");
   }
 
   public void testClassVariable() throws IOException {
@@ -1079,7 +1082,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(translation, "return create_A_Inner_initWithA_withInt_(self, 3);");
+    assertInTranslation(translation, "return create_A_Inner_initWithA_withInt_(self, 3);");
   }
 
   public void testNewFieldNotRetained() throws IOException {
@@ -1096,7 +1099,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(
+    assertInTranslation(
         translation, "JreStrongAssignAndConsume(&self->map_, new_JavaUtilHashMap_init())");
   }
 
@@ -1115,7 +1118,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(
+    assertInTranslation(
         translation, "JreStrictFieldStrongAssign(&self->map_, create_JavaUtilHashMap_init())");
   }
 
@@ -1134,7 +1137,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(translation, "JreStrAppendStrong(&self->myString_, \"$\", @\"Bar\");");
+    assertInTranslation(translation, "JreStrAppendStrong(&self->myString_, \"$\", @\"Bar\");");
   }
 
   public void testInterfaceStaticVarReference() throws IOException {
@@ -1155,14 +1158,14 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "int32_t i = Test_I_FOO;");
+    assertInTranslation(translation, "int32_t i = Test_I_FOO;");
   }
 
   public void testMethodWithPrimitiveArrayParameter() throws IOException {
     String translation =
         translateSourceFile(
             "public class Test {   public void foo(char[] chars) { } }", "Test", "Test.m");
-    assertTranslation(translation, "fooWithCharArray:");
+    assertInTranslation(translation, "fooWithCharArray:");
   }
 
   public void testMethodWithGenericArrayParameter() throws IOException {
@@ -1183,11 +1186,11 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "- (void)fooWithNSObjectArray:");
-    assertTranslation(translation, "- (void)barWithTestArray:");
-    assertTranslation(translation, "- (void)foo {");
-    assertTranslation(translation, "[self fooWithNSObjectArray:");
-    assertTranslation(translation, "- (void)bazWithTestArray:");
+    assertInTranslation(translation, "- (void)fooWithNSObjectArray:");
+    assertInTranslation(translation, "- (void)barWithTestArray:");
+    assertInTranslation(translation, "- (void)foo {");
+    assertInTranslation(translation, "[self fooWithNSObjectArray:");
+    assertInTranslation(translation, "- (void)bazWithTestArray:");
   }
 
   public void testGenericMethodWithfGenericArrayParameter() throws IOException {
@@ -1203,7 +1206,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "[self fooWithNSObjectArray:");
+    assertInTranslation(translation, "[self fooWithNSObjectArray:");
   }
 
   public void testJreDoubleNegativeInfinity() throws IOException {
@@ -1218,7 +1221,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation, "JavaLangDouble_valueOfWithDouble_(JavaLangDouble_NEGATIVE_INFINITY)");
   }
 
@@ -1240,7 +1243,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "[self fooWithId:");
+    assertInTranslation(translation, "[self fooWithId:");
   }
 
   public void testNewStringWithArrayInAnonymousClass() throws IOException {
@@ -1260,7 +1263,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "s = [NSString java_stringWith");
+    assertInTranslation(translation, "s = [NSString java_stringWith");
   }
 
   public void testMostNegativeIntegers() throws IOException {
@@ -1274,8 +1277,8 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "-0x7fffffff - 1");
-    assertTranslation(translation, "-0x7fffffffffffffffLL - 1");
+    assertInTranslation(translation, "-0x7fffffff - 1");
+    assertInTranslation(translation, "-0x7fffffffffffffffLL - 1");
   }
 
   public void testInnerNewStatement() throws IOException {
@@ -1291,7 +1294,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(translation, "create_A_B_initWithA_(create_A_init())");
+    assertInTranslation(translation, "create_A_B_initWithA_(create_A_init())");
   }
 
   public void testSuperFieldAccess() throws IOException {
@@ -1310,7 +1313,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(translation, "return i_ + i_B_;");
+    assertInTranslation(translation, "return i_ + i_B_;");
   }
 
   public void testStaticConstants() throws IOException {
@@ -1341,8 +1344,8 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "int32_t i = Foo_DEFAULT;");
-    assertTranslation(translation, "id lock = JreLoadStatic(Foo, LOCK);");
+    assertInTranslation(translation, "int32_t i = Foo_DEFAULT;");
+    assertInTranslation(translation, "id lock = JreLoadStatic(Foo, LOCK);");
   }
 
   public void testCastGenericReturnType() throws IOException {
@@ -1365,9 +1368,9 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test.h");
     // Test_B's "other" needs a trailing underscore, since there is an "other"
     // field in its superclass.
-    assertTranslation(translation, "Test_B *other_B_;");
+    assertInTranslation(translation, "Test_B *other_B_;");
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "JreStrongAssign(&self->other_B_, [self getOther])");
+    assertInTranslation(translation, "JreStrongAssign(&self->other_B_, [self getOther])");
   }
 
   public void testArrayInstanceOfTranslation() throws IOException {
@@ -1448,7 +1451,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertTranslation(translation, "JreStrongAssign(JreLoadStaticRef(Example, today), now);");
+    assertInTranslation(translation, "JreStrongAssign(JreLoadStaticRef(Example, today), now);");
   }
 
   // b/5872533: reserved method name not renamed correctly in super invocation.
@@ -1457,11 +1460,11 @@ public class StatementGeneratorTest extends GenerationTest {
     addSourceFile(
         "public class B extends A { B() {} public void init(int b) { super.init(b); }}", "B.java");
     String translation = translateSourceFile("A", "A.h");
-    assertTranslation(translation, "- (instancetype)init;");
-    assertTranslation(translation, "- (void)init__WithInt:(int32_t)a");
+    assertInTranslation(translation, "- (instancetype)init;");
+    assertInTranslation(translation, "- (void)init__WithInt:(int32_t)a");
     translation = translateSourceFile("B", "B.m");
-    assertTranslation(translation, "A_init(self);");
-    assertTranslation(translation, "[super init__WithInt:b];");
+    assertInTranslation(translation, "A_init(self);");
+    assertInTranslation(translation, "[super init__WithInt:b];");
   }
 
   // b/5872757: verify multi-dimensional array has cast before each
@@ -1480,10 +1483,10 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "IOSObjectArray_Set(nil_chk(IOSObjectArray_Get(nil_chk(Test_a), 0)), 0, @\"42\");");
-    assertTranslation(
+    assertInTranslation(
         translation, "((IOSObjectArray *) nil_chk(IOSObjectArray_Get(Test_a, 0)))->size_");
   }
 
@@ -1492,7 +1495,7 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String translation = generateStatement(stmts.get(0));
-    assertTranslation(
+    assertInTranslation(
         translation,
         "IOSObjectArray *a = [IOSObjectArray arrayWithObjects:(id[]){ nil, "
             + "[IOSIntArray arrayWithInts:(int32_t[]){ 0, 2 } count:2], "
@@ -1514,7 +1517,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "IOSObjectArray *a = [IOSObjectArray arrayWithObjects:(id[]){ nil, "
             + "[IOSObjectArray arrayWithObjects:(id[]){ i_, j_ } count:2 "
@@ -1539,17 +1542,17 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.h");
-    assertTranslation(translation, "- (void)fooWithNSObjectArray:(IOSObjectArray *)args");
-    assertTranslation(translation, "- (void)barWithNSObjectArray2:(IOSObjectArray *)args");
+    assertInTranslation(translation, "- (void)fooWithNSObjectArray:(IOSObjectArray *)args");
+    assertInTranslation(translation, "- (void)barWithNSObjectArray2:(IOSObjectArray *)args");
     translation = getTranslatedFile("Example.m");
 
     // Should be equivalent to foo(new Object[0]).
-    assertTranslation(
+    assertInTranslation(
         translation,
         "[self fooWithNSObjectArray:[IOSObjectArray arrayWithLength:0 type:NSObject_class_()]]");
 
     // Should be equivalent to bar(new Object[] { new Object[0] }).
-    assertTranslation(
+    assertInTranslation(
         translation,
         "[self barWithNSObjectArray2:[IOSObjectArray arrayWithObjects:"
             + "(id[]){ [IOSObjectArray arrayWithLength:0 type:NSObject_class_()] } count:1 "
@@ -1573,22 +1576,22 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "c1 = [Test_class_() getConstructor:"
             + "[IOSObjectArray arrayWithLength:0 type:IOSClass_class_()]];");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "c2 = [Test_class_() getConstructor:[IOSObjectArray "
             + "arrayWithObjects:(id[]){ NSString_class_() } count:1 type:IOSClass_class_()]];");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "c3 = [Test_class_() getConstructor:[IOSObjectArray arrayWithObjects:"
             + "(id[]){ NSString_class_(), JreLoadStatic(JavaLangByte, TYPE) } count:2 "
             + "type:IOSClass_class_()]];");
 
     // Array contents should be expanded.
-    assertTranslation(translation, "c4 = [Test_class_() getConstructor:types];");
+    assertInTranslation(translation, "c4 = [Test_class_() getConstructor:types];");
   }
 
   public void testGetVarargsWithLeadingParameter() throws IOException {
@@ -1603,7 +1606,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "[[self java_getClass] getMethod:@\"equals\" parameterTypes:[IOSObjectArray "
             + "arrayWithObjects:(id[]){ NSObject_class_() } count:1 type:IOSClass_class_()]];");
@@ -1621,7 +1624,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "[[self java_getClass] getMethod:@\"hashCode\" parameterTypes:[IOSObjectArray "
             + "arrayWithLength:0 type:IOSClass_class_()]];");
@@ -1647,7 +1650,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "[((Test_Foo *) nil_chk(f)) foo]");
+    assertInTranslation(translation, "[((Test_Foo *) nil_chk(f)) foo]");
   }
 
   // b/5934474: verify that static variables are always referenced by
@@ -1665,7 +1668,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "HelloWorld",
             "HelloWorld.m");
-    assertTranslation(translation, "printlnWithNSString:HelloWorld_staticString];");
+    assertInTranslation(translation, "printlnWithNSString:HelloWorld_staticString];");
   }
 
   public void testThisCallInEnumConstructor() throws IOException {
@@ -1686,7 +1689,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation, "Test_initWithInt_withNSString_withInt_(self, 0, __name, __ordinal);");
   }
 
@@ -1706,7 +1709,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "Test_Inner_initWithTest_(self, outer$);");
+    assertInTranslation(translation, "Test_Inner_initWithTest_(self, outer$);");
   }
 
   // Verify that an external string can be used in string concatenation,
@@ -1726,7 +1729,8 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(translation, "[NSString stringWithString:JreStrcat(\"@$\", o, B_separator)]");
+    assertInTranslation(
+        translation, "[NSString stringWithString:JreStrcat(\"@$\", o, B_separator)]");
   }
 
   public void testStringConcatWithBoolean() throws IOException {
@@ -1737,7 +1741,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(translation, "return JreStrcat(\"$Z\", @\"foo: \", b);");
+    assertInTranslation(translation, "return JreStrcat(\"$Z\", @\"foo: \", b);");
   }
 
   public void testStringConcatWithChar() throws IOException {
@@ -1752,7 +1756,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(translation, "return JreStrcat(\"$C\", @\"foo: \", c);");
+    assertInTranslation(translation, "return JreStrcat(\"$C\", @\"foo: \", c);");
   }
 
   // Verify that double quote character constants are concatenated correctly.
@@ -1767,7 +1771,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "Test_TEST = @\"\\\"\";");
+    assertInTranslation(translation, "Test_TEST = @\"\\\"\";");
   }
 
   // Verify that return statements in constructors return self.
@@ -1783,7 +1787,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(translation, "return self;");
+    assertInTranslation(translation, "return self;");
   }
 
   public void testNonAsciiOctalEscapeInString() throws IOException {
@@ -1798,9 +1802,9 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(translation, "@\"\\x7f\"");
-    assertTranslation(translation, "@\"\\xc2\\x80\"");
-    assertTranslation(translation, "@\"\\u00ff\"");
+    assertInTranslation(translation, "@\"\\x7f\"");
+    assertInTranslation(translation, "@\"\\xc2\\x80\"");
+    assertInTranslation(translation, "@\"\\u00ff\"");
   }
 
   public void testCharLiteralsAreEscaped() throws IOException {
@@ -1819,11 +1823,11 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.h");
-    assertTranslation(translation, "#define A_APOSTROPHE '\\''");
-    assertTranslation(translation, "#define A_BACKSLASH '\\\\'");
+    assertInTranslation(translation, "#define A_APOSTROPHE '\\''");
+    assertInTranslation(translation, "#define A_BACKSLASH '\\\\'");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "fooWithChar:'\\'']");
-    assertTranslation(translation, "fooWithChar:'\\\\']");
+    assertInTranslation(translation, "fooWithChar:'\\'']");
+    assertInTranslation(translation, "fooWithChar:'\\\\']");
   }
 
   public void testStaticVarAccessFromInnerClass() throws IOException {
@@ -1846,7 +1850,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "JreStrongAssign(JreLoadStaticRef(Test, foo), s);");
+    assertInTranslation(translation, "JreStrongAssign(JreLoadStaticRef(Test, foo), s);");
   }
 
   public void testNoAutoreleasePoolForStatement() throws IOException {
@@ -1862,7 +1866,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "  for (int32_t i = 0; i < 10; i++) {\n  }");
+    assertInTranslation(translation, "  for (int32_t i = 0; i < 10; i++) {\n  }");
   }
 
   public void testAutoreleasePoolForStatement() throws IOException {
@@ -1879,7 +1883,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation, "  for (int32_t i = 0; i < 10; i++) {\n    @autoreleasepool {\n    }\n  }");
   }
 
@@ -1897,7 +1901,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "@autoreleasepool");
+    assertInTranslation(translation, "@autoreleasepool");
   }
 
   public void testARCAutoreleasePoolForStatement() throws IOException {
@@ -1915,7 +1919,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "  for (int32_t i = 0; i < 10; i++) {\n    @autoreleasepool {\n" + "    }\n  }");
   }
@@ -1935,7 +1939,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "@autoreleasepool {");
+    assertInTranslation(translation, "@autoreleasepool {");
   }
 
   public void testShiftAssignArrayElement() throws IOException {
@@ -1954,10 +1958,11 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "JreURShiftAssignInt(IOSIntArray_GetRef(nil_chk(array), 0), 2)");
-    assertTranslation(translation, "JreURShiftAssignInt(IOSIntArray_GetRef(array, i - 1), 3)");
-    assertTranslation(translation, "JreRShiftAssignInt(IOSIntArray_GetRef(array, 1), 4)");
-    assertTranslation(translation, "JreLShiftAssignInt(IOSIntArray_GetRef(array, 2), 5)");
+    assertInTranslation(
+        translation, "JreURShiftAssignInt(IOSIntArray_GetRef(nil_chk(array), 0), 2)");
+    assertInTranslation(translation, "JreURShiftAssignInt(IOSIntArray_GetRef(array, i - 1), 3)");
+    assertInTranslation(translation, "JreRShiftAssignInt(IOSIntArray_GetRef(array, 1), 4)");
+    assertInTranslation(translation, "JreLShiftAssignInt(IOSIntArray_GetRef(array, 2), 5)");
   }
 
   public void testAssertWithoutDescription() throws IOException {
@@ -1974,7 +1979,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation, "JreAssert(a < b, @\"Test.java:5 condition failed: assert a < b;\")");
   }
 
@@ -1992,7 +1997,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "JreAssert(a < b, @\"a should be lower than b\")");
+    assertInTranslation(translation, "JreAssert(a < b, @\"a should be lower than b\")");
   }
 
   public void testAssertWithDynamicDescription() throws IOException {
@@ -2009,7 +2014,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation, "JreAssert(a < b, JreStrcat(\"I$I\", a, @\" should be lower than \", b));");
   }
 
@@ -2027,7 +2032,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "Test_TEST = @\"China's name is \\u4e2d\\u56fd\"");
+    assertInTranslation(translation, "Test_TEST = @\"China's name is \\u4e2d\\u56fd\"");
   }
 
   public void testPartialArrayCreation2D() throws IOException {
@@ -2042,9 +2047,9 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "#include \"IOSObjectArray.h\"");
-    assertTranslation(translation, "#include \"IOSClass.h\"");
-    assertTranslation(
+    assertInTranslation(translation, "#include \"IOSObjectArray.h\"");
+    assertInTranslation(translation, "#include \"IOSClass.h\"");
+    assertInTranslation(
         translation,
         "IOSObjectArray *c = [IOSObjectArray arrayWithLength:3 type:IOSClass_charArray(1)]");
   }
@@ -2061,8 +2066,8 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "#include \"IOSObjectArray.h\"");
-    assertTranslation(
+    assertInTranslation(translation, "#include \"IOSObjectArray.h\"");
+    assertInTranslation(
         translation,
         "IOSObjectArray *c = [IOSObjectArray arrayWithLength:3 type:IOSClass_charArray(2)]");
   }
@@ -2084,11 +2089,11 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "r = JreURShift32(a, 1);");
-    assertTranslation(translation, "r = JreURShift64(b, 2);");
-    assertTranslation(translation, "r = JreURShift32(c, 3);");
-    assertTranslation(translation, "r = JreURShift32(d, 4);");
-    assertTranslation(translation, "r = JreURShift32(e, 5);");
+    assertInTranslation(translation, "r = JreURShift32(a, 1);");
+    assertInTranslation(translation, "r = JreURShift64(b, 2);");
+    assertInTranslation(translation, "r = JreURShift32(c, 3);");
+    assertInTranslation(translation, "r = JreURShift32(d, 4);");
+    assertInTranslation(translation, "r = JreURShift32(e, 5);");
   }
 
   public void testUnsignedRightShiftAssign() throws IOException {
@@ -2107,11 +2112,11 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "JreURShiftAssignInt(&a, 1);");
-    assertTranslation(translation, "JreURShiftAssignLong(&b, 2);");
-    assertTranslation(translation, "JreURShiftAssignChar(&c, 3);");
-    assertTranslation(translation, "JreURShiftAssignByte(&d, 4);");
-    assertTranslation(translation, "JreURShiftAssignShort(&e, 5);");
+    assertInTranslation(translation, "JreURShiftAssignInt(&a, 1);");
+    assertInTranslation(translation, "JreURShiftAssignLong(&b, 2);");
+    assertInTranslation(translation, "JreURShiftAssignChar(&c, 3);");
+    assertInTranslation(translation, "JreURShiftAssignByte(&d, 4);");
+    assertInTranslation(translation, "JreURShiftAssignShort(&e, 5);");
   }
 
   public void testUnsignedShiftRightAssignCharArray() throws IOException {
@@ -2126,7 +2131,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation, "JreURShiftAssignChar(IOSCharArray_GetRef(nil_chk(array), 0), 2)");
   }
 
@@ -2142,7 +2147,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "return JreStrcat(\"C$C\", '\"', s, '\"');");
+    assertInTranslation(translation, "return JreStrcat(\"C$C\", '\"', s, '\"');");
   }
 
   public void testIntConcatenation() throws IOException {
@@ -2157,7 +2162,7 @@ public class StatementGeneratorTest extends GenerationTest {
             }
             """,
             "Test", "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "[self checkWithBoolean:true withNSString:@\"%d-%d\" "
             + "withNSObjectArray:[IOSObjectArray arrayWithObjects:(id[]){ "
@@ -2180,12 +2185,12 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(translation, "aByte_ = (int8_t) 0b00100001;");
-    assertTranslation(translation, "aShort_ = (int16_t) 0b1010000101000101;");
-    assertTranslation(translation, "anInt1_ = 0b10100001010001011010000101000101;");
-    assertTranslation(translation, "anInt2_ = 0b101;");
-    assertTranslation(translation, "anInt3_ = 0B101;");
-    assertTranslation(
+    assertInTranslation(translation, "aByte_ = (int8_t) 0b00100001;");
+    assertInTranslation(translation, "aShort_ = (int16_t) 0b1010000101000101;");
+    assertInTranslation(translation, "anInt1_ = 0b10100001010001011010000101000101;");
+    assertInTranslation(translation, "anInt2_ = 0b101;");
+    assertInTranslation(translation, "anInt3_ = 0B101;");
+    assertInTranslation(
         translation,
         "aLong_ = 0b1010000101000101101000010100010110100001010001011010000101000101LL;");
   }
@@ -2207,14 +2212,14 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertTranslation(translation, "creditCardNumber_ = 1234567890123456LL;");
-    assertTranslation(translation, "socialSecurityNumber_ = 999999999LL;");
-    assertTranslation(translation, "pi_ = 3.1415f;");
-    assertTranslation(translation, "hexBytes_ = (int32_t) 0xFFECDE5E;");
-    assertTranslation(translation, "hexWords_ = (int32_t) 0xCAFEBABE;");
-    assertTranslation(translation, "maxLong_ = (int64_t) 0x7fffffffffffffffLL;");
-    assertTranslation(translation, "nybbles_ = 0b00100101;");
-    assertTranslation(translation, "bytes_ = 0b11010010011010011001010010010010;");
+    assertInTranslation(translation, "creditCardNumber_ = 1234567890123456LL;");
+    assertInTranslation(translation, "socialSecurityNumber_ = 999999999LL;");
+    assertInTranslation(translation, "pi_ = 3.1415f;");
+    assertInTranslation(translation, "hexBytes_ = (int32_t) 0xFFECDE5E;");
+    assertInTranslation(translation, "hexWords_ = (int32_t) 0xCAFEBABE;");
+    assertInTranslation(translation, "maxLong_ = (int64_t) 0x7fffffffffffffffLL;");
+    assertInTranslation(translation, "nybbles_ = 0b00100101;");
+    assertInTranslation(translation, "bytes_ = 0b11010010011010011001010010010010;");
   }
 
   // Verify that the null literal is concatenated as "null" in strings.
@@ -2230,7 +2235,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "return JreStrcat(\"$@\", @\"the nil value is \", nil);");
+    assertInTranslation(translation, "return JreStrcat(\"$@\", @\"the nil value is \", nil);");
   }
 
   public void testTypeVariableWithBoundsIsCast() throws IOException {
@@ -2256,8 +2261,8 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "[((id<Test_A>) nil_chk(t)) foo];");
-    assertTranslation(translation, "[((Test_B *) nil_chk(t)) foo];");
+    assertInTranslation(translation, "[((id<Test_A>) nil_chk(t)) foo];");
+    assertInTranslation(translation, "[((Test_B *) nil_chk(t)) foo];");
   }
 
   public void testTypeVariableWithMultipleBounds() throws IOException {
@@ -2270,7 +2275,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.h");
-    assertTranslation(translation, "NSString<JavaLangRunnable, NSCopying> *t");
+    assertInTranslation(translation, "NSString<JavaLangRunnable, NSCopying> *t");
   }
 
   public void testMultiCatch() throws IOException {
@@ -2296,8 +2301,8 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "@catch (Test_FirstException *e) {\n    @throw e;\n  }");
-    assertTranslation(translation, "@catch (Test_SecondException *e) {\n    @throw e;\n  }");
+    assertInTranslation(translation, "@catch (Test_FirstException *e) {\n    @throw e;\n  }");
+    assertInTranslation(translation, "@catch (Test_SecondException *e) {\n    @throw e;\n  }");
     assertNotInTranslation(translation, "@catch (JavaLangException *e) {\n    @throw e;\n  }");
   }
 
@@ -2321,7 +2326,7 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test.m");
     // Note that the type of the captured parameter is the least upper bound of
     // (Array | String) IndexOutOfBoundsException.
-    assertTranslation(translation, "JavaLangIndexOutOfBoundsException *capture$0");
+    assertInTranslation(translation, "JavaLangIndexOutOfBoundsException *capture$0");
   }
 
   public void testDifferentTypesInConditionalExpression() throws IOException {
@@ -2336,7 +2341,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "(r != nil ? r : (id) @\"bar\")");
+    assertInTranslation(translation, "(r != nil ? r : (id) @\"bar\")");
   }
 
   // Verify that when a method invocation returns an object that is ignored,
@@ -2356,8 +2361,8 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "(void) [sb appendWithNSString:@\"hello, world\"];");
-    assertTranslation(translation, "(void) new_JavaLangThrowable_init();");
+    assertInTranslation(translation, "(void) [sb appendWithNSString:@\"hello, world\"];");
+    assertInTranslation(translation, "(void) new_JavaLangThrowable_init();");
   }
 
   // Verify that multiple resources are closed in reverse order from opening.
@@ -2401,7 +2406,8 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "[((Test_Foo *) nil_chk([((Test *) nil_chk(t)) getObj])) foo]");
+    assertInTranslation(
+        translation, "[((Test_Foo *) nil_chk([((Test *) nil_chk(t)) getObj])) foo]");
   }
 
   public void testCastResultWhenInterfaceDeclaresMoreGenericType() throws IOException {
@@ -2429,13 +2435,13 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test",
             "Test.h");
     // Check that protocols are declared in the same order.
-    assertTranslation(translation, "@interface Test_D : Test_C < Test_I1, Test_I2 >");
+    assertInTranslation(translation, "@interface Test_D : Test_C < Test_I1, Test_I2 >");
     // A "foo" declaration is added to class "D" to override the less specific
     // return type inherited from "I1".
     assertOccurrences(translation, "- (Test_B *)foo;", 3);
     translation = getTranslatedFile("Test.m");
     // Check that the result of d.foo() is not cast.
-    assertTranslation(translation, "return [((Test_D *) nil_chk(d)) foo];");
+    assertInTranslation(translation, "return [((Test_D *) nil_chk(d)) foo];");
   }
 
   public void testStaticMethodCalledOnObject() throws IOException {
@@ -2451,14 +2457,14 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "Test_foo();");
+    assertInTranslation(translation, "Test_foo();");
   }
 
   public void testAnnotationVariableDeclaration() throws IOException {
     String translation =
         translateSourceFile(
             "public class Test { void test() { Deprecated annotation = null; }}", "Test", "Test.m");
-    assertTranslation(translation, "id<JavaLangDeprecated> annotation = ");
+    assertInTranslation(translation, "id<JavaLangDeprecated> annotation = ");
   }
 
   public void testAnnotationTypeLiteral() throws IOException {
@@ -2474,7 +2480,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "JavaLangDeprecated_class_()");
+    assertInTranslation(translation, "JavaLangDeprecated_class_()");
   }
 
   public void testEnumThisCallWithNoArguments() throws IOException {
@@ -2492,7 +2498,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation, "JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);");
     // Called from the "this()" call.
     assertOccurrences(translation, "Test_initWithNSString_withInt_(self, __name, __ordinal);", 1);
@@ -2505,7 +2511,7 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test",
             "Test.m");
     // C requires that each var have its own pointer.
-    assertTranslation(translation, "for (NSString *s1 = nil, *s2 = nil; ; )");
+    assertInTranslation(translation, "for (NSString *s1 = nil, *s2 = nil; ; )");
   }
 
   // Verify that constant variables are directly referenced when expression is "self".
@@ -2524,7 +2530,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "return JreLoadEnum(Test_Type, TYPE_BOOL);");
+    assertInTranslation(translation, "return JreLoadEnum(Test_Type, TYPE_BOOL);");
   }
 
   public void testMakeQuotedStringHang() throws IOException {
@@ -2562,7 +2568,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "[((JavaUtilArrayList *) nil_chk(this$0_->testField_)) ensureCapacityWithInt:42];");
   }
@@ -2579,10 +2585,10 @@ public class StatementGeneratorTest extends GenerationTest {
             }
             """,
             "Test", "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "S1 = @\"?\" \"?=?\" \"?/?\" \"?'?\" \"?(?\" \"?)?\" \"?!?\" \"?<?\" \"?>?\" \"?-\";");
-    assertTranslation(translation, "S2 = @\"??@??$??%??&??*??A??z??1??.\";");
+    assertInTranslation(translation, "S2 = @\"??@??$??%??&??*??A??z??1??.\";");
   }
 
   // Verify that casting from a floating point primitive to an integral primitive
@@ -2677,7 +2683,7 @@ public class StatementGeneratorTest extends GenerationTest {
             "class Test {void test() { @SuppressWarnings(\"unused\") int foo; }}",
             "Test",
             "Test.m");
-    assertTranslation(translation, "__unused int32_t foo;");
+    assertInTranslation(translation, "__unused int32_t foo;");
   }
 
   public void testSuppressedUnusedVariableFromMethod() throws IOException {
@@ -2686,7 +2692,7 @@ public class StatementGeneratorTest extends GenerationTest {
             "class Test {@SuppressWarnings(\"unused\") void test() { int foo; }}",
             "Test",
             "Test.m");
-    assertTranslation(translation, "__unused int32_t foo;");
+    assertInTranslation(translation, "__unused int32_t foo;");
   }
 
   public void testSuppressedUnusedVariableFromClass() throws IOException {
@@ -2695,7 +2701,7 @@ public class StatementGeneratorTest extends GenerationTest {
             "@SuppressWarnings(\"unused\") class Test {void test() {   int foo; }}",
             "Test",
             "Test.m");
-    assertTranslation(translation, "__unused int32_t foo;");
+    assertInTranslation(translation, "__unused int32_t foo;");
   }
 
   public void testSuppressedUnusedVariableByName() throws IOException {
@@ -2710,7 +2716,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "__unused int32_t unusedFoo;");
+    assertInTranslation(translation, "__unused int32_t unusedFoo;");
   }
 
   // Verify that empty statements line offset to owning statement is preserved.
@@ -2730,7 +2736,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(translation, "if (a < b) ;");
+    assertInTranslation(translation, "if (a < b) ;");
     assertTranslatedLines(translation, "if (c < d)", ";");
   }
 
@@ -2752,8 +2758,8 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test",
             "Test.m");
     // Verify correct type inference.
-    assertTranslation(translation, "JavaUtilArrayList *list = create_JavaUtilArrayList_init();");
-    assertTranslation(translation, "id<JavaUtilStreamStream> stream = [list stream];");
+    assertInTranslation(translation, "JavaUtilArrayList *list = create_JavaUtilArrayList_init();");
+    assertInTranslation(translation, "id<JavaUtilStreamStream> stream = [list stream];");
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
@@ -2771,7 +2777,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation, "@interface Test_$Lambda$1 : NSObject < JavaUtilFunctionFunction >");
   }
 
@@ -3046,7 +3052,7 @@ public class StatementGeneratorTest extends GenerationTest {
                   "Test",
                   "Test.m");
           // Verify that the local variable is named "_", as javac uses an empty strings.
-          assertTranslation(
+          assertInTranslation(
               translation,
               "id<JavaSqlConnection> _ = JavaSqlDriverManager_getConnectionWithNSString_"
                   + "withNSString_withNSString_(url, user, pwd);");
@@ -3074,7 +3080,7 @@ public class StatementGeneratorTest extends GenerationTest {
                   "Test",
                   "Test.m");
           // Verify that the local variable is named "_", as javac uses an empty strings.
-          assertTranslation(
+          assertInTranslation(
               translation,
               "id<JavaSqlConnection> _ = JavaSqlDriverManager_getConnectionWithNSString_"
                   + "withNSString_withNSString_(url, user, pwd);");
@@ -3097,7 +3103,7 @@ public class StatementGeneratorTest extends GenerationTest {
                   "Test",
                   "Test.m");
           // Verify that the local variable is named "_", as javac uses an empty strings.
-          assertTranslation(translation, "bool b = [obj isKindOfClass:[NSString class]];");
+          assertInTranslation(translation, "bool b = [obj isKindOfClass:[NSString class]];");
         });
   }
 }

@@ -34,8 +34,8 @@ public class OperatorRewriterTest extends GenerationTest {
                 + "void test(boolean b) { (b ? new Test() : getTest()).s = \"foo\"; } }",
             "Test",
             "Test.m");
-    assertTranslation(translation,
-        "JreStrongAssign(&(b ? create_Test_init() : Test_getTest())->s_, @\"foo\");");
+    assertInTranslation(
+        translation, "JreStrongAssign(&(b ? create_Test_init() : Test_getTest())->s_, @\"foo\");");
   }
 
   public void testSetFieldOnResultOfExpressionStrictFieldAssign() throws IOException {
@@ -46,7 +46,7 @@ public class OperatorRewriterTest extends GenerationTest {
                 + "void test(boolean b) { (b ? new Test() : getTest()).s = \"foo\"; } }",
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "JreStrictFieldStrongAssign(&(b ? create_Test_init() : Test_getTest())->s_, @\"foo\");");
   }
@@ -90,8 +90,8 @@ public class OperatorRewriterTest extends GenerationTest {
       + "  double doubleMod(double one, double two) { return one % two; }"
       + "  float floatMod(float three, float four) { return three % four; }}",
       "A", "A.m");
-    assertTranslation(translation, "return fmod(one, two);");
-    assertTranslation(translation, "return fmodf(three, four);");
+    assertInTranslation(translation, "return fmod(one, two);");
+    assertInTranslation(translation, "return fmodf(three, four);");
   }
 
   public void testLShift32WithExtendedOperands() {
@@ -150,7 +150,7 @@ public class OperatorRewriterTest extends GenerationTest {
     String translation =
         translateSourceFile(
             "class Test { String s; void test(String s2) { (s) = s2; } }", "Test", "Test.m");
-    assertTranslation(translation, "JreStrongAssign(&(s_), s2);");
+    assertInTranslation(translation, "JreStrongAssign(&(s_), s2);");
   }
 
   public void testParenthesizedLeftHandSideStrictField() throws IOException {
@@ -159,7 +159,7 @@ public class OperatorRewriterTest extends GenerationTest {
     String translation =
         translateSourceFile(
             "class Test { String s; void test(String s2) { (s) = s2; } }", "Test", "Test.m");
-    assertTranslation(translation, "JreStrictFieldStrongAssign(&(s_), s2);");
+    assertInTranslation(translation, "JreStrictFieldStrongAssign(&(s_), s2);");
   }
 
   public void testVolatileLoadAndAssign() throws IOException {
@@ -221,18 +221,18 @@ public class OperatorRewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test() { String str = \"foo\"; str += \"bar\"; } }", "Test", "Test.m");
     // Local variables in ARC have strong semantics.
-    assertTranslation(translation, "JreStrAppendStrong(&str, \"$\", @\"bar\")");
+    assertInTranslation(translation, "JreStrAppendStrong(&str, \"$\", @\"bar\")");
   }
 
   public void testStringAppendInfixExpression() throws IOException {
     String translation = translateSourceFile(
         "class Test { void test(int x, int y) { "
         + "String str = \"foo\"; str += x + y; } }", "Test", "Test.m");
-    assertTranslation(translation, "JreStrAppend(&str, \"I\", x + y);");
+    assertInTranslation(translation, "JreStrAppend(&str, \"I\", x + y);");
     translation = translateSourceFile(
         "class Test { void test(int x) { "
         + "String str = \"foo\"; str += \"bar\" + x; } }", "Test", "Test.m");
-    assertTranslation(translation, "JreStrAppend(&str, \"$I\", @\"bar\", x);");
+    assertInTranslation(translation, "JreStrAppend(&str, \"$I\", @\"bar\", x);");
   }
 
   public void testRetainedWithAnnotation() throws IOException {
@@ -242,9 +242,9 @@ public class OperatorRewriterTest extends GenerationTest {
         + "Test getTest() { return new Test(); }"
         + "void test() { rwo = new Object(); rwvo = new Object(); }"
         + "void test2() { getTest().rwo = new Object(); } }", "Test", "Test.m");
-    assertTranslation(translation, "JreRetainedWithAssign(self, &rwo_, create_NSObject_init());");
-    assertTranslation(translation,
-        "JreVolatileRetainedWithAssign(self, &rwvo_, create_NSObject_init());");
+    assertInTranslation(translation, "JreRetainedWithAssign(self, &rwo_, create_NSObject_init());");
+    assertInTranslation(
+        translation, "JreVolatileRetainedWithAssign(self, &rwvo_, create_NSObject_init());");
     assertTranslatedLines(translation,
         // The getTest() call must be extracted so that it can be passed as the parent ref without
         // duplicating the expression.
@@ -252,8 +252,8 @@ public class OperatorRewriterTest extends GenerationTest {
         "((void) (__rw$0 = nil_chk([self getTest])), "
           + "JreRetainedWithAssign(__rw$0, &__rw$0->rwo_, create_NSObject_init()));");
     // Test the dealloc calls too.
-    assertTranslation(translation, "JreRetainedWithRelease(self, rwo_);");
-    assertTranslation(translation, "JreVolatileRetainedWithRelease(self, &rwvo_);");
+    assertInTranslation(translation, "JreRetainedWithRelease(self, rwo_);");
+    assertInTranslation(translation, "JreVolatileRetainedWithRelease(self, &rwvo_);");
   }
 
   public void testRetainedWithAnnotationStrictField() throws IOException {
@@ -268,8 +268,8 @@ public class OperatorRewriterTest extends GenerationTest {
                 + "void test2() { getTest().rwo = new Object(); } }",
             "Test",
             "Test.m");
-    assertTranslation(translation, "JreRetainedWithAssign(self, &rwo_, create_NSObject_init());");
-    assertTranslation(
+    assertInTranslation(translation, "JreRetainedWithAssign(self, &rwo_, create_NSObject_init());");
+    assertInTranslation(
         translation, "JreVolatileRetainedWithAssign(self, &rwvo_, create_NSObject_init());");
     assertTranslatedLines(
         translation,
@@ -279,8 +279,8 @@ public class OperatorRewriterTest extends GenerationTest {
         "((void) (__rw$0 = nil_chk([self getTest])), "
             + "JreRetainedWithAssign(__rw$0, &__rw$0->rwo_, create_NSObject_init()));");
     // Test the dealloc calls too.
-    assertTranslation(translation, "JreStrictFieldRetainedWithRelease(self, &rwo_);");
-    assertTranslation(translation, "JreVolatileRetainedWithRelease(self, &rwvo_);");
+    assertInTranslation(translation, "JreStrictFieldRetainedWithRelease(self, &rwo_);");
+    assertInTranslation(translation, "JreVolatileRetainedWithRelease(self, &rwvo_);");
   }
 
   public void testRetainedLocalRef() throws IOException {
@@ -370,7 +370,7 @@ public class OperatorRewriterTest extends GenerationTest {
   public void testRetainedLocalRefFieldGetter() throws IOException {
     String translation =
         translateSourceFile(RETENTION_TEST_SOURCE, "RetentionTest", "RetentionTest.m");
-    assertTranslation(translation, "id object = JreRetainedLocalValue([ref get]);");
+    assertInTranslation(translation, "id object = JreRetainedLocalValue([ref get]);");
   }
 
   public void testNoRetainedLocalRefWithARC() throws IOException {
@@ -389,7 +389,7 @@ public class OperatorRewriterTest extends GenerationTest {
         "import com.google.errorprone.annotations.concurrent.LazyInit;"
         + "class Test { @LazyInit String lazyStr; @LazyInit static String lazyStaticStr; }",
         "Test", "Test.h");
-    assertTranslation(translation, "volatile_id lazyStr_;");
+    assertInTranslation(translation, "volatile_id lazyStr_;");
     assertTranslatedLines(translation,
         "FOUNDATION_EXPORT volatile_id Test_lazyStaticStr;",
         "J2OBJC_STATIC_FIELD_OBJ_VOLATILE(Test, lazyStaticStr, NSString *)");
@@ -417,14 +417,14 @@ public class OperatorRewriterTest extends GenerationTest {
         + "    f2 = f1;"
         + "  }"
         + "}", "Test", "Test.m");
-    assertTranslation(translation, "Test_Foo *f2 = JreRetainedLocalValue(f_);");
-    assertTranslation(translation, "f1 = JreRetainedLocalValue(f2);");
-    assertTranslation(translation, "Test_Foo *f3 = JreRetainedLocalValue(f2);");
-    assertTranslation(translation, "s1 = @\"foo\";");
-    assertTranslation(translation, "c1 = 'a';");
-    assertTranslation(translation, "f3 = JreRetainedLocalValue(f1);");
-    assertTranslation(translation, "f3 = JreRetainedLocalValue(f2);");
-    assertTranslation(translation, "f2 = f1;");
+    assertInTranslation(translation, "Test_Foo *f2 = JreRetainedLocalValue(f_);");
+    assertInTranslation(translation, "f1 = JreRetainedLocalValue(f2);");
+    assertInTranslation(translation, "Test_Foo *f3 = JreRetainedLocalValue(f2);");
+    assertInTranslation(translation, "s1 = @\"foo\";");
+    assertInTranslation(translation, "c1 = 'a';");
+    assertInTranslation(translation, "f3 = JreRetainedLocalValue(f1);");
+    assertInTranslation(translation, "f3 = JreRetainedLocalValue(f2);");
+    assertInTranslation(translation, "f2 = f1;");
   }
 
   public void testRetainedLocal_synchronizedBlock_StrictField() throws IOException {
@@ -454,14 +454,14 @@ public class OperatorRewriterTest extends GenerationTest {
                 + "}",
             "Test",
             "Test.m");
-    assertTranslation(translation, "Test_Foo *f2 = JreStrictFieldStrongLoad(&f_);");
-    assertTranslation(translation, "f1 = JreRetainedLocalValue(f2);");
-    assertTranslation(translation, "Test_Foo *f3 = JreRetainedLocalValue(f2);");
-    assertTranslation(translation, "s1 = @\"foo\";");
-    assertTranslation(translation, "c1 = 'a';");
-    assertTranslation(translation, "f3 = JreRetainedLocalValue(f1);");
-    assertTranslation(translation, "f3 = JreRetainedLocalValue(f2);");
-    assertTranslation(translation, "f2 = f1;");
+    assertInTranslation(translation, "Test_Foo *f2 = JreStrictFieldStrongLoad(&f_);");
+    assertInTranslation(translation, "f1 = JreRetainedLocalValue(f2);");
+    assertInTranslation(translation, "Test_Foo *f3 = JreRetainedLocalValue(f2);");
+    assertInTranslation(translation, "s1 = @\"foo\";");
+    assertInTranslation(translation, "c1 = 'a';");
+    assertInTranslation(translation, "f3 = JreRetainedLocalValue(f1);");
+    assertInTranslation(translation, "f3 = JreRetainedLocalValue(f2);");
+    assertInTranslation(translation, "f2 = f1;");
   }
 
   public void testRetainedLocal_returnWithinSynchronizedMethodOrBlock() throws IOException {
@@ -483,9 +483,9 @@ public class OperatorRewriterTest extends GenerationTest {
         + "    return val;"
         + "  }"
         + "}", "Test", "Test.m");
-    assertTranslation(translation, "return JreRetainedLocalValue(s1);");
-    assertTranslation(translation, "return JreRetainedLocalValue(f1)");
-    assertTranslation(translation, "return val;");
+    assertInTranslation(translation, "return JreRetainedLocalValue(s1);");
+    assertInTranslation(translation, "return JreRetainedLocalValue(f1)");
+    assertInTranslation(translation, "return val;");
   }
 
   public void testRetainAutoreleaseReturns() throws IOException {
@@ -515,11 +515,11 @@ public class OperatorRewriterTest extends GenerationTest {
                 + "}",
             "Test",
             "Test.m");
-    assertTranslation(translation, "return JreRetainedAutoreleasedReturnValue(s1);");
-    assertTranslation(translation, "return JreRetainedAutoreleasedReturnValue(f1)");
-    assertTranslation(translation, "return [self test2]");
-    assertTranslation(translation, "return @\"bar\"");
-    assertTranslation(translation, "return val;");
+    assertInTranslation(translation, "return JreRetainedAutoreleasedReturnValue(s1);");
+    assertInTranslation(translation, "return JreRetainedAutoreleasedReturnValue(f1)");
+    assertInTranslation(translation, "return [self test2]");
+    assertInTranslation(translation, "return @\"bar\"");
+    assertInTranslation(translation, "return val;");
   }
 
   public void testRetainAutoreleaseReturnsARC() throws IOException {
@@ -550,11 +550,11 @@ public class OperatorRewriterTest extends GenerationTest {
                 + "}",
             "Test",
             "Test.m");
-    assertTranslation(translation, "return s1;");
-    assertTranslation(translation, "return f1");
-    assertTranslation(translation, "return [self test2]");
-    assertTranslation(translation, "return @\"bar\"");
-    assertTranslation(translation, "return val;");
+    assertInTranslation(translation, "return s1;");
+    assertInTranslation(translation, "return f1");
+    assertInTranslation(translation, "return [self test2]");
+    assertInTranslation(translation, "return @\"bar\"");
+    assertInTranslation(translation, "return val;");
   }
 
   public void testObjectEquality() throws IOException {
@@ -591,16 +591,16 @@ public class OperatorRewriterTest extends GenerationTest {
             + "    return i3 != i4;"
             + "  }"
             + "}", "Test", "Test.m");
-    assertTranslation(translation, "return JreStringEqualsEquals(s1, s2);");
-    assertTranslation(translation, "return JreObjectEqualsEquals(o1, o2);");
-    assertTranslation(translation, "return JreObjectEqualsEquals(s3, o3);");
-    assertTranslation(translation, "return o4 == nil;");
-    assertTranslation(translation, "return i1 == i2;");
-    assertTranslation(translation, "return !JreStringEqualsEquals(s5, s6);");
-    assertTranslation(translation, "return !JreObjectEqualsEquals(o5, o6);");
-    assertTranslation(translation, "return !JreObjectEqualsEquals(s7, o7);");
-    assertTranslation(translation, "return o8 != nil;");
-    assertTranslation(translation, "return i3 != i4;");
+    assertInTranslation(translation, "return JreStringEqualsEquals(s1, s2);");
+    assertInTranslation(translation, "return JreObjectEqualsEquals(o1, o2);");
+    assertInTranslation(translation, "return JreObjectEqualsEquals(s3, o3);");
+    assertInTranslation(translation, "return o4 == nil;");
+    assertInTranslation(translation, "return i1 == i2;");
+    assertInTranslation(translation, "return !JreStringEqualsEquals(s5, s6);");
+    assertInTranslation(translation, "return !JreObjectEqualsEquals(o5, o6);");
+    assertInTranslation(translation, "return !JreObjectEqualsEquals(s7, o7);");
+    assertInTranslation(translation, "return o8 != nil;");
+    assertInTranslation(translation, "return i3 != i4;");
   }
 
   public void testEqualOperator() throws IOException {
@@ -628,23 +628,23 @@ public class OperatorRewriterTest extends GenerationTest {
                 + "}",
             "Test",
             "Test.m");
-    assertTranslation(
+    assertInTranslation(
         translation, "return JavaLangBoolean_valueOfWithBoolean_(JreObjectEqualsEquals(b1, b2));");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "return JavaLangBoolean_valueOfWithBoolean_(JreObjectEqualsEquals(b1, b2) =="
             + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2) =="
             + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "return JavaLangBoolean_valueOfWithBoolean_(JreObjectEqualsEquals(s1, s2) =="
             + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
-    assertTranslation(
+    assertInTranslation(
         translation, "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2));");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2) !="
             + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");

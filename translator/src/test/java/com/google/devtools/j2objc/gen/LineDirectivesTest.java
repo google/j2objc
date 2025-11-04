@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,12 +54,12 @@ public class LineDirectivesTest extends GenerationTest {
         + "  void two() {}\n"
         + "  void three() {}}\n",
         "A", "A.m");
-    assertTranslation(translation, "#line 1 \"A.java\"");
-    assertTranslation(translation, "#line 3\n@implementation A");
-    assertTranslation(translation, "#line 6\n- (void)one");
+    assertInTranslation(translation, "#line 1 \"A.java\"");
+    assertInTranslation(translation, "#line 3\n@implementation A");
+    assertInTranslation(translation, "#line 6\n- (void)one");
     // Lines match up between one() and two() so no need for the directive.
     assertNotInTranslation(translation, "#line 9\n- (void)two");
-    assertTranslation(translation, "#line 10\n- (void)three");
+    assertInTranslation(translation, "#line 10\n- (void)three");
   }
 
   public void testStatementNumbering() throws IOException {
@@ -73,10 +72,10 @@ public class LineDirectivesTest extends GenerationTest {
         + "    return Integer.toString(i);\n"
         + "  }}\n",
         "A", "A.m");
-    assertTranslation(translation, "#line 1 \"A.java\"");
-    assertTranslation(translation, "#line 2\n- (NSString *)test");
-    assertTranslation(translation, "#line 4\n  int32_t i = 0;");
-    assertTranslation(translation, "#line 7\n  return JavaLangInteger_toStringWithInt_(i);");
+    assertInTranslation(translation, "#line 1 \"A.java\"");
+    assertInTranslation(translation, "#line 2\n- (NSString *)test");
+    assertInTranslation(translation, "#line 4\n  int32_t i = 0;");
+    assertInTranslation(translation, "#line 7\n  return JavaLangInteger_toStringWithInt_(i);");
   }
 
   public void testForIfWhileStatementsWithoutBlocks() throws IOException {

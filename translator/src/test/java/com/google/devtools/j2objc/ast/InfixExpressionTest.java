@@ -33,6 +33,6 @@ public class InfixExpressionTest extends GenerationTest {
     String exprStr = sb.toString();
     String translation = translateSourceFile(UnicodeUtils.format(
         "class Test { boolean test(int i) { %s } }", exprStr), "Test", "Test.m");
-    assertTranslation(translation, exprStr);
+    assertInTranslation(translation, exprStr);
   }
 }

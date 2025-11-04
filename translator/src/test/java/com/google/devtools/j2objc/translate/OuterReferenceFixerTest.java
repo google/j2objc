@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-
 import java.io.IOException;
 
 /**
@@ -29,21 +28,21 @@ public class OuterReferenceFixerTest extends GenerationTest {
     addSourceFile("class A { class Inner { } }", "A.java");
     String translation = translateSourceFile(
         "class B extends A.Inner { B(A a) { a.super(); } }", "B", "B.m");
-    assertTranslation(translation, "A_Inner_initWithA_(self, nil_chk(a));");
+    assertInTranslation(translation, "A_Inner_initWithA_(self, nil_chk(a));");
   }
 
   public void testLocalClassCaptureVariablesInsideGenericClass() throws IOException {
     String translation = translateSourceFile(
         "class Test<T> { void test() { final Object o = null; class Inner { "
         + "public void foo() { o.toString(); } } new Inner(); } }", "Test", "Test.m");
-    assertTranslation(translation, "create_Test_1Inner_initWithId_(o)");
+    assertInTranslation(translation, "create_Test_1Inner_initWithId_(o)");
   }
 
   public void testRecursiveConstructionOfLocalClass() throws IOException {
     String translation = translateSourceFile(
         "public class Test { void test(final Object bar) { "
         + "class Foo { void foo() { bar.toString(); new Foo(); } } } }", "Test", "Test.m");
-    assertTranslation(translation, "create_Test_1Foo_initWithId_(val$bar_)");
+    assertInTranslation(translation, "create_Test_1Foo_initWithId_(val$bar_)");
   }
 
   public void testLocalClassExtendsLocalClassCapturesVariables() throws IOException {

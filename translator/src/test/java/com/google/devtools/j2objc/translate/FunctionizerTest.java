@@ -33,10 +33,10 @@ public class FunctionizerTest extends GenerationTest {
     String functionHeader = "NSString *A_str(A *self)";
     assertNotInTranslation(translation, functionHeader);
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "static " + functionHeader + ";");
-    assertTranslation(translation, functionHeader + " {");
-    assertTranslation(translation, "return A_str(self);");
-    assertTranslation(translation, "return [self description];");
+    assertInTranslation(translation, "static " + functionHeader + ";");
+    assertInTranslation(translation, functionHeader + " {");
+    assertInTranslation(translation, "return A_str(self);");
+    assertInTranslation(translation, "return [self description];");
   }
 
   // Verify one function calls another with the instance parameter.
@@ -45,8 +45,8 @@ public class FunctionizerTest extends GenerationTest {
         "class A { private String test(String msg) { return str(); } "
         + "  private String str() { return toString(); }}",
         "A", "A.m");
-    assertTranslation(translation, "return A_str(self);");
-    assertTranslation(translation, "return [self description];");
+    assertInTranslation(translation, "return A_str(self);");
+    assertInTranslation(translation, "return [self description];");
   }
 
   public void testPrivateInstanceMethod() throws IOException {
@@ -58,11 +58,11 @@ public class FunctionizerTest extends GenerationTest {
         "NSString *A_strWithNSString_withIOSClass_(A *self, NSString *msg, IOSClass *cls)";
     assertNotInTranslation(translation, functionHeader);
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "static " + functionHeader + ";");
+    assertInTranslation(translation, "static " + functionHeader + ";");
     assertTranslatedLines(translation, functionHeader + " {",
         "return JreStrcat(\"$@\", msg, cls);");
-    assertTranslation(translation,
-        "return A_strWithNSString_withIOSClass_(self, msg, [self java_getClass]);");
+    assertInTranslation(
+        translation, "return A_strWithNSString_withIOSClass_(self, msg, [self java_getClass]);");
   }
 
   // Verify non-private instance method is generated normally.
@@ -74,8 +74,8 @@ public class FunctionizerTest extends GenerationTest {
     assertTranslatedLines(translation,
         "- (NSString *)strWithNSString:(NSString *)msg",
         "withIOSClass:(IOSClass *)cls {");
-    assertTranslation(translation,
-        "return [self strWithNSString:msg withIOSClass:[self java_getClass]];");
+    assertInTranslation(
+        translation, "return [self strWithNSString:msg withIOSClass:[self java_getClass]];");
   }
 
   // Verify instance field access in function.
@@ -225,7 +225,7 @@ public class FunctionizerTest extends GenerationTest {
         "A", "A.h");
     String functionHeader =
         "NSString *A_strWithNSString_withIOSClass_(NSString *msg, IOSClass *cls)";
-    assertTranslation(translation, functionHeader + ';');
+    assertInTranslation(translation, functionHeader + ';');
     translation = getTranslatedFile("A.m");
     // Check new function.
     assertTranslatedLines(translation, functionHeader + " {",
@@ -248,7 +248,7 @@ public class FunctionizerTest extends GenerationTest {
         + "  private String echo(String msg) { return msg; } "
         + "  private String str(String msg) { return msg; }}",
         "A", "A.m");
-    assertTranslatedLines(translation, "A_echoWithNSString_(self, A_strWithNSString_(self, msg))");
+    assertInTranslation(translation, "A_echoWithNSString_(self, A_strWithNSString_(self, msg))");
   }
 
   public void testStaticVarargsMethod() throws IOException {
@@ -259,9 +259,11 @@ public class FunctionizerTest extends GenerationTest {
     String functionHeader = "NSString *A_strcharsWithCharArray_(IOSCharArray *args)";
     assertNotInTranslation(translation, functionHeader + ';');
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, functionHeader + " {");
-    assertTranslation(translation, "return A_strcharsWithCharArray_("
-        + "[IOSCharArray arrayWithChars:(unichar[]){ 'a', 'b', 'c' } count:3]);");
+    assertInTranslation(translation, functionHeader + " {");
+    assertInTranslation(
+        translation,
+        "return A_strcharsWithCharArray_("
+            + "[IOSCharArray arrayWithChars:(unichar[]){ 'a', 'b', 'c' } count:3]);");
   }
 
   public void testSynchronizedFunction() throws IOException {
@@ -269,36 +271,36 @@ public class FunctionizerTest extends GenerationTest {
         "class A { void test() { str(); } "
         + "private synchronized String str() { return toString(); }}",
         "A", "A.m");
-    assertTranslation(translation, "@synchronized(self)");
+    assertInTranslation(translation, "@synchronized(self)");
     assertOccurrences(translation, "@synchronized", 1);
     translation = translateSourceFile(
         "class A { void test() { str(); } "
         + "  private String str() { synchronized(this) { return toString(); }}}",
         "A", "A.m");
-    assertTranslation(translation, "@synchronized(self)");
+    assertInTranslation(translation, "@synchronized(self)");
     translation = translateSourceFile(
         "class A { void test() { str(); } "
         + "  private static synchronized String str() { return \"abc\"; }}",
         "A", "A.m");
-    assertTranslation(translation, "@synchronized(A_class_())");
+    assertInTranslation(translation, "@synchronized(A_class_())");
     assertOccurrences(translation, "@synchronized", 1);
     translation = translateSourceFile(
         "class A { void test() { str(); } "
         + "  private String str() { synchronized(this.getClass()) { return \"abc\"; }}}",
         "A", "A.m");
-    assertTranslation(translation, "@synchronized([self java_getClass])");
+    assertInTranslation(translation, "@synchronized([self java_getClass])");
     translation = translateSourceFile(
         "class A { void test() { str(); } "
         + "  private static String str() { synchronized(A.class) { return \"abc\"; }}}",
         "A", "A.m");
-    assertTranslation(translation, "@synchronized(A_class_())");
+    assertInTranslation(translation, "@synchronized(A_class_())");
   }
 
   public void testSetter() throws IOException {
     String translation = translateSourceFile(
         "class A { Object o; private void setO(Object o) { this.o = o; }}",
         "A", "A.m");
-    assertTranslation(translation, "JreStrongAssign(&self->o_, o)");
+    assertInTranslation(translation, "JreStrongAssign(&self->o_, o)");
   }
 
   public void testClassInitializerCalledFromFunction() throws IOException {
@@ -342,7 +344,7 @@ public class FunctionizerTest extends GenerationTest {
         "class A { Object o; void use() { setO(null); } "
         + "  private native void setO(Object o) /*-[ self->o_ = o; ]-*/; }",
         "A", "A.m");
-    assertTranslation(translation, "static void A_setOWithId_(A *self, id o);");
+    assertInTranslation(translation, "static void A_setOWithId_(A *self, id o);");
     assertTranslatedLines(translation, "void A_setOWithId_(A *self, id o) {", "self->o_ = o;", "}");
     assertTranslatedLines(translation,
         "- (void)setOWithId:(id)o {", "A_setOWithId_(self, o);", "}");
@@ -352,7 +354,7 @@ public class FunctionizerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { private static <T> void foo(T t) {} static void bar() { foo(\"test\"); } }",
         "Test", "Test.m");
-    assertTranslation(translation, "Test_fooWithId_(@\"test\");");
+    assertInTranslation(translation, "Test_fooWithId_(@\"test\");");
   }
 
   public void testProtectedMethodInPrivateClass() throws IOException {
@@ -368,8 +370,8 @@ public class FunctionizerTest extends GenerationTest {
         "enum Test { A { void bar() { foo(); } }; private static void foo() {} }",
         "Test", "Test.m");
     assertTranslatedLines(translation, "- (void)bar {", "Test_foo();");
-    assertTranslation(translation, "static void Test_foo(void);");
-    assertTranslation(translation, "void Test_foo() {");
+    assertInTranslation(translation, "static void Test_foo(void);");
+    assertInTranslation(translation, "void Test_foo() {");
   }
 
   public void testNativeMethodsWithoutOcni() throws IOException {
@@ -378,20 +380,20 @@ public class FunctionizerTest extends GenerationTest {
         "Test", "Test.h");
 
     // Public declaration for "foo" instance method, within "NativeMethods" category.
-    assertTranslation(translation, "- (void)foo;");
+    assertInTranslation(translation, "- (void)foo;");
     // Public declaration for "bar". both the class method and c-function.
-    assertTranslation(translation, "+ (void)bar;");
-    assertTranslation(translation, "FOUNDATION_EXPORT void Test_bar(void);");
+    assertInTranslation(translation, "+ (void)bar;");
+    assertInTranslation(translation, "FOUNDATION_EXPORT void Test_bar(void);");
 
     translation = getTranslatedFile("Test.m");
     // Implementation for "foo" is functionized.
-    assertTranslation(translation, "void Test_foo(Test *self);");
+    assertInTranslation(translation, "void Test_foo(Test *self);");
     assertTranslatedLines(translation, "- (void)foo {", "Test_foo(self);", "}");
     // class method wrapper for "bar".
     assertTranslatedLines(translation, "+ (void)bar {", "Test_bar();", "}");
     // JNI external function declarations
-    assertTranslation(translation, "JNIEXPORT void Java_Test_foo(JNIEnv *_env_, jobject self);");
-    assertTranslation(translation, "JNIEXPORT void Java_Test_bar(JNIEnv *_env_, jclass _cls_);");
+    assertInTranslation(translation, "JNIEXPORT void Java_Test_foo(JNIEnv *_env_, jobject self);");
+    assertInTranslation(translation, "JNIEXPORT void Java_Test_bar(JNIEnv *_env_, jclass _cls_);");
     // JNI wrapper functions
     assertTranslatedLines(translation,
         "void Test_foo(Test *self) {", "Java_Test_foo(&J2ObjC_JNIEnv, self);", "}");
@@ -405,25 +407,26 @@ public class FunctionizerTest extends GenerationTest {
         "Test", "Test.h");
 
     // Public declaration for "foo" instance method, within "NativeMethods" category.
-    assertTranslation(translation, "- (void)fooWithInt:(int32_t)i;");
+    assertInTranslation(translation, "- (void)fooWithInt:(int32_t)i;");
     // Public declaration for "bar". both the class method and c-function.
-    assertTranslation(translation, "+ (void)fooWithNSString:(NSString *)s;");
-    assertTranslation(translation, "FOUNDATION_EXPORT void Test_fooWithNSString_(NSString *s);");
+    assertInTranslation(translation, "+ (void)fooWithNSString:(NSString *)s;");
+    assertInTranslation(translation, "FOUNDATION_EXPORT void Test_fooWithNSString_(NSString *s);");
 
     translation = getTranslatedFile("Test.m");
     // Implementation for "foo" is functionized.
-    assertTranslation(translation, "void Test_fooWithInt_(Test *self, int32_t i);");
+    assertInTranslation(translation, "void Test_fooWithInt_(Test *self, int32_t i);");
     assertTranslatedLines(translation,
         "- (void)fooWithInt:(int32_t)i {", "Test_fooWithInt_(self, i);", "}");
     // class method wrapper for "bar".
     assertTranslatedLines(translation,
         "+ (void)fooWithNSString:(NSString *)s {", "Test_fooWithNSString_(s);", "}");
     // JNI external function declarations
-    assertTranslation(translation,
-        "JNIEXPORT void Java_Test_foo__I(JNIEnv *_env_, jobject self, int32_t i);");
-    assertTranslation(translation,
+    assertInTranslation(
+        translation, "JNIEXPORT void Java_Test_foo__I(JNIEnv *_env_, jobject self, int32_t i);");
+    assertInTranslation(
+        translation,
         "JNIEXPORT void Java_Test_foo__Ljava_lang_String_2("
-        + "JNIEnv *_env_, jclass _cls_, jstring s);");
+            + "JNIEnv *_env_, jclass _cls_, jstring s);");
     // JNI wrapper functions
     assertTranslatedLines(translation,
         "void Test_fooWithInt_(Test *self, int32_t i) {",
@@ -450,7 +453,7 @@ public class FunctionizerTest extends GenerationTest {
   public void testSuperInvocationFromConstructor() throws IOException {
     String translation = translateSourceFile(
         "class Test { Test() { super.toString(); } }", "Test", "Test.m");
-    assertTranslation(translation, "Test_super$_description(self, @selector(description));");
+    assertInTranslation(translation, "Test_super$_description(self, @selector(description));");
   }
 
   public String innerTestFunctionizedConstructors() throws IOException {
@@ -459,20 +462,23 @@ public class FunctionizerTest extends GenerationTest {
         + "Test() { this(0); } "
         + "private Test(int i) { this.i = i; } }", "Test", "Test.h");
     // Functionized constructor.
-    assertTranslation(translation, "FOUNDATION_EXPORT void Test_init(Test *self);");
+    assertInTranslation(translation, "FOUNDATION_EXPORT void Test_init(Test *self);");
     // Retaining allocating constructor.
-    assertTranslation(translation,
-        "FOUNDATION_EXPORT Test *new_Test_init(void) NS_RETURNS_RETAINED;");
+    assertInTranslation(
+        translation, "FOUNDATION_EXPORT Test *new_Test_init(void) NS_RETURNS_RETAINED;");
     // Releasing allocating constructor.
-    assertTranslation(translation, "FOUNDATION_EXPORT Test *create_Test_init(void);");
+    assertInTranslation(translation, "FOUNDATION_EXPORT Test *create_Test_init(void);");
     translation = getTranslatedFile("Test.m");
     // Declarations for the private constructor.
-    assertTranslation(translation,
+    assertInTranslation(
+        translation,
         "__attribute__((unused)) static void Test_initWithInt_(Test *self, int32_t i);");
-    assertTranslation(translation,
-        "__attribute__((unused)) static Test *new_Test_initWithInt_(int32_t i) NS_RETURNS_RETAINED;");
-    assertTranslation(translation,
-        "__attribute__((unused)) static Test *create_Test_initWithInt_(int32_t i);");
+    assertInTranslation(
+        translation,
+        "__attribute__((unused)) static Test *new_Test_initWithInt_(int32_t i)"
+            + " NS_RETURNS_RETAINED;");
+    assertInTranslation(
+        translation, "__attribute__((unused)) static Test *create_Test_initWithInt_(int32_t i);");
     // Implementations.
     assertTranslatedLines(translation,
         "void Test_init(Test *self) {",
@@ -529,24 +535,24 @@ public class FunctionizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
     assertTranslatedLines(
         translation, "NS_ASSUME_NONNULL_BEGIN", "@interface FooBarTest : NSObject");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "FOUNDATION_EXPORT void FooBarTest_initWithNSString_withNSString_(FooBarTest *self,"
             + " NSString *_Nullable nullableStr, NSString *nonNullStr);");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "FOUNDATION_EXPORT FooBarTest *new_FooBarTest_initWithNSString_withNSString_(NSString"
             + " *_Nullable nullableStr, NSString *nonNullStr) NS_RETURNS_RETAINED;");
-    assertTranslation(
+    assertInTranslation(
         translation,
         "FOUNDATION_EXPORT FooBarTest *create_FooBarTest_initWithNSString_withNSString_(NSString"
             + " *_Nullable nullableStr, NSString *nonNullStr);");
-    assertTranslation(translation, "NS_ASSUME_NONNULL_END");
+    assertInTranslation(translation, "NS_ASSUME_NONNULL_END");
   }
 
   public void testNoAllocatingConstructorsForAbstractClass() throws IOException {
     String translation = translateSourceFile("abstract class Test {}", "Test", "Test.h");
-    assertTranslation(translation, "FOUNDATION_EXPORT void Test_init(Test *self);");
+    assertInTranslation(translation, "FOUNDATION_EXPORT void Test_init(Test *self);");
     assertNotInTranslation(translation, "new_Test_init");
     assertNotInTranslation(translation, "create_Test_init");
     translation = getTranslatedFile("Test.m");
@@ -566,22 +572,22 @@ public class FunctionizerTest extends GenerationTest {
     // No reflection or wrapper stripping.
     String header = translateSourceFile("Test", "Test.h");
     String source = getTranslatedFile("Test.m");
-    assertTranslation(header, initSig);
-    assertTranslation(header, fooSig);
+    assertInTranslation(header, initSig);
+    assertInTranslation(header, fooSig);
     assertNotInTranslation(header, barSig);
-    assertTranslation(source, initSig);
-    assertTranslation(source, fooSig);
-    assertTranslation(source, barSig);
+    assertInTranslation(source, initSig);
+    assertInTranslation(source, fooSig);
+    assertInTranslation(source, barSig);
 
     // Reflection stripped: Private static method wrapper is removed.
     options.setStripReflection(true);
     header = translateSourceFile("Test", "Test.h");
     source = getTranslatedFile("Test.m");
-    assertTranslation(header, initSig);
-    assertTranslation(header, fooSig);
+    assertInTranslation(header, initSig);
+    assertInTranslation(header, fooSig);
     assertNotInTranslation(header, barSig);
-    assertTranslation(source, initSig);
-    assertTranslation(source, fooSig);
+    assertInTranslation(source, initSig);
+    assertInTranslation(source, fooSig);
     assertNotInTranslation(source, barSig);
 
     // Reflection not stripped, wrapper methods stripped: no declarations in the header.
@@ -589,18 +595,18 @@ public class FunctionizerTest extends GenerationTest {
     options.setEmitWrapperMethods(false);
     header = translateSourceFile("Test", "Test.h");
     source = getTranslatedFile("Test.m");
-    assertTranslation(header, initDisallowedSig);
+    assertInTranslation(header, initDisallowedSig);
     assertNotInTranslation(header, fooSig);
     assertNotInTranslation(header, barSig);
-    assertTranslation(source, initSig);
-    assertTranslation(source, fooSig);
-    assertTranslation(source, barSig);
+    assertInTranslation(source, initSig);
+    assertInTranslation(source, fooSig);
+    assertInTranslation(source, barSig);
 
     // Both reflection and wrapper methods stripped: no declarations or implementations.
     options.setStripReflection(true);
     header = translateSourceFile("Test", "Test.h");
     source = getTranslatedFile("Test.m");
-    assertTranslation(header, initDisallowedSig);
+    assertInTranslation(header, initDisallowedSig);
     assertNotInTranslation(header, fooSig);
     assertNotInTranslation(header, barSig);
     assertNotInTranslation(source, initSig);
@@ -612,14 +618,14 @@ public class FunctionizerTest extends GenerationTest {
     options.setDisallowInheritedConstructors(true);
     options.setEmitWrapperMethods(false);
     String translation = translateSourceFile("class A {}", "A", "A.h");
-    assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
+    assertInTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
   }
 
   public void testDisallowedConstructorInAbstractClass() throws IOException {
     String translation = translateSourceFile(
         "public abstract class A { public A(String unused) {} }", "A", "A.h");
     // init is inherited from NSObject.
-    assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
+    assertInTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
   }
 
   // Even when the private method contains a super invocation, it must be functionized. (b/63163887)
@@ -637,9 +643,9 @@ public class FunctionizerTest extends GenerationTest {
         "interface A { default String test(String msg) { return msg.toUpperCase(); }}",
         "A", "A.h");
     // Protocol method declaration.
-    assertTranslation(translation, "- (NSString *)testWithNSString:(NSString *)msg;");
+    assertInTranslation(translation, "- (NSString *)testWithNSString:(NSString *)msg;");
     // Default method's function declaration.
-    assertTranslation(translation, "NSString *A_testWithNSString_(id<A> self, NSString *msg);");
+    assertInTranslation(translation, "NSString *A_testWithNSString_(id<A> self, NSString *msg);");
 
     translation = getTranslatedFile("A.m");
     // Check default method function.
@@ -666,6 +672,6 @@ public class FunctionizerTest extends GenerationTest {
             + "  } "
             + "} ",
         "Test", "Test.m");
-    assertTranslation(translation, "+ (IOSObjectArray *)values {");
+    assertInTranslation(translation, "+ (IOSObjectArray *)values {");
   }
 }

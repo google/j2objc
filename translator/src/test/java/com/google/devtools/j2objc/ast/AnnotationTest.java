@@ -78,7 +78,7 @@ public class AnnotationTest extends GenerationTest {
                 """,
             "Elements",
             "Elements.h");
-    assertTranslation(translation, "@property (readonly) IOSObjectArray *value;");
+    assertInTranslation(translation, "@property (readonly) IOSObjectArray *value;");
   }
 
   // Issue 1063: test default values like Double.NEGATIVE_INFINITY.
