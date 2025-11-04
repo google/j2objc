@@ -377,11 +377,9 @@ public interface Collection<E> extends Iterable<E> {
      * @throws NullPointerException if the generator function is null
      * @since 11
      */
-    /* J2ObjC removed
     default <T> T[] toArray(IntFunction<T[]> generator) {
         return toArray(generator.apply(0));
     }
-    */
 
     // Modification Operations
 
