@@ -197,7 +197,16 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
         VariableElement newVar = GeneratedVariableElement.newLocalVar(
             "unseq$" + count++, access.expression.getTypeMirror(), currentMethod);
         stmtList.add(new VariableDeclarationStatement(newVar, access.expression.copy()));
-        access.expression.replaceWith(new SimpleName(newVar));
+        if (access.expression.getParent() instanceof CommaExpression commaExpression
+            && commaExpression.getExpressions().getLast() != access.expression) {
+          // If it this is not the last expression in a comma expression remove it instead
+          // of replacing it with a variable reference.
+          // TODO(b/457799703): This is probably better done as a general cleanup pass that removes
+          // constructs that don't have any effect like this one.
+          access.expression.remove();
+        } else {
+          access.expression.replaceWith(new SimpleName(newVar));
+        }
       }
     }
   }

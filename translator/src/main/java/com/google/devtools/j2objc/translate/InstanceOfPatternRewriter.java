@@ -78,7 +78,16 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
       return;
     }
 
-    enclosingScopes.peek().addStatement(0, new VariableDeclarationStatement(patternVariable, null));
+    // Initialize the patternVariable to null since the instanceof pattern is used in the rewrite
+    // of switches with pattern and the control flow of the rewrite prevents the objective-c
+    // compiler from determining that the variable is never access uninitialized.
+    // Type patternVariable = null;
+    enclosingScopes
+        .peek()
+        .addStatement(
+            0,
+            new VariableDeclarationStatement(
+                patternVariable, new NullLiteral(patternVariable.asType())));
     CommaExpression replacement = new CommaExpression();
 
     Expression expression = node.getLeftOperand();

@@ -2799,15 +2799,15 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "NSString *s;",
-        "if ((s = [o isKindOfClass:[NSString class]] ? (NSString *) o"
-            + " : nil, !JreStringEqualsEquals(s, nil))) {",
-        "return [s java_length];",
-        "}",
-        "return 0;");
+        """
+        NSString *s = nil;
+        if ((s = [o isKindOfClass:[NSString class]] ? (NSString *) o : nil, !JreStringEqualsEquals(s, nil))) {
+          return [s java_length];
+        }
+        return 0;
+        """);
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testInstanceOfPatternVariableTranslationWithGuards() throws IOException {
     String translation =
         translateSourceFile(
@@ -2830,65 +2830,62 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "Point *p;",
-        "if ((p = [o isKindOfClass:[Point class]] ? (Point *) o : nil,"
-            + " !JreObjectEqualsEquals(p, nil)) && x_ == p->x_ && y_ =="
-            + " p->y_) {",
-        "  return true;",
-        "}",
-        "else {",
-        "return false;",
-        "}",
-        "}");
+        """
+        Point *p = nil;
+        if ((p = [o isKindOfClass:[Point class]] ? (Point *) o : nil, !JreObjectEqualsEquals(p, nil)) && x_ == p->x_ && y_ == p->y_) {
+          return true;
+        }
+        else {
+          return false;
+        }
+        """);
   }
 
-  // TODO(tball): use text blocks when minimum Java is 15 or higher.
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testSimpleSwitchExpression() throws IOException {
     String translation = translateSourceFile(SIMPLE_SWITCH_EXPRESSION, "Test", "Test.m");
     assertTranslatedLines(
         translation,
-        "- (NSString *)howManyWithInt:(int32_t)k {",
-        "  switch (k) {",
-        "    case 1:",
-        "    return @\"one\";",
-        "    case 2:",
-        "    return @\"two\";",
-        "    default:",
-        "    return @\"many\";",
-        "  };",
-        "}");
+        """
+        return ^ NSString * (){
+          switch (k) {
+            case 1:
+            return @"one";
+            case 2:
+            return @"two";
+            default:
+            return @"many";
+          }
+        }();
+        """);
   }
 
   // Verify converted switch expression's AST looks correct. This isolates
   // the TreeConverter from later translation steps.
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testASTConversionSimpleSwitchExpressionWithPatternAndGuard() throws IOException {
     // Switch expression patterns introduced in Java 21.
-    String ast =
-        translateType("Test", SIMPLE_SWITCH_EXPRESSION_WITH_PATTERN_AND_GUARD).toString();
+    String ast = translateType("Test", SIMPLE_SWITCH_EXPRESSION_WITH_PATTERN_AND_GUARD).toString();
     assertTranslatedLines(
         ast,
-        "java.lang.String test(  java.lang.String str){",
-        "  java.lang.String msg;",
-        "  if (JreIndexOfStr(str, {}, 0) instanceof java.lang.String &&"
-            + " ((java.lang.String)JreIndexOfStr(str, {},"
-            + " 0)).length() > 10) {",
-        "    msg=JreStrcat($$, \"Long string: \", ((java.lang.String)JreIndexOfStr(str, {},"
-            + " 0)));",
-        "  }",
-        "  else if (JreIndexOfStr(str, {}, 0) instanceof java.lang.String) {",
-        "    msg=JreStrcat($$, \"Short string: \", ((java.lang.String)JreIndexOfStr(str, {},"
-            + " 0)));",
-        "  }",
-        "  else {",
-        "    __builtin_unreachable();",
-        "  }",
-        "  return msg;",
-        "}");
+        """
+        java.lang.String test(  java.lang.String str){
+            java.lang.String msg=^{
+              {
+                java.lang.String s=null;
+                java.lang.String s=null;
+                int selector=0;
+                if ((s=str instanceof java.lang.String ? str : null, !JreStringEqualsEquals(s, null)) && s.length() > 10)         selector=1;
+                else if ((s=str instanceof java.lang.String ? str : null, !JreStringEqualsEquals(s, null)))         selector=2;
+                switch (selector) {
+                  case 1: return JreStrcat($$, "Long string: ", s);
+                  case 2: return JreStrcat($$, "Short string: ", s);
+                  default: __builtin_unreachable();
+                };
+              }
+            }()
+        ;
+        """);
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testNullSwitchExpressionCase() throws IOException {
     String translation =
         translateSourceFile(
@@ -2909,20 +2906,16 @@ public class StatementGeneratorTest extends GenerationTest {
         translation,
         "switch (JreIndexOfStr(s, (id[]){ nil, @\"Foo\", @\"Bar\" }, 3)) {",
         "  case 0:",
-        "  result = @\"oops\";",
-        "  break;",
+        "  return @\"oops\";",
         "  case 1:",
         "  case 2:",
-        "  result = @\"great\";",
-        "  break;",
+        "  return @\"great\";",
         "  default:",
-        "  result = @\"okay\";",
-        "  break;",
-        "};");
+        "  return @\"okay\";",
+        "}");
   }
 
   // Test from https://openjdk.org/jeps/441: Improved enum constant case labels
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testQualifiedEnumNamesInSwitchExpressionCase() throws IOException {
     String translation =
         translateSourceFile(
@@ -2944,43 +2937,44 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "- (void)goodEnumSwitch1WithCurrency:(id<Currency>)c {",
-        "  switch (c) {",
-        "  case Coin_Enum_HEADS:",
-        "  {",
-        "  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Heads\"];",
-        "  }",
-        "  break;",
-        "  case Coin_Enum_TAILS:",
-        "  {",
-        "    [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Tails\"];",
-        "  }",
-        "  break;",
-        "  }",
-        "}");
+        """
+        - (void)goodEnumSwitch1WithCurrency:(id<Currency>)c {
+          switch (c) {
+            case Coin_Enum_HEADS:
+            {
+              [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Heads"];
+              break;
+            }
+            case Coin_Enum_TAILS:
+            {
+              [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Tails"];
+              break;
+            }
+          }
+        }
+        """);
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testUnnamedVariableDeclaration() throws IOException {
     testOnJava22OrAbove(
         () -> {
           String translation =
               translateSourceFile(
-                  String.join(
-                      "\n",
-                      "import java.util.Date;",
-                      "class Test {",
-                      "  private Date currentDate = null;",
-                      "  Date getCurrentDate() {",
-                      "    currentDate = new Date();",
-                      "  return currentDate;",
-                      "  }",
-                      "  void test() {",
-                      "    Date _ = getCurrentDate();",
-                      "    Number _ = null;",
-                      "    System.out.println(\"field initialized: \" + (currentDate != null));",
-                      "  }",
-                      "}"),
+                  """
+                  import java.util.Date;
+                  class Test {
+                    private Date currentDate = null;
+                    Date getCurrentDate() {
+                      currentDate = new Date();
+                    return currentDate;
+                    }
+                    void test() {
+                      Date _ = getCurrentDate();
+                      Number _ = null;
+                      System.out.println("field initialized: " + (currentDate != null));
+                    }
+                  }
+                  """,
                   "Test",
                   "Test.m");
           // Verify that unnamed local variable are named "_", as javac uses an empty strings. Also
@@ -2992,7 +2986,6 @@ public class StatementGeneratorTest extends GenerationTest {
         });
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testUnnamedSwitchCaseVariable() throws IOException {
     testOnJava22OrAbove(
         () -> {
@@ -3015,18 +3008,34 @@ public class StatementGeneratorTest extends GenerationTest {
           // Verify that the local variable is named "_", as javac uses an empty strings.
           assertTranslatedLines(
               translation,
-              "  if ([obj isKindOfClass:[JavaLangInteger class]]) {",
-              "    [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Is an integer\"];",
-              "  }",
-              "  else if ([obj isKindOfClass:[JavaLangFloat class]]) {",
-              "    [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Is a float\"];",
-              "  }",
-              "  else if ([obj isKindOfClass:[NSString class]]) {",
-              "    [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Is a String\"];",
-              "  }",
-              "  else {",
-              "    [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"Default\"];",
-              "  }");
+              """
+              int32_t selector = 0;
+              if ([obj isKindOfClass:[JavaLangInteger class]]) selector = 1;
+              else if ([obj isKindOfClass:[JavaLangFloat class]]) selector = 2;
+              else if ([obj isKindOfClass:[NSString class]]) selector = 3;
+              switch (selector) {
+                case 1:
+                {
+                  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Is an integer"];
+                  break;
+                }
+                case 2:
+                {
+                  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Is a float"];
+                  break;
+                }
+                case 3:
+                {
+                  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Is a String"];
+                  break;
+                }
+                default:
+                {
+                  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Default"];
+                  break;
+                }
+              }
+              """);
         });
   }
 

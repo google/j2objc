@@ -34,7 +34,7 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "NSString *s;",
+        "NSString *s = nil;",
         "id o = @\"Hello\";",
         "int32_t i = (s = [o isKindOfClass:[NSString class]] ? (NSString"
             + " *) o : nil, !JreStringEqualsEquals(s, nil)) ? [s"
@@ -54,8 +54,8 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "NSString *s;",
-        "NSString *s_1;",
+        "NSString *s = nil;",
+        "NSString *s_1 = nil;",
         "id o = @\"Hello\";",
         "if ((s_1 = [o isKindOfClass:[NSString class]] ? (NSString *) o"
             + " : nil, !JreStringEqualsEquals(s_1, nil))) {",
@@ -80,7 +80,7 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         "id tmp;",
-        "NSString *s;",
+        "NSString *s = nil;",
         "if ((tmp = [((id<JavaUtilList>) nil_chk(l)) getWithInt:0], s = "
             + "[tmp isKindOfClass:[NSString class]] ? (NSString *) tmp"
             + " : nil, !JreStringEqualsEquals(s, nil))) {",
@@ -102,8 +102,8 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "NSString *s;",
-        "NSString *s_1;",
+        "NSString *s = nil;",
+        "NSString *s_1 = nil;",
         "id x = nil;",
         "id y = @\"Hello\";",
         "if (x != nil && (s_1 = [y isKindOfClass:[NSString class]] ?"
@@ -114,5 +114,31 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
             + " (NSString *) y : nil, !JreStringEqualsEquals(s, nil)))) {",
         "int32_t i = [((NSString *) nil_chk(s)) java_length];",
         "}");
+  }
+
+  public void testNegatedInstanceOfPattern() throws IOException {
+    String source =
+        """
+        class Test {
+          void test(Object o) {
+            if (!(o instanceof String s)) {
+              throw new IllegalArgumentException();
+            }
+            System.out.println(s.repeat(5));
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        // "s"  must be declared outside the scope of the if statement below since it will be
+        // accessed outside.
+        "NSString *s = nil;",
+        "if (!((s = [o isKindOfClass:[NSString class]] ? (NSString"
+            + " *) o : nil, !JreStringEqualsEquals(s, nil)))) {",
+        "@throw create_JavaLangIllegalArgumentException_init();",
+        "}",
+        "[((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out)))"
+            + " printlnWithNSString:[s java_repeat:5]];");
   }
 }

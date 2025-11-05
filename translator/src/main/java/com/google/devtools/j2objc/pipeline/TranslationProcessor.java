@@ -64,7 +64,7 @@ import com.google.devtools.j2objc.translate.Rewriter;
 import com.google.devtools.j2objc.translate.SerializationStripper;
 import com.google.devtools.j2objc.translate.StaticVarRewriter;
 import com.google.devtools.j2objc.translate.SuperMethodInvocationRewriter;
-import com.google.devtools.j2objc.translate.SwitchCaseRewriter;
+import com.google.devtools.j2objc.translate.SwitchConstructRewriter;
 import com.google.devtools.j2objc.translate.SwitchRewriter;
 import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriter;
 import com.google.devtools.j2objc.translate.VarargsRewriter;
@@ -211,6 +211,10 @@ public class TranslationProcessor extends FileProcessor {
     new AbstractMethodRewriter(unit, deadCodeMap).run();
     ticker.tick("AbstractMethodRewriter");
 
+    // Before: InstanceOfPatternRewriter - to handle instanceof patterns from the switch rewrite.
+    new SwitchConstructRewriter(unit).run();
+    ticker.tick("SwitchConstructRewriter");
+
     // Before: VariableRenamer - VariableRenamer renames variables in a scope-aware manner.
     new InstanceOfPatternRewriter(unit).run();
     ticker.tick("InstanceOfPatternRewriter");
@@ -341,11 +345,6 @@ public class TranslationProcessor extends FileProcessor {
     // added in other phases may need added casts.
     new CastResolver(unit).run();
     ticker.tick("CastResolver");
-
-    // After: SwitchRewriter to handle Java 21 patterns and guards in switches,
-    // and CastResolver to avoid duplicate cast checks.
-    new SwitchCaseRewriter(unit).run();
-    ticker.tick("SwitchCaseRewriter");
 
     // After: InnerClassExtractor, Functionizer - Expects all types to be
     //   top-level and functionizing to have occurred.

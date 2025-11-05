@@ -306,7 +306,6 @@ public class SwitchRewriterTest extends GenerationTest {
     assertTranslatedLines(translation, "switch (i) {", "}");
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testSimpleVoidSwitchNewSyntax() throws IOException {
     String translation =
         translateSourceFile(
@@ -326,20 +325,27 @@ public class SwitchRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "switch (k) {",
-        "  case 1:",
-        "  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"one\"];",
-        "  break;",
-        "  case 2:",
-        "  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"two\"];",
-        "  break;",
-        "  default:",
-        "  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@\"many\"];",
-        "  break;",
-        "}");
+        """
+        switch (k) {
+          case 1:
+          {
+            [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"one"];
+            break;
+          }
+          case 2:
+          {
+            [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"two"];
+            break;
+          }
+          default:
+          {
+            [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"many"];
+            break;
+          }
+        }
+        """);
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testSimpleSwitchExpression() throws IOException {
     // Snippet from Guava's com.google.common.base.Joiner.
     String translation =
@@ -362,20 +368,20 @@ public class SwitchRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "- (id)getWithInt:(int32_t)index {",
-        "  switch (index) {",
-        "    case 0:",
-        "    return first_;",
-        "    case 1:",
-        "    return second_;",
-        "    default:",
-        "    return IOSObjectArray_Get(rest_, index - 2);",
-        "  };",
-        "}");
+        """
+        return ^ id (){
+          switch (index) {
+            case 0:
+            return first_;
+            case 1:
+            return second_;
+            default:
+            return IOSObjectArray_Get(rest_, index - 2);
+          }
+        }();
+        """);
   }
 
-
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testMultipleCasesSwitchExpression() throws IOException {
     // Snippet from Guava's com.google.common.base.CharMatcher.
     String translation =
@@ -407,30 +413,33 @@ public class SwitchRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "- (bool)matchesWithChar:(unichar)c {",
-        "  switch (c) {",
-        "    case 0x0009:",
-        "    case 0x000a:",
-        "    case 0x000b:",
-        "    case 0x000c:",
-        "    case 0x000d:",
-        "    case ' ':",
-        "    case 0x0085:",
-        "    case 0x1680:",
-        "    case 0x2028:",
-        "    case 0x2029:",
-        "    case 0x205f:",
-        "    case 0x3000:",
-        "    return true;",
-        "    case 0x2007:",
-        "    return false;",
-        "    default:",
-        "    return c >= 0x2000 && c <= 0x200a;",
-        "  };",
-        "}");
+        """
+        - (bool)matchesWithChar:(unichar)c {
+          return ^ bool (){
+            switch (c) {
+              case 0x0009:
+              case 0x000a:
+              case 0x000b:
+              case 0x000c:
+              case 0x000d:
+              case ' ':
+              case 0x0085:
+              case 0x1680:
+              case 0x2028:
+              case 0x2029:
+              case 0x205f:
+              case 0x3000:
+              return true;
+              case 0x2007:
+              return false;
+              default:
+              return c >= 0x2000 && c <= 0x200a;
+            }
+          }();
+        }
+        """);
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testEnumSwitchExpressionCase() throws IOException {
     // Snippet from Guava's com.google.common.collect.AbstractIterator.
     String translation =
@@ -473,30 +482,29 @@ public class SwitchRewriterTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-  assertTranslatedLines(
-      translation,
-      "- (bool)hasNext {",
-      "  switch ([state_ ordinal]) {",
-      "    case Test_State_Enum_DONE:",
-      "    {",
-      "      return false;",
-      "    }",
-      "    break;",
-      "    case Test_State_Enum_READY:",
-      "    {",
-      "      return true;",
-      "    }",
-      "    break;",
-      "    default:",
-      "    {",
-      "    }",
-      "    break;",
-      "  }",
-      "  return Test_tryToComputeNext(self);",
-      "}");
+    assertTranslatedLines(
+        translation,
+        """
+        - (bool)hasNext {
+          switch ([state_ ordinal]) {
+            case Test_State_Enum_DONE:
+            {
+              return false;
+            }
+            case Test_State_Enum_READY:
+            {
+              return true;
+            }
+            default:
+            {
+              break;
+            }
+          }
+          return Test_tryToComputeNext(self);
+        }
+        """);
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testYieldInCaseBlock() throws IOException {
     // Snippet from Guava's com.google.common.math.LongMath.
     String translation =
@@ -519,12 +527,19 @@ public class SwitchRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "  switch ((int32_t) b) {",
-        "    case 2:",
-        "    return JreLShift64(1LL, k);",
-        "    default:",
-        "    @throw create_JavaLangAssertionError_init();",
-        "  };");
+        """
+        return ^ int64_t (){
+          switch ((int32_t) b) {
+            case 2:
+            {
+              Test_checkNoOverflowWithBoolean_withNSString_withLong_withLong_(k < JavaLangLong_SIZE - 1, @"checkedPow", b, k);
+              return JreLShift64(1LL, k);
+            }
+            default:
+            @throw create_JavaLangAssertionError_init();
+          }
+        }();
+        """);
   }
 
   @SuppressWarnings("StringConcatToTextBlock")
@@ -586,28 +601,30 @@ public class SwitchRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "  switch ([unit ordinal]) {",
-        "    case JavaUtilConcurrentTimeUnit_Enum_NANOSECONDS:",
-        "    return @\"ns\";",
-        "    case JavaUtilConcurrentTimeUnit_Enum_MICROSECONDS:",
-        "    return @\"\\u03bcs\";",
-        "    case JavaUtilConcurrentTimeUnit_Enum_MILLISECONDS:",
-        "    return @\"ms\";",
-        "    case JavaUtilConcurrentTimeUnit_Enum_SECONDS:",
-        "    return @\"s\";",
-        "    case JavaUtilConcurrentTimeUnit_Enum_MINUTES:",
-        "    return @\"min\";",
-        "    case JavaUtilConcurrentTimeUnit_Enum_HOURS:",
-        "    return @\"h\";",
-        "    case JavaUtilConcurrentTimeUnit_Enum_DAYS:",
-        "    return @\"d\";",
-        "    default:",
-        "    __builtin_unreachable();",
-        "  };",
-        "}");
+        """
+        return ^ NSString * (){
+          switch ([unit ordinal]) {
+            case JavaUtilConcurrentTimeUnit_Enum_NANOSECONDS:
+            return @"ns";
+            case JavaUtilConcurrentTimeUnit_Enum_MICROSECONDS:
+            return @"\\u03bcs";
+            case JavaUtilConcurrentTimeUnit_Enum_MILLISECONDS:
+            return @"ms";
+            case JavaUtilConcurrentTimeUnit_Enum_SECONDS:
+            return @"s";
+            case JavaUtilConcurrentTimeUnit_Enum_MINUTES:
+            return @"min";
+            case JavaUtilConcurrentTimeUnit_Enum_HOURS:
+            return @"h";
+            case JavaUtilConcurrentTimeUnit_Enum_DAYS:
+            return @"d";
+            default:
+            __builtin_unreachable();
+          }
+        }();
+        """);
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testSavedSwitchExpression() throws IOException {
     String translation =
         translateSourceFile(
@@ -630,25 +647,22 @@ public class SwitchRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "- (NSString *)testWithInt:(int32_t)choice {",
-        "  NSString *foo = @\"foo\";",
-        "  NSString *result;",
-        "  switch (choice) {",
-        "    case 1:",
-        "    result = nil;",
-        "    break;",
-        "    case 2:",
-        "    result = @\"Hello\";",
-        "    break;",
-        "    default:",
-        "    result = @\"World\";",
-        "    break;",
-        "  };",
-        "  return result;",
-        "}");
+        """
+        NSString *result = ^ NSString * (){
+          switch (choice) {
+            case 1:
+            return nil;
+            case 2:
+            return @"Hello";
+            default:
+            {
+              return @"World";
+            }
+          }
+        }();
+        """);
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testStringSwitchNewSyntax() throws IOException {
     // Snippet from Guava's com.google.common.io.Files.
     String translation =
@@ -676,22 +690,27 @@ public class SwitchRewriterTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-  assertTranslatedLines(
-      translation,
-      "switch (JreIndexOfStr(component, (id[]){ @\".\", @\"..\" }, 2)) {",
-      "  case 0:",
-      "  {",
-      "    continue;",
-      "  }",
-      "  break;",
-      "  case 1:",
-      "  {",
-      "    [path addWithId:@\"..\"];",
-      "  }",
-      "  break;",
-      "  default:",
-      "  [path addWithId:component];",
-      "  break;",
-      "}");
+    assertTranslatedLines(
+        translation,
+        """
+        switch (JreIndexOfStr(component, (id[]){ @".", @".." }, 2)) {
+          case 0:
+          {
+            continue;
+            break;
+          }
+          case 1:
+          {
+            [path addWithId:@".."];
+            break;
+          }
+          default:
+          {
+            [path addWithId:component];
+            break;
+          }
+        }
+
+        """);
   }
 }

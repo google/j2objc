@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.javac;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
@@ -94,6 +96,7 @@ import com.google.devtools.j2objc.ast.SuperFieldAccess;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.SwitchCase;
+import com.google.devtools.j2objc.ast.SwitchConstruct;
 import com.google.devtools.j2objc.ast.SwitchExpression;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.SynchronizedStatement;
@@ -206,7 +209,6 @@ import com.sun.tools.javac.tree.JCTree.Tag;
 import com.sun.tools.javac.util.Position;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import javax.lang.model.element.AnnotationMirror;
@@ -318,8 +320,6 @@ public class TreeConverter {
         return convertBlock((BlockTree) javacNode, parent);
       case "BREAK":
         return convertBreakStatement((BreakTree) javacNode);
-      case "CASE":
-        return convertCase((CaseTree) javacNode, parent);
       case "CATCH":
         return convertCatch((CatchTree) javacNode, parent);
       case "CLASS":
@@ -672,19 +672,6 @@ public class TreeConverter {
       newNode.setLabel(
           (SimpleName) new SimpleName(label.toString()).setPosition(getPosition(node)));
     }
-    return newNode;
-  }
-
-  private TreeNode convertCase(CaseTree node, TreePath parent) {
-    // Case statements are converted in convertSwitch().
-    // TODO(b/456297342): Implement handling for patterns in case statements.
-    SwitchCase newNode = new SwitchCase();
-    List<? extends ExpressionTree> expressions = node.getExpressions();
-    for (ExpressionTree expressionTree : expressions) {
-      TreePath path = getTreePath(parent, node);
-      newNode.addExpression((Expression) convert(expressionTree, path));
-    }
-    newNode.setIsDefault(expressions.isEmpty());
     return newNode;
   }
 
@@ -1371,12 +1358,6 @@ public class TreeConverter {
 
   private TreeNode convertReturn(ReturnTree node, TreePath parent) {
     Expression expr = (Expression) convert(node.getExpression(), getTreePath(parent, node));
-    if (expr != null && expr.getKind() == TreeNode.Kind.SWITCH_EXPRESSION) {
-      // This is returning just a switch expression and the construction transforms yields to
-      // returns in this case so it is safe to just return the switch.
-      // TODO(b/456285695): Move this to a pass.
-      return new ExpressionStatement(expr);
-    }
     return new ReturnStatement(expr);
   }
 
@@ -1386,99 +1367,112 @@ public class TreeConverter {
 
   private TreeNode convertSwitch(SwitchTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
-    SwitchStatement newNode =
+    SwitchStatement switchStatement =
         new SwitchStatement().setExpression(convertWithoutParens(node.getExpression(), path));
-    for (CaseTree switchCase : node.getCases()) {
-      TreePath switchCasePath = getTreePath(path, switchCase);
-      if (switchCase.getCaseKind() == CaseKind.RULE) {
-        SwitchCase switchCaseStmt = convertCaseRule(switchCase, switchCasePath);
-        newNode.addStatement(switchCaseStmt);
-        newNode.addStatement(new BreakStatement());
-      } else {
-        newNode.addStatement((SwitchCase) convert(switchCase, path));
-        for (StatementTree s : switchCase.getStatements()) {
-          newNode.addStatement((Statement) convert(s, switchCasePath));
-        }
-      }
+    for (CaseTree caseTree : node.getCases()) {
+      TreePath switchCasePath = getTreePath(parent, caseTree);
+      SwitchCase switchCase = convertSwitchCaseLabel(caseTree, switchCasePath);
+      switchStatement.addStatement(switchCase);
+      convertSwitchCaseBody(caseTree, switchCasePath, switchStatement, switchCase);
     }
-    return newNode;
+
+    return switchStatement;
   }
 
   private SwitchExpression convertSwitchExpression(SwitchExpressionTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
-    SwitchExpression newNode =
-        new SwitchExpression().setExpression(convertWithoutParens(node.getExpression(), path));
-    newNode.setTypeMirror(getTypeMirror(path));
 
-    Tree parentTree = parent.getLeaf();
-    // TODO(b/456285695): Move the optimization of the two cases to a pass. And implement the
-    // general case, possibly using block expressions.
-    boolean exprReturned = parentTree.getKind() == Tree.Kind.RETURN;
-    boolean exprSaved = parentTree.getKind() == Tree.Kind.VARIABLE;
-    VariableElement yieldSymbol = null;
-    if (parentTree instanceof JCVariableDecl varDecl) {
-      yieldSymbol = varDecl.sym;
+    SwitchExpression switchExpression =
+        new SwitchExpression()
+            .setExpression(convertWithoutParens(node.getExpression(), path))
+            .setTypeMirror(getTypeMirror(path));
+
+    for (CaseTree caseTree : node.getCases()) {
+      TreePath switchCasePath = getTreePath(parent, caseTree);
+      SwitchCase switchCase = convertSwitchCaseLabel(caseTree, switchCasePath);
+      switchExpression.addStatement(switchCase);
+      convertSwitchCaseBody(caseTree, switchCasePath, switchExpression, switchCase);
     }
 
-    List<? extends CaseTree> cases = node.getCases();
-    for (CaseTree caseTree : cases) {
-      TreePath switchCasePath = getTreePath(path, caseTree);
+    if (!switchExpression.hasDefaultCase()) {
+      // Switch expressions are exhaustive, so if there is no default case, add one to signal the
+      // compiler that the default case is unreachable.
+      addUnreachableDirective(switchExpression);
+    }
 
-      SwitchCase switchCase = convertCaseRule(caseTree, switchCasePath);
+    return switchExpression;
+  }
 
-      // Convert any cases that have multiple expressions into a list of
-      // SwitchCases for all but the last expression, remove them from
-      // the SwitchExpressionCase and insert their SwitchCase equivalent
-      // ahead of the current case.
-      List<Expression> caseExprs = switchCase.getExpressions();
-      if (caseExprs.size() > 1) {
-        Iterator<Expression> caseExprIter = caseExprs.iterator();
-        Expression caseExpr = caseExprIter.next();
-        do {
-          caseExprIter.remove();
-          SwitchCase newCase = new SwitchCase();
-          newCase.addExpression(caseExpr.copy());
-          newNode.addStatement(newCase);
-          caseExpr = caseExprIter.next();
-        } while (caseExprIter.hasNext());
-      }
-
-      TreeNode body = switchCase.getBody();
-      if (body.getKind() == TreeNode.Kind.YIELD_STATEMENT) {
-        Expression yield = ((YieldStatement) body).getExpression().copy();
-        if (exprReturned) {
-          switchCase.setBody(new ReturnStatement(yield));
-        } else if (exprSaved) {
-          Assignment assignment = new Assignment(new SimpleName(yieldSymbol), yield);
-          switchCase.setBody(new ExpressionStatement(assignment));
+  private SwitchCase convertSwitchCaseLabel(CaseTree caseTree, TreePath parent) {
+    TreePath switchCasePath = getTreePath(parent, caseTree);
+    SwitchCase switchCase = new SwitchCase();
+    List<? extends CaseLabelTree> caseExpressionsList = caseTree.getLabels();
+    for (CaseLabelTree caseLabelTree : caseExpressionsList) {
+      switch (caseLabelTree.getKind()) {
+        case CONSTANT_CASE_LABEL -> {
+          ConstantCaseLabelTree constantCaseLabelTree = (ConstantCaseLabelTree) caseLabelTree;
+          switchCase.addExpression(
+              (Expression) convert(constantCaseLabelTree.getConstantExpression(), switchCasePath));
         }
-      } else if (body.getKind() == TreeNode.Kind.BLOCK) {
-        List<Statement> blockStmts = ((Block) body).getStatements();
-        if (!blockStmts.isEmpty()) {
-          int lastIndex = blockStmts.size() - 1;
-          Statement lastStmt = blockStmts.get(lastIndex);
-          if (lastStmt.getKind() == TreeNode.Kind.YIELD_STATEMENT) {
-            Expression yield = ((YieldStatement) lastStmt).getExpression().copy();
-            if (exprReturned) {
-              switchCase.setBody(new ReturnStatement(yield));
-            } else if (exprSaved) {
-              Assignment assignment = new Assignment(new SimpleName(yieldSymbol), yield);
-              switchCase.setBody(new ExpressionStatement(assignment));
-            }
+        case PATTERN_CASE_LABEL -> {
+          PatternCaseLabelTree patternCaseLabelTree = (PatternCaseLabelTree) caseLabelTree;
+          if (patternCaseLabelTree.getPattern() instanceof BindingPatternTree bindingPatternTree) {
+            VariableTree varTree = (VariableTree) bindingPatternTree.getVariable();
+            VariableElement var =
+                ((VariableDeclaration) convertVariableDeclaration(varTree, switchCasePath))
+                    .getVariableElement();
+            Pattern.BindingPattern pattern = new Pattern.BindingPattern(var);
+            switchCase.setPattern(pattern);
           }
         }
-      }
-      newNode.addStatement(switchCase);
-      if (exprSaved) {
-        newNode.addStatement(new BreakStatement());
+        case DEFAULT_CASE_LABEL -> switchCase.setIsDefault(true);
+        default -> throw new AssertionError("unknown case label type: " + caseLabelTree.getKind());
       }
     }
+    switchCase.setGuard((Expression) convert(caseTree.getGuard(), switchCasePath));
 
-    if (!newNode.hasDefaultCase()) {
-      addUnreachableDirective(newNode);
+    return switchCase;
+  }
+
+  private void convertSwitchCaseBody(
+      CaseTree caseTree, TreePath parent, SwitchConstruct switchConstruct, SwitchCase switchCase) {
+    TreePath switchCasePath = getTreePath(parent, caseTree);
+    if (caseTree.getCaseKind() == CaseKind.RULE) {
+      if (caseTree.getBody() != null) {
+        boolean isImplicitYield =
+            switchConstruct instanceof SwitchExpression switchExpression
+                && switchExpression.getTypeMirror().getKind() != TypeKind.VOID;
+
+        TreeNode body = convert(caseTree.getBody(), parent);
+        if (body instanceof Expression expression) {
+          if (isImplicitYield) {
+            // Switch expression that are not void have an implicit yield.
+            body = new YieldStatement(expression);
+          } else {
+            body = new ExpressionStatement(expression);
+          }
+        }
+        if (!isImplicitYield) {
+          // Add a break statement to the switch statement with rules to avoid fallback.
+          Block block = body instanceof Block b ? b : new Block().addStatement((Statement) body);
+          block.addStatement(new BreakStatement());
+          body = block;
+        }
+        switchCase.setBody((Statement) body);
+
+      } else {
+        Block body = new Block();
+        for (StatementTree s : caseTree.getStatements()) {
+          body.addStatement((Statement) convert(s, switchCasePath));
+        }
+        switchCase.setBody(body);
+      }
+    } else {
+      checkArgument(caseTree.getBody() == null);
+      for (StatementTree s : caseTree.getStatements()) {
+        switchConstruct.addStatement((Statement) convert(s, switchCasePath));
+      }
     }
-
-    return newNode;
   }
 
   // If a switch expression doesn't have a default case,  add a function call to tell clang that all
@@ -1501,52 +1495,6 @@ public class TreeConverter {
       // Otherwise, add it as a statement.
       switchExpression.addStatement(new ExpressionStatement(unreachableInvocation));
     }
-  }
-
-  private SwitchCase convertCaseRule(CaseTree caseTree, TreePath parent) {
-    SwitchCase switchCase = new SwitchCase();
-    List<? extends CaseLabelTree> caseExpressionsList = caseTree.getLabels();
-    for (CaseLabelTree caseLabelTree : caseExpressionsList) {
-      switch (caseLabelTree.getKind()) {
-        case CONSTANT_CASE_LABEL -> {
-          ConstantCaseLabelTree constantCaseLabelTree = (ConstantCaseLabelTree) caseLabelTree;
-          switchCase.addExpression(
-              (Expression) convert(constantCaseLabelTree.getConstantExpression(), parent));
-        }
-        case PATTERN_CASE_LABEL -> {
-          PatternCaseLabelTree patternCaseLabelTree = (PatternCaseLabelTree) caseLabelTree;
-          if (patternCaseLabelTree.getPattern() instanceof BindingPatternTree bindingPatternTree) {
-            VariableTree varTree = (VariableTree) bindingPatternTree.getVariable();
-            VariableElement var =
-                ((VariableDeclaration) convertVariableDeclaration(varTree, parent))
-                    .getVariableElement();
-            Pattern.BindingPattern pattern = new Pattern.BindingPattern(var);
-            switchCase.setPattern(pattern);
-          }
-        }
-        case DEFAULT_CASE_LABEL -> switchCase.setIsDefault(true);
-        default -> throw new AssertionError("unknown case label type: " + caseLabelTree.getKind());
-      }
-    }
-    Tree javacBody = caseTree.getBody();
-    if (javacBody != null) {
-      TreeNode body = convert(javacBody, parent);
-      if (body instanceof Expression) {
-        body = new YieldStatement((Expression) body);
-      }
-      switchCase.setBody((Statement) body);
-    } else {
-      Block body = new Block();
-      List<? extends StatementTree> statementTrees = caseTree.getStatements();
-      for (StatementTree statementTree : statementTrees) {
-        body.addStatement((Statement) convert(statementTree, parent));
-      }
-      switchCase.setBody(body);
-    }
-
-    switchCase.setGuard((Expression) convert(caseTree.getGuard(), parent));
-
-    return switchCase;
   }
 
   private TreeNode convertSynchronized(SynchronizedTree node, TreePath parent) {

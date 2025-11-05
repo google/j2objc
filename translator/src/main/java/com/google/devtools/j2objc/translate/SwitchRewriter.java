@@ -70,9 +70,9 @@ public class SwitchRewriter extends UnitTreeVisitor {
     List<Statement> stmts = node.getStatements();
     if (!stmts.isEmpty()) {
       Statement lastStmt = stmts.get(stmts.size() - 1);
-      if (lastStmt instanceof SwitchCase) {
-        // Last switch case doesn't have an associated statement, so add an empty one
-        // with the same line number as the switch case to keep line numbers synced.
+      if (lastStmt instanceof SwitchCase switchCase && switchCase.getBody() == null) {
+        // Last switch case doesn't have statements, so add an empty one with the same line number
+        // as the switch case to keep line numbers synced.
         EmptyStatement emptyStmt = new EmptyStatement();
         emptyStmt.setLineNumber(lastStmt.getLineNumber());
         stmts.add(emptyStmt);
@@ -105,41 +105,6 @@ public class SwitchRewriter extends UnitTreeVisitor {
           exprs.set(i, TreeUtil.newLiteral(value, typeUtil));
         }
       }
-    }
-  }
-
-  @Override
-  public void endVisit(Block node) {
-    List<Statement> statements = node.getStatements();
-    Block block = new Block();
-    List<Statement> blockStmts = block.getStatements();
-    boolean blockChanged = false;
-    for (Statement stmt : statements) {
-      // If statement declares a local variable and its initializer is a switch
-      // expression, move the initializer into a separate expression statement.
-      if (stmt instanceof VariableDeclarationStatement) {
-        VariableDeclarationStatement declStmt = (VariableDeclarationStatement) stmt;
-        if (!declStmt.getFragments().isEmpty()) {
-          VariableDeclarationFragment fragment = declStmt.getFragments().get(0);
-          SwitchExpression switchExpression = null;
-          Expression initializer = fragment.getInitializer();
-          if (initializer instanceof SwitchExpression) {
-            switchExpression = ((SwitchExpression) initializer).copy();
-            VariableDeclarationFragment newDecl =
-                new VariableDeclarationFragment(fragment.getVariableElement(), null);
-            blockStmts.add(new VariableDeclarationStatement(newDecl));
-            blockStmts.add(new ExpressionStatement(switchExpression));
-            blockChanged = true;
-          } else {
-            blockStmts.add(declStmt.copy());
-          }
-        }
-      } else {
-        blockStmts.add(stmt.copy());
-      }
-    }
-    if (blockChanged) {
-      node.replaceWith(block);
     }
   }
 

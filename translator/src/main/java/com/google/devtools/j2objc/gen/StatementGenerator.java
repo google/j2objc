@@ -99,6 +99,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
+import com.google.devtools.j2objc.ast.YieldStatement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
@@ -785,20 +786,8 @@ public class StatementGenerator extends UnitTreeVisitor {
   @Override
   @SuppressWarnings("UngroupedOverloads")
   public boolean visit(SwitchExpression node) {
-    Expression expr = node.getExpression();
-    buffer.append("switch (");
-    expr.accept(this);
-    buffer.append(") ");
-    buffer.append("{\n");
-    buffer.indent();
-    for (Statement stmt : node.getStatements()) {
-      buffer.printIndent();
-      stmt.accept(this);
-    }
-    buffer.unindent();
-    buffer.printIndent();
-    buffer.append("}");
-    return false;
+    // Switch expressions are rewritten to switch statements by SwitchConstructRewriter.
+    throw new AssertionError("switch expression not converted");
   }
 
   @Override
@@ -995,6 +984,12 @@ public class StatementGenerator extends UnitTreeVisitor {
     buffer.append(") ");
     node.getBody().accept(this);
     return false;
+  }
+
+  @Override
+  public boolean visit(YieldStatement node) {
+    // Yield statements are rewritten to return statements in SwitchConstructRewriter.
+    throw new AssertionError("yield statement not converted");
   }
 
   @Override
