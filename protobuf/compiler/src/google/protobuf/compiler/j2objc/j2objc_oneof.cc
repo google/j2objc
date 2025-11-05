@@ -57,6 +57,10 @@ std::string NotSetName(const OneofDescriptor* descriptor) {
   return ToUpper(CapitalizedName(descriptor)) + "_NOT_SET";
 }
 
+std::string NotSetInstanceName(const OneofDescriptor* descriptor) {
+  return LowerString(CapitalizedName(descriptor)) + "NotSet";
+}
+
 std::string CaseClassName(const OneofDescriptor* descriptor) {
   return ClassName(descriptor->containing_type()) + "_"
       + UnderscoresToCamelCase(descriptor->name(), true) + "Case";
@@ -174,6 +178,9 @@ void OneofGenerator::GenerateHeader(io::Printer* printer) {
           "classname", CaseClassName(descriptor_), "name",
           descriptor_->field(i)->camelcase_name());
     }
+    printer->Print("@property(class, readonly, retain) $classname$ *$name$;\n",
+                   "classname", CaseClassName(descriptor_), "name",
+                   NotSetInstanceName(descriptor_));
   }
 
   printer->Print(
@@ -306,6 +313,13 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
           CaseValueName(descriptor_->field(i)), "camel_case_name",
           descriptor_->field(i)->camelcase_name());
     }
+    printer->Print(
+        "+ ($classname$ *) $camel_case_name$ {\n"
+        "  return $classname$_get_$upper_name$();\n"
+        "}\n",
+        "classname", CaseClassName(descriptor_), "upper_name",
+        NotSetName(descriptor_), "camel_case_name",
+        NotSetInstanceName(descriptor_));
   }
 
   printer->Print(
