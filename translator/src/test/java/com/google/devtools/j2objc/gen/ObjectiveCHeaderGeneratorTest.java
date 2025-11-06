@@ -1132,6 +1132,67 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertInTranslation(translation, "NS_SWIFT_NAME(builder(size:))");
   }
 
+  public void testSwiftNameMethodAnnotationWithObjCName() throws IOException {
+    String sourceContent =
+        "  package com.foo.bar;"
+            + "import com.google.j2objc.annotations.SwiftName;"
+            + "import com.google.j2objc.annotations.ObjectiveCName;"
+            + ""
+            + "public abstract class FooBar {"
+            + "  @SwiftName(\"swiftSet(name:)\") "
+            + "  @ObjectiveCName(\"objcSetFooField:\") "
+            + "  public void setFooField(String fooField) {}"
+            + ""
+            + "  @ObjectiveCName(\"objcBuilderWithSize:\") "
+            + "  @SwiftName(\"swiftBuilder(size:)\") "
+            + "  public static void builderWithExpectedSize(int expectedSize){}"
+            + ""
+            + "  @SwiftName(\"swiftDoAction()\") "
+            + "  @ObjectiveCName(\"objcDoAction\") "
+            + "  public void doAction(){}"
+            + "}";
+    String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
+    assertInTranslation(
+        translation,
+        "- (void)objcSetFooField:(NSString *)fooField NS_SWIFT_NAME(swiftSet(name:));");
+    assertInTranslation(
+        translation,
+        "+ (void)objcBuilderWithSize:(int32_t)expectedSize NS_SWIFT_NAME(swiftBuilder(size:));");
+    assertInTranslation(translation, "- (void)objcDoAction NS_SWIFT_NAME(swiftDoAction());");
+  }
+
+  public void testSwiftNamePackageAnnotationWithObjCNameMethods() throws IOException {
+    addSourceFile(
+        "@SwiftName "
+            + "package com.foo.bar;"
+            + ""
+            + "import com.google.j2objc.annotations.SwiftName;",
+        "com/foo/bar/package-info.java");
+
+    String sourceContent =
+        "  package com.foo.bar;"
+            + "import com.google.j2objc.annotations.SwiftName;"
+            + "import com.google.j2objc.annotations.ObjectiveCName;"
+            + ""
+            + "public abstract class FooBar {"
+            + "  @ObjectiveCName(\"objcSetFooField:\") "
+            + "  public void setFooField(String fooField) {}"
+            + ""
+            + "  @ObjectiveCName(\"objcBuilderWithSize:\") "
+            + "  public static void builderWithExpectedSize(int expectedSize){}"
+            + ""
+            + "  @ObjectiveCName(\"objcDoAction\") "
+            + "  public void doAction(){}"
+            + "}";
+    String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
+    assertInTranslation(
+        translation, "- (void)objcSetFooField:(NSString *)fooField NS_SWIFT_NAME(set(fooField:));");
+    assertInTranslation(
+        translation,
+        "+ (void)objcBuilderWithSize:(int32_t)expectedSize NS_SWIFT_NAME(builder(expectedSize:));");
+    assertInTranslation(translation, "- (void)objcDoAction;");
+  }
+
   public void testSwiftNameAnnotationWithNestedTypes() throws IOException {
     addSourceFile(
         "@SwiftName "
