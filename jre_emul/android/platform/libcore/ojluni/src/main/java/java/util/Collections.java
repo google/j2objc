@@ -1093,7 +1093,7 @@ public class Collections {
         public boolean contains(Object o)          {return c.contains(o);}
         public Object[] toArray()                  {return c.toArray();}
         public <T> T[] toArray(T[] a)              {return c.toArray(a);}
-        // public <T> T[] toArray(IntFunction<T[]> f) {return c.toArray(f);}
+        public <T> T[] toArray(IntFunction<T[]> f) {return c.toArray(f);}
         public String toString()                   {return c.toString();}
 
         public Iterator<E> iterator() {
@@ -2164,9 +2164,9 @@ public class Collections {
         public <T> T[] toArray(T[] a) {
             synchronized (mutex) {return c.toArray(a);}
         }
-        // public <T> T[] toArray(IntFunction<T[]> f) {
-        //     synchronized (mutex) {return c.toArray(f);}
-        // }
+        public <T> T[] toArray(IntFunction<T[]> f) {
+            synchronized (mutex) {return c.toArray(f);}
+        }
 
         public Iterator<E> iterator() {
             return c.iterator(); // Must be manually synched by user!
@@ -3226,7 +3226,7 @@ public class Collections {
         public boolean contains(Object o)          { return c.contains(o); }
         public Object[] toArray()                  { return c.toArray(); }
         public <T> T[] toArray(T[] a)              { return c.toArray(a); }
-        // public <T> T[] toArray(IntFunction<T[]> f) { return c.toArray(f); }
+        public <T> T[] toArray(IntFunction<T[]> f) { return c.toArray(f); }
         public String toString()                   { return c.toString(); }
         public boolean remove(Object o)            { return c.remove(o); }
         public void clear()                        {        c.clear(); }
@@ -5865,7 +5865,7 @@ public class Collections {
         public Iterator<E> iterator()               { return q.iterator(); }
         public Object[] toArray()                   { return q.toArray(); }
         public <T> T[] toArray(T[] a)               { return q.toArray(a); }
-        // public <T> T[] toArray(IntFunction<T[]> f)  { return q.toArray(f); }
+        public <T> T[] toArray(IntFunction<T[]> f)  { return q.toArray(f); }
         public String toString()                    { return q.toString(); }
         public boolean containsAll(Collection<?> c) { return q.containsAll(c); }
         public boolean removeAll(Collection<?> c)   { return q.removeAll(c); }

@@ -71,6 +71,7 @@ ICU_PROPERTIES_ROOT = $(ANDROID_PLATFORM)/external/icu/android_icu4j/resources
 ICU_RES_DIR = $(BUILD_DIR)/icu_res
 ICU_EMBEDDED_RES_DIR = $(ICU_RES_DIR)/embedded
 ANDROID_PLATFORM_COMPAT_ROOT = $(ANDROID_BASE)/tools/platform-compat/java
+LIBCORE_TEST_RULES=$(LIBCORE_BASE)/test-rules/src/main/java
 
 OPENJDK_SHARE_ROOT = openjdk/src/share/classes
 OPENJDK_MACOSX_ROOT = openjdk/src/macosx/classes
@@ -134,7 +135,7 @@ TEST_SRC_ROOTS = \
     $(ANDROID_JSR166_TEST_ROOT) $(MOCKWEBSERVER_ROOT) \
     $(ANDROID_DALVIK_TEST_ROOT) \
     $(APACHE_COMMONS_LANG_TEST_ROOT) $(JAVA_TIME_TEST_ROOT) \
-    $(OJLUNI_NIO_TEST_ROOT) $(ICU_TEST_ROOT)
+    $(OJLUNI_NIO_TEST_ROOT) $(ICU_TEST_ROOT) $(LIBCORE_TEST_RULES)
 TEST_SRC = $(subst $(eval) ,:,$(TEST_SRC_ROOTS))
 vpath %.java $(JRE_SRC):$(TEST_SRC)
 

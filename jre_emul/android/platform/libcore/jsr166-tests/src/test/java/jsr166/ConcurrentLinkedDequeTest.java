@@ -40,7 +40,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
         ConcurrentLinkedDeque<Integer> q = new ConcurrentLinkedDeque<Integer>();
         assertTrue(q.isEmpty());
         for (int i = 0; i < n; ++i)
-            assertTrue(q.offer(new Integer(i)));
+            assertTrue(q.offer(Integer.valueOf(i)));
         assertFalse(q.isEmpty());
         assertEquals(n, q.size());
         return q;
@@ -80,7 +80,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     public void testConstructor5() {
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE - 1; ++i)
-            ints[i] = new Integer(i);
+            ints[i] = Integer.valueOf(i);
         try {
             new ConcurrentLinkedDeque(Arrays.asList(ints));
             shouldThrow();
@@ -93,7 +93,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     public void testConstructor6() {
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE; ++i)
-            ints[i] = new Integer(i);
+            ints[i] = Integer.valueOf(i);
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque(Arrays.asList(ints));
         for (int i = 0; i < SIZE; ++i)
             assertEquals(ints[i], q.poll());
@@ -124,7 +124,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
         }
         for (int i = 0; i < SIZE; ++i) {
             assertEquals(i, q.size());
-            q.add(new Integer(i));
+            q.add(Integer.valueOf(i));
         }
     }
 
@@ -336,7 +336,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE - 1; ++i)
-            ints[i] = new Integer(i);
+            ints[i] = Integer.valueOf(i);
         try {
             q.addAll(Arrays.asList(ints));
             shouldThrow();
@@ -350,7 +350,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
         Integer[] empty = new Integer[0];
         Integer[] ints = new Integer[SIZE];
         for (int i = 0; i < SIZE; ++i)
-            ints[i] = new Integer(i);
+            ints[i] = Integer.valueOf(i);
         ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         assertFalse(q.addAll(Arrays.asList(empty)));
         assertTrue(q.addAll(Arrays.asList(ints)));
@@ -550,11 +550,11 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     public void testRemoveFirstOccurrence() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 1; i < SIZE; i += 2) {
-            assertTrue(q.removeFirstOccurrence(new Integer(i)));
+            assertTrue(q.removeFirstOccurrence(Integer.valueOf(i)));
         }
         for (int i = 0; i < SIZE; i += 2) {
-            assertTrue(q.removeFirstOccurrence(new Integer(i)));
-            assertFalse(q.removeFirstOccurrence(new Integer(i + 1)));
+            assertTrue(q.removeFirstOccurrence(Integer.valueOf(i)));
+            assertFalse(q.removeFirstOccurrence(Integer.valueOf(i + 1)));
         }
         assertTrue(q.isEmpty());
     }
@@ -565,11 +565,11 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     public void testRemoveLastOccurrence() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 1; i < SIZE; i += 2) {
-            assertTrue(q.removeLastOccurrence(new Integer(i)));
+            assertTrue(q.removeLastOccurrence(Integer.valueOf(i)));
         }
         for (int i = 0; i < SIZE; i += 2) {
-            assertTrue(q.removeLastOccurrence(new Integer(i)));
-            assertFalse(q.removeLastOccurrence(new Integer(i + 1)));
+            assertTrue(q.removeLastOccurrence(Integer.valueOf(i)));
+            assertFalse(q.removeLastOccurrence(Integer.valueOf(i + 1)));
         }
         assertTrue(q.isEmpty());
     }
@@ -580,9 +580,9 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     public void testContains() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         for (int i = 0; i < SIZE; ++i) {
-            assertTrue(q.contains(new Integer(i)));
+            assertTrue(q.contains(Integer.valueOf(i)));
             q.poll();
-            assertFalse(q.contains(new Integer(i)));
+            assertFalse(q.contains(Integer.valueOf(i)));
         }
     }
 
@@ -609,7 +609,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
         for (int i = 0; i < SIZE; ++i) {
             assertTrue(q.containsAll(p));
             assertFalse(p.containsAll(q));
-            p.add(new Integer(i));
+            p.add(Integer.valueOf(i));
         }
         assertTrue(p.containsAll(q));
     }
@@ -677,7 +677,7 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     public void testToArray_NullArg() {
         ConcurrentLinkedDeque q = populatedDeque(SIZE);
         try {
-            q.toArray(null);
+            q.toArray((Object[]) null);
             shouldThrow();
         } catch (NullPointerException success) {}
     }
@@ -759,17 +759,17 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
             int max = rng.nextInt(5) + 2;
             int split = rng.nextInt(max - 1) + 1;
             for (int j = 1; j <= max; ++j)
-                q.add(new Integer(j));
+                q.add(Integer.valueOf(j));
             Iterator it = q.iterator();
             for (int j = 1; j <= split; ++j)
-                assertEquals(it.next(), new Integer(j));
+                assertEquals(it.next(), Integer.valueOf(j));
             it.remove();
-            assertEquals(it.next(), new Integer(split + 1));
+            assertEquals(it.next(), Integer.valueOf(split + 1));
             for (int j = 1; j <= split; ++j)
-                q.remove(new Integer(j));
+                q.remove(Integer.valueOf(j));
             it = q.iterator();
             for (int j = split + 1; j <= max; ++j) {
-                assertEquals(it.next(), new Integer(j));
+                assertEquals(it.next(), Integer.valueOf(j));
                 it.remove();
             }
             assertFalse(it.hasNext());
@@ -802,9 +802,9 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
     public void testDescendingIteratorOrdering() {
         final ConcurrentLinkedDeque q = new ConcurrentLinkedDeque();
         for (int iters = 0; iters < 100; ++iters) {
-            q.add(new Integer(3));
-            q.add(new Integer(2));
-            q.add(new Integer(1));
+            q.add(Integer.valueOf(3));
+            q.add(Integer.valueOf(2));
+            q.add(Integer.valueOf(1));
             int k = 0;
             for (Iterator it = q.descendingIterator(); it.hasNext();) {
                 assertEquals(++k, it.next());
@@ -827,17 +827,17 @@ public class ConcurrentLinkedDequeTest extends JSR166TestCase {
             int max = rng.nextInt(5) + 2;
             int split = rng.nextInt(max - 1) + 1;
             for (int j = max; j >= 1; --j)
-                q.add(new Integer(j));
+                q.add(Integer.valueOf(j));
             Iterator it = q.descendingIterator();
             for (int j = 1; j <= split; ++j)
-                assertEquals(it.next(), new Integer(j));
+                assertEquals(it.next(), Integer.valueOf(j));
             it.remove();
-            assertEquals(it.next(), new Integer(split + 1));
+            assertEquals(it.next(), Integer.valueOf(split + 1));
             for (int j = 1; j <= split; ++j)
-                q.remove(new Integer(j));
+                q.remove(Integer.valueOf(j));
             it = q.descendingIterator();
             for (int j = split + 1; j <= max; ++j) {
-                assertEquals(it.next(), new Integer(j));
+                assertEquals(it.next(), Integer.valueOf(j));
                 it.remove();
             }
             assertFalse(it.hasNext());

@@ -1,18 +1,18 @@
 /*
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.apache.harmony.tests.java.util;
@@ -65,7 +65,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 
         LinkedList subList = new LinkedList();
         for (int i = -50; i < 150; i++)
-            subList.add(new Integer(i));
+            subList.add(Integer.valueOf(i));
         new Support_ListTest("", subList.subList(50, 150)).runTest();
     }
 
@@ -411,7 +411,7 @@ public class LinkedListTest extends junit.framework.TestCase {
     public void test_lastIndexOfLjava_lang_Object() {
         // Test for method int
         // java.util.LinkedList.lastIndexOf(java.lang.Object)
-        ll.add(new Integer(99));
+        ll.add(Integer.valueOf(99));
         assertEquals("Returned incorrect index",
                 100, ll.lastIndexOf(objArray[99]));
         assertEquals("Returned index for invalid Object", -1, ll
@@ -646,7 +646,7 @@ public class LinkedListTest extends junit.framework.TestCase {
             assertTrue("Lists are not equal", li.next() == ri.next());
 
         try {
-            ll.toArray(null);
+            ll.toArray((Object[]) null);
             fail("NullPointerException expected");
         } catch (NullPointerException e) {
             //expected
@@ -996,11 +996,11 @@ public class LinkedListTest extends junit.framework.TestCase {
      * java.util.LinkedList#Serialization()
      */
     public void test_serialization() throws Exception {
-        assertTrue(ll.add(new Integer(1)));
-        assertTrue(ll.add(new Integer(2)));
-        assertTrue(ll.add(new Integer(3)));
-        assertTrue(ll.add(new Integer(4)));
-        assertTrue(ll.add(new Integer(5)));
+        assertTrue(ll.add(Integer.valueOf(1)));
+        assertTrue(ll.add(Integer.valueOf(2)));
+        assertTrue(ll.add(Integer.valueOf(3)));
+        assertTrue(ll.add(Integer.valueOf(4)));
+        assertTrue(ll.add(Integer.valueOf(5)));
         SerializationTest.verifySelf(ll, new SerializableAssert() {
             public void assertDeserialized(Serializable initial,
                     Serializable deserialized) {
@@ -1020,7 +1020,7 @@ public class LinkedListTest extends junit.framework.TestCase {
 
         objArray = new Object[100];
         for (int i = 0; i < objArray.length; i++) {
-            objArray[i] = new Integer(i);
+            objArray[i] = Integer.valueOf(i);
         }
 
         ll = new LinkedList();

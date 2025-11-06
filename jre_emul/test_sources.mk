@@ -91,6 +91,8 @@ SUPPORT_SOURCES = \
     libcore/javax/xml/datatype/DurationImpl.java \
     libcore/javax/xml/transform/SourceLocatorImpl.java \
     libcore/libcore/util/SerializationTester.java \
+    libcore/test/annotation/NonCts.java \
+    libcore/test/reasons/NonCtsReasons.java \
     org/apache/harmony/beans/tests/support/MisprintBean.java \
     org/apache/harmony/beans/tests/support/MisprintEvent.java \
     org/apache/harmony/beans/tests/support/MisprintListenerr.java \
