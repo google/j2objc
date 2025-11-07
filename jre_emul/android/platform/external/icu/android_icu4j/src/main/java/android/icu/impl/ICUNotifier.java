@@ -70,7 +70,7 @@ public abstract class ICUNotifier {
 
     /**
      * Stop notifying this listener.  The listener must
-     * not be null.  Attemps to remove a listener that is
+     * not be null.  Attempts to remove a listener that is
      * not registered will be silently ignored.
      */
     public void removeListener(EventListener l) {

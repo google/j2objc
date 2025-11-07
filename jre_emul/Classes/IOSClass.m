@@ -182,7 +182,7 @@ const J2ObjcClassInfo *IOSClass_GetMetadataOrFail(IOSClass *iosClass) {
   return nil;
 }
 
-// Returnes a SignatureParser with the already parsed generic class signatur or null if there is no
+// Returns a SignatureParser with the already parsed generic class signature or null if there is no
 // generic signature. The returned SignatureParser must be released by the caller.
 static LibcoreReflectGenericSignatureParser *NewParsedClassSignature(IOSClass *cls) {
   const J2ObjcClassInfo *metadata = cls->metadata_;

@@ -77,7 +77,7 @@ static IOSClass *ReferentSubclassGetClass(id self, SEL _cmd);
 static void WhileLocked(void (^block)(void));
 static CFMutableSetRef CreateReferentSet(void);
 
-// Global recursive mutux.
+// Global recursive mutex.
 static pthread_mutex_t reference_mutex;
 
 // Maps referents to sets of Reference instances that refer to them.
