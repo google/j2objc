@@ -328,14 +328,14 @@ std::string JavaPackageToDir(std::string package_name) {
 std::string ClassName(const Descriptor *descriptor) {
   return absl::StrCat(
       GetClassPrefix(descriptor->file(), descriptor->containing_type(),
-                     !java::NestedInFileClass(*descriptor, /*immutable=*/true)),
+                     !java::NestedInFileClass(*descriptor)),
       descriptor->name(), globalPostfix);
 }
 
 std::string ClassName(const EnumDescriptor *descriptor) {
   return absl::StrCat(
       GetClassPrefix(descriptor->file(), descriptor->containing_type(),
-                     !java::NestedInFileClass(*descriptor, /*immutable=*/true)),
+                     !java::NestedInFileClass(*descriptor)),
       descriptor->name(), globalPostfix);
 }
 
@@ -400,7 +400,7 @@ std::string GetHeader(const FileDescriptor *descriptor) {
 
 std::string GetHeader(const Descriptor *descriptor) {
   const FileDescriptor *file = descriptor->file();
-  if (!java::NestedInFileClass(*descriptor, /*immutable=*/true)) {
+  if (!java::NestedInFileClass(*descriptor)) {
     const Descriptor *containing_type = descriptor->containing_type();
     if (containing_type != nullptr) {
       return GetHeader(containing_type);
@@ -419,7 +419,7 @@ std::string GetHeader(const Descriptor *descriptor) {
 
 std::string GetHeader(const EnumDescriptor *descriptor) {
   const FileDescriptor *file = descriptor->file();
-  if (!java::NestedInFileClass(*descriptor, /*immutable=*/true)) {
+  if (!java::NestedInFileClass(*descriptor)) {
     const Descriptor *containing_type = descriptor->containing_type();
     if (containing_type != nullptr) {
       return GetHeader(containing_type);

@@ -560,13 +560,11 @@ void FileGenerator::GenerateSiblings(GeneratorContext* context) {
 }
 
 bool FileGenerator::GenerateMultipleFiles(const Descriptor* descriptor) {
-  return !java::NestedInFileClass(*descriptor, /*immutable=*/true) &&
-         !IsGenerateFileDirMapping();
+  return !java::NestedInFileClass(*descriptor) && !IsGenerateFileDirMapping();
 }
 
 bool FileGenerator::GenerateMultipleFiles(const EnumDescriptor* descriptor) {
-  return !java::NestedInFileClass(*descriptor, /*immutable=*/true) &&
-         !IsGenerateFileDirMapping();
+  return !java::NestedInFileClass(*descriptor) && !IsGenerateFileDirMapping();
 }
 
 void PrintProperty(io::Printer* printer, const std::string& key,

@@ -205,14 +205,14 @@ std::string JavaPackageToDir(std::string package_name) {
 std::string ClassName(const Descriptor *descriptor) {
   return absl::StrCat(
       GetClassPrefix(descriptor->file(), descriptor->containing_type(),
-                     !java::NestedInFileClass(*descriptor, /*immutable=*/true)),
+                     !java::NestedInFileClass(*descriptor)),
       descriptor->name(), globalPostfix);
 }
 
 std::string ClassName(const EnumDescriptor *descriptor) {
   return absl::StrCat(
       GetClassPrefix(descriptor->file(), descriptor->containing_type(),
-                     !java::NestedInFileClass(*descriptor, /*immutable=*/true)),
+                     !java::NestedInFileClass(*descriptor)),
       descriptor->name(), globalPostfix);
 }
 
