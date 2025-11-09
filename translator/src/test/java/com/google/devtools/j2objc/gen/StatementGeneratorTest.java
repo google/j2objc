@@ -3118,4 +3118,34 @@ public class StatementGeneratorTest extends GenerationTest {
           assertInTranslation(translation, "bool b = [obj isKindOfClass:[NSString class]];");
         });
   }
+
+  public void testAnyRecordPattern() throws IOException {
+    testOnJava22OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  """
+                  class Test {
+                    record B(Object a1, int i, int i2) {}
+                    void test() {
+                      Object o = new B(null, 3, 4);
+                      if (o instanceof B(_, _, var i2)) {
+                      }
+                    }
+                  }
+                  """,
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+              """
+              Test_B *rec = nil;
+              int32_t i2 = 0;
+              id o = create_Test_B_initWithId_withInt_withInt_(nil, 3, 4);
+              if ([o isKindOfClass:[Test_B class]] && (rec = (Test_B *) o, true)\
+               && (i2 = (int32_t) [((Test_B *) nil_chk(rec)) i2], true)) {
+              }
+              """);
+        });
+  }
 }

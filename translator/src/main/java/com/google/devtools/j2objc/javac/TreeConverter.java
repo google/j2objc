@@ -148,6 +148,7 @@ import com.sun.source.tree.CompoundAssignmentTree;
 import com.sun.source.tree.ConditionalExpressionTree;
 import com.sun.source.tree.ConstantCaseLabelTree;
 import com.sun.source.tree.ContinueTree;
+import com.sun.source.tree.DeconstructionPatternTree;
 import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
@@ -209,8 +210,10 @@ import com.sun.tools.javac.tree.JCTree.Tag;
 import com.sun.tools.javac.util.Position;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -1006,7 +1009,10 @@ public class TreeConverter {
     TreePath path = getTreePath(parent, node);
 
     Pattern pattern = node.getPattern() == null ? null : convertPattern(node.getPattern(), path);
-    TypeMirror clazz = getTypeMirror(getTreePath(path, node.getType()));
+    TypeMirror clazz =
+        pattern == null
+            ? getTypeMirror(getTreePath(path, node.getType()))
+            : pattern.getTypeMirror();
 
     return new InstanceofExpression()
         .setLeftOperand((Expression) convert(node.getExpression(), path))
@@ -1015,14 +1021,34 @@ public class TreeConverter {
         .setPattern(pattern);
   }
 
-  private Pattern convertPattern(PatternTree patternTree, TreePath unused) {
-    return switch (patternTree) {
-      case BindingPatternTree bindingPattern
-          when bindingPattern.getVariable() instanceof JCVariableDecl var ->
-          new Pattern.BindingPattern(var.sym).setTypeMirror(var.sym.asType());
+  private Pattern convertPattern(PatternTree patternTree, TreePath parent) {
 
-      default -> throw new IllegalArgumentException("Unhandled pattern: " + patternTree);
-    };
+    switch (patternTree) {
+      case BindingPatternTree bindingPattern
+          when bindingPattern.getVariable() instanceof JCVariableDecl var -> {
+        return new Pattern.BindingPattern(var.sym).setTypeMirror(var.sym.asType());
+      }
+      case DeconstructionPatternTree deconstructionPatternTree -> {
+        ExpressionTree deconstructor = deconstructionPatternTree.getDeconstructor();
+        TreePath path = getTreePath(parent, deconstructor);
+        List<Pattern> nestedPatterns =
+            deconstructionPatternTree.getNestedPatterns().stream()
+                .map(np -> convertPattern(np, path))
+                .collect(Collectors.toList());
+        return new Pattern.DeconstructionPattern()
+            .setTypeMirror(getTypeMirror(path))
+            .copyNestedPatterns(nestedPatterns);
+      }
+      default -> {
+        // TODO(b/459581977): Remove reflective access once we switch to Java 22.
+        if (Arrays.stream(patternTree.getClass().getInterfaces())
+            .anyMatch(i -> i.getName().equals("com.sun.source.tree.AnyPatternTree"))) {
+          return new Pattern.AnyPattern();
+        }
+
+        return null;
+      }
+    }
   }
 
   private LabeledStatement convertLabeledStatement(LabeledStatementTree node, TreePath parent) {

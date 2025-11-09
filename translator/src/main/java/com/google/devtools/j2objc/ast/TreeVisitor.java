@@ -86,6 +86,12 @@ public class TreeVisitor {
 
   public void endVisit(Pattern.BindingPattern node) {}
 
+  public boolean visit(Pattern.DeconstructionPattern node) {
+    return true;
+  }
+
+  public void endVisit(Pattern.DeconstructionPattern node) {}
+
   public boolean visit(Block node) {
     return true;
   }
