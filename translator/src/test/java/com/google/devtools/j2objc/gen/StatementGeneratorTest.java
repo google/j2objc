@@ -51,6 +51,7 @@ public class StatementGeneratorTest extends GenerationTest {
         String test(String str) {
           String msg = switch (str) {
             case String s when s.length() > 10 -> "Long string: " + s;
+            case null -> "null";
             case String s -> "Short string: " + s;
           };
           return msg;
@@ -2868,20 +2869,22 @@ public class StatementGeneratorTest extends GenerationTest {
         ast,
         """
         java.lang.String test(  java.lang.String str){
-            java.lang.String msg=^{
-              {
-                java.lang.String s=null;
-                java.lang.String s=null;
-                int selector=0;
-                if ((s=str instanceof java.lang.String ? str : null, !JreStringEqualsEquals(s, null)) && s.length() > 10)         selector=1;
-                else if ((s=str instanceof java.lang.String ? str : null, !JreStringEqualsEquals(s, null)))         selector=2;
-                switch (selector) {
-                  case 1: return JreStrcat($$, "Long string: ", s);
-                  case 2: return JreStrcat($$, "Short string: ", s);
-                  default: __builtin_unreachable();
-                };
-              }
-            }()
+          java.lang.String msg=^{
+            {
+              java.lang.String s=null;
+              java.lang.String s=null;
+              int selector=0;
+              if ((s=str instanceof java.lang.String ? str : null, !JreStringEqualsEquals(s, null)) && s.length() > 10)         selector=1;
+              else if (str == null)         selector=2;
+              else if ((s=str instanceof java.lang.String ? str : null, !JreStringEqualsEquals(s, null)))         selector=3;
+              switch (selector) {
+                case 1: return JreStrcat($$, "Long string: ", s);
+                case 2: return "null";
+                case 3: return JreStrcat($$, "Short string: ", s);
+                default: __builtin_unreachable();
+              };
+            }
+          }()
         ;
         """);
   }

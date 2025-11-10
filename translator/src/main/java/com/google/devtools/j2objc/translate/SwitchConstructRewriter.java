@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InfixExpression.Operator;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
+import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.Pattern;
 import com.google.devtools.j2objc.ast.ReturnStatement;
@@ -195,17 +196,32 @@ public class SwitchConstructRewriter extends UnitTreeVisitor {
 
   private Expression buildCondition(Expression switchExpression, SwitchCase switchCase) {
     Expression condition = null;
-    checkState(switchCase.getExpressions().isEmpty());
-    Pattern.BindingPattern pattern = (Pattern.BindingPattern) switchCase.getPattern();
-    if (pattern != null) {
+    if (switchCase.getExpressions().size() == 1) {
+      // This is case null.
+      Expression expression = switchCase.getExpressions().getFirst();
+      checkState(switchCase.getPattern() == null);
+      checkState(expression instanceof NullLiteral);
       condition =
           andCondition(
               condition,
-              new InstanceofExpression()
+              new InfixExpression()
                   .setTypeMirror(typeUtil.getBoolean())
-                  .setLeftOperand(switchExpression.copy())
-                  .setRightOperand(pattern.getVariable().getType().copy())
-                  .setPattern(pattern.copy()));
+                  .setOperator(Operator.EQUALS)
+                  .addOperand(switchExpression.copy())
+                  .addOperand(expression.copy()));
+    } else {
+      checkState(switchCase.getExpressions().isEmpty());
+      Pattern.BindingPattern pattern = (Pattern.BindingPattern) switchCase.getPattern();
+      if (pattern != null) {
+        condition =
+            andCondition(
+                condition,
+                new InstanceofExpression()
+                    .setTypeMirror(typeUtil.getBoolean())
+                    .setLeftOperand(switchExpression.copy())
+                    .setRightOperand(pattern.getVariable().getType().copy())
+                    .setPattern(pattern.copy()));
+      }
     }
     if (switchCase.getGuard() != null) {
       condition = andCondition(condition, switchCase.getGuard().copy());
