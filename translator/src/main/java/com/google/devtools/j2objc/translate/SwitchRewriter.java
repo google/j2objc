@@ -30,7 +30,6 @@ import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.SwitchExpression;
 import com.google.devtools.j2objc.ast.SwitchStatement;
-import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
@@ -149,17 +148,7 @@ public class SwitchRewriter extends UnitTreeVisitor {
     ArrayInitializer arrayInit = new ArrayInitializer(arrayType);
     int idx = 0;
     for (Statement stmt : statements) {
-      if (stmt.getKind() == TreeNode.Kind.SWITCH_CASE) {
-        SwitchCase caseStmt = (SwitchCase) stmt;
-        if (!caseStmt.isDefault()) {
-          List<Expression> caseExprs = caseStmt.getExpressions();
-          for (int i = 0; i < caseExprs.size(); i++) {
-            arrayInit.addExpression(caseExprs.get(i).copy());
-            caseExprs.set(i, NumberLiteral.newIntLiteral(idx++, typeUtil));
-          }
-        }
-      } else if (stmt.getKind() == TreeNode.Kind.SWITCH_CASE) {
-        SwitchCase caseStmt = (SwitchCase) stmt;
+      if (stmt instanceof SwitchCase caseStmt) {
         if (!caseStmt.isDefault()) {
           List<Expression> caseExprs = caseStmt.getExpressions();
           for (int i = 0; i < caseExprs.size(); i++) {
