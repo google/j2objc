@@ -39,6 +39,7 @@ import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
@@ -604,6 +605,15 @@ public class NilCheckResolver extends UnitTreeVisitor {
           setConditionalSafeVars(node, Collections.singleton(maybeNullVar), EMPTY_VARS);
         }
       }
+    }
+    return true;
+  }
+
+  @Override
+  public boolean visit(InstanceofExpression node) {
+    VariableElement maybeNullVar = TreeUtil.getVariableElement(node.getLeftOperand());
+    if (maybeNullVar != null) {
+      setConditionalSafeVars(node, Collections.singleton(maybeNullVar), EMPTY_VARS);
     }
     return true;
   }

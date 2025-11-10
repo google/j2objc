@@ -287,13 +287,9 @@ public class CastResolverTest extends GenerationTest {
         "  }",
         "}"), "Test", "Test.m");
     assertNotInTranslation(translation, "cast_chk");
-    assertInTranslation(
-        translation, "return [((JavaLangInteger *) nil_chk(((JavaLangInteger *) o))) intValue];");
-    assertInTranslation(
-        translation, "return [((JavaLangDouble *) nil_chk(((JavaLangDouble *) o))) intValue];");
-    assertInTranslation(
-        translation,
-        "return [((JavaLangCharacter *) nil_chk(((JavaLangCharacter *) o))) charValue];");
+    assertInTranslation(translation, "return [((JavaLangInteger *) o) intValue];");
+    assertInTranslation(translation, "return [((JavaLangDouble *) o) intValue];");
+    assertInTranslation(translation, "return [((JavaLangCharacter *) o) charValue];");
   }
 
   public void testIfStatementCastChkNoOpt() throws IOException {

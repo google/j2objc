@@ -635,8 +635,6 @@ public class AutoboxerTest extends GenerationTest {
         + "    }\n"
         + "  }\n"
         + "}", "Test", "Test.m");
-    assertInTranslation(
-        translation,
-        "return [((JavaLangCharacter *) nil_chk((JavaLangCharacter *) o)) charValue];");
+    assertInTranslation(translation, "return [(JavaLangCharacter *) o charValue];");
   }
 }
