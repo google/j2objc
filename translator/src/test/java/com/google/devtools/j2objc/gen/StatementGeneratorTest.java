@@ -2802,8 +2802,8 @@ public class StatementGeneratorTest extends GenerationTest {
         translation,
         """
         NSString *s = nil;
-        if ((s = [o isKindOfClass:[NSString class]] ? (NSString *) o : nil, !JreStringEqualsEquals(s, nil))) {
-          return [s java_length];
+        if ([o isKindOfClass:[NSString class]] && (s = (NSString *) o, true)) {
+          return [((NSString *) nil_chk(s)) java_length];
         }
         return 0;
         """);
@@ -2833,7 +2833,7 @@ public class StatementGeneratorTest extends GenerationTest {
         translation,
         """
         Point *p = nil;
-        if ((p = [o isKindOfClass:[Point class]] ? (Point *) o : nil, !JreObjectEqualsEquals(p, nil)) && x_ == p->x_ && y_ == p->y_) {
+        if ([o isKindOfClass:[Point class]] && (p = (Point *) o, true) && x_ == ((Point *) nil_chk(p))->x_ && y_ == p->y_) {
           return true;
         }
         else {
@@ -2874,9 +2874,9 @@ public class StatementGeneratorTest extends GenerationTest {
               java.lang.String s=null;
               java.lang.String s=null;
               int selector=0;
-              if ((s=str instanceof java.lang.String ? str : null, !JreStringEqualsEquals(s, null)) && s.length() > 10)         selector=1;
+              if (str instanceof java.lang.String && (s=str, true) && ((java.lang.String)nil_chk(s)).length() > 10)         selector=1;
               else if (str == null)         selector=2;
-              else if ((s=str instanceof java.lang.String ? str : null, !JreStringEqualsEquals(s, null)))         selector=3;
+              else if (str instanceof java.lang.String && (s=str, true))         selector=3;
               switch (selector) {
                 case 1: return JreStrcat($$, "Long string: ", s);
                 case 2: return "null";

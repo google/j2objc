@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.translate;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.devtools.j2objc.ast.Assignment;
@@ -38,6 +39,7 @@ import com.google.devtools.j2objc.ast.SwitchExpression;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.YieldStatement;
@@ -211,7 +213,7 @@ public class SwitchConstructRewriter extends UnitTreeVisitor {
                   .addOperand(expression.copy()));
     } else {
       checkState(switchCase.getExpressions().isEmpty());
-      Pattern.BindingPattern pattern = (Pattern.BindingPattern) switchCase.getPattern();
+      Pattern pattern = switchCase.getPattern();
       if (pattern != null) {
         condition =
             andCondition(
@@ -219,7 +221,7 @@ public class SwitchConstructRewriter extends UnitTreeVisitor {
                 new InstanceofExpression()
                     .setTypeMirror(typeUtil.getBoolean())
                     .setLeftOperand(switchExpression.copy())
-                    .setRightOperand(pattern.getVariable().getType().copy())
+                    .setRightOperand(Type.newType(checkNotNull(pattern.getTypeMirror())))
                     .setPattern(pattern.copy()));
       }
     }

@@ -45,8 +45,8 @@ public class SwitchConstructRewriterTest extends GenerationTest {
             JavaLangInteger *i = nil;
             NSString *s = nil;
             int32_t selector = 0;
-            if ((s = [obj isKindOfClass:[NSString class]] ? (NSString *) obj : nil, !JreStringEqualsEquals(s, nil))) selector = 1;
-            else if ((i = [obj isKindOfClass:[JavaLangInteger class]] ? (JavaLangInteger *) obj : nil, !JreObjectEqualsEquals(i, nil))) selector = 2;
+            if ([obj isKindOfClass:[NSString class]] && (s = (NSString *) obj, true)) selector = 1;
+            else if ([obj isKindOfClass:[JavaLangInteger class]] && (i = (JavaLangInteger *) obj, true)) selector = 2;
             switch (selector) {
               case 1:
               return JreStrcat("$$", @"It's a String: ", s);
@@ -89,10 +89,10 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         NSString *s_1 = nil;
         NSString *s_2 = nil;
         int32_t selector = 0;
-        if ((s_2 = [obj isKindOfClass:[NSString class]] ? (NSString *) obj : nil, !JreStringEqualsEquals(s_2, nil)) && [s_2 java_length] > 25) selector = 1;
-        else if ((s_1 = [obj isKindOfClass:[NSString class]] ? (NSString *) obj : nil, !JreStringEqualsEquals(s_1, nil)) && [s_1 java_length] > 5) selector = 2;
-        else if ((s = [obj isKindOfClass:[NSString class]] ? (NSString *) obj : nil, !JreStringEqualsEquals(s, nil))) selector = 3;
-        else if ((i = [obj isKindOfClass:[JavaLangInteger class]] ? (JavaLangInteger *) obj : nil, !JreObjectEqualsEquals(i, nil))) selector = 4;
+        if ([obj isKindOfClass:[NSString class]] && (s_2 = (NSString *) obj, true) && [((NSString *) nil_chk(s_2)) java_length] > 25) selector = 1;
+        else if ([obj isKindOfClass:[NSString class]] && (s_1 = (NSString *) obj, true) && [((NSString *) nil_chk(s_1)) java_length] > 5) selector = 2;
+        else if ([obj isKindOfClass:[NSString class]] && (s = (NSString *) obj, true)) selector = 3;
+        else if ([obj isKindOfClass:[JavaLangInteger class]] && (i = (JavaLangInteger *) obj, true)) selector = 4;
         switch (selector) {
           case 1:
           {
@@ -149,9 +149,9 @@ public class SwitchConstructRewriterTest extends GenerationTest {
             NSString *s = nil;
             JavaLangInteger *i_1 = nil;
             int32_t selector = 0;
-            if ((i_1 = [o isKindOfClass:[JavaLangInteger class]] ? (JavaLangInteger *) o : nil, !JreObjectEqualsEquals(i_1, nil)) && [i_1 intValue] == 0 && [i_1 intValue] < 1 && (s = [o2 isKindOfClass:[NSString class]] ? (NSString *) o2 : nil, !JreStringEqualsEquals(s, nil))) selector = 1;
-            else if ((i = [o isKindOfClass:[JavaLangInteger class]] ? (JavaLangInteger *) o : nil, !JreObjectEqualsEquals(i, nil)) && [i intValue] == 0 || [i intValue] > 1) selector = 2;
-            else if ((x = [o isKindOfClass:[NSObject class]] ? o : nil, !JreObjectEqualsEquals(x, nil))) selector = 3;
+            if ([o isKindOfClass:[JavaLangInteger class]] && (i_1 = (JavaLangInteger *) o, true) && [((JavaLangInteger *) nil_chk(i_1)) intValue] == 0 && [i_1 intValue] < 1 && [o2 isKindOfClass:[NSString class]] && (s = (NSString *) o2, true)) selector = 1;
+            else if ([o isKindOfClass:[JavaLangInteger class]] && (i = (JavaLangInteger *) o, true) && [((JavaLangInteger *) nil_chk(i)) intValue] == 0 || [i intValue] > 1) selector = 2;
+            else if ([o isKindOfClass:[NSObject class]] && (x = o, true)) selector = 3;
             switch (selector) {
               case 1:
               o = JreStrcat("$$", s, NSString_java_valueOf_(i_1));

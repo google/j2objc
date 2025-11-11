@@ -14,17 +14,23 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
- * A tree node used as the base class for the different kinds of patterns
- * (introduced in Java 16).
+ * A tree node used as the base class for the different kinds of patterns (introduced in Java 16).
  */
 public abstract class Pattern extends TreeNode {
 
   public Pattern() {}
 
   public Pattern(Pattern other) {}
+
+  public abstract TypeMirror getTypeMirror();
+
+  @Override
+  public abstract Pattern copy();
 
   /**
    * A tree node for a binding pattern that matches a pattern with a variable
@@ -39,6 +45,11 @@ public abstract class Pattern extends TreeNode {
     public AnyPattern() {}
 
     public AnyPattern(AnyPattern other) {}
+
+    @Override
+    public TypeMirror getTypeMirror() {
+      return null;
+    }
 
     @Override
     public Kind getKind() {
@@ -63,6 +74,7 @@ public abstract class Pattern extends TreeNode {
    * variable declared by the binding pattern.
    */
   public static class BindingPattern extends Pattern {
+    private TypeMirror typeMirror;
     private final ChildLink<SingleVariableDeclaration> var =
         ChildLink.create(SingleVariableDeclaration.class, this);
 
@@ -76,6 +88,17 @@ public abstract class Pattern extends TreeNode {
     }
 
     @Override
+    public TypeMirror getTypeMirror() {
+      return typeMirror;
+    }
+
+    @CanIgnoreReturnValue
+    public BindingPattern setTypeMirror(TypeMirror typeMirror) {
+      this.typeMirror = typeMirror;
+      return this;
+    }
+
+    @Override
     public Kind getKind() {
       return Kind.BINDING_PATTERN;
     }
@@ -84,6 +107,7 @@ public abstract class Pattern extends TreeNode {
       return var.get();
     }
 
+    @CanIgnoreReturnValue
     public BindingPattern setVariable(SingleVariableDeclaration e) {
       var.set(e);
       return this;

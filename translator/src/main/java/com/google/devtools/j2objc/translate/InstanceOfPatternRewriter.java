@@ -16,23 +16,27 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InfixExpression.Operator;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.Pattern;
+import com.google.devtools.j2objc.ast.Pattern.BindingPattern;
 import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 import javax.lang.model.element.VariableElement;
 
 /**
@@ -69,62 +73,75 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
       return;
     }
 
-    VariableElement patternVariable =
-        ((Pattern.BindingPattern) node.getPattern()).getVariable().getVariableElement();
-
-    if (ElementUtil.isUnnamed(patternVariable)) {
-      // If the pattern variable is unnamed this is a regular instanceof expression.
-      node.setPattern(null);
-      return;
-    }
-
-    // Initialize the patternVariable to null since the instanceof pattern is used in the rewrite
-    // of switches with pattern and the control flow of the rewrite prevents the objective-c
-    // compiler from determining that the variable is never access uninitialized.
-    // Type patternVariable = null;
-    enclosingScopes
-        .peek()
-        .addStatement(
-            0,
-            new VariableDeclarationStatement(
-                patternVariable, new NullLiteral(patternVariable.asType())));
-    CommaExpression replacement = new CommaExpression();
-
     Expression expression = node.getLeftOperand();
     // No need to generate a temporary variable if it is already a SimpleName.
     if (!(expression instanceof SimpleName)) {
       // Generate a temporary variable to preserve evaluation semantics since we can't guarantee
       // that the expression doesn't have side effects and can be evaluated multiple times.
       VariableElement tempVariable =
-          GeneratedVariableElement.newLocalVar(
-              "tmp", node.getLeftOperand().getTypeMirror(), patternVariable.getEnclosingElement());
-      enclosingScopes.peek().addStatement(0, new VariableDeclarationStatement(tempVariable, null));
-      // tmp = expr
-      replacement.addExpression(
-          new Assignment(new SimpleName(tempVariable), node.getLeftOperand().copy()));
+          GeneratedVariableElement.newLocalVar("tmp", node.getLeftOperand().getTypeMirror(), null);
+      enclosingScopes
+          .peek()
+          // Type tmp = expr
+          .addStatement(
+              0, new VariableDeclarationStatement(tempVariable, node.getLeftOperand().copy()));
       expression = new SimpleName(tempVariable);
     }
 
-    replacement.addExpressions(
-        // patternVariable = expression instanceof T ? (T) expression : null
-        new Assignment(
-            new SimpleName(patternVariable),
-            new ConditionalExpression()
-                .setExpression(
-                    new InstanceofExpression(node)
-                        .setLeftOperand(expression.copy())
-                        .setPattern(null))
-                .setThenExpression(
-                    new CastExpression(patternVariable.asType(), expression.copy())
-                        .setNeedsCastChk(false))
-                .setElseExpression(new NullLiteral(patternVariable.asType()))
-                .setTypeMirror(patternVariable.asType())),
-        // patternVariable != null
-        new InfixExpression()
-            .setTypeMirror(typeUtil.getBoolean())
-            .setOperator(Operator.NOT_EQUALS)
-            .addOperand(new SimpleName(patternVariable))
-            .addOperand(new NullLiteral(patternVariable.asType())));
-    node.replaceWith(replacement);
+    List<VariableElement> variablesToDeclare = new ArrayList<>();
+    Expression condition =
+        computePatternCondition(expression, node.getPattern(), variablesToDeclare);
+
+    for (var variableToDeclare : variablesToDeclare) {
+      // Initialize the patternVariables to null. The implementation of patterns in switches creates
+      // logic that prevents the objective-c compiler from determining that the variable is never
+      // accessed uninitialized.
+
+      // Type patternVariable = null;
+      enclosingScopes
+          .peek()
+          .addStatement(
+              0,
+              new VariableDeclarationStatement(
+                  variableToDeclare, new NullLiteral(variableToDeclare.asType())));
+    }
+    node.replaceWith(condition);
+  }
+
+  private Expression computePatternCondition(
+      Expression expression, Pattern pattern, List<VariableElement> variablesToDeclare) {
+    switch (pattern) {
+      case BindingPattern bindingPattern -> {
+        VariableElement patternVariable = bindingPattern.getVariable().getVariableElement();
+
+        if (ElementUtil.isUnnamed(patternVariable)) {
+          return new InstanceofExpression()
+              .setLeftOperand(expression.copy())
+              .setRightOperand(Type.newType(patternVariable.asType()))
+              .setPattern(null)
+              .setTypeMirror(typeUtil.getBoolean());
+        }
+
+        variablesToDeclare.add(patternVariable);
+        //  expression instanceof T  && (patternVariable = (T) expression, true)
+        return andCondition(
+            new InstanceofExpression()
+                .setLeftOperand(expression.copy())
+                .setRightOperand(Type.newType(patternVariable.asType()))
+                .setTypeMirror(typeUtil.getBoolean()),
+            new CommaExpression()
+                .addExpressions(
+                    new Assignment(
+                        new SimpleName(patternVariable),
+                        new CastExpression(patternVariable.asType(), expression.copy())
+                            .setNeedsCastChk(false)),
+                    new BooleanLiteral(true, typeUtil.getBoolean())));
+      }
+      default -> throw new IllegalArgumentException("Unhandled pattern" + pattern);
+    }
+  }
+
+  private Expression andCondition(Expression lhs, Expression rhs) {
+    return new InfixExpression(typeUtil.getBoolean(), Operator.CONDITIONAL_AND, lhs, rhs);
   }
 }

@@ -1004,13 +1004,9 @@ public class TreeConverter {
 
   private TreeNode convertInstanceOf(InstanceOfTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
+
+    Pattern pattern = node.getPattern() == null ? null : convertPattern(node.getPattern(), path);
     TypeMirror clazz = getTypeMirror(getTreePath(path, node.getType()));
-    Pattern pattern = null;
-    PatternTree patternTree = node.getPattern();
-    if (patternTree instanceof BindingPatternTree bindingPattern
-        && bindingPattern.getVariable() instanceof JCVariableDecl var) {
-      pattern = new Pattern.BindingPattern(var.sym);
-    }
 
     return new InstanceofExpression()
         .setLeftOperand((Expression) convert(node.getExpression(), path))
@@ -1019,7 +1015,17 @@ public class TreeConverter {
         .setPattern(pattern);
   }
 
-  private TreeNode convertLabeledStatement(LabeledStatementTree node, TreePath parent) {
+  private Pattern convertPattern(PatternTree patternTree, TreePath unused) {
+    return switch (patternTree) {
+      case BindingPatternTree bindingPattern
+          when bindingPattern.getVariable() instanceof JCVariableDecl var ->
+          new Pattern.BindingPattern(var.sym).setTypeMirror(var.sym.asType());
+
+      default -> throw new IllegalArgumentException("Unhandled pattern: " + patternTree);
+    };
+  }
+
+  private LabeledStatement convertLabeledStatement(LabeledStatementTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
     return new LabeledStatement()
         .setLabel(
@@ -1416,14 +1422,7 @@ public class TreeConverter {
         }
         case PATTERN_CASE_LABEL -> {
           PatternCaseLabelTree patternCaseLabelTree = (PatternCaseLabelTree) caseLabelTree;
-          if (patternCaseLabelTree.getPattern() instanceof BindingPatternTree bindingPatternTree) {
-            VariableTree varTree = (VariableTree) bindingPatternTree.getVariable();
-            VariableElement var =
-                ((VariableDeclaration) convertVariableDeclaration(varTree, switchCasePath))
-                    .getVariableElement();
-            Pattern.BindingPattern pattern = new Pattern.BindingPattern(var);
-            switchCase.setPattern(pattern);
-          }
+          switchCase.setPattern(convertPattern(patternCaseLabelTree.getPattern(), switchCasePath));
         }
         case DEFAULT_CASE_LABEL -> switchCase.setIsDefault(true);
         default -> throw new AssertionError("unknown case label type: " + caseLabelTree.getKind());
