@@ -212,7 +212,7 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
         "\n"
         "@class $classname$;"
         "\n"
-        "@protocol $classname$_Companion\n"
+        "@protocol $classname$CompanionProtocol\n"
         "- (nonnull $classname$_Builder *)newBuilder OBJC_METHOD_FAMILY_NONE;\n"
         "- (nonnull $classname$ *)getDefaultInstance;\n"
         "- (nonnull $classname$ *)parseFromWithComGoogleProtobufByteString:"
@@ -224,7 +224,9 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
         "// in j2objc_message.cc \n"
         "@interface $classname$ : $superclassname$<$classname$OrBuilder>\n\n"
         "@property (nonnull, readonly, class)"
-        " id<$classname$_Companion> companion;\n",
+        " id<$classname$CompanionProtocol> companion;\n"
+        "@property (nonnull, readonly, class)"
+        " id<$classname$CompanionProtocol> shared;\n",
         "classname", ClassName(descriptor_), "superclassname", superclassName);
   } else {
     printer->Print(
@@ -360,6 +362,7 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
         "\n"
         "@compatibility_alias KNP$classname$ $classname$;\n"
         "@compatibility_alias KNP$classname$_Builder $classname$_Builder;\n"
+        "@compatibility_alias KNP$classname$Companion $classname$;\n"
         "\n",
         "classname", ClassName(descriptor_));
   }
@@ -440,8 +443,11 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
 
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
-        "+ (nonnull id<$classname$_Companion>)companion {\n"
-        "  return (id<$classname$_Companion>) [self class];\n"
+        "+ (nonnull id<$classname$CompanionProtocol>)shared {\n"
+        "  return (id<$classname$CompanionProtocol>) [self class];\n"
+        "}\n"
+        "+ (nonnull id<$classname$CompanionProtocol>)companion {\n"
+        "  return (id<$classname$CompanionProtocol>) [self class];\n"
         "}\n",
         "classname", ClassName(descriptor_));
     for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
