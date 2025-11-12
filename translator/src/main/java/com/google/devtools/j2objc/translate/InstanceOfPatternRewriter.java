@@ -24,19 +24,26 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InfixExpression.Operator;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
+import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NullLiteral;
+import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.Pattern;
+import com.google.devtools.j2objc.ast.Pattern.AnyPattern;
 import com.google.devtools.j2objc.ast.Pattern.BindingPattern;
+import com.google.devtools.j2objc.ast.Pattern.DeconstructionPattern;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.sun.tools.javac.code.Type.ClassType;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 
 /**
@@ -73,6 +80,7 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
       return;
     }
 
+    int variableInsertionIndex = 0;
     Expression expression = node.getLeftOperand();
     // No need to generate a temporary variable if it is already a SimpleName.
     if (!(expression instanceof SimpleName)) {
@@ -82,9 +90,10 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
           GeneratedVariableElement.newLocalVar("tmp", node.getLeftOperand().getTypeMirror(), null);
       enclosingScopes
           .peek()
-          // Type tmp = expr
           .addStatement(
-              0, new VariableDeclarationStatement(tempVariable, node.getLeftOperand().copy()));
+              variableInsertionIndex++,
+              new VariableDeclarationStatement(tempVariable, node.getLeftOperand().copy()));
+      // tmp = expr
       expression = new SimpleName(tempVariable);
     }
 
@@ -98,12 +107,18 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
       // accessed uninitialized.
 
       // Type patternVariable = null;
+      Expression initializer =
+          switch (variableToDeclare.asType().getKind()) {
+            case BOOLEAN -> new BooleanLiteral(false, variableToDeclare.asType());
+            case BYTE, SHORT, CHAR, INT, LONG, FLOAT, DOUBLE ->
+                new NumberLiteral(0, variableToDeclare.asType());
+            default -> new NullLiteral(variableToDeclare.asType());
+          };
       enclosingScopes
           .peek()
           .addStatement(
-              0,
-              new VariableDeclarationStatement(
-                  variableToDeclare, new NullLiteral(variableToDeclare.asType())));
+              variableInsertionIndex++,
+              new VariableDeclarationStatement(variableToDeclare, initializer));
     }
     node.replaceWith(condition);
   }
@@ -122,13 +137,31 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
               .setTypeMirror(typeUtil.getBoolean());
         }
 
+        Expression instanceofLhs = expression.copy();
+        if (!(expression instanceof SimpleName)
+            && !patternVariable.asType().getKind().isPrimitive()) {
+          // Use a temporary variable to avoid evaluating the expression more than once and make
+          // sure that user written property getters that might have side-effects are only
+          // evaluated once.
+          VariableElement tempVariable =
+              GeneratedVariableElement.newLocalVar("comp", expression.getTypeMirror(), null);
+          variablesToDeclare.add(tempVariable);
+          // (prop = r.prop()) instanceof ...
+          instanceofLhs = new Assignment(new SimpleName(tempVariable), expression);
+          expression = new SimpleName(tempVariable);
+        }
+
         variablesToDeclare.add(patternVariable);
-        //  expression instanceof T  && (patternVariable = (T) expression, true)
+        //  expression instanceof T && (patternVariable = (T) expression, true)
         return andCondition(
-            new InstanceofExpression()
-                .setLeftOperand(expression.copy())
-                .setRightOperand(Type.newType(patternVariable.asType()))
-                .setTypeMirror(typeUtil.getBoolean()),
+            patternVariable.asType().getKind().isPrimitive()
+                // Primitives don't needs any checking. In the future when/if primitive patterns are
+                // incorporated in the Java language, this should be updated.
+                ? null
+                : new InstanceofExpression()
+                    .setLeftOperand(instanceofLhs)
+                    .setRightOperand(Type.newType(patternVariable.asType()))
+                    .setTypeMirror(typeUtil.getBoolean()),
             new CommaExpression()
                 .addExpressions(
                     new Assignment(
@@ -137,11 +170,47 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
                             .setNeedsCastChk(false)),
                     new BooleanLiteral(true, typeUtil.getBoolean())));
       }
-      default -> throw new IllegalArgumentException("Unhandled pattern" + pattern);
+
+      case DeconstructionPattern deconstructionPattern -> {
+        VariableElement tempVariable =
+            GeneratedVariableElement.newLocalVar(
+                "rec", deconstructionPattern.getTypeMirror(), null);
+        // (e instanceof Rec rec)
+        Expression condition =
+            computePatternCondition(
+                expression, new BindingPattern(tempVariable), variablesToDeclare);
+
+        var recordType = (TypeElement) ((ClassType) deconstructionPattern.getTypeMirror()).tsym;
+        for (int i = 0; i < deconstructionPattern.getNestedPatterns().size(); i++) {
+          var nestedPattern = deconstructionPattern.getNestedPatterns().get(i);
+          if (nestedPattern instanceof AnyPattern) {
+            // AnyPatterns do not contribute anything to the condition.
+            continue;
+          }
+
+          var component = recordType.getRecordComponents().get(i);
+          // rec.component instanceof Nested n
+          Expression property =
+              new MethodInvocation(
+                  new ExecutablePair(component.getAccessor()),
+                  component.getAccessor().getReturnType(),
+                  new SimpleName(tempVariable));
+
+          condition =
+              andCondition(
+                  condition, computePatternCondition(property, nestedPattern, variablesToDeclare));
+        }
+        return condition;
+      }
+
+      default -> throw new IllegalArgumentException("Unknown pattern" + pattern);
     }
   }
 
   private Expression andCondition(Expression lhs, Expression rhs) {
+    if (lhs == null) {
+      return rhs;
+    }
     return new InfixExpression(typeUtil.getBoolean(), Operator.CONDITIONAL_AND, lhs, rhs);
   }
 }

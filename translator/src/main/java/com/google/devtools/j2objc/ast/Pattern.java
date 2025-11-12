@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import java.util.List;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -124,6 +125,59 @@ public abstract class Pattern extends TreeNode {
     @Override
     public BindingPattern copy() {
       return new BindingPattern(this);
+    }
+  }
+
+  /** A deconstruction pattern. */
+  public static class DeconstructionPattern extends Pattern {
+    private TypeMirror typeMirror;
+    private final ChildList<Pattern> nestedPatterns = ChildList.create(Pattern.class, this);
+
+    public DeconstructionPattern() {}
+
+    public DeconstructionPattern(DeconstructionPattern other) {
+      super(other);
+      typeMirror = other.getTypeMirror();
+      nestedPatterns.copyFrom(other.getNestedPatterns());
+    }
+
+    @Override
+    public TypeMirror getTypeMirror() {
+      return typeMirror;
+    }
+
+    @CanIgnoreReturnValue
+    public DeconstructionPattern setTypeMirror(TypeMirror typeMirror) {
+      this.typeMirror = typeMirror;
+      return this;
+    }
+
+    @Override
+    public Kind getKind() {
+      return Kind.DECONSTRUCTION_PATTERN;
+    }
+
+    public List<Pattern> getNestedPatterns() {
+      return nestedPatterns;
+    }
+
+    @CanIgnoreReturnValue
+    public DeconstructionPattern copyNestedPatterns(List<Pattern> patterns) {
+      nestedPatterns.copyFrom(patterns);
+      return this;
+    }
+
+    @Override
+    protected void acceptInner(TreeVisitor visitor) {
+      if (visitor.visit(this)) {
+        nestedPatterns.accept(visitor);
+      }
+      visitor.endVisit(this);
+    }
+
+    @Override
+    public DeconstructionPattern copy() {
+      return new DeconstructionPattern(this);
     }
   }
 }
