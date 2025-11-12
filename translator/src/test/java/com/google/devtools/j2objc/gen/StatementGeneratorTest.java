@@ -63,8 +63,14 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testReturnReservedWord() throws IOException {
     String translation =
         translateSourceFile(
-            "public class Test { static final String BOOL = \"bool\"; String test() { return"
-                + " BOOL; }}",
+            """
+            public class Test {
+              static final String BOOL = "bool";
+              String test() {
+                return BOOL;
+              }
+            }
+            """,
             "Test",
             "Test.m");
     assertInTranslation(translation, "return Test_BOOL;");
@@ -146,7 +152,11 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testParameterTranslation() throws IOException {
-    String source = "Throwable cause = new Throwable(); new Exception(cause);";
+    String source =
+        """
+        Throwable cause = new Throwable();
+        new Exception(cause);
+        """;
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
@@ -154,27 +164,33 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testCastTranslation() throws IOException {
-    String source = "Object o = new Object(); Throwable t = (Throwable) o; int[] i = (int[]) o;";
+    String source =
+        """
+        Object o = new Object();
+        Throwable t = (Throwable) o;
+        int[] i = (int[]) o;
+        """;
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
     assertEquals(
-        "JavaLangThrowable *t = " + "(JavaLangThrowable *) cast_chk(o, [JavaLangThrowable class]);",
+        "JavaLangThrowable *t = (JavaLangThrowable *) cast_chk(o, [JavaLangThrowable class]);",
         result);
     result = generateStatement(stmts.get(2));
-    assertEquals("IOSIntArray *i = " + "(IOSIntArray *) cast_chk(o, [IOSIntArray class]);", result);
+    assertEquals("IOSIntArray *i = (IOSIntArray *) cast_chk(o, [IOSIntArray class]);", result);
   }
 
   public void testInterfaceCastTranslation() throws IOException {
     String source =
-        "java.util.Collection al = new java.util.ArrayList(); "
-            + "java.util.List l = (java.util.List) al;";
+        """
+        java.util.Collection al = new java.util.ArrayList();
+        java.util.List l = (java.util.List) al;
+        """;
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
     assertEquals(
-        "id<JavaUtilList> l = " + "(id<JavaUtilList>) cast_check(al, JavaUtilList_class_());",
-        result);
+        "id<JavaUtilList> l = (id<JavaUtilList>) cast_check(al, JavaUtilList_class_());", result);
   }
 
   public void testCatchTranslation() throws IOException {
@@ -186,7 +202,11 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testInstanceOfTranslation() throws IOException {
-    String source = "Exception e = new Exception(); if (e instanceof Throwable) {}";
+    String source =
+        """
+        Exception e = new Exception();
+        if (e instanceof Throwable) {}
+        """;
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
@@ -202,7 +222,12 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testToStringRenaming() throws IOException {
-    String source = "Object o = new Object(); o.toString(); toString();";
+    String source =
+        """
+        Object o = new Object();
+        o.toString();
+        toString();
+        """;
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
@@ -333,7 +358,10 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation =
         translateSourceFile(
             """
-            public class Example { Boolean b1 = Boolean.TRUE; Boolean b2 = Boolean.FALSE; }
+            public class Example {
+              Boolean b1 = Boolean.TRUE;
+              Boolean b2 = Boolean.FALSE;
+            }
             """,
             "Example",
             "Example.m");
@@ -717,9 +745,11 @@ public class StatementGeneratorTest extends GenerationTest {
     assertInTranslation(translation, "- (instancetype)initWithInt:(int32_t)i");
     assertTranslatedLines(
         translation,
-        "void Test_Two_initWithInt_(Test_Two *self, int32_t i) {",
-        "  Test_One_initWithInt_(self, i);",
-        "}");
+        """
+        void Test_Two_initWithInt_(Test_Two *self, int32_t i) {
+          Test_One_initWithInt_(self, i);
+        }
+        """);
   }
 
   public void testStaticInnerClassSuperFieldAccess() throws IOException {
@@ -881,7 +911,13 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testLongLiteral() throws IOException {
     String translation =
         translateSourceFile(
-            "public class Test { public static void testLong() { long l1 = 1L; }}",
+            """
+            public class Test {
+              public static void testLong() {
+                long l1 = 1L;
+              }
+            }
+            """,
             "Test",
             "Test.m");
     assertInTranslation(translation, "int64_t l1 = 1LL");
@@ -916,7 +952,11 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testArrayInitializer() {
-    String source = "int[] a = { 1, 2, 3 }; char b[] = { '4', '5' };";
+    String source =
+        """
+        int[] a = { 1, 2, 3 };
+        char b[] = { '4', '5' };
+        """;
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(0));
@@ -924,8 +964,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "IOSIntArray *a = [IOSIntArray arrayWithInts:(int32_t[]){ 1, 2, 3 } count:3];", result);
     result = generateStatement(stmts.get(1));
     assertEquals(
-        "IOSCharArray *b = " + "[IOSCharArray arrayWithChars:(unichar[]){ '4', '5' } count:2];",
-        result);
+        "IOSCharArray *b = [IOSCharArray arrayWithChars:(unichar[]){ '4', '5' } count:2];", result);
   }
 
   /** Verify that static array initializers are rewritten as method calls. */
@@ -980,7 +1019,11 @@ public class StatementGeneratorTest extends GenerationTest {
 
   public void testEnhancedForStatement() throws IOException {
     String source =
-        "String[] strings = {\"test1\", \"test2\"};" + "for (String string : strings) { }";
+        """
+        String[] strings = {"test1", "test2"};
+        for (String string : strings) {
+        }
+        """;
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
@@ -998,28 +1041,38 @@ public class StatementGeneratorTest extends GenerationTest {
 
   public void testEnhancedForStatementInSwitchStatement() throws IOException {
     String source =
-        "int test = 5; int[] myInts = new int[10]; "
-            + "switch (test) { case 0: break; default: "
-            + "for (int i : myInts) {} break; }";
+        """
+        int test = 5;
+        int[] myInts = new int[10];
+        switch (test) {
+          case 0:
+            break;
+          default:
+            for (int i : myInts) {}
+            break;
+        }
+        """;
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(2));
     assertTranslatedLines(
         result,
-        "switch (test) {",
-        "case 0:",
-        "break;",
-        "default:",
-        "{",
-        "IOSIntArray *a__ = myInts;",
-        "int32_t const *b__ = a__->buffer_;",
-        "int32_t const *e__ = b__ + a__->size_;",
-        "while (b__ < e__) {",
-        "int32_t i = *b__++;",
-        "}",
-        "}",
-        "break;",
-        "}");
+        """
+        switch (test) {
+          case 0:
+            break;
+          default:
+            {
+              IOSIntArray *a__ = myInts;
+              int32_t const *b__ = a__->buffer_;
+              int32_t const *e__ = b__ + a__->size_;
+              while (b__ < e__) {
+                int32_t i = *b__++;
+              }
+            }
+            break;
+        }
+        """);
   }
 
   public void testSwitchStatementWithExpression() throws IOException {
@@ -1051,9 +1104,11 @@ public class StatementGeneratorTest extends GenerationTest {
 
   public void testClassVariable() throws IOException {
     String source =
-        "Class<?> myClass = getClass();"
-            + "Class<?> mySuperClass = myClass.getSuperclass();"
-            + "Class<?> enumClass = Enum.class;";
+        """
+        Class<?> myClass = getClass();
+        Class<?> mySuperClass = myClass.getSuperclass();
+        Class<?> enumClass = Enum.class;\
+        """;
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(0));
@@ -1165,7 +1220,13 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testMethodWithPrimitiveArrayParameter() throws IOException {
     String translation =
         translateSourceFile(
-            "public class Test {   public void foo(char[] chars) { } }", "Test", "Test.m");
+            """
+            public class Test {
+              public void foo(char[] chars) {}
+            }
+            """,
+            "Test",
+            "Test.m");
     assertInTranslation(translation, "fooWithCharArray:");
   }
 
@@ -1318,7 +1379,11 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testStaticConstants() throws IOException {
-    String source = "float f = Float.NaN; double d = Double.POSITIVE_INFINITY;";
+    String source =
+        """
+        float f = Float.NaN;
+        double d = Double.POSITIVE_INFINITY;
+        """;
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(0)).trim();
@@ -1375,7 +1440,11 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testArrayInstanceOfTranslation() throws IOException {
-    String source = "Object args = new String[0]; if (args instanceof String[]) {}";
+    String source =
+        """
+        Object args = new String[0];
+        if (args instanceof String[]) {}
+        """;
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
@@ -1383,7 +1452,11 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testInterfaceArrayInstanceOfTranslation() throws IOException {
-    String source = "Object args = new Readable[0]; if (args instanceof Readable[]) {}";
+    String source =
+        """
+        Object args = new Readable[0];
+        if (args instanceof Readable[]) {}
+        """;
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
@@ -1392,7 +1465,11 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testPrimitiveArrayInstanceOfTranslation() throws IOException {
-    String source = "Object args = new int[0]; if (args instanceof int[]) {}";
+    String source =
+        """
+        Object args = new int[0];
+        if (args instanceof int[]) {}
+        """;
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
@@ -1422,7 +1499,12 @@ public class StatementGeneratorTest extends GenerationTest {
   }
 
   public void testArrayPlusAssign() throws IOException {
-    String source = "int[] array = new int[] { 1, 2, 3 }; int offset = 1; array[offset] += 23;";
+    String source =
+        """
+        int[] array = new int[] { 1, 2, 3 };
+        int offset = 1;
+        array[offset] += 23;
+        """;
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(2));
@@ -1457,9 +1539,24 @@ public class StatementGeneratorTest extends GenerationTest {
 
   // b/5872533: reserved method name not renamed correctly in super invocation.
   public void testSuperReservedName() throws IOException {
-    addSourceFile("public class A { A() {} public void init(int a) { }}", "A.java");
     addSourceFile(
-        "public class B extends A { B() {} public void init(int b) { super.init(b); }}", "B.java");
+        """
+        public class A {
+          A() {}
+          public void init(int a) { }
+        }
+        """,
+        "A.java");
+    addSourceFile(
+        """
+        public class B extends A {
+          B() {}
+          public void init(int b) {
+            super.init(b);
+          }
+        }
+        """,
+        "B.java");
     String translation = translateSourceFile("A", "A.h");
     assertInTranslation(translation, "- (instancetype)init;");
     assertInTranslation(translation, "- (void)init__WithInt:(int32_t)a");
@@ -1867,7 +1964,12 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(translation, "  for (int32_t i = 0; i < 10; i++) {\n  }");
+    assertTranslatedLines(
+        translation,
+        """
+        for (int32_t i = 0; i < 10; i++) {
+        }
+        """);
   }
 
   public void testAutoreleasePoolForStatement() throws IOException {
@@ -1884,8 +1986,14 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(
-        translation, "  for (int32_t i = 0; i < 10; i++) {\n    @autoreleasepool {\n    }\n  }");
+    assertTranslatedLines(
+        translation,
+        """
+        for (int32_t i = 0; i < 10; i++) {
+          @autoreleasepool {
+          }
+        }
+        """);
   }
 
   public void testAutoreleasePoolEnhancedForStatement() throws IOException {
@@ -1920,9 +2028,14 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(
+    assertTranslatedLines(
         translation,
-        "  for (int32_t i = 0; i < 10; i++) {\n    @autoreleasepool {\n" + "    }\n  }");
+        """
+        for (int32_t i = 0; i < 10; i++) {
+          @autoreleasepool {
+          }
+        }
+        """);
   }
 
   public void testARCAutoreleasePoolEnhancedForStatement() throws IOException {
@@ -2464,7 +2577,15 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testAnnotationVariableDeclaration() throws IOException {
     String translation =
         translateSourceFile(
-            "public class Test { void test() { Deprecated annotation = null; }}", "Test", "Test.m");
+            """
+            public class Test {
+              void test() {
+                Deprecated annotation = null;
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
     assertInTranslation(translation, "id<JavaLangDeprecated> annotation = ");
   }
 
@@ -2508,7 +2629,13 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testForStatementWithMultipleInitializers() throws IOException {
     String translation =
         translateSourceFile(
-            "class Test { void test() { for (String s1 = null, s2 = null;;) {}}}",
+            """
+            class Test {
+              void test() {
+                for (String s1 = null, s2 = null; ; ) {}
+              }
+            }
+            """,
             "Test",
             "Test.m");
     // C requires that each var have its own pointer.
@@ -2537,7 +2664,13 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testMakeQuotedStringHang() throws IOException {
     // Test hangs if bug makeQuotedString() isn't fixed.
     translateSourceFile(
-        "public class Test { void test(String s) { assert !\"null\\foo\\nbar\".equals(s); }}",
+        """
+        public class Test {
+          void test(String s) {
+            assert !"null\\foo\\nbar".equals(s);
+          }
+        }
+        """,
         "Test",
         "Test.m");
   }
@@ -2545,12 +2678,25 @@ public class StatementGeneratorTest extends GenerationTest {
   // Verify that the type of superclass field's type variable is cast properly.
   public void testSuperTypeVariable() throws IOException {
     addSourceFile(
-        "import java.util.List; class TestList <T extends List> { "
-            + "  protected final T testField; TestList(T field) { testField = field; }}",
+        """
+        import java.util.List;
+        class TestList <T extends List> {
+          protected final T testField;
+          TestList(T field) {
+            testField = field;
+          }
+        }
+        """,
         "TestList.java");
     addSourceFile(
-        "import java.util.ArrayList; class TestArrayList extends TestList<ArrayList> { "
-            + "  TestArrayList(ArrayList list) { super(list); }}",
+        """
+        import java.util.ArrayList;
+        class TestArrayList extends TestList<ArrayList> {
+          TestArrayList(ArrayList list) {
+            super(list);
+          }
+        }
+        """,
         "TestArrayList.java");
     String translation =
         translateSourceFile(
@@ -2681,7 +2827,13 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testSuppressedUnusedVariable() throws IOException {
     String translation =
         translateSourceFile(
-            "class Test {void test() { @SuppressWarnings(\"unused\") int foo; }}",
+            """
+            class Test {
+              void test() {
+                @SuppressWarnings("unused") int foo;
+              }
+            }
+            """,
             "Test",
             "Test.m");
     assertInTranslation(translation, "__unused int32_t foo;");
@@ -2690,7 +2842,13 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testSuppressedUnusedVariableFromMethod() throws IOException {
     String translation =
         translateSourceFile(
-            "class Test {@SuppressWarnings(\"unused\") void test() { int foo; }}",
+            """
+            class Test {
+              @SuppressWarnings("unused") void test() {
+                int foo;
+                }
+              }
+            """,
             "Test",
             "Test.m");
     assertInTranslation(translation, "__unused int32_t foo;");
@@ -2699,7 +2857,14 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testSuppressedUnusedVariableFromClass() throws IOException {
     String translation =
         translateSourceFile(
-            "@SuppressWarnings(\"unused\") class Test {void test() {   int foo; }}",
+            """
+            @SuppressWarnings("unused")
+            class Test {
+              void test() {
+                int foo;
+              }
+            }
+            """,
             "Test",
             "Test.m");
     assertInTranslation(translation, "__unused int32_t foo;");
@@ -2812,21 +2977,21 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testInstanceOfPatternVariableTranslationWithGuards() throws IOException {
     String translation =
         translateSourceFile(
-            String.join(
-                "\n",
-                "class Point {",
-                "  private final int x;",
-                "  private final int y;",
-                "  Point(int x, int y) { this.x = x; this.y = y; }",
-                "  @Override public boolean equals(Object o) {",
-                // Define instanceof pattern variable p with two guards.
-                "    if (o instanceof Point p && x == p.x && y == p.y) {",
-                "      return true;",
-                "    } else {",
-                "      return false;",
-                "    }",
-                "  }",
-                "}"),
+            // Define instanceof pattern variable p with two guards.
+            """
+            class Point {
+              private final int x;
+              private final int y;
+              Point(int x, int y) { this.x = x; this.y = y; }
+              @Override public boolean equals(Object o) {
+                if (o instanceof Point p && x == p.x && y == p.y) {
+                  return true;
+                } else {
+                  return false;
+                }
+              }
+            }
+            """,
             "Test",
             "Test.m");
     assertTranslatedLines(
@@ -2892,50 +3057,56 @@ public class StatementGeneratorTest extends GenerationTest {
   public void testNullSwitchExpressionCase() throws IOException {
     String translation =
         translateSourceFile(
-                "class Test {\n"
-                    + "  String testNullCase(String s) {\n"
-                    + "    String result = switch (s) {\n"
-                    + "      case null -> \"oops\";\n"
-                    + "      case \"Foo\", \"Bar\" -> \"great\";\n"
-                    + "      default -> \"okay\";\n"
-                    + "    };\n"
-                    + "    return result;"
-                    + "  }\n"
-                    + "}\n",
+                """
+                class Test {
+                  String testNullCase(String s) {
+                    String result = switch (s) {
+                      case null -> "oops";
+                      case "Foo", "Bar" -> "great";
+                      default -> "okay";
+                    };
+                    return result;
+                  }
+                }
+                """,
                 "Test",
                 "Test.m")
             .toString();
     assertTranslatedLines(
         translation,
-        "switch (JreIndexOfStr(s, (id[]){ nil, @\"Foo\", @\"Bar\" }, 3)) {",
-        "  case 0:",
-        "  return @\"oops\";",
-        "  case 1:",
-        "  case 2:",
-        "  return @\"great\";",
-        "  default:",
-        "  return @\"okay\";",
-        "}");
+        """
+        switch (JreIndexOfStr(s, (id[]){ nil, @\"Foo\", @\"Bar\" }, 3)) {
+          case 0:
+            return @"oops";
+          case 1:
+          case 2:
+            return @"great";
+          default:
+            return @"okay";
+        }
+        """);
   }
 
   // Test from https://openjdk.org/jeps/441: Improved enum constant case labels
   public void testQualifiedEnumNamesInSwitchExpressionCase() throws IOException {
     String translation =
         translateSourceFile(
-            "sealed interface Currency permits Coin {}\n"
-                + "enum Coin implements Currency { HEADS, TAILS }\n"
-                + "class Test {"
-                + "  void goodEnumSwitch1(Currency c) {\n"
-                + "    switch (c) {\n"
-                + "      case Coin.HEADS -> {\n"
-                + "        System.out.println(\"Heads\");\n"
-                + "      }\n"
-                + "      case Coin.TAILS -> {\n"
-                + "        System.out.println(\"Tails\");\n"
-                + "      }\n"
-                + "    }\n"
-                + "  }\n"
-                + "}",
+            """
+            sealed interface Currency permits Coin {}
+            enum Coin implements Currency { HEADS, TAILS }
+            class Test {
+              void goodEnumSwitch1(Currency c) {
+                switch (c) {
+                  case Coin.HEADS -> {
+                    System.out.println("Heads");
+                  }
+                  case Coin.TAILS -> {
+                    System.out.println("Tails");
+                  }
+                }
+              }
+            }
+            """,
             "Test",
             "Test.m");
     assertTranslatedLines(
@@ -2994,18 +3165,18 @@ public class StatementGeneratorTest extends GenerationTest {
         () -> {
           String translation =
               translateSourceFile(
-                  String.join(
-                      "\n",
-                      "class Test {",
-                      "  void test(Object obj) {",
-                      "    switch (obj) {",
-                      "      case Integer _ -> System.out.println(\"Is an integer\");",
-                      "      case Float _ -> System.out.println(\"Is a float\");",
-                      "      case String _ -> System.out.println(\"Is a String\");",
-                      "      default -> System.out.println(\"Default\");",
-                      "    }",
-                      "  }",
-                      "}"),
+                  """
+                  class Test {
+                    void test(Object obj) {
+                      switch (obj) {
+                        case Integer _ -> System.out.println("Is an integer");
+                        case Float _ -> System.out.println("Is a float");
+                        case String _ -> System.out.println("Is a String");
+                        default -> System.out.println("Default");
+                      }
+                    }
+                  }
+                  """,
                   "Test",
                   "Test.m");
           // Verify that the local variable is named "_", as javac uses an empty strings.
@@ -3048,19 +3219,19 @@ public class StatementGeneratorTest extends GenerationTest {
         () -> {
           String translation =
               translateSourceFile(
-                  String.join(
-                      "\n",
-                      "import java.sql.*;",
-                      "class Test {",
-                      "  void test(String url, String user, String pwd) {",
-                      "    try {",
-                      "      Connection _ = DriverManager.getConnection(url, user, pwd);",
-                      "      System.out.println(\"DB Connection successful\");",
-                      "    } catch (SQLException e) {",
-                      "      System.err.println(\"Exception \" + e);",
-                      "    }",
-                      "  }",
-                      "}"),
+                  """
+                  import java.sql.*;
+                  class Test {
+                    void test(String url, String user, String pwd) {
+                      try {
+                        Connection _ = DriverManager.getConnection(url, user, pwd);
+                        System.out.println("DB Connection successful");
+                      } catch (SQLException e) {
+                        System.err.println("Exception " + e);
+                      }
+                    }
+                  }
+                  """,
                   "Test",
                   "Test.m");
           // Verify that the local variable is named "_", as javac uses an empty strings.
@@ -3077,18 +3248,18 @@ public class StatementGeneratorTest extends GenerationTest {
         () -> {
           String translation =
               translateSourceFile(
-                  String.join(
-                      "\n",
-                      "import java.sql.*;",
-                      "class Test {",
-                      "  void test(String url, String user, String pwd) {",
-                      "    try (Connection _ = DriverManager.getConnection(url, user, pwd)) {",
-                      "      System.out.println(\"DB Connection successful\");",
-                      "    } catch (SQLException e) {",
-                      "      System.err.println(\"Exception \" + e);",
-                      "    }",
-                      "  }",
-                      "}"),
+                  """
+                  import java.sql.*;
+                  class Test {
+                    void test(String url, String user, String pwd) {
+                      try (Connection _ = DriverManager.getConnection(url, user, pwd)) {
+                        System.out.println("DB Connection successful");
+                      } catch (SQLException e) {
+                        System.err.println("Exception " + e);
+                      }
+                    }
+                  }
+                  """,
                   "Test",
                   "Test.m");
           // Verify that the local variable is named "_", as javac uses an empty strings.
@@ -3105,13 +3276,13 @@ public class StatementGeneratorTest extends GenerationTest {
         () -> {
           String translation =
               translateSourceFile(
-                  String.join(
-                      "\n",
-                      "class Test {",
-                      "  void test(Object obj) {",
-                      "    boolean b = obj instanceof String _;",
-                      "  }",
-                      "}"),
+                  """
+                  class Test {
+                    void test(Object obj) {
+                      boolean b = obj instanceof String _;
+                    }
+                  }
+                  """,
                   "Test",
                   "Test.m");
           // Verify that the local variable is named "_", as javac uses an empty strings.
