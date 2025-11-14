@@ -198,8 +198,7 @@ endif
 
 # Used to build JRE module.
 ifndef JAVA_PLATFORM
-JAVA_PLATFORM = \
-  $(shell $(JAVA_HOME)/bin/jmod describe $(JAVA_HOME)/jmods/java.base.jmod |grep -i '^platform'|cut -d' ' -f2)
+  JAVA_PLATFORM := $(shell $(J2OBJC_ROOT)/scripts/detect-java-platform.sh)
 endif
 
 ifndef MEMORY_MODEL_FLAG
