@@ -44,7 +44,7 @@ public final class ReflectionUtil {
   }
 
   /**
-   * Transpiled code that directly acccess the serialVersionUID field when reflection is stripped
+   * Transpiled code that directly access the serialVersionUID field when reflection is stripped
    * won't compile because this field is also stripped.
    *
    * <p>Accessing it via reflection allows the non-stripped code to keep the same behavior and
