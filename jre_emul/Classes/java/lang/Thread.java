@@ -788,6 +788,8 @@ public class Thread implements Runnable {
       }
   }
 
+  public static void onSpinWait() {}
+
   public final boolean isAlive() {
     int s = state;
     return s != STATE_NEW && s != STATE_TERMINATED;
