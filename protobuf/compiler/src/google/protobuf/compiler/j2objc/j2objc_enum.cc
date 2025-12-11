@@ -331,10 +331,10 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
     for (int i = 0; i < canonical_values_.size(); i++) {
       printer->Print(
           "+ ($classname$ *) $name$ {\n"
-          "  return $classname$_get_$original_name$();\n"
+          "  return $classname$_values_[$classname$_Enum_$original_name$];\n"
           "}\n",
-          "classname", ClassName(descriptor_),         //
-          "name", PropertyName(canonical_values_[i]),  //
+          "classname", ClassName(descriptor_),
+          "name", PropertyName(canonical_values_[i]),
           "original_name", canonical_values_[i]->name());
     }
   }
@@ -342,7 +342,7 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
   if (!descriptor_->is_closed()) {
     printer->Print(
         "+ ($classname$ *) UNRECOGNIZED {\n"
-        "  return $classname$_get_UNRECOGNIZED();\n"
+        "  return $classname$_values_[$classname$_Enum_UNRECOGNIZED];\n"
         "}\n",
         "classname", ClassName(descriptor_));
   }

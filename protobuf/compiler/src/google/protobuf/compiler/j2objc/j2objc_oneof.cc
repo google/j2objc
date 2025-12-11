@@ -307,7 +307,7 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
     for (int i = 0; i < descriptor_->field_count(); i++) {
       printer->Print(
           "+ ($classname$ *) $camel_case_name$ {\n"
-          "  return $classname$_get_$upper_name$();\n"
+          "  return $classname$_values_[$classname$_Enum_$upper_name$];\n"
           "}\n",
           "classname", CaseClassName(descriptor_), "upper_name",
           CaseValueName(descriptor_->field(i)), "camel_case_name",
@@ -315,7 +315,7 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
     }
     printer->Print(
         "+ ($classname$ *) $camel_case_name$ {\n"
-        "  return $classname$_get_$upper_name$();\n"
+        "  return $classname$_values_[$classname$_Enum_$upper_name$];\n"
         "}\n",
         "classname", CaseClassName(descriptor_), "upper_name",
         NotSetName(descriptor_), "camel_case_name",
