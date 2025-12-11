@@ -3381,39 +3381,39 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   return AUTORELEASE(newBuilder);
 }
 
-+ (ComGoogleProtobufGeneratedMessage *)getDefaultInstance {
++ (instancetype)getDefaultInstance {
   CGPDescriptor *descriptor = [self getDescriptor];
   return AUTORELEASE(CGPNewMessage(descriptor));
 }
 
-- (ComGoogleProtobufGeneratedMessage *)getDefaultInstanceForType {
+- (instancetype)getDefaultInstanceForType {
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
   return descriptor->defaultInstance_;
 }
 
-+ (id)parseFromWithByteArray:(IOSByteArray *)bytes {
++ (instancetype)parseFromWithByteArray:(IOSByteArray *)bytes {
   return CGPParseFromByteArray([self getDescriptor], bytes, nil);
 }
 
-+ (id)parseFromWithByteArray:(IOSByteArray *)bytes
++ (instancetype)parseFromWithByteArray:(IOSByteArray *)bytes
     withComGoogleProtobufExtensionRegistryLite:(CGPExtensionRegistryLite *)registry {
   return CGPParseFromByteArray([self getDescriptor], bytes, registry);
 }
 
-+ (id)parseFromWithComGoogleProtobufByteString:(CGPByteString *)byteString {
++ (instancetype)parseFromWithComGoogleProtobufByteString:(CGPByteString *)byteString {
   return CGPParseFromByteString([self getDescriptor], byteString, nil);
 }
 
-+ (id)parseFromWithComGoogleProtobufByteString:(CGPByteString *)byteString
-    withComGoogleProtobufExtensionRegistryLite:(CGPExtensionRegistryLite *)registry {
++ (instancetype)parseFromWithComGoogleProtobufByteString:(CGPByteString *)byteString
+              withComGoogleProtobufExtensionRegistryLite:(CGPExtensionRegistryLite *)registry {
   return CGPParseFromByteString([self getDescriptor], byteString, registry);
 }
 
-+ (id)parseFromNSData:(NSData *)data {
++ (instancetype)parseFromNSData:(NSData *)data {
   return [self parseFromNSData:data registry:nil];
 }
 
-+ (id)parseFromNSData:(NSData *)data registry:(CGPExtensionRegistryLite *)registry {
++ (instancetype)parseFromNSData:(NSData *)data registry:(CGPExtensionRegistryLite *)registry {
   CGPDescriptor *descriptor = [self getDescriptor];
   ComGoogleProtobufGeneratedMessage *msg = AUTORELEASE(CGPNewMessage(descriptor));
   CGPCodedInputStream codedStream([data bytes], (int)[data length]);
@@ -3426,21 +3426,21 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   return msg;
 }
 
-+ (id)parseFromWithJavaIoInputStream:(JavaIoInputStream *)input {
++ (instancetype)parseFromWithJavaIoInputStream:(JavaIoInputStream *)input {
   return CGPParseFromInputStream([self getDescriptor], input, nil);
 }
 
-+ (id)parseFromWithJavaIoInputStream:(JavaIoInputStream *)input
++ (instancetype)parseFromWithJavaIoInputStream:(JavaIoInputStream *)input
     withComGoogleProtobufExtensionRegistryLite:(CGPExtensionRegistryLite *)registry {
   return CGPParseFromInputStream([self getDescriptor], input, registry);
 }
 
-+ (id)parseDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input {
++ (instancetype)parseDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input {
   return CGPParseDelimitedFromInputStream([self getDescriptor], input, nil);
 }
 
-+ (id)parseDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input
-    withComGoogleProtobufExtensionRegistryLite:(CGPExtensionRegistryLite *)registry {
++ (instancetype)parseDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input
+             withComGoogleProtobufExtensionRegistryLite:(CGPExtensionRegistryLite *)registry {
   return CGPParseDelimitedFromInputStream([self getDescriptor], input, registry);
 }
 
@@ -3653,9 +3653,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   return [object_getClass(self) getDescriptor];
 }
 
-- (ComGoogleProtobufGeneratedMessage *)getDefaultInstanceForType {
+- (instancetype)getDefaultInstanceForType {
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
-  return descriptor->defaultInstance_;
+  return (id)descriptor->defaultInstance_;
 }
 
 - (id<ComGoogleProtobufMessage_Builder>)
@@ -3765,8 +3765,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   return GetAllFields(self);
 }
 
-- (id<ComGoogleProtobufMessage_Builder>)mergeFromWithComGoogleProtobufMessage:
-    (id<ComGoogleProtobufMessage>)message {
+- (instancetype)mergeFromWithComGoogleProtobufMessage:(id<ComGoogleProtobufMessage>)message {
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
   CGPDescriptor *otherDescriptor = [object_getClass(message) getDescriptor];
   if (descriptor != otherDescriptor) {
@@ -3840,7 +3839,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   return self;
 }
 
-- (id<ComGoogleProtobufMessage_Builder>)mergeFromWithByteArray:(IOSByteArray *)data {
+- (instancetype)mergeFromWithByteArray:(IOSByteArray *)data {
   return [self mergeFromWithByteArray:data withComGoogleProtobufExtensionRegistryLite:nil];
 }
 

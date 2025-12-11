@@ -169,34 +169,12 @@ void MessageLiteGenerator::GenerateHeader(io::Printer* printer) {
       "\n"
       "// in j2objc_message_lite.cc \n"
       "@interface $classname$ : $superclassname$<$classname$OrBuilder>\n\n"
-      "+ (nonnull $classname$ *)getDefaultInstance;\n"
-      "- (nonnull $classname$ *)getDefaultInstanceForType;\n"
       "+ (nonnull $classname$_Builder *)newBuilder OBJC_METHOD_FAMILY_NONE;\n"
       "- (nonnull $classname$_Builder *)newBuilderForType "
       "OBJC_METHOD_FAMILY_NONE;\n"
       "- (nonnull $classname$_Builder *)toBuilder;\n"
       "+ (nonnull $classname$_Builder *)newBuilderWith$classname$:"
-      "($classname$ *)message OBJC_METHOD_FAMILY_NONE;\n"
-      "+ (nonnull ComGoogleProtobufDescriptors_Descriptor *)getDescriptor;\n"
-      "+ ($classname$ *)parseFromWithByteArray:(IOSByteArray *)bytes;\n"
-      "+ ($classname$ *)parseFromWithByteArray:(IOSByteArray *)bytes "
-      "withComGoogleProtobufExtensionRegistryLite:"
-      "(ComGoogleProtobufExtensionRegistryLite *)registry;\n"
-      "+ ($classname$ *)parseFromNSData:(NSData *)data;\n"
-      "+ ($classname$ *)parseFromNSData:(NSData *)data registry:"
-      "(ComGoogleProtobufExtensionRegistryLite *)registry;\n"
-      "+ ($classname$ *)parseFromWithJavaIoInputStream:"
-      "(JavaIoInputStream *)input;\n"
-      "+ ($classname$ *)parseFromWithJavaIoInputStream:"
-      "(JavaIoInputStream *)bytes "
-      "withComGoogleProtobufExtensionRegistryLite:"
-      "(ComGoogleProtobufExtensionRegistryLite *)registry;\n"
-      "+ ($classname$ *)parseDelimitedFromWithJavaIoInputStream:"
-      "(JavaIoInputStream *)input;\n"
-      "+ ($classname$ *)parseDelimitedFromWithJavaIoInputStream:"
-      "(JavaIoInputStream *)bytes "
-      "withComGoogleProtobufExtensionRegistryLite:"
-      "(ComGoogleProtobufExtensionRegistryLite *)registry;\n",
+      "($classname$ *)message OBJC_METHOD_FAMILY_NONE;\n",
       "classname", ClassName(descriptor_), "superclassname", superclassName);
   if (descriptor_->field_count() > 0) {
     printer->Print("\n");
@@ -506,13 +484,9 @@ void MessageLiteGenerator::GenerateBuilderHeader(io::Printer* printer) {
       "$superclassname$<$classname$OrBuilder>\n"
       "\n"
       "- ($classname$ *)getDefaultInstanceForType;\n"
-      "- ($classname$_Builder *)mergeFromWith$classname$:"
-      "($classname$ *)message;\n"
-      "- ($classname$_Builder *)mergeFromWithComGoogleProtobufMessage:"
-      "(id<ComGoogleProtobufMessage>)message;\n"
+      "- (instancetype)mergeFromWith$classname$:($classname$ *)message;\n"
       "- ($classname$ *)build;\n"
-      "- ($classname$ *)buildPartial;\n"
-      "+ (nonnull ComGoogleProtobufDescriptors_Descriptor *)getDescriptor;\n",
+      "- ($classname$ *)buildPartial;\n",
       "classname", ClassName(descriptor_), "superclassname", superclassName);
 
   for (int i = 0; i < descriptor_->field_count(); i++) {

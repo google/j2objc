@@ -236,40 +236,12 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
         "classname", ClassName(descriptor_), "superclassname", superclassName);
   }
   printer->Print(
-      "+ (nonnull $classname$ *)getDefaultInstance;\n"
-      "- (nonnull $classname$ *)getDefaultInstanceForType;\n"
       "+ (nonnull $classname$_Builder *)newBuilder OBJC_METHOD_FAMILY_NONE;\n"
       "- (nonnull $classname$_Builder *)newBuilderForType "
       "OBJC_METHOD_FAMILY_NONE;\n"
       "- (nonnull $classname$_Builder *)toBuilder;\n"
       "+ (nonnull $classname$_Builder *)newBuilderWith$classname$:"
-      "($classname$ *)message OBJC_METHOD_FAMILY_NONE;\n"
-      "+ (nonnull ComGoogleProtobufDescriptors_Descriptor *)getDescriptor;\n"
-      "+ ($classname$ *)parseFromWithByteArray:(IOSByteArray *)bytes;\n"
-      "+ ($classname$ *)parseFromWithByteArray:(IOSByteArray *)bytes "
-      "withComGoogleProtobufExtensionRegistryLite:"
-      "(ComGoogleProtobufExtensionRegistryLite *)registry;\n"
-      "+ ($classname$ *)parseFromNSData:(NSData *)data;\n"
-      "+ ($classname$ *)parseFromNSData:(NSData *)data registry:"
-      "(ComGoogleProtobufExtensionRegistryLite *)registry;\n"
-      "+ ($classname$ *)parseFromWithJavaIoInputStream:"
-      "(JavaIoInputStream *)input;\n"
-      "+ ($classname$ *)parseFromWithJavaIoInputStream:"
-      "(JavaIoInputStream *)bytes "
-      "withComGoogleProtobufExtensionRegistryLite:"
-      "(ComGoogleProtobufExtensionRegistryLite *)registry;\n"
-      "+ ($classname$ *)parseFromWithComGoogleProtobufByteString:"
-      "(ComGoogleProtobufByteString *)byteString;\n"
-      "+ (id)parseFromWithComGoogleProtobufByteString:("
-      "ComGoogleProtobufByteString *)byteString "
-      "withComGoogleProtobufExtensionRegistryLite:"
-      "(ComGoogleProtobufExtensionRegistryLite *)registry;\n"
-      "+ ($classname$ *)parseDelimitedFromWithJavaIoInputStream:"
-      "(JavaIoInputStream *)input;\n"
-      "+ ($classname$ *)parseDelimitedFromWithJavaIoInputStream:"
-      "(JavaIoInputStream *)bytes "
-      "withComGoogleProtobufExtensionRegistryLite:"
-      "(ComGoogleProtobufExtensionRegistryLite *)registry;\n",
+      "($classname$ *)message OBJC_METHOD_FAMILY_NONE;\n",
       "classname", ClassName(descriptor_), "superclassname", superclassName);
 
   if (descriptor_->field_count() > 0) {
@@ -637,14 +609,10 @@ void MessageGenerator::GenerateBuilderHeader(io::Printer* printer) {
       "@interface $classname$_Builder : "
       "$superclassname$<$classname$OrBuilder>\n"
       "\n"
-      "- (nonnull $classname$ *)getDefaultInstanceForType;\n"
       "- (nonnull $classname$_Builder *)mergeFromWith$classname$:"
       "(nonnull $classname$ *)message;\n"
-      "- (nonnull $classname$_Builder *)mergeFromWithComGoogleProtobufMessage:"
-      "(nonnull id<ComGoogleProtobufMessage>)message;\n"
       "- (nonnull $classname$ *)build;\n"
-      "- (nonnull $classname$ *)buildPartial;\n"
-      "+ (nonnull ComGoogleProtobufDescriptors_Descriptor *)getDescriptor;\n",
+      "- (nonnull $classname$ *)buildPartial;\n",
       "classname", ClassName(descriptor_), "superclassname", superclassName);
 
   for (int i = 0; i < descriptor_->field_count(); i++) {

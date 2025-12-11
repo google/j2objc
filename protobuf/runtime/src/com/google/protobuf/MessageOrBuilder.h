@@ -42,7 +42,7 @@
 
 @protocol ComGoogleProtobufMessageOrBuilder <JavaObject>
 
-- (id<ComGoogleProtobufMessage>)getDefaultInstanceForType;
+- (instancetype)getDefaultInstanceForType;
 
 - (jint)getRepeatedFieldCountWithComGoogleProtobufDescriptors_FieldDescriptor:
     (ComGoogleProtobufDescriptors_FieldDescriptor *)descriptor;

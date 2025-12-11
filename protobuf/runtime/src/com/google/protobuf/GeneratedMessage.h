@@ -54,13 +54,26 @@ typedef ComGoogleProtobufGeneratedMessage_GeneratedExtension CGPGeneratedExtensi
 
 @interface ComGoogleProtobufGeneratedMessage : ComGoogleProtobufAbstractMessage
 
-+ (id)getDescriptor;
-+ (id)parseFromWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)byteString;
-+ (id)parseFromWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)byteString
++ (nonnull ComGoogleProtobufDescriptors_Descriptor *)getDescriptor;
++ (nonnull instancetype)getDefaultInstance;
+- (nonnull instancetype)getDefaultInstanceForType;
++ (instancetype)parseFromWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)byteString;
++ (instancetype)parseFromWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)byteString
+              withComGoogleProtobufExtensionRegistryLite:
+                  (ComGoogleProtobufExtensionRegistryLite *)registry;
++ (instancetype)parseFromNSData:(NSData *)data;
++ (instancetype)parseFromNSData:(NSData *)data
+                       registry:(ComGoogleProtobufExtensionRegistryLite *)registry;
++ (instancetype)parseFromWithByteArray:(IOSByteArray *)bytes;
++ (instancetype)parseFromWithByteArray:(IOSByteArray *)bytes
     withComGoogleProtobufExtensionRegistryLite:(ComGoogleProtobufExtensionRegistryLite *)registry;
-+ (id)parseFromNSData:(NSData *)data;
-+ (id)parseFromNSData:(NSData *)data registry:(ComGoogleProtobufExtensionRegistryLite *)registry;
-
++ (instancetype)parseFromWithJavaIoInputStream:(JavaIoInputStream *)input;
++ (instancetype)parseFromWithJavaIoInputStream:(JavaIoInputStream *)bytes
+    withComGoogleProtobufExtensionRegistryLite:(ComGoogleProtobufExtensionRegistryLite *)registry;
++ (instancetype)parseDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input;
++ (instancetype)parseDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)bytes
+             withComGoogleProtobufExtensionRegistryLite:
+                 (ComGoogleProtobufExtensionRegistryLite *)registry;
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage)
@@ -69,18 +82,19 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage)
 
 @interface ComGoogleProtobufGeneratedMessage_Builder : ComGoogleProtobufAbstractMessage_Builder
 
-- (id)mergeFromWithJavaIoInputStream:(JavaIoInputStream *)input;
-- (id)mergeFromWithJavaIoInputStream:(JavaIoInputStream *)input
+- (instancetype)mergeFromWithJavaIoInputStream:(JavaIoInputStream *)input;
+- (instancetype)mergeFromWithJavaIoInputStream:(JavaIoInputStream *)input
     withComGoogleProtobufExtensionRegistryLite:
         (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
-- (id)mergeFromWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)data;
-- (id)mergeFromWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)data
+- (instancetype)mergeFromWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)data;
+- (instancetype)mergeFromWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)data
+              withComGoogleProtobufExtensionRegistryLite:
+                  (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
+- (instancetype)mergeFromWithByteArray:(IOSByteArray *)data;
+- (instancetype)mergeFromWithByteArray:(IOSByteArray *)data
     withComGoogleProtobufExtensionRegistryLite:
         (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
-- (id)mergeFromWithByteArray:(IOSByteArray *)data;
-- (id)mergeFromWithByteArray:(IOSByteArray *)data
-    withComGoogleProtobufExtensionRegistryLite:
-        (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
+- (instancetype)mergeFromWithComGoogleProtobufMessage:(id<ComGoogleProtobufMessage>)message;
 
 @end
 
