@@ -367,12 +367,9 @@ FOUNDATION_EXPORT NSString *NSString_java_joinWithJavaLangCharSequence_withJavaL
 @interface JreStringCategoryDummy : NSObject
 @end
 
-// Use the category dummy to initialize static variables for the String class.
-FOUNDATION_EXPORT _Atomic(bool) NSString__initialized;
+J2OBJC_CLASS_DECLARATION(JreStringCategoryDummy);
 __attribute__((always_inline)) inline void NSString_initialize(void) {
-  if (__builtin_expect(!__c11_atomic_load(&NSString__initialized, __ATOMIC_ACQUIRE), 0)) {
-    [JreStringCategoryDummy class];
-  }
+    objc_opt_class(J2OBJC_CLASS_REFERENCE(JreStringCategoryDummy));
 }
 
 inline id<JavaUtilComparator> NSString_get_CASE_INSENSITIVE_ORDER(void);

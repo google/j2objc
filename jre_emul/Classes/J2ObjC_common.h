@@ -28,31 +28,31 @@
 #define __has_feature(x) 0  // Compatibility with non-clang compilers.
 #endif
 
-# ifndef OBJC_METHOD_FAMILY_NONE
-#  if __has_attribute(objc_method_family)
-#   define OBJC_METHOD_FAMILY_NONE __attribute__((objc_method_family(none)))
-#  else
-#   define OBJC_METHOD_FAMILY_NONE
-#  endif
-# endif
+#ifndef OBJC_METHOD_FAMILY_NONE
+#if __has_attribute(objc_method_family)
+#define OBJC_METHOD_FAMILY_NONE __attribute__((objc_method_family(none)))
+#else
+#define OBJC_METHOD_FAMILY_NONE
+#endif
+#endif
 
-# if __has_feature(objc_arc)
-#  define ARCBRIDGE __bridge
-#  define ARCBRIDGE_TRANSFER __bridge_transfer
-#  define ARC_CONSUME_PARAMETER __attribute((ns_consumed))
-#  define AUTORELEASE(x) x
-#  define RELEASE_(x) x
-#  define RETAIN_(x) x
-#  define RETAIN_AND_AUTORELEASE(x) x
-# else
-#  define ARCBRIDGE
-#  define ARCBRIDGE_TRANSFER
-#  define ARC_CONSUME_PARAMETER
-#  define AUTORELEASE(x) [x autorelease]
-#  define RELEASE_(x) [x release]
-#  define RETAIN_(x) [x retain]
-#  define RETAIN_AND_AUTORELEASE(x) [[x retain] autorelease]
-# endif
+#if __has_feature(objc_arc)
+#define ARCBRIDGE __bridge
+#define ARCBRIDGE_TRANSFER __bridge_transfer
+#define ARC_CONSUME_PARAMETER __attribute((ns_consumed))
+#define AUTORELEASE(x) x
+#define RELEASE_(x) x
+#define RETAIN_(x) x
+#define RETAIN_AND_AUTORELEASE(x) x
+#else
+#define ARCBRIDGE
+#define ARCBRIDGE_TRANSFER
+#define ARC_CONSUME_PARAMETER
+#define AUTORELEASE(x) [x autorelease]
+#define RELEASE_(x) [x release]
+#define RETAIN_(x) [x retain]
+#define RETAIN_AND_AUTORELEASE(x) [[x retain] autorelease]
+#endif
 
 // Support for -Xretain-autorelease-returns and -Xarc-autorelease-returns
 #if __has_feature(objc_arc)
@@ -122,9 +122,9 @@ __attribute__((always_inline)) inline id JreRetainedAutoreleasedReturnValue(id v
 #endif  // __has_feature(objc_arc)
 
 #if __has_feature(objc_arc_weak)
-# define WEAK_ __weak
+#define WEAK_ __weak
 #else
-# define WEAK_ __unsafe_unretained
+#define WEAK_ __unsafe_unretained
 #endif
 
 CF_EXTERN_C_BEGIN
@@ -162,8 +162,8 @@ NSString *JreStrcat(const char *types, ...);
 bool JreAnnotationEquals(id a1, id a2);
 int32_t JreAnnotationHashCode(id a);
 
-NSUInteger JreDefaultFastEnumeration(
-    id<JavaLangIterable> obj, NSFastEnumerationState *state, id __unsafe_unretained *stackbuf);
+NSUInteger JreDefaultFastEnumeration(id<JavaLangIterable> obj, NSFastEnumerationState *state,
+                                     id __unsafe_unretained *stackbuf);
 
 CF_EXTERN_C_END
 
@@ -177,8 +177,8 @@ CF_EXTERN_C_END
 #define nil_chk(p) (p ?: JreThrowNullPointerException())
 
 #if !__has_feature(objc_arc)
-__attribute__((always_inline)) inline id JreAutoreleasedAssign(
-    id *pIvar, NS_RELEASES_ARGUMENT id value) {
+__attribute__((always_inline)) inline id JreAutoreleasedAssign(id *pIvar,
+                                                               NS_RELEASES_ARGUMENT id value) {
   [*pIvar autorelease];
   return *pIvar = value;
 }
@@ -189,14 +189,14 @@ __attribute__((always_inline)) inline id JreAutoreleasedAssign(
  */
 #define J2OBJC_ARG(...) __VA_ARGS__
 
-#define J2OBJC_VOLATILE_ACCESS_DEFN(NAME, TYPE) \
+#define J2OBJC_VOLATILE_ACCESS_DEFN(NAME, TYPE)                                             \
   __attribute__((always_inline)) inline TYPE JreLoadVolatile##NAME(volatile_##TYPE *pVar) { \
-    return __c11_atomic_load(pVar, __ATOMIC_SEQ_CST); \
-  } \
-  __attribute__((always_inline)) inline TYPE JreAssignVolatile##NAME( \
-      volatile_##TYPE *pVar, TYPE value) { \
-    __c11_atomic_store(pVar, value, __ATOMIC_SEQ_CST); \
-    return value; \
+    return __c11_atomic_load(pVar, __ATOMIC_SEQ_CST);                                       \
+  }                                                                                         \
+  __attribute__((always_inline)) inline TYPE JreAssignVolatile##NAME(volatile_##TYPE *pVar, \
+                                                                     TYPE value) {          \
+    __c11_atomic_store(pVar, value, __ATOMIC_SEQ_CST);                                      \
+    return value;                                                                           \
   }
 
 J2OBJC_VOLATILE_ACCESS_DEFN(Boolean, bool)
@@ -215,7 +215,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, double)
  * @define J2OBJC_INITIALIZED_DEFN
  * @param CLASS The class for which the initialized flag is defined.
  */
-#define J2OBJC_INITIALIZED_DEFN(CLASS) _Atomic(bool) CLASS##__initialized = false;
+#define J2OBJC_INITIALIZED_DEFN(CLASS)
 
 /*!
  * Defines the code to set a class's initialized flag. This should be used at
@@ -224,23 +224,59 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, double)
  * @define J2OBJC_SET_INITIALIZED
  * @param CLASS The class who's flag is to be set.
  */
-#define J2OBJC_SET_INITIALIZED(CLASS) \
-  __c11_atomic_store(&CLASS##__initialized, true, __ATOMIC_RELEASE);
+#define J2OBJC_SET_INITIALIZED(CLASS)
+
+/*!
+ A type to represent an Objective-C class.
+ This is actually an `objc_class` but the runtime headers will not allow us to
+ reference `objc_class`, so we have defined our own.
+
+ Adapted from:
+ https://github.com/protocolbuffers/protobuf/blob/master/objectivec/GPBUtilities_PackagePrivate.h
+*/
+typedef struct J2ObjCClass_t J2ObjCClass_t;
+
+/*!
+ Macros for generating a Class from a class name. These are used wherever a
+ static Objective-C class reference is needed for a generated class. Unlike
+ "[classname class]", this macro doesn't trigger class initialization, avoiding
+ the chance of Objective-C initialization deadlocks.
+
+ Adapted from:
+ https://github.com/protocolbuffers/protobuf/blob/master/objectivec/GPBUtilities_PackagePrivate.h
+ */
+#define J2OBJC_CLASS_SYMBOL_NAME(name) OBJC_CLASS_$_##name
+#define J2OBJC_CLASS_REFERENCE(name) \
+    ((__bridge Class)&(J2OBJC_CLASS_SYMBOL_NAME(name)))
+#define J2OBJC_CLASS_DECLARATION(name) \
+    extern const J2ObjCClass_t J2OBJC_CLASS_SYMBOL_NAME(name)
+
+// Compiler function to get the class of an object. This will cause the class to be initialized as
+// a side effect.
+FOUNDATION_EXPORT Class _Nullable objc_opt_class(id _Nullable obj);
 
 /*!
  * Defines an init function for a class that will ensure that the class is
  * initialized. For class "Foo" the function will have the following signature:
  *   inline void Foo_initialize();
  *
+ * We are using `objc_opt_class here instead of `[Class class]` because we found that the latter
+ * was causing the generation of several equivalent blocks of code in the generated code.
+ *
+ *   adrp       x8, #0x10b5a6000                            ; CODE XREF=sub_101f4b798+112
+ *   ldr        x0, [x8, #0x520]   ; argument "class" for method imp___stubs__objc_opt_class
+ *   b          imp___stubs__objc_opt_class
+ *
+ * This appears to be a bug in the ICF pass in the linker that is not removing the duplicate
+ * blocks.
+ *
  * @define J2OBJC_STATIC_INIT
  * @param CLASS The class to declare the init function for.
  */
-#define J2OBJC_STATIC_INIT(CLASS)                                                           \
-  FOUNDATION_EXPORT _Atomic(bool) CLASS##__initialized;                                     \
-  __attribute__((always_inline)) inline void CLASS##_initialize(void) {                     \
-    if (__builtin_expect(!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE), 0)) { \
-      [CLASS class];                                                                        \
-    }                                                                                       \
+#define J2OBJC_STATIC_INIT(CLASS)                                       \
+  J2OBJC_CLASS_DECLARATION(CLASS);                                      \
+  __attribute__((always_inline)) inline void CLASS##_initialize(void) { \
+    objc_opt_class(J2OBJC_CLASS_REFERENCE(CLASS));                      \
   }
 
 /*!
@@ -259,8 +295,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, double)
  * @define J2OBJC_TYPE_LITERAL_HEADER
  * @param TYPE The name of the type to declare the accessor for.
  */
-#define J2OBJC_TYPE_LITERAL_HEADER(TYPE) \
-  FOUNDATION_EXPORT IOSClass *TYPE##_class_(void);
+#define J2OBJC_TYPE_LITERAL_HEADER(TYPE) FOUNDATION_EXPORT IOSClass *TYPE##_class_(void);
 
 /*!
  * Defines the type literal accessor for a class or enum type. This macro should
@@ -308,26 +343,26 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, double)
 #else  // J2OBJC_STRICT_FIELD_ASSIGN
 
 #if __has_feature(objc_arc)
-#define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
+#define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE)                                                 \
   __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-    return instance->FIELD = value; \
+    return instance->FIELD = value;                                                             \
   }
 #else
-#define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
+#define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE)                                                 \
   __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-    return JreStrongAssign(&instance->FIELD, value); \
-  }\
-  __attribute__((unused)) static inline TYPE CLASS##_setAndConsume_##FIELD( \
-        CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) { \
-    return JreStrongAssignAndConsume(&instance->FIELD, value); \
+    return JreStrongAssign(&instance->FIELD, value);                                            \
+  }                                                                                             \
+  __attribute__((unused)) static inline TYPE CLASS##_setAndConsume_##FIELD(                     \
+      CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) {                                       \
+    return JreStrongAssignAndConsume(&instance->FIELD, value);                                  \
   }
 #endif
 
 #endif  // J2OBJC_STRICT_FIELD_ASSIGN
 
-#define J2OBJC_VOLATILE_FIELD_SETTER(CLASS, FIELD, TYPE) \
+#define J2OBJC_VOLATILE_FIELD_SETTER(CLASS, FIELD, TYPE)                                        \
   __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-    return JreVolatileStrongAssign(&instance->FIELD, value); \
+    return JreVolatileStrongAssign(&instance->FIELD, value);                                    \
   }
 
 /*!
@@ -337,34 +372,12 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, double)
  *
  * @define J2OBJC_ETERNAL_SINGLETON
  */
-#define J2OBJC_ETERNAL_SINGLETON \
-  - (id)retain { return self; } \
-  - (oneway void)release {} \
-  - (id)autorelease { return self; }
+#define J2OBJC_ETERNAL_SINGLETON              \
+  -(id)retain {                               \
+    return self;                              \
+  }                                           \
+  -(oneway void)release{} - (id)autorelease { \
+    return self;                              \
+  }
 
-/*!
- A type to represent an Objective C class.
- This is actually an `objc_class` but the runtime headers will not allow us to
- reference `objc_class`, so we have defined our own.
-
- Adapted from:
- https://github.com/protocolbuffers/protobuf/blob/master/objectivec/GPBRuntimeTypes.h
-*/
-typedef struct J2ObjCClass_t J2ObjCClass_t;
-
-/*!
- Macros for generating a Class from a class name. These are used wherever a
- static Objective C class reference is needed for a generated class. Unlike
- "[classname class]", this macro doesn't trigger class initialization, avoiding
- the chance of Objective C initialization deadlocks.
-
- Adapted from:
- https://github.com/protocolbuffers/protobuf/blob/master/objectivec/GPBUtilities_PackagePrivate.h
- */
-#define J2OBJC_CLASS_SYMBOL(name) OBJC_CLASS_$_##name
-#define J2OBJC_CLASS_REFERENCE(name) \
-    ((__bridge Class)&(J2OBJC_CLASS_SYMBOL(name)))
-#define J2OBJC_CLASS_DECLARATION(name) \
-    extern const J2ObjCClass_t J2OBJC_CLASS_SYMBOL(name)
-
-#endif // _J2OBJC_COMMON_H_
+#endif  // _J2OBJC_COMMON_H_
