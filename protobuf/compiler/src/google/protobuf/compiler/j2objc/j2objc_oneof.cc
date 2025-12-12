@@ -218,7 +218,6 @@ void OneofGenerator::GenerateHeader(io::Printer* printer) {
   }
 
   printer->Print(
-      "inline $classname$ *$classname$_get_$name$(void);\n"
       "J2OBJC_ENUM_CONSTANT($classname$, $name$)\n",
       "classname", CaseClassName(descriptor_), "name", NotSetName(descriptor_));
 }
