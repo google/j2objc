@@ -228,18 +228,58 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, double)
   __c11_atomic_store(&CLASS##__initialized, true, __ATOMIC_RELEASE);
 
 /*!
+ A type to represent an Objective-C class.
+ This is actually an `objc_class` but the runtime headers will not allow us to
+ reference `objc_class`, so we have defined our own.
+
+ Adapted from:
+ https://github.com/protocolbuffers/protobuf/blob/master/objectivec/GPBUtilities_PackagePrivate.h
+*/
+typedef struct J2ObjCClass_t J2ObjCClass_t;
+
+/*!
+ Macros for generating a Class from a class name. These are used wherever a
+ static Objective-C class reference is needed for a generated class. Unlike
+ "[classname class]", this macro doesn't trigger class initialization, avoiding
+ the chance of Objective-C initialization deadlocks.
+
+ Adapted from:
+ https://github.com/protocolbuffers/protobuf/blob/master/objectivec/GPBUtilities_PackagePrivate.h
+ */
+#define J2OBJC_CLASS_SYMBOL_NAME(name) OBJC_CLASS_$_##name
+#define J2OBJC_CLASS_REFERENCE(name) \
+    ((__bridge Class)&(J2OBJC_CLASS_SYMBOL_NAME(name)))
+#define J2OBJC_CLASS_DECLARATION(name) \
+    extern const J2ObjCClass_t J2OBJC_CLASS_SYMBOL_NAME(name)
+
+// Compiler function to get the class of an object. This will cause the class to be initialized as
+// a side effect.
+FOUNDATION_EXPORT Class _Nullable objc_opt_class(id _Nullable obj);
+
+/*!
  * Defines an init function for a class that will ensure that the class is
  * initialized. For class "Foo" the function will have the following signature:
  *   inline void Foo_initialize();
+ *
+ * We are using `objc_opt_class here instead of `[Class class]` because we found that the latter
+ * was causing the generation of several equivalent blocks of code in the generated code.
+ *
+ *   adrp       x8, #0x10b5a6000                            ; CODE XREF=sub_101f4b798+112
+ *   ldr        x0, [x8, #0x520]   ; argument "class" for method imp___stubs__objc_opt_class
+ *   b          imp___stubs__objc_opt_class
+ *
+ * This appears to be a bug in the ICF pass in the linker that is not removing the duplicate
+ * blocks.
  *
  * @define J2OBJC_STATIC_INIT
  * @param CLASS The class to declare the init function for.
  */
 #define J2OBJC_STATIC_INIT(CLASS)                                                           \
+  J2OBJC_CLASS_DECLARATION(CLASS);                                                          \
   FOUNDATION_EXPORT _Atomic(bool) CLASS##__initialized;                                     \
   __attribute__((always_inline)) inline void CLASS##_initialize(void) {                     \
     if (__builtin_expect(!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE), 0)) { \
-      [CLASS class];                                                                        \
+      objc_opt_class(J2OBJC_CLASS_REFERENCE(CLASS));                                        \
     }                                                                                       \
   }
 
@@ -342,29 +382,5 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, double)
   - (oneway void)release {} \
   - (id)autorelease { return self; }
 
-/*!
- A type to represent an Objective C class.
- This is actually an `objc_class` but the runtime headers will not allow us to
- reference `objc_class`, so we have defined our own.
-
- Adapted from:
- https://github.com/protocolbuffers/protobuf/blob/master/objectivec/GPBRuntimeTypes.h
-*/
-typedef struct J2ObjCClass_t J2ObjCClass_t;
-
-/*!
- Macros for generating a Class from a class name. These are used wherever a
- static Objective C class reference is needed for a generated class. Unlike
- "[classname class]", this macro doesn't trigger class initialization, avoiding
- the chance of Objective C initialization deadlocks.
-
- Adapted from:
- https://github.com/protocolbuffers/protobuf/blob/master/objectivec/GPBUtilities_PackagePrivate.h
- */
-#define J2OBJC_CLASS_SYMBOL(name) OBJC_CLASS_$_##name
-#define J2OBJC_CLASS_REFERENCE(name) \
-    ((__bridge Class)&(J2OBJC_CLASS_SYMBOL(name)))
-#define J2OBJC_CLASS_DECLARATION(name) \
-    extern const J2ObjCClass_t J2OBJC_CLASS_SYMBOL(name)
 
 #endif // _J2OBJC_COMMON_H_
