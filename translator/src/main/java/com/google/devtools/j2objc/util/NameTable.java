@@ -1056,6 +1056,22 @@ public class NameTable {
     }
   }
 
+  public String getNativeKotlinEnumConstantName(
+      TypeElement enumTypeElement, EnumConstantDeclaration constantDeclaration) {
+    return getNativeKotlinEnumConstantName(
+        enumTypeElement, constantDeclaration.getVariableElement());
+  }
+
+  public String getNativeKotlinEnumConstantName(
+      TypeElement enumTypeElement, VariableElement constantVariableElement) {
+    // Note that we stick to J2objc type name conventions here, avoiding type name churn in
+    // addition to the literal name change.
+    String enumBaseName = getFullName(enumTypeElement) + "_Enum";
+    String constantSuffix = getVariableBaseName(constantVariableElement);
+    constantSuffix = camelCaseName(constantSuffix, true);
+    return enumBaseName + constantSuffix;
+  }
+
   public String getNativeEnumSwiftConstantName(EnumConstantDeclaration constantDeclaration) {
     return camelCaseName(getVariableBaseName(constantDeclaration.getVariableElement()), false);
   }
