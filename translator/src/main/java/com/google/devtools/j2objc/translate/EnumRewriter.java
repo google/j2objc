@@ -353,6 +353,13 @@ public class EnumRewriter extends UnitTreeVisitor {
 
       node.addBodyDeclaration(
           NativeDeclaration.newInnerDeclaration(
+              UnicodeUtils.format("@property(readonly) %s nsEnum%s;", nativeName, segmentName),
+              UnicodeUtils.format(
+                  "- (%s)nsEnum {\n" + "  return (%s)[self ordinal];\n" + "}\n\n",
+                  nativeName, nativeName)));
+
+      node.addBodyDeclaration(
+          NativeDeclaration.newInnerDeclaration(
               UnicodeUtils.format("+ (%s *)fromNSEnum:(%s)value;\n", typeName, nativeName),
               UnicodeUtils.format(
                   "+ (%s *)fromNSEnum:(%s)nativeValue {\n"
@@ -368,7 +375,7 @@ public class EnumRewriter extends UnitTreeVisitor {
       node.addBodyDeclaration(
           NativeDeclaration.newInnerDeclaration(
               UnicodeUtils.format(
-                  "- (%s)ordinal NS_SWIFT_UNAVAILABLE(\"Use .enumValue\")%s;\n",
+                  "- (%s)ordinal NS_SWIFT_UNAVAILABLE(\"Use .nsEnum\")%s;\n",
                   ordinalName, segmentName),
               UnicodeUtils.format(
                   "- (%s)ordinal {\n" + "  return (%s)[super ordinal];\n" + "}\n\n",
