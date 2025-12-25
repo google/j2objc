@@ -127,6 +127,18 @@ __attribute__((always_inline)) inline id JreRetainedAutoreleasedReturnValue(id v
 # define WEAK_ __unsafe_unretained
 #endif
 
+#ifndef J2OBJC_EXTERNALLY_RETAINED
+#if __has_feature(objc_arc) && __has_attribute(objc_externally_retained)
+#   define J2OBJC_EXTERNALLY_RETAINED              __attribute__((objc_externally_retained))
+#   define J2OBJC_ASSUME_EXTERNALLY_RETAINED_BEGIN _Pragma("clang attribute J2OBJC_ASSUME_EXTERNALLY_RETAINED.push(__attribute__((objc_externally_retained)), apply_to=any(function, block, objc_method))")
+#   define J2OBJC_ASSUME_EXTERNALLY_RETAINED_END   _Pragma("clang attribute J2OBJC_ASSUME_EXTERNALLY_RETAINED.pop")
+#else // __OBJC__ && objc_arc && objc_externally_retained
+#   define J2OBJC_EXTERNALLY_RETAINED
+#   define J2OBJC_ASSUME_EXTERNALLY_RETAINED_BEGIN
+#   define J2OBJC_ASSUME_EXTERNALLY_RETAINED_END
+#endif // __OBJC__ && objc_arc && objc_externally_retained
+#endif // !J2OBJC_EXTERNALLY_RETAINED
+
 CF_EXTERN_C_BEGIN
 
 id JreThrowNullPointerException(void) __attribute__((noreturn));
