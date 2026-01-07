@@ -52,6 +52,8 @@ public class EnumRewriterTest extends GenerationTest {
         "  return (Test_Enum)[self ordinal];",
         "}");
     assertTranslatedLines(
+        translation, "- (Test_Enum)nsEnum {", "  return (Test_Enum)[self ordinal];", "}");
+    assertTranslatedLines(
         translation,
         "+ (Test *)fromNSEnum:(Test_Enum)nativeValue {",
         "  Test *javaEnum = Test_fromOrdinal(nativeValue);",
