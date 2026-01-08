@@ -518,6 +518,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "@end\n"
       "\n"
+      "J2OBJC_ASSUME_EXTERNALLY_RETAINED_BEGIN\n"
       "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
       "\n"
       "$classname$ * _Nonnull $classname$_getDefaultInstance(void) {\n"
@@ -575,6 +576,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "$classname$_descriptor_, input, registry);\n"
       "}\n",
       "classname", ClassName(descriptor_));
+    printer->Print("\nJ2OBJC_ASSUME_EXTERNALLY_RETAINED_END\n");
 
   for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
     OneofGenerator(descriptor_->oneof_decl(i)).GenerateSource(printer);
