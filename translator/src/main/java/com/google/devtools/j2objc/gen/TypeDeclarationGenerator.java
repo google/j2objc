@@ -215,6 +215,17 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       }
       print("\n");
 
+      // Provide aliases for compatibility with kotlin
+      for (EnumConstantDeclaration constant : constants) {
+        String nativeConstantName = nameTable.getNativeEnumConstantName(typeElement, constant);
+        String kotlinConstantName =
+            nameTable.getNativeKotlinEnumConstantName(typeElement, constant);
+        if (!nativeConstantName.equals(kotlinConstantName)) {
+          printf("#define %s %s\n", kotlinConstantName, nativeConstantName);
+        }
+      }
+      print("\n");
+
       // Use different types for transpiled Java ordinals (which expects ordinals to be int32_t) and
       // native code using the enum (where stricter ordinal types help clang warnings).
       printf(
