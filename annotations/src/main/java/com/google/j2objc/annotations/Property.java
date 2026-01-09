@@ -70,7 +70,7 @@ import java.lang.annotation.Target;
  * @author Harry Cheung
  */
 @Documented
-@Retention(RetentionPolicy.SOURCE)
+@Retention(RetentionPolicy.CLASS)
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.TYPE})
 public @interface Property {
 
