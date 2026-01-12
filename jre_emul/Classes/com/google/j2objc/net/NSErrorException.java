@@ -79,7 +79,7 @@ public class NSErrorException extends RuntimeException {
    */
   public native String getFailingURLString() /*-[
     NSDictionary *userInfo = ((NSError *)nsError_).userInfo;
-    return [userInfo objectForKey:NSURLErrorFailingURLStringErrorKey];
+    return [userInfo objectForKey:NSURLErrorFailingURLErrorKey];
   ]-*/;
 
   /**

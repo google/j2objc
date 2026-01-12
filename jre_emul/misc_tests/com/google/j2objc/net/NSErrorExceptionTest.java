@@ -30,7 +30,7 @@ public class NSErrorExceptionTest extends TestCase {
       [userInfo setObject:description_ forKey:NSLocalizedDescriptionKey];
     }
     if (failingURL) {
-      [userInfo setObject:failingURL forKey:NSURLErrorFailingURLStringErrorKey];
+      [userInfo setObject:failingURL forKey:NSURLErrorFailingURLErrorKey];
     }
     if (underlyingError) {
       [userInfo setObject:underlyingError forKey:NSUnderlyingErrorKey];
@@ -51,7 +51,7 @@ public class NSErrorExceptionTest extends TestCase {
     assertNull("unexpected cause", exception.getCause());
   }
 
-  public void testNextedError() {
+  public void testNestedError() {
     // NSURLErrorSecureConnectionFailed = -1200, NSURLErrorServerCertificateUntrusted = -1202.
     String untrustedDescription = "certificate untrusted";
     String url = "https://0.0.0.0";
