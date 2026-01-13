@@ -143,7 +143,7 @@ public class RecordExpanderTest extends GenerationTest {
         "return JreStrcat(\"$I$IC\", @\"Point[x=\", x_, @\", y=\", y_, ']');");
   }
 
-  public void testHashCodeUsesEqualsForObjectTypes() throws IOException {
+  public void testEqualsUsesObjectsEqualsForObjectTypes() throws IOException {
     String translation =
         translateSourceFile(
             "import java.util.List; public record Point(String s, int i, List<?>[] l) {}",
@@ -153,7 +153,8 @@ public class RecordExpanderTest extends GenerationTest {
         translation,
         "if (!([o isKindOfClass:[Point class]])) return false;",
         "Point *other = (Point *) cast_chk(o, [Point class]);",
-        "return JreStringEqualsEquals(((Point *) nil_chk(other))->s_, s_) "
-            + "&& other->i_ == i_ && JreObjectEqualsEquals(other->l_, l_);");
+        "return JavaUtilObjects_equalsWithId_withId_(((Point *) nil_chk(other))->s_, s_) "
+            + "&& other->i_ == i_ "
+            + "&& JavaUtilObjects_equalsWithId_withId_(other->l_, l_);");
   }
 }

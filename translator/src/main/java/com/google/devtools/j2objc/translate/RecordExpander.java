@@ -161,16 +161,26 @@ public class RecordExpander extends UnitTreeVisitor {
               .setTypeMirror(typeUtil.getBoolean())
               .setOperator(InfixExpression.Operator.CONDITIONAL_AND);
 
+      TypeElement objectsElement = elementUtil.getTypeElement("java.util.Objects");
+      ExecutableElement method =
+          ElementUtil.findMethod(objectsElement, "equals", "java.lang.Object", "java.lang.Object");
+      if (method == null) {
+        ErrorUtil.fatalError(
+            new NoSuchMethodError("java.util.Objects.equals(Object, Object)"), node.toString());
+      }
       for (RecordDeclaration.RecordComponent component : node.getRecordComponents()) {
         // other.<comp> == <comp>
         VariableElement field = ElementUtil.findField(record, component.toString());
-        InfixExpression operand =
-            new InfixExpression()
-                .setTypeMirror(typeUtil.getBoolean())
-                .setOperator(InfixExpression.Operator.EQUALS)
-                .addOperand(new FieldAccess(field, field.asType(), new SimpleName(otherVar)))
-                .addOperand(new SimpleName(field));
-        infixExpr.addOperand(operand);
+        infixExpr.addOperand(
+            field.asType().getKind().isPrimitive()
+                ? new InfixExpression()
+                    .setTypeMirror(typeUtil.getBoolean())
+                    .setOperator(InfixExpression.Operator.EQUALS)
+                    .addOperand(new FieldAccess(field, field.asType(), new SimpleName(otherVar)))
+                    .addOperand(new SimpleName(field))
+                : new MethodInvocation(new ExecutablePair(method), new SimpleName(objectsElement))
+                    .addArgument(new FieldAccess(field, field.asType(), new SimpleName(otherVar)))
+                    .addArgument(new SimpleName(field)));
       }
       block.addStatement(new ReturnStatement(infixExpr));
       node.addBodyDeclaration(equalsDecl);
