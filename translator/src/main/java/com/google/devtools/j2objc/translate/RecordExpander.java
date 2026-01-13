@@ -34,10 +34,10 @@ import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SimpleType;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
-import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
@@ -74,24 +74,7 @@ public class RecordExpander extends UnitTreeVisitor {
       if (decl.getKind() == TreeNode.Kind.METHOD_DECLARATION) {
         MethodDeclaration methodDecl = (MethodDeclaration) decl;
         if (ElementUtil.isConstructor(methodDecl.getExecutableElement())) {
-          // Check if it's the default constructor for a record.
-          List<? extends VariableElement> args = methodDecl.getExecutableElement().getParameters();
-          if (args.size() == node.getRecordComponents().size()) {
-            List<Statement> stmts = methodDecl.getBody().getStatements();
-            if (stmts.size() == 1
-                && stmts.get(0).getKind() == TreeNode.Kind.SUPER_CONSTRUCTOR_INVOCATION) {
-              for (VariableElement arg : args) {
-                VariableElement field =
-                    ElementUtil.findField(record, arg.getSimpleName().toString());
-                ExpressionStatement stmt =
-                    new ExpressionStatement(
-                        new Assignment(
-                            new FieldAccess(field, new ThisExpression(record.asType())),
-                            new SimpleName(arg)));
-                stmts.add(stmt);
-              }
-            }
-          }
+          maybeAddFieldInitialization(node, methodDecl);
         }
       }
     }
@@ -116,6 +99,58 @@ public class RecordExpander extends UnitTreeVisitor {
     maybeAddHashCode(node);
     maybeAddToString(node);
     node.validate();
+  }
+
+  private void maybeAddFieldInitialization(
+      RecordDeclaration recordDeclaration, MethodDeclaration constructorDeclaration) {
+    var stmts = constructorDeclaration.getBody().getStatements();
+    if (stmts.stream().noneMatch(s -> s.getKind() == Kind.SUPER_CONSTRUCTOR_INVOCATION)) {
+      // This is a delegating constructor, the component assignments are handled by the constructor
+      // that this one delegates to.
+      return;
+    }
+
+    if (areComponentsInitialized(recordDeclaration, constructorDeclaration)) {
+      // The constructor initializes components explicitly.
+      return;
+    }
+
+    TypeElement record = recordDeclaration.getTypeElement();
+    // Check if it's the default constructor for a record.
+    List<? extends VariableElement> args =
+        constructorDeclaration.getExecutableElement().getParameters();
+    if (args.size() == recordDeclaration.getRecordComponents().size()) {
+      for (VariableElement arg : args) {
+        VariableElement field = ElementUtil.findField(record, arg.getSimpleName().toString());
+        ExpressionStatement stmt =
+            new ExpressionStatement(
+                new Assignment(
+                    new FieldAccess(field, new ThisExpression(record.asType())),
+                    new SimpleName(arg)));
+        stmts.add(stmt);
+      }
+    }
+  }
+
+  private boolean areComponentsInitialized(
+      RecordDeclaration recordDeclaration, MethodDeclaration constructorDeclaration) {
+    boolean[] initializesComponents = {false};
+    constructorDeclaration.accept(
+        new UnitTreeVisitor(unit) {
+          @Override
+          public void endVisit(FieldAccess fieldAccess) {
+            var variableElement = fieldAccess.getVariableElement();
+            if (!ElementUtil.isStatic(variableElement)
+                && variableElement.getEnclosingElement() == recordDeclaration.getTypeElement()
+                && fieldAccess.getParent() instanceof Assignment assignment
+                && assignment.getLeftHandSide() == fieldAccess) {
+              // If the constructor initializes a component, then it must also initialize
+              // all of them.
+              initializesComponents[0] = true;
+            }
+          }
+        });
+    return initializesComponents[0];
   }
 
   private void maybeAddEquals(RecordDeclaration node) {
