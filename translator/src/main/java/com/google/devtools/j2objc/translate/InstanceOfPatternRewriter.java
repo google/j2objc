@@ -99,7 +99,8 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
 
     List<VariableElement> variablesToDeclare = new ArrayList<>();
     Expression condition =
-        computePatternCondition(expression, node.getPattern(), variablesToDeclare);
+        computePatternCondition(
+            expression, node.getPattern(), /* allowUnconditional= */ false, variablesToDeclare);
 
     for (var variableToDeclare : variablesToDeclare) {
       // Initialize the patternVariables to null. The implementation of patterns in switches creates
@@ -124,7 +125,10 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
   }
 
   private Expression computePatternCondition(
-      Expression expression, Pattern pattern, List<VariableElement> variablesToDeclare) {
+      Expression expression,
+      Pattern pattern,
+      boolean allowUnconditional,
+      List<VariableElement> variablesToDeclare) {
     switch (pattern) {
       case BindingPattern bindingPattern -> {
         VariableElement patternVariable = bindingPattern.getVariable().getVariableElement();
@@ -137,9 +141,12 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
               .setTypeMirror(typeUtil.getBoolean());
         }
 
+        boolean isUnconditional = allowUnconditional
+            && typeUtil.isAssignable(
+            expression.getTypeMirror(), patternVariable.asType());
+
         Expression instanceofLhs = expression.copy();
-        if (!(expression instanceof SimpleName)
-            && !patternVariable.asType().getKind().isPrimitive()) {
+        if (!(expression instanceof SimpleName) && !isUnconditional) {
           // Use a temporary variable to avoid evaluating the expression more than once and make
           // sure that user written property getters that might have side-effects are only
           // evaluated once.
@@ -154,9 +161,9 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
         variablesToDeclare.add(patternVariable);
         //  expression instanceof T && (patternVariable = (T) expression, true)
         return andCondition(
-            patternVariable.asType().getKind().isPrimitive()
-                // Primitives don't needs any checking. In the future when/if primitive patterns are
-                // incorporated in the Java language, this should be updated.
+             isUnconditional
+                // Unconditional patterns don't needs any checking. In the future when/if primitive
+                // patterns are incorporated in the Java language, this should be updated.
                 ? null
                 : new InstanceofExpression()
                     .setLeftOperand(instanceofLhs)
@@ -178,7 +185,13 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
         // (e instanceof Rec rec)
         Expression condition =
             computePatternCondition(
-                expression, new BindingPattern(tempVariable), variablesToDeclare);
+                expression,
+                new BindingPattern(tempVariable),
+                // The binding pattern resulting from the implementation of a deconstruction pattern
+                // cannot be uncondiional since its components will be accessed and hence it cannot
+                // allow nulls.
+                /* allowUnconditional */ false,
+                variablesToDeclare);
 
         var recordType = (TypeElement) ((ClassType) deconstructionPattern.getTypeMirror()).tsym;
         for (int i = 0; i < deconstructionPattern.getNestedPatterns().size(); i++) {
@@ -198,7 +211,9 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
 
           condition =
               andCondition(
-                  condition, computePatternCondition(property, nestedPattern, variablesToDeclare));
+                  condition,
+                  computePatternCondition(
+                      property, nestedPattern, /* allowUnconditional= */ true, variablesToDeclare));
         }
         return condition;
       }
