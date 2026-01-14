@@ -3314,6 +3314,7 @@ public class StatementGeneratorTest extends GenerationTest {
               int32_t i2 = 0;
               id o = create_Test_B_initWithId_withInt_withInt_(nil, 3, 4);
               if ([o isKindOfClass:[Test_B class]] && (rec = (Test_B *) o, true)\
+               && ([((Test_B *) nil_chk(rec)) a1], true) && ([((Test_B *) nil_chk(rec)) i], true)\
                && (i2 = (int32_t) [((Test_B *) nil_chk(rec)) i2], true)) {
               }
               """);
