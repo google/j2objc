@@ -80,28 +80,12 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
       return;
     }
 
-    int variableInsertionIndex = 0;
-    Expression expression = node.getLeftOperand();
-    // No need to generate a temporary variable if it is already a SimpleName.
-    if (!(expression instanceof SimpleName)) {
-      // Generate a temporary variable to preserve evaluation semantics since we can't guarantee
-      // that the expression doesn't have side effects and can be evaluated multiple times.
-      VariableElement tempVariable =
-          GeneratedVariableElement.newLocalVar("tmp", node.getLeftOperand().getTypeMirror(), null);
-      enclosingScopes
-          .peek()
-          .addStatement(
-              variableInsertionIndex++,
-              new VariableDeclarationStatement(tempVariable, node.getLeftOperand().copy()));
-      // tmp = expr
-      expression = new SimpleName(tempVariable);
-    }
-
     List<VariableElement> variablesToDeclare = new ArrayList<>();
     Expression condition =
         computePatternCondition(
-            expression, node.getPattern(), /* allowsNulls= */ false, variablesToDeclare);
+            node.getLeftOperand(), node.getPattern(), /* allowsNulls= */ false, variablesToDeclare);
 
+    int variableInsertionIndex = 0;
     for (var variableToDeclare : variablesToDeclare) {
       // Initialize the patternVariables to null. The implementation of patterns in switches creates
       // logic that prevents the objective-c compiler from determining that the variable is never
@@ -159,7 +143,7 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
               GeneratedVariableElement.newLocalVar("comp", expression.getTypeMirror(), null);
           variablesToDeclare.add(tempVariable);
           // (prop = r.prop()) instanceof ...
-          instanceofLhs = new Assignment(new SimpleName(tempVariable), expression);
+          instanceofLhs = new Assignment(new SimpleName(tempVariable), expression.copy());
           expression = new SimpleName(tempVariable);
         }
 

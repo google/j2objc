@@ -99,9 +99,10 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        id tmp = [((id<JavaUtilList>) nil_chk(l)) getWithInt:0];
+        id comp = nil;
         NSString *s = nil;
-        if ([tmp isKindOfClass:[NSString class]] && (s = (NSString *) tmp, true)) {
+        if ([comp = [((id<JavaUtilList>) nil_chk(l)) getWithInt:0] isKindOfClass:[NSString class]]\
+         && (s = (NSString *) comp, true)) {
           int32_t i = [((NSString *) nil_chk(s)) java_length];
         }
         """);
