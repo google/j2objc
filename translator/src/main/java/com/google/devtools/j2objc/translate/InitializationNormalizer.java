@@ -196,9 +196,12 @@ public class InitializationNormalizer extends UnitTreeVisitor {
    */
   private List<Statement> getInitLocation(MethodDeclaration node) {
     List<Statement> stmts = node.getBody().getStatements();
-    if (!stmts.isEmpty() && stmts.get(0) instanceof SuperConstructorInvocation) {
-      return stmts.subList(0, 1);
+    for (int i = 0; i < stmts.size(); i++) {
+      if (stmts.get(i) instanceof SuperConstructorInvocation) {
+        return stmts.subList(0, i + 1);
+      }
     }
+
     // java.lang.Object supertype is null. All other types should have a super() call.
     assert TypeUtil.isNone(
         ElementUtil.getDeclaringClass(node.getExecutableElement()).getSuperclass())

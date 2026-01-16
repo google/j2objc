@@ -475,4 +475,31 @@ public class InitializationNormalizerTest extends GenerationTest {
     // Was it moved to class initialization?
     assertNotInTranslation(translation, "JreStrongAssign(&test_CLASS_LOCK, nil);");
   }
+
+  public void testFlexibleConstructorBodies() throws IOException {
+    testOnJava25OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  """
+                  class Test {
+                    int x;
+                    Test() {
+                      this.x = 1;
+                      super();
+                    }
+                  }
+                  """,
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+              """
+              void Test_init(Test *self) {
+                self->x_ = 1;
+                NSObject_init(self);
+              }
+              """);
+        });
+  }
 }
