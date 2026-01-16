@@ -197,10 +197,11 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
                 /* allowsNulls= */ false,
                 variablesToDeclare);
 
-        var recordType = (TypeElement) ((ClassType) deconstructionPattern.getTypeMirror()).tsym;
+        var recordClassType = (ClassType) deconstructionPattern.getTypeMirror();
+        var recordTypeElement = (TypeElement) recordClassType.tsym;
         for (int i = 0; i < deconstructionPattern.getNestedPatterns().size(); i++) {
           var nestedPattern = deconstructionPattern.getNestedPatterns().get(i);
-          var component = recordType.getRecordComponents().get(i);
+          var component = recordTypeElement.getRecordComponents().get(i);
 
           if (nestedPattern instanceof AnyPattern) {
             // match-all patterns are treated as unconditional binding patterns with an unnamed
@@ -211,11 +212,14 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
                         "", component.getAccessor().getReturnType(), null));
           }
 
+          // Retrieve the parameterized type for the component accessor.
+          var accessorType = typeUtil.asMemberOf(recordClassType, component.getAccessor());
+
           // rec.component() instanceof Nested n
           Expression property =
               new MethodInvocation(
-                  new ExecutablePair(component.getAccessor()),
-                  component.getAccessor().getReturnType(),
+                  new ExecutablePair(component.getAccessor(), accessorType),
+                  accessorType.getReturnType(),
                   new SimpleName(tempVariable));
 
           condition =

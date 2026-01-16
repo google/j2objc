@@ -203,4 +203,34 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
          && (a = [((Test_B *) nil_chk(rec)) a2], true)) {
         """);
   }
+
+  public void testParametricRecordPatterns() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              record A<T>(T t) {}
+              void test() {
+                A<String> a = null;
+                boolean b;
+                b = a instanceof A(String s); // Unconditional pattern.
+                b = a instanceof A<String>(String s); // Unconditional pattern.
+                b = a instanceof A<?>(String s);
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        b = ([a isKindOfClass:[Test_A class]] && (rec_2 = a, true)\
+         && (s_2 = [((Test_A *) nil_chk(rec_2)) t], true));
+        b = ([a isKindOfClass:[Test_A class]] && (rec_1 = a, true)\
+         && (s_1 = [((Test_A *) nil_chk(rec_1)) t], true));
+        b = ([a isKindOfClass:[Test_A class]] && (rec = a, true)\
+         && [comp = [((Test_A *) nil_chk(rec)) t] isKindOfClass:[NSString class]] &&\
+         (s = (NSString *) comp, true));
+        """);
+  }
 }
