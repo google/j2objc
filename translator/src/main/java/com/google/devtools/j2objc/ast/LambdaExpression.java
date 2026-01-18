@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
@@ -49,16 +50,19 @@ public class LambdaExpression extends FunctionalExpression {
     return body.get();
   }
 
+  @CanIgnoreReturnValue
   public LambdaExpression setBody(TreeNode newBody) {
     body.set(newBody);
     return this;
   }
 
+  @CanIgnoreReturnValue
   @Override
   public LambdaExpression setTypeMirror(TypeMirror t) {
     return (LambdaExpression) super.setTypeMirror(t);
   }
 
+  @CanIgnoreReturnValue
   @Override
   public LambdaExpression setTypeElement(TypeElement e) {
     return (LambdaExpression) super.setTypeElement(e);
