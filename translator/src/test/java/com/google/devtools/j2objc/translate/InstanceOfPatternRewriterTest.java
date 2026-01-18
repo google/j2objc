@@ -86,11 +86,24 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
         translateSourceFile(
             """
             import java.util.List;
+            import java.util.function.Supplier;
+
             class Test {
+              // Note that there are two instanceof pattern expression with side effects in the
+              // initializer to make sure that there is only one block synthesized to declare all
+              // variables.
+              int i = new Object() instanceof Integer n && new Object() instanceof String s
+                  ? s.length() + n
+                  : 0;
               void test(List<Object> l) {
                 if (l.get(0) instanceof String s) {
                   int i = s.length();
                 }
+
+                Supplier<Integer> supplier = () ->
+                    new Object() instanceof Integer n && new Object() instanceof String s
+                        ? s.length() + n
+                        : 0;
               }
             }
             """,
@@ -102,8 +115,50 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
         id comp = nil;
         NSString *s = nil;
         if ([comp = [((id<JavaUtilList>) nil_chk(l)) getWithInt:0] isKindOfClass:[NSString class]]\
-         && (s = (NSString *) comp, true)) {
+            && (s = (NSString *) comp, true)) {
           int32_t i = [((NSString *) nil_chk(s)) java_length];
+        }
+        """);
+
+    assertTranslatedLines(
+        translation,
+        """
+        - (id)get {
+          id comp_1 = nil;
+          NSString *s_1 = nil;
+          id comp_2 = nil;
+          JavaLangInteger *n = nil;
+          return JreRetainedLocalValue([comp_2 =\
+               create_NSObject_init() isKindOfClass:[JavaLangInteger class]]\
+                  && (n = (JavaLangInteger *) comp_2, true)\
+                  && [comp_1 = create_NSObject_init() isKindOfClass:[NSString class]]\
+                  && (s_1 = (NSString *) comp_1, true)\
+                      ? JavaLangInteger_valueOfWithInt_([((NSString *) nil_chk(s_1)) java_length]\
+                         + [((JavaLangInteger *) nil_chk(n)) intValue])\
+                      : JavaLangInteger_valueOfWithInt_(0));
+        }
+        """);
+
+    assertTranslatedLines(
+        translation,
+        """
+        void Test_init(Test *self) {
+          NSObject_init(self);
+          self->i_ = ^ int32_t (){
+            {
+              id comp = nil;
+              NSString *s = nil;
+              id comp_1 = nil;
+              JavaLangInteger *n = nil;
+              return [comp_1 = create_NSObject_init() isKindOfClass:[JavaLangInteger class]]\
+                  && (n = (JavaLangInteger *) comp_1, true)\
+                  && [comp = create_NSObject_init() isKindOfClass:[NSString class]]\
+                  && (s = (NSString *) comp, true)\
+                    ? [((NSString *) nil_chk(s)) java_length]\
+                        + [((JavaLangInteger *) nil_chk(n)) intValue]\
+                    : 0;
+            }
+          }();
         }
         """);
   }
