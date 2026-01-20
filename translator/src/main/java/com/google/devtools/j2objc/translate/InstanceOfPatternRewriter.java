@@ -14,13 +14,17 @@
 
 package com.google.devtools.j2objc.translate;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.EmbeddedStatementExpression;
 import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InfixExpression.Operator;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
@@ -31,7 +35,9 @@ import com.google.devtools.j2objc.ast.Pattern;
 import com.google.devtools.j2objc.ast.Pattern.AnyPattern;
 import com.google.devtools.j2objc.ast.Pattern.BindingPattern;
 import com.google.devtools.j2objc.ast.Pattern.DeconstructionPattern;
+import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
@@ -39,9 +45,7 @@ import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.sun.tools.javac.code.Type.ClassType;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -50,28 +54,14 @@ import javax.lang.model.element.VariableElement;
  * Rewrites instance of patterns.
  *
  * <p>Rewrites instance of patterns by extracting the variable declaration and rewriting {@code expr
- * instanceof Class c} as {@code (X tmp = expr, c = tmp instanceof C ? (c = (C) tmp): null, c !=
- * null)}
+ * instanceof Class c} as {@code (tmp = expr) instanceof C && (c = (C) tmp, true)}
  *
  * @author Roberto Lublinerman
  */
 public class InstanceOfPatternRewriter extends UnitTreeVisitor {
 
-  private Deque<Block> enclosingScopes = new ArrayDeque<>();
-
   public InstanceOfPatternRewriter(CompilationUnit unit) {
     super(unit);
-  }
-
-  @Override
-  public boolean visit(Block node) {
-    enclosingScopes.push(node);
-    return true;
-  }
-
-  @Override
-  public void endVisit(Block node) {
-    enclosingScopes.pop();
   }
 
   @Override
@@ -84,6 +74,11 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
     Expression condition =
         computePatternCondition(
             node.getLeftOperand(), node.getPattern(), /* allowsNulls= */ false, variablesToDeclare);
+
+    // TODO(b/477277380): Ideally we could keep the variable declarations in the comma expressions
+    // and have a pass at the end that moves them to the right scope.
+    Block enclosingBlock =
+        variablesToDeclare.isEmpty() ? null : getBlockForVariableDeclarations(node);
 
     int variableInsertionIndex = 0;
     for (var variableToDeclare : variablesToDeclare) {
@@ -99,13 +94,39 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
                 new NumberLiteral(0, variableToDeclare.asType());
             default -> new NullLiteral(variableToDeclare.asType());
           };
-      enclosingScopes
-          .peek()
-          .addStatement(
-              variableInsertionIndex++,
-              new VariableDeclarationStatement(variableToDeclare, initializer));
+
+      enclosingBlock.addStatement(
+          variableInsertionIndex++,
+          new VariableDeclarationStatement(variableToDeclare, initializer));
     }
     node.replaceWith(condition);
+  }
+
+  /** Returns an enclosing block where to declare the pattern and temporary variables. */
+  private Block getBlockForVariableDeclarations(TreeNode node) {
+    while (!(node instanceof Block block)) {
+      node = node.getParent();
+      if (node instanceof FieldDeclaration fieldDeclaration) {
+        // The instanceof pattern is in a field initializer, no suitable block is found to
+        // declare the temporary variables. Hence, create a new block where to declare the variables
+        // and replace the field initializer with an embedded statement containing that block.
+        var block = new Block();
+        var embeddedStatement =
+            new EmbeddedStatementExpression()
+                .setTypeMirror(fieldDeclaration.getTypeMirror())
+                .setStatement(block);
+
+        // Reattach the initializer as the return value of the embedded statement.
+        var initializer = fieldDeclaration.getFragment().getInitializer();
+        initializer.remove();
+        block.addStatement(new ReturnStatement().setExpression(initializer));
+        fieldDeclaration.getFragment().setInitializer(embeddedStatement);
+
+        // And return an enclosing block where variables can be declared.
+        return block;
+      }
+    }
+    return checkNotNull(block);
   }
 
   private Expression computePatternCondition(

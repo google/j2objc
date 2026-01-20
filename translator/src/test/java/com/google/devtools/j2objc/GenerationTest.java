@@ -18,6 +18,7 @@ package com.google.devtools.j2objc;
 
 import static com.google.common.truth.Truth.assertThat;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.toList;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
@@ -365,8 +366,15 @@ public abstract class GenerationTest extends TestCase {
     System.arraycopy(rest, 0, expectedLines, 1, rest.length);
     int unmatchedLineIndex = unmatchedLineIndex(translation, expectedLines);
     if (unmatchedLineIndex != -1) {
-      fail("unmatched:\n\"" + expectedLines[unmatchedLineIndex] + "\"\n" + "expected lines:\n\""
-          + Joiner.on('\n').join(expectedLines) + "\"\nin:\n" + translation);
+      fail(
+          "unmatched:\n\""
+              + trim(expectedLines[unmatchedLineIndex])
+              + "\"\n"
+              + "expected lines:\n\""
+              + Joiner.on('\n')
+                  .join(Arrays.stream(expectedLines).map(GenerationTest::trim).collect(toList()))
+              + "\"\nin:\n"
+              + translation);
     }
   }
 
@@ -382,7 +390,7 @@ public abstract class GenerationTest extends TestCase {
         if (nextLine == null) {
           return i;
         }
-        if (!nextLine.trim().equals(lines[i].trim())) {
+        if (!trim(nextLine).equals(trim(lines[i]))) {
           // Check if there is a subsequent match.
           int subsequentMatch = unmatchedLineIndex(s.substring(index + 1), lines);
           if (subsequentMatch == -1) {
@@ -395,6 +403,10 @@ public abstract class GenerationTest extends TestCase {
     } finally {
       in.close();
     }
+  }
+
+  private static String trim(String s) {
+    return s.replaceAll("\\s+", " ").trim();
   }
 
   /**

@@ -87,6 +87,12 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
             """
             import java.util.List;
             class Test {
+              // Note that there are two instanceof pattern expression with side effects in the
+              // initializer to make sure that there is only one block synthesized to declare all
+              // variables.
+              int i = new Object() instanceof Integer n && new Object() instanceof String s
+                  ? s.length() + n
+                  : 0;
               void test(List<Object> l) {
                 if (l.get(0) instanceof String s) {
                   int i = s.length();
@@ -104,6 +110,29 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
         if ([comp = [((id<JavaUtilList>) nil_chk(l)) getWithInt:0] isKindOfClass:[NSString class]]\
          && (s = (NSString *) comp, true)) {
           int32_t i = [((NSString *) nil_chk(s)) java_length];
+        }
+        """);
+
+    assertTranslatedLines(
+        translation,
+        """
+        void Test_init(Test *self) {
+          NSObject_init(self);
+          self->i_ = ^ int32_t (){
+            {
+              id comp = nil;
+              NSString *s = nil;
+              id comp_1 = nil;
+              JavaLangInteger *n = nil;
+              return [comp_1 = create_NSObject_init() isKindOfClass:[JavaLangInteger class]]\
+                  && (n = (JavaLangInteger *) comp_1, true)\
+                  && [comp = create_NSObject_init() isKindOfClass:[NSString class]]\
+                  && (s = (NSString *) comp, true)\
+                    ? [((NSString *) nil_chk(s)) java_length]\
+                        + [((JavaLangInteger *) nil_chk(n)) intValue]\
+                    : 0;
+            }
+          }();
         }
         """);
   }
