@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
@@ -107,6 +108,7 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
   private Block getBlockForVariableDeclarations(TreeNode node) {
     while (!(node instanceof Block block)) {
       node = node.getParent();
+      checkState(!(node instanceof LambdaExpression));
       if (node instanceof FieldDeclaration fieldDeclaration) {
         // The instanceof pattern is in a field initializer, no suitable block is found to
         // declare the temporary variables. Hence, create a new block where to declare the variables
@@ -124,17 +126,6 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
         fieldDeclaration.getFragment().setInitializer(embeddedStatement);
 
         // And return an enclosing block where variables can be declared.
-        return block;
-      } else if (node instanceof LambdaExpression lambdaExpression) {
-        // This lambda has an expression in its rhs (as opposed to a block), otherwise theblock
-        // would have been found and returned.
-        var lambdaBody = (Expression) lambdaExpression.getBody();
-        var block = new Block();
-
-        // Reattach the body as the return value of the block.
-        lambdaBody.remove();
-        block.addStatement(new ReturnStatement().setExpression(lambdaBody));
-        lambdaExpression.setBody(block);
         return block;
       }
     }

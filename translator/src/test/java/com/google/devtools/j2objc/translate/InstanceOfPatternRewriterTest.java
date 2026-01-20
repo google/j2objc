@@ -124,16 +124,16 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
         translation,
         """
         - (id)get {
+          id comp = nil;
+          NSString *s = nil;
           id comp_1 = nil;
-          NSString *s_1 = nil;
-          id comp_2 = nil;
           JavaLangInteger *n = nil;
-          return JreRetainedLocalValue([comp_2 =\
-               create_NSObject_init() isKindOfClass:[JavaLangInteger class]]\
-                  && (n = (JavaLangInteger *) comp_2, true)\
-                  && [comp_1 = create_NSObject_init() isKindOfClass:[NSString class]]\
-                  && (s_1 = (NSString *) comp_1, true)\
-                      ? JavaLangInteger_valueOfWithInt_([((NSString *) nil_chk(s_1)) java_length]\
+          return JreRetainedLocalValue([comp_1 =\
+              create_NSObject_init() isKindOfClass:[JavaLangInteger class]]\
+                  && (n = (JavaLangInteger *) comp_1, true)\
+                  && [comp = create_NSObject_init() isKindOfClass:[NSString class]]\
+                  && (s = (NSString *) comp, true)\
+                      ? JavaLangInteger_valueOfWithInt_([((NSString *) nil_chk(s)) java_length]\
                          + [((JavaLangInteger *) nil_chk(n)) intValue])\
                       : JavaLangInteger_valueOfWithInt_(0));
         }

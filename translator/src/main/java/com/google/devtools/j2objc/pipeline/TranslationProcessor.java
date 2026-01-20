@@ -211,6 +211,12 @@ public class TranslationProcessor extends FileProcessor {
     new AbstractMethodRewriter(unit, deadCodeMap).run();
     ticker.tick("AbstractMethodRewriter");
 
+    // Before: Autoboxer - Must generate implementations so autoboxing can be applied to result.
+    // Before: InstanceOfPatternRewriter - so that there is a block where to add the
+    // temporary variable declarations.
+    new LambdaRewriter(unit).run();
+    ticker.tick("LambdaRewriter");
+
     // Before: InstanceOfPatternRewriter - to handle instanceof patterns from the switch rewrite.
     new SwitchConstructRewriter(unit).run();
     ticker.tick("SwitchConstructRewriter");
@@ -229,10 +235,6 @@ public class TranslationProcessor extends FileProcessor {
 
     new VariableRenamer(unit).run();
     ticker.tick("VariableRenamer");
-
-    // Before: Autoboxer - Must generate implementations so autoboxing can be applied to result.
-    new LambdaRewriter(unit).run();
-    ticker.tick("LambdaRewriter");
 
     // Add auto-boxing conversions.
     new Autoboxer(unit).run();
