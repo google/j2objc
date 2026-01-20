@@ -28,6 +28,7 @@ import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InfixExpression.Operator;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
+import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.NumberLiteral;
@@ -123,6 +124,17 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
         fieldDeclaration.getFragment().setInitializer(embeddedStatement);
 
         // And return an enclosing block where variables can be declared.
+        return block;
+      } else if (node instanceof LambdaExpression lambdaExpression) {
+        // This lambda has an expression in its rhs (as opposed to a block), otherwise theblock
+        // would have been found and returned.
+        var lambdaBody = (Expression) lambdaExpression.getBody();
+        var block = new Block();
+
+        // Reattach the body as the return value of the block.
+        lambdaBody.remove();
+        block.addStatement(new ReturnStatement().setExpression(lambdaBody));
+        lambdaExpression.setBody(block);
         return block;
       }
     }
