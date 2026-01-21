@@ -164,7 +164,7 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
           // sure that user written property getters that might have side-effects are only
           // evaluated once.
           VariableElement tempVariable =
-              GeneratedVariableElement.newLocalVar("comp", expression.getTypeMirror(), null);
+              GeneratedVariableElement.newLocalVar("tmp", expression.getTypeMirror(), null);
           variablesToDeclare.add(tempVariable);
           // (prop = r.prop()) instanceof ...
           instanceofLhs = new Assignment(new SimpleName(tempVariable), expression.copy());

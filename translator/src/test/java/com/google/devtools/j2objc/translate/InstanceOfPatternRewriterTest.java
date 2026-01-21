@@ -112,10 +112,10 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        id comp = nil;
+        id tmp = nil;
         NSString *s = nil;
-        if ([comp = [((id<JavaUtilList>) nil_chk(l)) getWithInt:0] isKindOfClass:[NSString class]]\
-            && (s = (NSString *) comp, true)) {
+        if ([tmp = [((id<JavaUtilList>) nil_chk(l)) getWithInt:0] isKindOfClass:[NSString class]]\
+            && (s = (NSString *) tmp, true)) {
           int32_t i = [((NSString *) nil_chk(s)) java_length];
         }
         """);
@@ -124,15 +124,15 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
         translation,
         """
         - (id)get {
-          id comp = nil;
+          id tmp = nil;
           NSString *s = nil;
-          id comp_1 = nil;
+          id tmp_1 = nil;
           JavaLangInteger *n = nil;
-          return JreRetainedLocalValue([comp_1 =\
+          return JreRetainedLocalValue([tmp_1 =\
               create_NSObject_init() isKindOfClass:[JavaLangInteger class]]\
-                  && (n = (JavaLangInteger *) comp_1, true)\
-                  && [comp = create_NSObject_init() isKindOfClass:[NSString class]]\
-                  && (s = (NSString *) comp, true)\
+                  && (n = (JavaLangInteger *) tmp_1, true)\
+                  && [tmp = create_NSObject_init() isKindOfClass:[NSString class]]\
+                  && (s = (NSString *) tmp, true)\
                       ? JavaLangInteger_valueOfWithInt_([((NSString *) nil_chk(s)) java_length]\
                          + [((JavaLangInteger *) nil_chk(n)) intValue])\
                       : JavaLangInteger_valueOfWithInt_(0));
@@ -146,14 +146,14 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
           NSObject_init(self);
           self->i_ = ^ int32_t (){
             {
-              id comp = nil;
+              id tmp = nil;
               NSString *s = nil;
-              id comp_1 = nil;
+              id tmp_1 = nil;
               JavaLangInteger *n = nil;
-              return [comp_1 = create_NSObject_init() isKindOfClass:[JavaLangInteger class]]\
-                  && (n = (JavaLangInteger *) comp_1, true)\
-                  && [comp = create_NSObject_init() isKindOfClass:[NSString class]]\
-                  && (s = (NSString *) comp, true)\
+              return [tmp_1 = create_NSObject_init() isKindOfClass:[JavaLangInteger class]]\
+                  && (n = (JavaLangInteger *) tmp_1, true)\
+                  && [tmp = create_NSObject_init() isKindOfClass:[NSString class]]\
+                  && (s = (NSString *) tmp, true)\
                     ? [((NSString *) nil_chk(s)) java_length]\
                         + [((JavaLangInteger *) nil_chk(n)) intValue]\
                     : 0;
@@ -244,7 +244,7 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
         translation,
         """
         Test_B *rec = nil;
-        id comp = nil;
+        id tmp = nil;
         Test_A *rec_1 = nil;
         int32_t i1 = 0;
         NSString *s = nil;
@@ -252,7 +252,7 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
         Test_A *a = nil;
         id o = create_Test_B_initWithId_withInt_withTest_A_(create_Test_A_initWithInt_withNSString_(1, @""), 3, create_Test_A_initWithInt_withNSString_(2, @"bye"));
         if ([o isKindOfClass:[Test_B class]] && (rec = (Test_B *) o, true)\
-         && [comp = [((Test_B *) nil_chk(rec)) a1] isKindOfClass:[Test_A class]] && (rec_1 = (Test_A *) comp, true)\
+         && [tmp = [((Test_B *) nil_chk(rec)) a1] isKindOfClass:[Test_A class]] && (rec_1 = (Test_A *) tmp, true)\
          && (i1 = (int32_t) [((Test_A *) nil_chk(rec_1)) i], true)\
          && (s = [((Test_A *) nil_chk(rec_1)) s], true)\
          && (i2 = (int32_t) [((Test_B *) nil_chk(rec)) i], true)\
@@ -285,8 +285,8 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
         b = ([a isKindOfClass:[Test_A class]] && (rec_1 = a, true)\
          && (s_1 = [((Test_A *) nil_chk(rec_1)) t], true));
         b = ([a isKindOfClass:[Test_A class]] && (rec = a, true)\
-         && [comp = [((Test_A *) nil_chk(rec)) t] isKindOfClass:[NSString class]] &&\
-         (s = (NSString *) comp, true));
+         && [tmp = [((Test_A *) nil_chk(rec)) t] isKindOfClass:[NSString class]] &&\
+         (s = (NSString *) tmp, true));
         """);
   }
 }
