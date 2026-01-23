@@ -68,6 +68,7 @@ import com.google.devtools.j2objc.translate.SwitchConstructRewriter;
 import com.google.devtools.j2objc.translate.SwitchRewriter;
 import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriter;
 import com.google.devtools.j2objc.translate.VarargsRewriter;
+import com.google.devtools.j2objc.translate.VariableDeclarationHoister;
 import com.google.devtools.j2objc.translate.VariableRenamer;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
@@ -229,6 +230,9 @@ public class TranslationProcessor extends FileProcessor {
     // Rewrite enhanced for loops into correct C code.
     new EnhancedForRewriter(unit).run();
     ticker.tick("EnhancedForRewriter");
+
+    new VariableDeclarationHoister(unit).run();
+    ticker.tick("VariableDeclarationHoister");
 
     new ComputeVariableModifiers(unit).run();
     ticker.tick("ComputeVariableModifiers");

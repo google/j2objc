@@ -372,7 +372,10 @@ public abstract class GenerationTest extends TestCase {
               + "\"\n"
               + "expected lines:\n\""
               + Joiner.on('\n')
-                  .join(Arrays.stream(expectedLines).map(GenerationTest::trim).collect(toList()))
+                  .join(
+                      Arrays.stream(expectedLines)
+                          .map(GenerationTest::trimKeepingIndentation)
+                          .collect(toList()))
               + "\"\nin:\n"
               + translation);
     }
@@ -407,6 +410,14 @@ public abstract class GenerationTest extends TestCase {
 
   private static String trim(String s) {
     return s.replaceAll("\\s+", " ").trim();
+  }
+
+  private static String trimKeepingIndentation(String s) {
+    int indentation = 0;
+    for (;
+        indentation < s.length() && Character.isWhitespace(s.charAt(indentation));
+        indentation++) {}
+    return " ".repeat(indentation) + trim(s);
   }
 
   /**

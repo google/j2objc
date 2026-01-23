@@ -40,8 +40,8 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        NSString *s = nil;
         id o = @"Hello";
+        NSString *s = nil;
         int32_t i = [o isKindOfClass:[NSString class]] && (s = (NSString *) o, true) ? [((NSString *) nil_chk(s)) java_length] : 0;
         """);
   }
@@ -68,16 +68,16 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        NSString *s = nil;
-        NSString *s_1 = nil;
         id o = @"Hello";
-        if ([o isKindOfClass:[NSString class]] && (s_1 = (NSString *) o, true)) {
-          int32_t i = [((NSString *) nil_chk(s_1)) java_length];
+        NSString *s = nil;
+        if ([o isKindOfClass:[NSString class]] && (s = (NSString *) o, true)) {
+          int32_t i = [((NSString *) nil_chk(s)) java_length];
         }
-        if (!([o isKindOfClass:[NSString class]] && (s = (NSString *) o, true))) {
+        NSString *s_1 = nil;
+        if (!([o isKindOfClass:[NSString class]] && (s_1 = (NSString *) o, true))) {
           return;
         }
-        int32_t j = [((NSString *) nil_chk(s)) java_length];
+        int32_t j = [((NSString *) nil_chk(s_1)) java_length];
         """);
   }
 
@@ -112,9 +112,9 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        id tmp = nil;
-        NSString *s = nil;
-        if ([tmp = [((id<JavaUtilList>) nil_chk(l)) getWithInt:0] isKindOfClass:[NSString class]]\
+          id tmp = nil;
+          NSString *s = nil;
+          if ([tmp = [((id<JavaUtilList>) nil_chk(l)) getWithInt:0] isKindOfClass:[NSString class]]\
             && (s = (NSString *) tmp, true)) {
           int32_t i = [((NSString *) nil_chk(s)) java_length];
         }
@@ -125,14 +125,14 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
         """
         - (id)get {
           id tmp = nil;
-          NSString *s = nil;
-          id tmp_1 = nil;
           JavaLangInteger *n = nil;
-          return JreRetainedLocalValue([tmp_1 =\
+          id tmp_1 = nil;
+          NSString *s = nil;
+          return JreRetainedLocalValue([tmp =\
               create_NSObject_init() isKindOfClass:[JavaLangInteger class]]\
-                  && (n = (JavaLangInteger *) tmp_1, true)\
-                  && [tmp = create_NSObject_init() isKindOfClass:[NSString class]]\
-                  && (s = (NSString *) tmp, true)\
+                  && (n = (JavaLangInteger *) tmp, true)\
+                  && [tmp_1 = create_NSObject_init() isKindOfClass:[NSString class]]\
+                  && (s = (NSString *) tmp_1, true)\
                       ? JavaLangInteger_valueOfWithInt_([((NSString *) nil_chk(s)) java_length]\
                          + [((JavaLangInteger *) nil_chk(n)) intValue])\
                       : JavaLangInteger_valueOfWithInt_(0));
@@ -147,16 +147,16 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
           self->i_ = ^ int32_t (){
             {
               id tmp = nil;
-              NSString *s = nil;
-              id tmp_1 = nil;
               JavaLangInteger *n = nil;
-              return [tmp_1 = create_NSObject_init() isKindOfClass:[JavaLangInteger class]]\
-                  && (n = (JavaLangInteger *) tmp_1, true)\
-                  && [tmp = create_NSObject_init() isKindOfClass:[NSString class]]\
-                  && (s = (NSString *) tmp, true)\
-                    ? [((NSString *) nil_chk(s)) java_length]\
-                        + [((JavaLangInteger *) nil_chk(n)) intValue]\
-                    : 0;
+              id tmp_1 = nil;
+              NSString *s = nil;
+              return [tmp = create_NSObject_init() isKindOfClass:[JavaLangInteger class]]\
+                  && (n = (JavaLangInteger *) tmp, true)\
+                  && [tmp_1 = create_NSObject_init() isKindOfClass:[NSString class]]\
+                  && (s = (NSString *) tmp_1, true)\
+                ? [((NSString *) nil_chk(s)) java_length]\
+                    + [((JavaLangInteger *) nil_chk(n)) intValue]\
+                : 0;
             }
           }();
         }
@@ -185,15 +185,15 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        NSString *s = nil;
-        NSString *s_1 = nil;
         id x = nil;
         id y = @"Hello";
-        if (x != nil && [y isKindOfClass:[NSString class]] && (s_1 = (NSString *) y, true)) {
-          int32_t i = [((NSString *) nil_chk(s_1)) java_length];
-        }
-        if (x != nil && ([y isKindOfClass:[NSString class]] && (s = (NSString *) y, true))) {
+        NSString *s = nil;
+        if (x != nil && [y isKindOfClass:[NSString class]] && (s = (NSString *) y, true)) {
           int32_t i = [((NSString *) nil_chk(s)) java_length];
+        }
+        NSString *s_1 = nil;
+        if (x != nil && ([y isKindOfClass:[NSString class]] && (s_1 = (NSString *) y, true))) {
+          int32_t i = [((NSString *) nil_chk(s_1)) java_length];
         }
         """);
   }
@@ -243,6 +243,7 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
+        id o = create_Test_B_initWithId_withInt_withTest_A_(create_Test_A_initWithInt_withNSString_(1, @""), 3, create_Test_A_initWithInt_withNSString_(2, @"bye"));
         Test_B *rec = nil;
         id tmp = nil;
         Test_A *rec_1 = nil;
@@ -250,13 +251,14 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
         NSString *s = nil;
         int32_t i2 = 0;
         Test_A *a = nil;
-        id o = create_Test_B_initWithId_withInt_withTest_A_(create_Test_A_initWithInt_withNSString_(1, @""), 3, create_Test_A_initWithInt_withNSString_(2, @"bye"));
         if ([o isKindOfClass:[Test_B class]] && (rec = (Test_B *) o, true)\
-         && [tmp = [((Test_B *) nil_chk(rec)) a1] isKindOfClass:[Test_A class]] && (rec_1 = (Test_A *) tmp, true)\
-         && (i1 = (int32_t) [((Test_A *) nil_chk(rec_1)) i], true)\
-         && (s = [((Test_A *) nil_chk(rec_1)) s], true)\
-         && (i2 = (int32_t) [((Test_B *) nil_chk(rec)) i], true)\
-         && (a = [((Test_B *) nil_chk(rec)) a2], true)) {
+            && [tmp = [((Test_B *) nil_chk(rec)) a1] isKindOfClass:[Test_A class]]\
+            && (rec_1 = (Test_A *) tmp, true)\
+            && (i1 = (int32_t) [((Test_A *) nil_chk(rec_1)) i], true)\
+            && (s = [((Test_A *) nil_chk(rec_1)) s], true)\
+            && (i2 = (int32_t) [((Test_B *) nil_chk(rec)) i], true)\
+            && (a = [((Test_B *) nil_chk(rec)) a2], true)) {
+        }
         """);
   }
 
@@ -280,13 +282,22 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        b = ([a isKindOfClass:[Test_A class]] && (rec_2 = a, true)\
-         && (s_2 = [((Test_A *) nil_chk(rec_2)) t], true));
-        b = ([a isKindOfClass:[Test_A class]] && (rec_1 = a, true)\
-         && (s_1 = [((Test_A *) nil_chk(rec_1)) t], true));
+        Test_A *a = nil;
+        bool b;
+        Test_A *rec = nil;
+        NSString *s = nil;
         b = ([a isKindOfClass:[Test_A class]] && (rec = a, true)\
-         && [tmp = [((Test_A *) nil_chk(rec)) t] isKindOfClass:[NSString class]] &&\
-         (s = (NSString *) tmp, true));
+            && (s = [((Test_A *) nil_chk(rec)) t], true));
+        Test_A *rec_1 = nil;
+        NSString *s_1 = nil;
+        b = ([a isKindOfClass:[Test_A class]] && (rec_1 = a, true)\
+            && (s_1 = [((Test_A *) nil_chk(rec_1)) t], true));
+        Test_A *rec_2 = nil;
+        id tmp = nil;
+        NSString *s_2 = nil;
+        b = ([a isKindOfClass:[Test_A class]] && (rec_2 = a, true)\
+            && [tmp = [((Test_A *) nil_chk(rec_2)) t] isKindOfClass:[NSString class]]\
+            && (s_2 = (NSString *) tmp, true));
         """);
   }
 }

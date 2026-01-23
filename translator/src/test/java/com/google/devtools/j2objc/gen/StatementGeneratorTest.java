@@ -3036,9 +3036,9 @@ public class StatementGeneratorTest extends GenerationTest {
         java.lang.String test(  java.lang.String str){
           java.lang.String msg=^{
             {
-              java.lang.String s=null;
-              java.lang.String s=null;
               int selector=0;
+              java.lang.String s=null;
+              java.lang.String s=null;
               if (str instanceof java.lang.String && (s=str, true) && ((java.lang.String)nil_chk(s)).length() > 10)         selector=1;
               else if (str == null)         selector=2;
               else if (str instanceof java.lang.String && (s=str, true))         selector=3;
@@ -3310,9 +3310,9 @@ public class StatementGeneratorTest extends GenerationTest {
           assertTranslatedLines(
               translation,
               """
+              id o = create_Test_B_initWithId_withInt_withInt_(nil, 3, 4);
               Test_B *rec = nil;
               int32_t i2 = 0;
-              id o = create_Test_B_initWithId_withInt_withInt_(nil, 3, 4);
               if ([o isKindOfClass:[Test_B class]] && (rec = (Test_B *) o, true)\
                && ([((Test_B *) nil_chk(rec)) a1], true) && ([((Test_B *) nil_chk(rec)) i], true)\
                && (i2 = (int32_t) [((Test_B *) nil_chk(rec)) i2], true)) {

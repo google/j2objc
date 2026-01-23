@@ -14,22 +14,16 @@
 
 package com.google.devtools.j2objc.translate;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 import com.google.devtools.j2objc.ast.Assignment;
-import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.EmbeddedStatementExpression;
 import com.google.devtools.j2objc.ast.Expression;
-import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InfixExpression.Operator;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
-import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.NumberLiteral;
@@ -37,18 +31,14 @@ import com.google.devtools.j2objc.ast.Pattern;
 import com.google.devtools.j2objc.ast.Pattern.AnyPattern;
 import com.google.devtools.j2objc.ast.Pattern.BindingPattern;
 import com.google.devtools.j2objc.ast.Pattern.DeconstructionPattern;
-import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
-import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
-import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.sun.tools.javac.code.Type.ClassType;
-import java.util.ArrayList;
-import java.util.List;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 
@@ -72,71 +62,13 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
       return;
     }
 
-    List<VariableElement> variablesToDeclare = new ArrayList<>();
-    Expression condition =
+    node.replaceWith(
         computePatternCondition(
-            node.getLeftOperand(), node.getPattern(), /* allowsNulls= */ false, variablesToDeclare);
-
-    // TODO(b/477277380): Ideally we could keep the variable declarations in the comma expressions
-    // and have a pass at the end that moves them to the right scope.
-    Block enclosingBlock =
-        variablesToDeclare.isEmpty() ? null : getBlockForVariableDeclarations(node);
-
-    int variableInsertionIndex = 0;
-    for (var variableToDeclare : variablesToDeclare) {
-      // Initialize the patternVariables to null. The implementation of patterns in switches creates
-      // logic that prevents the objective-c compiler from determining that the variable is never
-      // accessed uninitialized.
-
-      // Type patternVariable = null;
-      Expression initializer =
-          switch (variableToDeclare.asType().getKind()) {
-            case BOOLEAN -> new BooleanLiteral(false, variableToDeclare.asType());
-            case BYTE, SHORT, CHAR, INT, LONG, FLOAT, DOUBLE ->
-                new NumberLiteral(0, variableToDeclare.asType());
-            default -> new NullLiteral(variableToDeclare.asType());
-          };
-
-      enclosingBlock.addStatement(
-          variableInsertionIndex++,
-          new VariableDeclarationStatement(variableToDeclare, initializer));
-    }
-    node.replaceWith(condition);
-  }
-
-  /** Returns an enclosing block where to declare the pattern and temporary variables. */
-  private Block getBlockForVariableDeclarations(TreeNode node) {
-    while (!(node instanceof Block block)) {
-      node = node.getParent();
-      checkState(!(node instanceof LambdaExpression));
-      if (node instanceof FieldDeclaration fieldDeclaration) {
-        // The instanceof pattern is in a field initializer, no suitable block is found to
-        // declare the temporary variables. Hence, create a new block where to declare the variables
-        // and replace the field initializer with an embedded statement containing that block.
-        var block = new Block();
-        var embeddedStatement =
-            new EmbeddedStatementExpression()
-                .setTypeMirror(fieldDeclaration.getTypeMirror())
-                .setStatement(block);
-
-        // Reattach the initializer as the return value of the embedded statement.
-        var initializer = fieldDeclaration.getFragment().getInitializer();
-        initializer.remove();
-        block.addStatement(new ReturnStatement().setExpression(initializer));
-        fieldDeclaration.getFragment().setInitializer(embeddedStatement);
-
-        // And return an enclosing block where variables can be declared.
-        return block;
-      }
-    }
-    return checkNotNull(block);
+            node.getLeftOperand(), node.getPattern(), /* allowsNulls= */ false));
   }
 
   private Expression computePatternCondition(
-      Expression expression,
-      Pattern pattern,
-      boolean allowsNulls,
-      List<VariableElement> variablesToDeclare) {
+      Expression expression, Pattern pattern, boolean allowsNulls) {
     switch (pattern) {
       case BindingPattern bindingPattern -> {
         VariableElement patternVariable = bindingPattern.getVariable().getVariableElement();
@@ -158,6 +90,8 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
                   .setTypeMirror(typeUtil.getBoolean());
         }
 
+        var result = new CommaExpression();
+
         Expression instanceofLhs = expression.copy();
         if (!(expression instanceof SimpleName || isUnconditional)) {
           // Use a temporary variable to avoid evaluating the expression more than once and make
@@ -165,30 +99,36 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
           // evaluated once.
           VariableElement tempVariable =
               GeneratedVariableElement.newLocalVar("tmp", expression.getTypeMirror(), null);
-          variablesToDeclare.add(tempVariable);
+
+          // Type tmp = null
+          result.addExpression(
+              new VariableDeclarationExpression(tempVariable, getDefaultValue(tempVariable)));
+
           // (prop = r.prop()) instanceof ...
           instanceofLhs = new Assignment(new SimpleName(tempVariable), expression.copy());
           expression = new SimpleName(tempVariable);
         }
-
-        variablesToDeclare.add(patternVariable);
-        //  expression instanceof T && (patternVariable = (T) expression, true)
-        return andCondition(
-            isUnconditional
-                // Unconditional patterns don't needs any checking. In the future when/if primitive
-                // patterns are incorporated in the Java language, this should be updated.
-                ? null
-                : new InstanceofExpression()
-                    .setLeftOperand(instanceofLhs)
-                    .setRightOperand(Type.newType(patternVariable.asType()))
-                    .setTypeMirror(typeUtil.getBoolean()),
-            new CommaExpression()
-                .addExpressions(
-                    new Assignment(
-                        new SimpleName(patternVariable),
-                        new CastExpression(patternVariable.asType(), expression.copy())
-                            .setNeedsCastChk(false)),
-                    new BooleanLiteral(true, typeUtil.getBoolean())));
+        return result.addExpressions(
+            // Type patternVariable = null
+            new VariableDeclarationExpression(patternVariable, getDefaultValue(patternVariable)),
+            //  expression instanceof T && (patternVariable = (T) expression, true)
+            andCondition(
+                isUnconditional
+                    // Unconditional patterns don't needs any checking. In the future when/if
+                    // primitive patterns are incorporated in the Java language, this should be
+                    // updated.
+                    ? null
+                    : new InstanceofExpression()
+                        .setLeftOperand(instanceofLhs)
+                        .setRightOperand(Type.newType(patternVariable.asType()))
+                        .setTypeMirror(typeUtil.getBoolean()),
+                new CommaExpression()
+                    .addExpressions(
+                        new Assignment(
+                            new SimpleName(patternVariable),
+                            new CastExpression(patternVariable.asType(), expression.copy())
+                                .setNeedsCastChk(false)),
+                        new BooleanLiteral(true, typeUtil.getBoolean()))));
       }
 
       case DeconstructionPattern deconstructionPattern -> {
@@ -202,8 +142,7 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
                 new BindingPattern(tempVariable),
                 // This binding pattern resulting from the implementation of a deconstruction
                 // pattern cannot allow nulls.
-                /* allowsNulls= */ false,
-                variablesToDeclare);
+                /* allowsNulls= */ false);
 
         var recordClassType = (ClassType) deconstructionPattern.getTypeMirror();
         var recordTypeElement = (TypeElement) recordClassType.tsym;
@@ -233,14 +172,21 @@ public class InstanceOfPatternRewriter extends UnitTreeVisitor {
           condition =
               andCondition(
                   condition,
-                  computePatternCondition(
-                      property, nestedPattern, /* allowsNulls= */ true, variablesToDeclare));
+                  computePatternCondition(property, nestedPattern, /* allowsNulls= */ true));
         }
         return condition;
       }
 
       default -> throw new IllegalArgumentException("Unknown pattern" + pattern);
     }
+  }
+
+  private static Expression getDefaultValue(VariableElement variable) {
+    return switch (variable.asType().getKind()) {
+      case BOOLEAN -> new BooleanLiteral(false, variable.asType());
+      case BYTE, SHORT, CHAR, INT, LONG, FLOAT, DOUBLE -> new NumberLiteral(0, variable.asType());
+      default -> new NullLiteral(variable.asType());
+    };
   }
 
   private Expression andCondition(Expression lhs, Expression rhs) {

@@ -19,6 +19,7 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -39,6 +40,11 @@ public class VariableDeclarationExpression extends Expression {
     type.copyFrom(other.getType());
     fragments.copyFrom(other.getFragments());
     modifiers.addAll(other.getModifiers());
+  }
+
+  public VariableDeclarationExpression(VariableElement variableElement, Expression initializer) {
+    setType(Type.newType(variableElement.asType()));
+    addFragment(new VariableDeclarationFragment(variableElement, initializer));
   }
 
   @Override

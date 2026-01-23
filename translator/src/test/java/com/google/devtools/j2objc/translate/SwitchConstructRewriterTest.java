@@ -41,21 +41,24 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         translation,
         """
         return ^ NSString * (){
-          {
-            JavaLangInteger *i = nil;
-            NSString *s = nil;
-            int32_t selector = 0;
-            if ([obj isKindOfClass:[NSString class]] && (s = (NSString *) obj, true)) selector = 1;
-            else if ([obj isKindOfClass:[JavaLangInteger class]] && (i = (JavaLangInteger *) obj, true)) selector = 2;
-            switch (selector) {
-              case 1:
-              return JreStrcat("$$", @"It's a String: ", s);
-              case 2:
-              return JreStrcat("$@", @"It's an Integer: ", i);
-              default:
-              return @"It's something else.";
-            }
+        {
+          int32_t selector = 0;
+          NSString *s = nil;
+          JavaLangInteger *i = nil;
+          if ([obj isKindOfClass:[NSString class]] && (s = (NSString *) obj, true))\
+            selector = 1;
+          else if ([obj isKindOfClass:[JavaLangInteger class]]\
+              && (i = (JavaLangInteger *) obj, true))\
+            selector = 2;
+          switch (selector) {
+            case 1:
+            return JreStrcat("$$", @"It's a String: ", s);
+            case 2:
+            return JreStrcat("$@", @"It's an Integer: ", i);
+            default:
+            return @"It's something else.";
           }
+        }
         """);
   }
 
@@ -84,15 +87,21 @@ public class SwitchConstructRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        JavaLangInteger *i = nil;
         NSString *s = nil;
         NSString *s_1 = nil;
         NSString *s_2 = nil;
-        int32_t selector = 0;
-        if ([obj isKindOfClass:[NSString class]] && (s_2 = (NSString *) obj, true) && [((NSString *) nil_chk(s_2)) java_length] > 25) selector = 1;
-        else if ([obj isKindOfClass:[NSString class]] && (s_1 = (NSString *) obj, true) && [((NSString *) nil_chk(s_1)) java_length] > 5) selector = 2;
-        else if ([obj isKindOfClass:[NSString class]] && (s = (NSString *) obj, true)) selector = 3;
-        else if ([obj isKindOfClass:[JavaLangInteger class]] && (i = (JavaLangInteger *) obj, true)) selector = 4;
+        JavaLangInteger *i = nil;
+        if ([obj isKindOfClass:[NSString class]] && (s = (NSString *) obj, true)\
+            && [((NSString *) nil_chk(s)) java_length] > 25)\
+          selector = 1;
+        else if ([obj isKindOfClass:[NSString class]] && (s_1 = (NSString *) obj, true)\
+            && [((NSString *) nil_chk(s_1)) java_length] > 5)\
+          selector = 2;
+        else if ([obj isKindOfClass:[NSString class]] && (s_2 = (NSString *) obj, true))\
+          selector = 3;
+        else if ([obj isKindOfClass:[JavaLangInteger class]]\
+            && (i = (JavaLangInteger *) obj, true))\
+          selector = 4;
         switch (selector) {
           case 1:
           {
@@ -144,20 +153,27 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         """
         return ^ NSString * (){
           {
-            id x = nil;
+            int32_t selector = 0;
             JavaLangInteger *i = nil;
             NSString *s = nil;
             JavaLangInteger *i_1 = nil;
-            int32_t selector = 0;
-            if ([o isKindOfClass:[JavaLangInteger class]] && (i_1 = (JavaLangInteger *) o, true) && [((JavaLangInteger *) nil_chk(i_1)) intValue] == 0 && [i_1 intValue] < 1 && [o2 isKindOfClass:[NSString class]] && (s = (NSString *) o2, true)) selector = 1;
-            else if ([o isKindOfClass:[JavaLangInteger class]] && (i = (JavaLangInteger *) o, true) && [((JavaLangInteger *) nil_chk(i)) intValue] == 0 || [i intValue] > 1) selector = 2;
-            else if ([o isKindOfClass:[NSObject class]] && (x = o, true)) selector = 3;
+            id x = nil;
+            if ([o isKindOfClass:[JavaLangInteger class]] && (i = (JavaLangInteger *) o, true)\
+                && [((JavaLangInteger *) nil_chk(i)) intValue] == 0 && [i intValue] < 1\
+                && [o2 isKindOfClass:[NSString class]] && (s = (NSString *) o2, true))\
+              selector = 1;
+            else if ([o isKindOfClass:[JavaLangInteger class]]\
+                && (i_1 = (JavaLangInteger *) o, true)\
+                && [((JavaLangInteger *) nil_chk(i_1)) intValue] == 0 || [i_1 intValue] > 1)\
+              selector = 2;
+            else if ([o isKindOfClass:[NSObject class]] && (x = o, true))\
+              selector = 3;
             switch (selector) {
               case 1:
-              o = JreStrcat("$$", s, NSString_java_valueOf_(i_1));
+              o = JreStrcat("$$", s, NSString_java_valueOf_(i));
               return @"true";
               case 2:
-              o = NSString_java_valueOf_(i);
+              o = NSString_java_valueOf_(i_1);
               return @"second";
               case 3:
               return @"any";
