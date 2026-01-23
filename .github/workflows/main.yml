@@ -20,7 +20,7 @@ jobs:
       - name: java_21_env
         run: echo "JAVA_21_HOME=$(/usr/libexec/java_home -v 21)" >> $GITHUB_ENV
       
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
 
       # Build everything but protobuf targets, which require that the public
       # protobuf distribution be installed.
