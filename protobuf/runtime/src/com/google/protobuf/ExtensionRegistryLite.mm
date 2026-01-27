@@ -91,7 +91,9 @@ CGPExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_getEmptyRegistr
 void CGPExtensionRegistryAdd(CGPExtensionRegistryLite *registry, CGPExtensionLite *extension) {
   CGPFieldDescriptor *field = extension->fieldDescriptor_;
   CGPDescriptor *containingType = field->containingType_;
-  registry->map_[ExtensionRegistryKey(containingType, CGPFieldGetNumber(field))] = field;
+  if (containingType) {
+    registry->map_[ExtensionRegistryKey(containingType, CGPFieldGetNumber(field))] = field;
+  }
 }
 
 void ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(
