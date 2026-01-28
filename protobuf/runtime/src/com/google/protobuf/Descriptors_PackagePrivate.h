@@ -122,13 +122,6 @@ typedef struct CGPOneofData {
   // Either nil, a Descriptor or a EnumDescriptor depending on the field type.
   id valueType_;
   ComGoogleProtobufDescriptorProtos_FieldOptions *fieldOptions_;
-  // containingType_ can be nil if the containing type was eliminated via allwayslink = False.
-  // It's only used to create a key for registration and lookup.
-  // - If lookup is used anywhere, the corresponding class should be referenced in code and the
-  //   containing type shouldn't be nil at construction time.
-  // - Otherwise if there is no lookup, we don't need to register.
-  // Hence, we skip registration in CGPExtensionRegistryAdd if containingType_ is nil. Note that
-  // this has the assumption that corresponding class and the rest code are in the same framework.
   CGPDescriptor *containingType_;
   CGPOneofDescriptor *containingOneof_;
 }

@@ -60,10 +60,8 @@ void ComGoogleProtobufExtensionLite_initWithFieldData_(CGPExtensionLite *self,
                                                        struct CGPFieldData *data) {
   NSObject_init(self);
   Class msgClass = objc_getClass(data->containingType);
-  // If the containing class was eliminated during linking, we don't set it in the field descriptor;
-  // see documentation at ComGoogleProtobufDescriptors_FieldDescriptor.containingType_
-  CGPDescriptor *containingType =
-      msgClass == nil ? nil : [msgClass performSelector:@selector(getDescriptor)];
+  NSCAssert(msgClass != nil, @"Containing message type not found.");
+  CGPDescriptor *containingType = [msgClass performSelector:@selector(getDescriptor)];
   self->fieldDescriptor_ =
       [[CGPFieldDescriptor alloc] initWithData:data containingType:containingType];
 }
