@@ -162,6 +162,9 @@ public final class Posix implements Os {
     const char* cpath = absolutePath(path);
     int rc = TEMP_FAILURE_RETRY(access(cpath, mode));
     if (rc == -1) {
+      if (errno == ENOENT) {
+        return NO;
+      }
       LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"access", errno);
     }
     return (rc == 0);
