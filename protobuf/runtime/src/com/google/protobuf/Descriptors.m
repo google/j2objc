@@ -30,6 +30,7 @@
 
 //  Hand written counterpart of com.google.protobuf.Descriptors.
 
+#import <Foundation/Foundation.h>
 #import "com/google/protobuf/Descriptors_PackagePrivate.h"
 
 #import "IOSClass.h"
@@ -90,8 +91,9 @@ IOSObjectArray *CreateFields(
       type:ComGoogleProtobufDescriptors_FieldDescriptor_class_()];
   CGPFieldDescriptor **fieldsBuf = fields->buffer_;
   for (jint i = 0; i < fieldCount; i++) {
-    fieldsBuf[i] = [[CGPFieldDescriptor alloc] initWithData:&fieldData[i]
-                                             containingType:containingType];
+    fieldsBuf[i] =
+        [[CGPFieldDescriptor alloc] initWithData:&fieldData[i]
+                                  containingType:NSStringFromClass([containingType class])];
   }
   return fields;
 }
@@ -354,8 +356,7 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
   }
 }
 
-- (instancetype)initWithData:(CGPFieldData *)data
-              containingType:(CGPDescriptor *)containingType {
+- (instancetype)initWithData:(CGPFieldData *)data containingType:(NSString *)containingType {
   if (self = [self init]) {
     data_ = data;
     tag_ = TagFromData(data);
