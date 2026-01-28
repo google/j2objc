@@ -122,12 +122,11 @@ typedef struct CGPOneofData {
   // Either nil, a Descriptor or a EnumDescriptor depending on the field type.
   id valueType_;
   ComGoogleProtobufDescriptorProtos_FieldOptions *fieldOptions_;
-  CGPDescriptor *containingType_;
+  NSString *containingType_;
   CGPOneofDescriptor *containingOneof_;
 }
 
-- (instancetype)initWithData:(CGPFieldData *)data
-              containingType:(CGPDescriptor *)containingType;
+- (instancetype)initWithData:(CGPFieldData *)data containingType:(NSString *)containingType;
 
 @end
 
