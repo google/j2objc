@@ -37,7 +37,7 @@
 
 #include "J2ObjC_source.h"
 
-typedef std::pair<const CGPDescriptor *, jint> ExtensionRegistryKey;
+typedef std::pair<std::string, jint> ExtensionRegistryKey;
 typedef std::map<ExtensionRegistryKey, CGPFieldDescriptor *> ExtensionRegistryMap;
 
 @interface ComGoogleProtobufExtensionRegistryLite () {
@@ -90,8 +90,8 @@ CGPExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_getEmptyRegistr
 
 void CGPExtensionRegistryAdd(CGPExtensionRegistryLite *registry, CGPExtensionLite *extension) {
   CGPFieldDescriptor *field = extension->fieldDescriptor_;
-  CGPDescriptor *containingType = field->containingType_;
-  registry->map_[ExtensionRegistryKey(containingType, CGPFieldGetNumber(field))] = field;
+  registry->map_[ExtensionRegistryKey(std::string(field->data_->containingType),
+                                      CGPFieldGetNumber(field))] = field;
 }
 
 void ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(
@@ -109,7 +109,8 @@ ComGoogleProtobufExtensionRegistryLite *new_ComGoogleProtobufExtensionRegistryLi
 CGPFieldDescriptor *CGPExtensionRegistryFind(
     CGPExtensionRegistryLite *registry, CGPDescriptor *descriptor, jint fieldNumber) {
   ExtensionRegistryMap *map = &registry->map_;
-  ExtensionRegistryMap::iterator it = map->find(ExtensionRegistryKey(descriptor, fieldNumber));
+  ExtensionRegistryMap::iterator it = map->find(ExtensionRegistryKey(
+      std::string(NSStringFromClass([descriptor->messageClass_ class]).UTF8String), fieldNumber));
   if (it != map->end()) {
     return it->second;
   }
