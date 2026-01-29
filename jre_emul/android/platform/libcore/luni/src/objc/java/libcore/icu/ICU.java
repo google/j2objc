@@ -15,6 +15,7 @@
  */
 package libcore.icu;
 
+import android.icu.util.ULocale;
 import com.google.j2objc.LibraryNotLinkedError;
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -468,6 +469,7 @@ public final class ICU {
     if (cldrShortTzId == null) {
       return null;
     }
+    /* J2ObjC removed
     String tzid = null;
     try {
       Class<?> ulocaleClass = Class.forName("android.icu.util.ULocale");
@@ -478,6 +480,11 @@ public final class ICU {
     } catch (Exception e) {
       // Ignore reflection exception and return null below.
     }
+    */
+
+    /* J2ObjC added: reference ULocale explicitly rather than through reflection. */
+    String tzid = ULocale.toLegacyType("tz", cldrShortTzId);
+
     // ULocale.toLegacyType() returns the lower case of the input ID if it matches the spec, but
     // it's not a valid tz id.
     if (tzid == null || tzid.equals(cldrShortTzId.toLowerCase(Locale.ROOT))) {
