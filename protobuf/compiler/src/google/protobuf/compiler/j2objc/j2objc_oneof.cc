@@ -325,6 +325,7 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "@end\n"
       "\n"
+      "J2OBJC_ASSUME_EXTERNALLY_RETAINED_BEGIN\n"
       "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
       "\n"
       "IOSObjectArray *$classname$_values(void) {\n"
@@ -378,6 +379,7 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
         "classname", CaseClassName(descriptor_),
         "name", CaseValueName(descriptor_->field(i)));
   }
+  printer->Print("\nJ2OBJC_ASSUME_EXTERNALLY_RETAINED_END\n");
 }
 
 void OneofGenerator::GenerateMessageOrBuilder(io::Printer* printer) {

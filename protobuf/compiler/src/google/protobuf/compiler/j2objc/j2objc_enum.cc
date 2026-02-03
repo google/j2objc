@@ -398,6 +398,7 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "@end\n"
       "\n"
+      "J2OBJC_ASSUME_EXTERNALLY_RETAINED_BEGIN\n"
       "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
       "\n"
       "IOSObjectArray *$classname$_values(void) {\n"
@@ -471,6 +472,7 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
         "}\n",
         "classname", ClassName(descriptor_), "name", "UNRECOGNIZED");
   }
+  printer->Print("\nJ2OBJC_ASSUME_EXTERNALLY_RETAINED_END\n");
 }
 
 }  // namespace j2objc
