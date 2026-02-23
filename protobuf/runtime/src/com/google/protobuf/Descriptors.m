@@ -581,6 +581,17 @@ ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_
   return self;
 }
 
+static void
+ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type *self,
+    ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *javaType, NSString *__name,
+    jint __ordinal) {
+  // Called from +[ComGoogleProtobufDescriptors_FieldDescriptor_Type initialize] only, thus does
+  // not call ComGoogleProtobufDescriptors_FieldDescriptor_Type_initialize().
+  JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
+  JreStrongAssign(&self->javaType_, javaType);
+}
+
 + (void)initialize {
   if (self == [ComGoogleProtobufDescriptors_FieldDescriptor_Type class]) {
     size_t objSize = class_getInstanceSize(self);
@@ -715,11 +726,6 @@ ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_
 
 @end
 
-void ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(ComGoogleProtobufDescriptors_FieldDescriptor_Type *self, ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *javaType, NSString *__name, jint __ordinal) {
-  JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
-  JreStrongAssign(&self->javaType_, javaType);
-}
-
 ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_FieldDescriptor_Type_valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type_(ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type *type) {
   ComGoogleProtobufDescriptors_FieldDescriptor_Type_initialize();
   return IOSObjectArray_Get(nil_chk(ComGoogleProtobufDescriptors_FieldDescriptor_Type_values()), [((ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type *) nil_chk(type)) getNumber] - 1);
@@ -768,6 +774,15 @@ ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescript
 
 - (id)copyWithZone:(NSZone *)zone {
   return self;
+}
+
+static void ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(
+    ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *self, id defaultDefault,
+    NSString *__name, jint __ordinal) {
+  // Called from +[ComGoogleProtobufDescriptors_FieldDescriptor_JavaType initialize] only,
+  // thus does not call ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initialize().
+  JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
+  JreStrongAssign(&self->defaultDefault_, defaultDefault);
 }
 
 + (void)initialize {
@@ -848,11 +863,6 @@ ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescript
 }
 
 @end
-
-void ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *self, id defaultDefault, NSString *__name, jint __ordinal) {
-  JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
-  JreStrongAssign(&self->defaultDefault_, defaultDefault);
-}
 
 IOSObjectArray *ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_values() {
   ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initialize();
