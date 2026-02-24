@@ -2057,6 +2057,7 @@ static BOOL MergeFieldFromStream(id msg, CGPFieldDescriptor *field, CGPCodedInpu
 
 static BOOL MergeFromStream(id msg, CGPDescriptor *descriptor, CGPCodedInputStream *stream,
                             CGPExtensionRegistryLite *registry, CGPExtensionMap *extensionMap) {
+  objc_opt_class(descriptor);  // Ensure +[descriptor initialize] has run.
   NSUInteger index = 0;
   NSUInteger fieldsCount = descriptor->fields_->size_;
   CGPFieldDescriptor **fieldsBuf = descriptor->fields_->buffer_;
