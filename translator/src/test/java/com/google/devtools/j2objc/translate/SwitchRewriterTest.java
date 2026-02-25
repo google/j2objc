@@ -214,22 +214,24 @@ public class SwitchRewriterTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslatedLines(translation,
-        "switch (JreIndexOfStr(s, (id[]){ @\"foo\", "
-            + "@\"bar\", Test_constant, Foo_TEST, Bar_TEST }, 5)) {",
-        "  case 0:",
-        "  return 42;",
-        "  case 1:",
-        "  return 666;",
-        "  case 2:",
-        "  return -1;",
-        "  case 3:",
-        "  return -2;",
-        "  case 4:",
-        "  return -3;",
-        "  default:",
-        "  return -1;",
-        "}");
+    assertTranslatedLines(
+        translation,
+        """
+        switch (JreIndexOfStr(s, (id[]){ @"foo", @"bar", Test_constant, Foo_TEST, Bar_TEST }, 5)) {
+          case 0:
+          return 42;
+          case 1:
+          return 666;
+          case 2:
+          return -1;
+          case 3:
+          return -2;
+          case 4:
+          return -3;
+          default:
+          return -1;
+        }
+        """);
   }
 
   /**
@@ -567,15 +569,16 @@ public class SwitchRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "switch ([mode ordinal]) {",
-        "  case JavaMathRoundingMode_Enum_DOWN:",
-        "    return JavaLangDouble_MAX_VALUE;",
-        "  default:",
-        "    return [x doubleValue];",
-        "}");
+        """
+        switch ([mode ordinal]) {
+          case JavaMathRoundingMode_Enum_DOWN:
+            return JavaLangDouble_MAX_VALUE;
+          default:
+            return [x doubleValue];
+        }
+        """);
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testSwitchExpressionReturnForAllEnumPaths() throws IOException {
     // Snippet from Guava's com.google.common.base.Stopwatch.
     // Verifies that a switch using an enum can have all paths handled without a default case.

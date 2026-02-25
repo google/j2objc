@@ -29,8 +29,6 @@ import java.util.List;
  */
 public class StatementGeneratorTest extends GenerationTest {
 
-  // TODO(tball): use text block when minimum Java is 15 or higher.
-  @SuppressWarnings("StringConcatToTextBlock")
   public static final String SIMPLE_SWITCH_EXPRESSION =
       """
       class Test {
@@ -44,7 +42,6 @@ public class StatementGeneratorTest extends GenerationTest {
       }
       """;
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public static final String SIMPLE_SWITCH_EXPRESSION_WITH_PATTERN_AND_GUARD =
       """
       class Test {
@@ -517,8 +514,10 @@ public class StatementGeneratorTest extends GenerationTest {
             "Example.m");
     assertInTranslation(
         translation,
-        "[self fooWithNSObjectArray:[IOSObjectArray arrayWithObjects:(id[]){"
-            + " JavaLangInteger_valueOfWithInt_(1) } count:1 type:NSObject_class_()]];");
+        """
+        [self fooWithNSObjectArray:[IOSObjectArray arrayWithObjects:(id[]){\
+         JavaLangInteger_valueOfWithInt_(1) } count:1 type:NSObject_class_()]];
+        """);
   }
 
   public void testVarargsMethodInvocationPrimitiveArgs() throws IOException {
@@ -792,8 +791,10 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test.m");
     assertInTranslation(
         translation,
-        "return [((id<JavaUtilMap_Entry>) "
-            + "nil_chk([((id<JavaUtilIterator>) nil_chk(iterator_)) next])) getKey];");
+        """
+        return [((id<JavaUtilMap_Entry>)\
+         nil_chk([((id<JavaUtilIterator>) nil_chk(iterator_)) next])) getKey];
+        """);
   }
 
   public void testAnonymousClassInInnerStatic() throws IOException {
@@ -852,8 +853,10 @@ public class StatementGeneratorTest extends GenerationTest {
         "- (instancetype)initWithJavaUtilCollection:(id<JavaUtilCollection>)capture$0;");
     assertInTranslation(
         translation,
-        "__attribute__((unused)) static Test_1 *new_Test_1_initWithJavaUtilCollection_("
-            + "id<JavaUtilCollection> capture$0) NS_RETURNS_RETAINED;");
+        """
+        __attribute__((unused)) static Test_1 *new_Test_1_initWithJavaUtilCollection_(\
+        id<JavaUtilCollection> capture$0) NS_RETURNS_RETAINED;
+        """);
   }
 
   public void testEnumInEqualsTest() throws IOException {
@@ -1617,12 +1620,14 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test.m");
     assertInTranslation(
         translation,
-        "IOSObjectArray *a = [IOSObjectArray arrayWithObjects:(id[]){ nil, "
-            + "[IOSObjectArray arrayWithObjects:(id[]){ i_, j_ } count:2 "
-            + "type:JavaLangInteger_class_()], "
-            + "[IOSObjectArray arrayWithObjects:(id[]){ j_, i_ } count:2 "
-            + "type:JavaLangInteger_class_()] } count:3 "
-            + "type:IOSClass_arrayType(JavaLangInteger_class_(), 1)];");
+        """
+        IOSObjectArray *a = [IOSObjectArray arrayWithObjects:(id[]){ nil, \
+        [IOSObjectArray arrayWithObjects:(id[]){ i_, j_ } count:2 \
+        type:JavaLangInteger_class_()], \
+        [IOSObjectArray arrayWithObjects:(id[]){ j_, i_ } count:2 \
+        type:JavaLangInteger_class_()] } count:3 \
+        type:IOSClass_arrayType(JavaLangInteger_class_(), 1)];
+        """);
   }
 
   public void testVarargsMethodInvocationZeroLengthArray() throws IOException {
@@ -1652,9 +1657,11 @@ public class StatementGeneratorTest extends GenerationTest {
     // Should be equivalent to bar(new Object[] { new Object[0] }).
     assertInTranslation(
         translation,
-        "[self barWithNSObjectArray2:[IOSObjectArray arrayWithObjects:"
-            + "(id[]){ [IOSObjectArray arrayWithLength:0 type:NSObject_class_()] } count:1 "
-            + "type:IOSClass_arrayType(NSObject_class_(), 1)]];");
+        """
+        [self barWithNSObjectArray2:[IOSObjectArray arrayWithObjects:\
+        (id[]){ [IOSObjectArray arrayWithLength:0 type:NSObject_class_()] } count:1 \
+        type:IOSClass_arrayType(NSObject_class_(), 1)]];
+        """);
   }
 
   public void testVarargsIOSMethodInvocation() throws IOException {
@@ -1680,13 +1687,17 @@ public class StatementGeneratorTest extends GenerationTest {
             + "[IOSObjectArray arrayWithLength:0 type:IOSClass_class_()]];");
     assertInTranslation(
         translation,
-        "c2 = [Test_class_() getConstructor:[IOSObjectArray "
-            + "arrayWithObjects:(id[]){ NSString_class_() } count:1 type:IOSClass_class_()]];");
+        """
+        c2 = [Test_class_() getConstructor:[IOSObjectArray \
+        arrayWithObjects:(id[]){ NSString_class_() } count:1 type:IOSClass_class_()]];
+        """);
     assertInTranslation(
         translation,
-        "c3 = [Test_class_() getConstructor:[IOSObjectArray arrayWithObjects:"
-            + "(id[]){ NSString_class_(), JreLoadStatic(JavaLangByte, TYPE) } count:2 "
-            + "type:IOSClass_class_()]];");
+        """
+        c3 = [Test_class_() getConstructor:[IOSObjectArray arrayWithObjects:\
+        (id[]){ NSString_class_(), JreLoadStatic(JavaLangByte, TYPE) } count:2 \
+        type:IOSClass_class_()]];
+        """);
 
     // Array contents should be expanded.
     assertInTranslation(translation, "c4 = [Test_class_() getConstructor:types];");
@@ -1706,8 +1717,10 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test.m");
     assertInTranslation(
         translation,
-        "[[self java_getClass] getMethod:@\"equals\" parameterTypes:[IOSObjectArray "
-            + "arrayWithObjects:(id[]){ NSObject_class_() } count:1 type:IOSClass_class_()]];");
+        """
+        [[self java_getClass] getMethod:@\"equals\" parameterTypes:[IOSObjectArray \
+        arrayWithObjects:(id[]){ NSObject_class_() } count:1 type:IOSClass_class_()]];
+        """);
   }
 
   public void testGetVarargsWithLeadingParameterNoArgs() throws IOException {
@@ -1724,8 +1737,10 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test.m");
     assertInTranslation(
         translation,
-        "[[self java_getClass] getMethod:@\"hashCode\" parameterTypes:[IOSObjectArray "
-            + "arrayWithLength:0 type:IOSClass_class_()]];");
+        """
+        [[self java_getClass] getMethod:@\"hashCode\" parameterTypes:[IOSObjectArray \
+        arrayWithLength:0 type:IOSClass_class_()]];
+        """);
   }
 
   public void testTypeVariableWithBoundCast() throws IOException {
@@ -2278,10 +2293,12 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test", "Test.m");
     assertInTranslation(
         translation,
-        "[self checkWithBoolean:true withNSString:@\"%d-%d\" "
-            + "withNSObjectArray:[IOSObjectArray arrayWithObjects:(id[]){ "
-            + "JavaLangInteger_valueOfWithInt_(i), JavaLangInteger_valueOfWithInt_(j) } count:2 "
-            + "type:NSObject_class_()]];");
+        """
+        [self checkWithBoolean:true withNSString:@\"%d-%d\" \
+        withNSObjectArray:[IOSObjectArray arrayWithObjects:(id[]){ \
+        JavaLangInteger_valueOfWithInt_(i), JavaLangInteger_valueOfWithInt_(j) } count:2 \
+        type:NSObject_class_()]];
+        """);
   }
 
   public void testBinaryLiterals() throws IOException {
@@ -2906,7 +2923,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation, "if (c < d)", ";");
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testVarLocalVariables() throws IOException {
     String translation =
         translateSourceFile(
@@ -2928,7 +2944,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertInTranslation(translation, "id<JavaUtilStreamStream> stream = [list stream];");
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testVarLambdaExpressionParameter() throws IOException {
     String translation =
         translateSourceFile(
@@ -2947,7 +2962,6 @@ public class StatementGeneratorTest extends GenerationTest {
         translation, "@interface Test_$Lambda$1 : NSObject < JavaUtilFunctionFunction >");
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testInstanceOfPatternVariableTranslation() throws IOException {
     String translation =
         translateSourceFile(
@@ -3213,7 +3227,6 @@ public class StatementGeneratorTest extends GenerationTest {
         });
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testUnnamedExceptionCatch() throws IOException {
     testOnJava22OrAbove(
         () -> {
@@ -3242,7 +3255,6 @@ public class StatementGeneratorTest extends GenerationTest {
         });
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testUnnamedTryVariable() throws IOException {
     testOnJava22OrAbove(
         () -> {
@@ -3270,7 +3282,6 @@ public class StatementGeneratorTest extends GenerationTest {
         });
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testUnnamedInstanceofPatternVariable() throws IOException {
     testOnJava22OrAbove(
         () -> {
