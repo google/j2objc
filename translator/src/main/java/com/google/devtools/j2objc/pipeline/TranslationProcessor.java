@@ -325,6 +325,10 @@ public class TranslationProcessor extends FileProcessor {
     new SuperMethodInvocationRewriter(unit).run();
     ticker.tick("SuperMethodInvocationRewriter");
 
+    // Before OperatorRewriter - Needs to see the case expressions before they are rewritten.
+    new SwitchRewriter(unit).run();
+    ticker.tick("SwitchRewriter");
+
     new OperatorRewriter(unit).run();
     ticker.tick("OperatorRewriter");
 
@@ -337,9 +341,6 @@ public class TranslationProcessor extends FileProcessor {
     //   hasRetainedResult on ArrayCreation nodes.
     new ArrayRewriter(unit).run();
     ticker.tick("ArrayRewriter");
-
-    new SwitchRewriter(unit).run();
-    ticker.tick("SwitchRewriter");
 
     // Breaks up deeply nested expressions such as chained method calls.
     // Should be one of the last translations because other mutations will

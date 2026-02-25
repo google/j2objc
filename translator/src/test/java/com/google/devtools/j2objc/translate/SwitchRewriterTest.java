@@ -281,15 +281,18 @@ public class SwitchRewriterTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslatedLines(translation,
-        "switch (i) {",
-        "  case 1:",
-        "  return 'a';",
-        "  case 2:",
-        "  return 'b';",
-        "  default:",
-        "  return 'z';",
-        "}");
+    assertTranslatedLines(
+        translation,
+        """
+        switch (i) {
+          case 1:
+          return 'a';
+          case 2:
+          return 'b';
+          default:
+          return 'z';
+        }
+        """);
   }
 
   public void testEmptySwitchStatement() throws IOException {
@@ -544,7 +547,6 @@ public class SwitchRewriterTest extends GenerationTest {
         """);
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testEnumConstAsSwitchExpression() throws IOException {
     // Snippet from Guava's com.google.common.math.ToDoubleRounder.
     String translation =
@@ -714,6 +716,41 @@ public class SwitchRewriterTest extends GenerationTest {
           }
         }
 
+        """);
+  }
+
+  public void testSwitchExpressionCaseConstantExpression() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              static final int PLACES = 1 << 1;
+              public Object get(int index) {
+                return switch (index) {
+                  case 2 + 1 -> null;
+                  case 10 >> PLACES -> null;
+                  default -> null;
+                };
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        - (id)getWithInt:(int32_t)index {
+          return ^ id (){
+            switch (index) {
+              case 3:
+              return nil;
+              case 2:
+              return nil;
+              default:
+              return nil;
+            }
+          }();
+        }
         """);
   }
 }

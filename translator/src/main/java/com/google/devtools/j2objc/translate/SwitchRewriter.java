@@ -90,19 +90,26 @@ public class SwitchRewriter extends UnitTreeVisitor {
     List<Expression> exprs = node.getExpressions();
     for (int i = 0; i < exprs.size(); i++) {
       Expression expr = exprs.get(i);
-      VariableElement var = expr != null ? TreeUtil.getVariableElement(expr) : null;
-      if (var == null) {
+      if (expr == null) {
         continue;
       }
-      TypeMirror type = var.asType();
-      if (TypeUtil.isEnum(type)) {
-        String enumValue = nameTable.getNativeEnumConstantName(TypeUtil.asTypeElement(type), var);
-        exprs.set(i, new NativeExpression(enumValue, typeUtil.getInt()));
-      } else if (type.getKind().isPrimitive() && var.getKind() == ElementKind.LOCAL_VARIABLE) {
-        Object value = var.getConstantValue();
-        if (value != null) {
-          exprs.set(i, TreeUtil.newLiteral(value, typeUtil));
+      VariableElement var = TreeUtil.getVariableElement(expr);
+      if (var != null) {
+        TypeMirror type = var.asType();
+        if (TypeUtil.isEnum(type)) {
+          String enumValue = nameTable.getNativeEnumConstantName(TypeUtil.asTypeElement(type), var);
+          exprs.set(i, new NativeExpression(enumValue, typeUtil.getInt()));
+        } else if (type.getKind().isPrimitive() && var.getKind() == ElementKind.LOCAL_VARIABLE) {
+          // Only inline the constant value for local variables but not for compile-time constant
+          // fields.
+          Object value = expr.getConstantValue();
+          if (value != null) {
+            exprs.set(i, TreeUtil.newLiteral(value, typeUtil));
+          }
         }
+      } else if (expr.getTypeMirror().getKind().isPrimitive() && expr.getConstantValue() != null) {
+        // Inline constant value for constant expressions that are of primitive types.
+        exprs.set(i, TreeUtil.newLiteral(expr.getConstantValue(), typeUtil));
       }
     }
   }
