@@ -50,6 +50,7 @@
 - (jint)getSerializedSize;
 - (ComGoogleProtobufByteString *)toByteString;
 - (IOSByteArray *)toByteArray;
+- (NSData *)toNSData;
 
 - (void)writeToWithJavaIoOutputStream:(JavaIoOutputStream *)output;
 - (void)writeDelimitedToWithJavaIoOutputStream:(JavaIoOutputStream *)output;

@@ -45,6 +45,10 @@
   return fieldDescriptor_;
 }
 
+- (jint)getNumber {
+  return [fieldDescriptor_ getNumber];
+}
+
 - (id<ComGoogleProtobufMessage>)getMessageDefaultInstance {
   if (CGPFieldTypeIsMessage(fieldDescriptor_)) {
     return ((CGPDescriptor *)fieldDescriptor_->valueType_)->defaultInstance_;

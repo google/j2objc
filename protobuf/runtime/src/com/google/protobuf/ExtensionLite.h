@@ -52,6 +52,8 @@ struct CGPFieldData;
 
 - (id<ComGoogleProtobufMessage>)getMessageDefaultInstance;
 
+- (jint)getNumber;
+
 @end
 
 typedef ComGoogleProtobufExtensionLite CGPExtensionLite;
