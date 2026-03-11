@@ -264,4 +264,11 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     assertInTranslation(translation, "JavaIoSerializable_class_();");
     assertInTranslation(translation, "JavaLangRunnable_class_();");
   }
+
+  public void testEnumExterns() throws IOException {
+    String source = "enum Test { ONE, TWO }";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertInTranslation(translation, "extern Test *Test_get_ONE(void);");
+    assertInTranslation(translation, "extern Test *Test_get_TWO(void);");
+  }
 }

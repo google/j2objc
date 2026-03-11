@@ -107,6 +107,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     syncFilename(getSourceFilePath());
 
     printInitFlagDefinition();
+    printEnumExterns();
     printStaticVars();
     printEnumValuesArray();
 
@@ -258,6 +259,23 @@ public class TypeImplementationGenerator extends TypeGenerator {
       List<EnumConstantDeclaration> constants = ((EnumDeclaration) typeNode).getEnumConstants();
       newline();
       printf("%s *%s_values_[%s];\n", typeName, typeName, constants.size());
+    }
+  }
+
+  /**
+   * Prints extern declarations for enum constant accessors.
+   *
+   * <p>Enum accessors are declared as {@code inline} in the header. If the compiler decides not to
+   * inline a call, it will expect an external definition. These extern declarations ensure that the
+   * compiler emits a non-inline version of the function in the implementation file.
+   */
+  private void printEnumExterns() {
+    if (typeNode instanceof EnumDeclaration enumDeclaration) {
+      newline();
+      for (EnumConstantDeclaration constant : enumDeclaration.getEnumConstants()) {
+        String varName = nameTable.getVariableBaseName(constant.getVariableElement());
+        printf("extern %s *%s_get_%s(void);\n", typeName, typeName, varName);
+      }
     }
   }
 
