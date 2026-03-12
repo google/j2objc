@@ -199,6 +199,26 @@ void CGPInitializeOneofCaseEnum(
   }
 }
 
+id CGPValueOfEnumOrOneOfWithNSString(NSString *name, __strong id values[], jint count) {
+  for (jint i = 0; i < count; i++) {
+    id e = values[i];
+    if ([name isEqual:[e name]]) {
+      return e;
+    }
+  }
+  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name] autorelease];
+}
+
+id CGPValueOfEnumOrOneOfWithInt(jint value, __strong id values[], jint count) {
+  for (jint i = 0; i < count; i++) {
+    id e = values[i];
+    if (value == [e getNumber]) {
+      return e;
+    }
+  }
+  return nil;
+}
+
 static inline ComGoogleProtobufDescriptors_FieldDescriptor_Type *GetTypeObj(CGPFieldType type) {
   ComGoogleProtobufDescriptors_FieldDescriptor_Type_initialize();
   return ComGoogleProtobufDescriptors_FieldDescriptor_Type_values_[type];

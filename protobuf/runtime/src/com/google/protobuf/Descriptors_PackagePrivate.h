@@ -202,6 +202,11 @@ void CGPInitializeOneofCaseEnum(
     __strong JavaLangEnum<ComGoogleProtobufInternal_EnumLite> *values[],
     __strong NSString **names, jint *intValues);
 
+
+id CGPValueOfEnumOrOneOfWithNSString(NSString *name, __strong id values[], jint count);
+
+id CGPValueOfEnumOrOneOfWithInt(jint value, __strong id values[], jint count);
+
 CGP_ALWAYS_INLINE inline jint CGPFieldGetNumber(const CGPFieldDescriptor *field) {
   return field->data_->number;
 }

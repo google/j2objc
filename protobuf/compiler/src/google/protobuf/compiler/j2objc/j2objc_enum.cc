@@ -408,20 +408,14 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "$classname$ *$classname$_valueOfWithNSString_(NSString *name) {\n"
       "  $classname$_initialize();\n"
-      "  for (jint i = 0; i < $count$; i++) {\n"
-      "    $classname$ *e = $classname$_values_[i];\n"
-      "    if ([name isEqual:[e name]]) {\n"
-      "      return e;\n"
-      "    }\n"
-      "  }\n"
-      "  @throw create_JavaLangIllegalArgumentException_initWithNSString_("
-      "name);\n",
+      "  return CGPValueOfEnumOrOneOfWithNSString(name, $classname$_values_,"
+      " $count$);\n"
+      "}\n"
+      "\n",
       "classname", ClassName(descriptor_), "count",
       SimpleItoa(enum_count));  // Include UNRECOGNIZED constant.
 
   printer->Print(
-      "}\n"
-      "\n"
       "$classname$ *$classname$_valueOfWithInt_($valuepreprocessorname$ value) "
       "{\n"
       "  return $classname$_forNumberWithInt_(value);\n"
@@ -430,13 +424,8 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "$classname$ *$classname$_forNumberWithInt_($valuepreprocessorname$ "
       "value) {\n"
       "  $classname$_initialize();\n"
-      "  for (jint i = 0; i < $count$; i++) {\n"
-      "    $classname$ *e = $classname$_values_[i];\n"
-      "    if (value == [e getNumber]) {\n"
-      "      return e;\n"
-      "    }\n"
-      "  }\n"
-      "  return nil;\n"
+      "  return CGPValueOfEnumOrOneOfWithInt(value, $classname$_values_,\n"
+      " $count$);\n"
       "}\n"
       "\n",
       "classname", ClassName(descriptor_), "count", SimpleItoa(canonical_count),
