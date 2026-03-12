@@ -174,7 +174,7 @@ typedef struct CGPOneofData {
 
 CF_EXTERN_C_BEGIN
 
-CGPDescriptor *CGPInitDescriptor(
+NS_RETURNS_RETAINED CGPDescriptor *CGPInitDescriptor(
     Class messageClass, Class builderClass, CGPMessageFlags flags,
     size_t storageSize);
 
@@ -192,7 +192,7 @@ CGP_ALWAYS_INLINE inline BOOL CGPIsMessageSetWireFormat(const CGPDescriptor *des
 
 IOSObjectArray *CGPGetSerializationOrderFields(CGPDescriptor *descriptor);
 
-CGPEnumDescriptor *CGPInitializeEnumType(
+NS_RETURNS_RETAINED CGPEnumDescriptor *CGPInitializeEnumType(
     Class enumClass, jint valuesCount,
     __strong JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *values[],
     __strong NSString **names, jint *intValues, bool is_closed);
