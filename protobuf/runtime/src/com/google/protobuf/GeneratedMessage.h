@@ -40,6 +40,7 @@
 
 #include "com/google/protobuf/AbstractMessage.h"
 #include "com/google/protobuf/Extension.h"
+#include "com/google/protobuf/ExtensionRegistryLite.h"
 #include "com/google/protobuf/Message.h"
 #include "com/google/protobuf/MessageOrBuilder.h"
 #include "com/google/protobuf/common.h"
@@ -190,4 +191,123 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_GeneratedExtension)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_GeneratedExtension)
 
+/*!
+ * Defines the class instance name for a type.
+ *
+ * @define J2OBJC_PROTO_TYPE_LITERAL_CLASS_INSTANCE_NAME
+ * @param TYPE The name of the type to define the class instance name for.
+ */
+#define J2OBJC_PROTO_TYPE_LITERAL_CLASS_INSTANCE_NAME(TYPE) TYPE##_class_instance_
+
+/*!
+ * Declares the type literal accessor for a proto type.
+ * Different from J2OBJC_TYPE_LITERAL_HEADER because it depends on the initializer method instead
+ * of a dispatch once to initialize the class instance.
+ *
+ * @define J2OBJC_PROTO_TYPE_LITERAL_HEADER
+ * @param TYPE The name of the type to declare the accessor for.
+ */
+#define J2OBJC_PROTO_TYPE_LITERAL_HEADER(TYPE)         \
+  FOUNDATION_EXPORT IOSClass *J2OBJC_PROTO_TYPE_LITERAL_CLASS_INSTANCE_NAME(TYPE);  \
+  CGP_ALWAYS_INLINE IOSClass *TYPE##_class_(void) {    \
+    TYPE##_initialize();                               \
+    return J2OBJC_PROTO_TYPE_LITERAL_CLASS_INSTANCE_NAME(TYPE);                     \
+  }                                                    \
+
+/*!
+ * Declares the storage for the type literal for a proto type.
+ * Different from J2OBJC_TYPE_LITERAL_HEADER because it depends on the initializer method instead
+ * of a dispatch once to initialize the class instance.
+ *
+ * @define J2OBJC_PROTO_CLASS_TYPE_LITERAL_SOURCE
+ * @param TYPE The name of the type to define the accessor for.
+ */
+#define J2OBJC_PROTO_CLASS_TYPE_LITERAL_SOURCE(TYPE) \
+  IOSClass *J2OBJC_PROTO_TYPE_LITERAL_CLASS_INSTANCE_NAME(TYPE);                  \
+
+/*!
+ * Defines the build class instance name for a type.
+ *
+ * @define J2OBJC_PROTO_TYPE_LITERAL_CLASS_INSTANCE_NAME
+ * @param TYPE The name of the type to define the class instance name for.
+ */
+#define J2OBJC_PROTO_TYPE_LITERAL_BUILDER_CLASS_INSTANCE_NAME(TYPE) TYPE##_builder_class_instance_
+
+/*!
+ * Defines the build class instance name for a type.
+ *
+ * @define J2OBJC_PROTO_TYPE_LITERAL_CLASS_INSTANCE_NAME
+ * @param TYPE The name of the type to define the class instance name for.
+ */
+#define J2OBJC_PROTO_TYPE_LITERAL_ORBUILDER_CLASS_INSTANCE_NAME(TYPE) TYPE##OrBuilder_class_instance_
+
+/*!
+ * Declares the type literal accessor for a proto type.
+ * Different from J2OBJC_TYPE_LITERAL_HEADER because it depends on the initializer method instead
+ * of a dispatch once to initialize the class instance.
+ *
+ * @define J2OBJC_PROTO_TYPE_LITERAL_HEADER
+ * @param TYPE The name of the type to declare the accessor for.
+ */
+#define J2OBJC_PROTO_MSG_TYPE_LITERAL_HEADER(TYPE)                                            \
+  FOUNDATION_EXPORT IOSClass *J2OBJC_PROTO_TYPE_LITERAL_CLASS_INSTANCE_NAME(TYPE);            \
+  FOUNDATION_EXPORT IOSClass *J2OBJC_PROTO_TYPE_LITERAL_BUILDER_CLASS_INSTANCE_NAME(TYPE);    \
+  FOUNDATION_EXPORT IOSClass *J2OBJC_PROTO_TYPE_LITERAL_ORBUILDER_CLASS_INSTANCE_NAME(TYPE);  \
+  CGP_ALWAYS_INLINE IOSClass *TYPE##_class_(void) {                                           \
+    TYPE##_initialize();                                                                      \
+    return J2OBJC_PROTO_TYPE_LITERAL_CLASS_INSTANCE_NAME(TYPE);                               \
+  }                                                                                           \
+  CGP_ALWAYS_INLINE IOSClass *TYPE##_Builder_class_(void) {                                   \
+    TYPE##_initialize();                                                                      \
+    return J2OBJC_PROTO_TYPE_LITERAL_BUILDER_CLASS_INSTANCE_NAME(TYPE);                       \
+  }                                                                                           \
+  CGP_ALWAYS_INLINE IOSClass *TYPE##OrBuilder_class_(void) {                                  \
+    TYPE##_initialize();                                                                      \
+    return J2OBJC_PROTO_TYPE_LITERAL_ORBUILDER_CLASS_INSTANCE_NAME(TYPE);                     \
+  }
+
+/*!
+ * Declares the storage for the type literal for a proto type.
+ * Different from J2OBJC_TYPE_LITERAL_HEADER because it depends on the initializer method instead
+ * of a dispatch once to initialize the class instance.
+ *
+ * @define J2OBJC_PROTO_MSG_CLASS_TYPE_LITERAL_SOURCE
+ * @param TYPE The name of the type to define the accessor for.
+ */
+#define J2OBJC_PROTO_MSG_CLASS_TYPE_LITERAL_SOURCE(TYPE)                   \
+  IOSClass *J2OBJC_PROTO_TYPE_LITERAL_CLASS_INSTANCE_NAME(TYPE);           \
+  IOSClass *J2OBJC_PROTO_TYPE_LITERAL_BUILDER_CLASS_INSTANCE_NAME(TYPE);   \
+  IOSClass *J2OBJC_PROTO_TYPE_LITERAL_ORBUILDER_CLASS_INSTANCE_NAME(TYPE);
+
+// CGPFunctions are for internal implementation only.
+CF_EXTERN_C_BEGIN
+
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage *CGPNewMessage(
+    ComGoogleProtobufDescriptors_Descriptor *descriptor);
+
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage_Builder *CGPNewBuilder(
+    ComGoogleProtobufDescriptors_Descriptor *descriptor);
+
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage_Builder *CGPBuilderFromPrototype(
+    CGPDescriptor *descriptor, ComGoogleProtobufGeneratedMessage *prototype);
+
+void CGPMergeFromRawData(id msg, CGPDescriptor *descriptor, const char *data, uint32_t length);
+
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage *CGPParseFromByteArray(
+    CGPDescriptor *descriptor, IOSByteArray *bytes,
+    ComGoogleProtobufExtensionRegistryLite *registry);
+
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage *CGPParseFromInputStream(
+    CGPDescriptor *descriptor, JavaIoInputStream *input,
+    ComGoogleProtobufExtensionRegistryLite *registry);
+
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage *CGPParseFromByteString(
+    CGPDescriptor *descriptor, ComGoogleProtobufByteString *byteString,
+    ComGoogleProtobufExtensionRegistryLite *registry);
+
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage *CGPParseDelimitedFromInputStream(
+    CGPDescriptor *descriptor, JavaIoInputStream *input,
+    ComGoogleProtobufExtensionRegistryLite *registry);
+
+CF_EXTERN_C_END
 #endif  // __ComGoogleProtobufGeneratedMessage_H__

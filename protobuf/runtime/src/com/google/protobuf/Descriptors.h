@@ -142,4 +142,12 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors_OneofDescriptor)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_OneofDescriptor)
 
+// CGPFunctions are for internal implementation only.
+CF_EXTERN_C_BEGIN
+
+id CGPValueOfEnumOrOneOfWithNSString(NSString *name, __strong id values[], jint count);
+id CGPValueOfEnumOrOneOfWithInt(jint value, __strong id values[], jint count);
+
+CF_EXTERN_C_END
+
 #endif // __ComGoogleProtobufDescriptors_H__
