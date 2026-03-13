@@ -147,7 +147,7 @@ class CGPCodedInputStream {
   // Always inline because this is only called in once place per parse loop
   // but it is called for every iteration of said loop, so it should be fast.
   // GCC doesn't want to inline this by default.
-  uint32_t ReadTag() CGP_ALWAYS_INLINE;
+  CGP_ALWAYS_INLINE uint32_t ReadTag();
 
   // If the last call to ReadTag() returned the given value, returns true.
   // Otherwise, returns false;

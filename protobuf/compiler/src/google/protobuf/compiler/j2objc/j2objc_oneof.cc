@@ -105,6 +105,7 @@ void OneofGenerator::CollectMessageOrBuilderForwardDeclarations(
 void OneofGenerator::CollectHeaderImports(
     std::set<std::string>* imports) const {
   imports->insert("com/google/protobuf/Internal.h");
+  imports->insert("IOSObjectArray.h");
 }
 
 void OneofGenerator::CollectSourceImports(
@@ -194,20 +195,54 @@ void OneofGenerator::GenerateHeader(io::Printer* printer) {
       "/*! INTERNAL ONLY - Use enum accessors declared below. */\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_values_[];\n"
       "\n"
-      "FOUNDATION_EXPORT IOSObjectArray *$classname$_values(void);\n"
-      "FOUNDATION_EXPORT $classname$ *$classname$_valueOfWithNSString_("
-      "NSString *name);\n"
-      "FOUNDATION_EXPORT $classname$ *$classname$_valueOfWithInt_("
-      "jint value);\n"
-      "FOUNDATION_EXPORT $classname$ *$classname$_forNumberWithInt_("
-      "jint value);\n"
-      "FOUNDATION_EXPORT $classname$ *$classname$_fromOrdinal("
-      "NSUInteger ordinal);\n\n",
-      "classname", CaseClassName(descriptor_));
+      "CGP_ALWAYS_INLINE IOSObjectArray *$classname$_values(void) {\n"
+      "  $classname$_initialize();"
+      "  return [IOSObjectArray arrayWithObjects:$classname$_values_"
+      " count:$count$ type:$classname$_class_()];\n"
+      "}\n"
+      "\n"
+      "CGP_ALWAYS_INLINE $classname$ *"
+      "$classname$_valueOfWithNSString_(NSString *name) {\n"
+      "  $classname$_initialize();\n"
+      "  return CGPValueOfEnumOrOneOfWithNSString(name, $classname$_values_,"
+      " $count$);\n"
+      "}\n"
+      "\n"
+      "CGP_ALWAYS_INLINE $classname$ *"
+      "$classname$_forNumberWithInt_(jint value) {\n"
+      "  $classname$_initialize();\n"
+      "  return CGPValueOfEnumOrOneOfWithInt(value, $classname$_values_,\n"
+      " $count$);\n"
+      "}\n"
+      "\n"
+      "CGP_ALWAYS_INLINE $classname$ *"
+      "$classname$_valueOfWithInt_(jint value) {\n"
+      "  return $classname$_forNumberWithInt_(value);\n"
+      "}\n"
+      "\n"
+      "CGP_ALWAYS_INLINE $classname$ *"
+      "$classname$_fromOrdinal(NSUInteger ordinal) {\n"
+      "  $classname$_initialize();\n"
+      "  if (ordinal >= $count$) {\n"
+      "    return nil;\n"
+      "  }\n"
+      "  return $classname$_values_[ordinal];\n"
+      "}\n\n",
+      "classname", CaseClassName(descriptor_), "count",
+      SimpleItoa(descriptor_->field_count() + 1));
+  for (int i = 0; i < descriptor_->field_count(); i++) {
+    printer->Print(
+        "CGP_ALWAYS_INLINE $classname$ *$classname$_get_$name$(void) {\n"
+        "  $classname$_initialize();\n"
+        "  return $classname$_values_[$classname$_Enum_$name$];\n"
+        "}\n",
+        "classname", CaseClassName(descriptor_),
+        "name", CaseValueName(descriptor_->field(i)));
+  }
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
     printer->Print(
-        "FOUNDATION_EXPORT $classname$ *$classname$_get_$name$(void);\n",
+        "CGP_ALWAYS_INLINE $classname$ *$classname$_get_$name$(void);\n",
         "classname", CaseClassName(descriptor_),
         "name", CaseValueName(descriptor_->field(i)));
   }
@@ -326,47 +361,9 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
       "@end\n"
       "\n"
       "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
-      "\n"
-      "IOSObjectArray *$classname$_values(void) {\n"
-      "  $classname$_initialize();"
-      "  return [IOSObjectArray arrayWithObjects:$classname$_values_"
-      " count:$count$ type:$classname$_class_()];\n"
-      "}\n"
-      "\n"
-      "$classname$ *$classname$_valueOfWithNSString_(NSString *name) {\n"
-      "  $classname$_initialize();\n"
-      "  return CGPValueOfEnumOrOneOfWithNSString(name, $classname$_values_,"
-      " $count$);\n"
-      "}\n"
-      "\n"
-      "$classname$ *$classname$_valueOfWithInt_(jint value) {\n"
-      "  return $classname$_forNumberWithInt_(value);\n"
-      "}\n"
-      "\n"
-      "$classname$ *$classname$_forNumberWithInt_(jint value) {\n"
-      "  $classname$_initialize();\n"
-      "  return CGPValueOfEnumOrOneOfWithInt(value, $classname$_values_,\n"
-      " $count$);\n"
-      "}\n"
-      "\n"
-      "$classname$ *$classname$_fromOrdinal(NSUInteger ordinal) {\n"
-      "  $classname$_initialize();\n"
-      "  if (ordinal >= $count$) {\n"
-      "    return nil;\n"
-      "  }\n"
-      "  return $classname$_values_[ordinal];\n"
-      "}\n",
-      "classname", CaseClassName(descriptor_), "count",
-      SimpleItoa(descriptor_->field_count() + 1));
-  for (int i = 0; i < descriptor_->field_count(); i++) {
-    printer->Print(
-        "\n$classname$ *$classname$_get_$name$(void) {\n"
-        "  $classname$_initialize();\n"
-        "  return $classname$_values_[$classname$_Enum_$name$];\n"
-        "}\n",
-        "classname", CaseClassName(descriptor_),
-        "name", CaseValueName(descriptor_->field(i)));
-  }
+      "\n",
+      "classname", CaseClassName(descriptor_));
+
 }
 
 void OneofGenerator::GenerateMessageOrBuilder(io::Printer* printer) {

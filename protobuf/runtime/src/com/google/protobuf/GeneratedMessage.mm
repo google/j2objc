@@ -91,15 +91,15 @@ static void MessageToString(id msg, CGPDescriptor *descriptor, NSMutableString *
                             int indent);
 
 #define REPEATED_PRIMITIVE_FIELD_GETTER_IMP(NAME)                                         \
-  CGP_ALWAYS_INLINE inline TYPE_##NAME CGPRepeatedFieldGet##NAME(CGPRepeatedField *field, \
-                                                                 jint idx) {              \
+  CGP_ALWAYS_INLINE TYPE_##NAME CGPRepeatedFieldGet##NAME(CGPRepeatedField *field,        \
+                                                          jint idx) {                     \
     CGPRepeatedFieldCheckBounds(field, idx);                                              \
     return ((TYPE_##NAME *)field->data->buffer)[idx];                                     \
   }
 
 #define REPEATED_RETAINABLE_FIELD_GETTER_IMP(NAME)                                        \
-  CGP_ALWAYS_INLINE inline TYPE_##NAME CGPRepeatedFieldGet##NAME(CGPRepeatedField *field, \
-                                                                 jint idx) {              \
+  CGP_ALWAYS_INLINE TYPE_##NAME CGPRepeatedFieldGet##NAME(CGPRepeatedField *field,        \
+                                                          jint idx) {                     \
     CGPRepeatedFieldCheckBounds(field, idx);                                              \
     return RETAIN_AND_AUTORELEASE(((TYPE_##NAME *)field->data->buffer)[idx]);             \
   }
@@ -110,8 +110,8 @@ FOR_EACH_TYPE_NO_ENUM(REPEATED_PRIMITIVE_FIELD_GETTER_IMP, REPEATED_RETAINABLE_F
 #undef REPEATED_RETAINABLE_FIELD_GETTER_IMP
 
 #define REPEATED_FIELD_ADDER_IMP(NAME)                                                     \
-  CGP_ALWAYS_INLINE inline void CGPRepeatedFieldAdd##NAME(CGPRepeatedField *field,         \
-                                                          TYPE_##NAME value) {             \
+  CGP_ALWAYS_INLINE void CGPRepeatedFieldAdd##NAME(CGPRepeatedField *field,                \
+                                                   TYPE_##NAME value) {                    \
     uint32_t total_size = CGPRepeatedFieldTotalSize(field);                                \
     if (CGPRepeatedFieldSize(field) == total_size) {                                       \
       CGPRepeatedFieldReserve(field, total_size + 1, sizeof(TYPE_##NAME));                 \
@@ -124,8 +124,8 @@ FOR_EACH_TYPE_WITH_ENUM(REPEATED_FIELD_ADDER_IMP)
 #undef REPEATED_FIELD_ADDER_IMP
 
 #define REPEATED_FIELD_SETTER_IMP(NAME)                                                      \
-  CGP_ALWAYS_INLINE inline void CGPRepeatedFieldSet##NAME(CGPRepeatedField *field, jint idx, \
-                                                          TYPE_##NAME value) {               \
+  CGP_ALWAYS_INLINE void CGPRepeatedFieldSet##NAME(CGPRepeatedField *field, jint idx,        \
+                                                   TYPE_##NAME value) {                      \
     CGPRepeatedFieldCheckBounds(field, idx);                                                 \
     TYPE_##NAME *ptr = &((TYPE_##NAME *)field->data->buffer)[idx];                           \
     TYPE_ASSIGN_##NAME(*ptr, value);                                                         \
@@ -1567,7 +1567,7 @@ ComGoogleProtobufGeneratedMessage_Builder *CGPBuilderFromPrototype(
   ComGoogleProtobufGeneratedMessage_Builder *builder = CGPNewBuilder(descriptor);
   CopyMessage(builder, BuilderExtensionMap(builder, descriptor), prototype,
               MessageExtensionMap(prototype, descriptor), descriptor);
-  return AUTORELEASE(builder);
+  return builder;
 }
 
 // *****************************************************************************
@@ -2105,7 +2105,7 @@ void CGPMergeFromRawData(id msg, CGPDescriptor *descriptor, const char *data, ui
 ComGoogleProtobufGeneratedMessage *CGPParseFromByteArray(CGPDescriptor *descriptor,
                                                          IOSByteArray *bytes,
                                                          CGPExtensionRegistryLite *registry) {
-  ComGoogleProtobufGeneratedMessage *msg = AUTORELEASE(CGPNewMessage(descriptor));
+  ComGoogleProtobufGeneratedMessage *msg = CGPNewMessage(descriptor);
   CGPCodedInputStream codedStream(bytes->buffer_, (int)bytes->size_);
   BOOL success = MergeFromStream(msg, descriptor, &codedStream, registry,
                                  MessageExtensionMap(msg, descriptor)) &&
@@ -2119,7 +2119,7 @@ ComGoogleProtobufGeneratedMessage *CGPParseFromByteArray(CGPDescriptor *descript
 ComGoogleProtobufGeneratedMessage *CGPParseFromInputStream(CGPDescriptor *descriptor,
                                                            JavaIoInputStream *input,
                                                            CGPExtensionRegistryLite *registry) {
-  ComGoogleProtobufGeneratedMessage *msg = AUTORELEASE(CGPNewMessage(descriptor));
+  ComGoogleProtobufGeneratedMessage *msg = CGPNewMessage(descriptor);
   CGPCodedInputStream codedStream(input, INT_MAX);
   BOOL success = MergeFromStream(msg, descriptor, &codedStream, registry,
                                  MessageExtensionMap(msg, descriptor)) &&
@@ -2144,7 +2144,7 @@ ComGoogleProtobufGeneratedMessage *CGPParseDelimitedFromInputStream(
   }
   uint32_t length;
   if (!CGPCodedInputStream::ReadVarint32(firstByte, input, &length)) InvalidPB();
-  ComGoogleProtobufGeneratedMessage *msg = AUTORELEASE(CGPNewMessage(descriptor));
+  ComGoogleProtobufGeneratedMessage *msg = CGPNewMessage(descriptor);
   CGPCodedInputStream codedStream(input, length);
   BOOL success = MergeFromStream(msg, descriptor, &codedStream, registry,
                                  MessageExtensionMap(msg, descriptor)) &&

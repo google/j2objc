@@ -36,41 +36,11 @@
 
 #import "com/google/protobuf/GeneratedMessage.h"
 
-#import "com/google/protobuf/Descriptors_PackagePrivate.h"
-#import "com/google/protobuf/ExtensionRegistryLite.h"
-
 @interface ComGoogleProtobufGeneratedMessage () {
  @package
   int memoizedSize_;
   int memoizedHash_;
 }
 @end
-
-CF_EXTERN_C_BEGIN
-
-NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage *CGPNewMessage(
-    ComGoogleProtobufDescriptors_Descriptor *descriptor);
-
-NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage_Builder *CGPNewBuilder(
-    ComGoogleProtobufDescriptors_Descriptor *descriptor);
-
-ComGoogleProtobufGeneratedMessage_Builder *CGPBuilderFromPrototype(
-    CGPDescriptor *descriptor, ComGoogleProtobufGeneratedMessage *prototype);
-
-void CGPMergeFromRawData(id msg, CGPDescriptor *descriptor, const char *data, uint32_t length);
-
-ComGoogleProtobufGeneratedMessage *CGPParseFromByteArray(
-    CGPDescriptor *descriptor, IOSByteArray *bytes, CGPExtensionRegistryLite *registry);
-
-ComGoogleProtobufGeneratedMessage *CGPParseFromInputStream(
-    CGPDescriptor *descriptor, JavaIoInputStream *input, CGPExtensionRegistryLite *registry);
-
-ComGoogleProtobufGeneratedMessage *CGPParseFromByteString(CGPDescriptor *descriptor,
-    ComGoogleProtobufByteString *byteString, CGPExtensionRegistryLite *registry);
-
-ComGoogleProtobufGeneratedMessage *CGPParseDelimitedFromInputStream(
-    CGPDescriptor *descriptor, JavaIoInputStream *input, CGPExtensionRegistryLite *registry);
-
-CF_EXTERN_C_END
 
 #endif // __ComGoogleProtobufGeneratedMessage_PackagePrivate_H__
