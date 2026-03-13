@@ -34,8 +34,9 @@
 
 #include "google/protobuf/compiler/j2objc/j2objc_message.h"
 
-#include <algorithm>
-#include <memory>
+#include <set>
+#include <string>
+#include <vector>
 
 #include "google/protobuf/compiler/j2objc/j2objc_enum.h"
 #include "google/protobuf/compiler/j2objc/j2objc_extension.h"
@@ -154,7 +155,9 @@ void MessageGenerator::CollectHeaderImports(
   for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
     OneofGenerator(descriptor_->oneof_decl(i)).CollectHeaderImports(imports);
   }
-
+  for (int i = 0; i < descriptor_->enum_type_count(); i++) {
+    EnumGenerator(descriptor_->enum_type(i)).CollectHeaderImports(imports);
+  }
   for (int i = 0; i < descriptor_->nested_type_count(); i++) {
     if (IsMapEntry(descriptor_->nested_type(i))) continue;
     MessageGenerator generator(descriptor_->nested_type(i));
@@ -255,58 +258,91 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
       "\n"
       "@end\n"
       "\n"
-      "FOUNDATION_EXPORT $classname$ * _Nonnull "
-      "$classname$_getDefaultInstance(void);\n"
-      "FOUNDATION_EXPORT $classname$_Builder * _Nonnull "
-      "$classname$_newBuilder(void);\n"
-      "FOUNDATION_EXPORT $classname$_Builder * _Nonnull "
-      "$classname$_newBuilderWith"
-      "$classname$_($classname$ *message);\n"
+      "J2OBJC_STATIC_INIT($classname$)\n"
+      "J2OBJC_PROTO_MSG_TYPE_LITERAL_HEADER($classname$)\n"
+      "\n"
       "FOUNDATION_EXPORT ComGoogleProtobufDescriptors_Descriptor "
-      "* _Nonnull $classname$_getDescriptor(void);\n"
-      "FOUNDATION_EXPORT $classname$ *$classname$_parseFromWithByteArray_with"
+      "* _Nonnull $classname$_descriptor_;\n"
+      "CGP_ALWAYS_INLINE NS_RETURNS_RETAINED $classname$ * _Nonnull "
+      "$classname$_getDefaultInstance(void) {\n"
+      "  $classname$_initialize();\n"
+      "  return ($classname$ *)CGPNewMessage($classname$_descriptor_);\n"
+      "}\n"
+      "CGP_ALWAYS_INLINE NS_RETURNS_RETAINED $classname$_Builder * _Nonnull "
+      "$classname$_newBuilder(void) {\n"
+      "  $classname$_initialize();\n"
+      "  return ($classname$_Builder *)"
+      "CGPNewBuilder($classname$_descriptor_);\n"
+      "}\n"
+      "CGP_ALWAYS_INLINE NS_RETURNS_RETAINED $classname$_Builder * _Nonnull "
+      "$classname$_newBuilderWith"
+      "$classname$_($classname$ *message) {\n"
+      "  $classname$_initialize();\n"
+      "  return ($classname$_Builder *)CGPBuilderFromPrototype("
+      "$classname$_descriptor_, message);\n"
+      "}\n"
+      "CGP_ALWAYS_INLINE ComGoogleProtobufDescriptors_Descriptor "
+      "* _Nonnull $classname$_getDescriptor(void) {\n"
+      "  $classname$_initialize();\n"
+      "  return $classname$_descriptor_;\n"
+      "}\n"
+      "CGP_ALWAYS_INLINE NS_RETURNS_RETAINED $classname$ *"
+      "$classname$_parseFromWithByteArray_with"
       "ComGoogleProtobufExtensionRegistryLite_(IOSByteArray *bytes, "
-      "ComGoogleProtobufExtensionRegistryLite *registry);\n"
-      "CGP_ALWAYS_INLINE inline $classname$ *$classname$_"
+      "ComGoogleProtobufExtensionRegistryLite *registry) {\n"
+      "  $classname$_initialize();\n"
+      "  return ($classname$ *)CGPParseFromByteArray("
+      "$classname$_descriptor_, bytes, registry);\n"
+      "}\n"
+      "CGP_ALWAYS_INLINE NS_RETURNS_RETAINED $classname$ *$classname$_"
       "parseFromWithByteArray_(IOSByteArray *bytes) {\n"
       "  return $classname$_parseFromWithByteArray_withComGoogleProtobuf"
       "ExtensionRegistryLite_(bytes, nil);\n"
       "}\n"
-      "FOUNDATION_EXPORT $classname$ *$classname$_parseFromWithJavaIo"
+      "CGP_ALWAYS_INLINE NS_RETURNS_RETAINED $classname$ *"
+      "$classname$_parseFromWithJavaIo"
       "InputStream_withComGoogleProtobufExtensionRegistryLite_("
       "JavaIoInputStream *input, "
-      "ComGoogleProtobufExtensionRegistryLite *registry);\n"
-      "CGP_ALWAYS_INLINE inline $classname$ *$classname$_parseFromWith"
+      "ComGoogleProtobufExtensionRegistryLite *registry) {\n"
+      "  $classname$_initialize();\n"
+      "  return ($classname$ *)CGPParseFromInputStream("
+      "$classname$_descriptor_, input, registry);\n"
+      "}\n"
+      "CGP_ALWAYS_INLINE NS_RETURNS_RETAINED $classname$ *"
+      "$classname$_parseFromWith"
       "JavaIoInputStream_(JavaIoInputStream *input) {\n"
       "  return $classname$_parseFromWithJavaIoInputStream_withComGoogle"
       "ProtobufExtensionRegistryLite_(input, nil);\n"
       "}\n"
-      "FOUNDATION_EXPORT $classname$ *$classname$_"
+      "CGP_ALWAYS_INLINE NS_RETURNS_RETAINED $classname$ *$classname$_"
       "parseFromWithComGoogleProtobufByteString_with"
       "ComGoogleProtobufExtensionRegistryLite_(ComGoogleProtobufByteString "
-      "*byteString, ComGoogleProtobufExtensionRegistryLite *registry);\n"
-      "CGP_ALWAYS_INLINE inline $classname$ *$classname$_"
+      "*byteString, ComGoogleProtobufExtensionRegistryLite *registry) {\n"
+      "  $classname$_initialize();\n"
+      "  return ($classname$ *)CGPParseFromByteString("
+      "$classname$_descriptor_, byteString, registry);\n"
+      "}\n"
+      "CGP_ALWAYS_INLINE NS_RETURNS_RETAINED $classname$ *$classname$_"
       "parseFromWithComGoogleProtobufByteString_(ComGoogleProtobufByteString "
       "*byteString) {\n"
       "  return $classname$_parseFromWithComGoogleProtobufByteString_"
       "withComGoogleProtobufExtensionRegistryLite_(byteString, nil);\n"
       "}\n"
-      "FOUNDATION_EXPORT $classname$ *$classname$_parseDelimitedFromWithJavaIo"
+      "CGP_ALWAYS_INLINE NS_RETURNS_RETAINED $classname$ *"
+      "$classname$_parseDelimitedFromWithJavaIo"
       "InputStream_withComGoogleProtobufExtensionRegistryLite_("
       "JavaIoInputStream *input, "
-      "ComGoogleProtobufExtensionRegistryLite *registry);\n"
-      "CGP_ALWAYS_INLINE inline $classname$ *$classname$_parseDelimitedFromWith"
+      "ComGoogleProtobufExtensionRegistryLite *registry) {\n"
+      "  $classname$_initialize();\n"
+      "  return ($classname$ *)CGPParseDelimitedFromInputStream("
+      "$classname$_descriptor_, input, registry);\n"
+      "}\n"
+      "CGP_ALWAYS_INLINE NS_RETURNS_RETAINED $classname$ *"
+      "$classname$_parseDelimitedFromWith"
       "JavaIoInputStream_(JavaIoInputStream *input) {\n"
       "  return $classname$_parseDelimitedFromWithJavaIoInputStream_"
       "withComGoogleProtobufExtensionRegistryLite_(input, nil);\n"
-      "}\n"
-      "\n"
-      "J2OBJC_STATIC_INIT($classname$)\n"
-      "\n"
-      "J2OBJC_TYPE_LITERAL_HEADER($classname$)\n"
-      "\n"
-      "FOUNDATION_EXPORT ComGoogleProtobufDescriptors_Descriptor "
-      "* _Nonnull $classname$_descriptor_;\n",
+      "}\n",
       "classname", ClassName(descriptor_));
 
   for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
@@ -504,7 +540,14 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
           .GenerateSourceInitializer(printer);
     }
   }
-  printer->Print("J2OBJC_SET_INITIALIZED($classname$)\n", "classname",
+  printer->Print(
+      "J2OBJC_PROTO_TYPE_LITERAL_CLASS_INSTANCE_NAME($classname$) "
+      "= IOSClass_fromClass(self);\n"
+      "J2OBJC_PROTO_TYPE_LITERAL_BUILDER_CLASS_INSTANCE_NAME($classname$) "
+      "= IOSClass_fromClass([$classname$_Builder class]);\n"
+      "J2OBJC_PROTO_TYPE_LITERAL_ORBUILDER_CLASS_INSTANCE_NAME($classname$) "
+      "= IOSClass_fromProtocol(@protocol($classname$OrBuilder));\n"
+      "J2OBJC_SET_INITIALIZED($classname$)\n", "classname",
                  ClassName(descriptor_));
   printer->Outdent();
   printer->Outdent();
@@ -518,62 +561,8 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "@end\n"
       "\n"
-      "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
-      "\n"
-      "$classname$ * _Nonnull $classname$_getDefaultInstance(void) {\n"
-      "  $classname$_initialize();\n"
-      "  return AUTORELEASE("
-      "($classname$ *)CGPNewMessage($classname$_descriptor_));\n"
-      "}\n"
-      "\n"
-      "$classname$_Builder * _Nonnull $classname$_newBuilder(void) {\n"
-      "  $classname$_initialize();\n"
-      "  return AUTORELEASE("
-      "($classname$_Builder *)CGPNewBuilder($classname$_descriptor_));\n"
-      "}\n"
-      "\n"
-      "$classname$_Builder *_Nonnull $classname$_newBuilderWith$classname$_("
-      "$classname$ *message) {\n"
-      "  $classname$_initialize();\n"
-      "  return ($classname$_Builder *)CGPBuilderFromPrototype("
-      "$classname$_descriptor_, message);\n"
-      "}\n"
-      "\n"
-      "ComGoogleProtobufDescriptors_Descriptor "
-      "* _Nonnull $classname$_getDescriptor(void) {\n"
-      "  $classname$_initialize();\n"
-      "  return $classname$_descriptor_;\n"
-      "}\n"
-      "\n"
-      "$classname$ *$classname$_parseFromWithByteArray_with"
-      "ComGoogleProtobufExtensionRegistryLite_(IOSByteArray *bytes, "
-      "ComGoogleProtobufExtensionRegistryLite *registry) {\n"
-      "  $classname$_initialize();\n"
-      "  return ($classname$ *)CGPParseFromByteArray("
-      "$classname$_descriptor_, bytes, registry);\n"
-      "}\n"
-      "\n"
-      "$classname$ *$classname$_parseFromWithJavaIoInputStream_withComGoogle"
-      "ProtobufExtensionRegistryLite_(JavaIoInputStream *input, "
-      "ComGoogleProtobufExtensionRegistryLite *registry) {\n"
-      "  $classname$_initialize();\n"
-      "  return ($classname$ *)CGPParseFromInputStream("
-      "$classname$_descriptor_, input, registry);\n"
-      "}\n"
-      "$classname$ *$classname$_parseFromWithComGoogleProtobufByteString_with"
-      "ComGoogleProtobufExtensionRegistryLite_(ComGoogleProtobufByteString "
-      "*input, ComGoogleProtobufExtensionRegistryLite *registry) {\n"
-      "  $classname$_initialize();\n"
-      "  return ($classname$ *)CGPParseFromByteString("
-      "$classname$_descriptor_, input, registry);\n"
-      "}\n"
-      "$classname$ *$classname$_parseDelimitedFromWithJavaIoInputStream_with"
-      "ComGoogleProtobufExtensionRegistryLite_(JavaIoInputStream *input,"
-      " ComGoogleProtobufExtensionRegistryLite *registry) {\n"
-      "  $classname$_initialize();\n"
-      "  return ($classname$ *)CGPParseDelimitedFromInputStream("
-      "$classname$_descriptor_, input, registry);\n"
-      "}\n",
+      "J2OBJC_PROTO_MSG_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
+      "\n",
       "classname", ClassName(descriptor_));
 
   for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
@@ -623,12 +612,14 @@ void MessageGenerator::GenerateBuilderHeader(io::Printer* printer) {
   printer->Print(
       "\n"
       "@end\n\n"
-      "FOUNDATION_EXPORT ComGoogleProtobufDescriptors_Descriptor "
-      "* _Nonnull $classname$_Builder_getDescriptor(void);\n"
+      "CGP_ALWAYS_INLINE ComGoogleProtobufDescriptors_Descriptor "
+      "* _Nonnull $classname$_Builder_getDescriptor(void){\n"
+      "  $classname$_initialize();\n"
+      "  return $classname$_descriptor_;\n"
+      "}\n"
       "\n"
       "J2OBJC_EMPTY_STATIC_INIT($classname$_Builder)\n"
-      "\n"
-      "J2OBJC_TYPE_LITERAL_HEADER($classname$_Builder)\n",
+      "\n",
       "classname", ClassName(descriptor_));
 }
 
@@ -659,17 +650,7 @@ void MessageGenerator::GenerateBuilderSource(io::Printer* printer) {
   printer->Print(
       "\n"
       "@end\n"
-      "\n"
-      "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$_Builder)\n"
-      // We don't generate a source file for the "OrBuilder" protocol.
-      "J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE($classname$OrBuilder)\n"
-      "\n"
-      "ComGoogleProtobufDescriptors_Descriptor "
-      "* _Nonnull $classname$_Builder_getDescriptor(void) {\n"
-      "  $classname$_initialize();\n"
-      "  return $classname$_descriptor_;\n"
-      "}\n",
-      "classname", ClassName(descriptor_));
+      "\n");
 }
 
 // Prints the name of the protocol directory along with name/class name
@@ -703,9 +684,7 @@ void MessageGenerator::GenerateMessageOrBuilder(io::Printer* printer) {
       "\n"
       "@end\n"
       "\n"
-      "J2OBJC_EMPTY_STATIC_INIT($classname$OrBuilder)\n"
-      "\n"
-      "J2OBJC_TYPE_LITERAL_HEADER($classname$OrBuilder)\n",
+      "J2OBJC_EMPTY_STATIC_INIT($classname$OrBuilder)\n",
       "classname", ClassName(descriptor_));
 }
 

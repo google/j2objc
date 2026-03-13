@@ -199,7 +199,7 @@ void MessageLiteGenerator::GenerateHeader(io::Printer* printer) {
       "FOUNDATION_EXPORT $classname$ *$classname$_parseFromWithByteArray_with"
       "ComGoogleProtobufExtensionRegistryLite_(IOSByteArray *bytes, "
       "ComGoogleProtobufExtensionRegistryLite *registry);\n"
-      "CGP_ALWAYS_INLINE inline $classname$ *$classname$_"
+      "CGP_ALWAYS_INLINE $classname$ *$classname$_"
       "parseFromWithByteArray_(IOSByteArray *bytes) {\n"
       "  return $classname$_parseFromWithByteArray_withComGoogleProtobuf"
       "ExtensionRegistryLite_(bytes, nil);\n"
@@ -208,7 +208,7 @@ void MessageLiteGenerator::GenerateHeader(io::Printer* printer) {
       "InputStream_withComGoogleProtobufExtensionRegistryLite_("
       "JavaIoInputStream *input, "
       "ComGoogleProtobufExtensionRegistryLite *registry);\n"
-      "CGP_ALWAYS_INLINE inline $classname$ *$classname$_parseFromWith"
+      "CGP_ALWAYS_INLINE $classname$ *$classname$_parseFromWith"
       "JavaIoInputStream_(JavaIoInputStream *input) {\n"
       "  return $classname$_parseFromWithJavaIoInputStream_withComGoogle"
       "ProtobufExtensionRegistryLite_(input, nil);\n"
@@ -217,7 +217,7 @@ void MessageLiteGenerator::GenerateHeader(io::Printer* printer) {
       "InputStream_withComGoogleProtobufExtensionRegistryLite_("
       "JavaIoInputStream *input, "
       "ComGoogleProtobufExtensionRegistryLite *registry);\n"
-      "CGP_ALWAYS_INLINE inline $classname$ *$classname$_parseDelimitedFromWith"
+      "CGP_ALWAYS_INLINE $classname$ *$classname$_parseDelimitedFromWith"
       "JavaIoInputStream_(JavaIoInputStream *input) {\n"
       "  return $classname$_parseDelimitedFromWithJavaIoInputStream_"
       "withComGoogleProtobufExtensionRegistryLite_(input, nil);\n"
@@ -561,9 +561,7 @@ void MessageLiteGenerator::GenerateMessageOrBuilder(io::Printer* printer) {
       "\n"
       "@end\n"
       "\n"
-      "J2OBJC_EMPTY_STATIC_INIT($classname$OrBuilder)\n"
-      "\n"
-      "J2OBJC_TYPE_LITERAL_HEADER($classname$OrBuilder)\n",
+      "J2OBJC_EMPTY_STATIC_INIT($classname$OrBuilder)\n",
       "classname", ClassName(descriptor_));
 }
 

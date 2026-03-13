@@ -35,6 +35,7 @@
 #ifndef GOOGLE_PROTOBUF_COMPILER_J2OBJC_ENUM_H__
 #define GOOGLE_PROTOBUF_COMPILER_J2OBJC_ENUM_H__
 
+#include <set>
 #include <string>
 #include <vector>
 
@@ -51,6 +52,7 @@ class EnumGenerator {
   ~EnumGenerator();
 
   void CollectSourceImports(std::set<std::string>* imports) const;
+  void CollectHeaderImports(std::set<std::string>* imports) const;
   void GenerateHeader(io::Printer* printer);
   void GenerateSource(io::Printer* printer);
 
