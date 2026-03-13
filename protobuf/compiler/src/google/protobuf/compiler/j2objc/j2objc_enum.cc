@@ -35,6 +35,7 @@
 #include <google/protobuf/compiler/j2objc/j2objc_enum.h>
 #include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
 
+#include <set>
 #include <string>
 
 #include "google/protobuf/compiler/j2objc/common.h"
@@ -68,6 +69,10 @@ EnumGenerator::~EnumGenerator() {
 void EnumGenerator::CollectSourceImports(std::set<std::string>* imports) const {
   imports->insert("java/lang/IllegalArgumentException.h");
   imports->insert("java/lang/IllegalStateException.h");
+}
+
+void EnumGenerator::CollectHeaderImports(std::set<std::string>* imports) const {
+  imports->insert("IOSObjectArray.h");
 }
 
 void EnumGenerator::GenerateHeader(io::Printer* printer) {
@@ -201,6 +206,8 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
         "classname", ClassName(descriptor_));
   }
 
+  const int canonical_count = canonical_values_.size();
+  const int enum_count = canonical_count + (descriptor_->is_closed() ? 0 : 1);
   printer->Print(
       "\n"
       "@end\n"
@@ -212,29 +219,54 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
       "/*! INTERNAL ONLY - Use enum accessors declared below. */\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_values_[];\n"
       "\n"
-      "FOUNDATION_EXPORT IOSObjectArray *$classname$_values(void);\n"
-      "FOUNDATION_EXPORT $classname$ *$classname$_valueOfWithNSString_("
-      "NSString *name);\n"
-      "FOUNDATION_EXPORT $classname$ *$classname$_valueOfWithInt_("
-      "$valuepreprocessorname$ value);\n"
-      "FOUNDATION_EXPORT $classname$ *$classname$_forNumberWithInt_("
-      "$valuepreprocessorname$ value);\n"
-      "FOUNDATION_EXPORT $classname$ *$classname$_fromOrdinal("
-      "$ordinalpreprocessorname$ ordinal);\n\n",
-      "classname", ClassName(descriptor_), "ordinalpreprocessorname",
-      COrdinalPreprocessorName(descriptor_), "valueenumname",
-      CValueEnumName(descriptor_), "valuepreprocessorname",
-      CValuePreprocessorName(descriptor_));
+      "CGP_ALWAYS_INLINE IOSObjectArray *$classname$_values(void) {\n"
+      "  $classname$_initialize();\n"
+      "  return [IOSObjectArray arrayWithObjects:$classname$_values_"
+      " count:$enum_count$ type:$classname$_class_()];\n"
+      "}\n"
+      "CGP_ALWAYS_INLINE $classname$ *$classname$_valueOfWithNSString_("
+      "NSString *name){\n"
+      "  $classname$_initialize();\n"
+      "  return CGPValueOfEnumOrOneOfWithNSString(name, $classname$_values_,"
+      " $enum_count$);\n"
+      "}\n"
+      "CGP_ALWAYS_INLINE $classname$ *$classname$_forNumberWithInt_("
+      "$valuepreprocessorname$ value) {\n"
+      "  $classname$_initialize();\n"
+      "  return CGPValueOfEnumOrOneOfWithInt(value, $classname$_values_,\n"
+      " $canonical_count$);\n"
+      "}\n"
+      "CGP_ALWAYS_INLINE $classname$ *$classname$_valueOfWithInt_("
+      "$valuepreprocessorname$ value) {\n"
+      "  return $classname$_forNumberWithInt_(value);\n"
+      "}\n"
+      "CGP_ALWAYS_INLINE $classname$ *$classname$_fromOrdinal("
+      "$ordinalpreprocessorname$ ordinal) {\n"
+      "  $classname$_initialize();\n"
+      "  return ordinal < $enum_count$ ? $classname$_values_[ordinal] : nil;\n"
+      "}\n\n",
+      "classname", ClassName(descriptor_),
+      "ordinalpreprocessorname", COrdinalPreprocessorName(descriptor_),
+      "valueenumname", CValueEnumName(descriptor_),
+      "valuepreprocessorname", CValuePreprocessorName(descriptor_),
+      "canonical_count", SimpleItoa(canonical_count),
+      "enum_count", SimpleItoa(enum_count));
 
   for (int i = 0; i < canonical_values_.size(); i++) {
     printer->Print(
-        "FOUNDATION_EXPORT $classname$ *$classname$_get_$name$(void);\n",
+        "CGP_ALWAYS_INLINE $classname$ *$classname$_get_$name$(void){\n"
+        "  $classname$_initialize();\n"
+        "  return $classname$_values_[$classname$_Enum_$name$];\n"
+        "}\n",
         "classname", ClassName(descriptor_), "name",
         canonical_values_[i]->name());
   }
   if (!descriptor_->is_closed()) {
     printer->Print(
-        "FOUNDATION_EXPORT $classname$ *$classname$_get_UNRECOGNIZED(void);\n",
+        "CGP_ALWAYS_INLINE $classname$ *$classname$_get_UNRECOGNIZED(void) {\n"
+        "  $classname$_initialize();\n"
+        "  return $classname$_values_[$classname$_Enum_UNRECOGNIZED];\n"
+        "}\n",
         "classname", ClassName(descriptor_));
   }
 
@@ -399,67 +431,11 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "@end\n"
       "\n"
       "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
-      "\n"
-      "IOSObjectArray *$classname$_values(void) {\n"
-      "  $classname$_initialize();\n"
-      "  return [IOSObjectArray arrayWithObjects:$classname$_values_"
-      " count:$count$ type:$classname$_class_()];\n"
-      "}\n"
-      "\n"
-      "$classname$ *$classname$_valueOfWithNSString_(NSString *name) {\n"
-      "  $classname$_initialize();\n"
-      "  return CGPValueOfEnumOrOneOfWithNSString(name, $classname$_values_,"
-      " $count$);\n"
-      "}\n"
       "\n",
-      "classname", ClassName(descriptor_), "count",
-      SimpleItoa(enum_count));  // Include UNRECOGNIZED constant.
+      "classname", ClassName(descriptor_));
 
-  printer->Print(
-      "$classname$ *$classname$_valueOfWithInt_($valuepreprocessorname$ value) "
-      "{\n"
-      "  return $classname$_forNumberWithInt_(value);\n"
-      "}\n"
-      "\n"
-      "$classname$ *$classname$_forNumberWithInt_($valuepreprocessorname$ "
-      "value) {\n"
-      "  $classname$_initialize();\n"
-      "  return CGPValueOfEnumOrOneOfWithInt(value, $classname$_values_,\n"
-      " $count$);\n"
-      "}\n"
-      "\n",
-      "classname", ClassName(descriptor_), "count", SimpleItoa(canonical_count),
-      "valuepreprocessorname", CValuePreprocessorName(descriptor_));
 
-  printer->Print(
-      "$classname$ *$classname$_fromOrdinal($ordinalpreprocessorname$ ordinal) "
-      "{\n"
-      "  $classname$_initialize();\n"
-      "  if (ordinal >= $count$) {\n"
-      "    return nil;\n"
-      "  }\n"
-      "  return $classname$_values_[ordinal];\n"
-      "}\n",
-      "classname", ClassName(descriptor_), "count", SimpleItoa(enum_count),
-      "ordinalpreprocessorname", COrdinalPreprocessorName(descriptor_));
 
-  for (int i = 0; i < canonical_values_.size(); i++) {
-    printer->Print(
-        "\n$classname$ *$classname$_get_$name$(void) {\n"
-        "  $classname$_initialize();\n"
-        "  return $classname$_values_[$classname$_Enum_$name$];\n"
-        "}\n",
-        "classname", ClassName(descriptor_),
-        "name", canonical_values_[i]->name());
-  }
-  if (!descriptor_->is_closed()) {
-    printer->Print(
-        "\n$classname$ *$classname$_get_$name$(void) {\n"
-        "  $classname$_initialize();\n"
-        "  return $classname$_values_[$classname$_Enum_$name$];\n"
-        "}\n",
-        "classname", ClassName(descriptor_), "name", "UNRECOGNIZED");
-  }
 }
 
 }  // namespace j2objc

@@ -40,6 +40,7 @@
 
 #include "com/google/protobuf/AbstractMessage.h"
 #include "com/google/protobuf/Extension.h"
+#include "com/google/protobuf/ExtensionRegistryLite.h"
 #include "com/google/protobuf/Message.h"
 #include "com/google/protobuf/MessageOrBuilder.h"
 #include "com/google/protobuf/common.h"
@@ -190,4 +191,35 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_GeneratedExtension)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_GeneratedExtension)
 
+// CGPFunctions are for internal implementation only.
+CF_EXTERN_C_BEGIN
+
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage *CGPNewMessage(
+    ComGoogleProtobufDescriptors_Descriptor *descriptor);
+
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage_Builder *CGPNewBuilder(
+    ComGoogleProtobufDescriptors_Descriptor *descriptor);
+
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage_Builder *CGPBuilderFromPrototype(
+    CGPDescriptor *descriptor, ComGoogleProtobufGeneratedMessage *prototype);
+
+void CGPMergeFromRawData(id msg, CGPDescriptor *descriptor, const char *data, uint32_t length);
+
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage *CGPParseFromByteArray(
+    CGPDescriptor *descriptor, IOSByteArray *bytes,
+    ComGoogleProtobufExtensionRegistryLite *registry);
+
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage *CGPParseFromInputStream(
+    CGPDescriptor *descriptor, JavaIoInputStream *input,
+    ComGoogleProtobufExtensionRegistryLite *registry);
+
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage *CGPParseFromByteString(
+    CGPDescriptor *descriptor, ComGoogleProtobufByteString *byteString,
+    ComGoogleProtobufExtensionRegistryLite *registry);
+
+NS_RETURNS_RETAINED ComGoogleProtobufGeneratedMessage *CGPParseDelimitedFromInputStream(
+    CGPDescriptor *descriptor, JavaIoInputStream *input,
+    ComGoogleProtobufExtensionRegistryLite *registry);
+
+CF_EXTERN_C_END
 #endif  // __ComGoogleProtobufGeneratedMessage_H__
