@@ -182,11 +182,11 @@ void CGPInitFields(
     CGPDescriptor *descriptor, jint fieldCount, CGPFieldData *fieldData,
     jint oneofCount, CGPOneofData *oneofData);
 
-CGP_ALWAYS_INLINE inline BOOL CGPIsExtendable(const CGPDescriptor *descriptor) {
+CGP_ALWAYS_INLINE BOOL CGPIsExtendable(const CGPDescriptor *descriptor) {
   return descriptor->flags_ & CGPMessageFlagExtendable;
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPIsMessageSetWireFormat(const CGPDescriptor *descriptor) {
+CGP_ALWAYS_INLINE BOOL CGPIsMessageSetWireFormat(const CGPDescriptor *descriptor) {
   return descriptor->flags_ & CGPMessageFlagMessageSetWireFormat;
 }
 
@@ -207,67 +207,67 @@ id CGPValueOfEnumOrOneOfWithNSString(NSString *name, __strong id values[], jint 
 
 id CGPValueOfEnumOrOneOfWithInt(jint value, __strong id values[], jint count);
 
-CGP_ALWAYS_INLINE inline jint CGPFieldGetNumber(const CGPFieldDescriptor *field) {
+CGP_ALWAYS_INLINE jint CGPFieldGetNumber(const CGPFieldDescriptor *field) {
   return field->data_->number;
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPFieldIsRequired(const CGPFieldDescriptor *field) {
+CGP_ALWAYS_INLINE BOOL CGPFieldIsRequired(const CGPFieldDescriptor *field) {
   return field->data_->flags & CGPFieldFlagRequired;
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPFieldIsRepeated(const CGPFieldDescriptor *field) {
+CGP_ALWAYS_INLINE BOOL CGPFieldIsRepeated(const CGPFieldDescriptor *field) {
   return field->data_->flags & CGPFieldFlagRepeated;
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPFieldIsMap(const CGPFieldDescriptor *field) {
+CGP_ALWAYS_INLINE BOOL CGPFieldIsMap(const CGPFieldDescriptor *field) {
   return field->data_->flags & CGPFieldFlagMap;
 }
 
-CGP_ALWAYS_INLINE inline CGPFieldDescriptor *CGPFieldMapKey(const CGPFieldDescriptor *field) {
+CGP_ALWAYS_INLINE CGPFieldDescriptor *CGPFieldMapKey(const CGPFieldDescriptor *field) {
   return ((CGPDescriptor *)field->valueType_)->fields_->buffer_[0];
 }
 
-CGP_ALWAYS_INLINE inline CGPFieldDescriptor *CGPFieldMapValue(const CGPFieldDescriptor *field) {
+CGP_ALWAYS_INLINE CGPFieldDescriptor *CGPFieldMapValue(const CGPFieldDescriptor *field) {
   return ((CGPDescriptor *)field->valueType_)->fields_->buffer_[1];
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPFieldIsPacked(const CGPFieldDescriptor *field) {
+CGP_ALWAYS_INLINE BOOL CGPFieldIsPacked(const CGPFieldDescriptor *field) {
   return field->data_->flags & CGPFieldFlagPacked;
 }
 
-CGP_ALWAYS_INLINE inline CGPFieldType CGPFieldGetType(const CGPFieldDescriptor *field) {
+CGP_ALWAYS_INLINE CGPFieldType CGPFieldGetType(const CGPFieldDescriptor *field) {
   return field->data_->type;
 }
 
-CGP_ALWAYS_INLINE inline CGPFieldJavaType CGPFieldGetJavaType(const CGPFieldDescriptor *field) {
+CGP_ALWAYS_INLINE CGPFieldJavaType CGPFieldGetJavaType(const CGPFieldDescriptor *field) {
   return field->javaType_;
 }
 
-CGP_ALWAYS_INLINE inline uint32_t CGPFieldGetHasBitIndex(const CGPFieldDescriptor *field) {
+CGP_ALWAYS_INLINE uint32_t CGPFieldGetHasBitIndex(const CGPFieldDescriptor *field) {
   return field->data_->hasBitIndex;
 }
 
-CGP_ALWAYS_INLINE inline uint32_t CGPFieldGetOffset(const CGPFieldDescriptor *field, Class cls) {
+CGP_ALWAYS_INLINE uint32_t CGPFieldGetOffset(const CGPFieldDescriptor *field, Class cls) {
   return (uint32_t)class_getInstanceSize(cls) + field->data_->offset;
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPTypeIsGroup(CGPFieldType type) {
+CGP_ALWAYS_INLINE BOOL CGPTypeIsGroup(CGPFieldType type) {
   return type == ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_GROUP;
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPJavaTypeIsMessage(CGPFieldJavaType type) {
+CGP_ALWAYS_INLINE BOOL CGPJavaTypeIsMessage(CGPFieldJavaType type) {
   return type == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE;
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPFieldTypeIsMessage(const CGPFieldDescriptor *field) {
+CGP_ALWAYS_INLINE BOOL CGPFieldTypeIsMessage(const CGPFieldDescriptor *field) {
   return CGPJavaTypeIsMessage(CGPFieldGetJavaType(field));
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPJavaTypeIsEnum(CGPFieldJavaType type) {
+CGP_ALWAYS_INLINE BOOL CGPJavaTypeIsEnum(CGPFieldJavaType type) {
   return type == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM;
 }
 
-CGP_ALWAYS_INLINE inline jint CGPEnumGetIntValue(CGPEnumDescriptor *descriptor, id enumObj) {
+CGP_ALWAYS_INLINE jint CGPEnumGetIntValue(CGPEnumDescriptor *descriptor, id enumObj) {
   return *(jint *)((char *)(ARCBRIDGE void *)enumObj + descriptor->valueOffset_);
 }
 
@@ -275,7 +275,7 @@ id CGPFieldGetDefaultValue(CGPFieldDescriptor *field);
 
 Class<ComGoogleProtobufInternal_EnumLite> CGPOneofGetCaseClass(CGPOneofDescriptor *oneof);
 
-CGP_ALWAYS_INLINE inline uint32_t CGPOneofGetOffset(const CGPOneofDescriptor *oneof, Class cls) {
+CGP_ALWAYS_INLINE uint32_t CGPOneofGetOffset(const CGPOneofDescriptor *oneof, Class cls) {
   return (uint32_t)class_getInstanceSize(cls) + oneof->data_->offset;
 }
 

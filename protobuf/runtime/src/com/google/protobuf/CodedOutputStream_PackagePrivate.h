@@ -240,10 +240,10 @@ class CGPCodedOutputStream {
   // WriteVarint32FallbackToArray.  Meanwhile, WriteVarint32() is already
   // out-of-line, so it should just invoke this directly to avoid any extra
   // function call overhead.
-  static uint8* WriteVarint32FallbackToArrayInline(
-      uint32_t value, uint8* target) CGP_ALWAYS_INLINE;
-  static uint8* WriteVarint64ToArrayInline(
-      uint64_t value, uint8* target) CGP_ALWAYS_INLINE;
+  CGP_ALWAYS_INLINE static uint8* WriteVarint32FallbackToArrayInline(
+      uint32_t value, uint8* target) ;
+  CGP_ALWAYS_INLINE static uint8* WriteVarint64ToArrayInline(
+      uint64_t value, uint8* target);
 
   static int VarintSize32Fallback(uint32_t value);
 };
