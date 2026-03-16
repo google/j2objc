@@ -35,6 +35,7 @@
 #include <google/protobuf/compiler/j2objc/j2objc_enum.h>
 #include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
 
+#include <set>
 #include <string>
 
 #include "google/protobuf/compiler/j2objc/common.h"

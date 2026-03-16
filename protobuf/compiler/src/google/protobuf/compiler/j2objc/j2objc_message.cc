@@ -34,8 +34,9 @@
 
 #include "google/protobuf/compiler/j2objc/j2objc_message.h"
 
-#include <algorithm>
-#include <memory>
+#include <set>
+#include <string>
+#include <vector>
 
 #include "google/protobuf/compiler/j2objc/j2objc_enum.h"
 #include "google/protobuf/compiler/j2objc/j2objc_extension.h"
