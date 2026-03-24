@@ -68,6 +68,7 @@ import com.google.devtools.j2objc.translate.MetadataWriterTest;
 import com.google.devtools.j2objc.translate.NilCheckResolverTest;
 import com.google.devtools.j2objc.translate.NumberMethodRewriterTest;
 import com.google.devtools.j2objc.translate.ObjectiveCAdapterMethodAnnotationTest;
+import com.google.devtools.j2objc.translate.ObjectiveCKmpMethodTranslatorTest;
 import com.google.devtools.j2objc.translate.ObjectiveCNativeEnumNameTest;
 import com.google.devtools.j2objc.translate.ObjectiveCNativeProtocolAnnotationTest;
 import com.google.devtools.j2objc.translate.OcniExtractorTest;
@@ -165,6 +166,7 @@ public class SmallTests {
         ObjectiveCHeaderGeneratorTest.class,
         ObjectiveCImplementationGeneratorTest.class,
         ObjectiveCNativeEnumNameTest.class,
+        ObjectiveCKmpMethodTranslatorTest.class,
         ObjectiveCNativeProtocolAnnotationTest.class,
         ObjectiveCSegmentedHeaderGeneratorTest.class,
         ObjectiveCSourceFileGeneratorTest.class,

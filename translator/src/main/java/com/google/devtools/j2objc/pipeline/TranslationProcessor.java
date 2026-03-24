@@ -52,6 +52,7 @@ import com.google.devtools.j2objc.translate.MetadataWriter;
 import com.google.devtools.j2objc.translate.NilCheckResolver;
 import com.google.devtools.j2objc.translate.NumberMethodRewriter;
 import com.google.devtools.j2objc.translate.ObjectiveCAdapterMethodAnnotation;
+import com.google.devtools.j2objc.translate.ObjectiveCKmpMethodTranslator;
 import com.google.devtools.j2objc.translate.ObjectiveCNativeProtocolAnnotation;
 import com.google.devtools.j2objc.translate.OcniExtractor;
 import com.google.devtools.j2objc.translate.OperatorRewriter;
@@ -368,6 +369,9 @@ public class TranslationProcessor extends FileProcessor {
     // do not need other processing above.
     new ObjectiveCAdapterMethodAnnotation(unit).run();
     ticker.tick("ObjectiveCAdapterMethodAnnotation");
+
+    new ObjectiveCKmpMethodTranslator(unit).run();
+    ticker.tick("ObjectiveCKmpMethodTranslator");
 
     if (deadCodeMap != null) {
       deadCodeEliminator.removeDeadClasses();
