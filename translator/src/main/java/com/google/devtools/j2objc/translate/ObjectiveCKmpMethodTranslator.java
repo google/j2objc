@@ -105,6 +105,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
 
   private static final ImmutableMap<String, String> JAVA_TO_NATIVE_TYPE_MAP =
       ImmutableMap.<String, String>builder()
+          .put("com.google.common.collect.ImmutableList", "NSArray")
           .put("java.util.List", "NSArray")
           .put("java.util.Map", "NSDictionary")
           .put("java.util.Set", "NSSet")

@@ -24,6 +24,22 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
   @Override
   public void setUp() throws IOException {
     super.setUp();
+    addSourceFile(
+        """
+        package com.google.common.collect;
+        public class ImmutableList<E> extends java.util.AbstractList<E> {
+          public static <E> ImmutableList<E> of() {
+            return new ImmutableList<E>();
+          }
+          public E get(int index) {
+            return null;
+          }
+          public int size() {
+            return 0;
+          }
+        }
+        """,
+        "com/google/common/collect/ImmutableList.java");
     addSourceFile("public class Foo {}", "Foo.java");
     addSourceFile("public class Bar {}", "Bar.java");
     addSourceFile(
@@ -767,6 +783,58 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         testImplementation,
         "[self setListWithJavaUtilList:(id<JavaUtilList>) [IntermediateAdapter"
             + " toGenericWithId:list]]");
+  }
+
+  public void testImmutableListIsConverted() throws IOException {
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ImmutableListAdapter {
+          public static native Object fromImmutableList(ImmutableList<String> list) /*-[ return nil; ]-*/;
+          public static native ImmutableList<String> toImmutableList(Object list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "ImmutableListAdapter.java");
+
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public class ImmutableListTest {
+          @ObjectiveCKmpMethod(selector="setListWithNSArray:", adapter=ImmutableListAdapter.class)
+          public void setList(ImmutableList<String> list) {
+            return;
+          }
+
+          @ObjectiveCKmpMethod(selector="getListAsNSArray", adapter=ImmutableListAdapter.class)
+          public ImmutableList<String> getList() {
+            return null;
+          }
+        }
+        """,
+        "ImmutableListTest.java");
+
+    String testHeader = translateSourceFile("ImmutableListTest", "ImmutableListTest.h");
+    assertInTranslation(testHeader, "- (void)setListWithNSArray:(NSArray<NSString *> *)list;");
+    assertInTranslation(testHeader, "- (NSArray<NSString *> *)getListAsNSArray;");
+
+    String testImplementation = translateSourceFile("ImmutableListTest", "ImmutableListTest.m");
+    assertInTranslation(
+        testImplementation,
+        """
+        - (void)setListWithNSArray:(NSArray<NSString *> *)list {
+          [self setListWithComGoogleCommonCollectImmutableList:[ImmutableListAdapter toImmutableListWithId:list]];
+        }
+        """);
+    assertInTranslation(
+        testImplementation,
+        """
+        - (NSArray<NSString *> *)getListAsNSArray {
+          return (NSArray<NSString *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:[self getList]];
+        }
+        """);
   }
 
   public void testNoMethodFoundThrowsException() throws IOException {
