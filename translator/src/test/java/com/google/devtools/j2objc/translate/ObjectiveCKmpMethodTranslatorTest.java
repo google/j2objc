@@ -785,6 +785,242 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
             + " toGenericWithId:list]]");
   }
 
+  public void testInterface() throws IOException {
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ImmutableListAdapter {
+          public static native Object fromImmutableList(ImmutableList<String> list) /*-[ return nil; ]-*/;
+          public static native ImmutableList<String> toImmutableList(Object list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "ImmutableListAdapter.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public interface MyInterface {
+          @ObjectiveCKmpMethod(selector="setItems:", adapter=ImmutableListAdapter.class)
+          void setItems(ImmutableList<String> items);
+
+          @ObjectiveCKmpMethod(selector="getItems", adapter=ImmutableListAdapter.class)
+          ImmutableList<String> getItems();
+        }
+        """,
+        "MyInterface.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ConcreteImpl implements MyInterface {
+          @Override
+          public void setItems(ImmutableList<String> items) {}
+
+          @Override
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "ConcreteImpl.java");
+
+    String interfaceHeader = translateSourceFile("MyInterface", "MyInterface.h");
+    assertInTranslation(interfaceHeader, "- (void)setItems:(NSArray<NSString *> *)items;");
+    assertInTranslation(interfaceHeader, "- (NSArray<NSString *> *)getItems;");
+
+    String concreteHeader = translateSourceFile("ConcreteImpl", "ConcreteImpl.h");
+    assertInTranslation(concreteHeader, "- (void)setItems:(NSArray<NSString *> *)items;");
+    assertInTranslation(concreteHeader, "- (NSArray<NSString *> *)getItems;");
+
+    String concreteImpl = translateSourceFile("ConcreteImpl", "ConcreteImpl.m");
+    assertInTranslation(
+        concreteImpl,
+        """
+        - (void)setItems:(NSArray<NSString *> *)items {
+          [self setItemsWithComGoogleCommonCollectImmutableList:[ImmutableListAdapter toImmutableListWithId:items]];
+        }
+        """);
+    assertInTranslation(
+        concreteImpl,
+        """
+        - (NSArray<NSString *> *)getItems {
+          return (NSArray<NSString *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:[self getItems]];
+        }
+        """);
+  }
+
+  public void testAbstractClass() throws IOException {
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ImmutableListAdapter {
+          public static native Object fromImmutableList(ImmutableList<String> list) /*-[ return nil; ]-*/;
+          public static native ImmutableList<String> toImmutableList(Object list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "ImmutableListAdapter.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public abstract class AbstractClass {
+          @ObjectiveCKmpMethod(selector="setItems:", adapter=ImmutableListAdapter.class)
+          public abstract void setItems(ImmutableList<String> items);
+
+          @ObjectiveCKmpMethod(selector="getItems", adapter=ImmutableListAdapter.class)
+          public abstract ImmutableList<String> getItems();
+        }
+        """,
+        "AbstractClass.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ConcreteClass extends AbstractClass {
+          @Override
+          public void setItems(ImmutableList<String> items) {}
+
+          @Override
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "ConcreteClass.java");
+
+    String abstractHeader = translateSourceFile("AbstractClass", "AbstractClass.h");
+    assertInTranslation(abstractHeader, "- (void)setItems:(NSArray<NSString *> *)items;");
+    assertInTranslation(abstractHeader, "- (NSArray<NSString *> *)getItems;");
+
+    String abstractImpl = translateSourceFile("AbstractClass", "AbstractClass.m");
+    assertInTranslation(
+        abstractImpl,
+        """
+        - (NSArray<NSString *> *)getItems {
+          return (NSArray<NSString *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:[self getItems]];
+        }
+        """);
+
+    String concreteHeader = translateSourceFile("ConcreteClass", "ConcreteClass.h");
+    assertNotInTranslation(concreteHeader, "- (void)setItems:(NSArray<NSString *> *)items;");
+    assertNotInTranslation(concreteHeader, "- (NSArray<NSString *> *)getItems;");
+
+    String concreteImpl = translateSourceFile("ConcreteClass", "ConcreteClass.m");
+    assertNotInTranslation(
+        concreteImpl,
+        """
+        - (void)setItems:(NSArray<NSString *> *)items {
+          [self setItemsWithComGoogleCommonCollectImmutableList:[ImmutableListAdapter toImmutableListWithId:items]];
+        }
+        """);
+    assertNotInTranslation(
+        concreteImpl,
+        """
+        - (NSArray<NSString *> *)getItems {
+          return (NSArray<NSString *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:[self getItems]];
+        }
+        """);
+  }
+
+  public void testAbstractMethodWithCustomClass() throws IOException {
+    addSourceFile(
+        """
+        package my.pkg;
+        public class CustomClass {
+        }
+        """,
+        "my/pkg/CustomClass.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import my.pkg.CustomClass;
+
+        public class ImmutableListAdapter {
+          public static native Object fromImmutableList(ImmutableList<CustomClass> list) /*-[ return nil; ]-*/;
+          public static native ImmutableList<CustomClass> toImmutableList(Object list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "ImmutableListAdapter.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+        import my.pkg.CustomClass;
+
+        public abstract class AbstractClass {
+          @ObjectiveCKmpMethod(selector="setItems:", adapter=ImmutableListAdapter.class)
+          public abstract void setItems(ImmutableList<CustomClass> items);
+
+          @ObjectiveCKmpMethod(selector="getItems", adapter=ImmutableListAdapter.class)
+          public abstract ImmutableList<CustomClass> getItems();
+        }
+        """,
+        "AbstractClass.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import my.pkg.CustomClass;
+
+        public class ConcreteClass extends AbstractClass {
+          @Override
+          public void setItems(ImmutableList<CustomClass> items) {}
+
+          @Override
+          public ImmutableList<CustomClass> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "ConcreteClass.java");
+
+    String abstractHeader = translateSourceFile("AbstractClass", "AbstractClass.h");
+    assertInTranslation(
+        abstractHeader, "- (void)setItems:(NSArray<MyPkgCustomClass *> *)items;");
+    assertInTranslation(abstractHeader, "- (NSArray<MyPkgCustomClass *> *)getItems;");
+    assertInTranslation(abstractHeader, "@class MyPkgCustomClass;");
+
+    String abstractImpl = translateSourceFile("AbstractClass", "AbstractClass.m");
+    assertInTranslation(
+        abstractImpl,
+        """
+        - (void)setItems:(NSArray<MyPkgCustomClass *> *)items {
+          [self setItemsWithComGoogleCommonCollectImmutableList:[ImmutableListAdapter toImmutableListWithId:items]];
+        }
+        """);
+    assertInTranslation(
+        abstractImpl,
+        """
+        - (NSArray<MyPkgCustomClass *> *)getItems {
+          return (NSArray<MyPkgCustomClass *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:[self getItems]];
+        }
+        """);
+
+    String concreteHeader = translateSourceFile("ConcreteClass", "ConcreteClass.h");
+    assertNotInTranslation(concreteHeader, "- (void)setItems:(NSArray<MyPkgCustomClass *> *)items;");
+    assertNotInTranslation(concreteHeader, "- (NSArray<MyPkgCustomClass *> *)getItems;");
+    assertNotInTranslation(concreteHeader, "@class MyPkgCustomClass;");
+
+    String concreteImpl = translateSourceFile("ConcreteClass", "ConcreteClass.m");
+    assertNotInTranslation(
+        concreteImpl,
+        """
+        - (void)setItems:(NSArray<MyPkgCustomClass *> *)items {
+          [self setItemsWithComGoogleCommonCollectImmutableList:[ImmutableListAdapter toImmutableListWithId:items]];
+        }
+        """);
+    assertNotInTranslation(
+        concreteImpl,
+        """
+        - (NSArray<MyPkgCustomClass *> *)getItems {
+          return (NSArray<MyPkgCustomClass *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:[self getItems]];
+        }
+        """);
+  }
+
   public void testImmutableListIsConverted() throws IOException {
     addSourceFile(
         """
