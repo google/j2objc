@@ -937,11 +937,10 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
     addSourceFile(
         """
         import com.google.common.collect.ImmutableList;
-        import my.pkg.CustomClass;
 
         public class ImmutableListAdapter {
-          public static native Object fromImmutableList(ImmutableList<CustomClass> list) /*-[ return nil; ]-*/;
-          public static native ImmutableList<CustomClass> toImmutableList(Object list) /*-[ return nil; ]-*/;
+          public static native <T> Object fromImmutableList(ImmutableList<T> list) /*-[ return nil; ]-*/;
+          public static native <T> ImmutableList<T> toImmutableList(Object list) /*-[ return nil; ]-*/;
         }
         """,
         "ImmutableListAdapter.java");
@@ -988,7 +987,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         abstractImpl,
         """
         - (void)setItems:(NSArray<MyPkgCustomClass *> *)items {
-          [self setItemsWithComGoogleCommonCollectImmutableList:[ImmutableListAdapter toImmutableListWithId:items]];
+          [self setItemsWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *) [ImmutableListAdapter toImmutableListWithId:items]];
         }
         """);
     assertInTranslation(
