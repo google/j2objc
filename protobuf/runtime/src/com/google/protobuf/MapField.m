@@ -101,7 +101,7 @@ static CGPMapFieldData *NewData() {
 // The passed in key and value must already have an incremented retain count if they have a
 // retainable type.
 static CGPMapFieldEntry *NewEntryConsuming(CGPValue key, CGPValue value, uint32_t hash) {
-  CGPMapFieldEntry *entry = malloc(sizeof(CGPMapFieldEntry));
+  CGPMapFieldEntry *entry = calloc(sizeof(CGPMapFieldEntry), 1);
   entry->key = key;
   entry->value = value;
   entry->hash = hash;
