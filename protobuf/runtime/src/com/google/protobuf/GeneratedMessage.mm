@@ -831,8 +831,7 @@ static BOOL AddMapGetWithKeyMethod(Class cls, SEL sel, CGPFieldDescriptor *field
           key.CGPValueField_##KEY_NAME = pKey;                                        \
           CGPValue value;                                                             \
           value.CGPValueField_##VALUE_NAME = pValue;                                  \
-          CGPMapFieldPut(MAP_FIELD_PTR(msg, offset), key, keyType, value, valueType,  \
-                         /* retainedKeyAndValue */ false);                            \
+          CGPMapFieldPut(MAP_FIELD_PTR(msg, offset), key, keyType, value, valueType); \
           return msg;                                                                 \
         });                                                                           \
   }
@@ -1674,28 +1673,37 @@ static BOOL MergeMapEntryFromStream(CGPMapField *field, CGPCodedInputStream *str
   if (!CGPReadInt32(stream, &length)) return NO;
   CGPCodedInputStream::Limit limit = stream->PushLimit(length);
   CGPFieldDescriptor *keyField = entry->fields_->buffer_[0];
+  CGPFieldJavaType keyType = CGPFieldGetJavaType(keyField);
   CGPFieldDescriptor *valueField = entry->fields_->buffer_[1];
-  BOOL hasKey = NO;
-  BOOL hasValue = NO;
+  CGPFieldJavaType valueType = CGPFieldGetJavaType(valueField);
   CGPValue key;
+  key.valueId = nil;
   CGPValue value;
+  if (CGPJavaTypeIsEnum(valueType)) {
+    // Note that even though value.valueId is an id, in the case of enums it is not retained.
+    // It is a "constant" value from the value descriptor that owns it.
+    value.valueId =
+        ((ComGoogleProtobufDescriptors_EnumValueDescriptor *)[valueField getDefaultValue])->enum_;
+  } else {
+    value.valueId = nil;
+  }
   while (YES) {
     uint32_t tag = stream->ReadTag();
     if (tag == 0) break;
     switch (CGPWireFormatGetTagFieldNumber(tag)) {
       case 1:
-        if (hasKey && CGPIsRetainedType(CGPFieldGetJavaType(keyField))) {
-          RELEASE_(key.valueId);
+        if (!ReadMapEntryField(stream, keyField, tag, registry, &key)) {
+          return NO;
+        } else if (CGPIsRetainedType(keyType)) {
+          AUTORELEASE(key.valueId);
         }
-        ReadMapEntryField(stream, keyField, tag, registry, &key);
-        hasKey = YES;
         break;
       case 2:
-        if (hasValue && CGPIsRetainedType(CGPFieldGetJavaType(valueField))) {
-          RELEASE_(value.valueId);
+        if (!ReadMapEntryField(stream, valueField, tag, registry, &value)) {
+          return NO;
+        } else if (CGPIsRetainedType(valueType)) {
+          AUTORELEASE(value.valueId);
         }
-        ReadMapEntryField(stream, valueField, tag, registry, &value);
-        hasValue = YES;
         break;
       default:
         if (!CGPWireFormatSkipField(stream, tag)) return NO;
@@ -1704,8 +1712,33 @@ static BOOL MergeMapEntryFromStream(CGPMapField *field, CGPCodedInputStream *str
   }
   if (!stream->ConsumedEntireMessage()) return NO;
   stream->PopLimit(limit);
-  CGPMapFieldPut(field, key, CGPFieldGetJavaType(keyField), value, CGPFieldGetJavaType(valueField),
-                 /* retainedKeyAndValue */ true);
+  if ((keyType == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING) &&
+      (key.valueId == nil)) {
+    key.valueId = @"";
+  }
+  if ((CGPIsRetainedType(valueType)) && (value.valueId == nil)) {
+    switch (valueType) {
+      case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING:
+        value.valueId = @"";
+        break;
+      case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BYTE_STRING:
+        value.valueId = [CGPByteString empty];
+        break;
+      case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:
+        if (valueField->valueType_ == nil) {
+          // Should not happen, but protect against crash.
+          return NO;
+        }
+        value.valueId = AUTORELEASE(CGPNewMessage(valueField->valueType_));
+        break;
+      default:
+        // Should not happen, but we don't trust potential undefined behavior
+        // in CGPIsRetainedType.
+        return NO;
+        break;
+    }
+  }
+  CGPMapFieldPut(field, key, keyType, value, valueType);
   return YES;
 }
 
