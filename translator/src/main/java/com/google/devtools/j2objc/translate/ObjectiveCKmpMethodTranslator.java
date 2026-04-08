@@ -625,8 +625,64 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       return methodName.startsWith(prefix);
     }
 
+    /**
+     * Checks if the adapter method's type matches the target candidate type.
+     * First attempts an exact match. If the method declares type parameters (e.g., {@code <T>}),
+     * it performs a looser match that treats type variables as matching any type.
+     */
     boolean matchesType(ExecutableElement method, TypeMirror candidate, TypeUtil typeUtil) {
-      return typeUtil.isSameType(getType(method), candidate);
+      TypeMirror methodType = getType(method);
+      if (typeUtil.isSameType(methodType, candidate)) {
+        return true;
+      }
+      // If the adapter method has generic type parameters, allow type variables to act as
+      // wildcards.
+      if (!method.getTypeParameters().isEmpty()) {
+        return isTypeMatchIgnoringTypeVariables(methodType, candidate, typeUtil);
+      }
+      return false;
+    }
+
+    /**
+     * Recursively checks if {@code methodType} matches {@code candidate}, treating any type
+     * variable in {@code methodType} as a match-all wildcard. For example, this allows
+     * {@code ImmutableList<T>} to match {@code ImmutableList<CustomClass>}.
+     */
+    private boolean isTypeMatchIgnoringTypeVariables(
+        TypeMirror methodType, TypeMirror candidate, TypeUtil typeUtil) {
+      // A type variable (like 'T') matches any type in the candidate.
+      if (TypeUtil.isTypeVariable(methodType)) {
+        return true;
+      }
+
+      // For declared types (like classes or interfaces), ensure the base elements are the same,
+      // then recursively check their type arguments.
+      if (TypeUtil.isDeclaredType(methodType) && TypeUtil.isDeclaredType(candidate)) {
+        DeclaredType mDeclared = (DeclaredType) methodType;
+        DeclaredType cDeclared = (DeclaredType) candidate;
+
+        // Check if the base type (e.g., ImmutableList) matches.
+        if (!mDeclared.asElement().equals(cDeclared.asElement())) {
+          return false;
+        }
+
+        List<? extends TypeMirror> mArgs = mDeclared.getTypeArguments();
+        List<? extends TypeMirror> cArgs = cDeclared.getTypeArguments();
+        if (mArgs.size() != cArgs.size()) {
+          return false;
+        }
+
+        // Recursively compare each type argument.
+        for (int i = 0; i < mArgs.size(); i++) {
+          if (!isTypeMatchIgnoringTypeVariables(mArgs.get(i), cArgs.get(i), typeUtil)) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      // Fallback to strict equality for other types (e.g., primitives, arrays).
+      return typeUtil.isSameType(methodType, candidate);
     }
 
     abstract TypeMirror getType(ExecutableElement method);
