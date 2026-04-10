@@ -304,10 +304,7 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
       "\n"
       "J2OBJC_STATIC_INIT($classname$)\n"
       "\n"
-      "J2OBJC_TYPE_LITERAL_HEADER($classname$)\n"
-      "\n"
-      "FOUNDATION_EXPORT ComGoogleProtobufDescriptors_Descriptor "
-      "* _Nonnull $classname$_descriptor_;\n",
+      "J2OBJC_TYPE_LITERAL_HEADER($classname$)\n",
       "classname", ClassName(descriptor_));
 
   for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
@@ -358,7 +355,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "J2OBJC_INITIALIZED_DEFN($classname$);\n"
       "\n"
-      "ComGoogleProtobufDescriptors_Descriptor * _Nonnull "
+      "static ComGoogleProtobufDescriptors_Descriptor * _Nonnull "
       "$classname$_descriptor_;\n",
       "classname", ClassName(descriptor_));
 
@@ -459,7 +456,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "classname", ClassName(descriptor_), "flags",
       GetMessageFlags(descriptor_));
   if (field_generators_.numMapFields() > 0) {
-    printer->Print("static CGPFieldData mapEntryFields[] = {\n");
+    printer->Print("static const CGPFieldData mapEntryFields[] = {\n");
     printer->Indent();
     for (int i = 0; i < descriptor_->field_count(); i++) {
       field_generators_.get(descriptor_->field(i))
@@ -468,7 +465,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
     printer->Outdent();
     printer->Print("};\n");
   }
-  printer->Print("static CGPFieldData fields[] = {\n");
+  printer->Print("static const CGPFieldData fields[] = {\n");
   printer->Indent();
   for (int i = 0; i < descriptor_->field_count(); i++) {
     field_generators_.get(descriptor_->field(i)).GenerateFieldData(printer);
@@ -476,7 +473,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   printer->Outdent();
   printer->Print("};\n");
   if (descriptor_->real_oneof_decl_count() > 0) {
-    printer->Print("static CGPOneofData oneofs[] = {\n");
+    printer->Print("static const CGPOneofData oneofs[] = {\n");
     printer->Indent();
     for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
       OneofGenerator(descriptor_->oneof_decl(i)).GenerateOneofData(printer);
@@ -493,7 +490,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       descriptor_->real_oneof_decl_count() > 0 ? "oneofs" : "NULL");
 
   if (descriptor_->extension_count() > 0) {
-    printer->Print("static CGPFieldData extensionFields[] = {\n");
+    printer->Print("static const CGPFieldData extensionFields[] = {\n");
     printer->Indent();
     for (int i = 0; i < descriptor_->extension_count(); i++) {
       ExtensionGenerator(descriptor_->extension(i)).GenerateFieldData(printer);

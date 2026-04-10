@@ -90,18 +90,16 @@ static void WriteMessage(id msg, CGPDescriptor *descriptor, CGPCodedOutputStream
 static void MessageToString(id msg, CGPDescriptor *descriptor, NSMutableString *builder,
                             int indent);
 
-#define REPEATED_PRIMITIVE_FIELD_GETTER_IMP(NAME)                                         \
-  CGP_ALWAYS_INLINE TYPE_##NAME CGPRepeatedFieldGet##NAME(CGPRepeatedField *field,        \
-                                                          jint idx) {                     \
-    CGPRepeatedFieldCheckBounds(field, idx);                                              \
-    return ((TYPE_##NAME *)field->data->buffer)[idx];                                     \
+#define REPEATED_PRIMITIVE_FIELD_GETTER_IMP(NAME)                                              \
+  CGP_ALWAYS_INLINE TYPE_##NAME CGPRepeatedFieldGet##NAME(CGPRepeatedField *field, jint idx) { \
+    CGPRepeatedFieldCheckBounds(field, idx);                                                   \
+    return ((TYPE_##NAME *)field->data->buffer)[idx];                                          \
   }
 
-#define REPEATED_RETAINABLE_FIELD_GETTER_IMP(NAME)                                        \
-  CGP_ALWAYS_INLINE TYPE_##NAME CGPRepeatedFieldGet##NAME(CGPRepeatedField *field,        \
-                                                          jint idx) {                     \
-    CGPRepeatedFieldCheckBounds(field, idx);                                              \
-    return RETAIN_AND_AUTORELEASE(((TYPE_##NAME *)field->data->buffer)[idx]);             \
+#define REPEATED_RETAINABLE_FIELD_GETTER_IMP(NAME)                                             \
+  CGP_ALWAYS_INLINE TYPE_##NAME CGPRepeatedFieldGet##NAME(CGPRepeatedField *field, jint idx) { \
+    CGPRepeatedFieldCheckBounds(field, idx);                                                   \
+    return RETAIN_AND_AUTORELEASE(((TYPE_##NAME *)field->data->buffer)[idx]);                  \
   }
 
 FOR_EACH_TYPE_NO_ENUM(REPEATED_PRIMITIVE_FIELD_GETTER_IMP, REPEATED_RETAINABLE_FIELD_GETTER_IMP)
@@ -109,26 +107,25 @@ FOR_EACH_TYPE_NO_ENUM(REPEATED_PRIMITIVE_FIELD_GETTER_IMP, REPEATED_RETAINABLE_F
 #undef REPEATED_PRIMITIVE_FIELD_GETTER_IMP
 #undef REPEATED_RETAINABLE_FIELD_GETTER_IMP
 
-#define REPEATED_FIELD_ADDER_IMP(NAME)                                                     \
-  CGP_ALWAYS_INLINE void CGPRepeatedFieldAdd##NAME(CGPRepeatedField *field,                \
-                                                   TYPE_##NAME value) {                    \
-    uint32_t total_size = CGPRepeatedFieldTotalSize(field);                                \
-    if (CGPRepeatedFieldSize(field) == total_size) {                                       \
-      CGPRepeatedFieldReserve(field, total_size + 1, sizeof(TYPE_##NAME));                 \
-    }                                                                                      \
-    ((TYPE_##NAME *)field->data->buffer)[field->data->size++] = TYPE_RETAIN_##NAME(value); \
+#define REPEATED_FIELD_ADDER_IMP(NAME)                                                           \
+  CGP_ALWAYS_INLINE void CGPRepeatedFieldAdd##NAME(CGPRepeatedField *field, TYPE_##NAME value) { \
+    uint32_t total_size = CGPRepeatedFieldTotalSize(field);                                      \
+    if (CGPRepeatedFieldSize(field) == total_size) {                                             \
+      CGPRepeatedFieldReserve(field, total_size + 1, sizeof(TYPE_##NAME));                       \
+    }                                                                                            \
+    ((TYPE_##NAME *)field->data->buffer)[field->data->size++] = TYPE_RETAIN_##NAME(value);       \
   }
 
 FOR_EACH_TYPE_WITH_ENUM(REPEATED_FIELD_ADDER_IMP)
 
 #undef REPEATED_FIELD_ADDER_IMP
 
-#define REPEATED_FIELD_SETTER_IMP(NAME)                                                      \
-  CGP_ALWAYS_INLINE void CGPRepeatedFieldSet##NAME(CGPRepeatedField *field, jint idx,        \
-                                                   TYPE_##NAME value) {                      \
-    CGPRepeatedFieldCheckBounds(field, idx);                                                 \
-    TYPE_##NAME *ptr = &((TYPE_##NAME *)field->data->buffer)[idx];                           \
-    TYPE_ASSIGN_##NAME(*ptr, value);                                                         \
+#define REPEATED_FIELD_SETTER_IMP(NAME)                                               \
+  CGP_ALWAYS_INLINE void CGPRepeatedFieldSet##NAME(CGPRepeatedField *field, jint idx, \
+                                                   TYPE_##NAME value) {               \
+    CGPRepeatedFieldCheckBounds(field, idx);                                          \
+    TYPE_##NAME *ptr = &((TYPE_##NAME *)field->data->buffer)[idx];                    \
+    TYPE_ASSIGN_##NAME(*ptr, value);                                                  \
   }
 
 FOR_EACH_TYPE_WITH_ENUM(REPEATED_FIELD_SETTER_IMP)
@@ -384,11 +381,11 @@ static BOOL AddGetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   size_t offset = CGPFieldGetOffset(field, cls);
   CGPHasLocator hasLoc = GetHasLocator(cls, field);
 
-#define ADD_GETTER_METHOD_CASE(NAME)                                                              \
-  imp = repeated                                                                                  \
-            ? GetRepeatedGetterImp##NAME(offset)                                                  \
-            : GetSingularGetterImp##NAME(offset, hasLoc, field->data_->defaultValue.value##NAME); \
-  strcpy(encoding, @encode(TYPE_##NAME));                                                         \
+#define ADD_GETTER_METHOD_CASE(NAME)                                                       \
+  imp = repeated ? GetRepeatedGetterImp##NAME(offset)                                      \
+                 : GetSingularGetterImp##NAME(offset, hasLoc,                              \
+                                              CGPFieldGetDefaultValue(field).value##NAME); \
+  strcpy(encoding, @encode(TYPE_##NAME));                                                  \
   break;
 
   SWITCH_TYPES_NO_ENUM(CGPFieldGetJavaType(field), ADD_GETTER_METHOD_CASE)
@@ -1299,11 +1296,11 @@ static id GetSingularField(id msg, CGPFieldDescriptor *field) {
   bool isSet = GetHas(msg, GetHasLocator(msgCls, field));
   size_t offset = CGPFieldGetOffset(field, msgCls);
 
-#define GET_FIELD_CASE(NAME)                                                     \
-  {                                                                              \
-    TYPE_##NAME value = isSet ? *FIELD_PTR(TYPE_##NAME, msg, offset)             \
-                              : field->data_->defaultValue.CGPValueField_##NAME; \
-    return CGPToReflectionType##NAME(value, field);                              \
+#define GET_FIELD_CASE(NAME)                                                         \
+  {                                                                                  \
+    TYPE_##NAME value = isSet ? *FIELD_PTR(TYPE_##NAME, msg, offset)                 \
+                              : CGPFieldGetDefaultValue(field).CGPValueField_##NAME; \
+    return CGPToReflectionType##NAME(value, field);                                  \
   }
 
   SWITCH_TYPES_WITH_ENUM(CGPFieldGetJavaType(field), GET_FIELD_CASE)
@@ -3953,7 +3950,7 @@ static id GetSingularExtension(CGPExtensionMap *extensionMap,
   if (it != extensionMap->end()) {
     value = it->second.get();
   } else {
-    value = CGPFieldGetDefaultValue(field);
+    value = CGPFieldGetDefaultValueObject(field);
   }
   return FromReflectionType(field, value);
 }
