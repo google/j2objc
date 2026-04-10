@@ -255,7 +255,7 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "$classname$ *$classname$_values_[$count$];\n"
       "\n"
-      "ComGoogleProtobufDescriptors_EnumDescriptor"
+      "static ComGoogleProtobufDescriptors_EnumDescriptor"
       " *$classname$_descriptor_ = nil;\n"
       "\n"
       "@implementation $classname$\n"
