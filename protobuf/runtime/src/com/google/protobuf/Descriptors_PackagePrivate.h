@@ -80,9 +80,8 @@ typedef struct CGPFieldData {
   uint32_t offset;
   union {
     Class objcType;
-    struct CGPFieldData *mapEntryFields;
+    const struct CGPFieldData *mapEntryFields;
   };
-  const __unsafe_unretained id *descriptorRef;
   const char *containingType;
   const char *optionsData;
 } CGPFieldData;
@@ -116,16 +115,17 @@ typedef struct CGPOneofData {
 
 @interface ComGoogleProtobufDescriptors_FieldDescriptor () {
  @package
-  CGPFieldData *data_;
+  const CGPFieldData *data_;
   uint32_t tag_;
   CGPFieldJavaType javaType_;
-  // Either nil, a Descriptor or a EnumDescriptor depending on the field type.
+  // Either nil, a ComGoogleProtobufByteString, a Descriptor or a EnumDescriptor depending on the
+  // field type.
   id valueType_;
   ComGoogleProtobufDescriptorProtos_FieldOptions *fieldOptions_;
   CGPOneofDescriptor *containingOneof_;
 }
 
-- (instancetype)initWithData:(CGPFieldData *)data;
+- (instancetype)initWithData:(const CGPFieldData *)data;
 
 @end
 
@@ -151,11 +151,11 @@ typedef struct CGPOneofData {
 
 @interface ComGoogleProtobufDescriptors_OneofDescriptor () {
  @package
-  CGPOneofData *data_;
+  const CGPOneofData *data_;
   CGPDescriptor *containingType_;
 }
 
-- (instancetype)initWithData:(CGPOneofData *)data
+- (instancetype)initWithData:(const CGPOneofData *)data
               containingType:(CGPDescriptor *)containingType;
 
 @end
@@ -169,18 +169,16 @@ typedef struct CGPOneofData {
 #define CGPToReflectionTypeDouble(value, field) [JavaLangDouble valueOfWithDouble:value]
 #define CGPToReflectionTypeBool(value, field) [JavaLangBoolean valueOfWithBoolean:value]
 #define CGPToReflectionTypeEnum(value, field) \
-    ((CGPEnumDescriptor *)field->valueType_)->values_->buffer_[[(JavaLangEnum *)value ordinal]]
+  ((CGPEnumDescriptor *)field->valueType_)->values_->buffer_[[(JavaLangEnum *)value ordinal]]
 #define CGPToReflectionTypeRetainable(value, field) RETAIN_AND_AUTORELEASE(value)
 
 CF_EXTERN_C_BEGIN
 
-NS_RETURNS_RETAINED CGPDescriptor *CGPInitDescriptor(
-    Class messageClass, Class builderClass, CGPMessageFlags flags,
-    size_t storageSize);
+NS_RETURNS_RETAINED CGPDescriptor *CGPInitDescriptor(Class messageClass, Class builderClass,
+                                                     CGPMessageFlags flags, size_t storageSize);
 
-void CGPInitFields(
-    CGPDescriptor *descriptor, jint fieldCount, CGPFieldData *fieldData,
-    jint oneofCount, CGPOneofData *oneofData);
+void CGPInitFields(CGPDescriptor *descriptor, jint fieldCount, const CGPFieldData *fieldData,
+                   jint oneofCount, const CGPOneofData *oneofData);
 
 CGP_ALWAYS_INLINE BOOL CGPIsExtendable(const CGPDescriptor *descriptor) {
   return descriptor->flags_ & CGPMessageFlagExtendable;
@@ -197,11 +195,9 @@ NS_RETURNS_RETAINED CGPEnumDescriptor *CGPInitializeEnumType(
     __strong JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *values[],
     __strong NSString **names, jint *intValues, bool is_closed);
 
-void CGPInitializeOneofCaseEnum(
-    Class enumClass, jint valuesCount,
-    __strong JavaLangEnum<ComGoogleProtobufInternal_EnumLite> *values[],
-    __strong NSString **names, jint *intValues);
-
+void CGPInitializeOneofCaseEnum(Class enumClass, jint valuesCount,
+                                __strong JavaLangEnum<ComGoogleProtobufInternal_EnumLite> *values[],
+                                __strong NSString **names, jint *intValues);
 
 id CGPValueOfEnumOrOneOfWithNSString(NSString *name, __strong id values[], jint count);
 
@@ -271,7 +267,8 @@ CGP_ALWAYS_INLINE jint CGPEnumGetIntValue(CGPEnumDescriptor *descriptor, id enum
   return *(jint *)((char *)(ARCBRIDGE void *)enumObj + descriptor->valueOffset_);
 }
 
-id CGPFieldGetDefaultValue(CGPFieldDescriptor *field);
+id CGPFieldGetDefaultValueObject(CGPFieldDescriptor *field);
+CGPValue CGPFieldGetDefaultValue(const CGPFieldDescriptor *field);
 
 Class<ComGoogleProtobufInternal_EnumLite> CGPOneofGetCaseClass(CGPOneofDescriptor *oneof);
 
@@ -297,7 +294,8 @@ CF_EXTERN_C_END
 
 @end
 
-J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_Type, javaType_, ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *)
+J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_Type, javaType_,
+                    ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *)
 
 @interface ComGoogleProtobufDescriptors_FieldDescriptor_JavaType () {
  @public
@@ -308,4 +306,4 @@ J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_Type, javaType_
 
 J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, defaultDefault_, id)
 
-#endif // __ComGoogleProtobufDescriptors_PackagePrivate_H__
+#endif  // __ComGoogleProtobufDescriptors_PackagePrivate_H__
