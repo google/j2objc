@@ -151,11 +151,12 @@ typedef struct CGPOneofData {
 
 @interface ComGoogleProtobufDescriptors_OneofDescriptor () {
  @package
-  CGPOneofData *data_;
+  const CGPOneofData *data_;
   CGPDescriptor *containingType_;
 }
 
-- (instancetype)initWithData:(CGPOneofData *)data containingType:(CGPDescriptor *)containingType;
+- (instancetype)initWithData:(const CGPOneofData *)data
+              containingType:(CGPDescriptor *)containingType;
 
 @end
 
@@ -176,8 +177,9 @@ CF_EXTERN_C_BEGIN
 NS_RETURNS_RETAINED CGPDescriptor *CGPInitDescriptor(Class messageClass, Class builderClass,
                                                      CGPMessageFlags flags, size_t storageSize);
 
-void CGPInitFields(CGPDescriptor *descriptor, jint fieldCount, CGPFieldData *fieldData,
-                   jint oneofCount, CGPOneofData *oneofData);
+void CGPInitFields(
+    CGPDescriptor *descriptor, jint fieldCount, CGPFieldData *fieldData,
+    jint oneofCount, const CGPOneofData *oneofData);
 
 CGP_ALWAYS_INLINE BOOL CGPIsExtendable(const CGPDescriptor *descriptor) {
   return descriptor->flags_ & CGPMessageFlagExtendable;

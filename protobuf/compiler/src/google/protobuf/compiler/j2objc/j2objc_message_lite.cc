@@ -355,7 +355,7 @@ void MessageLiteGenerator::GenerateSource(io::Printer* printer) {
   printer->Outdent();
   printer->Print("};\n");
   if (descriptor_->oneof_decl_count() > 0) {
-    printer->Print("static CGPOneofData oneofs[] = {\n");
+    printer->Print("static const CGPOneofData oneofs[] = {\n");
     printer->Indent();
     for (int i = 0; i < descriptor_->oneof_decl_count(); i++) {
       OneofGenerator(descriptor_->oneof_decl(i)).GenerateOneofData(printer);

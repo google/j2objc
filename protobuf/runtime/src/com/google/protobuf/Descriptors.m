@@ -105,7 +105,7 @@ CGPDescriptor *CGPInitDescriptor(Class messageClass, Class builderClass, CGPMess
 }
 
 void CGPInitFields(CGPDescriptor *descriptor, jint fieldCount, CGPFieldData *fieldData,
-                   jint oneofCount, CGPOneofData *oneofData) {
+                   jint oneofCount, const CGPOneofData *oneofData) {
   descriptor->fields_ = CreateFields(fieldCount, fieldData, descriptor);
 
   if (oneofCount > 0) {
@@ -521,7 +521,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors_EnumValueDescripto
 
 @implementation ComGoogleProtobufDescriptors_OneofDescriptor
 
-- (instancetype)initWithData:(CGPOneofData *)data containingType:(CGPDescriptor *)containingType {
+- (instancetype)initWithData:(const CGPOneofData *)data
+              containingType:(CGPDescriptor *)containingType {
   if (self = [self init]) {
     data_ = data;
     containingType_ = containingType;
