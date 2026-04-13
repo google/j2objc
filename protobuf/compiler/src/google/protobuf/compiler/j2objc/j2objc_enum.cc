@@ -168,13 +168,15 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
       "  $valueenumname$ value_;\n"
       "}\n"
       "\n"
+      "@property(nonatomic, readonly, getter=ordinal) $ordinalenumname$ nsEnum;\n"
       "+ (IOSObjectArray *)values;\n"
       "+ ($classname$ *)valueOfWithNSString:(NSString *)name;\n"
       "+ ($classname$ *)valueOfWithInt:($valuepreprocessorname$)value;\n"
       "+ ($classname$ *)forNumberWithInt:($valuepreprocessorname$)value;\n"
       "- ($valuepreprocessorname$)getNumber;\n",
-      "classname", ClassName(descriptor_), "valueenumname",
-      CValueEnumName(descriptor_), "valuepreprocessorname",
+      "classname", ClassName(descriptor_), 
+      "ordinalenumname", COrdinalEnumName(descriptor_),
+      "valueenumname", CValueEnumName(descriptor_), "valuepreprocessorname",
       CValuePreprocessorName(descriptor_));
 
   if (IsGenerateProperties(descriptor_->file())) {
