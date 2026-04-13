@@ -374,6 +374,44 @@ FOR_EACH_TYPE_NO_ENUM(REPEATED_GETTER_IMP, REPEATED_GETTER_IMP)
 
 #undef REPEATED_GETTER_IMP
 
+// Getter for singular enum fields. Intercepts tagged pointers for unknown values
+// and returns the UNRECOGNIZED singleton instead.
+static IMP GetSingularGetterImpEnum(size_t offset, CGPHasLocator hasLoc, id defaultValue,
+                                    CGPFieldDescriptor *field) {
+  CGPEnumDescriptor *enumType = [field getEnumType];
+  id unrecognizedSingleton =
+      ((CGPEnumValueDescriptor *)enumType->values_->buffer_[enumType->values_->size_ - 1])->enum_;
+
+  return imp_implementationWithBlock(^id(id msg) {
+    if (GetHas(msg, hasLoc)) {
+      id value = *FIELD_PTR(id, msg, offset);
+      uintptr_t stored_val = (uintptr_t)(__bridge void *)value;
+      if (stored_val & 0x1) {
+        return unrecognizedSingleton;
+      }
+      return value;
+    }
+    return defaultValue;
+  });
+}
+
+// Getter for repeated enum fields. Intercepts tagged pointers for unknown values
+// and returns the UNRECOGNIZED singleton instead.
+static IMP GetRepeatedGetterImpEnum(size_t offset, CGPFieldDescriptor *field) {
+  CGPEnumDescriptor *enumType = [field getEnumType];
+  id unrecognizedSingleton =
+      ((CGPEnumValueDescriptor *)enumType->values_->buffer_[enumType->values_->size_ - 1])->enum_;
+
+  return imp_implementationWithBlock(^id(id msg, jint idx) {
+    id value = CGPRepeatedFieldGetId(REPEATED_FIELD_PTR(msg, offset), idx);
+    uintptr_t stored_val = (uintptr_t)(__bridge void *)value;
+    if (stored_val & 0x1) {
+      return unrecognizedSingleton;
+    }
+    return value;
+  });
+}
+
 static BOOL AddGetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   BOOL repeated = CGPFieldIsRepeated(field);
   IMP imp = NULL;
@@ -388,7 +426,30 @@ static BOOL AddGetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   strcpy(encoding, @encode(TYPE_##NAME));                                                         \
   break;
 
-  SWITCH_TYPES_NO_ENUM(CGPFieldGetJavaType(field), ADD_GETTER_METHOD_CASE)
+  // We expand the switch manually instead of using SWITCH_TYPES_NO_ENUM
+  // to handle ENUM fields specially and avoid RETAIN_AND_AUTORELEASE on tagged pointers.
+  switch (CGPFieldGetJavaType(field)) {
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_INT:
+      ADD_GETTER_METHOD_CASE(Int)
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_LONG:
+      ADD_GETTER_METHOD_CASE(Long)
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_FLOAT:
+      ADD_GETTER_METHOD_CASE(Float)
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_DOUBLE:
+      ADD_GETTER_METHOD_CASE(Double)
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BOOLEAN:
+      ADD_GETTER_METHOD_CASE(Bool)
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BYTE_STRING:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:
+      ADD_GETTER_METHOD_CASE(Id)
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:
+      imp = repeated ? GetRepeatedGetterImpEnum(offset, field)
+                     : GetSingularGetterImpEnum(offset, hasLoc, field->data_->defaultValue.valueId,
+                                                field);
+      strcpy(encoding, @encode(id));
+      break;
+  }
 
 #undef ADD_GETTER_METHOD_CASE
 
@@ -1579,11 +1640,37 @@ static inline BOOL ReadEnumValueDescriptor(CGPCodedInputStream *input, CGPEnumDe
   return YES;
 }
 
+// Reads an enum value from the stream and resolves it to a Java enum instance.
+//
+// This function is preserves unknown enum values in proto3 (open enums)
+// by storing them as tagged integers instead of falling back to the UNRECOGNIZED
+// singleton.
+//
+// See CGPEnumGetIntValue in Descriptors_PackagePrivate.h for details on the
+// tagged representation and why it is safe with ARC and PAC.
 static BOOL ReadEnumJavaValue(CGPCodedInputStream *input, CGPEnumDescriptor *enumType,
                               id *javaValue) {
-  CGPEnumValueDescriptor *valueDescriptor;
-  if (!ReadEnumValueDescriptor(input, enumType, &valueDescriptor)) return NO;
-  *javaValue = valueDescriptor == nil ? nil : valueDescriptor->enum_;
+  jint value;
+  if (!CGPReadEnum(input, &value)) return NO;
+
+  CGPEnumValueDescriptor *valueDescriptor = CGPEnumValueDescriptorFromInt(enumType, value);
+
+  if (valueDescriptor == nil) {
+    // Closed enum (proto2) and value was not found. We store nil.
+    *javaValue = nil;
+  } else if (!enumType->is_closed_ &&
+             valueDescriptor == enumType->values_->buffer_[enumType->values_->size_ - 1]) {
+    // Open enum (proto3) and the value was not found, so CGPEnumValueDescriptorFromInt
+    // returned the UNRECOGNIZED descriptor (which is always the last element in values_).
+    //
+    // We store the raw value in the upper 32 bits and set the lowest bit to 1.
+    // This preserves the value for serialization while remaining safe from ARC.
+    *javaValue = (id)(ARCBRIDGE void *)(((uintptr_t)value << 32) | 0x1);
+  } else {
+    // Found a valid known descriptor. Store the singleton pointer.
+    *javaValue = valueDescriptor->enum_;
+  }
+
   return YES;
 }
 
