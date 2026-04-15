@@ -50,7 +50,7 @@
 static uint32_t Hash0(CGPValue value, CGPFieldJavaType type) {
 #define HASH_CASE(NAME) return HASH_##NAME(value.CGPValueField_##NAME);
 
-SWITCH_TYPES_NO_ENUM(type, HASH_CASE)
+  SWITCH_TYPES(type, HASH_CASE, HASH_CASE, HASH_CASE)
 
 #undef HASH_CASE
 }
