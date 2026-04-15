@@ -51,15 +51,6 @@
 #import "java/util/Arrays.h"
 #import "java/util/Collections.h"
 
-// Defines the field in the CGPValue union type to use for each field type.
-#define VALUE_FIELD_Int valueInt
-#define VALUE_FIELD_Long valueLong
-#define VALUE_FIELD_Float valueFloat
-#define VALUE_FIELD_Double valueDouble
-#define VALUE_FIELD_Bool valueBool
-#define VALUE_FIELD_Enum valueId
-#define VALUE_FIELD_Retainable valueId
-
 BOOL CGPIsRetainedType(CGPFieldJavaType type) {
   switch (type) {
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_INT:
@@ -67,8 +58,8 @@ BOOL CGPIsRetainedType(CGPFieldJavaType type) {
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_FLOAT:
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_DOUBLE:
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BOOLEAN:
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:
       return NO;
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING:
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BYTE_STRING:
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:
@@ -79,13 +70,13 @@ BOOL CGPIsRetainedType(CGPFieldJavaType type) {
 size_t CGPGetTypeSize(CGPFieldJavaType type) {
 #define GET_TYPE_SIZE_CASE(NAME) return sizeof(TYPE_##NAME);
 
-  SWITCH_TYPES_NO_ENUM(type, GET_TYPE_SIZE_CASE)
+  SWITCH_TYPES(type, GET_TYPE_SIZE_CASE)
 
 #undef GET_TYPE_SIZE_CASE
 }
 
-IOSObjectArray *CreateFields(jint fieldCount, CGPFieldData *fieldData,
-                             CGPDescriptor *containingType) {
+static IOSObjectArray *CreateFields(jint fieldCount, const CGPFieldData *fieldData,
+                                    CGPDescriptor *containingType) {
   IOSObjectArray *fields =
       [IOSObjectArray newArrayWithLength:fieldCount
                                     type:ComGoogleProtobufDescriptors_FieldDescriptor_class_()];
@@ -104,7 +95,7 @@ CGPDescriptor *CGPInitDescriptor(Class messageClass, Class builderClass, CGPMess
                                          storageSize:storageSize];
 }
 
-void CGPInitFields(CGPDescriptor *descriptor, jint fieldCount, CGPFieldData *fieldData,
+void CGPInitFields(CGPDescriptor *descriptor, jint fieldCount, const CGPFieldData *fieldData,
                    jint oneofCount, const CGPOneofData *oneofData) {
   descriptor->fields_ = CreateFields(fieldCount, fieldData, descriptor);
 
@@ -127,7 +118,7 @@ void CGPInitFields(CGPDescriptor *descriptor, jint fieldCount, CGPFieldData *fie
   }
 }
 
-CGPDescriptor *NewMapEntryDescriptor(CGPFieldData *fieldData) {
+static CGPDescriptor *NewMapEntryDescriptor(const CGPFieldData *fieldData) {
   CGPDescriptor *descriptor = [[CGPDescriptor alloc] init];
   descriptor->fields_ = CreateFields(2, fieldData, descriptor);
   return descriptor;
@@ -290,7 +281,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors_Descriptor)
 
 @implementation ComGoogleProtobufDescriptors_FieldDescriptor
 
-static uint32_t TagFromData(CGPFieldData *data) {
+static uint32_t TagFromData(const CGPFieldData *data) {
   BOOL isPacked = data->flags & CGPFieldFlagPacked;
   return CGPWireFormatMakeTag(data->number, CGPWireFormatForType(data->type, isPacked));
 }
@@ -313,8 +304,8 @@ static ComGoogleProtobufDescriptorProtos_FieldOptions *InitFieldOptions(const ch
 }
 
 // Default values for enums and message types can't be assigned in static data.
-static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
-  CGPFieldData *data = descriptor->data_;
+static void CGPFieldUpdateValueType(CGPFieldDescriptor *descriptor) {
+  const CGPFieldData *data = descriptor->data_;
   switch (descriptor->javaType_) {
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_INT:
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_LONG:
@@ -327,15 +318,12 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
       Class enumClass = data->objcType;
       NSCAssert(enumClass != nil, @"Field data is missing objc enum type.");
       CGPEnumDescriptor *enumDescriptor = [enumClass performSelector:@selector(getDescriptor)];
-      CGPEnumValueDescriptor *valueDescriptor =
-          IOSObjectArray_Get(enumDescriptor->values_, data->defaultValue.valueInt);
-      data->defaultValue.valueId = valueDescriptor->enum_;
       descriptor->valueType_ = enumDescriptor;
       break;
     }
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BYTE_STRING:
       if (data->defaultValue.valueId == nil) {
-        data->defaultValue.valueId = ComGoogleProtobufByteString_get_EMPTY();
+        descriptor->valueType_ = ComGoogleProtobufByteString_get_EMPTY();
       } else {
         // Default byte string data is written to static data as a length
         // prefixed c-string.
@@ -346,7 +334,7 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
         rawBytes += sizeof(length);
         CGPByteString *byteString = CGPNewByteString(length);
         memcpy(byteString->buffer_, rawBytes, length);
-        data->defaultValue.valueId = byteString;
+        descriptor->valueType_ = byteString;
       }
       break;
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE: {
@@ -354,27 +342,21 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
         descriptor->valueType_ = NewMapEntryDescriptor(data->mapEntryFields);
         break;
       }
-      CGPDescriptor *msgDescriptor =
-          data->descriptorRef ? (__bridge id) * (data->descriptorRef) : nil;
-      if (msgDescriptor == nil) {
-        // The descriptorRef wasn't specified, so use its accessor.
-        Class msgClass = data->objcType;
-        msgDescriptor = [msgClass performSelector:@selector(getDescriptor)];
-      }
+      Class msgClass = data->objcType;
+      CGPDescriptor *msgDescriptor = [msgClass performSelector:@selector(getDescriptor)];
       NSCAssert(msgDescriptor != nil, @"Field data is missing descriptor reference.");
-      data->defaultValue.valueId = msgDescriptor->defaultInstance_;
       descriptor->valueType_ = msgDescriptor;
       break;
     }
   }
 }
 
-- (instancetype)initWithData:(CGPFieldData *)data {
+- (instancetype)initWithData:(const CGPFieldData *)data {
   if (self = [self init]) {
     data_ = data;
     tag_ = TagFromData(data);
     javaType_ = [GetTypeObj(data->type)->javaType_ ordinal];
-    CGPFieldFixDefaultValue(self);
+    CGPFieldUpdateValueType(self);
   }
   return self;
 }
@@ -433,7 +415,7 @@ static void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
 }
 
 - (id)getDefaultValue {
-  return CGPFieldGetDefaultValue(self);
+  return CGPFieldGetDefaultValueObject(self);
 }
 
 - (ComGoogleProtobufDescriptorProtos_FieldOptions *)getOptions {
@@ -453,17 +435,59 @@ J2OBJC_ETERNAL_SINGLETON
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors_FieldDescriptor)
 
-id CGPFieldGetDefaultValue(CGPFieldDescriptor *field) {
+CGPValue CGPFieldGetDefaultValue(const CGPFieldDescriptor *field) {
+  CGPValue value;
+  switch (CGPFieldGetJavaType(field)) {
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_INT:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_LONG:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_FLOAT:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_DOUBLE:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BOOLEAN:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING:
+      value = field->data_->defaultValue;
+      break;
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BYTE_STRING:
+      value.valueId = field->valueType_;
+      break;
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM: {
+      jint enumOrdinal = field->data_->defaultValue.valueInt;
+      CGPEnumDescriptor *enumDescriptor = (CGPEnumDescriptor *)field->valueType_;
+      CGPEnumValueDescriptor **valuesBuf = enumDescriptor->values_->buffer_;
+      value.valueEnum = valuesBuf[enumOrdinal];
+      break;
+    }
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:
+      value.valueId = ((CGPDescriptor *)field->valueType_)->defaultInstance_;
+      break;
+  }
+  return value;
+}
+
+id CGPFieldGetDefaultValueObject(CGPFieldDescriptor *field) {
   if (CGPFieldIsRepeated(field)) {
     return [JavaUtilCollections emptyList];
   }
-
-#define GET_DEFAULT_VALUE_CASE(NAME) \
-  return CGPToReflectionType##NAME(field->data_->defaultValue.VALUE_FIELD_##NAME, field);
-
-  SWITCH_TYPES_WITH_ENUM(CGPFieldGetJavaType(field), GET_DEFAULT_VALUE_CASE)
-
-#undef GET_DEFAULT_VALUE_CASE
+  switch (CGPFieldGetJavaType(field)) {
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_INT:
+      return [JavaLangInteger valueOfWithInt:field->data_->defaultValue.valueInt];
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_LONG:
+      return [JavaLangLong valueOfWithLong:field->data_->defaultValue.valueLong];
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_FLOAT:
+      return [JavaLangFloat valueOfWithFloat:field->data_->defaultValue.valueFloat];
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_DOUBLE:
+      return [JavaLangDouble valueOfWithDouble:field->data_->defaultValue.valueDouble];
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BOOLEAN:
+      return [JavaLangBoolean valueOfWithBoolean:field->data_->defaultValue.valueBool];
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING:
+      return field->data_->defaultValue.valueId;
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BYTE_STRING:
+      return field->valueType_;
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:
+      return ((CGPEnumDescriptor *)field->valueType_)
+          ->values_->buffer_[field->data_->defaultValue.valueInt];
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:
+      return ((CGPDescriptor *)field->valueType_)->defaultInstance_;
+  }
 }
 
 CGPEnumValueDescriptor *CGPEnumValueDescriptorFromInt(CGPEnumDescriptor *enumType, jint value) {
@@ -476,8 +500,23 @@ CGPEnumValueDescriptor *CGPEnumValueDescriptorFromInt(CGPEnumDescriptor *enumTyp
       return valueDescriptor;
     }
   }
-  // If proto3 (not closed), the UNRECOGNIZED value is the last values element.
-  return enumType->is_closed_ ? nil : valuesBuf[count - 1];
+
+  if (enumType->is_closed_) {
+    return nil;
+  }
+
+  CGPEnumValueDescriptor *unrecognizedValue = valuesBuf[count - 1];
+  if (value == -1) {
+    // -1 is the value generated for the UNRECOGNIZED constant in open enums.
+    // If the value is -1, we return the UNRECOGNIZED descriptor.
+    return unrecognizedValue;
+  } else {
+    CGPEnumValueDescriptor *unknownValue = (CGPEnumValueDescriptor *)AUTORELEASE(
+        [[ComGoogleProtobufDescriptors_UnknownEnumValueDescriptor alloc] init]);
+    unknownValue->number_ = value;
+    unknownValue->enum_ = unrecognizedValue->enum_;
+    return unknownValue;
+  }
 }
 
 @implementation ComGoogleProtobufDescriptors_EnumDescriptor
@@ -503,7 +542,7 @@ J2OBJC_ETERNAL_SINGLETON
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors_EnumDescriptor)
 
-@implementation ComGoogleProtobufDescriptors_EnumValueDescriptor
+@implementation ComGoogleProtobufDescriptors_UnknownEnumValueDescriptor
 
 - (jint)getNumber {
   return number_;
@@ -512,6 +551,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors_EnumDescriptor)
 - (NSString *)getName {
   return [enum_ name];
 }
+
+@end
+
+@implementation ComGoogleProtobufDescriptors_EnumValueDescriptor
 
 J2OBJC_ETERNAL_SINGLETON
 

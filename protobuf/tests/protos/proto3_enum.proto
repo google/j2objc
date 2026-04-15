@@ -27,6 +27,8 @@ enum Fruit {
 
 message FruitBox {
   Fruit fruit = 1;
+  repeated Fruit fruits = 2;
+  map<int32, Fruit> fruit_map = 3;
 }
 
 enum Greetings {
