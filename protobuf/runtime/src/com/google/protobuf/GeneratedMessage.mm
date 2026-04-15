@@ -71,8 +71,8 @@
 #define NIL_CHECK_Float(value)
 #define NIL_CHECK_Double(value)
 #define NIL_CHECK_Bool(value)
-#define NIL_CHECK_Enum(value) (void)nil_chk(value);
-#define NIL_CHECK_Retainable(value) (void)nil_chk(value);
+#define NIL_CHECK_Enum(value) (void)nil_chk(value)
+#define NIL_CHECK_Retainable(value) (void)nil_chk(value)
 
 // Forward declarations.
 class CGPExtensionValue;
@@ -125,7 +125,7 @@ FOR_EACH_TYPE_WITH_ENUM(REPEATED_FIELD_ADDER_IMP)
                                                    TYPE_##NAME value) {               \
     CGPRepeatedFieldCheckBounds(field, idx);                                          \
     TYPE_##NAME *ptr = &((TYPE_##NAME *)field->data->buffer)[idx];                    \
-    TYPE_ASSIGN_##NAME(*ptr, value);                                                  \
+    TYPE_ASSIGN_##NAME(ptr, value);                                                   \
   }
 
 FOR_EACH_TYPE_WITH_ENUM(REPEATED_FIELD_SETTER_IMP)
@@ -302,15 +302,19 @@ static inline BOOL ClearPreviousOneof(id msg, CGPHasLocator loc, uintptr_t ptr) 
   return wasCleared;
 }
 
-#define REPEATED_FIELD_PTR(msg, offset) ((CGPRepeatedField *)((uint8_t *)msg + offset))
-#define MAP_FIELD_PTR(msg, offset) ((CGPMapField *)((uint8_t *)msg + offset))
+CGP_ALWAYS_INLINE CGPRepeatedField *REPEATED_FIELD_PTR(id msg, ptrdiff_t offset) {
+  return (CGPRepeatedField *)((uint8_t *)msg + offset);
+}
+CGP_ALWAYS_INLINE CGPMapField *MAP_FIELD_PTR(id msg, ptrdiff_t offset) {
+  return (CGPMapField *)((uint8_t *)msg + offset);
+}
 #define FIELD_PTR(TYPE, msg, offset) ((TYPE *)((uint8_t *)msg + offset))
 
 #define SINGULAR_SETTER_IMP(NAME)                                                                 \
   static void SingularSet##NAME(id msg, TYPE_##NAME value, size_t offset, CGPHasLocator hasLoc) { \
     TYPE_##NAME *ptr = FIELD_PTR(TYPE_##NAME, msg, offset);                                       \
     ClearPreviousOneof(msg, hasLoc, (uintptr_t)ptr);                                              \
-    TYPE_ASSIGN_##NAME(*ptr, value);                                                              \
+    TYPE_ASSIGN_##NAME(ptr, value);                                                               \
     SetHas(msg, hasLoc);                                                                          \
   }
 
@@ -508,7 +512,8 @@ static BOOL AddClearMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
 #define GET_SINGULAR_SETTER_IMP(NAME)                                          \
   static IMP GetSingularSetterImp##NAME(size_t offset, CGPHasLocator hasLoc) { \
     return imp_implementationWithBlock(^id(id msg, TYPE_##NAME value) {        \
-      NIL_CHECK_##NAME(value) SingularSet##NAME(msg, value, offset, hasLoc);   \
+      NIL_CHECK_##NAME(value);                                                 \
+      SingularSet##NAME(msg, value, offset, hasLoc);                           \
       return msg;                                                              \
     });                                                                        \
   }
@@ -520,8 +525,8 @@ FOR_EACH_TYPE_WITH_ENUM(GET_SINGULAR_SETTER_IMP)
 #define GET_REPEATED_SETTER_IMP(NAME)                                             \
   static IMP GetRepeatedSetterImp##NAME(size_t offset) {                          \
     return imp_implementationWithBlock(^id(id msg, jint idx, TYPE_##NAME value) { \
-      NIL_CHECK_##NAME(value)                                                     \
-          CGPRepeatedFieldSet##NAME(REPEATED_FIELD_PTR(msg, offset), idx, value); \
+      NIL_CHECK_##NAME(value);                                                    \
+      CGPRepeatedFieldSet##NAME(REPEATED_FIELD_PTR(msg, offset), idx, value);     \
       return msg;                                                                 \
     });                                                                           \
   }
@@ -572,12 +577,13 @@ static BOOL AddBuilderSetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field
   return class_addMethod(cls, sel, imp, "@@:@");
 }
 
-#define GET_ADDER_IMP(NAME)                                                                      \
-  static IMP GetAdderImp##NAME(size_t offset) {                                                  \
-    return imp_implementationWithBlock(^id(id msg, TYPE_##NAME value) {                          \
-      NIL_CHECK_##NAME(value) CGPRepeatedFieldAdd##NAME(REPEATED_FIELD_PTR(msg, offset), value); \
-      return msg;                                                                                \
-    });                                                                                          \
+#define GET_ADDER_IMP(NAME)                                              \
+  static IMP GetAdderImp##NAME(size_t offset) {                          \
+    return imp_implementationWithBlock(^id(id msg, TYPE_##NAME value) {  \
+      NIL_CHECK_##NAME(value);                                           \
+      CGPRepeatedFieldAdd##NAME(REPEATED_FIELD_PTR(msg, offset), value); \
+      return msg;                                                        \
+    });                                                                  \
   }
 
 FOR_EACH_TYPE_WITH_ENUM(GET_ADDER_IMP)
@@ -1501,10 +1507,10 @@ static void MergeFieldsFromMessage(id msg, id other, CGPDescriptor *descriptor) 
       }
       ClearPreviousOneof(msg, hasLoc, fieldPtr);
 
-#define MERGE_FIELD_CASE(NAME)                                                   \
-  {                                                                              \
-    TYPE_ASSIGN_##NAME(*(TYPE_##NAME *)fieldPtr, *(TYPE_##NAME *)otherFieldPtr); \
-    break;                                                                       \
+#define MERGE_FIELD_CASE(NAME)                                                  \
+  {                                                                             \
+    TYPE_ASSIGN_##NAME((TYPE_##NAME *)fieldPtr, *(TYPE_##NAME *)otherFieldPtr); \
+    break;                                                                      \
   }
 
       SWITCH_TYPES_WITH_ENUM(type, MERGE_FIELD_CASE)
@@ -3193,13 +3199,13 @@ static void MessageToString(id msg, CGPDescriptor *descriptor, NSMutableString *
 // ********** isEqual and hash *************************************************
 // *****************************************************************************
 
-#define FieldIsEqualInt(a, b) a == b
-#define FieldIsEqualLong(a, b) a == b
-#define FieldIsEqualFloat(a, b) a == b
-#define FieldIsEqualDouble(a, b) a == b
-#define FieldIsEqualBool(a, b) a == b
-#define FieldIsEqualEnum(a, b) a == b
-#define FieldIsEqualRetainable(a, b) a == b || [a isEqual:b]
+CGP_ALWAYS_INLINE BOOL FieldIsEqualInt(jint a, jint b) { return a == b; }
+CGP_ALWAYS_INLINE BOOL FieldIsEqualLong(jlong a, jlong b) { return a == b; }
+CGP_ALWAYS_INLINE BOOL FieldIsEqualFloat(jfloat a, jfloat b) { return a == b; }
+CGP_ALWAYS_INLINE BOOL FieldIsEqualDouble(jdouble a, jdouble b) { return a == b; }
+CGP_ALWAYS_INLINE BOOL FieldIsEqualBool(bool a, bool b) { return a == b; }
+CGP_ALWAYS_INLINE BOOL FieldIsEqualEnum(id a, id b) { return a == b; }
+CGP_ALWAYS_INLINE BOOL FieldIsEqualRetainable(id a, id b) { return a == b || [a isEqual:b]; }
 
 static BOOL FieldIsEqual(id self, id other, size_t offset, CGPFieldJavaType type) {
 #define IS_FIELD_EQUAL_CASE(NAME)                                  \
