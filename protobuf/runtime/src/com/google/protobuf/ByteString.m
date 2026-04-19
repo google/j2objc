@@ -377,7 +377,7 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_fromHexWithNSString_(NS
         JreStrcat("$$$I$", @"Invalid hexString ", hexString, @" of length ",
                   [hexString java_length], @" must be even."));
   }
-  IOSByteArray *bytes = [IOSByteArray newArrayWithLength:JreIntDiv([hexString java_length], 2)];
+  IOSByteArray *bytes = [IOSByteArray arrayWithLength:JreIntDiv([hexString java_length], 2)];
   for (jint i = 0; i < bytes->size_; i++) {
     jint d1 = ComGoogleProtobufByteString_extractHexDigitWithNSString_withInt_(hexString, 2 * i);
     jint d2 =
@@ -385,7 +385,6 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_fromHexWithNSString_(NS
     *IOSByteArray_GetRef(bytes, i) = (jbyte)((JreLShift32(d1, 4)) | d2);
   }
   ComGoogleProtobufByteString *result = ComGoogleProtobufByteString_copyFromWithByteArray_(bytes);
-  RELEASE_(bytes);
   return result;
 }
 
