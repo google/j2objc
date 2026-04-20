@@ -105,7 +105,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   @Override
   protected boolean shouldPrintDeclaration(BodyDeclaration decl) {
-    if (decl instanceof MethodDeclaration && !((MethodDeclaration) decl).hasDeclaration()) {
+    if (decl instanceof MethodDeclaration methodDeclaration
+        && !methodDeclaration.hasDeclaration()) {
       return false;
     }
     return decl.hasPrivateDeclaration() == printPrivateDeclarations();
@@ -164,11 +165,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printNativeEnum() {
-    if (!(typeNode instanceof EnumDeclaration)) {
+    if (!(typeNode instanceof EnumDeclaration enumDeclaration)) {
       return;
     }
 
-    List<EnumConstantDeclaration> constants = ((EnumDeclaration) typeNode).getEnumConstants();
+    List<EnumConstantDeclaration> constants = enumDeclaration.getEnumConstants();
     String nativeName = nameTable.getNativeEnumName(typeElement);
     String ordinalName = NameTable.getNativeOrdinalPreprocessorName(typeName);
 
@@ -309,7 +310,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement, true);
 
     if (swiftName != null) {
-      if ((typeNode instanceof EnumDeclaration)) {
+      if (typeNode instanceof EnumDeclaration) {
         swiftName = swiftName + "Class";
       }
       printf(" NS_SWIFT_NAME(%s)\n", swiftName);
@@ -345,8 +346,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           printf("\n+ (void)set%s:(%s)value;\n", NameTable.capitalize(accessorName), objcType);
         }
       }
-      if (typeNode instanceof EnumDeclaration) {
-        for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
+      if (typeNode instanceof EnumDeclaration enumDeclaration) {
+        for (EnumConstantDeclaration constant : enumDeclaration.getEnumConstants()) {
           String accessorName = nameTable.getStaticAccessorName(constant.getVariableElement());
           String nullabilitySpecifier = "";
           TypeElement element = typeNode.getTypeElement();
@@ -424,8 +425,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           .ifPresent(this::println);
     }
 
-    if (options.classProperties() && typeNode instanceof EnumDeclaration) {
-      for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
+    if (options.classProperties() && typeNode instanceof EnumDeclaration enumDeclaration) {
+      for (EnumConstantDeclaration constant : enumDeclaration.getEnumConstants()) {
         String accessorName = nameTable.getStaticAccessorName(constant.getVariableElement());
         print("\n@property (readonly, class");
         if (options.nullability()) {
@@ -467,7 +468,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printEnumConstants() {
-    if (typeNode instanceof EnumDeclaration) {
+    if (typeNode instanceof EnumDeclaration enumDeclaration) {
       newline();
       println("/*! INTERNAL ONLY - Use enum accessors declared below. */");
 
@@ -478,7 +479,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       String arrayTypeNamePrefix = nullMarked ? "_Nonnull " : "";
       String arrayTypeName = arrayTypeNamePrefix + typeName;
       printf("FOUNDATION_EXPORT %s *%s_values_[];\n", typeName, arrayTypeName);
-      for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
+      for (EnumConstantDeclaration constant : enumDeclaration.getEnumConstants()) {
         String varName = nameTable.getVariableBaseName(constant.getVariableElement());
         newline();
         JavadocGenerator.printDocComment(getBuilder(), constant.getJavadoc());
@@ -862,7 +863,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
 
     private static DeclarationCategory categorize(BodyDeclaration decl) {
-      if (decl instanceof MethodDeclaration && ((MethodDeclaration) decl).isUnavailable()) {
+      if (decl instanceof MethodDeclaration methodDeclaration
+          && methodDeclaration.isUnavailable()) {
         return UNAVAILABLE;
       }
       int mods = decl.getModifiers();
@@ -901,8 +903,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       List<MethodDeclaration> methods = Lists.newArrayList();
       for (Iterator<BodyDeclaration> iter = declarations.iterator(); iter.hasNext(); ) {
         BodyDeclaration decl = iter.next();
-        if (decl instanceof MethodDeclaration) {
-          methods.add((MethodDeclaration) decl);
+        if (decl instanceof MethodDeclaration methodDeclaration) {
+          methods.add(methodDeclaration);
           iter.remove();
         }
       }
