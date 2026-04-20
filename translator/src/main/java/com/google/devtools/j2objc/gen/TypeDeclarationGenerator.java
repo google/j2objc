@@ -30,6 +30,8 @@ import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
+import com.google.devtools.j2objc.ast.PropertyAnnotation;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -420,7 +422,20 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   protected void printProperties() {
     Iterable<VariableDeclarationFragment> fields = getAllFields();
+
     for (VariableDeclarationFragment fragment : fields) {
+      VariableElement var = fragment.getVariableElement();
+      if (typeNode instanceof RecordDeclaration && !ElementUtil.isStatic(var)) {
+        // Instance files of a record are its components.
+
+        // Synthesize a declaration as if it was annotated with @Property.
+        FieldDeclaration componentDeclaration = new FieldDeclaration(var, null);
+        PropertyAnnotation componentAnnotation = new PropertyAnnotation();
+        componentAnnotation.getPropertyAttributes().add("readonly");
+        componentAnnotation.getPropertyAttributes().add("nonatomic");
+        componentDeclaration.addAnnotation(componentAnnotation);
+        fragment = componentDeclaration.getFragment();
+      }
       PropertyGenerator.generate(fragment, options, nameTable, typeUtil, parametersNonnullByDefault)
           .ifPresent(this::println);
     }
