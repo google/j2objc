@@ -509,6 +509,78 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """);
   }
 
+  public void testPrimitiveReturnWithConversion() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        public class PrimitiveReturn {
+          @ObjectiveCKmpMethod(selector="checkElement:inList:", adapter=Adapter.class)
+          public boolean checkElement(String element, List<String> list) {
+            return true;
+          }
+        }
+        """,
+        "PrimitiveReturn.java");
+
+    String testHeader = translateSourceFile("PrimitiveReturn", "PrimitiveReturn.h");
+    assertInTranslation(
+        testHeader,
+        "- (BOOL)checkElement:(NSString *)element\n"
+            + "              inList:(NSArray<NSString *> *)list;");
+  }
+
+  public void testAllPrimitiveReturns() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        public class PrimitiveReturns {
+          @ObjectiveCKmpMethod(selector="returnBoolean:", adapter=Adapter.class)
+          public boolean returnBoolean(List<String> list) { return true; }
+          @ObjectiveCKmpMethod(selector="returnInt:", adapter=Adapter.class)
+          public int returnInt(List<String> list) { return 1; }
+          @ObjectiveCKmpMethod(selector="returnLong:", adapter=Adapter.class)
+          public long returnLong(List<String> list) { return 1L; }
+          @ObjectiveCKmpMethod(selector="returnFloat:", adapter=Adapter.class)
+          public float returnFloat(List<String> list) { return 1.0f; }
+          @ObjectiveCKmpMethod(selector="returnDouble:", adapter=Adapter.class)
+          public double returnDouble(List<String> list) { return 1.0; }
+          @ObjectiveCKmpMethod(selector="returnChar:", adapter=Adapter.class)
+          public char returnChar(List<String> list) { return 'a'; }
+          @ObjectiveCKmpMethod(selector="returnByte:", adapter=Adapter.class)
+          public byte returnByte(List<String> list) { return 1; }
+          @ObjectiveCKmpMethod(selector="returnShort:", adapter=Adapter.class)
+          public short returnShort(List<String> list) { return 1; }
+
+          @ObjectiveCKmpMethod(selector="staticReturnBoolean:", adapter=Adapter.class)
+          public static boolean staticReturnBoolean(List<String> list) { return true; }
+          @ObjectiveCKmpMethod(selector="staticReturnInt:", adapter=Adapter.class)
+          public static int staticReturnInt(List<String> list) { return 1; }
+        }
+        """,
+        "PrimitiveReturns.java");
+
+    String testHeader = translateSourceFile("PrimitiveReturns", "PrimitiveReturns.h");
+    assertInTranslation(testHeader, "- (BOOL)returnBoolean:(NSArray<NSString *> *)list;");
+    assertInTranslation(testHeader, "- (int32_t)returnInt:(NSArray<NSString *> *)list;");
+    assertInTranslation(testHeader, "- (int64_t)returnLong:(NSArray<NSString *> *)list;");
+    assertInTranslation(testHeader, "- (float)returnFloat:(NSArray<NSString *> *)list;");
+    assertInTranslation(testHeader, "- (double)returnDouble:(NSArray<NSString *> *)list;");
+    assertInTranslation(testHeader, "- (unichar)returnChar:(NSArray<NSString *> *)list;");
+    assertInTranslation(testHeader, "- (char)returnByte:(NSArray<NSString *> *)list;");
+    assertInTranslation(testHeader, "- (int16_t)returnShort:(NSArray<NSString *> *)list;");
+
+    assertInTranslation(
+        testHeader,
+        "FOUNDATION_EXPORT BOOL PrimitiveReturns_staticReturnBoolean_(NSArray<NSString *> *list);");
+    assertInTranslation(
+        testHeader,
+        "FOUNDATION_EXPORT int32_t PrimitiveReturns_staticReturnInt_(NSArray<NSString *> *list);");
+  }
+
   /** Tests multiple complex parameters needing conversion with @ObjectiveCKmpMethod. */
   public void testMultipleComplexParameters() throws IOException {
     addSourceFile(

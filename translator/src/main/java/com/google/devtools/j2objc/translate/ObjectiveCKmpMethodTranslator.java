@@ -62,6 +62,7 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleTypeVisitor9;
 import org.jspecify.annotations.Nullable;
@@ -595,6 +596,22 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
         builder.append("<").append(typeArgsString).append(">");
       }
       builder.append(" *");
+      return null;
+    }
+
+    @Override
+    public Void visitPrimitive(PrimitiveType type, StringBuilder builder) {
+      switch (type.getKind()) {
+        case BOOLEAN -> builder.append("BOOL");
+        case INT -> builder.append("int32_t");
+        case LONG -> builder.append("int64_t");
+        case FLOAT -> builder.append("float");
+        case DOUBLE -> builder.append("double");
+        case CHAR -> builder.append("unichar");
+        case BYTE -> builder.append("char");
+        case SHORT -> builder.append("int16_t");
+        default -> builder.append(type.toString());
+      }
       return null;
     }
 
