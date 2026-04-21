@@ -910,20 +910,8 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
     assertNotInTranslation(concreteHeader, "- (NSArray<NSString *> *)getItems;");
 
     String concreteImpl = translateSourceFile("ConcreteClass", "ConcreteClass.m");
-    assertNotInTranslation(
-        concreteImpl,
-        """
-        - (void)setItems:(NSArray<NSString *> *)items {
-          [self setItemsWithComGoogleCommonCollectImmutableList:[ImmutableListAdapter toImmutableListWithId:items]];
-        }
-        """);
-    assertNotInTranslation(
-        concreteImpl,
-        """
-        - (NSArray<NSString *> *)getItems {
-          return (NSArray<NSString *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:[self getItems]];
-        }
-        """);
+    assertNotInTranslation(concreteImpl, "- (void)setItems:(NSArray<NSString *> *)items {");
+    assertNotInTranslation(concreteImpl, "- (NSArray<NSString *> *)getItems {");
   }
 
   public void testAbstractMethodWithCustomClass() throws IOException {
@@ -977,8 +965,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         "ConcreteClass.java");
 
     String abstractHeader = translateSourceFile("AbstractClass", "AbstractClass.h");
-    assertInTranslation(
-        abstractHeader, "- (void)setItems:(NSArray<MyPkgCustomClass *> *)items;");
+    assertInTranslation(abstractHeader, "- (void)setItems:(NSArray<MyPkgCustomClass *> *)items;");
     assertInTranslation(abstractHeader, "- (NSArray<MyPkgCustomClass *> *)getItems;");
     assertInTranslation(abstractHeader, "@class MyPkgCustomClass;");
 
@@ -999,25 +986,14 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """);
 
     String concreteHeader = translateSourceFile("ConcreteClass", "ConcreteClass.h");
-    assertNotInTranslation(concreteHeader, "- (void)setItems:(NSArray<MyPkgCustomClass *> *)items;");
+    assertNotInTranslation(
+        concreteHeader, "- (void)setItems:(NSArray<MyPkgCustomClass *> *)items;");
     assertNotInTranslation(concreteHeader, "- (NSArray<MyPkgCustomClass *> *)getItems;");
     assertNotInTranslation(concreteHeader, "@class MyPkgCustomClass;");
 
     String concreteImpl = translateSourceFile("ConcreteClass", "ConcreteClass.m");
-    assertNotInTranslation(
-        concreteImpl,
-        """
-        - (void)setItems:(NSArray<MyPkgCustomClass *> *)items {
-          [self setItemsWithComGoogleCommonCollectImmutableList:[ImmutableListAdapter toImmutableListWithId:items]];
-        }
-        """);
-    assertNotInTranslation(
-        concreteImpl,
-        """
-        - (NSArray<MyPkgCustomClass *> *)getItems {
-          return (NSArray<MyPkgCustomClass *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:[self getItems]];
-        }
-        """);
+    assertNotInTranslation(concreteImpl, "- (void)setItems:(NSArray<MyPkgCustomClass *> *)items {");
+    assertNotInTranslation(concreteImpl, "- (NSArray<MyPkgCustomClass *> *)getItems {");
   }
 
   public void testImmutableListIsConverted() throws IOException {
@@ -1096,5 +1072,167 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
     assertTrue(message.contains("No converter method found"));
     assertTrue(message.contains("java.util.List<java.lang.String>"));
     assertTrue(message.contains("java.util.List<?>"));
+  }
+
+  public void testNonCollectionFallback() throws IOException {
+    addSourceFile(
+        """
+        public class FallbackAdapter {}
+        """,
+        "FallbackAdapter.java");
+
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public class FallbackTest {
+          @ObjectiveCKmpMethod(selector="foo:", adapter=FallbackAdapter.class)
+          public void foo(String s) {}
+        }
+        """,
+        "FallbackTest.java");
+
+    var unused = translateSourceFile("FallbackTest", "FallbackTest.m");
+  }
+
+  public void testNonCollectionFallbackWithStringReturn() throws IOException {
+    addSourceFile(
+        """
+        public class FallbackAdapter {}
+        """,
+        "FallbackAdapter.java");
+
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public class FallbackReturnTest {
+          @ObjectiveCKmpMethod(selector="foo:", adapter=FallbackAdapter.class)
+          public String foo(String s) { return s; }
+        }
+        """,
+        "FallbackReturnTest.java");
+
+    var unused = translateSourceFile("FallbackReturnTest", "FallbackReturnTest.m");
+  }
+
+  public void testStaticMethods() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+        import java.util.ArrayList;
+
+        public class StaticTest {
+          @ObjectiveCKmpMethod(selector="setStaticListWithNSArray:", adapter=Adapter.class)
+          public static void setStaticList(List<String> list) {
+            return;
+          }
+
+          @ObjectiveCKmpMethod(selector="getStaticListAsNArray", adapter=Adapter.class)
+          public static List<String> getStaticList() {
+            return new ArrayList<String>();
+          }
+        }
+        """,
+        "StaticTest.java");
+    String testHeader = translateSourceFile("StaticTest", "StaticTest.h");
+    assertNotInTranslation(
+        testHeader, "+ (void)setStaticListWithNSArray:(NSArray<NSString *> *)list;");
+    assertNotInTranslation(testHeader, "+ (NSArray<NSString *> *)getStaticListAsNArray;");
+    assertInTranslation(
+        testHeader,
+        "FOUNDATION_EXPORT void StaticTest_setStaticListWithNSArray_(NSArray<NSString *> *list);");
+    assertInTranslation(
+        testHeader,
+        "FOUNDATION_EXPORT NSArray<NSString *> *StaticTest_getStaticListAsNArray(void);");
+
+    String testImplementation = translateSourceFile("StaticTest", "StaticTest.m");
+    assertInTranslation(
+        testImplementation,
+        """
+        void StaticTest_setStaticListWithNSArray_(NSArray<NSString *> *list) {
+          StaticTest_setStaticListWithJavaUtilList_((id<JavaUtilList>) [Adapter toJavaUtilListWithId:list]);
+        }
+        """);
+    assertInTranslation(
+        testImplementation,
+        """
+        NSArray<NSString *> *StaticTest_getStaticListAsNArray() {
+          return (NSArray<NSString *> *) [Adapter fromJavaUtilListWithJavaUtilList:StaticTest_getStaticList()];
+        }
+        """);
+  }
+
+  public void testNoWrapperMethods() throws IOException {
+    options.load(new String[] {"--no-wrapper-methods"});
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+        import java.util.ArrayList;
+
+        public class NoWrapper {
+          @ObjectiveCKmpMethod(selector="setListWithNSArray:", adapter=Adapter.class)
+          public void setList(List<String> list) {
+            return;
+          }
+
+          @ObjectiveCKmpMethod(selector="getListAsNArray", adapter=Adapter.class)
+          public List<String> getList() {
+            return new ArrayList<String>();
+          }
+
+          @ObjectiveCKmpMethod(selector="setStaticListWithNSArray:", adapter=Adapter.class)
+          public static void setStaticList(List<String> list) {
+            return;
+          }
+
+          @ObjectiveCKmpMethod(selector="getStaticListAsNArray", adapter=Adapter.class)
+          public static List<String> getStaticList() {
+            return new ArrayList<String>();
+          }
+        }
+        """,
+        "NoWrapper.java");
+    String testHeader = translateSourceFile("NoWrapper", "NoWrapper.h");
+    assertInTranslation(testHeader, "- (void)setListWithNSArray:(NSArray<NSString *> *)list;");
+    assertInTranslation(testHeader, "- (NSArray<NSString *> *)getListAsNArray;");
+    assertInTranslation(
+        testHeader,
+        "FOUNDATION_EXPORT void NoWrapper_setStaticListWithNSArray_(NSArray<NSString *> *list);");
+    assertInTranslation(
+        testHeader,
+        "FOUNDATION_EXPORT NSArray<NSString *> *NoWrapper_getStaticListAsNArray(void);");
+
+    String testImplementation = translateSourceFile("NoWrapper", "NoWrapper.m");
+    assertInTranslation(
+        testImplementation,
+        """
+        - (void)setListWithNSArray:(NSArray<NSString *> *)list {
+          [self setListWithJavaUtilList:(id<JavaUtilList>) [Adapter toJavaUtilListWithId:list]];
+        }
+        """);
+    assertInTranslation(
+        testImplementation,
+        """
+        - (NSArray<NSString *> *)getListAsNArray {
+          return (NSArray<NSString *> *) [Adapter fromJavaUtilListWithJavaUtilList:[self getList]];
+        }
+        """);
+    assertInTranslation(
+        testImplementation,
+        """
+        void NoWrapper_setStaticListWithNSArray_(NSArray<NSString *> *list) {
+          NoWrapper_setStaticListWithJavaUtilList_((id<JavaUtilList>) [Adapter toJavaUtilListWithId:list]);
+        }
+        """);
+    assertInTranslation(
+        testImplementation,
+        """
+        NSArray<NSString *> *NoWrapper_getStaticListAsNArray() {
+          return (NSArray<NSString *> *) [Adapter fromJavaUtilListWithJavaUtilList:NoWrapper_getStaticList()];
+        }
+        """);
   }
 }
