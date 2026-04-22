@@ -106,10 +106,10 @@ CGP_ALWAYS_INLINE uint32_t CGPMapFieldMapSize(
 CGPMapFieldEntry *CGPMapFieldGetWithKey(
     CGPMapField *field, CGPValue key, CGPFieldJavaType keyType, CGPFieldJavaType valueType);
 
-// The caller will indicate whether the key and value are already retained.
+// The key and value are assumed to not be retained.
 void CGPMapFieldPut(
     CGPMapField *field, CGPValue key, CGPFieldJavaType keyType, CGPValue value,
-    CGPFieldJavaType valueType, bool retainedKeyAndValue);
+    CGPFieldJavaType valueType);
 
 void CGPMapFieldRemove(
     CGPMapField *field, CGPValue key, CGPFieldJavaType keyType, CGPFieldJavaType valueType);
