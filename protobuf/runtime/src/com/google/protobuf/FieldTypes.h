@@ -36,6 +36,7 @@
 #define __ComGoogleProtobufFieldTypes_H__
 
 #import "com/google/protobuf/ProtocolMessageEnum.h"
+#import "com/google/protobuf/common.h"
 #import "java/lang/Boolean.h"
 #import "java/lang/Double.h"
 #import "java/lang/Enum.h"
@@ -46,151 +47,96 @@
 @class ComGoogleProtobufDescriptors_FieldDescriptor_JavaType;
 @class ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type;
 
-#define TYPE_Int jint
-#define TYPE_Long jlong
-#define TYPE_Float jfloat
-#define TYPE_Double jdouble
-#define TYPE_Bool bool
-#define TYPE_Enum id
-#define TYPE_Id id
-#define TYPE_Retainable id
+typedef jint TYPE_Int;
+typedef jlong TYPE_Long;
+typedef jfloat TYPE_Float;
+typedef jdouble TYPE_Double;
+typedef bool TYPE_Bool;
+typedef JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *TYPE_Enum;
+typedef id TYPE_Id;
 
-#define TYPE_RETAIN_Int(value) value
-#define TYPE_RETAIN_Long(value) value
-#define TYPE_RETAIN_Float(value) value
-#define TYPE_RETAIN_Double(value) value
-#define TYPE_RETAIN_Bool(value) value
-#define TYPE_RETAIN_Enum(value) value
-#if __has_feature(objc_arc)
-#define TYPE_RETAIN_Retainable(value) value
-#else
-#define TYPE_RETAIN_Retainable(value) [value retain]
-#endif
+typedef TYPE_Int EXTERNAL_TYPE_Int;
+typedef TYPE_Long EXTERNAL_TYPE_Long;
+typedef TYPE_Float EXTERNAL_TYPE_Float;
+typedef TYPE_Double EXTERNAL_TYPE_Double;
+typedef TYPE_Bool EXTERNAL_TYPE_Bool;
+typedef TYPE_Enum EXTERNAL_TYPE_Enum;
+typedef TYPE_Id EXTERNAL_TYPE_Id;
 
-#define TYPE_ASSIGN_Int(assignee, value) assignee = value
-#define TYPE_ASSIGN_Long(assignee, value) assignee = value
-#define TYPE_ASSIGN_Float(assignee, value) assignee = value
-#define TYPE_ASSIGN_Double(assignee, value) assignee = value
-#define TYPE_ASSIGN_Bool(assignee, value) assignee = value
-#define TYPE_ASSIGN_Enum(assignee, value) assignee = value
-#if __has_feature(objc_arc)
-#define TYPE_ASSIGN_Retainable(assignee, value) assignee = value
-#else
-#define TYPE_ASSIGN_Retainable(assignee, value) \
-  ([assignee autorelease], assignee = [value retain])
-#endif
+CGP_ALWAYS_INLINE void TYPE_ASSIGN_Int(jint *assignee, jint value) { *assignee = value; }
+CGP_ALWAYS_INLINE void TYPE_ASSIGN_Long(jlong *assignee, jlong value) { *assignee = value; }
+CGP_ALWAYS_INLINE void TYPE_ASSIGN_Float(jfloat *assignee, jfloat value) { *assignee = value; }
+CGP_ALWAYS_INLINE void TYPE_ASSIGN_Double(jdouble *assignee, jdouble value) { *assignee = value; }
+CGP_ALWAYS_INLINE void TYPE_ASSIGN_Bool(bool *assignee, bool value) { *assignee = value; }
+CGP_ALWAYS_INLINE void TYPE_ASSIGN_Enum(id *assignee, id value) {
+  __unused id unused = AUTORELEASE(*assignee);
+  *assignee = RETAIN_(value);
+}
+CGP_ALWAYS_INLINE void TYPE_ASSIGN_Id(id *assignee, id value) {
+  __unused id unused = AUTORELEASE(*assignee);
+  *assignee = RETAIN_(value);
+}
 
-#define HASH_Int(value) value
-#define HASH_Long(value) (int)((uint64_t)value ^ ((uint64_t)value >> 32))
-#define HASH_Float(value) *(int *)&value
-#define HASH_Double(value) (int)(*(uint64_t *)&value ^ (*(uint64_t *)&value >> 32))
-#define HASH_Bool(value) (value ? 1231 : 1237)
-#define HASH_Id(value) (int)[value hash]
-
-// Functions that box a value from its field storage type into an object type.
-// For enums, the boxed type is the same as its storage type. (a Java enum
-// object)
-#define CGPBoxedValueInt(value) [JavaLangInteger valueOfWithInt:value]
-#define CGPBoxedValueLong(value) [JavaLangLong valueOfWithLong:value]
-#define CGPBoxedValueFloat(value) [JavaLangFloat valueOfWithFloat:value]
-#define CGPBoxedValueDouble(value) [JavaLangDouble valueOfWithDouble:value]
-#define CGPBoxedValueBool(value) [JavaLangBoolean valueOfWithBoolean:value]
-#define CGPBoxedValueId(value) value
-
-// Functions that unbox a value into its primitive type.
-#define CGPUnboxValueInt(value) [value intValue]
-#define CGPUnboxValueLong(value) [value longLongValue]
-#define CGPUnboxValueFloat(value) [value floatValue]
-#define CGPUnboxValueDouble(value) [value doubleValue]
-#define CGPUnboxValueBool(value) [value booleanValue]
-#define CGPUnboxValueEnum(value) value
-#define CGPUnboxValueRetainable(value) value
-
-// Functions that convert a value from its reflection to its storage type.
-#define CGPFromReflectionTypeInt(value) [value intValue]
-#define CGPFromReflectionTypeLong(value) [value longLongValue]
-#define CGPFromReflectionTypeFloat(value) [value floatValue]
-#define CGPFromReflectionTypeDouble(value) [value doubleValue]
-#define CGPFromReflectionTypeBool(value) [value booleanValue]
-#define CGPFromReflectionTypeEnum(value) ((CGPEnumValueDescriptor *)value)->enum_
-#define CGPFromReflectionTypeRetainable(value) value
+CGP_ALWAYS_INLINE int HASH_Int(jint value) { return value; }
+CGP_ALWAYS_INLINE int HASH_Long(jlong value) {
+  return (int)((uint64_t)value ^ ((uint64_t)value >> 32));
+}
+CGP_ALWAYS_INLINE int HASH_Float(jfloat value) {
+  uint32_t bits;
+  memcpy(&bits, &value, sizeof(bits));
+  return bits;
+}
+CGP_ALWAYS_INLINE int HASH_Double(jdouble value) {
+  uint64_t bits;
+  memcpy(&bits, &value, sizeof(bits));
+  return (int)(bits ^ (bits >> 32));
+}
+CGP_ALWAYS_INLINE int HASH_Bool(bool value) { return (value ? 1231 : 1237); }
+CGP_ALWAYS_INLINE int HASH_Enum(id value) { return (int)[value hash]; }
+CGP_ALWAYS_INLINE int HASH_Id(id value) { return (int)[value hash]; }
 
 // Creates a switch statement over the java types grouping enums together with
 // the other object types.
-#define SWITCH_TYPES_NO_ENUM(type, CASE_MACRO) \
-  switch (type) { \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_INT: \
-      CASE_MACRO(Int) \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_LONG: \
-      CASE_MACRO(Long) \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_FLOAT: \
-      CASE_MACRO(Float) \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_DOUBLE: \
-      CASE_MACRO(Double) \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BOOLEAN: \
-      CASE_MACRO(Bool) \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING: \
+#define SWITCH_TYPES(type, TYPE_MACRO)                                           \
+  switch (type) {                                                                \
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_INT:         \
+      TYPE_MACRO(Int)                                                            \
+      break;                                                                     \
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_LONG:        \
+      TYPE_MACRO(Long)                                                           \
+      break;                                                                     \
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_FLOAT:       \
+      TYPE_MACRO(Float)                                                          \
+      break;                                                                     \
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_DOUBLE:      \
+      TYPE_MACRO(Double)                                                         \
+      break;                                                                     \
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BOOLEAN:     \
+      TYPE_MACRO(Bool)                                                           \
+      break;                                                                     \
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:        \
+      TYPE_MACRO(Enum)                                                           \
+      break;                                                                     \
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING:      \
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BYTE_STRING: \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM: \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE: \
-      CASE_MACRO(Id) \
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:     \
+      TYPE_MACRO(Id)                                                             \
+      break;                                                                     \
   }
-
-// Creates a switch statement over the java types separating enums from the
-// other object types.
-#define SWITCH_TYPES_WITH_ENUM(type, CASE_MACRO) \
-  switch (type) { \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_INT: \
-      CASE_MACRO(Int) \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_LONG: \
-      CASE_MACRO(Long) \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_FLOAT: \
-      CASE_MACRO(Float) \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_DOUBLE: \
-      CASE_MACRO(Double) \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BOOLEAN: \
-      CASE_MACRO(Bool) \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING: \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BYTE_STRING: \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE: \
-      CASE_MACRO(Retainable) \
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM: \
-      CASE_MACRO(Enum) \
-  }
-
-
-// Declares the given macro once for each java field type, grouping enums and
-// the other object types together as "Id". Non-retainable types use the
-// PRIMITIVE_TYPE_MACRO, retainable types use the RETAINABLE_TYPE_MACRO
-#define FOR_EACH_TYPE_NO_ENUM(PRIMITIVE_TYPE_MACRO, RETAINABLE_TYPE_MACRO) \
-  PRIMITIVE_TYPE_MACRO(Int) \
-  PRIMITIVE_TYPE_MACRO(Long) \
-  PRIMITIVE_TYPE_MACRO(Float) \
-  PRIMITIVE_TYPE_MACRO(Double) \
-  PRIMITIVE_TYPE_MACRO(Bool) \
-  RETAINABLE_TYPE_MACRO(Id)
-
-
-// Declares the given macro once for each java field type, declaring it
-// separately for enums (as "Enum) and the other object types (as "Retainable").
-#define FOR_EACH_TYPE_WITH_ENUM(MACRO) \
-  MACRO(Int) \
-  MACRO(Long) \
-  MACRO(Float) \
-  MACRO(Double) \
-  MACRO(Bool) \
-  MACRO(Enum) \
-  MACRO(Retainable)
 
 // Declares the given macro once for each java field type except for retainable
-//types.
-#define FOR_EACH_TYPE_NO_RETAINABLE(MACRO) \
-  MACRO(Int) \
-  MACRO(Long) \
-  MACRO(Float) \
-  MACRO(Double) \
-  MACRO(Bool) \
-  MACRO(Enum)
+// types.
+#define FOR_EACH_PRIMITIVE_TYPE(PRIMITIVE_TYPE_MACRO) \
+  PRIMITIVE_TYPE_MACRO(Int)                           \
+  PRIMITIVE_TYPE_MACRO(Long)                          \
+  PRIMITIVE_TYPE_MACRO(Float)                         \
+  PRIMITIVE_TYPE_MACRO(Double)                        \
+  PRIMITIVE_TYPE_MACRO(Bool)
+
+#define FOR_EACH_TYPE(TYPE_MACRO)     \
+  FOR_EACH_PRIMITIVE_TYPE(TYPE_MACRO) \
+  TYPE_MACRO(Enum)                    \
+  TYPE_MACRO(Id)
 
 // The remainder of this file is copied from the translation of the types
 // FieldDescriptor.Type and FieldDescriptor.JavaType in Descriptor.java.
@@ -218,7 +164,7 @@ typedef NS_ENUM(NSUInteger, ComGoogleProtobufDescriptors_FieldDescriptor_Type_En
 
 typedef ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum CGPFieldType;
 
-@interface ComGoogleProtobufDescriptors_FieldDescriptor_Type : JavaLangEnum < NSCopying >
+@interface ComGoogleProtobufDescriptors_FieldDescriptor_Type : JavaLangEnum <NSCopying>
 
 #pragma mark Public
 
@@ -226,7 +172,9 @@ typedef ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum CGPFieldType;
 
 - (ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type *)toProto;
 
-+ (ComGoogleProtobufDescriptors_FieldDescriptor_Type *)valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type:(ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type *)type;
++ (ComGoogleProtobufDescriptors_FieldDescriptor_Type *)
+    valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type:
+        (ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type *)type;
 
 #pragma mark Package-Private
 
@@ -241,7 +189,8 @@ typedef ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum CGPFieldType;
 J2OBJC_STATIC_INIT(ComGoogleProtobufDescriptors_FieldDescriptor_Type)
 
 /*! INTERNAL ONLY - Use enum accessors declared below. */
-FOUNDATION_EXPORT ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_FieldDescriptor_Type_values_[];
+FOUNDATION_EXPORT ComGoogleProtobufDescriptors_FieldDescriptor_Type
+    *ComGoogleProtobufDescriptors_FieldDescriptor_Type_values_[];
 
 inline ComGoogleProtobufDescriptors_FieldDescriptor_Type *
 ComGoogleProtobufDescriptors_FieldDescriptor_Type_get_DOUBLE(void);
@@ -315,13 +264,17 @@ inline ComGoogleProtobufDescriptors_FieldDescriptor_Type *
 ComGoogleProtobufDescriptors_FieldDescriptor_Type_get_SINT64(void);
 J2OBJC_ENUM_CONSTANT(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SINT64)
 
-FOUNDATION_EXPORT ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_FieldDescriptor_Type_valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type_(ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type *type);
+FOUNDATION_EXPORT ComGoogleProtobufDescriptors_FieldDescriptor_Type *
+ComGoogleProtobufDescriptors_FieldDescriptor_Type_valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type_(
+    ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type *type);
 
 FOUNDATION_EXPORT IOSObjectArray *ComGoogleProtobufDescriptors_FieldDescriptor_Type_values(void);
 
-FOUNDATION_EXPORT ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_FieldDescriptor_Type_valueOfWithNSString_(NSString *name);
+FOUNDATION_EXPORT ComGoogleProtobufDescriptors_FieldDescriptor_Type *
+ComGoogleProtobufDescriptors_FieldDescriptor_Type_valueOfWithNSString_(NSString *name);
 
-FOUNDATION_EXPORT ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_FieldDescriptor_Type_fromOrdinal(NSUInteger ordinal);
+FOUNDATION_EXPORT ComGoogleProtobufDescriptors_FieldDescriptor_Type *
+ComGoogleProtobufDescriptors_FieldDescriptor_Type_fromOrdinal(NSUInteger ordinal);
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_FieldDescriptor_Type)
 
@@ -337,7 +290,7 @@ typedef NS_ENUM(NSUInteger, ComGoogleProtobufDescriptors_FieldDescriptor_JavaTyp
   ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE = 8,
 };
 
-@interface ComGoogleProtobufDescriptors_FieldDescriptor_JavaType : JavaLangEnum < NSCopying >
+@interface ComGoogleProtobufDescriptors_FieldDescriptor_JavaType : JavaLangEnum <NSCopying>
 
 #pragma mark Package-Private
 
@@ -352,7 +305,8 @@ typedef NS_ENUM(NSUInteger, ComGoogleProtobufDescriptors_FieldDescriptor_JavaTyp
 J2OBJC_STATIC_INIT(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType)
 
 /*! INTERNAL ONLY - Use enum accessors declared below. */
-FOUNDATION_EXPORT ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_values_[];
+FOUNDATION_EXPORT ComGoogleProtobufDescriptors_FieldDescriptor_JavaType
+    *ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_values_[];
 
 inline ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *
 ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_get_INT(void);
@@ -393,10 +347,12 @@ J2OBJC_ENUM_CONSTANT(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, MESS
 FOUNDATION_EXPORT IOSObjectArray *ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_values(
     void);
 
-FOUNDATION_EXPORT ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_valueOfWithNSString_(NSString *name);
+FOUNDATION_EXPORT ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *
+ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_valueOfWithNSString_(NSString *name);
 
-FOUNDATION_EXPORT ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_fromOrdinal(NSUInteger ordinal);
+FOUNDATION_EXPORT ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *
+ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_fromOrdinal(NSUInteger ordinal);
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType)
 
-#endif // __ComGoogleProtobufFieldTypes_H__
+#endif  // __ComGoogleProtobufFieldTypes_H__
