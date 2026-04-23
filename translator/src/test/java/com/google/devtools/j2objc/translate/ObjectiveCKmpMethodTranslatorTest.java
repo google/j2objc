@@ -1209,9 +1209,9 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """,
         "StaticTest.java");
     String testHeader = translateSourceFile("StaticTest", "StaticTest.h");
-    assertNotInTranslation(
+    assertInTranslation(
         testHeader, "+ (void)setStaticListWithNSArray:(NSArray<NSString *> *)list;");
-    assertNotInTranslation(testHeader, "+ (NSArray<NSString *> *)getStaticListAsNArray;");
+    assertInTranslation(testHeader, "+ (NSArray<NSString *> *)getStaticListAsNArray;");
     assertInTranslation(
         testHeader,
         "FOUNDATION_EXPORT void StaticTest_setStaticListWithNSArray_(NSArray<NSString *> *list);");
@@ -1231,6 +1231,20 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         testImplementation,
         """
         NSArray<NSString *> *StaticTest_getStaticListAsNArray() {
+          return (NSArray<NSString *> *) [Adapter fromJavaUtilListWithJavaUtilList:StaticTest_getStaticList()];
+        }
+        """);
+    assertInTranslation(
+        testImplementation,
+        """
+        + (void)setStaticListWithNSArray:(NSArray<NSString *> *)list {
+          StaticTest_setStaticListWithJavaUtilList_((id<JavaUtilList>) [Adapter toJavaUtilListWithId:list]);
+        }
+        """);
+    assertInTranslation(
+        testImplementation,
+        """
+        + (NSArray<NSString *> *)getStaticListAsNArray {
           return (NSArray<NSString *> *) [Adapter fromJavaUtilListWithJavaUtilList:StaticTest_getStaticList()];
         }
         """);
