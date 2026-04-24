@@ -84,25 +84,26 @@ static bool ShouldFilterStackElement(JavaLangStackTraceElement *element) {
   return false;
 }
 
-static void ProcessRawStack(RawStack *rawStack, NSMutableArray *frames, bool applyFilter) {
-  for (unsigned i = 0; i < rawStack->count_; i++) {
-    JavaLangStackTraceElement *element =
-        [[JavaLangStackTraceElement alloc] initWithLong:(jlong)rawStack->frames_[i]];
-    if (!applyFilter || !ShouldFilterStackElement(element)) {
-      [frames addObject:element];
-    }
-    [element release];
-  }
-}
-
 jarray Java_java_lang_Throwable_nativeGetStackTrace(
     JNIEnv *_env_, jclass _cls_, jobject stackState) {
   RawStack *rawStack = stackState;
   NSMutableArray *frames = [NSMutableArray array];
-  if (rawStack) {
-    ProcessRawStack(rawStack, frames, true);
-    JavaLangStackTraceElement *element = [frames lastObject];
+  if (rawStack && rawStack->count_ > 0) {
+    char **stackSymbols = backtrace_symbols(rawStack->frames_, rawStack->count_);
+    NSStringEncoding encoding = [NSString defaultCStringEncoding];
+
+    for (unsigned i = 0; i < rawStack->count_; i++) {
+      NSString *symbolStr = [NSString stringWithCString:stackSymbols[i] encoding:encoding];
+      JavaLangStackTraceElement *element = 
+          JavaLangStackTraceElement_createFromSymbolWithLong_withNSString_((jlong)rawStack->frames_[i], symbolStr);
+
+      if (!ShouldFilterStackElement(element)) {
+        [frames addObject:element];
+      }
+    }
+
     // Remove initial Method.invoke(), so app's main method is last.
+    JavaLangStackTraceElement *element = [frames lastObject];
     if ([[element getClassName] isEqualToString:@"JavaLangReflectMethod"] &&
         [[element getMethodName] isEqualToString:@"invoke"]) {
       [frames removeLastObject];
@@ -110,8 +111,14 @@ jarray Java_java_lang_Throwable_nativeGetStackTrace(
     // If symbols were removed, the stack trace will be empty at this point.
     // In order to help with debugging, return the raw stack trace.
     if ([frames count] == 0) {
-      ProcessRawStack(rawStack, frames, false);
+      for (unsigned i = 0; i < rawStack->count_; i++) {
+        NSString *symbolStr = [NSString stringWithCString:stackSymbols[i] encoding:encoding];
+        JavaLangStackTraceElement *element = 
+            JavaLangStackTraceElement_createFromSymbolWithLong_withNSString_((jlong)rawStack->frames_[i], symbolStr);
+        [frames addObject:element];
+      }
     }
+    free(stackSymbols);
   }
   return [IOSObjectArray arrayWithNSArray:frames type:JavaLangStackTraceElement_class_()];
 }
