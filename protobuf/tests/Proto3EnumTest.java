@@ -101,4 +101,41 @@ public class Proto3EnumTest extends ProtobufTest {
     Text text = Text.parseFrom(new byte[] {0x08, 0x7f}, ExtensionRegistry.getEmptyRegistry());
     assertThat(text.getGreeting()).isSameInstanceAs(Greetings.UNRECOGNIZED);
   }
+
+  public void testSingularParseUnknownEnumSerialization() throws Exception {
+    // field 1 (fruit), value 5 (unrecognized)
+    // Tag: (1 << 3) | 0 = 8
+    // Value: 5
+    byte[] bytes = new byte[] {0x08, 0x05};
+    FruitBox box = FruitBox.parseFrom(bytes, ExtensionRegistry.getEmptyRegistry());
+
+    byte[] outputBytes = box.toByteArray();
+    assertThat(outputBytes).isEqualTo(bytes);
+  }
+
+  public void testRepeatedParseUnknownEnumSerialization() throws Exception {
+    // field 2 (fruits), repeated, packed
+    // Tag: (2 << 3) | 2 = 18
+    // Length: 3
+    // Values: 1 (APPLE), 2 (BANANA), 5 (unrecognized)
+    byte[] bytes = new byte[] {0x12, 0x03, 0x01, 0x02, 0x05};
+    FruitBox box = FruitBox.parseFrom(bytes, ExtensionRegistry.getEmptyRegistry());
+
+    byte[] outputBytes = box.toByteArray();
+    assertThat(outputBytes).isEqualTo(bytes);
+  }
+
+  public void testMapParseUnknownEnumSerialization() throws Exception {
+    // field 3 (fruit_map), map
+    // Tag: (3 << 3) | 2 = 26
+    // Length: 4
+    // Map Entry:
+    //   key: field 1, value 1 -> 0x08 0x01
+    //   value: field 2, value 5 -> 0x10 0x05
+    byte[] bytes = new byte[] {0x1a, 0x04, 0x08, 0x01, 0x10, 0x05};
+    FruitBox box = FruitBox.parseFrom(bytes, ExtensionRegistry.getEmptyRegistry());
+
+    byte[] outputBytes = box.toByteArray();
+    assertThat(outputBytes).isEqualTo(bytes);
+  }
 }
