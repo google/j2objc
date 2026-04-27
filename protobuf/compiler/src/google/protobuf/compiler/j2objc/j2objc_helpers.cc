@@ -195,8 +195,8 @@ std::string GetClassPrefix(const FileDescriptor* file,
 
 }  // namespace
 
-std::string SafeName(const std::string &name) {
-  std::string result = name;
+std::string SafeName(absl::string_view name) {
+  std::string result(name);
   if (kKeywords.count(result) > 0) {
     result.append("_");
   }

@@ -176,7 +176,7 @@ void OneofGenerator::GenerateHeader(io::Printer* printer) {
       printer->Print(
           "@property(class, readonly, retain) $classname$ *$name$;\n",
           "classname", CaseClassName(descriptor_), "name",
-          descriptor_->field(i)->camelcase_name());
+          SafeName(descriptor_->field(i)->camelcase_name()));
     }
     printer->Print("@property(class, readonly, retain) $classname$ *$name$;\n",
                    "classname", CaseClassName(descriptor_), "name",
@@ -310,7 +310,7 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
           "}\n",
           "classname", CaseClassName(descriptor_), "upper_name",
           CaseValueName(descriptor_->field(i)), "camel_case_name",
-          descriptor_->field(i)->camelcase_name());
+          SafeName(descriptor_->field(i)->camelcase_name()));
     }
     printer->Print(
         "+ ($classname$ *) $camel_case_name$ {\n"

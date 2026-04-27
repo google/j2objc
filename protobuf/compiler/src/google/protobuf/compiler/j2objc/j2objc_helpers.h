@@ -44,7 +44,7 @@ namespace protobuf {
 namespace compiler {
 namespace j2objc {
 
-std::string SafeName(const std::string &name);
+std::string SafeName(absl::string_view name);
 
 std::string UnderscoresToCamelCase(absl::string_view input,
                                    bool cap_next_letter);
