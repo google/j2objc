@@ -1143,7 +1143,6 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
     String message = e.getMessage();
     assertTrue(message.contains("No converter method found"));
     assertTrue(message.contains("java.util.List<java.lang.String>"));
-    assertTrue(message.contains("java.util.List<?>"));
   }
 
   public void testNonCollectionFallback() throws IOException {
@@ -1404,5 +1403,40 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
           return create_ConstTest_initWithJavaUtilList_((id<JavaUtilList>) [Adapter toJavaUtilListWithId:list]);
         }
         """);
+  }
+
+  public void testSetOfBooleanFails() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.Set;
+        public class FailBoolean {
+          @ObjectiveCKmpMethod(selector="setBooleanSet:", adapter=Adapter.class)
+          public void setBooleanSet(Set<Boolean> set) {}
+        }
+        """,
+        "FailBoolean.java");
+
+    Throwable e =
+        assertThrows(Throwable.class, () -> translateSourceFile("FailBoolean", "FailBoolean.m"));
+    assertTrue(e.getMessage().contains("Exact converter required for mapped type"));
+  }
+
+  public void testSetOfListFails() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.Set;
+        import java.util.List;
+        public class FailList {
+          @ObjectiveCKmpMethod(selector="setListSet:", adapter=Adapter.class)
+          public void setListSet(Set<List<String>> set) {}
+        }
+        """,
+        "FailList.java");
+
+    Throwable e =
+        assertThrows(Throwable.class, () -> translateSourceFile("FailList", "FailList.m"));
+    assertTrue(e.getMessage().contains("Exact converter required for mapped type"));
   }
 }

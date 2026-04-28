@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.Streams.stream;
 import static java.lang.reflect.Modifier.ABSTRACT;
 import static java.lang.reflect.Modifier.STATIC;
 
@@ -51,12 +50,10 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.ObjectiveCKmpMethod;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ExecutableElement;
@@ -66,7 +63,6 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleTypeVisitor9;
-import org.jspecify.annotations.Nullable;
 
 /**
  * Implements the @ObjectiveCKmpMethod translator.
@@ -98,21 +94,21 @@ import org.jspecify.annotations.Nullable;
  *       the return type of this method is the native Objective-C type.
  * </ul>
  *
- * <h3>Type Matching (Candidates)</h3>
+ * <h3>Type Matching (Selection)</h3>
  *
- * <p>When matching types, the translator generates candidate types by progressively replacing type
- * arguments with wildcards ({@code ?}) from deepest to shallowest. It searches for a matching
- * adapter method for each candidate, prioritizing the most specific type first.
+ * <p>The translator finds all applicable methods in the adapter class that start with the required
+ * prefix ("to" or "from"). It then scores how well their signatures match the target type.
  *
- * <p>For example, for the type {@code List<String>}, the candidates are:
+ * <p>The translator prioritizes matching candidate methods by:
  *
  * <ol>
- *   <li>{@code List<String>} (depth 1)
- *   <li>{@code List<?>} (depth 0)
+ *   <li><b>Exact Match</b> over <b>Wildcard Match</b>.
+ *   <li>Deeper type arguments (higher nesting level).
+ *   <li>Lower score for matching type arguments (fewer wildcards used).
  * </ol>
  *
- * <p>The translator will first try to find an adapter method that matches {@code List<String>}. If
- * not found, it will fallback to a method that matches {@code List<?>}.
+ * <p>Wildcard matches are disallowed for mapped types (like {@code List}, {@code Map}, {@code Set}
+ * , {@code Boolean}) to ensure strict typing at the conversion boundaries.
  */
 public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
 
@@ -140,6 +136,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
           "java.util.Set");
 
   private final ImmutableSet<String> supportedConversionTypes = JAVA_TO_NATIVE_TYPE_MAP.keySet();
+  private final AdapterLookup adapterLookup;
 
   private boolean isCollectionType(TypeMirror type) {
     return COLLECTION_TYPES.contains(TypeUtil.getQualifiedName(typeUtil.erasure(type)));
@@ -147,6 +144,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
 
   public ObjectiveCKmpMethodTranslator(CompilationUnit unit) {
     super(unit);
+    this.adapterLookup = new AdapterLookup(typeUtil);
   }
 
   private String getOverrideSignature(ExecutablePair method) {
@@ -282,7 +280,6 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     private final TypeMirror originalMethodReturnType;
     private final ImmutableList<? extends VariableElement> originalMethodParameters;
     private final TypeMirror adapter;
-    private final ImmutableList<ExecutableElement> adapterMethods;
     private final boolean isInterface;
 
     private record ParameterMapping(
@@ -300,18 +297,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
           ImmutableList.copyOf(originalMethodExecutable.getParameters());
       this.selector = (String) ElementUtil.getAnnotationValue(annotation, "selector");
       this.adapter = (TypeMirror) ElementUtil.getAnnotationValue(annotation, "adapter");
-      this.adapterMethods = getAdapterMethods(this.adapter);
       this.isInterface = isInterface;
-    }
-
-    private ImmutableList<ExecutableElement> getAdapterMethods(TypeMirror adapterType) {
-      TypeElement adapterElement = TypeUtil.asTypeElement(adapterType);
-      if (adapterElement == null) {
-        return ImmutableList.of();
-      }
-      return stream(ElementUtil.getMethods(adapterElement))
-          .filter(m -> m.getParameters().size() == 1)
-          .collect(toImmutableList());
     }
 
     /** Orchestrates the parameter conversion and adapter method creation. */
@@ -583,7 +569,10 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
 
         Expression converterMethodInvocation =
             createConverterMethodInvocation(
-                ConversionDirection.TO, parameterType, parameterType, new SimpleName(parameter));
+                ConversionDirection.TO,
+                parameterType,
+                /* castType= */ parameterType, // provide the original type as the cast type
+                new SimpleName(parameter));
         adaptingArguments.add(converterMethodInvocation);
       }
       return new ParameterMapping(adaptingArguments, adapterParameters);
@@ -611,15 +600,30 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     private Expression createConverterMethodInvocation(
         ConversionDirection prefix,
         TypeMirror originalType,
-        TypeMirror returnType,
+        TypeMirror castType,
         Expression argument) {
-      List<TypeMirror> candidates = calculateConverterTypeCandidates(originalType);
-      ExecutableElement foundMethod =
-          candidates.stream()
-              .map(candidate -> findAdapterMethod(prefix, candidate))
-              .filter(Objects::nonNull)
-              .findFirst()
-              .orElse(null);
+      TypeElement adapterElement = TypeUtil.asTypeElement(adapter);
+      if (adapterElement == null) {
+        throw new IllegalArgumentException(
+            String.format("No cannot find adapter %s", adapter.toString()));
+      }
+      AdapterLookup.ConverterMatch match;
+      if (prefix == ConversionDirection.TO) {
+        match = adapterLookup.findConverterByParamType(adapterElement, originalType);
+      } else {
+        match = adapterLookup.findConverterByReturnType(adapterElement, originalType);
+      }
+
+      if (match.matchType() == AdapterLookup.MatchType.NONE_EXACT_REQUIRED) {
+        throw new IllegalStateException(
+            String.format(
+                "Exact converter required for mapped type %s in adapter %s for %s",
+                originalType,
+                adapterElement.getQualifiedName(),
+                originalMethodExecutable.getSimpleName()));
+      }
+
+      ExecutableElement foundMethod = match.converter();
 
       if (foundMethod == null) {
         if (!isCollectionType(originalType)) {
@@ -627,18 +631,15 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
           return argument;
         }
         throw new IllegalArgumentException(
-            String.format(
-                "No converter method found in %s for type %s. Candidates searched: %s",
-                adapter, originalType, candidates));
+            String.format("No converter method found in %s for type %s.", adapter, originalType));
       }
 
-      TypeElement adapterElement = TypeUtil.asTypeElement(adapter);
       Expression converterInvocation =
           createAdapterInvocation(foundMethod, adapterElement, argument);
 
-      if (!typeUtil.isSameType(foundMethod.getReturnType(), returnType)
-          && !typeUtil.isSubtype(foundMethod.getReturnType(), returnType)) {
-        return new CastExpression(returnType, converterInvocation);
+      if (!typeUtil.isSameType(foundMethod.getReturnType(), castType)
+          && !typeUtil.isSubtype(foundMethod.getReturnType(), castType)) {
+        return new CastExpression(castType, converterInvocation);
       }
 
       return converterInvocation;
@@ -652,17 +653,6 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
           new MethodInvocation(new ExecutablePair(foundMethod), new SimpleName(adapterElement));
       methodInvocation.addArgument(argument);
       return methodInvocation;
-    }
-
-    private @Nullable ExecutableElement findAdapterMethod(
-        ConversionDirection prefix, TypeMirror candidate) {
-      return adapterMethods.stream()
-          .filter(
-              method ->
-                  prefix.matches(method.getSimpleName().toString())
-                      && prefix.matchesType(method, candidate, typeUtil))
-          .findFirst()
-          .orElse(null);
     }
 
     private MethodDeclaration createAdapterMethodDeclaration(
@@ -685,28 +675,6 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       }
       return adapterMethodDeclaration;
     }
-  }
-
-  private List<TypeMirror> calculateConverterTypeCandidates(TypeMirror type) {
-    int maxDepth = calculateTypeDepth(type);
-    List<TypeMirror> candidates = new ArrayList<>();
-    // Add candidates in reverse order to prioritize most specific (deepest) first.
-    for (int i = maxDepth; i >= 0; i--) {
-      candidates.add(type.accept(new CandidateTypeVisitor(), i));
-    }
-    return candidates;
-  }
-
-  private int calculateTypeDepth(TypeMirror type) {
-    if (!TypeUtil.isDeclaredType(type)) {
-      return 0;
-    }
-    DeclaredType declaredType = (DeclaredType) type;
-    int maxDepth = 0;
-    for (TypeMirror typeArgument : declaredType.getTypeArguments()) {
-      maxDepth = Math.max(maxDepth, calculateTypeDepth(typeArgument) + 1);
-    }
-    return maxDepth;
   }
 
   /**
@@ -811,136 +779,8 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     }
   }
 
-  /**
-   * Visitor to generate candidate types for converter method lookup.
-   *
-   * <p>This visitor takes a {@link DeclaredType} and a target depth. It generates a new type where
-   * type arguments are replaced by wildcards or recursively processed based on the depth.
-   *
-   * <p>Examples:
-   *
-   * <ul>
-   *   <li>{@code List<String>}, depth 0: {@code List<?>}
-   *   <li>{@code List<String>}, depth 1: {@code List<String>}
-   *   <li>{@code Map<String, Integer>}, depth 0: {@code Map<?, ?>}
-   *   <li>{@code Map<String, Integer>}, depth 1: {@code Map<String, Integer>}
-   *   <li>{@code List<List<String>>}, depth 0: {@code List<?>}
-   *   <li>{@code List<List<String>>}, depth 1: {@code List<List<?>>}
-   *   <li>{@code List<List<String>>}, depth 2: {@code List<List<String>>}
-   * </ul>
-   */
-  private class CandidateTypeVisitor extends SimpleTypeVisitor9<TypeMirror, Integer> {
-    @Override
-    public TypeMirror visitDeclared(DeclaredType type, Integer targetDepth) {
-      TypeElement element = (TypeElement) type.asElement();
-      List<? extends TypeMirror> typeArguments = type.getTypeArguments();
-      if (typeArguments.isEmpty()) {
-        return type;
-      }
-
-      if (targetDepth == 0) {
-        TypeMirror[] wildcards = new TypeMirror[typeArguments.size()];
-        Arrays.fill(wildcards, typeUtil.getWildcardType(null, null));
-        return typeUtil.getDeclaredType(element, wildcards);
-      }
-
-      TypeMirror[] args = new TypeMirror[typeArguments.size()];
-      for (int i = 0; i < typeArguments.size(); i++) {
-        args[i] = typeArguments.get(i).accept(this, targetDepth - 1);
-      }
-      return typeUtil.getDeclaredType(element, args);
-    }
-
-    @Override
-    protected TypeMirror defaultAction(TypeMirror e, Integer p) {
-      return e;
-    }
-  }
-
   private enum ConversionDirection {
-    FROM("from") {
-      @Override
-      TypeMirror getType(ExecutableElement method) {
-        return method.getParameters().get(0).asType();
-      }
-    },
-    TO("to") {
-      @Override
-      TypeMirror getType(ExecutableElement method) {
-        return method.getReturnType();
-      }
-    };
-
-    private final String prefix;
-
-    ConversionDirection(String prefix) {
-      this.prefix = prefix;
-    }
-
-    boolean matches(String methodName) {
-      return methodName.startsWith(prefix);
-    }
-
-    /**
-     * Checks if the adapter method's type matches the target candidate type. First attempts an
-     * exact match. If the method declares type parameters (e.g., {@code <T>}), it performs a looser
-     * match that treats type variables as matching any type.
-     */
-    boolean matchesType(ExecutableElement method, TypeMirror candidate, TypeUtil typeUtil) {
-      TypeMirror methodType = getType(method);
-      if (typeUtil.isSameType(methodType, candidate)) {
-        return true;
-      }
-      // If the adapter method has generic type parameters, allow type variables to act as
-      // wildcards.
-      if (!method.getTypeParameters().isEmpty()) {
-        return isTypeMatchIgnoringTypeVariables(methodType, candidate, typeUtil);
-      }
-      return false;
-    }
-
-    /**
-     * Recursively checks if {@code methodType} matches {@code candidate}, treating any type
-     * variable in {@code methodType} as a match-all wildcard. For example, this allows {@code
-     * ImmutableList<T>} to match {@code ImmutableList<CustomClass>}.
-     */
-    private boolean isTypeMatchIgnoringTypeVariables(
-        TypeMirror methodType, TypeMirror candidate, TypeUtil typeUtil) {
-      // A type variable (like 'T') matches any type in the candidate.
-      if (TypeUtil.isTypeVariable(methodType)) {
-        return true;
-      }
-
-      // For declared types (like classes or interfaces), ensure the base elements are the same,
-      // then recursively check their type arguments.
-      if (TypeUtil.isDeclaredType(methodType) && TypeUtil.isDeclaredType(candidate)) {
-        DeclaredType mDeclared = (DeclaredType) methodType;
-        DeclaredType cDeclared = (DeclaredType) candidate;
-
-        // Check if the base type (e.g., ImmutableList) matches.
-        if (!mDeclared.asElement().equals(cDeclared.asElement())) {
-          return false;
-        }
-
-        List<? extends TypeMirror> mArgs = mDeclared.getTypeArguments();
-        List<? extends TypeMirror> cArgs = cDeclared.getTypeArguments();
-        if (mArgs.size() != cArgs.size()) {
-          return false;
-        }
-
-        // Recursively compare each type argument.
-        for (int i = 0; i < mArgs.size(); i++) {
-          if (!isTypeMatchIgnoringTypeVariables(mArgs.get(i), cArgs.get(i), typeUtil)) {
-            return false;
-          }
-        }
-        return true;
-      }
-
-      // Fallback to strict equality for other types (e.g., primitives, arrays).
-      return typeUtil.isSameType(methodType, candidate);
-    }
-
-    abstract TypeMirror getType(ExecutableElement method);
+    FROM,
+    TO;
   }
 }
