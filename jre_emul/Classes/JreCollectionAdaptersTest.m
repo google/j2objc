@@ -16,7 +16,11 @@
 #import "JreCollectionAdapters.h"
 #include "java/util/ArrayList.h"
 #include "java/util/Collections.h"
+#include "java/util/HashMap.h"
+#include "java/util/HashSet.h"
 #include "java/util/List.h"
+#include "java/util/Map.h"
+#include "java/util/Set.h"
 
 @interface JreCollectionAdaptersTest : XCTestCase
 @end
@@ -70,6 +74,80 @@
   XCTAssertEqual(listArray.count, 1);
 
   XCTAssertFalse([listArray isKindOfClass:NSClassFromString(@"JREImmutableJavaListArray")]);
+}
+
+- (void)testEmptySet {
+  id<JavaUtilSet> emptyImmutableSet = [JavaUtilSet of];
+  NSSet *emptyImmutableSetArray = JREAdaptedSetFromJavaSet(emptyImmutableSet);
+  XCTAssertEqual(emptyImmutableSetArray.count, 0);
+  XCTAssertFalse([emptyImmutableSetArray isKindOfClass:NSClassFromString(@"JREImmutableJavaSet")]);
+
+  id<JavaUtilSet> emptySet = [[JavaUtilHashSet alloc] init];
+  NSSet *emptySetArray = JREAdaptedSetFromJavaSet(emptySet);
+  XCTAssertEqual(emptySetArray.count, 0);
+  XCTAssertFalse([emptySetArray isKindOfClass:NSClassFromString(@"JREImmutableJavaSet")]);
+}
+
+- (void)testImmutableSet {
+  id<JavaUtilSet> immutableSet = [JavaUtilSet ofWithId:@"thing"];
+  NSSet *immutableSetArray = JREAdaptedSetFromJavaSet(immutableSet);
+
+  XCTAssertTrue([immutableSetArray isKindOfClass:NSClassFromString(@"JREImmutableJavaSet")]);
+  XCTAssertEqual(immutableSetArray.count, 1);
+  XCTAssertTrue([immutableSetArray containsObject:@"thing"]);
+}
+
+- (void)testMutableSetCopied {
+  id<JavaUtilSet> mutableSet = [[JavaUtilHashSet alloc] init];
+  [mutableSet addWithId:@"thing"];
+
+  NSSet *setArray = JREAdaptedSetFromJavaSet(mutableSet);
+  XCTAssertEqual([mutableSet size], 1);
+  XCTAssertEqual(setArray.count, 1);
+
+  [mutableSet addWithId:@"other"];
+
+  XCTAssertEqual([mutableSet size], 2);
+  XCTAssertEqual(setArray.count, 1);
+
+  XCTAssertFalse([setArray isKindOfClass:NSClassFromString(@"JREImmutableJavaSet")]);
+}
+
+- (void)testEmptyMap {
+  id<JavaUtilMap> emptyImmutableMap = [JavaUtilMap of];
+  NSDictionary *emptyImmutableMapArray = JREAdaptedDictionaryFromJavaMap(emptyImmutableMap);
+  XCTAssertEqual(emptyImmutableMapArray.count, 0);
+  XCTAssertFalse([emptyImmutableMapArray isKindOfClass:NSClassFromString(@"JREImmutableJavaMap")]);
+
+  id<JavaUtilMap> emptyMap = [[JavaUtilHashMap alloc] init];
+  NSDictionary *emptyMapArray = JREAdaptedDictionaryFromJavaMap(emptyMap);
+  XCTAssertEqual(emptyMapArray.count, 0);
+  XCTAssertFalse([emptyMapArray isKindOfClass:NSClassFromString(@"JREImmutableJavaMap")]);
+}
+
+- (void)testImmutableMap {
+  id<JavaUtilMap> immutableMap = [JavaUtilMap ofWithId:@"key" withId:@"value"];
+  NSDictionary *immutableMapArray = JREAdaptedDictionaryFromJavaMap(immutableMap);
+
+  XCTAssertTrue([immutableMapArray isKindOfClass:NSClassFromString(@"JREImmutableJavaMap")]);
+  XCTAssertEqual(immutableMapArray.count, 1);
+  XCTAssertEqualObjects(immutableMapArray[@"key"], @"value");
+}
+
+- (void)testMutableMapCopied {
+  id<JavaUtilMap> mutableMap = [[JavaUtilHashMap alloc] init];
+  [mutableMap putWithId:@"key" withId:@"value"];
+
+  NSDictionary *mapArray = JREAdaptedDictionaryFromJavaMap(mutableMap);
+  XCTAssertEqual([mutableMap size], 1);
+  XCTAssertEqual(mapArray.count, 1);
+
+  [mutableMap putWithId:@"key2" withId:@"value2"];
+
+  XCTAssertEqual([mutableMap size], 2);
+  XCTAssertEqual(mapArray.count, 1);
+
+  XCTAssertFalse([mapArray isKindOfClass:NSClassFromString(@"JREImmutableJavaMap")]);
 }
 
 @end

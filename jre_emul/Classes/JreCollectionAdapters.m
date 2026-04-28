@@ -12,7 +12,10 @@
 
 #import "JreCollectionAdapters.h"
 
+#include "java/util/Iterator.h"
 #include "java/util/List.h"
+#include "java/util/Map.h"
+#include "java/util/Set.h"
 
 // Helper subclass of NSArray that avoids copying a Java immutable list.
 // Can only be safely used with known-immutable Java lists.
@@ -123,15 +126,108 @@
 
 @end
 
-NSArray *JREAdaptedArrayFromJavaList(id<JavaUtilList> list) {
-  if (!list) return nil;
+// Helper to wrap Java Iterator as NSEnumerator.
+@interface JREJavaIteratorEnumerator : NSEnumerator
+- (instancetype)initWithIterator:(id<JavaUtilIterator>)iterator;
+@end
 
-  // Empty lists require no conversion.
-  if (list.isEmpty) {
-    return [NSArray array];
+@implementation JREJavaIteratorEnumerator {
+  id<JavaUtilIterator> _iterator;
+}
+
+- (instancetype)initWithIterator:(id<JavaUtilIterator>)iterator {
+  self = [super init];
+  if (self) {
+    _iterator = iterator;
   }
+  return self;
+}
 
-  // Detect known Java immutable list types.
+- (id)nextObject {
+  if ([_iterator hasNext]) {
+    return [_iterator next];
+  }
+  return nil;
+}
+
+@end
+
+// Helper subclass of NSSet that avoids copying a Java immutable set.
+@interface JREImmutableJavaSet : NSSet
+- (instancetype)initWithSet:(id<JavaUtilSet>)set;
+@end
+
+@implementation JREImmutableJavaSet {
+  NSUInteger _size;
+  id<JavaUtilSet> _set;
+}
+
+- (instancetype)initWithSet:(id<JavaUtilSet>)set {
+  self = [super init];
+  if (self) {
+    _set = set;
+    _size = [set size];
+  }
+  return self;
+}
+
+- (NSUInteger)count {
+  return _size;
+}
+
+- (id)member:(id)object {
+  return [_set containsWithId:object] ? object : nil;
+}
+
+- (NSEnumerator *)objectEnumerator {
+  return [[[JREJavaIteratorEnumerator alloc] initWithIterator:[_set iterator]] autorelease];
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+  return self;  // Immutable
+}
+
+@end
+
+// Helper subclass of NSDictionary that avoids copying a Java immutable map.
+@interface JREImmutableJavaMap : NSDictionary
+- (instancetype)initWithMap:(id<JavaUtilMap>)map;
+@end
+
+@implementation JREImmutableJavaMap {
+  NSUInteger _size;
+  id<JavaUtilMap> _map;
+}
+
+- (instancetype)initWithMap:(id<JavaUtilMap>)map {
+  self = [super init];
+  if (self) {
+    _map = map;
+    _size = [map size];
+  }
+  return self;
+}
+
+- (NSUInteger)count {
+  return _size;
+}
+
+- (id)objectForKey:(id)aKey {
+  return [_map getWithId:aKey];
+}
+
+- (NSEnumerator *)keyEnumerator {
+  return
+      [[[JREJavaIteratorEnumerator alloc] initWithIterator:[[_map keySet] iterator]] autorelease];
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+  return self;  // Immutable
+}
+
+@end
+
+static NSSet *ImmutableCollectionClasses(void) {
   static dispatch_once_t immutableClassesOnce = 0;
   static NSSet *immutableClasses = nil;
   dispatch_once(&immutableClassesOnce, ^{
@@ -157,8 +253,46 @@ NSArray *JREAdaptedArrayFromJavaList(id<JavaUtilList> list) {
 
     immutableClasses = [classes retain];
   });
+  return immutableClasses;
+}
 
-  for (Class immutableClass in immutableClasses) {
+static NSSet *ImmutableMapClasses(void) {
+  static dispatch_once_t immutableMapClassesOnce = 0;
+  static NSSet *immutableMapClasses = nil;
+  dispatch_once(&immutableMapClassesOnce, ^{
+    NSMutableSet *classes = [NSMutableSet set];
+
+    Class javaImmutableMap =
+        NSClassFromString(@"JavaUtilImmutableCollections_AbstractImmutableMap");
+    if (javaImmutableMap) {
+      [classes addObject:javaImmutableMap];
+    }
+
+    Class javaUnmodifiableMap = NSClassFromString(@"JavaUtilCollections_UnmodifiableMap");
+    if (javaUnmodifiableMap) {
+      [classes addObject:javaUnmodifiableMap];
+    }
+
+    Class comGoogleCommonCollectImmutableMap =
+        NSClassFromString(@"ComGoogleCommonCollectImmutableMap");
+    if (comGoogleCommonCollectImmutableMap) {
+      [classes addObject:comGoogleCommonCollectImmutableMap];
+    }
+
+    immutableMapClasses = [classes retain];
+  });
+  return immutableMapClasses;
+}
+
+NSArray *JREAdaptedArrayFromJavaList(id<JavaUtilList> list) {
+  if (!list) return nil;
+
+  // Empty lists require no conversion.
+  if (list.isEmpty) {
+    return [NSArray array];
+  }
+
+  for (Class immutableClass in ImmutableCollectionClasses()) {
     if ([list isKindOfClass:immutableClass]) {
       return [[[JREImmutableJavaListArray alloc] initWithList:list] autorelease];
     }
@@ -171,4 +305,47 @@ NSArray *JREAdaptedArrayFromJavaList(id<JavaUtilList> list) {
     [array addObject:object];
   }
   return [array autorelease];  // Ownership transfer, no need to copy to immutable NSArray.
+}
+
+NSSet *JREAdaptedSetFromJavaSet(id<JavaUtilSet> set) {
+  if (!set) return nil;
+
+  if (set.isEmpty) {
+    return [NSSet set];
+  }
+
+  for (Class immutableClass in ImmutableCollectionClasses()) {
+    if ([set isKindOfClass:immutableClass]) {
+      return [[[JREImmutableJavaSet alloc] initWithSet:set] autorelease];
+    }
+  }
+
+  NSMutableSet *mutableSet = [[NSMutableSet alloc] initWithCapacity:[set size]];
+  for (id object in set) {
+    [mutableSet addObject:object];
+  }
+  return [mutableSet autorelease];
+}
+
+NSDictionary *JREAdaptedDictionaryFromJavaMap(id<JavaUtilMap> map) {
+  if (!map) return nil;
+
+  if (map.isEmpty) {
+    return [NSDictionary dictionary];
+  }
+
+  for (Class immutableClass in ImmutableMapClasses()) {
+    if ([map isKindOfClass:immutableClass]) {
+      return [[[JREImmutableJavaMap alloc] initWithMap:map] autorelease];
+    }
+  }
+
+  NSMutableDictionary *mutableDict = [[NSMutableDictionary alloc] initWithCapacity:[map size]];
+  id<JavaUtilSet> entrySet = [map entrySet];
+  id<JavaUtilIterator> iterator = [entrySet iterator];
+  while ([iterator hasNext]) {
+    id<JavaUtilMap_Entry> entry = [iterator next];
+    [mutableDict setObject:[entry getValue] forKey:[entry getKey]];
+  }
+  return [mutableDict autorelease];
 }
