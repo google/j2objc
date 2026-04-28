@@ -115,6 +115,8 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
   private static final ImmutableMap<String, String> JAVA_TO_NATIVE_TYPE_MAP =
       ImmutableMap.<String, String>builder()
           .put("com.google.common.collect.ImmutableList", "NSArray")
+          .put("com.google.common.collect.ImmutableMap", "NSDictionary")
+          .put("com.google.common.collect.ImmutableSet", "NSSet")
           .put("java.util.List", "NSArray")
           .put("java.util.Map", "NSDictionary")
           .put("java.util.Set", "NSSet")
@@ -124,6 +126,8 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
           .put("java.lang.Double", "NSNumber")
           .put("java.lang.Float", "NSNumber")
           .put("java.lang.Boolean", "NSNumber")
+          .put("java.lang.Byte", "NSNumber")
+          .put("java.lang.Short", "NSNumber")
           .buildOrThrow();
 
   private static final ImmutableSet<String> COLLECTION_TYPES =
@@ -589,12 +593,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
               originalMethodReturnType,
               adapterReturnType,
               adaptingMethodInvocation);
-      if (!typeUtil.isSameType(converterMethodInvocation.getTypeMirror(), adapterReturnType)
-          && !typeUtil.isSubtype(converterMethodInvocation.getTypeMirror(), adapterReturnType)) {
-        return new ReturnStatement(
-            new CastExpression(adapterReturnType, converterMethodInvocation));
-      }
-      return new ReturnStatement(converterMethodInvocation);
+      return new ReturnStatement(maybeCast(adapterReturnType, converterMethodInvocation));
     }
 
     private Expression createConverterMethodInvocation(
@@ -637,12 +636,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       Expression converterInvocation =
           createAdapterInvocation(foundMethod, adapterElement, argument);
 
-      if (!typeUtil.isSameType(foundMethod.getReturnType(), castType)
-          && !typeUtil.isSubtype(foundMethod.getReturnType(), castType)) {
-        return new CastExpression(castType, converterInvocation);
-      }
-
-      return converterInvocation;
+      return maybeCast(castType, converterInvocation);
     }
 
     // Adapter invocation are always with wrapped methods, which means that the package it is in
@@ -651,8 +645,22 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
         ExecutableElement foundMethod, TypeElement adapterElement, Expression argument) {
       MethodInvocation methodInvocation =
           new MethodInvocation(new ExecutablePair(foundMethod), new SimpleName(adapterElement));
-      methodInvocation.addArgument(argument);
+      TypeMirror paramType = foundMethod.getParameters().get(0).asType();
+      methodInvocation.addArgument(maybeCast(paramType, argument));
       return methodInvocation;
+    }
+
+    private Expression maybeCast(TypeMirror targetType, Expression expression) {
+      // If the target type is Object (id), we don't need to cast the expression.
+      if (TypeUtil.isDeclaredType(targetType)
+          && "java.lang.Object".equals(TypeUtil.getQualifiedName(targetType))) {
+        return expression;
+      }
+      if (!typeUtil.isSameType(expression.getTypeMirror(), targetType)
+          && !typeUtil.isSubtype(expression.getTypeMirror(), targetType)) {
+        return new CastExpression(targetType, expression);
+      }
+      return expression;
     }
 
     private MethodDeclaration createAdapterMethodDeclaration(
