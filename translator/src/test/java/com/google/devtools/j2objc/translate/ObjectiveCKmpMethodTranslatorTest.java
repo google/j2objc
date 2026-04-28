@@ -276,7 +276,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
     assertInTranslation(
         testImplementation,
         "return (NSArray<NSArray<NSString *> *> *) [Adapter"
-            + " fromJavaUtilList_JavaUtilList_WithJavaUtilList:[self getMatrix]]");
+            + " fromJavaUtilList_JavaUtilList_WithJavaUtilList:(id<JavaUtilList>) [self getMatrix]]");
   }
 
   /** Tests mixed nested collection conversion with @ObjectiveCKmpMethod. */
@@ -433,7 +433,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         testImplementation,
         """
         - (NSDictionary<NSString *, NSArray<Bar *> *> *)getMap {
-          return (NSDictionary<NSString *, NSArray<Bar *> *> *) [Adapter fromJavaUtilMap_String_JavaUtilList_WithJavaUtilMap:[self getMap]];
+          return (NSDictionary<NSString *, NSArray<Bar *> *> *) [Adapter fromJavaUtilMap_String_JavaUtilList_WithJavaUtilMap:(id<JavaUtilMap>) [self getMap]];
         }
         """);
   }
@@ -1053,7 +1053,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         abstractImpl,
         """
         - (NSArray<MyPkgCustomClass *> *)getItems {
-          return (NSArray<MyPkgCustomClass *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:[self getItems]];
+          return (NSArray<MyPkgCustomClass *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *) [self getItems]];
         }
         """);
 
