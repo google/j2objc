@@ -24,6 +24,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
   @Override
   public void setUp() throws IOException {
     super.setUp();
+    options.load(new String[] {"--objc-generics"});
     addSourceFile(
         """
         package com.google.common.collect;
@@ -276,7 +277,8 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
     assertInTranslation(
         testImplementation,
         "return (NSArray<NSArray<NSString *> *> *) [Adapter"
-            + " fromJavaUtilList_JavaUtilList_WithJavaUtilList:(id<JavaUtilList>) [self getMatrix]]");
+            + " fromJavaUtilList_JavaUtilList_WithJavaUtilList:(id<JavaUtilList>) [self"
+            + " getMatrix]]");
   }
 
   /** Tests mixed nested collection conversion with @ObjectiveCKmpMethod. */
@@ -1061,7 +1063,6 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
     assertNotInTranslation(
         concreteHeader, "- (void)setItems:(NSArray<MyPkgCustomClass *> *)items;");
     assertNotInTranslation(concreteHeader, "- (NSArray<MyPkgCustomClass *> *)getItems;");
-    assertNotInTranslation(concreteHeader, "@class MyPkgCustomClass;");
 
     String concreteImpl = translateSourceFile("ConcreteClass", "ConcreteClass.m");
     assertNotInTranslation(concreteImpl, "- (void)setItems:(NSArray<MyPkgCustomClass *> *)items {");
@@ -1403,6 +1404,37 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
           return create_ConstTest_initWithJavaUtilList_((id<JavaUtilList>) [Adapter toJavaUtilListWithId:list]);
         }
         """);
+  }
+
+  public void testObjCGenerics() throws IOException {
+
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+        public class GenericsOn {
+          @ObjectiveCKmpMethod(selector="setList:", adapter=Adapter.class)
+          public void setList(List<String> list) {}
+        }
+        """,
+        "GenericsOn.java");
+    String headerOn = translateSourceFile("GenericsOn", "GenericsOn.h");
+    assertInTranslation(headerOn, "- (void)setList:(NSArray<NSString *> *)list;");
+
+    options.setAsObjCGenericDecl(false);
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+        public class GenericsOff {
+          @ObjectiveCKmpMethod(selector="setList:", adapter=Adapter.class)
+          public void setList(List<String> list) {}
+        }
+        """,
+        "GenericsOff.java");
+    String headerOff = translateSourceFile("GenericsOff", "GenericsOff.h");
+    assertInTranslation(headerOff, "- (void)setList:(NSArray *)list;");
+    options.setAsObjCGenericDecl(true);
   }
 
   public void testSetOfBooleanFails() throws IOException {
