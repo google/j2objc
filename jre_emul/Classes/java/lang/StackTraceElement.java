@@ -78,6 +78,13 @@ public class StackTraceElement implements Serializable {
     this.address = address;
   }
 
+  public static native StackTraceElement createFromSymbol(long address, String symbol) /*-[
+    JavaLangStackTraceElement *element = [[JavaLangStackTraceElement alloc] initWithLong:address];
+    NSStringEncoding encoding = [NSString defaultCStringEncoding];
+    PopulateElementFromSymbol(element, [symbol UTF8String], encoding);
+    return AUTORELEASE(element);
+  ]-*/;
+
   @Override
   public String toString() {
     initializeFromAddress();
@@ -239,21 +246,10 @@ public class StackTraceElement implements Serializable {
   }
   ]-*/
 
-  /**
-   * Implements lazy loading of symbol information from application.
-   */
-  private native void initializeFromAddress() /*-[
-    if (self->address_ == 0L     // Is there an address to initialze from?
-        || self->hexAddress_) {  // Already initialized?
-      return;
-    }
-    void *shortStack[1];
-    shortStack[0] = (void *)self->address_;
-    char **stackSymbol = backtrace_symbols(shortStack, 1);
-    NSStringEncoding encoding = [NSString defaultCStringEncoding];
-
-    // Extract hexAddress.
-    char *start = strstr(*stackSymbol, "0x");  // Skip text before address.
+  /*-[
+  static void PopulateElementFromSymbol(JavaLangStackTraceElement *self, const char *stackSymbol, NSStringEncoding encoding) {
+    char *symbolCopy = strdup(stackSymbol);
+    char *start = strstr(symbolCopy, "0x");
     char *addressEnd = strstr(start, " ");
     char *hex = strndup(start, addressEnd - start);
     self->hexAddress_ = [[NSString alloc] initWithCString:hex encoding:encoding];
@@ -325,6 +321,21 @@ public class StackTraceElement implements Serializable {
     if ([self->methodName_ isEqual:JavaLangStackTraceElement_UNKNOWN]) {
       self->methodName_ = JavaLangStackTraceElement_STRIPPED;
     }
+    free(symbolCopy);
+  }
+  ]-*/
+
+  /** Implements lazy loading of symbol information from application. */
+  private native void initializeFromAddress() /*-[
+    if (self->address_ == 0L     // Is there an address to initialze from?
+        || self->hexAddress_) {  // Already initialized?
+      return;
+    }
+    void *shortStack[1];
+    shortStack[0] = (void *)self->address_;
+    char **stackSymbol = backtrace_symbols(shortStack, 1);
+    NSStringEncoding encoding = [NSString defaultCStringEncoding];
+    PopulateElementFromSymbol(self, *stackSymbol, encoding);
     free(stackSymbol);
   ]-*/;
 }
