@@ -1321,4 +1321,88 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         }
         """);
   }
+
+  public void testConstructorConversion_wrapperMethod() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        public class ConstTest {
+          @ObjectiveCKmpMethod(selector="initWithList:", adapter=Adapter.class)
+          public ConstTest(List<String> list) {
+            super();
+          }
+        }
+        """,
+        "ConstTest.java");
+
+    String testHeader = translateSourceFile("ConstTest", "ConstTest.h");
+    assertInTranslation(testHeader, "- (instancetype)initWithList:(NSArray<NSString *> *)list;");
+
+    String testImplementation = translateSourceFile("ConstTest", "ConstTest.m");
+    assertInTranslation(
+        testImplementation,
+        """
+        - (instancetype)initWithList:(NSArray<NSString *> *)list {
+          ConstTest_initWithJavaUtilList_(self, (id<JavaUtilList>) [Adapter toJavaUtilListWithId:list]);
+          return self;
+        }
+        """);
+  }
+
+  public void testConstructorConversion_noWrapperMethod() throws IOException {
+    options.load(new String[] {"--no-wrapper-methods"});
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        public class ConstTest {
+          @ObjectiveCKmpMethod(selector="initWithList:", adapter=Adapter.class)
+          public ConstTest(List<String> list) {
+            super();
+          }
+        }
+        """,
+        "ConstTest.java");
+
+    String testHeader = translateSourceFile("ConstTest", "ConstTest.h");
+    assertNotInTranslation(testHeader, "- (instancetype)initWithList:(NSArray<NSString *> *)list;");
+    assertInTranslation(
+        testHeader,
+        "FOUNDATION_EXPORT void ConstTest_initWithList_(ConstTest *self_, NSArray<NSString *>"
+            + " *list);");
+    assertInTranslation(
+        testHeader,
+        "FOUNDATION_EXPORT ConstTest *new_ConstTest_initWithList_(NSArray<NSString *> *list);");
+    assertInTranslation(
+        testHeader,
+        "FOUNDATION_EXPORT ConstTest *create_ConstTest_initWithList_(NSArray<NSString *> *list);");
+
+    String testImplementation = translateSourceFile("ConstTest", "ConstTest.m");
+    assertNotInTranslation(
+        testImplementation, "- (instancetype)initWithList:(NSArray<NSString *> *)list");
+    assertInTranslation(
+        testImplementation,
+        """
+        void ConstTest_initWithList_(ConstTest *self_, NSArray<NSString *> *list) {
+          ConstTest_initWithJavaUtilList_(self_, (id<JavaUtilList>) [Adapter toJavaUtilListWithId:list]);
+        }
+        """);
+    assertInTranslation(
+        testImplementation,
+        """
+        ConstTest *new_ConstTest_initWithList_(NSArray<NSString *> *list) {
+          return new_ConstTest_initWithJavaUtilList_((id<JavaUtilList>) [Adapter toJavaUtilListWithId:list]);
+        }
+        """);
+    assertInTranslation(
+        testImplementation,
+        """
+        ConstTest *create_ConstTest_initWithList_(NSArray<NSString *> *list) {
+          return create_ConstTest_initWithJavaUtilList_((id<JavaUtilList>) [Adapter toJavaUtilListWithId:list]);
+        }
+        """);
+  }
 }
