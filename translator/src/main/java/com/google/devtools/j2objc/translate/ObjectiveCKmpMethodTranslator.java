@@ -748,7 +748,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     public Void visitDeclared(DeclaredType type, StringBuilder builder) {
       builder.append(toNativeType(type, methodExecutable, referencedTypes));
       List<? extends TypeMirror> typeArguments = type.getTypeArguments();
-      if (!typeArguments.isEmpty()) {
+      if (options.asObjCGenericDecl() && !typeArguments.isEmpty()) {
         String typeArgsString = buildTypeArgumentString(typeArguments);
         builder.append("<").append(typeArgsString).append(">");
       }
