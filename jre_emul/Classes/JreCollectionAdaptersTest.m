@@ -150,4 +150,46 @@
   XCTAssertFalse([mapArray isKindOfClass:NSClassFromString(@"JREImmutableJavaMap")]);
 }
 
+- (void)testCodingList {
+  id<JavaUtilList> immutableList = [JavaUtilList ofWithId:@"thing"];
+  NSArray *immutableListArray = JREAdaptedArrayFromJavaList(immutableList);
+
+  NSData *data = [NSKeyedArchiver archivedDataWithRootObject:immutableListArray
+                                       requiringSecureCoding:NO
+                                                       error:nil];
+  NSArray *unarchivedArray = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSArray class]
+                                                               fromData:data
+                                                                  error:nil];
+
+  XCTAssertEqualObjects(unarchivedArray, immutableListArray);
+}
+
+- (void)testCodingSet {
+  id<JavaUtilSet> immutableSet = [JavaUtilSet ofWithId:@"thing"];
+  NSSet *immutableSetArray = JREAdaptedSetFromJavaSet(immutableSet);
+
+  NSData *data = [NSKeyedArchiver archivedDataWithRootObject:immutableSetArray
+                                       requiringSecureCoding:NO
+                                                       error:nil];
+  NSSet *unarchivedSet = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSSet class]
+                                                           fromData:data
+                                                              error:nil];
+
+  XCTAssertEqualObjects(unarchivedSet, immutableSetArray);
+}
+
+- (void)testCodingMap {
+  id<JavaUtilMap> immutableMap = [JavaUtilMap ofWithId:@"key" withId:@"value"];
+  NSDictionary *immutableMapArray = JREAdaptedDictionaryFromJavaMap(immutableMap);
+
+  NSData *data = [NSKeyedArchiver archivedDataWithRootObject:immutableMapArray
+                                       requiringSecureCoding:NO
+                                                       error:nil];
+  NSDictionary *unarchivedDict = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSDictionary class]
+                                                                   fromData:data
+                                                                      error:nil];
+
+  XCTAssertEqualObjects(unarchivedDict, immutableMapArray);
+}
+
 @end
