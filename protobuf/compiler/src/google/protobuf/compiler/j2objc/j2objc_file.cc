@@ -153,6 +153,9 @@ void FileGenerator::GenerateHeader(GeneratorContext* context) {
 
   GenerateHeaderBoilerplate(&printer);
 
+  std::string guard_name = ClassName(file_) + "_H";
+  printer.Print("#ifndef $guard$\n#define $guard$\n", "guard", guard_name);
+
   std::set<std::string> headers;
   AddHeaderImports(headers);
   std::set<std::string> declarations;
@@ -266,7 +269,8 @@ void FileGenerator::GenerateHeader(GeneratorContext* context) {
   }
   printer.Print(
       "\n"
-      "#pragma clang diagnostic pop\n");
+      "#pragma clang diagnostic pop\n"
+      "#endif // $guard$\n", "guard", ClassName(file_) + "_H");
 }
 
 void FileGenerator::GenerateSource(GeneratorContext* context) {
