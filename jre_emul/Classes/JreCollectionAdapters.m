@@ -187,6 +187,20 @@
   return self;  // Immutable
 }
 
+#pragma mark NSCoding
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+  return [super initWithCoder:coder];
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  NSMutableSet *set = [NSMutableSet setWithCapacity:_size];
+  for (id object in _set) {
+    [set addObject:object];
+  }
+  [set encodeWithCoder:coder];
+}
+
 @end
 
 // Helper subclass of NSDictionary that avoids copying a Java immutable map.
@@ -223,6 +237,23 @@
 
 - (id)copyWithZone:(NSZone *)zone {
   return self;  // Immutable
+}
+
+#pragma mark NSCoding
+
+- (instancetype)initWithCoder:(NSCoder *)coder {
+  return [super initWithCoder:coder];
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:_size];
+  id<JavaUtilSet> entrySet = [_map entrySet];
+  id<JavaUtilIterator> iterator = [entrySet iterator];
+  while ([iterator hasNext]) {
+    id<JavaUtilMap_Entry> entry = [iterator next];
+    [dict setObject:[entry getValue] forKey:[entry getKey]];
+  }
+  [dict encodeWithCoder:coder];
 }
 
 @end
