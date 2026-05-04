@@ -97,6 +97,21 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
   printer->Outdent();
   printer->Print("};\n\n");
 
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print("typedef $ordinalenumname$ KNP$ordinalenumname$;\n",
+                   "ordinalenumname", COrdinalEnumName(descriptor_));
+    for (int i = 0; i < canonical_values_.size(); i++) {
+      printer->Print("#define KNP$ordinalname$ $ordinalname$\n", "ordinalname",
+                     EnumOrdinalName(canonical_values_[i]));
+    }
+    if (!descriptor_->is_closed()) {
+      printer->Print(
+          "#define KNP$ordinalname$_UNRECOGNIZED = "
+          "$ordinalname$_UNRECOGNIZED\n",
+          "ordinalname", COrdinalEnumName(descriptor_));
+    }
+  }
+
   printer->Print(
       "\n// Java enum ordinal preprocessor name that allows for stricter enum "
       "types\n"
@@ -181,6 +196,9 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
     printer->Print("- ($valuepreprocessorname$)number;\n",
                    "valuepreprocessorname",
                    CValuePreprocessorName(descriptor_));
+    printer->Print("- ($ordinalpreprocessorname$)nsEnum;\n",
+                   "ordinalpreprocessorname",
+                   COrdinalPreprocessorName(descriptor_));
   }
 
   // We add an explicit Swift name to prevent weird implicit conversions
@@ -355,6 +373,12 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
         "}\n",
         "classname", ClassName(descriptor_), "valuepreprocessorname",
         CValuePreprocessorName(descriptor_));
+    printer->Print(
+        "- ($ordinalpreprocessorname$)nsEnum {\n"
+        "  return [self ordinal];\n"
+        "}\n",
+        "classname", ClassName(descriptor_), "ordinalpreprocessorname",
+        COrdinalPreprocessorName(descriptor_));
   }
 
   printer->Print(
