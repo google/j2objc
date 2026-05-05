@@ -106,8 +106,7 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
     }
     if (!descriptor_->is_closed()) {
       printer->Print(
-          "#define KNP$ordinalname$_UNRECOGNIZED = "
-          "$ordinalname$_UNRECOGNIZED\n",
+          "#define KNP$ordinalname$_UNRECOGNIZED $ordinalname$_UNRECOGNIZED\n",
           "ordinalname", COrdinalEnumName(descriptor_));
     }
   }
