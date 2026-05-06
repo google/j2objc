@@ -108,6 +108,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
     printInitFlagDefinition();
     printEnumExterns();
+    printStaticFieldExterns();
     printStaticVars();
     printEnumValuesArray();
 
@@ -275,6 +276,33 @@ public class TypeImplementationGenerator extends TypeGenerator {
       for (EnumConstantDeclaration constant : enumDeclaration.getEnumConstants()) {
         String varName = nameTable.getVariableBaseName(constant.getVariableElement());
         printf("extern %s *%s_get_%s(void);\n", typeName, typeName, varName);
+      }
+    }
+  }
+
+  /**
+   * Prints extern declarations for static field accessors.
+   *
+   * <p>Static field accessors are declared as {@code inline} in the header. If the compiler decides
+   * not to inline a call, it will expect an external definition. These extern declarations ensure
+   * that the compiler emits a non-inline version of the function in the implementation file.
+   */
+  private void printStaticFieldExterns() {
+    if (typeNode.isDeadClass()) {
+      return;
+    }
+    for (VariableDeclarationFragment fragment : getStaticFields()) {
+      VariableElement var = fragment.getVariableElement();
+      String objcTypePadded = paddedType(nameTable.getObjCTypeDeclaration(var.asType()), var);
+      String name = nameTable.getVariableShortName(var);
+      newline();
+      printf("extern %s%s_get_%s(void);\n", objcTypePadded, typeName, name);
+      if (!ElementUtil.isFinal(var)) {
+        printf("extern %s%s_set_%s(%svalue);\n", objcTypePadded, typeName, name, objcTypePadded);
+        if (var.asType().getKind().isPrimitive() && !ElementUtil.isVolatile(var)) {
+          String objcType = nameTable.getObjCTypeDeclaration(var.asType());
+          printf("extern %s *%s_getRef_%s(void);\n", objcType, typeName, name);
+        }
       }
     }
   }
