@@ -195,7 +195,7 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
     printer->Print("- ($valuepreprocessorname$)number;\n",
                    "valuepreprocessorname",
                    CValuePreprocessorName(descriptor_));
-    printer->Print("- ($ordinalpreprocessorname$)nsEnum;\n",
+    printer->Print("@property(readonly) $ordinalpreprocessorname$ nsEnum;\n",
                    "ordinalpreprocessorname",
                    COrdinalPreprocessorName(descriptor_));
   }
