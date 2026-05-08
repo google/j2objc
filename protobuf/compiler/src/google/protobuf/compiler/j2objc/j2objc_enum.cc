@@ -84,14 +84,16 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
   printer->Indent();
 
   for (int i = 0; i < canonical_values_.size(); i++) {
-      printer->Print("$ordinalname$ = $ordinal$,\n", "ordinalname",
-                     EnumOrdinalName(canonical_values_[i]), "ordinal",
-                     SimpleItoa(i));
+    printer->Print("$ordinalname$ NS_SWIFT_NAME($swiftname$) = $ordinal$,\n",
+                   "ordinalname", EnumOrdinalName(canonical_values_[i]),
+                   "swiftname", PropertyName(canonical_values_[i]), "ordinal",
+                   SimpleItoa(i));
   }
   if (!descriptor_->is_closed()) {
-      printer->Print("$ordinalname$_UNRECOGNIZED = $count$,\n", "ordinalname",
-                     COrdinalEnumName(descriptor_), "count",
-                     SimpleItoa(canonical_values_.size()));
+    printer->Print(
+        "$ordinalname$_UNRECOGNIZED NS_SWIFT_NAME(unrecognized) = $count$,\n",
+        "ordinalname", COrdinalEnumName(descriptor_), "count",
+        SimpleItoa(canonical_values_.size()));
   }
 
   printer->Outdent();
