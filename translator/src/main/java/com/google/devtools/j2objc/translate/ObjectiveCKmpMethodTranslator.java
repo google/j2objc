@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
@@ -33,6 +34,7 @@ import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
@@ -63,6 +65,7 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleTypeVisitor9;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Implements the @ObjectiveCKmpMethod translator.
@@ -178,14 +181,19 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       this.typeElem = typeElem;
     }
 
-    private boolean superclassHasAdapter(String signature) {
-      TypeMirror superclass = typeElem.getSuperclass();
-      if (TypeUtil.isNone(superclass)) {
-        return false;
+    private @Nullable AdapterGenerator getSupertypeAdapterGenerator(String signature) {
+      for (TypeMirror supertype : typeUtil.directSupertypes(typeElem.asType())) {
+        TypeElement superElement = TypeUtil.asTypeElement(supertype);
+        if (superElement == null) {
+          continue;
+        }
+        AdapterGenerator superGen = new AdapterGenerator(superElement);
+        superGen.collectMethods((DeclaredType) supertype);
+        if (superGen.annotatedSignatures.containsKey(signature)) {
+          return superGen;
+        }
       }
-      AdapterGenerator superGen = new AdapterGenerator(TypeUtil.asTypeElement(superclass));
-      superGen.collectMethods((DeclaredType) superclass);
-      return superGen.annotatedSignatures.containsKey(signature);
+      return null;
     }
 
     private void visit() {
@@ -199,14 +207,46 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
         ExecutablePair method = allMethods.get(signature);
 
         boolean shouldGenerate;
+        MappingStrategy strategy = MappingStrategy.CONCRETE;
+
         if (isInterface) {
           shouldGenerate = ElementUtil.getDeclaringClass(method.element()).equals(typeElem);
         } else {
-          shouldGenerate = !superclassHasAdapter(signature);
+          AdapterGenerator superGen = getSupertypeAdapterGenerator(signature);
+          shouldGenerate =
+              superGen == null
+                  || ElementUtil.isAbstract(superGen.allMethods.get(signature).element());
+          if (ElementUtil.isAbstract(method.element())) {
+            strategy = MappingStrategy.ABSTRACT;
+          }
         }
 
         if (shouldGenerate) {
-          new AdapterContext(typeNode, method, annotation, isInterface).processMethod();
+          new AdapterContext(typeNode, method, annotation, isInterface, strategy).processMethod();
+        }
+      }
+
+      // Now handle overrides of abstract KMP methods
+      if (!isInterface) {
+        for (Map.Entry<String, ExecutablePair> entry : allMethods.entrySet()) {
+          String signature = entry.getKey();
+
+          // If this method overrides an abstract KMP method, we need to generate the concrete
+          // adapter
+          if (!annotatedSignatures.containsKey(signature)) {
+            AdapterGenerator superGen = getSupertypeAdapterGenerator(signature);
+            if (superGen != null
+                && ElementUtil.isAbstract(superGen.allMethods.get(signature).element())) {
+              AdapterContext adapterContext =
+                  new AdapterContext(
+                      typeNode,
+                      /* originalMethod= */ entry.getValue(),
+                      /* annotation= */ superGen.annotatedSignatures.get(signature),
+                      /* isInterface= */ false,
+                      MappingStrategy.CONCRETE);
+              adapterContext.processMethod();
+            }
+          }
         }
       }
     }
@@ -273,6 +313,10 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
+    TypeElement typeElem = node.getTypeElement();
+    if (typeElem != null && typeElem.getSimpleName().contentEquals("package-info")) {
+      return;
+    }
     new AdapterGenerator(node).visit();
   }
 
@@ -285,6 +329,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     private final ImmutableList<? extends VariableElement> originalMethodParameters;
     private final TypeMirror adapter;
     private final boolean isInterface;
+    private final MappingStrategy strategy;
 
     private record ParameterMapping(
         List<Expression> adaptingArguments, List<VariableElement> adapterParameters) {}
@@ -293,7 +338,8 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
         AbstractTypeDeclaration typeNode,
         ExecutablePair originalMethod,
         AnnotationMirror annotation,
-        boolean isInterface) {
+        boolean isInterface,
+        MappingStrategy strategy) {
       this.typeNode = typeNode;
       this.originalMethodExecutable = originalMethod.element();
       this.originalMethodReturnType = originalMethod.type().getReturnType();
@@ -302,6 +348,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       this.selector = (String) ElementUtil.getAnnotationValue(annotation, "selector");
       this.adapter = (TypeMirror) ElementUtil.getAnnotationValue(annotation, "adapter");
       this.isInterface = isInterface;
+      this.strategy = strategy;
     }
 
     /** Orchestrates the parameter conversion and adapter method creation. */
@@ -334,6 +381,8 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
         if (options.emitWrapperMethods()) {
           generateStaticMethodDeclaration(adapterReturnType, functionElement);
         }
+      } else if (strategy == MappingStrategy.ABSTRACT) {
+        generateAbstractInstanceMethodDeclaration(adapterReturnType);
       } else {
         generateInstanceMethodDeclaration(adapterReturnType);
       }
@@ -407,6 +456,49 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
 
       addMethodDeclaration(
           adapterMethodExecutable, adaptingMethodInvocation, adapterReturnType, adapterParameters);
+    }
+
+    private void generateAbstractInstanceMethodDeclaration(TypeMirror adapterReturnType) {
+      ParameterMapping mapping = processParameters();
+      List<Expression> adaptingArguments = mapping.adaptingArguments();
+      List<VariableElement> adapterParameters = mapping.adapterParameters();
+
+      GeneratedExecutableElement adapterMethodExecutable =
+          GeneratedExecutableElement.newAdapterMethod(
+              selector, adapterReturnType, adapterParameters, originalMethodExecutable);
+
+      Block adapterBodyBlock = new Block();
+      String bodyCode =
+          "// can't call an abstract method\n" + "[self doesNotRecognizeSelector:_cmd];";
+      if (!TypeUtil.isVoid(adapterReturnType)) {
+        bodyCode += "\nreturn 0;";
+      }
+      adapterBodyBlock.addStatement(new NativeStatement(bodyCode));
+
+      MethodDeclaration adapterMethodDeclaration =
+          createAdapterMethodDeclaration(
+              adapterMethodExecutable, adapterBodyBlock, adapterParameters, false);
+
+      typeNode.addBodyDeclaration(adapterMethodDeclaration);
+
+      // Now modify original method to call adapter
+      MethodInvocation adaptingMethodInvocation =
+          new MethodInvocation(new ExecutablePair(adapterMethodExecutable), null);
+      adaptingArguments.forEach(adaptingMethodInvocation::addArgument);
+
+      Block bodyBlock = new Block();
+      bodyBlock.addStatement(
+          createReturnStatement(adaptingMethodInvocation, originalMethodReturnType));
+
+      // Find the method declaration in typeNode and update it
+      for (BodyDeclaration decl : typeNode.getBodyDeclarations()) {
+        if (decl instanceof MethodDeclaration md
+            && md.getExecutableElement().equals(originalMethodExecutable)) {
+          md.setBody(bodyBlock);
+          md.removeModifiers(ABSTRACT);
+          break;
+        }
+      }
     }
 
     private FunctionInvocation createConstructorInvocation(TypeElement declaringClass) {
@@ -573,9 +665,9 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
 
         Expression converterMethodInvocation =
             createConverterMethodInvocation(
-                ConversionDirection.TO,
+                /* isParam= */ true,
                 parameterType,
-                /* castType= */ parameterType, // provide the original type as the cast type
+                strategy.getParamCastType(parameterType, nativeType),
                 new SimpleName(parameter));
         adaptingArguments.add(converterMethodInvocation);
       }
@@ -589,28 +681,25 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       }
       Expression converterMethodInvocation =
           createConverterMethodInvocation(
-              ConversionDirection.FROM,
+              /* isParam= */ false,
               originalMethodReturnType,
-              adapterReturnType,
+              strategy.getReturnCastType(originalMethodReturnType, adapterReturnType),
               adaptingMethodInvocation);
       return new ReturnStatement(maybeCast(adapterReturnType, converterMethodInvocation));
     }
 
     private Expression createConverterMethodInvocation(
-        ConversionDirection prefix,
-        TypeMirror originalType,
-        TypeMirror castType,
-        Expression argument) {
+        boolean isParam, TypeMirror originalType, TypeMirror castType, Expression argument) {
       TypeElement adapterElement = TypeUtil.asTypeElement(adapter);
       if (adapterElement == null) {
         throw new IllegalArgumentException(
             String.format("No cannot find adapter %s", adapter.toString()));
       }
       AdapterLookup.ConverterMatch match;
-      if (prefix == ConversionDirection.TO) {
-        match = adapterLookup.findConverterByParamType(adapterElement, originalType);
+      if (isParam) {
+        match = strategy.findParamConverter(adapterLookup, adapterElement, originalType);
       } else {
-        match = adapterLookup.findConverterByReturnType(adapterElement, originalType);
+        match = strategy.findReturnConverter(adapterLookup, adapterElement, originalType);
       }
 
       if (match.matchType() == AdapterLookup.MatchType.NONE_EXACT_REQUIRED) {
@@ -787,8 +876,65 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     }
   }
 
-  private enum ConversionDirection {
-    FROM,
-    TO;
+  private enum MappingStrategy {
+    CONCRETE {
+      @Override
+      AdapterLookup.ConverterMatch findReturnConverter(
+          AdapterLookup lookup, TypeElement adapterClass, TypeMirror type) {
+        return lookup.findConverterByReturnType(adapterClass, type);
+      }
+
+      @Override
+      AdapterLookup.ConverterMatch findParamConverter(
+          AdapterLookup lookup, TypeElement adapterClass, TypeMirror type) {
+        return lookup.findConverterByParamType(adapterClass, type);
+      }
+
+      @Override
+      TypeMirror getParamCastType(TypeMirror parameterType, TypeMirror nativeType) {
+        return parameterType;
+      }
+
+      @Override
+      TypeMirror getReturnCastType(
+          TypeMirror originalMethodReturnType, TypeMirror adapterReturnType) {
+        return adapterReturnType;
+      }
+    },
+    ABSTRACT {
+      @Override
+      AdapterLookup.ConverterMatch findReturnConverter(
+          AdapterLookup lookup, TypeElement adapterClass, TypeMirror type) {
+        return lookup.findConverterByParamType(adapterClass, type);
+      }
+
+      @Override
+      AdapterLookup.ConverterMatch findParamConverter(
+          AdapterLookup lookup, TypeElement adapterClass, TypeMirror type) {
+        return lookup.findConverterByReturnType(adapterClass, type);
+      }
+
+      @Override
+      TypeMirror getParamCastType(TypeMirror parameterType, TypeMirror nativeType) {
+        return nativeType;
+      }
+
+      @Override
+      TypeMirror getReturnCastType(
+          TypeMirror originalMethodReturnType, TypeMirror adapterReturnType) {
+        return originalMethodReturnType;
+      }
+    };
+
+    abstract AdapterLookup.ConverterMatch findReturnConverter(
+        AdapterLookup lookup, TypeElement adapterClass, TypeMirror type);
+
+    abstract AdapterLookup.ConverterMatch findParamConverter(
+        AdapterLookup lookup, TypeElement adapterClass, TypeMirror type);
+
+    abstract TypeMirror getParamCastType(TypeMirror parameterType, TypeMirror nativeType);
+
+    abstract TypeMirror getReturnCastType(
+        TypeMirror originalMethodReturnType, TypeMirror adapterReturnType);
   }
 }
