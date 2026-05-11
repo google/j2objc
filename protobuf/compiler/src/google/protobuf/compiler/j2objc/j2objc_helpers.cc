@@ -84,10 +84,10 @@ const std::set<absl::string_view> kKeywords = {
     "namespace", "new",         "not",       "operator",
     "or",        "private",     "protected", "public",
     "release",   "return",      "signed",    "specialCalendars",
-    "static",    "struct",      "switch",    "template",
-    "text",      "this",        "throw",     "try",
-    "union",     "unsigned",    "version",   "virtual",
-    "void",      "volatile",    "while",
+    "shared",    "static",      "struct",    "switch",
+    "template",  "text",      "this",        "throw",
+    "try",       "union",     "unsigned",    "version",
+    "virtual",   "void",      "volatile",    "while",
 };
 
 
