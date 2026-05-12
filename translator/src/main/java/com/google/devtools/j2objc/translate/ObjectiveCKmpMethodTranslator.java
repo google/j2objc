@@ -652,12 +652,16 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       List<VariableElement> adapterParameters = new ArrayList<>();
       for (VariableElement parameter : originalMethodParameters) {
         TypeMirror parameterType = parameter.asType();
-        if (!isTypeSupported(parameterType)) {
+        // If the type is not supported (a.k.a mapped to a native type), but is an interface or
+        // nullable, we still go through the computation of the type as we will be adding more
+        // information than just the type name (id brackets and nullability marker).
+        if (!isTypeSupported(parameterType)
+            && !isNullable(parameterType)
+            && !TypeUtil.isInterface(parameterType)) {
           adaptingArguments.add(new SimpleName(parameter));
           adapterParameters.add(parameter);
           continue;
         }
-
         NativeType nativeType = calculateNativeType(parameterType, originalMethodExecutable);
         adapterParameters.add(
             GeneratedVariableElement.newParameter(
@@ -787,17 +791,19 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     return new NativeType(builder.toString(), null, null, referencedTypes);
   }
 
-  private String toNativeType(
+  private PrintableNativeType toNativeType(
       TypeMirror typeMirror, ExecutableElement methodExecutable, List<TypeMirror> referencedTypes) {
     String fullyQualifiedNameJavaName = TypeUtil.getQualifiedName(typeMirror);
+    boolean isNullable = isNullable(typeMirror);
     String nativeType = JAVA_TO_NATIVE_TYPE_MAP.get(fullyQualifiedNameJavaName);
     if (nativeType != null) {
-      return nativeType;
+      return new PrintableNativeType(nativeType, false, isNullable);
     }
     TypeElement typeElement = TypeUtil.asTypeElement(typeMirror);
     if (typeElement != null) {
       referencedTypes.add(typeMirror);
-      return nameTable.getFullName(typeElement);
+      return new PrintableNativeType(
+          nameTable.getFullName(typeElement), TypeUtil.isInterface(typeMirror), isNullable);
     }
     throw new IllegalArgumentException(
         "Unsupported type: " + fullyQualifiedNameJavaName + " in method: " + methodExecutable);
@@ -806,6 +812,18 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
   private boolean isTypeSupported(TypeMirror typeMirror) {
     return supportedConversionTypes.contains(
         TypeUtil.getQualifiedName(typeUtil.erasure(typeMirror)));
+  }
+
+  private boolean isNullable(TypeMirror typeMirror) {
+    return typeMirror.getAnnotationMirrors().stream()
+        .anyMatch(
+            annotation ->
+                annotation
+                    .getAnnotationType()
+                    .asElement()
+                    .getSimpleName()
+                    .toString()
+                    .contains("Nullable"));
   }
 
   /**
@@ -820,6 +838,8 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
    *   <li>{@code List<String>} becomes {@code NSArray<NSString *> *}
    *   <li>{@code Map<Integer, String>} becomes {@code NSDictionary<NSNumber *, NSString *> *}
    *   <li>{@code Set<List<String>>} becomes {@code NSSet<NSArray<NSString *> *> *}
+   *   <li>{@code JavaInterface} becomes {@code id<JavaInterface>}
+   *   <li>{@code List<JavaInterface>} becomes {@code NSArray<id<JavaInterface>> *}
    * </ul>
    */
   private class NativeTypeVisitor extends SimpleTypeVisitor9<Void, StringBuilder> {
@@ -835,13 +855,24 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
 
     @Override
     public Void visitDeclared(DeclaredType type, StringBuilder builder) {
-      builder.append(toNativeType(type, methodExecutable, referencedTypes));
+      PrintableNativeType nativeType = toNativeType(type, methodExecutable, referencedTypes);
+      if (nativeType.isUntranslatedInterface) {
+        builder.append("id<");
+      }
+      builder.append(nativeType.nativeTypeName);
       List<? extends TypeMirror> typeArguments = type.getTypeArguments();
       if (options.asObjCGenericDecl() && !typeArguments.isEmpty()) {
         String typeArgsString = buildTypeArgumentString(typeArguments);
         builder.append("<").append(typeArgsString).append(">");
       }
-      builder.append(" *");
+      if (nativeType.isUntranslatedInterface) {
+        builder.append(">");
+      } else {
+        builder.append(" *");
+      }
+      if (nativeType.nullable) {
+        builder.append(" _Nullable");
+      }
       return null;
     }
 
@@ -937,4 +968,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     abstract TypeMirror getReturnCastType(
         TypeMirror originalMethodReturnType, TypeMirror adapterReturnType);
   }
+
+  private record PrintableNativeType(
+      String nativeTypeName, boolean isUntranslatedInterface, boolean nullable) {}
 }
