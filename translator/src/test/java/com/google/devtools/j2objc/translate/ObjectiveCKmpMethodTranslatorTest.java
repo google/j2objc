@@ -1595,4 +1595,82 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         assertThrows(Throwable.class, () -> translateSourceFile("FailList", "FailList.m"));
     assertTrue(e.getMessage().contains("Exact converter required for mapped type"));
   }
+
+  public void testInterfaceTypes() throws IOException {
+    addSourceFile(
+        """
+        public interface TestInterface {
+        }
+        """,
+        "TestInterface.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.Set;
+        import java.util.List;
+        public class InterfaceUsage {
+          @ObjectiveCKmpMethod(selector="getInterface", adapter=Adapter.class)
+          public TestInterface getInterface() {
+            return null;
+          }
+
+          @ObjectiveCKmpMethod(selector="setInterface:", adapter=Adapter.class)
+          public void setInterface(TestInterface value) {
+            return;
+          }
+        }
+        """,
+        "InterfaceUsage.java");
+
+    String header = translateSourceFile("InterfaceUsage", "InterfaceUsage.h");
+    assertInTranslation(
+        header,
+        """
+        - (id<TestInterface>)getInterface;
+        """);
+    assertInTranslation(
+        header,
+        """
+        - (void)setInterface:(id<TestInterface>)value;
+        """);
+  }
+
+  public void testListOfInterface() throws IOException {
+    addSourceFile(
+        """
+        public interface TestInterface {
+        }
+        """,
+        "TestInterface.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.Set;
+        import java.util.List;
+        public class ListOfInterface {
+          @ObjectiveCKmpMethod(selector="getListOfInterface", adapter=Adapter.class)
+          public List<TestInterface> getListOfInterface() {
+            return null;
+          }
+
+          @ObjectiveCKmpMethod(selector="setListOfInterface:", adapter=Adapter.class)
+          public void setListOfInterface(List<TestInterface> list) {
+            return;
+          }
+        }
+        """,
+        "ListOfInterface.java");
+
+    String header = translateSourceFile("ListOfInterface", "ListOfInterface.h");
+    assertInTranslation(
+        header,
+        """
+        - (NSArray<id<TestInterface>> *)getListOfInterface;
+        """);
+    assertInTranslation(
+        header,
+        """
+        - (void)setListOfInterface:(NSArray<id<TestInterface>> *)list;
+        """);
+  }
 }
