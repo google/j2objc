@@ -42,7 +42,8 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """,
         "com/google/common/collect/ImmutableList.java");
     addSourceFile("public class Foo {}", "Foo.java");
-    addSourceFile("public class Bar {}", "Bar.java");
+    addSourceFile("public class Bar implements Baz {}", "Bar.java");
+    addSourceFile("public interface Baz {}", "Baz.java");
     addSourceFile(
         """
         import java.util.List;
@@ -1599,23 +1600,17 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
   public void testInterfaceTypes() throws IOException {
     addSourceFile(
         """
-        public interface TestInterface {
-        }
-        """,
-        "TestInterface.java");
-    addSourceFile(
-        """
         import com.google.j2objc.annotations.ObjectiveCKmpMethod;
         import java.util.Set;
         import java.util.List;
         public class InterfaceUsage {
           @ObjectiveCKmpMethod(selector="getInterface", adapter=Adapter.class)
-          public TestInterface getInterface() {
+          public Baz getInterface() {
             return null;
           }
 
           @ObjectiveCKmpMethod(selector="setInterface:", adapter=Adapter.class)
-          public void setInterface(TestInterface value) {
+          public void setInterface(Baz value) {
             return;
           }
         }
@@ -1626,35 +1621,28 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
     assertInTranslation(
         header,
         """
-        - (id<TestInterface>)getInterface;
+        - (id<Baz>)getInterface;
         """);
     assertInTranslation(
         header,
         """
-        - (void)setInterface:(id<TestInterface>)value;
+        - (void)setInterface:(id<Baz>)value;
         """);
   }
 
   public void testListOfInterface() throws IOException {
     addSourceFile(
         """
-        public interface TestInterface {
-        }
-        """,
-        "TestInterface.java");
-    addSourceFile(
-        """
         import com.google.j2objc.annotations.ObjectiveCKmpMethod;
-        import java.util.Set;
         import java.util.List;
         public class ListOfInterface {
           @ObjectiveCKmpMethod(selector="getListOfInterface", adapter=Adapter.class)
-          public List<TestInterface> getListOfInterface() {
+          public List<Baz> getListOfInterface() {
             return null;
           }
 
           @ObjectiveCKmpMethod(selector="setListOfInterface:", adapter=Adapter.class)
-          public void setListOfInterface(List<TestInterface> list) {
+          public void setListOfInterface(List<Baz> list) {
             return;
           }
         }
@@ -1665,12 +1653,143 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
     assertInTranslation(
         header,
         """
-        - (NSArray<id<TestInterface>> *)getListOfInterface;
+        - (NSArray<id<Baz>> *)getListOfInterface;
         """);
     assertInTranslation(
         header,
         """
-        - (void)setListOfInterface:(NSArray<id<TestInterface>> *)list;
+        - (void)setListOfInterface:(NSArray<id<Baz>> *)list;
+        """);
+  }
+
+  public void testNullableTypes() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+        import java.util.Map;
+        import com.google.common.collect.ImmutableList;
+        import com.google.common.collect.ImmutableMap;
+        import org.jspecify.annotations.Nullable;
+
+        public class NullableTypes {
+          @ObjectiveCKmpMethod(selector="getNullableInterface", adapter=Adapter.class)
+          public @Nullable Baz getNullableInterface() {
+            return null;
+          }
+
+          @ObjectiveCKmpMethod(selector="getNullableClass", adapter=Adapter.class)
+          public @Nullable Bar getNullableClass() {
+            return null;
+          }
+
+          @ObjectiveCKmpMethod(selector="getListOfNullableInterface", adapter=Adapter.class)
+          public List<@Nullable Baz> getListOfNullableInterface() {
+            return ImmutableList.of();
+          }
+
+          @ObjectiveCKmpMethod(selector="getListOfNullableClass", adapter=Adapter.class)
+          public List<@Nullable Bar> getListOfNullableClass() {
+            return ImmutableList.of();
+          }
+
+          @ObjectiveCKmpMethod(selector="getNullableListOfInterface", adapter=Adapter.class)
+          public @Nullable List<Baz> getNullableListOfInterface() {
+            return null;
+          }
+
+          @ObjectiveCKmpMethod(selector="getNullableListOfClass", adapter=Adapter.class)
+          public @Nullable List<Bar> getNullableListOfClass() {
+            return null;
+          }
+
+          @ObjectiveCKmpMethod(selector="getMapOfNullableInterface", adapter=Adapter.class)
+          public Map<String, @Nullable Baz> getMapOfNullableInterface() {
+            return ImmutableMap.of();
+          }
+
+          @ObjectiveCKmpMethod(selector="getMapOfNullableClass", adapter=Adapter.class)
+          public Map<String, @Nullable Bar> getMapOfNullableClass() {
+            return ImmutableMap.of();
+          }
+
+          @ObjectiveCKmpMethod(selector="getNullableMapOfInterface", adapter=Adapter.class)
+          public @Nullable Map<String, Baz> getNullableMapOfInterface() {
+            return null;
+          }
+
+          @ObjectiveCKmpMethod(selector="getNullableMapOfClass", adapter=Adapter.class)
+          public @Nullable Map<String, Bar> getNullableMapOfClass() {
+            return null;
+          }
+
+          @ObjectiveCKmpMethod(selector="setWithNullableBar:withNullableBaz:withNullableList:withNullableMap:", adapter=Adapter.class)
+          public @Nullable Foo set(@Nullable Bar bar, @Nullable Baz baz, @Nullable List<@Nullable Bar> list,
+              @Nullable Map<String, @Nullable Baz> map) {
+            return null;
+          }
+        }
+        """,
+        "NullableTypes.java");
+
+    String header = translateSourceFile("NullableTypes", "NullableTypes.h");
+    assertInTranslation(
+        header,
+        """
+        - (id<Baz> _Nullable)getNullableInterface;
+        """);
+    assertInTranslation(
+        header,
+        """
+        - (Bar * _Nullable)getNullableClass;
+        """);
+    assertInTranslation(
+        header,
+        """
+        - (NSArray<id<Baz> _Nullable> *)getListOfNullableInterface;
+        """);
+    assertInTranslation(
+        header,
+        """
+        - (NSArray<Bar * _Nullable> *)getListOfNullableClass;
+        """);
+    assertInTranslation(
+        header,
+        """
+        - (NSArray<id<Baz>> * _Nullable)getNullableListOfInterface;
+        """);
+    assertInTranslation(
+        header,
+        """
+        - (NSArray<Bar *> * _Nullable)getNullableListOfClass;
+        """);
+    assertInTranslation(
+        header,
+        """
+        - (NSDictionary<NSString *, id<Baz> _Nullable> *)getMapOfNullableInterface;
+        """);
+    assertInTranslation(
+        header,
+        """
+        - (NSDictionary<NSString *, Bar * _Nullable> *)getMapOfNullableClass;
+        """);
+    assertInTranslation(
+        header,
+        """
+        - (NSDictionary<NSString *, id<Baz>> * _Nullable)getNullableMapOfInterface;
+        """);
+    assertInTranslation(
+        header,
+        """
+        - (NSDictionary<NSString *, Bar *> * _Nullable)getNullableMapOfClass;
+        """);
+    assertInTranslation(
+        header,
+        """
+        - (Foo * _Nullable)setWithNullableBar:(Bar * _Nullable)bar
+                              withNullableBaz:(id<Baz> _Nullable)baz
+                             withNullableList:(NSArray<Bar * _Nullable> * _Nullable)list
+                              withNullableMap:(NSDictionary<NSString *, id<Baz> _Nullable> * _Nullable)map;
         """);
   }
 }
