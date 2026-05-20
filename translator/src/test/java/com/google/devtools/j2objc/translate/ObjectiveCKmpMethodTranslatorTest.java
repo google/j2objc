@@ -926,6 +926,75 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """);
   }
 
+  public void testInterfaceDefaultMethod() throws IOException {
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ImmutableListAdapter {
+          public static native Object fromImmutableList(ImmutableList<String> list) /*-[ return nil; ]-*/;
+          public static native ImmutableList<String> toImmutableList(Object list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "ImmutableListAdapter.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public interface InterfaceWithDefault {
+          @ObjectiveCKmpMethod(selector="getItemsAsNsArray", adapter=ImmutableListAdapter.class)
+          default ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "InterfaceWithDefault.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ConcreteClassOverrides implements InterfaceWithDefault {
+          @Override
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "ConcreteClassOverrides.java");
+    addSourceFile(
+        """
+        public class ConcreteClassInherits implements InterfaceWithDefault {}
+        """,
+        "ConcreteClassInherits.java");
+
+    // Translate ConcreteClassOverrides and verify it generates getItems adapter
+    String overridesHeader =
+        translateSourceFile("ConcreteClassOverrides", "ConcreteClassOverrides.h");
+    assertInTranslation(overridesHeader, "- (NSArray<NSString *> *)getItemsAsNsArray;");
+    String overridesImpl =
+        translateSourceFile("ConcreteClassOverrides", "ConcreteClassOverrides.m");
+    assertInTranslation(
+        overridesImpl,
+        """
+        - (NSArray<NSString *> *)getItemsAsNsArray {
+          return (NSArray<NSString *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:[self getItems]];
+        }
+        """);
+
+    // Translate ConcreteClassInherits and verify it generates getItems adapter
+    String inheritsHeader = translateSourceFile("ConcreteClassInherits", "ConcreteClassInherits.h");
+    assertInTranslation(inheritsHeader, "- (NSArray<NSString *> *)getItemsAsNsArray;");
+    String inheritsImpl = translateSourceFile("ConcreteClassInherits", "ConcreteClassInherits.m");
+    assertInTranslation(
+        inheritsImpl,
+        """
+        - (NSArray<NSString *> *)getItemsAsNsArray {
+          return (NSArray<NSString *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:[self getItems]];
+        }
+        """);
+  }
+
   public void testAbstractClass() throws IOException {
     addSourceFile(
         """
