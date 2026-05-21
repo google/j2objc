@@ -130,6 +130,20 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printTypeDocumentation();
     printNonnullAuditedRegion(AuditedRegion.BEGIN);
 
+    if (needsKotlinCompanionClass()) {
+      // Companion methods might refer to the class type and the companion property will
+      // refer to the companion type, so we need one forward declaration in any case.
+      printf("\n@class %s;\n", typeName);
+
+      printf("\n@protocol %sCompanion\n", typeName);
+      for (BodyDeclaration declaration : getInnerDeclarations()) {
+        if (declaration.getKind().equals(TreeNode.Kind.METHOD_DECLARATION)) {
+          printMethodDeclaration((MethodDeclaration) declaration, false, true);
+        }
+      }
+      println("\n@end\n");
+    }
+
     printInterfaceType();
     printImplementedProtocols();
     if (!typeElement.getKind().isInterface()) {
@@ -140,6 +154,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (!typeElement.getKind().isInterface()) {
       printProperties();
       printStaticAccessors();
+      if (needsKotlinCompanionClass()) {
+        printf("\n#pragma clang diagnostic push\n");
+        printf("#pragma clang diagnostic ignored \"-Wincompatible-property-type\"\n");
+        printf("@property (readonly, class) id<%sCompanion> companion;\n", typeName);
+        printf("#pragma clang diagnostic pop\n");
+      }
     }
     printInnerDeclarations();
     println("\n@end");
@@ -320,7 +340,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   protected void printStaticInterfaceMethods() {
     for (BodyDeclaration declaration : getInnerDeclarations()) {
       if (declaration.getKind().equals(TreeNode.Kind.METHOD_DECLARATION)) {
-        printMethodDeclaration((MethodDeclaration) declaration, true);
+        printMethodDeclaration((MethodDeclaration) declaration, true, false);
       }
     }
   }
@@ -726,7 +746,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
    * @param m The method.
    * @param isCompanionClass If true, emit only if m is a static interface method.
    */
-  private void printMethodDeclaration(MethodDeclaration m, boolean isCompanionClass) {
+  private void printMethodDeclaration(
+      MethodDeclaration m, boolean isCompanionClass, boolean isKotlinCompanion) {
     ExecutableElement methodElement = m.getExecutableElement();
     TypeElement typeElement = ElementUtil.getDeclaringClass(methodElement);
     boolean allowGenerics = !typeUtil.isProtoClass(typeElement.asType());
@@ -736,6 +757,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       // in @protocol) or must both be true (i.e. this prints a static method decl in the
       // companion class' @interface).
       if (isCompanionClass != ElementUtil.isStatic(methodElement)) {
+        return;
+      }
+    } else if (isKotlinCompanion) {
+      if (!ElementUtil.isStatic(methodElement)) {
         return;
       }
     }
@@ -749,7 +774,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
 
     // Method declarations allow generics.
-    String methodSignature = getMethodSignature(m, allowGenerics);
+    String methodSignature = getMethodSignature(m, allowGenerics, isKotlinCompanion);
 
     // In order to properly map the method name from the entire signature, we must isolate it from
     // associated type and parameter declarations.  The method name is guaranteed to be between the
@@ -798,7 +823,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   @Override
   protected void printMethodDeclaration(MethodDeclaration m) {
-    printMethodDeclaration(m, false);
+    printMethodDeclaration(m, false, false);
   }
 
   private boolean needsDeprecatedAttribute(List<Annotation> annotations) {

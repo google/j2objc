@@ -37,6 +37,7 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationEnvironment;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
+import com.google.j2objc.annotations.GenerateObjCCompanion;
 import com.google.j2objc.annotations.ObjectiveCName;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
@@ -261,6 +262,23 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
         Iterables.filter(ElementUtil.getMethods(typeElement), ElementUtil::isStatic));
   }
 
+  protected boolean needsKotlinCompanionClass() {
+    if (!ElementUtil.hasAnnotation(typeElement, GenerateObjCCompanion.class)) {
+      return false;
+    }
+    if (typeNode.hasPrivateDeclaration()) {
+      throw new IllegalStateException("@GenerateObjCCompanion not supported for private classes.");
+    }
+    if (typeElement.getKind().isInterface()) {
+      throw new IllegalStateException("@GenerateObjCCompanion not supported for interfaces.");
+    }
+    if (!hasStaticMethods()) {
+      throw new IllegalStateException(
+          "@GenerateObjCCompanion not supported for types without static methods.");
+    }
+    return true;
+  }
+
   protected boolean needsPublicCompanionClass() {
     if (typeNode.hasPrivateDeclaration()) {
       return false;
@@ -307,10 +325,11 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   /** Create an Objective-C method signature string. */
-  protected String getMethodSignature(MethodDeclaration m, boolean generatorAllowsGenerics) {
+  protected String getMethodSignature(
+      MethodDeclaration m, boolean generatorAllowsGenerics, boolean staticToInstance) {
     StringBuilder sb = new StringBuilder();
     ExecutableElement element = m.getExecutableElement();
-    char prefix = Modifier.isStatic(m.getModifiers()) ? '+' : '-';
+    char prefix = Modifier.isStatic(m.getModifiers()) && !staticToInstance ? '+' : '-';
     String returnType = getReturnType(m, generatorAllowsGenerics);
     String selector = nameTable.getMethodSelector(element);
 

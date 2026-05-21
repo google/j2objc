@@ -117,6 +117,10 @@ public class TypeImplementationGenerator extends TypeGenerator {
       syncLineNumbers(typeNode.getName()); // avoid doc-comment
       printf("@implementation %s\n", typeName);
       printProperties();
+      if (!typeElement.getKind().isInterface() && needsKotlinCompanionClass()) {
+        printf("\n+ (id<%sCompanion>)companion {", typeName);
+        printf("\n  return (id<%sCompanion>)self;\n}\n", typeName);
+      }
       printStaticAccessors();
       printInnerDeclarations();
       printInitializeMethod();
@@ -367,7 +371,9 @@ public class TypeImplementationGenerator extends TypeGenerator {
     syncLineNumbers(m);  // avoid doc-comment
     // Implementations should not contain generics as this allows us to avoid type errors
     // when translating to ObjC's more limited system of generics.
-    print(getMethodSignature(m, false) + " ");
+    print(
+        getMethodSignature(m, /* generatorAllowsGenerics= */ false, /* staticToInstance= */ false)
+            + " ");
     print(reindent(generateStatement(m.getBody())) + "\n");
     if (isDesignatedInitializer) {
       println("J2OBJC_IGNORE_DESIGNATED_END");
