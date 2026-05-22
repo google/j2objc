@@ -46,7 +46,8 @@ public final class IosMockMaker implements MockMaker {
   private static int nextClassNameIndex = 0;
 
   @Override
-  public <T> T createMock(MockCreationSettings<T> settings, MockHandler<T> handler) {
+  @SuppressWarnings("unchecked")
+  public <T> T createMock(MockCreationSettings<T> settings, MockHandler handler) {
     Class<T> typeToMock = settings.getTypeToMock();
     @SuppressWarnings("rawtypes")
     Set<Class<?>> interfacesSet = settings.getExtraInterfaces();
@@ -85,7 +86,8 @@ public final class IosMockMaker implements MockMaker {
   }
 
   @Override
-  public void resetMock(Object mock, MockHandler<?> newHandler, MockCreationSettings<?> settings) {
+  @SuppressWarnings("rawtypes")
+  public void resetMock(Object mock, MockHandler newHandler, MockCreationSettings settings) {
     InvocationHandlerAdapter adapter = getInvocationHandlerAdapter(mock);
     adapter.setHandler(newHandler);
   }
