@@ -58,8 +58,10 @@ void CGPRepeatedFieldReserve(CGPRepeatedField *field, uint32_t new_size, size_t 
   }
 
   uint32_t newTotalSize = MAX(MIN_REPEATED_FIELD_SIZE, MAX(data->total_size * 2, new_size));
+  uint32_t oldTotalSize = data->total_size;
   data->total_size = newTotalSize;
   data->buffer = realloc(data->buffer, newTotalSize * elemSize);
+  bzero(data->buffer + elemSize * oldTotalSize, elemSize * (newTotalSize - oldTotalSize));
 }
 
 void CGPRepeatedFieldCopyData(CGPRepeatedField *field, CGPFieldJavaType type) {
@@ -82,8 +84,8 @@ void CGPRepeatedFieldCopyData(CGPRepeatedField *field, CGPFieldJavaType type) {
   }
 }
 
-void CGPRepeatedFieldAppendOther(
-    CGPRepeatedField *field, CGPRepeatedField *other, CGPFieldJavaType type) {
+void CGPRepeatedFieldAppendOther(CGPRepeatedField *field, CGPRepeatedField *other,
+                                 CGPFieldJavaType type) {
   uint32_t otherSize = CGPRepeatedFieldSize(other);
   if (otherSize == 0) {
     return;
@@ -130,9 +132,9 @@ id CGPRepeatedFieldGet(CGPRepeatedField *field, jint index, CGPFieldDescriptor *
   CGPRepeatedFieldCheckBounds(field, index);
 
 #define REPEATED_GET_CASE(NAME) \
-  return CGPToReflectionType##NAME(((TYPE_##NAME *)field->data->buffer)[index], descriptor); \
+  return CGPToReflectionType##NAME(((TYPE_##NAME *)field->data->buffer)[index]);
 
-  SWITCH_TYPES_WITH_ENUM(CGPFieldGetJavaType(descriptor), REPEATED_GET_CASE)
+  SWITCH_TYPES(CGPFieldGetJavaType(descriptor), REPEATED_GET_CASE)
 
 #undef REPEATED_GET_CASE
 }
@@ -143,9 +145,7 @@ void CGPRepeatedMessageFieldRemove(CGPRepeatedField *field, jint index) {
   id *msgBuffer = (id *)field->data->buffer;
   AUTORELEASE(msgBuffer[index]);
   if (count > (uint32_t)index + 1) {
-    memmove(&(msgBuffer[index]),
-            &(msgBuffer[index + 1]),
-            sizeof(id) * (count - (index + 1)));
+    memmove(&(msgBuffer[index]), &(msgBuffer[index + 1]), sizeof(id) * (count - (index + 1)));
   }
   field->data->size -= 1;
 }
@@ -153,26 +153,26 @@ void CGPRepeatedMessageFieldRemove(CGPRepeatedField *field, jint index) {
 void CGPRepeatedFieldSet(CGPRepeatedField *field, jint index, id value, CGPFieldJavaType type) {
   CGPRepeatedFieldCheckBounds(field, index);
 
-#define REPEATED_SET_CASE(NAME) \
-  { \
+#define REPEATED_SET_CASE(NAME)                                      \
+  {                                                                  \
     TYPE_##NAME *ptr = &((TYPE_##NAME *)field->data->buffer)[index]; \
-    TYPE_ASSIGN_##NAME(*ptr, CGPFromReflectionType##NAME(value)); \
-    break; \
+    TYPE_ASSIGN_##NAME(ptr, CGPFromReflectionType##NAME(value));     \
   }
 
-  SWITCH_TYPES_WITH_ENUM(type, REPEATED_SET_CASE)
+  SWITCH_TYPES(type, REPEATED_SET_CASE)
 
 #undef REPEATED_SET_CASE
 }
 
 // Make sure to reserve enough space in the buffer BEFORE calling this.
 static void CGPRepeatedFieldAddUnsafe(CGPRepeatedFieldData *data, id value, CGPFieldJavaType type) {
-#define REPEATED_ADD_CASE(NAME) \
-  ((TYPE_##NAME *)data->buffer)[data->size++] = \
-      TYPE_RETAIN_##NAME(CGPFromReflectionType##NAME(value)); \
-  break;
+#define REPEATED_ADD_CASE(NAME)                                      \
+  {                                                                  \
+    TYPE_##NAME *ptr = &((TYPE_##NAME *)data->buffer)[data->size++]; \
+    TYPE_ASSIGN_##NAME(ptr, CGPFromReflectionType##NAME(value));     \
+  }
 
-  SWITCH_TYPES_WITH_ENUM(type, REPEATED_ADD_CASE)
+  SWITCH_TYPES(type, REPEATED_ADD_CASE)
 
 #undef REPEATED_ADD_CASE
 }
@@ -185,8 +185,8 @@ void CGPRepeatedFieldAdd(CGPRepeatedField *field, id value, CGPFieldJavaType typ
   CGPRepeatedFieldAddUnsafe(field->data, value, type);
 }
 
-void CGPRepeatedFieldAssignFromList(
-    CGPRepeatedField *field, id<JavaUtilList> list, CGPFieldJavaType type) {
+void CGPRepeatedFieldAssignFromList(CGPRepeatedField *field, id<JavaUtilList> list,
+                                    CGPFieldJavaType type) {
   CGPRepeatedFieldClear(field, type);
 
   CGPRepeatedFieldReserve(field, [list size], CGPGetTypeSize(type));
@@ -203,13 +203,12 @@ id<JavaUtilList> CGPRepeatedFieldCopyList(CGPRepeatedField *field, CGPFieldDescr
     return newList;
   }
 
-#define REPEATED_COPY_ELEM_CASE(NAME) \
-  for (uint32_t i = 0; i < data->size; i++) { \
-    [newList addWithId:CGPToReflectionType##NAME(((TYPE_##NAME *)data->buffer)[i], descriptor)]; \
-  } \
-  break;
+#define REPEATED_COPY_ELEM_CASE(NAME)                                                \
+  for (uint32_t i = 0; i < data->size; i++) {                                        \
+    [newList addWithId:CGPToReflectionType##NAME(((TYPE_##NAME *)data->buffer)[i])]; \
+  }
 
-  SWITCH_TYPES_WITH_ENUM(CGPFieldGetJavaType(descriptor), REPEATED_COPY_ELEM_CASE)
+  SWITCH_TYPES(CGPFieldGetJavaType(descriptor), REPEATED_COPY_ELEM_CASE)
 
 #undef REPEATED_COPY_ELEM_CASE
 
@@ -254,7 +253,7 @@ void CGPRepeatedFieldOutOfBounds(jint idx, uint32_t size) {
 @end
 
 // We need a subclass for String fields which must implement the ProtocolStringList interface.
-@interface CGPRepeatedStringFieldList : CGPRepeatedFieldList < ComGoogleProtobufProtocolStringList >
+@interface CGPRepeatedStringFieldList : CGPRepeatedFieldList <ComGoogleProtobufProtocolStringList>
 @end
 
 @interface CGPStringAsByteStringList : JavaUtilAbstractList {
@@ -265,8 +264,9 @@ void CGPRepeatedFieldOutOfBounds(jint idx, uint32_t size) {
 
 id<JavaUtilList> CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaType type) {
   CGPRepeatedFieldList *list =
-      type == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING ?
-      [[CGPRepeatedStringFieldList alloc] init] : [[CGPRepeatedFieldList alloc] init];
+      type == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING
+          ? [[CGPRepeatedStringFieldList alloc] init]
+          : [[CGPRepeatedFieldList alloc] init];
   CGPRepeatedFieldData *data = field->data;
   if (data != NULL) {
     list->field_.data = data;
@@ -293,9 +293,9 @@ NSArray *CGPNewRepeatedFieldArray(CGPRepeatedField *field, CGPFieldJavaType type
   CGPRepeatedFieldCheckBounds(&field_, index);
 
 #define REPEATED_LIST_GET_CASE(NAME) \
-  return CGPBoxedValue##NAME(((TYPE_##NAME *)field_.data->buffer)[index]); \
+  return CGPBoxedValue##NAME(((TYPE_##NAME *)field_.data->buffer)[index]);
 
-  SWITCH_TYPES_NO_ENUM(type_, REPEATED_LIST_GET_CASE)
+  SWITCH_TYPES(type_, REPEATED_LIST_GET_CASE)
 
 #undef REPEATED_LIST_GET_CASE
 }

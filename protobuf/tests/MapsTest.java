@@ -13,6 +13,7 @@
  */
 
 import com.google.j2objc.annotations.AutoreleasePool;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
@@ -23,13 +24,25 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import protos.FakeScalarBytesMap;
+import protos.FakeScalarBytesMapFieldEntry;
+import protos.FakeScalarEnumMap;
+import protos.FakeScalarEnumMapFieldEntry;
+import protos.FakeScalarMsgMap;
+import protos.FakeScalarMsgMapFieldEntry;
+import protos.FakeStringStringMap;
+import protos.FakeStringStringMapFieldEntry;
 import protos.MapMsg;
 import protos.MapMsgOrBuilder;
 import protos.MapValue;
+import protos.RandomMessage;
+import protos.RealScalarBytesMap;
+import protos.RealScalarEnumMap;
+import protos.RealScalarMsgMap;
+import protos.RealStringBytesMap;
+import protos.RealStringStringMap;
 
-/**
- * Tests for correct serialization and deserialization of map fields.
- */
+/** Tests for correct serialization and deserialization of map fields. */
 public class MapsTest extends ProtobufTest {
 
   @AutoreleasePool
@@ -270,6 +283,119 @@ public class MapsTest extends ProtobufTest {
     assertFalse(msg1.equals(msg3));
     assertFalse(msg3.equals(msg2));
     assertEquals(msg1.hashCode(), msg2.hashCode());
+  }
+
+  public void testStringStringRepeatedFieldsToMapConversions() throws Exception {
+    // According to https://protobuf.dev/programming-guides/proto3/#backwards repeated fields are
+    // converted to maps by using the first field as the key and the second field as the value.
+    // This also verifies that we can parse maps with missing fields by using default values.
+    FakeStringStringMap fakeMap =
+        FakeStringStringMap.newBuilder()
+            .addMapField(FakeStringStringMapFieldEntry.newBuilder().setKey("duck").build())
+            .addMapField(FakeStringStringMapFieldEntry.newBuilder().setValue("quack").build())
+            .addMapField(
+                FakeStringStringMapFieldEntry.newBuilder().setKey("cat").setValue("meow").build())
+            .build();
+    byte[] bytes = fakeMap.toByteArray();
+    RealStringStringMap realMap = RealStringStringMap.parseFrom(bytes);
+    assertEquals("", realMap.getMapFieldOrThrow("duck"));
+    assertEquals("quack", realMap.getMapFieldOrThrow(""));
+    assertEquals("meow", realMap.getMapFieldOrThrow("cat"));
+  }
+
+  public void testScalarBytesRepeatedFieldsToMapConversions() throws Exception {
+    // According to https://protobuf.dev/programming-guides/proto3/#backwards repeated fields are
+    // converted to maps by using the first field as the key and the second field as the value.
+    // This also verifies that we can parse maps with missing fields by using default values.
+    FakeScalarBytesMap fakeScalarBytesMap =
+        FakeScalarBytesMap.newBuilder()
+            .addMapField(FakeScalarBytesMapFieldEntry.newBuilder().setKey(42).build())
+            .addMapField(
+                FakeScalarBytesMapFieldEntry.newBuilder().setValue(ByteString.EMPTY).build())
+            .build();
+    byte[] bytes = fakeScalarBytesMap.toByteArray();
+    RealScalarBytesMap realScalarBytesMap = RealScalarBytesMap.parseFrom(bytes);
+    assertEquals(ByteString.EMPTY, realScalarBytesMap.getMapFieldOrThrow(42));
+    assertEquals(ByteString.EMPTY, realScalarBytesMap.getMapFieldOrThrow(0));
+  }
+
+  public void testScalarMsgRepeatedFieldsToMapConversions() throws Exception {
+    // According to https://protobuf.dev/programming-guides/proto3/#backwards repeated fields are
+    // converted to maps by using the first field as the key and the second field as the value.
+    // This also verifies that we can parse maps with missing fields by using default values.
+    FakeScalarMsgMap fakeScalarMsgMap =
+        FakeScalarMsgMap.newBuilder()
+            .addMapField(FakeScalarMsgMapFieldEntry.newBuilder().setKey(777).build())
+            .addMapField(
+                FakeScalarMsgMapFieldEntry.newBuilder()
+                    .setValue(RandomMessage.getDefaultInstance())
+                    .build())
+            .build();
+    byte[] bytes = fakeScalarMsgMap.toByteArray();
+    RealScalarMsgMap realScalarMsgMap = RealScalarMsgMap.parseFrom(bytes);
+    assertEquals(RandomMessage.getDefaultInstance(), realScalarMsgMap.getMapFieldOrThrow(777));
+    assertEquals(RandomMessage.getDefaultInstance(), realScalarMsgMap.getMapFieldOrThrow(0));
+  }
+
+  public void testScalarEnumRepeatedFieldsToMapConversions() throws Exception {
+    // According to https://protobuf.dev/programming-guides/proto3/#backwards repeated fields are
+    // converted to maps by using the first field as the key and the second field as the value.
+    // This also verifies that we can parse maps with missing fields by using default values.
+    // Note that the default value for an enum is the first enum value.
+    FakeScalarEnumMap fakeScalarEnumMap =
+        FakeScalarEnumMap.newBuilder()
+            .addMapField(FakeScalarEnumMapFieldEntry.newBuilder().setKey(123).build())
+            .addMapField(
+                FakeScalarEnumMapFieldEntry.newBuilder()
+                    .setKey(456)
+                    .setValue(MapMsg.Color.YELLOW)
+                    .build())
+            .build();
+    byte[] bytes = fakeScalarEnumMap.toByteArray();
+    RealScalarEnumMap realScalarEnumMap = RealScalarEnumMap.parseFrom(bytes);
+    assertEquals(MapMsg.Color.GREEN, realScalarEnumMap.getMapFieldOrThrow(123));
+    assertEquals(MapMsg.Color.YELLOW, realScalarEnumMap.getMapFieldOrThrow(456));
+  }
+
+  public void testBadValueType() throws Exception {
+    // Verifies that maps fail to parse if the value type is not the expected type.
+    FakeScalarBytesMap fakeMap =
+        FakeScalarBytesMap.newBuilder()
+            .addMapField(
+                FakeScalarBytesMapFieldEntry.newBuilder()
+                    .setKey(7)
+                    .setValue(ByteString.copyFromUtf8("hello"))
+                    .build())
+            .build();
+    byte[] bytes = fakeMap.toByteArray();
+    try {
+      RealScalarMsgMap realMap = RealScalarMsgMap.parseFrom(bytes);
+      fail("Expected exception instead of map: " + realMap);
+    } catch (Exception e) {
+      // Expected.
+    }
+  }
+
+  // This test is disabled because the java runtime doesn't throw an exception when the key type is
+  // not the expected type. Instead, it has undefined behavior with regards to what map you actually
+  // get. The j2objc runtime throws an exception.
+  public void disabledTestBadKeyType() throws Exception {
+    // Verifies that maps fail to parse if the key type is not the expected type.
+    FakeScalarBytesMap fakeMap =
+        FakeScalarBytesMap.newBuilder()
+            .addMapField(
+                FakeScalarBytesMapFieldEntry.newBuilder()
+                    .setKey(7)
+                    .setValue(ByteString.copyFromUtf8("hello"))
+                    .build())
+            .build();
+    byte[] bytes = fakeMap.toByteArray();
+    try {
+      RealStringBytesMap realMap = RealStringBytesMap.parseFrom(bytes);
+      fail("Expected exception instead of map: " + realMap);
+    } catch (Exception e) {
+      // Expected.
+    }
   }
 
   public void testToString() throws Exception {
