@@ -438,39 +438,16 @@ public class NameTable {
     return sb.toString();
   }
 
-  private static String nameWithoutFirstParam(String name, String firstParam) {
-
-    // Change methods from `builderWithExpectedSizeWithInt` into `builderWithInt`
-    if (Ascii.toLowerCase(name).contains(Ascii.toLowerCase(firstParam))
-        && !name.startsWith(firstParam)) {
-      return name.replaceFirst(capitalize(firstParam), "").replaceFirst("With", "");
-    }
-
-    if (name.contains("With")) {
-      return name.substring(0, name.indexOf("With"));
-    }
-
-    return name;
-  }
-
   private String addSwiftParamNames(
       List<SingleVariableDeclaration> parameters, String name, char delim) {
     if (parameters.isEmpty()) {
       return name + "()";
     }
-    // get the name out of the map and
-    SingleVariableDeclaration firstParam = parameters.get(0);
-    String firstParamName = getVarBaseName(firstParam.getVariableElement(), true);
-
-    StringBuilder sb = new StringBuilder(nameWithoutFirstParam(name, firstParamName)).append("(");
+    StringBuilder sb = new StringBuilder(name).append("(");
     for (SingleVariableDeclaration param : parameters) {
       String paramName = getVarBaseName(param.getVariableElement(), true);
       // Sometimes they don't have real arguments names so we'll use underscore
-      if (paramName.contains("arg")
-          || paramName.equals("value")
-          || paramName.isEmpty()
-          || paramName.equals(name)
-          || paramName.equals(SELF_NAME)) {
+      if (paramName.isEmpty() || paramName.equals(SELF_NAME)) {
         sb.append("_").append(delim);
       } else {
         sb.append(paramName).append(delim);
