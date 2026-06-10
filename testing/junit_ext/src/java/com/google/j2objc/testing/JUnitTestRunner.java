@@ -261,9 +261,20 @@ public class JUnitTestRunner {
     return false;
   }
 
-  /** @return true if {@param cls} is {@link RunWith} annotated. */
+  /**
+   * @return true if {@param cls} is annotated with {@link RunWith} OR ends with "Test" and has at
+   *     least one method annotated with {@link org.junit.Test}.
+   */
   protected boolean isJUnit4TestClass(Class<?> cls) {
-    return cls.getAnnotation(RunWith.class) != null;
+    if (cls.getAnnotation(RunWith.class) != null) {
+      return true;
+    }
+    return cls.getSimpleName().endsWith("Test")
+        && Arrays.stream(cls.getMethods())
+            .anyMatch(
+                m ->
+                    Modifier.isPublic(m.getModifiers())
+                        && m.getAnnotation(org.junit.Test.class) != null);
   }
 
   /**
