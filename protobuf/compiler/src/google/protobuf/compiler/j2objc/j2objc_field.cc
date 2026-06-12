@@ -449,7 +449,7 @@ void RepeatedFieldGenerator::GenerateMessageOrBuilderProtocol(
         variables_,
         "@property (readonly, getter=_get$capitalized_name$Count)"
         " jint $camelcase_name$Count;\n"
-        "@property (readonly, getter=_get$capitalized_name$Array)"
+        "@property (nonnull, readonly, getter=_get$capitalized_name$Array)"
         " NSArray<$generic_type$> *$property_name$;\n"
         "- ($nonnull_type$)get$capitalized_name$Index:(int)index"
         " NS_SWIFT_NAME(get$capitalized_name$(_:));\n");
@@ -574,7 +574,7 @@ void MapFieldGenerator::GenerateMessageOrBuilderProtocol(
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
         variables_,
-        "@property (readonly, getter=_get$capitalized_name$Dict)"
+        "@property (nonnull, readonly, getter=_get$capitalized_name$Dict)"
         " NSDictionary<$key_generic_type$, $value_generic_type$>"
         " *$camelcase_name$;\n");
   }
