@@ -322,11 +322,11 @@ CGPMapFieldEntry *CGPMapFieldGetWithKey(
 
 void CGPMapFieldPut(
     CGPMapField *field, CGPValue key, CGPFieldJavaType keyType, CGPValue value,
-    CGPFieldJavaType valueType, bool retainedKeyAndValue) {
+    CGPFieldJavaType valueType) {
   BOOL keyTypeIsRetainable = CGPIsRetainedType(keyType);
   BOOL valueTypeIsRetainable = CGPIsRetainedType(valueType);
   // The value is always added to the map so make sure it's retained.
-  if (valueTypeIsRetainable && !retainedKeyAndValue) {
+  if (valueTypeIsRetainable) {
     RETAIN_(value.valueId);
   }
   uint32_t hash = Hash(key, keyType);
@@ -337,10 +337,6 @@ void CGPMapFieldPut(
     entry = GetFromHashArray(data, key, keyType, hash);
   }
   if (entry) {
-    // Existing entry so the key is not added to the map and must not be retained.
-    if (keyTypeIsRetainable && retainedKeyAndValue) {
-      [key.valueId autorelease];
-    }
     // Release the previous value.
     if (valueTypeIsRetainable) {
       [entry->value.valueId autorelease];
@@ -348,7 +344,7 @@ void CGPMapFieldPut(
     entry->value = value;
   } else {
     // Creating a new entry using the passed in key which must be retained.
-    if (keyTypeIsRetainable && !retainedKeyAndValue) {
+    if (keyTypeIsRetainable) {
       RETAIN_(key.valueId);
     }
     EnsureAdditionalHashMapCapacity(field, 1, keyType, valueType);
