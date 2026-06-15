@@ -25,6 +25,15 @@
 
 @implementation NSNumber (JavaNumber)
 
+- (id)copyWithZone:(NSZone *)zone {
+#if __has_feature(objc_arc)
+  return self;
+#else
+  // NSNumber is immutable, but under MRC copy returns a retained reference (+1).
+  return [self retain];
+#endif
+}
+
 + (const J2ObjcClassInfo *)__metadata {
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
