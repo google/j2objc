@@ -655,5 +655,13 @@ public final class Byte extends Number implements Comparable<Byte>
     - (void)getValue:(void *)buffer {
       *((char *) buffer) = value_;
     }
+
+    - (id)copyWithZone:(NSZone *)zone {
+#if __has_feature(objc_arc)
+      return self;
+#else
+      return [self retain];
+#endif
+    }
     ]-*/
 }
