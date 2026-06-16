@@ -123,7 +123,6 @@ const std::set<absl::string_view> kKeywords = {
     "self",
     "shared",
     "signed",
-    "specialCalendars",
     "static",
     "struct",
     "switch",
