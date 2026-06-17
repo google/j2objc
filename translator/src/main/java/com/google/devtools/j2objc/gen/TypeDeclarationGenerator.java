@@ -239,7 +239,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       // Use different types for transpiled Java ordinals (which expects ordinals to be int32_t) and
       // native code using the enum (where stricter ordinal types help clang warnings).
       printf(
-          "#if J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION\n"
+          "#if defined(J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION) &&"
+              + " J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION\n"
               + "#define %s int32_t\n"
               + "#else\n"
               + "#define %s %s\n"
