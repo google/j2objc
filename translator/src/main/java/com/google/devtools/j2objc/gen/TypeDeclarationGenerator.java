@@ -482,6 +482,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printProperties();
     printStaticInterfaceMethods();
     printStaticAccessors();
+    if (needsKotlinCompanionClass()) {
+      printf("\n#pragma clang diagnostic push\n");
+      printf("#pragma clang diagnostic ignored \"-Wincompatible-property-type\"\n");
+      printf("@property (readonly, class) id<%sCompanion> companion;\n", typeName);
+      printf("#pragma clang diagnostic pop\n");
+    }
     println("\n@end");
   }
 
@@ -758,15 +764,15 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     TypeElement typeElement = ElementUtil.getDeclaringClass(methodElement);
     boolean allowGenerics = !typeUtil.isProtoClass(typeElement.asType());
 
-    if (typeElement.getKind().isInterface()) {
+    if (isKotlinCompanion) {
+      if (!ElementUtil.isStatic(methodElement)) {
+        return;
+      }
+    } else if (typeElement.getKind().isInterface()) {
       // isCompanion and isStatic must be both false (i.e. this prints a non-static method decl
       // in @protocol) or must both be true (i.e. this prints a static method decl in the
       // companion class' @interface).
       if (isCompanionClass != ElementUtil.isStatic(methodElement)) {
-        return;
-      }
-    } else if (isKotlinCompanion) {
-      if (!ElementUtil.isStatic(methodElement)) {
         return;
       }
     }
