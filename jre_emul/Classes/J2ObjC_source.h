@@ -26,7 +26,6 @@
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
 #import "jni.h"
-#import "objc/runtime.h"
 
 // "I" is defined in complex.h, which results in errors if that file is also
 // included.
