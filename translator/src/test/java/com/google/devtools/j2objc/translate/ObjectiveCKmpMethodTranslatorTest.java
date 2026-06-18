@@ -1658,7 +1658,14 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         impl,
         """
         - (void)setBooleanSet:(NSSet<NSNumber *> *)set {
-          [self setBooleanSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set withJavaUtilFunctionFunction:TestSetOfBoolean_$Lambda$1_instance]];
+          [self setBooleanSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set withJavaUtilFunctionFunction:JreLoadStatic(TestSetOfBoolean_$Lambda$1, instance)]];
+        }
+        """);
+    assertInTranslation(
+        impl,
+        """
+        - (id)applyWithId:(id)elem {
+          return Adapter_toBooleanWithId_(elem);
         }
         """);
   }
@@ -1682,7 +1689,14 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         impl,
         """
         - (void)setBooleanSet:(NSSet<NSNumber *> *)set {
-          [self setBooleanSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set withJavaUtilFunctionFunction:TestSetLeaf_$Lambda$1_instance]];
+          [self setBooleanSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set withJavaUtilFunctionFunction:JreLoadStatic(TestSetLeaf_$Lambda$1, instance)]];
+        }
+        """);
+    assertInTranslation(
+        impl,
+        """
+        - (id)applyWithId:(id)elem {
+          return Adapter_toBooleanWithId_(elem);
         }
         """);
   }
@@ -1706,7 +1720,14 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         impl,
         """
         - (void)setBooleanList:(NSArray<NSNumber *> *)list {
-          [self setBooleanListWithJavaUtilList:(id<JavaUtilList>) [Adapter toJavaUtilListWithId:list withJavaUtilFunctionFunction:TestListParam_$Lambda$1_instance]];
+          [self setBooleanListWithJavaUtilList:(id<JavaUtilList>) [Adapter toJavaUtilListWithId:list withJavaUtilFunctionFunction:JreLoadStatic(TestListParam_$Lambda$1, instance)]];
+        }
+        """);
+    assertInTranslation(
+        impl,
+        """
+        - (id)applyWithId:(id)elem {
+          return Adapter_toBooleanWithId_(elem);
         }
         """);
   }
@@ -1731,7 +1752,14 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         impl,
         """
         - (void)setListSet:(NSSet<NSArray<NSString *> *> *)set {
-          [self setListSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set withJavaUtilFunctionFunction:TestSetOfList_$Lambda$1_instance]];
+          [self setListSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set withJavaUtilFunctionFunction:JreLoadStatic(TestSetOfList_$Lambda$1, instance)]];
+        }
+        """);
+    assertInTranslation(
+        impl,
+        """
+        - (id)applyWithId:(id)elem {
+          return (id<JavaUtilList>) Adapter_toJavaUtilListWithId_(elem);
         }
         """);
   }
@@ -1989,7 +2017,14 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """
         - (void)verifyList:(NSArray<NSArray<NSArray<Foo *> *> *> *)list {
           [self verifyListWithJavaUtilList:(id<JavaUtilList>) [Adapter toJavaUtilListWithId:list \
-        withJavaUtilFunctionFunction:TestClass_$Lambda$1_instance]];
+        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$Lambda$1, instance)]];
+        }
+        """);
+    assertInTranslation(
+        impl,
+        """
+        - (id)applyWithId:(id)elem {
+          return (id<JavaUtilList>) Adapter_toJavaUtilList_JavaUtilList_WithId_(elem);
         }
         """);
   }
