@@ -1861,4 +1861,44 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
                               withNullableMap:(NSDictionary<NSString *, id<Baz> _Nullable> * _Nullable)map;
         """);
   }
+
+  public void testVoidNullability() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import org.jspecify.annotations.Nullable;
+
+        public class VoidNullability {
+          @ObjectiveCKmpMethod(selector="doSomethingWithVoid:", adapter=Adapter.class)
+          public void doSomething(@Nullable Void v) {}
+
+          @ObjectiveCKmpMethod(selector="getVoid", adapter=Adapter.class)
+          public @Nullable Void getVoid() {
+            return null;
+          }
+        }
+        """,
+        "VoidNullability.java");
+
+    String header = translateSourceFile("VoidNullability", "VoidNullability.h");
+    assertInTranslation(header, "- (void)doSomethingWithVoid:(JavaLangVoid *)v;");
+    assertInTranslation(header, "- (JavaLangVoid *)getVoid;");
+  }
+
+  public void testUntranslatedInterfaceGenerics() throws IOException {
+    addSourceFile("public interface GenericInterface<T> {}", "GenericInterface.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public class InterfaceGenerics {
+          @ObjectiveCKmpMethod(selector="doSomethingWithInterface:", adapter=Adapter.class)
+          public void doSomething(GenericInterface<String> i) {}
+        }
+        """,
+        "InterfaceGenerics.java");
+
+    String header = translateSourceFile("InterfaceGenerics", "InterfaceGenerics.h");
+    assertInTranslation(header, "- (void)doSomethingWithInterface:(id<GenericInterface>)i;");
+  }
 }

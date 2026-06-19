@@ -142,6 +142,9 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
           "java.util.Map",
           "java.util.Set");
 
+  private static final ImmutableSet<String> TYPES_THAT_OMIT_NULLABILITY_MARKER =
+      ImmutableSet.of("java.lang.Void");
+
   private final ImmutableSet<String> supportedConversionTypes = JAVA_TO_NATIVE_TYPE_MAP.keySet();
   private final AdapterLookup adapterLookup;
 
@@ -818,15 +821,16 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
   }
 
   private boolean isNullable(TypeMirror typeMirror) {
-    return typeMirror.getAnnotationMirrors().stream()
-        .anyMatch(
-            annotation ->
-                annotation
-                    .getAnnotationType()
-                    .asElement()
-                    .getSimpleName()
-                    .toString()
-                    .contains("Nullable"));
+    return !TYPES_THAT_OMIT_NULLABILITY_MARKER.contains(TypeUtil.getQualifiedName(typeMirror))
+        && typeMirror.getAnnotationMirrors().stream()
+            .anyMatch(
+                annotation ->
+                    annotation
+                        .getAnnotationType()
+                        .asElement()
+                        .getSimpleName()
+                        .toString()
+                        .contains("Nullable"));
   }
 
   /**
@@ -864,7 +868,9 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       }
       builder.append(nativeType.nativeTypeName);
       List<? extends TypeMirror> typeArguments = type.getTypeArguments();
-      if (options.asObjCGenericDecl() && !typeArguments.isEmpty()) {
+      if (options.asObjCGenericDecl()
+          && !typeArguments.isEmpty()
+          && !nativeType.isUntranslatedInterface) {
         String typeArgsString = buildTypeArgumentString(typeArguments);
         builder.append("<").append(typeArgsString).append(">");
       }
