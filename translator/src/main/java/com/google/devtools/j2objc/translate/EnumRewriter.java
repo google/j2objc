@@ -208,16 +208,17 @@ public class EnumRewriter extends UnitTreeVisitor {
       } else {
         baseTypeCount++;
       }
-
-      initStatements.add(new ExpressionStatement(
-          new CommaExpression(
-              new CastExpression(voidType, new ParenthesizedExpression(
-                  new Assignment(new SimpleName(varElement),
-                  new Assignment(new SimpleName(localEnum),
+      Expression initExpr = new CastExpression(voidType, new ParenthesizedExpression(
+          new Assignment(new SimpleName(varElement),
+              new Assignment(new SimpleName(localEnum),
                   new NativeExpression(
                       UnicodeUtils.format("objc_constructInstance(%s, (void *)ptr)", classExpr),
-                      type.asType()))))),
-              new NativeExpression("ptr += " + sizeName, voidType))));
+                      type.asType())))));
+      if (i < node.getEnumConstants().size() - 1) {
+        initExpr = new CommaExpression(initExpr,
+            new NativeExpression("ptr += " + sizeName, voidType));
+      }
+      initStatements.add(new ExpressionStatement(initExpr));
       String initName = nameTable.getFullFunctionName(methodElement);
       FunctionElement initElement = new FunctionElement(initName, voidType, valueType)
           .addParameters(valueType.asType())

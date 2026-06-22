@@ -33,8 +33,8 @@ public class EnumRewriterTest extends GenerationTest {
         "void Test_initWithId_withNSString_withInt_("
             + "Test *self, id t, NSString *__name, int32_t __ordinal) {");
     assertTranslatedLines(translation,
-        "((void) (JreEnum(Test, A) = e = "
-          + "objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
+        "(void) (JreEnum(Test, A) = e = "
+          + "objc_constructInstance(self, (void *)ptr));",
         "Test_initWithId_withNSString_withInt_(e, @\"foo\", @\"A\", 0);");
   }
 
@@ -160,8 +160,8 @@ public class EnumRewriterTest extends GenerationTest {
         "((void) (JreEnum(Test, B) = e = objc_constructInstance([Test_1 class],"
           + " (void *)ptr)), ptr += objSize_B);",
         "Test_1_initWithNSString_withInt_(e, @\"B\", 1);",
-        "((void) (JreEnum(Test, C) = e = "
-          + "objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
+        "(void) (JreEnum(Test, C) = e = "
+          + "objc_constructInstance(self, (void *)ptr));",
         "Test_initWithNSString_withInt_(e, @\"C\", 2);");
   }
 
