@@ -117,7 +117,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       syncLineNumbers(typeNode.getName()); // avoid doc-comment
       printf("@implementation %s\n", typeName);
       printProperties();
-      if (!typeElement.getKind().isInterface() && needsKotlinCompanionClass()) {
+      if (needsKotlinCompanionClass()) {
         printf("\n+ (id<%sCompanion>)companion {", typeName);
         printf("\n  return (id<%sCompanion>)self;\n}\n", typeName);
       }
