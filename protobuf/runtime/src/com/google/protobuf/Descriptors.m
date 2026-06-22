@@ -51,15 +51,6 @@
 #import "java/util/Arrays.h"
 #import "java/util/Collections.h"
 
-// Defines the field in the CGPValue union type to use for each field type.
-#define VALUE_FIELD_Int valueInt
-#define VALUE_FIELD_Long valueLong
-#define VALUE_FIELD_Float valueFloat
-#define VALUE_FIELD_Double valueDouble
-#define VALUE_FIELD_Bool valueBool
-#define VALUE_FIELD_Enum valueId
-#define VALUE_FIELD_Retainable valueId
-
 BOOL CGPIsRetainedType(CGPFieldJavaType type) {
   switch (type) {
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_INT:
@@ -79,7 +70,7 @@ BOOL CGPIsRetainedType(CGPFieldJavaType type) {
 size_t CGPGetTypeSize(CGPFieldJavaType type) {
 #define GET_TYPE_SIZE_CASE(NAME) return sizeof(TYPE_##NAME);
 
-  SWITCH_TYPES_NO_ENUM(type, GET_TYPE_SIZE_CASE)
+  SWITCH_TYPES(type, GET_TYPE_SIZE_CASE, GET_TYPE_SIZE_CASE, GET_TYPE_SIZE_CASE)
 
 #undef GET_TYPE_SIZE_CASE
 }
@@ -459,9 +450,10 @@ id CGPFieldGetDefaultValue(CGPFieldDescriptor *field) {
   }
 
 #define GET_DEFAULT_VALUE_CASE(NAME) \
-  return CGPToReflectionType##NAME(field->data_->defaultValue.VALUE_FIELD_##NAME, field);
+  return CGPToReflectionType##NAME(field->data_->defaultValue.CGPValueField_##NAME, field);
 
-  SWITCH_TYPES_WITH_ENUM(CGPFieldGetJavaType(field), GET_DEFAULT_VALUE_CASE)
+  SWITCH_TYPES(CGPFieldGetJavaType(field), GET_DEFAULT_VALUE_CASE, GET_DEFAULT_VALUE_CASE,
+               GET_DEFAULT_VALUE_CASE)
 
 #undef GET_DEFAULT_VALUE_CASE
 }
