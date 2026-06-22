@@ -273,9 +273,6 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     if (typeNode.hasPrivateDeclaration()) {
       throw new IllegalStateException("@GenerateObjCCompanion not supported for private classes.");
     }
-    if (typeElement.getKind().isInterface()) {
-      throw new IllegalStateException("@GenerateObjCCompanion not supported for interfaces.");
-    }
     if (!hasStaticMethods() && !hasStaticFields()) {
       throw new IllegalStateException(
           "@GenerateObjCCompanion not supported for types without static members.");
@@ -290,7 +287,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     return hasInitializeMethod()
         || hasStaticAccessorMethods()
         || ElementUtil.isGeneratedAnnotation(typeElement)
-        || hasStaticMethods();
+        || hasStaticMethods()
+        || needsKotlinCompanionClass();
   }
 
   protected boolean needsCompanionClass() {
