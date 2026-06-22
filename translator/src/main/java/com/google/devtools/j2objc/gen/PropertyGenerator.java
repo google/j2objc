@@ -44,7 +44,18 @@ public final class PropertyGenerator {
       NameTable nameTable,
       TypeUtil typeUtil,
       boolean parametersNonnullByDefault) {
-    return new PropertyGenerator(fragment, options, nameTable, typeUtil, parametersNonnullByDefault)
+    return generate(fragment, options, nameTable, typeUtil, parametersNonnullByDefault, false);
+  }
+
+  public static Optional<String> generate(
+      VariableDeclarationFragment fragment,
+      Options options,
+      NameTable nameTable,
+      TypeUtil typeUtil,
+      boolean parametersNonnullByDefault,
+      boolean staticToInstance) {
+    return new PropertyGenerator(
+            fragment, options, nameTable, typeUtil, parametersNonnullByDefault, staticToInstance)
         .build();
   }
 
@@ -58,18 +69,21 @@ public final class PropertyGenerator {
   private final TypeMirror varType;
   private final String propertyName;
   private final FieldDeclaration declaration;
+  private final boolean staticToInstance;
 
   private PropertyGenerator(
       VariableDeclarationFragment fragment,
       Options options,
       NameTable nameTable,
       TypeUtil typeUtil,
-      boolean parametersNonnullByDefault) {
+      boolean parametersNonnullByDefault,
+      boolean staticToInstance) {
     this.fragment = fragment;
     this.options = options;
     this.nameTable = nameTable;
     this.typeUtil = typeUtil;
     this.parametersNonnullByDefault = parametersNonnullByDefault;
+    this.staticToInstance = staticToInstance;
     declaration = (FieldDeclaration) fragment.getParent();
     PropertyAnnotation annotation =
         (PropertyAnnotation) TreeUtil.getAnnotation(Property.class, declaration.getAnnotations());
@@ -154,7 +168,7 @@ public final class PropertyGenerator {
   }
 
   private void processClassAttribute(Set<String> attributes) {
-    if (ElementUtil.isStatic(varElement)) {
+    if (ElementUtil.isStatic(varElement) && !staticToInstance) {
       attributes.add("class");
     } else if (attributes.contains("class")) {
       ErrorUtil.error(fragment, "Only static fields can be translated to class properties");

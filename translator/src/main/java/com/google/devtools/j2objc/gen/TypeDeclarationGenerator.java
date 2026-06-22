@@ -141,6 +141,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           printMethodDeclaration((MethodDeclaration) declaration, false, true);
         }
       }
+      for (VariableDeclarationFragment fragment : getStaticFields()) {
+        PropertyGenerator.generate(
+                fragment, options, nameTable, typeUtil, parametersNonnullByDefault, true)
+            .ifPresent(this::println);
+      }
       println("\n@end\n");
     }
 

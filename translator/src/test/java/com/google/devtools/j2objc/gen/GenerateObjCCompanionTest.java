@@ -79,4 +79,43 @@ public class GenerateObjCCompanionTest extends GenerationTest {
         "- (JavaLangThreadLocal<NSString *>"
             + " *)identityWithJavaLangThreadLocal:(JavaLangThreadLocal<NSString *> *)val;");
   }
+
+  public void testCompanionPropertiesForStaticFields() throws IOException {
+    options.setClassProperties(true);
+    String source =
+        """
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        public class Foo {
+          public static final int CONSTANT_VALUE = 1;
+          public static int mutableStaticField = 2;
+          private static int privateStaticField = 3;
+        }
+        """;
+    String header = translateSourceFile(source, "Foo", "Foo.h");
+    assertInTranslation(header, "@protocol FooCompanion");
+    // Should generate instance property for CONSTANT_VALUE in companion protocol.
+    assertInTranslation(
+        header, "@property (readonly) int32_t CONSTANT_VALUE NS_SWIFT_NAME(CONSTANT_VALUE);");
+    // Should generate instance property for mutableStaticField in companion protocol.
+    assertInTranslation(
+        header, "@property int32_t mutableStaticField NS_SWIFT_NAME(mutableStaticField);");
+    // Should NOT generate property for privateStaticField.
+    assertNotInTranslation(header, "privateStaticField");
+  }
+
+  public void testCompanionWithOnlyStaticFields() throws IOException {
+    options.setClassProperties(true);
+    String source =
+        """
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        public class Foo {
+          public static final int CONSTANT_VALUE = 1;
+        }
+        """;
+    // This should compile successfully without throwing "types without static methods" exception.
+    String header = translateSourceFile(source, "Foo", "Foo.h");
+    assertInTranslation(header, "@protocol FooCompanion");
+    assertInTranslation(
+        header, "@property (readonly) int32_t CONSTANT_VALUE NS_SWIFT_NAME(CONSTANT_VALUE);");
+  }
 }

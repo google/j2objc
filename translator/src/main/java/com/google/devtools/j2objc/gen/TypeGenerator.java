@@ -262,6 +262,10 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
         Iterables.filter(ElementUtil.getMethods(typeElement), ElementUtil::isStatic));
   }
 
+  private boolean hasStaticFields() {
+    return !Iterables.isEmpty(getStaticFields());
+  }
+
   protected boolean needsKotlinCompanionClass() {
     if (!ElementUtil.hasAnnotation(typeElement, GenerateObjCCompanion.class)) {
       return false;
@@ -272,9 +276,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     if (typeElement.getKind().isInterface()) {
       throw new IllegalStateException("@GenerateObjCCompanion not supported for interfaces.");
     }
-    if (!hasStaticMethods()) {
+    if (!hasStaticMethods() && !hasStaticFields()) {
       throw new IllegalStateException(
-          "@GenerateObjCCompanion not supported for types without static methods.");
+          "@GenerateObjCCompanion not supported for types without static members.");
     }
     return true;
   }
