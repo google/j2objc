@@ -477,6 +477,17 @@ public class TreeShakerTest extends TestCase {
             getMethodName("p.B", "valueOf", "(Ljava/lang/String;)Lp/B;"));
   }
 
+  public void testRecords() throws IOException {
+    addTreeShakerRootsFile("p.A:\n    main()");
+    addSourceFile(
+        "A.java", "package p; class A { static void main() { R r = new R(1, \"two\"); r.x(); } }");
+    addSourceFile("R.java", "package p; record R(int x, String y) { void b() {} }");
+    addSourceFile("UnusedRecord.java", "package p; record UnusedRecord(int x) {}");
+    CodeReferenceMap unused = findUnusedCode();
+
+    assertThat(getUnusedClasses(unused)).containsExactly("p.UnusedRecord");
+  }
+
   public void testEnumImplicitMethods() throws IOException {
     addTreeShakerRootsFile("p.A:\n    main()");
     addSourceFile(
