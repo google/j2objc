@@ -288,7 +288,7 @@ public final class MethodTest extends TestCase {
 
     public interface InterfaceWithStatic {
         static String staticMethod() {
-            return identifyCaller();
+          return InterfaceWithStatic.class.getName();
         }
     }
 
@@ -327,7 +327,7 @@ public final class MethodTest extends TestCase {
 
     public interface InterfaceWithDefault {
         default String defaultMethod() {
-            return identifyCaller();
+            return InterfaceWithDefault.class.getName();
         }
     }
 
@@ -370,7 +370,7 @@ public final class MethodTest extends TestCase {
 
         InterfaceWithDefault anon = new InterfaceWithDefault() {
             @Override public String defaultMethod() {
-                return identifyCaller();
+                return this.getClass().getName();
             }
         };
 
@@ -401,7 +401,7 @@ public final class MethodTest extends TestCase {
 
         InterfaceWithDefault anon2 = new InterfaceWithDefault() {
             @Override public String defaultMethod() {
-                return identifyCaller();
+            return this.getClass().getName();
             }
         };
 
@@ -430,7 +430,7 @@ public final class MethodTest extends TestCase {
         InterfaceWithDefault impl = new InterfaceWithReAbstractedMethod() {
             // Implement a reabstracted default method.
             @Override public String defaultMethod() {
-                return identifyCaller();
+            return this.getClass().getName();
             }
         };
         Class<?> implClass = impl.getClass();
@@ -451,7 +451,7 @@ public final class MethodTest extends TestCase {
     interface InterfaceWithRedefinedMethods extends InterfaceWithReAbstractedMethod {
         // Reimplement an abstracted default method.
         @Override default String defaultMethod() {
-            return identifyCaller();
+            return InterfaceWithRedefinedMethods.class.getName();
         }
     }
 
@@ -466,22 +466,22 @@ public final class MethodTest extends TestCase {
         Class<?> implClass = impl.getClass();
 
         Method implClassDefaultMethod = implClass.getMethod("defaultMethod");
-        assertNull(getDeclaredMethodOrNull(implClass, "defaultMethod"));
+        assertNull("defaultMethod null", getDeclaredMethodOrNull(implClass, "defaultMethod"));
 
         // Check invocation behavior.
-        assertEquals(interfaceClassName, impl.defaultMethod());
-        assertEquals(interfaceClassName, implClassDefaultMethod.invoke(impl));
+        assertEquals("defaultMethod", interfaceClassName, impl.defaultMethod());
+        assertEquals("defaultMethod impl", interfaceClassName, implClassDefaultMethod.invoke(impl));
 
         // Check other method properties.
-        assertEquals(interfaceClass, implClassDefaultMethod.getDeclaringClass());
-        assertTrue(implClassDefaultMethod.isDefault());
+        assertEquals("declaring class", interfaceClass, implClassDefaultMethod.getDeclaringClass());
+        assertTrue("isDefault", implClassDefaultMethod.isDefault());
     }
 
     public void testDefaultMethod_invoke() throws Exception {
         InterfaceWithDefault impl1 = new InterfaceWithRedefinedMethods() {};
         InterfaceWithDefault impl2 = new InterfaceWithReAbstractedMethod() {
             @Override public String defaultMethod() {
-                return identifyCaller();
+                return this.getClass().getName();
             }
         };
         InterfaceWithDefault impl3 = new InterfaceWithDefault() {};
@@ -519,14 +519,14 @@ public final class MethodTest extends TestCase {
 
     interface OtherInterfaceWithDefault {
         default String defaultMethod() {
-            return identifyCaller();
+            return OtherInterfaceWithDefault.class.getName();
         }
     }
 
     public void testDefaultMethod_superSyntax() throws Exception {
         class ImplementationSuperUser implements InterfaceWithDefault, OtherInterfaceWithDefault {
             @Override public String defaultMethod() {
-                return identifyCaller() + ":" +
+        return this.getClass().getName() + ":" +
                         InterfaceWithDefault.super.defaultMethod() + ":" +
                         OtherInterfaceWithDefault.super.defaultMethod();
             }
@@ -538,10 +538,10 @@ public final class MethodTest extends TestCase {
         String expectedReturnValue = implementationSuperUserClassName + ":" +
             interfaceWithDefaultClassName + ":" + otherInterfaceWithDefaultClassName;
         ImplementationSuperUser obj = new ImplementationSuperUser();
-        assertEquals(expectedReturnValue, obj.defaultMethod());
+        assertEquals("defaultMethod", expectedReturnValue, obj.defaultMethod());
 
         Method defaultMethod = ImplementationSuperUser.class.getMethod("defaultMethod");
-        assertEquals(expectedReturnValue, defaultMethod.invoke(obj));
+        assertEquals("defaultMethod invoke", expectedReturnValue, defaultMethod.invoke(obj));
     }
 
     /* J2ObjC: enable and fix.
@@ -550,7 +550,7 @@ public final class MethodTest extends TestCase {
             @Override public Object invoke(Object proxy, Method method, Object[] args)
                     throws Throwable {
                 assertSame(InterfaceWithDefault.class, method.getDeclaringClass());
-                return identifyCaller();
+                return this.getClass().getName();
             }
         };
 
@@ -578,16 +578,5 @@ public final class MethodTest extends TestCase {
         } catch (NoSuchMethodException e) {
             return null;
         }
-    }
-
-    /**
-     * Keep this package-protected or public to avoid the introduction of synthetic methods that
-     * throw off the offset.
-     */
-    static String identifyCaller() {
-        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-        int i = 0;
-        while (!stack[i++].getMethodName().equals("identifyCaller")) {}
-        return stack[i].getClassName();
     }
 }
