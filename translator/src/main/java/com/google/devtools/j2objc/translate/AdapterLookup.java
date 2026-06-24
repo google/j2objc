@@ -25,7 +25,6 @@ import org.jspecify.annotations.Nullable;
 /** Utility class for finding converter functions in an adapter class using J2ObjC AST/Types. */
 public final class AdapterLookup {
 
-  private static final MatchResult EXACT_MATCH = new MatchResult(MatchType.EXACT, 0);
   private static final MatchResult NO_MATCH = new MatchResult(MatchType.NONE, -1);
   private static final MatchResult NO_MATCH_EXACT_REQUIRED =
       new MatchResult(MatchType.NONE_EXACT_REQUIRED, -1);
@@ -35,6 +34,15 @@ public final class AdapterLookup {
 
   AdapterLookup(TypeUtil typeUtil) {
     this.typeUtil = typeUtil;
+  }
+
+  private static MatchResult exactMatch(boolean isComposing) {
+    return new MatchResult(isComposing ? MatchType.EXACT_COMPOSING : MatchType.EXACT_DIRECT, 0);
+  }
+
+  private static MatchResult wildcardMatch(boolean isComposing, int score) {
+    return new MatchResult(
+        isComposing ? MatchType.WILDCARD_COMPOSING : MatchType.WILDCARD_DIRECT, score);
   }
 
   public ConverterMatch findConverterByParamType(
@@ -68,13 +76,21 @@ public final class AdapterLookup {
         converterCache.computeIfAbsent(
             new CacheKey(adapterElement, type, prefix),
             cacheKey -> {
+              int typeArgumentsSize =
+                  (type instanceof DeclaredType declared) ? declared.getTypeArguments().size() : 0;
+              int composableParams = 1 + typeArgumentsSize;
+
               // Find all applicable functions with the given prefix and matching parameter count.
+              // Either 1 param for direct conversion or 1 + number of type arguments for composing
+              // conversion.
               ImmutableList<ExecutableElement> applicableFunctions =
                   stream(ElementUtil.getMethods(adapterElement))
                       .filter(
-                          function ->
-                              function.getParameters().size() == 1
-                                  && function.getSimpleName().toString().startsWith(prefix))
+                          function -> {
+                            int size = function.getParameters().size();
+                            return (size == 1 || size == composableParams)
+                                && function.getSimpleName().toString().startsWith(prefix);
+                          })
                       .collect(toImmutableList());
 
               // Find the best match for each applicable function based on #matchTypes.
@@ -82,9 +98,11 @@ public final class AdapterLookup {
                   applicableFunctions.stream()
                       .map(
                           function -> {
+                            boolean isComposing = function.getParameters().size() > 1;
                             TypeMirror matchingType = getMatchingType.select(function);
                             MatchResult matchResult =
-                                matchTypes(matchingType, type, function.getTypeParameters());
+                                matchTypes(
+                                    matchingType, type, function.getTypeParameters(), isComposing);
                             int depth = getDepth(matchingType);
                             return new MatchCandidate(function, matchResult, depth);
                           })
@@ -135,16 +153,17 @@ public final class AdapterLookup {
    * @param genericType the generic type from the adapter function signature
    * @param concreteType the concrete type from the target function signature
    * @param typeParameters the type parameters of the adapter function
-   * @param typeUtil the type utility class
+   * @param isComposing whether the candidate function is composable
    */
   private MatchResult matchTypes(
       TypeMirror genericType,
       TypeMirror concreteType,
-      List<? extends TypeParameterElement> typeParameters) {
+      List<? extends TypeParameterElement> typeParameters,
+      boolean isComposing) {
 
     // Match if identical types.
     if (typeUtil.isSameType(genericType, concreteType)) {
-      return EXACT_MATCH;
+      return exactMatch(isComposing);
     }
 
     // Match if the generic type is a type variable.
@@ -153,10 +172,10 @@ public final class AdapterLookup {
         && typeParameters.contains(tv.asElement())) {
       // If the concrete type is a mapped type, then return a NO_MATCH_EXACT_REQUIRED because it
       // must be matched exactly, otherwise return a WILDCARD match.
-      if (isMappedTypeOrContainsMappedType(concreteType)) {
+      if (!isComposing && isMappedTypeOrContainsMappedType(concreteType)) {
         return NO_MATCH_EXACT_REQUIRED;
       } else {
-        return new MatchResult(MatchType.WILDCARD, 1);
+        return wildcardMatch(isComposing, 1);
       }
     }
 
@@ -177,7 +196,7 @@ public final class AdapterLookup {
         return NO_MATCH;
       }
 
-      MatchType maxType = MatchType.EXACT;
+      MatchType maxType = isComposing ? MatchType.EXACT_COMPOSING : MatchType.EXACT_DIRECT;
       int totalScore = 0;
 
       // Zip through the type arguments and match them recursively.
@@ -194,7 +213,7 @@ public final class AdapterLookup {
               && cWild.getExtendsBound() == null
               && cWild.getSuperBound() == null) {
             // Both are wildcards with no bounds, so return an EXACT match.
-            result = EXACT_MATCH;
+            result = exactMatch(isComposing);
           } else {
             result = NO_MATCH;
           }
@@ -205,10 +224,10 @@ public final class AdapterLookup {
           if (gWild.getExtendsBound() == null && gWild.getSuperBound() == null) {
             // If the concrete type is a mapped type, then return a NO_MATCH_EXACT_REQUIRED because
             // it must be matched exactly, otherwise return a WILDCARD match.
-            if (isMappedTypeOrContainsMappedType(cArg)) {
+            if (!isComposing && isMappedTypeOrContainsMappedType(cArg)) {
               return NO_MATCH_EXACT_REQUIRED;
             } else {
-              result = new MatchResult(MatchType.WILDCARD, 2);
+              result = wildcardMatch(isComposing, 2);
             }
           } else {
             // The generic type is a wildcard with bounds, so return a NO_MATCH.
@@ -217,7 +236,7 @@ public final class AdapterLookup {
           }
         } else {
           // Recursively match the generic type and concrete type.
-          result = matchTypes(gArg, cArg, typeParameters);
+          result = matchTypes(gArg, cArg, typeParameters, isComposing);
         }
         // If the result is a MatchType.NO_MATCH, then return a MatchResult NO_MATCH.
         if (result.type() == MatchType.NONE) {
@@ -236,10 +255,12 @@ public final class AdapterLookup {
 
   /** The type of match found between a generic type and a concrete type. */
   public enum MatchType {
-    EXACT(0),
-    WILDCARD(1),
-    NONE(2),
-    NONE_EXACT_REQUIRED(3);
+    EXACT_DIRECT(0),
+    EXACT_COMPOSING(1),
+    WILDCARD_DIRECT(2),
+    WILDCARD_COMPOSING(3),
+    NONE(4),
+    NONE_EXACT_REQUIRED(5);
 
     private final int rank;
 
@@ -249,6 +270,10 @@ public final class AdapterLookup {
 
     public int rank() {
       return rank;
+    }
+
+    public boolean isComposing() {
+      return this == EXACT_COMPOSING || this == WILDCARD_COMPOSING;
     }
   }
 
