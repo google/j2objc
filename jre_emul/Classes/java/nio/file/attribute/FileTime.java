@@ -17,6 +17,7 @@
 
 package java.nio.file.attribute;
 
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,6 +51,40 @@ public class FileTime implements Comparable<FileTime>{
 
   public static FileTime fromMillis(long value) {
     return new FileTime(value);
+  }
+
+  public native Instant toInstant() /*-[
+    id p = [JavaNioFileAttributeFileTime getProvider];
+    if (p) {
+      return [p toInstantWithJavaNioFileAttributeFileTime:self];
+    }
+    @throw create_JavaLangUnsupportedOperationException_initWithNSString_(@"java.time is not available");
+  ]-*/;
+
+  public static FileTime from(Instant instant) {
+    return getProvider().fromInstant(instant);
+  }
+
+  private static Provider provider;
+
+  private static Provider getProvider() {
+    if (provider == null) {
+      try {
+        Class.forName("java.nio.file.attribute.FileTimeProvider").newInstance();
+      } catch (Exception e) {
+        throw new UnsupportedOperationException("java.time is not available", e);
+      }
+    }
+    return provider;
+  }
+
+  public interface Provider {
+    Object toInstant(FileTime fileTime);
+    FileTime fromInstant(Object instant);
+  }
+
+  public static void setProvider(Provider p) {
+    provider = p;
   }
 
   @Override
