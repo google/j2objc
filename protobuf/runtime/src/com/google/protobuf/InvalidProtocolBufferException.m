@@ -35,6 +35,8 @@
 #import "InvalidProtocolBufferException.h"
 
 #import "IOSClass.h"
+#import "J2ObjC_source.h"
+#import "java/lang/Exception.h"
 
 @implementation ComGoogleProtobufInvalidProtocolBufferException {
   ComGoogleProtobufMessageLite *unfinishedMessage_;
@@ -72,5 +74,62 @@
 }
 
 @end
+
+ComGoogleProtobufInvalidProtocolBufferException *
+new_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_(NSString *s) {
+  ComGoogleProtobufInvalidProtocolBufferException *self =
+      [ComGoogleProtobufInvalidProtocolBufferException alloc];
+  return [self initWithNSString:s];
+}
+
+ComGoogleProtobufInvalidProtocolBufferException *
+create_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_(NSString *s) {
+  return AUTORELEASE(new_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_(s));
+}
+
+ComGoogleProtobufInvalidProtocolBufferException *
+new_ComGoogleProtobufInvalidProtocolBufferException_initWithJavaLangThrowable_(
+    JavaLangThrowable *cause) {
+  ComGoogleProtobufInvalidProtocolBufferException *self =
+      [ComGoogleProtobufInvalidProtocolBufferException alloc];
+  return [self initWithJavaLangThrowable:cause];
+}
+
+ComGoogleProtobufInvalidProtocolBufferException *
+create_ComGoogleProtobufInvalidProtocolBufferException_initWithJavaLangThrowable_(
+    JavaLangThrowable *cause) {
+  return AUTORELEASE(
+      new_ComGoogleProtobufInvalidProtocolBufferException_initWithJavaLangThrowable_(cause));
+}
+
+ComGoogleProtobufInvalidProtocolBufferException *
+new_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_withJavaLangThrowable_(
+    NSString *detailMessage, JavaLangThrowable *cause) {
+  ComGoogleProtobufInvalidProtocolBufferException *self =
+      [ComGoogleProtobufInvalidProtocolBufferException alloc];
+  return [self initWithNSString:detailMessage withJavaLangThrowable:cause];
+}
+
+ComGoogleProtobufInvalidProtocolBufferException *
+create_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_withJavaLangThrowable_(
+    NSString *detailMessage, JavaLangThrowable *cause) {
+  return AUTORELEASE(
+      new_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_withJavaLangThrowable_(
+          detailMessage, cause));
+}
+
+ComGoogleProtobufInvalidProtocolBufferException *
+new_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_withJavaLangException_(
+    NSString *detailMessage, JavaLangException *cause) {
+  return new_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_withJavaLangThrowable_(
+      detailMessage, cause);
+}
+
+ComGoogleProtobufInvalidProtocolBufferException *
+create_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_withJavaLangException_(
+    NSString *detailMessage, JavaLangException *cause) {
+  return create_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_withJavaLangThrowable_(
+      detailMessage, cause);
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufInvalidProtocolBufferException)

@@ -38,8 +38,13 @@
 #import "java/io/IOException.h"
 
 @class ComGoogleProtobufMessageLite;
+@class JavaLangException;
 
 @interface ComGoogleProtobufInvalidProtocolBufferException : JavaIoIOException
+- (instancetype)initWithNSString:(NSString *)s;
+- (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)cause;
+- (instancetype)initWithNSString:(NSString *)detailMessage
+           withJavaLangThrowable:(JavaLangThrowable *)cause;
 - (ComGoogleProtobufMessageLite *)getUnfinishedMessage;
 - (void)setUnfinishedMessage:(ComGoogleProtobufMessageLite *)message;
 @end
@@ -47,5 +52,36 @@
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufInvalidProtocolBufferException)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufInvalidProtocolBufferException)
+
+CF_EXTERN_C_BEGIN
+
+FOUNDATION_EXPORT ComGoogleProtobufInvalidProtocolBufferException *
+new_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_(NSString *s)
+    NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ComGoogleProtobufInvalidProtocolBufferException *
+create_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_(NSString *s);
+
+FOUNDATION_EXPORT ComGoogleProtobufInvalidProtocolBufferException *
+new_ComGoogleProtobufInvalidProtocolBufferException_initWithJavaLangThrowable_(
+    JavaLangThrowable *cause) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ComGoogleProtobufInvalidProtocolBufferException *
+create_ComGoogleProtobufInvalidProtocolBufferException_initWithJavaLangThrowable_(
+    JavaLangThrowable *cause);
+
+FOUNDATION_EXPORT ComGoogleProtobufInvalidProtocolBufferException *
+new_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_withJavaLangThrowable_(
+    NSString *detailMessage, JavaLangThrowable *cause) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ComGoogleProtobufInvalidProtocolBufferException *
+create_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_withJavaLangThrowable_(
+    NSString *detailMessage, JavaLangThrowable *cause);
+
+FOUNDATION_EXPORT ComGoogleProtobufInvalidProtocolBufferException *
+new_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_withJavaLangException_(
+    NSString *detailMessage, JavaLangException *cause) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ComGoogleProtobufInvalidProtocolBufferException *
+create_ComGoogleProtobufInvalidProtocolBufferException_initWithNSString_withJavaLangException_(
+    NSString *detailMessage, JavaLangException *cause);
+
+CF_EXTERN_C_END
 
 #endif // __ComGoogleProtobufInvalidProtocolBufferException_H__
