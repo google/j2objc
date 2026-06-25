@@ -32,6 +32,7 @@ import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
 import com.google.j2objc.annotations.ObjectiveCAdapterMethod;
+import com.google.j2objc.annotations.ObjectiveCKmpMethod;
 import com.google.j2objc.annotations.ObjectiveCName;
 import com.google.j2objc.annotations.ObjectiveCNativeEnumName;
 import com.google.j2objc.annotations.SwiftName;
@@ -560,7 +561,10 @@ public class NameTable {
 
   public @Nullable String getSwiftMethodNameFromAnnotation(MethodDeclaration method) {
     // Check if the method has the annotation
-    String annotationName = swiftNameFromAnnotation(method.getExecutableElement());
+    String annotationName = swiftNameFromObjectiveCKmpMethodAnnotation(method.getExecutableElement());
+    if (annotationName == null) {
+      annotationName = swiftNameFromAnnotation(method.getExecutableElement());
+    }
     if (annotationName != null) {
       return annotationName;
     }
@@ -637,9 +641,19 @@ public class NameTable {
       return null;
     }
 
+    boolean hasKmpSwiftName = false;
+    AnnotationMirror kmpAnnotation = ElementUtil.getAnnotation(method, ObjectiveCKmpMethod.class);
+    if (kmpAnnotation != null) {
+      String kmpSwiftName = (String) ElementUtil.getAnnotationValue(kmpAnnotation, "swiftName");
+      if (kmpSwiftName != null && !kmpSwiftName.isEmpty()) {
+        hasKmpSwiftName = true;
+      }
+    }
+
     if (!packageHasSwiftNameAnnotation(owner)
         && !elementHasSwiftNameAnnotation(owner)
-        && !elementHasSwiftNameAnnotation(method)) {
+        && !elementHasSwiftNameAnnotation(method)
+        && !hasKmpSwiftName) {
       return null;
     }
 
@@ -655,29 +669,45 @@ public class NameTable {
 
     StringBuilder sb = new StringBuilder();
 
-    String annotationName = function.getExecutableElement().getSimpleName().toString();
-
-    // Constructors are `<init>`
-    annotationName = annotationName.replace("<", "").replace(">", "");
-
-    if (annotationName.contains(":")) {
-      annotationName = annotationName.replace(":", "");
+    String customSwiftName = swiftNameFromObjectiveCKmpMethodAnnotation(method);
+    boolean isKmpSwiftName = customSwiftName != null;
+    if (customSwiftName == null) {
+      customSwiftName = swiftNameFromAnnotation(method);
     }
 
-    annotationName = addSwiftParamNames(function.getParameters(), annotationName, ':');
-    if (!functionName.contains("_init") && annotationName != null) {
-      sb.append(" NS_SWIFT_NAME(");
-      sb.append(className).append(".").append(annotationName);
-      sb.append(")");
-    } else if (functionName.contains("new_")) {
-      sb.append(" NS_SWIFT_NAME(");
-
-      if (annotationName != null) {
-        sb.append(className).append(".").append(annotationName);
-      } else {
-        sb.append(addSwiftParamNames(function.getParameters(), className + ".init", ':'));
+    if (customSwiftName != null) {
+      if (functionName.contains("new_")) {
+        if (isKmpSwiftName) {
+          sb.append(" NS_SWIFT_NAME(");
+          sb.append(className).append(".").append(customSwiftName);
+          sb.append(")");
+        } else {
+          sb.append(" NS_SWIFT_NAME(");
+          sb.append(addSwiftParamNames(function.getParameters(), className + ".init", ':'));
+          sb.append(")");
+        }
+      } else if (!functionName.contains("_init")) {
+        sb.append(" NS_SWIFT_NAME(");
+        sb.append(className).append(".").append(customSwiftName);
+        sb.append(")");
       }
-      sb.append(")");
+    } else {
+      String derivedName = method.getSimpleName().toString();
+      derivedName = derivedName.replace("<", "").replace(">", "");
+      if (derivedName.contains(":")) {
+        derivedName = derivedName.replace(":", "");
+      }
+      derivedName = addSwiftParamNames(function.getParameters(), derivedName, ':');
+
+      if (!functionName.contains("_init")) {
+        sb.append(" NS_SWIFT_NAME(");
+        sb.append(className).append(".").append(derivedName);
+        sb.append(")");
+      } else if (functionName.contains("new_")) {
+        sb.append(" NS_SWIFT_NAME(");
+        sb.append(addSwiftParamNames(function.getParameters(), className + ".init", ':'));
+        sb.append(")");
+      }
     }
 
     return sb.toString();
@@ -687,6 +717,17 @@ public class NameTable {
     AnnotationMirror annotation = ElementUtil.getAnnotation(elelement, SwiftName.class);
     if (annotation != null) {
       return (String) ElementUtil.getAnnotationValue(annotation, "value");
+    }
+    return null;
+  }
+
+  public static @Nullable String swiftNameFromObjectiveCKmpMethodAnnotation(Element element) {
+    AnnotationMirror annotation = ElementUtil.getAnnotation(element, ObjectiveCKmpMethod.class);
+    if (annotation != null) {
+      String value = (String) ElementUtil.getAnnotationValue(annotation, "swiftName");
+      if (value != null && !value.isEmpty()) {
+        return value;
+      }
     }
     return null;
   }
