@@ -431,7 +431,7 @@ BIT_OPERATORS_DEFN(Long, int64_t)
 
 #define JRE_HANDLE_DIV_BY_ZERO(NAME, TYPE, OP)                               \
   __attribute__((always_inline)) inline TYPE Jre##NAME(TYPE op1, TYPE op2) { \
-    if (op2 == 0) {                                                          \
+    if (__builtin_expect(op2 == 0, 0)) {                                     \
       JreThrowArithmeticExceptionWithNSString(@"/ by zero");                 \
     }                                                                        \
     return op1 OP op2;                                                       \
