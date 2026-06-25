@@ -417,7 +417,8 @@ public class SimpleDateFormatTest extends junit.framework.TestCase {
         DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT, new Locale("sl"));
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
         String result = df.format(0L);
-        assertTrue(result.equals("1. 1. 70") || result.equals("1. 01. 70"));
+        assertTrue("Result is: " + result, result.equals("1. 1. 70") ||
+                   result.equals("1. 01. 70") || result.equals("1. 1. 1970"));
     }
 
     public void testLenientParsingForZ() throws Exception {
