@@ -1086,7 +1086,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar)");
-    assertInTranslation(translation, "NS_SWIFT_NAME(set(fooField:))");
+    assertInTranslation(translation, "NS_SWIFT_NAME(setFooField(fooField:))");
   }
 
   public void testSwiftNameClassAnnotation() throws IOException {
@@ -1186,10 +1186,10 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
     assertInTranslation(
-        translation, "- (void)objcSetFooField:(NSString *)fooField NS_SWIFT_NAME(set(fooField:));");
+        translation, "- (void)objcSetFooField:(NSString *)fooField NS_SWIFT_NAME(setFooField(fooField:));");
     assertInTranslation(
         translation,
-        "+ (void)objcBuilderWithSize:(int32_t)expectedSize NS_SWIFT_NAME(builder(expectedSize:));");
+        "+ (void)objcBuilderWithSize:(int32_t)expectedSize NS_SWIFT_NAME(builderWithExpectedSize(expectedSize:));");
     assertInTranslation(translation, "- (void)objcDoAction;");
   }
 
@@ -1272,10 +1272,10 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslatedLines(
         barHeader,
         "- (NSString *)getElementByIndexWithInt:(int32_t)index"
-            + " NS_SWIFT_NAME(getElementByInt(index:));");
+            + " NS_SWIFT_NAME(getElementByIndexWithInt(index:));");
     assertTranslatedLines(
         fooHeader,
-        "- (id)getElementByIndexWithInt:(int32_t)index NS_SWIFT_NAME(getElementBy(index:));");
+        "- (id)getElementByIndexWithInt:(int32_t)index NS_SWIFT_NAME(getElementByIndex(index:));");
   }
 
   public void testSwiftNameAbnormalArgumentNames() throws IOException {
@@ -1296,14 +1296,14 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String fooHeader = translateCombinedFiles("com/Foo", ".h", "foo/FooBar.java");
     assertTranslatedLines(
         fooHeader,
-        "- (NSString *)fooBarWithNSString:(NSString *)fooBar NS_SWIFT_NAME(fooBar(_:));");
+        "- (NSString *)fooBarWithNSString:(NSString *)fooBar NS_SWIFT_NAME(fooBar(fooBar:));");
     assertTranslatedLines(
         fooHeader,
-        "- (NSString *)setSomeValueWithNSString:(NSString *)value NS_SWIFT_NAME(setSome(_:));");
+        "- (NSString *)setSomeValueWithNSString:(NSString *)value NS_SWIFT_NAME(setSomeValue(value:));");
     assertTranslatedLines(
         fooHeader,
         "- (NSString *)setSomeArgumentWithNSString:(NSString *)arg0"
-            + " NS_SWIFT_NAME(setSomeArgument(_:));");
+            + " NS_SWIFT_NAME(setSomeArgument(arg0:));");
   }
 
   public void testSwiftNameAnnotationWithStaticFunctions() throws IOException {
@@ -1330,8 +1330,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.init())");
-    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.builder(expectedSize:))");
-    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.builder(name:))");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.builderWithExpectedSize(expectedSize:))");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.builderWithName(name:))");
   }
 
   public void testSwiftNameAnnotationWithStaticFunctionsWithWapperMethods() throws IOException {
@@ -1356,7 +1356,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "   public static void builderWithExpectedSize(int expectedSize){}"
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
-    assertInTranslation(translation, "NS_SWIFT_NAME(builder(expectedSize:))");
+    assertInTranslation(translation, "NS_SWIFT_NAME(builderWithExpectedSize(expectedSize:))");
   }
 
   public void testSwiftNameAnnotationOverrideConstructor() throws IOException {
