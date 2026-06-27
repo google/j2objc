@@ -582,9 +582,17 @@ public class OperatorRewriter extends UnitTreeVisitor {
       case PLUS_ASSIGN:
       case MINUS_ASSIGN:
       case TIMES_ASSIGN:
+        return isVolatile(lhs)
+            || TypeUtil.isFloatingPoint(lhsType)
+            || TypeUtil.isFloatingPoint(rhsType)
+            || lhsType.getKind() == TypeKind.LONG
+            || rhsType.getKind() == TypeKind.LONG
+            || lhsType.getKind() == TypeKind.INT
+            || rhsType.getKind() == TypeKind.INT;
       case DIVIDE_ASSIGN:
       case REMAINDER_ASSIGN:
-        return isVolatile(lhs) || TypeUtil.isFloatingPoint(lhsType)
+        return isVolatile(lhs)
+            || TypeUtil.isFloatingPoint(lhsType)
             || TypeUtil.isFloatingPoint(rhsType);
       default:
         return isVolatile(lhs);
@@ -634,8 +642,12 @@ public class OperatorRewriter extends UnitTreeVisitor {
     Expression rhs = node.getRightHandSide();
     TypeMirror lhsType = lhs.getTypeMirror();
     TypeMirror lhsPointerType = new PointerType(lhsType);
-    String funcName = "Jre" + node.getOperator().getName() + (isVolatile(lhs) ? "Volatile" : "")
-        + NameTable.capitalize(lhsType.toString()) + getPromotionSuffix(node);
+    String funcName =
+        "Jre"
+            + node.getOperator().getName()
+            + (isVolatile(lhs) ? "Volatile" : "")
+            + NameTable.capitalize(TypeUtil.getName(lhsType))
+            + getPromotionSuffix(node);
     FunctionElement element = new FunctionElement(funcName, lhsType, null)
         .addParameters(lhsPointerType, rhs.getTypeMirror());
     FunctionInvocation invocation = new FunctionInvocation(element, lhsType);

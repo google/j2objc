@@ -82,9 +82,10 @@ public class StaticVarRewriterTest extends GenerationTest {
         "class Test { static class Inner { static int[] ints; } "
         + " int test() { Inner.ints[0] = 1; Inner.ints[0] += 2; return Inner.ints[0]; } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "*IOSIntArray_GetRef(nil_chk(JreLoadStatic(Test_Inner, ints)), 0) = 1;",
-        "*IOSIntArray_GetRef(JreLoadStatic(Test_Inner, ints), 0) += 2;",
+        "JrePlusAssignIntI(IOSIntArray_GetRef(JreLoadStatic(Test_Inner, ints), 0), 2);",
         "return IOSIntArray_Get(JreLoadStatic(Test_Inner, ints), 0);");
   }
 
@@ -101,8 +102,8 @@ public class StaticVarRewriterTest extends GenerationTest {
         translation,
         "*IOSIntArray_GetRef(nil_chk(JreStrictFieldStrongLoad(JreLoadStaticRef(Test_Inner, ints))),"
             + " 0) = 1;",
-        "*IOSIntArray_GetRef(JreStrictFieldStrongLoad(JreLoadStaticRef(Test_Inner, ints)), 0) +="
-            + " 2;",
+        "JrePlusAssignIntI(IOSIntArray_GetRef(JreStrictFieldStrongLoad("
+            + "JreLoadStaticRef(Test_Inner, ints)), 0), 2);",
         "return IOSIntArray_Get(JreStrictFieldStrongLoad(JreLoadStaticRef(Test_Inner, ints)), 0);");
   }
 

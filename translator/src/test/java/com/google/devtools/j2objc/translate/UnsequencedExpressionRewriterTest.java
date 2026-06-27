@@ -43,7 +43,7 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(
         translation,
-        "int32_t unseq$1 = i += 2;",
+        "int32_t unseq$1 = JrePlusAssignIntI(&i, 2);",
         "return JreIntPlus(IOSIntArray_Get(nil_chk(data), unseq$1), i);");
   }
 

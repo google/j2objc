@@ -313,9 +313,7 @@ JreFpToByte(double d) {
     return result;                                                                              \
   }
 #define ARITHMETIC_INTEGRAL_OPERATORS_DEFN(NAME, TYPE, PNAME, PTYPE)             \
-  ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Plus, +, PNAME, PTYPE, (TYPE))   \
-  ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Minus, -, PNAME, PTYPE, (TYPE))  \
-  ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Times, *, PNAME, PTYPE, (TYPE))  \
+  /* Plus, Minus and Times are handled by the overflow-safe macros below. */     \
   ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Divide, /, PNAME, PTYPE, (TYPE)) \
   ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Mod, %, PNAME, PTYPE, (TYPE))
 #define ARITHMETIC_FP_OPERATORS_DEFN(NAME, TYPE, PNAME, PTYPE, MODFUNC, CAST)  \
@@ -451,13 +449,45 @@ JRE_HANDLE_DIV_BY_ZERO(LongMod, int64_t, %);
     return (TYPE)((UNSIGNED_TYPE)a)OPERATION((UNSIGNED_TYPE)b);                             \
   }
 
-#define JRE_HANDLE_OVERFLOW_INFIX_OPERATIONS(TYPENAME, TYPE, UNSIGNED_TYPE)    \
-  JRE_HANDLE_OVERFLOW_INFIX_OPERATION(Plus, TYPENAME, TYPE, UNSIGNED_TYPE, +)  \
-  JRE_HANDLE_OVERFLOW_INFIX_OPERATION(Minus, TYPENAME, TYPE, UNSIGNED_TYPE, -) \
-  JRE_HANDLE_OVERFLOW_INFIX_OPERATION(Times, TYPENAME, TYPE, UNSIGNED_TYPE, *)
+#define JRE_HANDLE_OVERFLOW_INFIX_OPERATIONS(NAME, OPERATION)                   \
+  JRE_HANDLE_OVERFLOW_INFIX_OPERATION(NAME, Int, jint, uint32_t, OPERATION)     \
+  JRE_HANDLE_OVERFLOW_INFIX_OPERATION(NAME, Long, jlong, uint64_t, OPERATION)   \
+  JRE_HANDLE_OVERFLOW_INFIX_OPERATION(NAME, Char, jchar, uint16_t, OPERATION)   \
+  JRE_HANDLE_OVERFLOW_INFIX_OPERATION(NAME, Short, jshort, uint16_t, OPERATION) \
+  JRE_HANDLE_OVERFLOW_INFIX_OPERATION(NAME, Byte, jbyte, uint8_t, OPERATION)
 
-JRE_HANDLE_OVERFLOW_INFIX_OPERATIONS(Int, jint, uint32_t)
-JRE_HANDLE_OVERFLOW_INFIX_OPERATIONS(Long, jlong, uint64_t)
+JRE_HANDLE_OVERFLOW_INFIX_OPERATIONS(Plus, +)
+JRE_HANDLE_OVERFLOW_INFIX_OPERATIONS(Minus, -)
+JRE_HANDLE_OVERFLOW_INFIX_OPERATIONS(Times, *)
+
+// Support for +=, -=, and *= operators handling overflow.
+#define JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGN(NAME, LHSTYPENAME, RHSTYPENAME, LHSTYPE, RHSTYPE)  \
+  __attribute__((always_inline)) inline LHSTYPE Jre##NAME##Assign##LHSTYPENAME##RHSTYPENAME(   \
+      LHSTYPE *pLhs, RHSTYPE rhs) {                                                            \
+    return *pLhs = Jre##LHSTYPENAME##NAME(*pLhs, rhs);                                         \
+  }                                                                                            \
+  __attribute__((always_inline)) inline LHSTYPE                                                \
+  Jre##NAME##AssignVolatile##LHSTYPENAME##RHSTYPENAME(volatile_##LHSTYPE *pLhs, RHSTYPE rhs) { \
+    LHSTYPE lhs = __c11_atomic_load(pLhs, __ATOMIC_SEQ_CST);                                   \
+    LHSTYPE result = Jre##LHSTYPENAME##NAME(lhs, rhs);                                         \
+    __c11_atomic_store(pLhs, result, __ATOMIC_SEQ_CST);                                        \
+    return result;                                                                             \
+  }
+
+#define JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGNS_32_64(NAME, TYPE, JTYPE) \
+  JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGN(NAME, TYPE, I, JTYPE, jint)     \
+  JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGN(NAME, TYPE, J, JTYPE, jlong)
+
+#define JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGNS(NAME)              \
+  JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGNS_32_64(NAME, Int, jint)   \
+  JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGNS_32_64(NAME, Long, jlong) \
+  JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGNS_32_64(NAME, Char, jchar) \
+  JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGNS_32_64(NAME, Byte, jbyte) \
+  JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGNS_32_64(NAME, Short, jshort)
+
+JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGNS(Plus)
+JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGNS(Minus)
+JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGNS(Times)
 
 // Support for the "==" and "!=" operators. Objective C coalescing of
 // string literals only happens with linked bundles, so the same literal string in

@@ -63,6 +63,9 @@ typedef volatile_double   volatile_jdouble;
 // bool is a macro that expands to _Bool, so add typedef for use by macros.
 typedef volatile_bool     volatile__Bool;
 
+// jchar is an alias for unichar.
+typedef volatile_jchar volatile_unichar;
+
 // Volatile object access is guarded by spin locks because of reference counting
 // so we don't use an atomic type. uintptr_t is used for the typedef mainly to
 // prevent accidental usage as a regular id type.
