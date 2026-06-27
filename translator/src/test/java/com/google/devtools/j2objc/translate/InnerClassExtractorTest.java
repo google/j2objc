@@ -215,9 +215,8 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "private class Iterator { public void remove() { elementCount--; } } }",
         "Test", "Test.m");
     assertTranslatedLines(translation, "elementCount_ = 0;");
-    assertTranslatedLines(translation,
-        "- (void)remove {",
-        "this$0_->elementCount_--;");
+    assertTranslatedLines(
+        translation, "- (void)remove {", "JrePostDecInt(&this$0_->elementCount_);");
   }
 
   public void testOuterInterfaceMethodReference() throws IOException {

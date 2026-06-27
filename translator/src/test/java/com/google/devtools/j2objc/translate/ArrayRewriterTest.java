@@ -46,12 +46,12 @@ public class ArrayRewriterTest extends GenerationTest {
     String source = "int x[] = { 0 }; ++x[0]; x[0]++; ++(x[0]); (x[0])++; ++((x[0])); ((x[0]))++;";
     List<Statement> stmts = translateStatements(source);
     assertEquals(7, stmts.size());
-    assertEquals("++(*IOSIntArray_GetRef(x, 0));", generateStatement(stmts.get(1)));
-    assertEquals("(*IOSIntArray_GetRef(x, 0))++;", generateStatement(stmts.get(2)));
-    assertEquals("++(*IOSIntArray_GetRef(x, 0));", generateStatement(stmts.get(3)));
-    assertEquals("(*IOSIntArray_GetRef(x, 0))++;", generateStatement(stmts.get(4)));
-    assertEquals("++((*IOSIntArray_GetRef(x, 0)));", generateStatement(stmts.get(5)));
-    assertEquals("((*IOSIntArray_GetRef(x, 0)))++;", generateStatement(stmts.get(6)));
+    assertEquals("JrePreIncInt(IOSIntArray_GetRef(x, 0));", generateStatement(stmts.get(1)));
+    assertEquals("JrePostIncInt(IOSIntArray_GetRef(x, 0));", generateStatement(stmts.get(2)));
+    assertEquals("JrePreIncInt(&(*IOSIntArray_GetRef(x, 0)));", generateStatement(stmts.get(3)));
+    assertEquals("JrePostIncInt(&(*IOSIntArray_GetRef(x, 0)));", generateStatement(stmts.get(4)));
+    assertEquals("JrePreIncInt(&((*IOSIntArray_GetRef(x, 0))));", generateStatement(stmts.get(5)));
+    assertEquals("JrePostIncInt(&((*IOSIntArray_GetRef(x, 0))));", generateStatement(stmts.get(6)));
   }
 
   public void testArrayCastFromGenericMethodReturn() throws IOException {

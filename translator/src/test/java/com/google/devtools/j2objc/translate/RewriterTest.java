@@ -44,9 +44,9 @@ public class RewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         "int32_t i = 0;",
-        "for (; i < 10; i++) {",
+        "for (; i < 10; JrePostIncInt(&i)) {",
         "{",
-        "for (int32_t j = 0; j < 10; j++) {",
+        "for (int32_t j = 0; j < 10; JrePostIncInt(&j)) {",
         "int32_t n = JreIntPlus(i, j);",
         "if (n == 5) goto continue_outer;",
         "else goto break_outer;",

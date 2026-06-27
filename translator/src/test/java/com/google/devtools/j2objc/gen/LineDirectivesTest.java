@@ -96,23 +96,23 @@ public class LineDirectivesTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(
         translation,
-        "for (int32_t i = 0; i < 10; i++)",
+        "for (int32_t i = 0; i < 10; JrePostIncInt(&i))",
         "#line 4",
         "if ((JreIntMod(n, 2)) == 0)",
         "#line 5",
         "JrePlusAssignIntI(&n, i);",
         "",
         "#line 7",
-        "for (int32_t j = 0; j < 100; j++)",
+        "for (int32_t j = 0; j < 100; JrePostIncInt(&j))",
         "#line 8",
-        "for (int32_t k = 0; k < 1000; k++)",
+        "for (int32_t k = 0; k < 1000; JrePostIncInt(&k))",
         "#line 9",
         "JrePlusAssignIntI(&n, JreIntPlus(j, k));",
         "",
         "#line 11",
         "while (n > 0)",
         "#line 12",
-        "n--;");
+        "JrePostDecInt(&n);");
   }
 
   public void testCombinedFileLineDirectives() throws IOException {

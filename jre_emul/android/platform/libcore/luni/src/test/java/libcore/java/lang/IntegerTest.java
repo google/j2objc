@@ -453,4 +453,168 @@ public class IntegerTest extends junit.framework.TestCase {
         vcVal *= (char) 2;
         assertEquals((char) -2, vcVal);
     }
-}
+
+    public void testIncrementDecrementOverflowWraparound() {
+        int iMaxPlusOne = Integer.MAX_VALUE;
+        iMaxPlusOne++;
+        assertEquals(Integer.MIN_VALUE, iMaxPlusOne);
+
+        int iMaxPlusOnePre = Integer.MAX_VALUE;
+        ++iMaxPlusOnePre;
+        assertEquals(Integer.MIN_VALUE, iMaxPlusOnePre);
+
+        int iMinMinusOne = Integer.MIN_VALUE;
+        iMinMinusOne--;
+        assertEquals(Integer.MAX_VALUE, iMinMinusOne);
+
+        int iMinMinusOnePre = Integer.MIN_VALUE;
+        --iMinMinusOnePre;
+        assertEquals(Integer.MAX_VALUE, iMinMinusOnePre);
+
+        long lMaxPlusOne = Long.MAX_VALUE;
+        lMaxPlusOne++;
+        assertEquals(Long.MIN_VALUE, lMaxPlusOne);
+
+        long lMaxPlusOnePre = Long.MAX_VALUE;
+        ++lMaxPlusOnePre;
+        assertEquals(Long.MIN_VALUE, lMaxPlusOnePre);
+
+        long lMinMinusOne = Long.MIN_VALUE;
+        lMinMinusOne--;
+        assertEquals(Long.MAX_VALUE, lMinMinusOne);
+
+        long lMinMinusOnePre = Long.MIN_VALUE;
+        --lMinMinusOnePre;
+        assertEquals(Long.MAX_VALUE, lMinMinusOnePre);
+
+        short sMaxPlusOne = Short.MAX_VALUE;
+        sMaxPlusOne++;
+        assertEquals(Short.MIN_VALUE, sMaxPlusOne);
+
+        short sMaxPlusOnePre = Short.MAX_VALUE;
+        ++sMaxPlusOnePre;
+        assertEquals(Short.MIN_VALUE, sMaxPlusOnePre);
+
+        short sMinMinusOne = Short.MIN_VALUE;
+        sMinMinusOne--;
+        assertEquals(Short.MAX_VALUE, sMinMinusOne);
+
+        short sMinMinusOnePre = Short.MIN_VALUE;
+        --sMinMinusOnePre;
+        assertEquals(Short.MAX_VALUE, sMinMinusOnePre);
+
+        byte bMaxPlusOne = Byte.MAX_VALUE;
+        bMaxPlusOne++;
+        assertEquals(Byte.MIN_VALUE, bMaxPlusOne);
+
+        byte bMaxPlusOnePre = Byte.MAX_VALUE;
+        ++bMaxPlusOnePre;
+        assertEquals(Byte.MIN_VALUE, bMaxPlusOnePre);
+
+        byte bMinMinusOne = Byte.MIN_VALUE;
+        bMinMinusOne--;
+        assertEquals(Byte.MAX_VALUE, bMinMinusOne);
+
+        byte bMinMinusOnePre = Byte.MIN_VALUE;
+        --bMinMinusOnePre;
+        assertEquals(Byte.MAX_VALUE, bMinMinusOnePre);
+
+        char cMaxPlusOne = Character.MAX_VALUE;
+        cMaxPlusOne++;
+        assertEquals(Character.MIN_VALUE, cMaxPlusOne);
+
+        char cMaxPlusOnePre = Character.MAX_VALUE;
+        ++cMaxPlusOnePre;
+        assertEquals(Character.MIN_VALUE, cMaxPlusOnePre);
+
+        char cMinMinusOne = Character.MIN_VALUE;
+        cMinMinusOne--;
+        assertEquals(Character.MAX_VALUE, cMinMinusOne);
+
+        char cMinMinusOnePre = Character.MIN_VALUE;
+        --cMinMinusOnePre;
+        assertEquals(Character.MAX_VALUE, cMinMinusOnePre);
+    }
+
+    public void testVolatileIncrementDecrementOverflowWraparound() {
+        vVal = Integer.MAX_VALUE;
+        vVal++;
+        assertEquals(Integer.MIN_VALUE, vVal);
+
+        vVal = Integer.MAX_VALUE;
+        ++vVal;
+        assertEquals(Integer.MIN_VALUE, vVal);
+
+        vVal = Integer.MIN_VALUE;
+        vVal--;
+        assertEquals(Integer.MAX_VALUE, vVal);
+
+        vVal = Integer.MIN_VALUE;
+        --vVal;
+        assertEquals(Integer.MAX_VALUE, vVal);
+
+        vlVal = Long.MAX_VALUE;
+        vlVal++;
+        assertEquals(Long.MIN_VALUE, vlVal);
+
+        vlVal = Long.MAX_VALUE;
+        ++vlVal;
+        assertEquals(Long.MIN_VALUE, vlVal);
+
+        vlVal = Long.MIN_VALUE;
+        vlVal--;
+        assertEquals(Long.MAX_VALUE, vlVal);
+
+        vlVal = Long.MIN_VALUE;
+        --vlVal;
+        assertEquals(Long.MAX_VALUE, vlVal);
+
+        vsVal = Short.MAX_VALUE;
+        vsVal++;
+        assertEquals(Short.MIN_VALUE, vsVal);
+
+        vsVal = Short.MAX_VALUE;
+        ++vsVal;
+        assertEquals(Short.MIN_VALUE, vsVal);
+
+        vsVal = Short.MIN_VALUE;
+        vsVal--;
+        assertEquals(Short.MAX_VALUE, vsVal);
+
+        vsVal = Short.MIN_VALUE;
+        --vsVal;
+        assertEquals(Short.MAX_VALUE, vsVal);
+
+        vbVal = Byte.MAX_VALUE;
+        vbVal++;
+        assertEquals(Byte.MIN_VALUE, vbVal);
+
+        vbVal = Byte.MAX_VALUE;
+        ++vbVal;
+        assertEquals(Byte.MIN_VALUE, vbVal);
+
+        vbVal = Byte.MIN_VALUE;
+        vbVal--;
+        assertEquals(Byte.MAX_VALUE, vbVal);
+
+        vbVal = Byte.MIN_VALUE;
+        --vbVal;
+        assertEquals(Byte.MAX_VALUE, vbVal);
+
+        vcVal = Character.MAX_VALUE;
+        vcVal++;
+        assertEquals(Character.MIN_VALUE, vcVal);
+
+        vcVal = Character.MAX_VALUE;
+        ++vcVal;
+        assertEquals(Character.MIN_VALUE, vcVal);
+
+        vcVal = Character.MIN_VALUE;
+        vcVal--;
+        assertEquals(Character.MAX_VALUE, vcVal);
+
+        vcVal = Character.MIN_VALUE;
+        --vcVal;
+        assertEquals(Character.MAX_VALUE, vcVal);
+    }
+  }

@@ -31,6 +31,7 @@ import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
+import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.ReturnStatement;
@@ -284,6 +285,26 @@ public class OperatorRewriter extends UnitTreeVisitor {
           }
         }
       }
+    }
+  }
+
+  @Override
+  public void endVisit(PrefixExpression expr) {
+    PrefixExpression.Operator op = expr.getOperator();
+    if (op == PrefixExpression.Operator.INCREMENT) {
+      rewritePostPrefixExpr(expr, expr.getOperand(), "PreInc");
+    } else if (op == PrefixExpression.Operator.DECREMENT) {
+      rewritePostPrefixExpr(expr, expr.getOperand(), "PreDec");
+    }
+  }
+
+  @Override
+  public void endVisit(PostfixExpression expr) {
+    PostfixExpression.Operator op = expr.getOperator();
+    if (op == PostfixExpression.Operator.INCREMENT) {
+      rewritePostPrefixExpr(expr, expr.getOperand(), "PostInc");
+    } else if (op == PostfixExpression.Operator.DECREMENT) {
+      rewritePostPrefixExpr(expr, expr.getOperand(), "PostDec");
     }
   }
 
@@ -656,6 +677,33 @@ public class OperatorRewriter extends UnitTreeVisitor {
         lhsPointerType, PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(lhs)));
     args.add(TreeUtil.remove(rhs));
     node.replaceWith(invocation);
+  }
+
+  private void rewritePostPrefixExpr(Expression expr, Expression operand, String expressionName) {
+    TypeMirror operandType = operand.getTypeMirror();
+    TypeKind operandKind = operandType.getKind();
+    TypeMirror operandPointerType = new PointerType(operandType);
+
+    if (operandKind != TypeKind.INT
+        && operandKind != TypeKind.LONG
+        && operandKind != TypeKind.CHAR
+        && operandKind != TypeKind.BYTE
+        && operandKind != TypeKind.SHORT) {
+      return;
+    }
+    String funcName =
+        "Jre"
+            + expressionName
+            + (isVolatile(operand) ? "Volatile" : "")
+            + NameTable.capitalize(TypeUtil.getName(operandType));
+    FunctionElement element =
+        new FunctionElement(funcName, operandType, null).addParameters(operandPointerType);
+    FunctionInvocation invocation = new FunctionInvocation(element, operandType);
+    List<Expression> args = invocation.getArguments();
+    args.add(
+        new PrefixExpression(
+            operandPointerType, PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(operand)));
+    expr.replaceWith(invocation);
   }
 
   private CStringLiteral getStrcatTypesCString(List<Expression> operands) {

@@ -1620,6 +1620,72 @@ public class StatementGeneratorTest extends GenerationTest {
         "JreTimesAssignVolatileShortJ(&vs_, j_);");
   }
 
+  public void testIncrementDecrementAllTypes() throws IOException {
+    String source =
+        "class Test { "
+            + " int i = 0; volatile int vi = 0;"
+            + " long j = 0; volatile long vj = 0;"
+            + " char c = 'a'; volatile char vc = 'a';"
+            + " byte b = 0; volatile byte vb = 0;"
+            + " short s = 0; volatile short vs = 0;"
+            + " void test() {"
+            + "   i++; vi++; ++i; ++vi;"
+            + "   i--; vi--; --i; --vi;"
+            + "   j++; vj++; ++j; ++vj;"
+            + "   j--; vj--; --j; --vj;"
+            + "   c++; vc++; ++c; ++vc;"
+            + "   c--; vc--; --c; --vc;"
+            + "   b++; vb++; ++b; ++vb;"
+            + "   b--; vb--; --b; --vb;"
+            + "   s++; vs++; ++s; ++vs;"
+            + "   s--; vs--; --s; --vs;"
+            + " }"
+            + "}";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        "JrePostIncInt(&i_);",
+        "JrePostIncVolatileInt(&vi_);",
+        "JrePreIncInt(&i_);",
+        "JrePreIncVolatileInt(&vi_);",
+        "JrePostDecInt(&i_);",
+        "JrePostDecVolatileInt(&vi_);",
+        "JrePreDecInt(&i_);",
+        "JrePreDecVolatileInt(&vi_);",
+        "JrePostIncLong(&j_);",
+        "JrePostIncVolatileLong(&vj_);",
+        "JrePreIncLong(&j_);",
+        "JrePreIncVolatileLong(&vj_);",
+        "JrePostDecLong(&j_);",
+        "JrePostDecVolatileLong(&vj_);",
+        "JrePreDecLong(&j_);",
+        "JrePreDecVolatileLong(&vj_);",
+        "JrePostIncChar(&c_);",
+        "JrePostIncVolatileChar(&vc_);",
+        "JrePreIncChar(&c_);",
+        "JrePreIncVolatileChar(&vc_);",
+        "JrePostDecChar(&c_);",
+        "JrePostDecVolatileChar(&vc_);",
+        "JrePreDecChar(&c_);",
+        "JrePreDecVolatileChar(&vc_);",
+        "JrePostIncByte(&b_);",
+        "JrePostIncVolatileByte(&vb_);",
+        "JrePreIncByte(&b_);",
+        "JrePreIncVolatileByte(&vb_);",
+        "JrePostDecByte(&b_);",
+        "JrePostDecVolatileByte(&vb_);",
+        "JrePreDecByte(&b_);",
+        "JrePreDecVolatileByte(&vb_);",
+        "JrePostIncShort(&s_);",
+        "JrePostIncVolatileShort(&vs_);",
+        "JrePreIncShort(&s_);",
+        "JrePreIncVolatileShort(&vs_);",
+        "JrePostDecShort(&s_);",
+        "JrePostDecVolatileShort(&vs_);",
+        "JrePreDecShort(&s_);",
+        "JrePreDecVolatileShort(&vs_);");
+  }
+
   public void testRegisterVariableName() throws IOException {
     String source = "int register = 42;";
     List<Statement> stmts = translateStatements(source);
@@ -2088,7 +2154,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        for (int32_t i = 0; i < 10; i++) {
+        for (int32_t i = 0; i < 10; JrePostIncInt(&i)) {
         }
         """);
   }
@@ -2110,7 +2176,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        for (int32_t i = 0; i < 10; i++) {
+        for (int32_t i = 0; i < 10; JrePostIncInt(&i)) {
           @autoreleasepool {
           }
         }
@@ -2152,7 +2218,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        for (int32_t i = 0; i < 10; i++) {
+        for (int32_t i = 0; i < 10; JrePostIncInt(&i)) {
           @autoreleasepool {
           }
         }

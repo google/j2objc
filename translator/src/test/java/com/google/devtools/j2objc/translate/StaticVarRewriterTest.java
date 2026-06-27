@@ -57,10 +57,11 @@ public class StaticVarRewriterTest extends GenerationTest {
         "class Test { static int i = 5; static Test getTest() { return null; } "
         + " static void test() { Test t = new Test(); int a = t.i; int b = getTest().i; "
         + " int c = getTest().i++; int d = getTest().i = 6; } }", "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "int32_t a = Test_i;",
         "int32_t b = (Test_getTest(), Test_i);",
-        "int32_t c = (*(Test_getTest(), &Test_i))++;",
+        "int32_t c = JrePostIncInt((Test_getTest(), &Test_i));",
         "int32_t d = *(Test_getTest(), &Test_i) = 6;");
   }
 
@@ -70,10 +71,11 @@ public class StaticVarRewriterTest extends GenerationTest {
         + " static Test getTest() { return null; } "
         + " static void test() { Test t = new Test(); int a = t.i; int b = getTest().i; "
         + " int c = getTest().i++; int d = getTest().i = 6; } } }", "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "int32_t a = JreLoadStatic(Test, i);",
         "int32_t b = (Test_Inner_getTest(), JreLoadStatic(Test, i));",
-        "int32_t c = (*(Test_Inner_getTest(), JreLoadStaticRef(Test, i)))++;",
+        "int32_t c = JrePostIncInt((Test_Inner_getTest(), JreLoadStaticRef(Test, i)));",
         "int32_t d = *(Test_Inner_getTest(), JreLoadStaticRef(Test, i)) = 6;");
   }
 

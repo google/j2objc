@@ -184,7 +184,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "    final int myFoo = foo++; }}",
         "Example", "Example.m");
     assertInTranslation(translation, "int32_t Example_Inner_foo = 1");
-    assertInTranslation(translation, "myFoo_ = Example_Inner_foo++");
+    assertInTranslation(translation, "myFoo_ = JrePostIncInt(&Example_Inner_foo)");
   }
 
   public void testStaticVariableWithGenericTypeCast() throws IOException {
@@ -259,7 +259,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       "Color", "Color.m");
     assertInTranslation(translation, "Color *Color_values_[3];");
     assertInTranslation(translation, "@implementation Color");
-    assertInTranslation(translation, "for (int32_t i = 0; i < 3; i++) {");
+    assertInTranslation(translation, "for (int32_t i = 0; i < 3; JrePostIncInt(&i)) {");
     assertInTranslation(translation, "Color *e = Color_values_[i];");
     assertInTranslation(
         translation,

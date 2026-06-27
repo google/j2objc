@@ -255,9 +255,7 @@ JreFpToLong(jdouble d) {
   jlong result;
   // %x0 = 64-bit general purpose register
   // %d1 = 64-bit floating-point (SIMD) register
-  __asm__("fcvtzs %x0, %d1"
-          : "=r"(result)
-          : "w"(d));
+  __asm__("fcvtzs %x0, %d1" : "=r"(result) : "w"(d));
   return result;
 #else
   if (__builtin_expect(isnan(d), 0)) {
@@ -488,6 +486,39 @@ JRE_HANDLE_OVERFLOW_INFIX_OPERATIONS(Times, *)
 JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGNS(Plus)
 JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGNS(Minus)
 JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGNS(Times)
+
+// Support for ++ and -- operators handling overflow.
+#define JRE_HANDLE_OVERFLOW_POSTPREFIX_OPERATOR(TYPENAME, TYPE, OPNAME, OPERATION)        \
+  __attribute__((always_inline)) inline TYPE JrePost##OPNAME##TYPENAME(TYPE *pLhs) {      \
+    TYPE result = *pLhs;                                                                  \
+    *pLhs = Jre##TYPENAME##OPERATION(result, 1);                                          \
+    return result;                                                                        \
+  }                                                                                       \
+  __attribute__((always_inline)) inline TYPE JrePre##OPNAME##TYPENAME(TYPE *pLhs) {       \
+    return *pLhs = Jre##TYPENAME##OPERATION(*pLhs, 1);                                    \
+  }                                                                                       \
+  __attribute__((always_inline)) inline TYPE JrePost##OPNAME##Volatile##TYPENAME(         \
+      volatile_##TYPE *pLhs) {                                                            \
+    TYPE result = __c11_atomic_load(pLhs, __ATOMIC_SEQ_CST);                              \
+    __c11_atomic_store(pLhs, Jre##TYPENAME##OPERATION(result, 1), __ATOMIC_SEQ_CST);      \
+    return result;                                                                        \
+  }                                                                                       \
+  __attribute__((always_inline)) inline TYPE JrePre##OPNAME##Volatile##TYPENAME(          \
+      volatile_##TYPE *pLhs) {                                                            \
+    TYPE result = Jre##TYPENAME##OPERATION(__c11_atomic_load(pLhs, __ATOMIC_SEQ_CST), 1); \
+    __c11_atomic_store(pLhs, result, __ATOMIC_SEQ_CST);                                   \
+    return result;                                                                        \
+  }
+
+#define JRE_HANDLE_OVERFLOW_POSTPREFIX_OPERATORS(TYPENAME, TYPE)     \
+  JRE_HANDLE_OVERFLOW_POSTPREFIX_OPERATOR(TYPENAME, TYPE, Inc, Plus) \
+  JRE_HANDLE_OVERFLOW_POSTPREFIX_OPERATOR(TYPENAME, TYPE, Dec, Minus)
+
+JRE_HANDLE_OVERFLOW_POSTPREFIX_OPERATORS(Int, jint)
+JRE_HANDLE_OVERFLOW_POSTPREFIX_OPERATORS(Long, jlong)
+JRE_HANDLE_OVERFLOW_POSTPREFIX_OPERATORS(Char, jchar)
+JRE_HANDLE_OVERFLOW_POSTPREFIX_OPERATORS(Byte, jbyte)
+JRE_HANDLE_OVERFLOW_POSTPREFIX_OPERATORS(Short, jshort)
 
 // Support for the "==" and "!=" operators. Objective C coalescing of
 // string literals only happens with linked bundles, so the same literal string in
