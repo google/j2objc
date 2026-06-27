@@ -130,12 +130,12 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
           NSString *s = nil;
           return JreRetainedLocalValue([tmp =\
               create_NSObject_init() isKindOfClass:[JavaLangInteger class]]\
-                  && (n = (JavaLangInteger *) tmp, true)\
-                  && [tmp_1 = create_NSObject_init() isKindOfClass:[NSString class]]\
-                  && (s = (NSString *) tmp_1, true)\
-                      ? JavaLangInteger_valueOfWithInt_([((NSString *) nil_chk(s)) java_length]\
-                         + [((JavaLangInteger *) nil_chk(n)) intValue])\
-                      : JavaLangInteger_valueOfWithInt_(0));
+              && (n = (JavaLangInteger *) tmp, true)\
+              && [tmp_1 = create_NSObject_init() isKindOfClass:[NSString class]]\
+              && (s = (NSString *) tmp_1, true) ?\
+                  JavaLangInteger_valueOfWithInt_(JreIntPlus([((NSString *) nil_chk(s)) java_length],\
+                  [((JavaLangInteger *) nil_chk(n)) intValue]))\
+                : JavaLangInteger_valueOfWithInt_(0));
         }
         """);
 
@@ -154,8 +154,8 @@ public class InstanceOfPatternRewriterTest extends GenerationTest {
                   && (n = (JavaLangInteger *) tmp, true)\
                   && [tmp_1 = create_NSObject_init() isKindOfClass:[NSString class]]\
                   && (s = (NSString *) tmp_1, true)\
-                ? [((NSString *) nil_chk(s)) java_length]\
-                    + [((JavaLangInteger *) nil_chk(n)) intValue]\
+                  ? JreIntPlus([((NSString *) nil_chk(s)) java_length],\
+                    [((JavaLangInteger *) nil_chk(n)) intValue])\
                 : 0;
             }
           }();

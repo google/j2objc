@@ -30,7 +30,7 @@ public class CastResolverTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { int foo; static class Other<T extends Test> {"
         + " int test(T t) { return t.foo + t.foo; } } }", "Test", "Test.m");
-    assertInTranslation(translation, "return ((Test *) nil_chk(t))->foo_ + t->foo_;");
+    assertInTranslation(translation, "return JreIntPlus(((Test *) nil_chk(t))->foo_, t->foo_);");
   }
 
   public void testIntCastInStringConcatenation() throws IOException {

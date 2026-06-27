@@ -369,7 +369,8 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "    public int foo() { return i + j; } } }",
         "Test", "Test.m");
     assertInTranslation(translation, "Test *this$1"); // Inner2's outer reference.
-    assertInTranslation(translation, "[((JavaLangInteger *) nil_chk(this$1_->i_)) intValue] + j_");
+    assertInTranslation(
+        translation, "JreIntPlus([((JavaLangInteger *) nil_chk(this$1_->i_)) intValue], j_)");
   }
 
   public void testInnerClassInstantiatesAnotherInner() throws IOException {

@@ -94,7 +94,8 @@ public class LineDirectivesTest extends GenerationTest {
         + "      n--;"
         + "  }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "for (int32_t i = 0; i < 10; i++)",
         "#line 4",
         "if ((JreIntMod(n, 2)) == 0)",
@@ -106,7 +107,7 @@ public class LineDirectivesTest extends GenerationTest {
         "#line 8",
         "for (int32_t k = 0; k < 1000; k++)",
         "#line 9",
-        "n += j + k;",
+        "n += JreIntPlus(j, k);",
         "",
         "#line 11",
         "while (n > 0)",
@@ -186,14 +187,15 @@ public class LineDirectivesTest extends GenerationTest {
             + "  }\n"
             + "}",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "#line 2",
         "- (int32_t)sumWithInt:(int32_t)a",
         "           withInt:(int32_t)b",
         "           withInt:(int32_t)c {",
         "",
         "#line 3",
-        "  return a + b + c;",
+        "  return JreIntPlus(JreIntPlus(a, b), c);",
         "}");
   }
 

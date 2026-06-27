@@ -260,4 +260,35 @@ public class IntegerTest extends junit.framework.TestCase {
             // range, thus we don't test for such cases.
         }
     }
+
+    public void testIntegerOverflowWraparound() {
+        int maxPlusOne = Integer.MAX_VALUE + 1;
+        assertEquals(Integer.MIN_VALUE, maxPlusOne);
+
+        int minMinusOne = Integer.MIN_VALUE - 1;
+        assertEquals(Integer.MAX_VALUE, minMinusOne);
+
+        int doubleMin = Integer.MIN_VALUE + Integer.MIN_VALUE;
+        assertEquals(0, doubleMin);
+
+        int subMin = Integer.MIN_VALUE - Integer.MIN_VALUE;
+        assertEquals(0, subMin);
+    }
+
+    public void testIntegerMultiplicationOverflowWraparound() {
+        int maxTimesTwo = Integer.MAX_VALUE * 2;
+        assertEquals(-2, maxTimesTwo);
+
+        int maxTimesMax = Integer.MAX_VALUE * Integer.MAX_VALUE;
+        assertEquals(1, maxTimesMax);
+
+        int minTimesTwo = Integer.MIN_VALUE * 2;
+        assertEquals(0, minTimesTwo);
+
+        int minTimesMinusOne = Integer.MIN_VALUE * -1;
+        assertEquals(Integer.MIN_VALUE, minTimesMinusOne);
+
+        int minTimesMin = Integer.MIN_VALUE * Integer.MIN_VALUE;
+        assertEquals(0, minTimesMin);
+    }
 }

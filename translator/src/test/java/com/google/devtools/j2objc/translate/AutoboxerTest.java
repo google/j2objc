@@ -166,14 +166,14 @@ public class AutoboxerTest extends GenerationTest {
     String source = "Integer test = new Integer(5); int result = test + 3;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(1));
-    assertEquals("int32_t result = [test intValue] + 3;", result);
+    assertEquals("int32_t result = JreIntPlus([test intValue], 3);", result);
   }
 
   public void testInfixRightOperand() throws IOException {
     String source = "Integer test = new Integer(5); int result = 3 + test;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(1));
-    assertEquals("int32_t result = 3 + [test intValue];", result);
+    assertEquals("int32_t result = JreIntPlus(3, [test intValue]);", result);
   }
 
   public void testInfixBothOperands() throws IOException {
@@ -181,7 +181,7 @@ public class AutoboxerTest extends GenerationTest {
         "Integer foo = new Integer(5); Integer bar = new Integer(3); int result = foo + bar;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(2));
-    assertEquals("int32_t result = [foo intValue] + [bar intValue];", result);
+    assertEquals("int32_t result = JreIntPlus([foo intValue], [bar intValue]);", result);
   }
 
   public void testInfixNeitherOperand() throws IOException {
@@ -189,7 +189,7 @@ public class AutoboxerTest extends GenerationTest {
     String source = "int result = 3 + 5;";
     List<Statement> stmts = translateStatements(source);
     String result = generateStatement(stmts.get(0));
-    assertEquals("int32_t result = 3 + 5;", result);
+    assertEquals("int32_t result = JreIntPlus(3, 5);", result);
   }
 
   public void testVariableDeclaration() throws IOException {
@@ -565,7 +565,9 @@ public class AutoboxerTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(translation, "int32_t i3 = 1 + 2 + [i1 intValue] + [i2 intValue]");
+    assertInTranslation(
+        translation,
+        "int32_t i3 = JreIntPlus(JreIntPlus(JreIntPlus(1, 2), [i1 intValue]), [i2 intValue])");
   }
 
   public void testUnboxOfSwitchStatementExpression() throws IOException {

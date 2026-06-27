@@ -70,9 +70,12 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { int test() { return 1 + 2 - 3 + 4 - 5 + 6 - 7 + 8 - 9; } }",
         "Test", "Test.m");
-    assertInTranslation(translation, "int32_t complex$1 = 1 + 2 - 3 + 4;");
-    assertInTranslation(translation, "int32_t complex$2 = complex$1 - 5 + 6 - 7;");
-    assertInTranslation(translation, "return complex$2 + 8 - 9;");
+    assertInTranslation(
+        translation, "int32_t complex$1 = JreIntPlus(JreIntMinus(JreIntPlus(1, 2), 3), 4);");
+    assertInTranslation(
+        translation,
+        "int32_t complex$2 = JreIntMinus(JreIntPlus(JreIntMinus(complex$1, 5), 6), 7);");
+    assertInTranslation(translation, "return JreIntMinus(JreIntPlus(complex$2, 8), 9);");
   }
 
   public void testAssignCompareExpression() throws IOException {

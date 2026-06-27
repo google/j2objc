@@ -477,7 +477,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
         """;
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertInTranslation(
-        translation, "this$0_->j_ = [((JavaLangInteger *) nil_chk(val$i_)) intValue] + 1;");
+        translation,
+        "this$0_->j_ = JreIntPlus([((JavaLangInteger *) nil_chk(val$i_)) intValue], 1);");
   }
 
   public void testEnumConstantAnonymousClassNaming() throws IOException {

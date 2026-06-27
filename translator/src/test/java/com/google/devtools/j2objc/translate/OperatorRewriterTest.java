@@ -228,7 +228,7 @@ public class OperatorRewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test(int x, int y) { "
         + "String str = \"foo\"; str += x + y; } }", "Test", "Test.m");
-    assertInTranslation(translation, "JreStrAppend(&str, \"I\", x + y);");
+    assertInTranslation(translation, "JreStrAppend(&str, \"I\", JreIntPlus(x, y));");
     translation = translateSourceFile(
         "class Test { void test(int x) { "
         + "String str = \"foo\"; str += \"bar\" + x; } }", "Test", "Test.m");
@@ -677,5 +677,137 @@ public class OperatorRewriterTest extends GenerationTest {
         "if (!JreLoadVolatileBoolean(&isClosed_)) {",
         "JreAssignVolatileBoolean(&isClosed_, true);",
         "}");
+  }
+
+  public void testIntegerAdd32() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { int add(int a, int b) { return a + b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int32_t)addWithInt:(int32_t)a",
+        "withInt:(int32_t)b {",
+        "return JreIntPlus(a, b);");
+  }
+
+  public void testIntegerAdd64() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long add(long a, long b) { return a + b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)addWithLong:(int64_t)a",
+        "withLong:(int64_t)b {",
+        "return JreLongPlus(a, b);");
+  }
+
+  public void testIntegerAdd32_64() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long add(int a, long b) { return a + b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)addWithInt:(int32_t)a",
+        "withLong:(int64_t)b {",
+        "return JreLongPlus(a, b);");
+  }
+
+  public void testIntegerAdd64_32() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long add(long a, int b) { return a + b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)addWithLong:(int64_t)a",
+        "withInt:(int32_t)b {",
+        "return JreLongPlus(a, b);");
+  }
+
+  public void testIntegerMinus32() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { int sub(int a, int b) { return a - b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int32_t)subWithInt:(int32_t)a",
+        "withInt:(int32_t)b {",
+        "return JreIntMinus(a, b);");
+  }
+
+  public void testIntegerMinus64() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long sub(long a, long b) { return a - b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)subWithLong:(int64_t)a",
+        "withLong:(int64_t)b {",
+        "return JreLongMinus(a, b);");
+  }
+
+  public void testIntegerMinus32_64() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long sub(int a, long b) { return a - b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)subWithInt:(int32_t)a",
+        "withLong:(int64_t)b {",
+        "return JreLongMinus(a, b);");
+  }
+
+  public void testIntegerMinus64_32() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long sub(long a, int b) { return a - b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)subWithLong:(int64_t)a",
+        "withInt:(int32_t)b {",
+        "return JreLongMinus(a, b);");
+  }
+
+  public void testIntegerTimes32() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { int mul(int a, int b) { return a * b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int32_t)mulWithInt:(int32_t)a",
+        "withInt:(int32_t)b {",
+        "return JreIntTimes(a, b);");
+  }
+
+  public void testIntegerTimes64() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long mul(long a, long b) { return a * b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)mulWithLong:(int64_t)a",
+        "withLong:(int64_t)b {",
+        "return JreLongTimes(a, b);");
+  }
+
+  public void testIntegerTimes32_64() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long mul(int a, long b) { return a * b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)mulWithInt:(int32_t)a",
+        "withLong:(int64_t)b {",
+        "return JreLongTimes(a, b);");
+  }
+
+  public void testIntegerTimes64_32() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long mul(long a, int b) { return a * b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)mulWithLong:(int64_t)a",
+        "withInt:(int32_t)b {",
+        "return JreLongTimes(a, b);");
   }
 }

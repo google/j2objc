@@ -33,18 +33,18 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
   public void testUnsequencedPrefixExpression() throws IOException {
     String translation = translateSourceFile(
         "class Test { void test(int i) { int j = ++i - ++i; } }", "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "int32_t unseq$1 = ++i;",
-        "int32_t j = unseq$1 - ++i;");
+    assertTranslatedLines(
+        translation, "int32_t unseq$1 = ++i;", "int32_t j = JreIntMinus(unseq$1, ++i);");
   }
 
   public void testUnsequencedAssignmentExpression() throws IOException {
     String translation = translateSourceFile(
         "class Test { int test(int[] data, int i) { return data[i += 2] + i; } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "int32_t unseq$1 = i += 2;",
-        "return IOSIntArray_Get(nil_chk(data), unseq$1) + i;");
+        "return JreIntPlus(IOSIntArray_Get(nil_chk(data), unseq$1), i);");
   }
 
   public void testUnsequencedConditionalInfixExpression() throws IOException {
@@ -57,9 +57,9 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "bool unseq$1;",
         "if (!(unseq$1 = (i == 0 || i == 1))) {",
         "  int32_t unseq$2 = ++i;",
-        "  if (!(unseq$1 = (unseq$2 + i == 2))) {",
+        "  if (!(unseq$1 = (JreIntPlus(unseq$2, i) == 2))) {",
         "    int32_t unseq$3 = i++;",
-        "    unseq$1 = (unseq$1 || unseq$3 + i == 3 || i == 4);",
+        "    unseq$1 = (unseq$1 || JreIntPlus(unseq$3, i) == 3 || i == 4);",
         "  }",
         "}",
         "return unseq$1;");
@@ -78,9 +78,9 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "  if (i == 0) {",
         "    int32_t unseq$2 = i++;",
         "    bool unseq$3;",
-        "    if (!(unseq$3 = (unseq$2 + i == 0))) {",
+        "    if (!(unseq$3 = (JreIntPlus(unseq$2, i) == 0))) {",
         "      int32_t unseq$4 = i++;",
-        "      unseq$3 = (unseq$3 || unseq$4 + i == 0);",
+        "      unseq$3 = (unseq$3 || JreIntPlus(unseq$4, i) == 0);",
         "    }",
         "    unseq$1 = unseq$3;",
         "  }",
@@ -99,9 +99,9 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "  else {",
         "    int32_t unseq$2 = i++;",
         "    bool unseq$3;",
-        "    if (!(unseq$3 = (unseq$2 + i == 0))) {",
+        "    if (!(unseq$3 = (JreIntPlus(unseq$2, i) == 0))) {",
         "      int32_t unseq$4 = i++;",
-        "      unseq$3 = (unseq$3 || unseq$4 + i == 0);",
+        "      unseq$3 = (unseq$3 || JreIntPlus(unseq$4, i) == 0);",
         "    }",
         "    unseq$1 = unseq$3;",
         "  }",
@@ -112,10 +112,11 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
   public void testWhileLoop() throws IOException {
     String translation = translateSourceFile(
         "class Test { void test(int i) { while (i + i++ < 10) {} } }", "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "while (true) {",
         "  int32_t unseq$1 = i;",
-        "  if (!(unseq$1 + i++ < 10)) break;");
+        "  if (!(JreIntPlus(unseq$1, i++) < 10)) break;");
   }
 
   // https://github.com/google/j2objc/issues/1487
@@ -135,7 +136,7 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         "int32_t unseq$1 = j = i;",
-        "return [self cmpWithInt:unseq$1 withInt:(o == nil) ? j : j * 2];");
+        "return [self cmpWithInt:unseq$1 withInt:(o == nil) ? j : JreIntTimes(j, 2)];");
   }
 
   // https://github.com/google/j2objc/issues/1487
@@ -168,13 +169,14 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test() { int i = 0, j = i++ + i, k = j, l = --k - k, m = 1; } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "int32_t i = 0;",
         "int32_t unseq$1 = i++;",
-        "int32_t j = unseq$1 + i;",
+        "int32_t j = JreIntPlus(unseq$1, i);",
         "int32_t k = j;",
         "int32_t unseq$2 = --k;",
-        "int32_t l = unseq$2 - k;",
+        "int32_t l = JreIntMinus(unseq$2, k);",
         "int32_t m = 1;");
   }
 
@@ -185,7 +187,7 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         "int32_t unseq$1 = i++;",
-        "bool unseq$2 = unseq$1 + i++ == 0;",
+        "bool unseq$2 = JreIntPlus(unseq$1, i++) == 0;",
         "int32_t unseq$3 = i++;",
         "JreAssert(unseq$2, JreStrcat(\"$II\", @\"foo\", unseq$3, i++));");
   }
@@ -195,17 +197,18 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "class Test { void test() { int i = 0, j = 0, k = 0; "
         + "for (i = i++ + i++, j = i++ + i++, k = i++ + i++;;) { } } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "int32_t i = 0;",
         "int32_t j = 0;",
         "int32_t k = 0;",
         "int32_t unseq$1 = i++;",
         "int32_t unseq$2 = i++;",
-        "i = unseq$1 + unseq$2;",
+        "i = JreIntPlus(unseq$1, unseq$2);",
         "int32_t unseq$3 = i++;",
-        "j = unseq$3 + i++;",
+        "j = JreIntPlus(unseq$3, i++);",
         "int32_t unseq$4 = i++;",
-        "for (k = unseq$4 + i++; ; ) {",
+        "for (k = JreIntPlus(unseq$4, i++); ; ) {",
         "}");
   }
 
@@ -214,12 +217,13 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "class Test { void test() { int k = 0; "
         + "for (int i = k++ + k++, j = i++ + i++;;) { } } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "int32_t k = 0;",
         "int32_t unseq$1 = k++;",
-        "int32_t i = unseq$1 + k++;",
+        "int32_t i = JreIntPlus(unseq$1, k++);",
         "int32_t unseq$2 = i++;",
-        "for (int32_t j = unseq$2 + i++; ; ) {",
+        "for (int32_t j = JreIntPlus(unseq$2, i++); ; ) {",
         "}");
   }
 
@@ -229,16 +233,17 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         + "for (int i = k++ + k++; i++ + i++ < 10; i++, k = i++ + i++) { "
         + "  String s = \"foo\" + i; } } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "int32_t k = 0;",
         "int32_t unseq$1 = k++;",
-        "for (int32_t i = unseq$1 + k++; ; ) {",
+        "for (int32_t i = JreIntPlus(unseq$1, k++); ; ) {",
         "  int32_t unseq$2 = i++;",
-        "  if (!(unseq$2 + i++ < 10)) break;",
+        "  if (!(JreIntPlus(unseq$2, i++) < 10)) break;",
         "  NSString *s = JreStrcat(\"$I\", @\"foo\", i);",
         "  i++;",
         "  int32_t unseq$3 = i++;",
-        "  k = unseq$3 + i++;",
+        "  k = JreIntPlus(unseq$3, i++);",
         "}");
   }
 
@@ -247,13 +252,14 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "class Test { void test(int i) { "
         + "if (i++ + i++ == 0) {} else if (i++ + i++ == 1) {} else {} } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "int32_t unseq$1 = i++;",
-        "if (unseq$1 + i++ == 0) {",
+        "if (JreIntPlus(unseq$1, i++) == 0) {",
         "}",
         "else {",
         "  int32_t unseq$2 = i++;",
-        "  if (unseq$2 + i++ == 1) {",
+        "  if (JreIntPlus(unseq$2, i++) == 1) {",
         "  }",
         "  else {",
         "  }",
@@ -304,6 +310,6 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
   public void testInstanceVarIsNotUnsequenced() throws IOException {
     String translation = translateSourceFile(
         "class Test { int i; void test() { this.i = this.i + this.i++; } }", "Test", "Test.m");
-    assertInTranslation(translation, "self->i_ = self->i_ + self->i_++;");
+    assertInTranslation(translation, "self->i_ = JreIntPlus(self->i_, self->i_++);");
   }
 }

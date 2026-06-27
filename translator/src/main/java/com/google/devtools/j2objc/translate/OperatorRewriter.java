@@ -67,6 +67,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Rewrites certain operators, such as object assignment, into appropriate
@@ -386,7 +387,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     }
   }
 
-  private String getAssignmentFunctionName(
+  private @Nullable String getAssignmentFunctionName(
       Assignment node, VariableElement var, boolean isRetainedWith) {
     if (!ElementUtil.isField(var)) {
       return null;
@@ -496,7 +497,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     }
   }
 
-  private String getInfixFunction(InfixExpression node) {
+  private @Nullable String getInfixFunction(InfixExpression node) {
     InfixExpression.Operator op = node.getOperator();
     TypeMirror nodeType = node.getTypeMirror();
     if (op == InfixExpression.Operator.EQUALS || op == InfixExpression.Operator.NOT_EQUALS) {
@@ -516,6 +517,24 @@ public class OperatorRewriter extends UnitTreeVisitor {
       }
      }
     switch (op) {
+      case PLUS:
+        switch (nodeType.getKind()) {
+          case INT: return "JreIntPlus";
+          case LONG: return "JreLongPlus";
+          default: return null;
+        }
+      case MINUS:
+        switch (nodeType.getKind()) {
+          case INT: return "JreIntMinus";
+          case LONG: return "JreLongMinus";
+          default: return null;
+        }
+      case TIMES:
+        switch (nodeType.getKind()) {
+          case INT: return "JreIntTimes";
+          case LONG: return "JreLongTimes";
+          default: return null;
+        }
       case DIVIDE:
         switch (nodeType.getKind()) {
           case INT: return "JreIntDiv";
@@ -719,7 +738,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     }
   }
 
-  private static String getLiteralStringValue(Expression expr) {
+  private static @Nullable String getLiteralStringValue(Expression expr) {
     switch (expr.getKind()) {
       case STRING_LITERAL:
         String literalValue = ((StringLiteral) expr).getLiteralValue();

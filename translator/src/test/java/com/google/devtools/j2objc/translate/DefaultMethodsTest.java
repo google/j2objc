@@ -59,7 +59,7 @@ public class DefaultMethodsTest extends GenerationTest {
         + "}", "Test", "Test.m");
 
     assertInTranslation(translation, "int32_t i = Foo_fWithInt_(self, x);");
-    assertInTranslation(translation, "return Foo_fWithInt_(self, y) + 1;");
+    assertInTranslation(translation, "return JreIntPlus(Foo_fWithInt_(self, y), 1);");
   }
 
   public void testSuperMethodReferenceToDefaultMethod() throws IOException {

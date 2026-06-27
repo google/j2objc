@@ -606,7 +606,7 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test",
             "Test.m");
     assertInTranslation(translation, "- (int32_t)testWithInt:(int32_t)inArg");
-    assertInTranslation(translation, "return inArg + outArg;");
+    assertInTranslation(translation, "return JreIntPlus(inArg, outArg);");
   }
 
   public void testFieldAccess() throws IOException {
@@ -1378,7 +1378,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertInTranslation(translation, "return i_ + i_B_;");
+    assertInTranslation(translation, "return JreIntPlus(i_, i_B_);");
   }
 
   public void testStaticConstants() throws IOException {
@@ -2089,7 +2089,8 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test.m");
     assertInTranslation(
         translation, "JreURShiftAssignInt(IOSIntArray_GetRef(nil_chk(array), 0), 2)");
-    assertInTranslation(translation, "JreURShiftAssignInt(IOSIntArray_GetRef(array, i - 1), 3)");
+    assertInTranslation(
+        translation, "JreURShiftAssignInt(IOSIntArray_GetRef(array, JreIntMinus(i, 1)), 3)");
     assertInTranslation(translation, "JreRShiftAssignInt(IOSIntArray_GetRef(array, 1), 4)");
     assertInTranslation(translation, "JreLShiftAssignInt(IOSIntArray_GetRef(array, 2), 5)");
   }

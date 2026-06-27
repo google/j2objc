@@ -41,12 +41,13 @@ public class RewriterTest extends GenerationTest {
         + "int n = i + j; "
         + "if (n == 5) continue outer; "
         + "else break outer; } } } }", "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "int32_t i = 0;",
         "for (; i < 10; i++) {",
         "{",
         "for (int32_t j = 0; j < 10; j++) {",
-        "int32_t n = i + j;",
+        "int32_t n = JreIntPlus(i, j);",
         "if (n == 5) goto continue_outer;",
         "else goto break_outer;",
         "}",

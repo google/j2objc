@@ -442,6 +442,23 @@ JRE_HANDLE_DIV_BY_ZERO(LongDiv, int64_t, /);
 JRE_HANDLE_DIV_BY_ZERO(IntMod, int32_t, %);
 JRE_HANDLE_DIV_BY_ZERO(LongMod, int64_t, %);
 
+// Signed overflow in C is undefined, but unsigned overflow is well defined see
+// {@link} https://en.cppreference.com/cpp/language/operator_arithmetic and
+// {@link} https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.2.2
+// Support for the +, -, and * operators handling overflow.
+#define JRE_HANDLE_OVERFLOW_INFIX_OPERATION(NAME, TYPENAME, TYPE, UNSIGNED_TYPE, OPERATION) \
+  __attribute__((always_inline)) inline TYPE Jre##TYPENAME##NAME(TYPE a, TYPE b) {          \
+    return (TYPE)((UNSIGNED_TYPE)a)OPERATION((UNSIGNED_TYPE)b);                             \
+  }
+
+#define JRE_HANDLE_OVERFLOW_INFIX_OPERATIONS(TYPENAME, TYPE, UNSIGNED_TYPE)    \
+  JRE_HANDLE_OVERFLOW_INFIX_OPERATION(Plus, TYPENAME, TYPE, UNSIGNED_TYPE, +)  \
+  JRE_HANDLE_OVERFLOW_INFIX_OPERATION(Minus, TYPENAME, TYPE, UNSIGNED_TYPE, -) \
+  JRE_HANDLE_OVERFLOW_INFIX_OPERATION(Times, TYPENAME, TYPE, UNSIGNED_TYPE, *)
+
+JRE_HANDLE_OVERFLOW_INFIX_OPERATIONS(Int, jint, uint32_t)
+JRE_HANDLE_OVERFLOW_INFIX_OPERATIONS(Long, jlong, uint64_t)
+
 // Support for the "==" and "!=" operators. Objective C coalescing of
 // string literals only happens with linked bundles, so the same literal string in
 // an app and an app extention or dynamic library will have different addresses.

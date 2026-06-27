@@ -67,7 +67,7 @@ public class SwitchRewriterTest extends GenerationTest {
     assertTrue(translation.indexOf("int32_t l;") < translation.indexOf("case 1:"));
     assertTrue(translation.indexOf("int32_t j;") < translation.indexOf("int32_t k;"));
     assertTrue(translation.indexOf("int32_t k;") < translation.indexOf("int32_t l;"));
-    assertInTranslation(translation, "j = i * 2;");
+    assertInTranslation(translation, "j = JreIntTimes(i, 2);");
     assertInTranslation(translation, "k = i;");
     assertInTranslation(translation, "l = 42;");
     assertTrue(translation.indexOf("k = i") < translation.indexOf("l = 42"));
@@ -381,7 +381,7 @@ public class SwitchRewriterTest extends GenerationTest {
             case 1:
             return second_;
             default:
-            return IOSObjectArray_Get(rest_, index - 2);
+            return IOSObjectArray_Get(rest_, JreIntMinus(index, 2));
           }
         }();
         """);
@@ -537,7 +537,7 @@ public class SwitchRewriterTest extends GenerationTest {
           switch ((int32_t) b) {
             case 2:
             {
-              Test_checkNoOverflowWithBoolean_withNSString_withLong_withLong_(k < JavaLangLong_SIZE - 1, @"checkedPow", b, k);
+              Test_checkNoOverflowWithBoolean_withNSString_withLong_withLong_(k < JreIntMinus(JavaLangLong_SIZE, 1), @"checkedPow", b, k);
               return JreLShift64(1LL, k);
             }
             default:
