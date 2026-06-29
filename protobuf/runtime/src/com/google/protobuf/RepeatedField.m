@@ -284,6 +284,7 @@ NSArray *CGPNewRepeatedFieldArray(CGPRepeatedField *field, CGPFieldJavaType type
   for (id object in list) {
     [result addObject:object];
   }
+  RELEASE_(list);
   return result;
 }
 
