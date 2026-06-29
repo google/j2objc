@@ -1993,5 +1993,158 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         }
         """);
   }
+
+  public void testSwiftName() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        public class SwiftNameTest {
+          @ObjectiveCKmpMethod(
+              selector="initWithList:",
+              adapter=Adapter.class,
+              swiftName="init(myList:)")
+          public SwiftNameTest(List<String> list) {}
+
+          @ObjectiveCKmpMethod(
+              selector="setList:",
+              adapter=Adapter.class,
+              swiftName="set(myList:)")
+          public void setList(List<String> list) {}
+
+          @ObjectiveCKmpMethod(
+              selector="staticSetList:",
+              adapter=Adapter.class,
+              swiftName="staticSet(myList:)")
+          public static void staticSetList(List<String> list) {}
+        }
+        """,
+        "SwiftNameTest.java");
+
+    String header = translateSourceFile("SwiftNameTest", "SwiftNameTest.h");
+    // ObjC methods should have NS_SWIFT_NAME
+    assertInTranslation(
+        header,
+        "- (instancetype)initWithList:(NSArray<NSString *> *)list NS_SWIFT_NAME(init(myList:));");
+    assertInTranslation(
+        header, "- (void)setList:(NSArray<NSString *> *)list NS_SWIFT_NAME(set(myList:));");
+    assertInTranslation(
+        header,
+        "+ (void)staticSetList:(NSArray<NSString *> *)list NS_SWIFT_NAME(staticSet(myList:));");
+
+    // C functions should NOT have NS_SWIFT_NAME when wrapper methods are enabled
+    assertInTranslation(
+        header,
+        "FOUNDATION_EXPORT SwiftNameTest *new_SwiftNameTest_initWithList_(NSArray<NSString *>"
+            + " *list);");
+    assertNotInTranslation(
+        header, "new_SwiftNameTest_initWithList_(NSArray<NSString *> *list) NS_SWIFT_NAME");
+    assertInTranslation(
+        header, "FOUNDATION_EXPORT void SwiftNameTest_staticSetList_(NSArray<NSString *> *list);");
+    assertNotInTranslation(
+        header, "SwiftNameTest_staticSetList_(NSArray<NSString *> *list) NS_SWIFT_NAME");
+  }
+
+  public void testSwiftNameNoWrappers() throws IOException {
+    options.load(new String[] {"--no-wrapper-methods"});
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        public class SwiftNameTestNoWrappers {
+          @ObjectiveCKmpMethod(
+              selector="initWithList:",
+              adapter=Adapter.class,
+              swiftName="init(myList:)")
+          public SwiftNameTestNoWrappers(List<String> list) {}
+
+          @ObjectiveCKmpMethod(
+              selector="setList:",
+              adapter=Adapter.class,
+              swiftName="set(myList:)")
+          public void setList(List<String> list) {}
+
+          @ObjectiveCKmpMethod(
+              selector="staticSetList:",
+              adapter=Adapter.class,
+              swiftName="staticSet(myList:)")
+          public static void staticSetList(List<String> list) {}
+        }
+        """,
+        "SwiftNameTestNoWrappers.java");
+
+    String header = translateSourceFile("SwiftNameTestNoWrappers", "SwiftNameTestNoWrappers.h");
+    // ObjC instance methods still exist and should have NS_SWIFT_NAME
+    assertInTranslation(
+        header, "- (void)setList:(NSArray<NSString *> *)list NS_SWIFT_NAME(set(myList:));");
+
+    // ObjC class methods for static methods do NOT exist when wrapper methods are disabled
+    assertNotInTranslation(header, "+ (void)staticSetList");
+
+    // C functions SHOULD have NS_SWIFT_NAME when wrapper methods are disabled
+    assertInTranslation(
+        header,
+        "FOUNDATION_EXPORT SwiftNameTestNoWrappers"
+            + " *new_SwiftNameTestNoWrappers_initWithList_(NSArray<NSString *> *list) "
+            + "NS_SWIFT_NAME(SwiftNameTestNoWrappers.init(myList:));");
+    assertInTranslation(
+        header,
+        "FOUNDATION_EXPORT void SwiftNameTestNoWrappers_staticSetList_(NSArray<NSString *> *list) "
+            + "NS_SWIFT_NAME(SwiftNameTestNoWrappers.staticSet(myList:));");
+  }
+
+  public void testPrecedenceOfObjectiveCKmpMethodSwiftName() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.j2objc.annotations.SwiftName;
+        import java.util.List;
+
+        public class PrecedenceTest {
+          @ObjectiveCKmpMethod(
+              selector="setList:",
+              adapter=Adapter.class,
+              swiftName="kmpSwiftName(myList:)")
+          @SwiftName("standaloneSwiftName(myList:)")
+          public void setList(List<String> list) {}
+        }
+        """,
+        "PrecedenceTest.java");
+
+    String header = translateSourceFile("PrecedenceTest", "PrecedenceTest.h");
+    assertInTranslation(
+        header, "- (void)setList:(NSArray<NSString *> *)list NS_SWIFT_NAME(kmpSwiftName(myList:));");
+    assertNotInTranslation(header, "standaloneSwiftName");
+  }
+
+  public void testObjectiveCKmpMethodWithSwiftNameFallback() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.j2objc.annotations.SwiftName;
+        import java.util.List;
+
+        public class FallbackTest {
+          @ObjectiveCKmpMethod(selector="initWithList:", adapter=Adapter.class)
+          @SwiftName("init(myListFallback:)")
+          public FallbackTest(List<String> list) {}
+
+          @ObjectiveCKmpMethod(selector="setList:", adapter=Adapter.class)
+          @SwiftName("set(myListFallback:)")
+          public void setList(List<String> list) {}
+        }
+        """,
+        "FallbackTest.java");
+
+    String header = translateSourceFile("FallbackTest", "FallbackTest.h");
+    assertInTranslation(
+        header,
+        "- (instancetype)initWithList:(NSArray<NSString *> *)list"
+            + " NS_SWIFT_NAME(init(myListFallback:));");
+    assertInTranslation(
+        header, "- (void)setList:(NSArray<NSString *> *)list NS_SWIFT_NAME(set(myListFallback:));");
+  }
 }
 

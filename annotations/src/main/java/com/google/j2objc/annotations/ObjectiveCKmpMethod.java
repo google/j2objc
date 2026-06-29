@@ -80,4 +80,10 @@ public @interface ObjectiveCKmpMethod {
    * The class to map types on the method to Kotlin/Native interop types. This field is required.
    */
   Class<?> adapter();
+
+  /**
+   * The Swift name to use for the adapter method. If not specified, a default Swift name will be
+   * generated based on the selector.
+   */
+  String swiftName() default "";
 }
