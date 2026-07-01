@@ -142,5 +142,24 @@ public class GenerateObjCCompanionTest extends GenerationTest {
     assertInTranslation(impl, "+ (id<FooCompanion>)companion {");
     assertInTranslation(impl, "return (id<FooCompanion>)self;");
   }
+
+  public void testCompanionPropertiesForPropertyMethods() throws IOException {
+    String source =
+        """
+        import com.google.j2objc.annotations.Property;
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        public class Foo {
+          @Property("readonly, nonnull")
+          public static String getBar() {
+            return "bar";
+          }
+        }
+        """;
+    String header = translateSourceFile(source, "Foo", "Foo.h");
+    assertInTranslation(header, "@protocol FooCompanion");
+    assertInTranslation(header, "@property (nonatomic, getter=getBar, readonly) NSString * bar;");
+    assertInTranslation(
+        header, "@property (class, nonatomic, getter=getBar, readonly) NSString * bar;");
+  }
 }
 

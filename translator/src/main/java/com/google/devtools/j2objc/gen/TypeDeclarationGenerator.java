@@ -722,7 +722,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     return true;
   }
 
-  private void printPseudoProperty(MethodDeclaration m) {
+  private void printPseudoProperty(MethodDeclaration m, boolean isKotlinCompanion) {
     ExecutableElement methodElement = m.getExecutableElement();
     String methodName = nameTable.getMethodSelector(methodElement);
     String propertyName = NameTable.lowercaseFirst(methodName.replaceFirst("get", ""));
@@ -738,12 +738,13 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
     TypeMirror returnType = m.getReturnTypeMirror();
     ExecutableElement setter =
-        ElementUtil.findSetterMethod(propertyName, returnType, declaringClass, false);
+        ElementUtil.findSetterMethod(
+            propertyName, returnType, declaringClass, ElementUtil.isStatic(methodElement));
 
     newline();
     printf(
         "@property (%snonatomic, %s, %s%s) %s %s;",
-        ElementUtil.isStatic(methodElement) ? "class, " : "",
+        ElementUtil.isStatic(methodElement) && !isKotlinCompanion ? "class, " : "",
         "getter=" + methodName,
         setter != null ? "setter=" + nameTable.getMethodSelector(setter) : "readonly",
         shouldAddNullableAnnotation(methodElement) ? ", nullable" : "",
@@ -781,7 +782,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     JavadocGenerator.printDocComment(getBuilder(), m.getJavadoc());
 
     if (canPrintPseudoProperty(m)) {
-      printPseudoProperty(m);
+      printPseudoProperty(m, isKotlinCompanion);
       return;
     }
 
