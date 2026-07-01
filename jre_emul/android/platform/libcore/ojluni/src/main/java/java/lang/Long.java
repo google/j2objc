@@ -25,6 +25,8 @@
 
 package java.lang;
 
+import com.google.j2objc.util.ReflectionUtil;
+
 /* J2ObjC removed
 import jdk.internal.vm.annotation.IntrinsicCandidate;
 */
@@ -1265,9 +1267,9 @@ public final class Long extends Number
      * @return a hash code value for a {@code long} value.
      * @since 1.8
      */
-    public static int hashCode(long value) {
-        return (int)(value ^ (value >>> 32));
-    }
+    public static native int hashCode(long value) /*-[
+        return (jint)[@(value) hash];
+    ]-*/;
 
     /**
      * Compares this object to the specified object.  The result is
@@ -1280,8 +1282,8 @@ public final class Long extends Number
      *          {@code false} otherwise.
      */
     public boolean equals(Object obj) {
-        if (obj instanceof Long) {
-            return value == ((Long)obj).longValue();
+        if (obj instanceof Long || ReflectionUtil.isObjCNumber(obj)) {
+            return value == ((Number) obj).longValue();
         }
         return false;
     }
