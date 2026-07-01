@@ -1190,7 +1190,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertInTranslation(
         translation,
         "+ (void)objcBuilderWithSize:(int32_t)expectedSize NS_SWIFT_NAME(builderWithExpectedSize(expectedSize:));");
-    assertInTranslation(translation, "- (void)objcDoAction;");
+    assertInTranslation(translation, "- (void)objcDoAction NS_SWIFT_NAME(doAction());");
   }
 
   public void testSwiftNameAnnotationWithNestedTypes() throws IOException {

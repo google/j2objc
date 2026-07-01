@@ -565,10 +565,6 @@ public class NameTable {
       return annotationName;
     }
 
-    if (method.getParameters().isEmpty()) {
-      return null;
-    }
-
     // Check if the class or package has the annotation
     TypeElement clazz = ElementUtil.getDeclaringClass(method.getExecutableElement());
     if (!packageHasSwiftNameAnnotation(clazz) && !elementHasSwiftNameAnnotation(clazz)) {
