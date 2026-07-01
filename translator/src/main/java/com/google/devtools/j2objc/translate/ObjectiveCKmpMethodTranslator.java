@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CastExpression;
+import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
@@ -42,6 +43,7 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.ThisExpression;
+import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.ExecutablePair;
@@ -164,9 +166,37 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
   // originally executed in the translator pipeline.
   @Override
   public void run() {
+    Set<AbstractTypeDeclaration> existingTypes = new HashSet<>(unit.getTypes());
     super.run();
     new LambdaTypeElementAdder(unit).run();
     new LambdaRewriter(unit).run();
+    new InnerClassExtractor(unit).run();
+
+    Functionizer functionizer = new Functionizer(unit);
+    var unused = functionizer.visit(unit);
+    InitializationNormalizer initNormalizer = new InitializationNormalizer(unit);
+
+    // Pass 1: Run Functionizer and InitializationNormalizer exclusively over newly introduced
+    // lambda type declarations created during this translation pass.
+    for (AbstractTypeDeclaration type : unit.getTypes()) {
+      if (!existingTypes.contains(type)) {
+        type.accept(functionizer);
+        type.accept(initNormalizer);
+      }
+    }
+
+    // Pass 2: Run Functionizer specifically on ClassInstanceCreation nodes across the unit.
+    // This updates newly generated lambda instantiations (e.g., inside generated adapter methods).
+    unit.accept(
+        new TreeVisitor() {
+          @Override
+          public void endVisit(ClassInstanceCreation node) {
+            functionizer.endVisit(node);
+          }
+        });
+
+    new StaticVarRewriter(unit).run();
+    new PrivateDeclarationResolver(unit).run();
   }
 
   private String getOverrideSignature(ExecutablePair method) {
@@ -775,7 +805,6 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
         ExecutableElement foundMethod,
         DeclaredType declaredType,
         boolean isParam) {
-      var adapterElement = TypeUtil.asTypeElement(adapter);
       for (int i = 1; i < foundMethod.getParameters().size(); i++) {
         if (i - 1 >= declaredType.getTypeArguments().size()) {
           break;
