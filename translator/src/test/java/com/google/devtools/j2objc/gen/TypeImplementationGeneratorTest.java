@@ -254,6 +254,28 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     assertError("Test.java:1: Swift name annotation on private type");
   }
 
+  public void testPrivateClassesWithSwiftNamingOption() throws IOException {
+    options.setSwiftNaming(true);
+    String source =
+        "public class Test { "
+            + "  private class Inner { "
+            + "       public void foo() { }"
+            + "   }"
+            + "  private Inner bar; "
+            + "}";
+
+    // Should compile without error
+    translateSourceFile(source, "Test", "Test.m");
+  }
+
+  public void testPackageInfoWithSwiftNamingOption() throws IOException {
+    options.setSwiftNaming(true);
+    // Use deprecated annotation to force package-info class generation
+    addSourceFile("@Deprecated package foo;", "foo/package-info.java");
+    // Should compile without error
+    String unused = translateSourceFile("foo.package-info", "foo/package-info.m");
+  }
+
   public void testLinkProtocolsFunctions() throws IOException {
     options.setLinkProtocols(true);
     String source =

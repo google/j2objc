@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
+import com.google.j2objc.annotations.SwiftName;
 import java.lang.reflect.Modifier;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.VariableElement;
@@ -49,7 +50,7 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
 
   private void generate() {
     if (typeNode.hasPrivateDeclaration()) {
-      if (nameTable.elementHasSwiftNameAnnotation(this.typeElement)) {
+      if (ElementUtil.getAnnotation(this.typeElement, SwiftName.class) != null) {
         ErrorUtil.error(typeNode, "Swift name annotation on private type");
       }
       generateInitialDeclaration();
