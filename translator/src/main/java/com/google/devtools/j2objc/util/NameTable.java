@@ -94,6 +94,7 @@ public class NameTable {
   // actually want the first parameter to be self. This is an internal name,
   // converted to self during generation.
   public static final String SELF_NAME = "$$self$$";
+  public static final String OUTER_NAME = "outer$";
   public static final String ID_TYPE = "id";
 
   private static final Logger logger = Logger.getLogger(NameTable.class.getName());
@@ -447,7 +448,7 @@ public class NameTable {
     for (SingleVariableDeclaration param : parameters) {
       String paramName = getVarBaseName(param.getVariableElement(), true);
       // Sometimes they don't have real arguments names so we'll use underscore
-      if (paramName.isEmpty() || paramName.equals(SELF_NAME)) {
+      if (paramName.isEmpty() || paramName.equals(SELF_NAME) || paramName.equals(OUTER_NAME)) {
         sb.append("_").append(delim);
       } else {
         sb.append(paramName).append(delim);

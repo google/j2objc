@@ -1662,4 +1662,24 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String implFile = getTranslatedFile("foo/ObjectiveCAdapterMethod.m");
     assertInTranslation(implFile, "ObjectiveCAdapterMethod_Adaptation_Enum");
   }
+
+  public void testSwiftNameInnerClassConstructor() throws IOException {
+    options.setSwiftNaming(true);
+    addSourceFile(
+        """
+        package com.foo.bar;
+        public class Outer {
+          public class Inner {
+            public Inner() {}
+          }
+        }
+        """,
+        "com/foo/bar/Outer.java");
+    String translation = translateSourceFile("com.foo.bar.Outer", "com/foo/bar/Outer.h");
+    // The implicit outer parameter "outer$" should be mapped to "_" (positional) in Swift name.
+    assertInTranslation(
+        translation,
+        "- (instancetype)initWithComFooBarOuter:(ComFooBarOuter *)outer$"
+            + " NS_SWIFT_NAME(init(_:));");
+  }
 }
