@@ -1448,3 +1448,462 @@ intellectual property laws of the United States of America. No party to this
 Agreement will bring a legal action under this Agreement more than one year
 after the cause of action arose. Each party waives its rights to a jury trial
 in any resulting litigation. 
+----
+
+File: jre_emul/android/platform/external/icu/android_icu4j/src/main/tests/android/icu/dev/test/stringprep/PunycodeReference.java
+
+
+
+Copyright (C) 2003-2007, International Business Machines Corporation and    *
+others. All Rights Reserved.                                                *
+
+Disclaimer and license
+
+    Regarding this entire document or any portion of it (including
+    the pseudocode and C code), the author makes no guarantees and
+    is not responsible for any damage resulting from its use.  The
+    author grants irrevocable permission to anyone to use, modify,
+    and distribute it in any way that does not diminish the rights
+    of anyone else to use, modify, and distribute it, provided that
+    redistributed derivative works do not contain misleading author or
+    version information.  Derivative works need not be licensed under
+    similar terms.
+
+----
+
+File: jre_emul/android/platform/libcore/jsr166-tests/src/test/java/jsr166/AbstractExecutorServiceTest.java
+
+Written by Doug Lea with assistance from members of JCP JSR-166
+Expert Group and released to the public domain, as explained at
+http://creativecommons.org/publicdomain/zero/1.0/
+Other contributors include Andrew Wright, Jeffrey Hayes,
+Pat Fisher, Mike Judd.
+
+----
+
+File: jre_emul/android/platform/libcore/luni/src/main/java/org/w3c/dom/Attr.java
+
+Copyright (c) 2004 World Wide Web Consortium,
+
+(Massachusetts Institute of Technology, European Research Consortium for
+Informatics and Mathematics, Keio University). All Rights Reserved. This
+work is distributed under the W3C(r) Software License [1] in the hope that
+it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+[1] http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
+
+
+W3C SOFTWARE NOTICE AND LICENSE
+
+This work (and included software, documentation such as READMEs, or other related items) is being provided by the copyright holders under the following license.
+
+License
+
+By obtaining, using and/or copying this work, you (the licensee) agree that you have read, understood, and will comply with the following terms and conditions.
+
+Permission to copy, modify, and distribute this software and its documentation, with or without modification, for any purpose and without fee or royalty is hereby granted, provided that you include the following on ALL copies of the software and documentation or portions thereof, including modifications:
+
+     The full text of this NOTICE in a location viewable to users of the redistributed or derivative work.
+
+     Any pre-existing intellectual property disclaimers, notices, or terms and conditions. If none exist, the W3C Software Short Notice should be included (hypertext is preferred, text is permitted) within the body of any redistributed or derivative code.
+
+     Notice of any changes or modifications to the files, including the date changes were made. (We recommend you provide URIs to the location from which the code is derived.)
+
+Disclaimers
+
+THIS SOFTWARE AND DOCUMENTATION IS PROVIDED "AS IS," AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF THE SOFTWARE OR DOCUMENTATION WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+
+COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE SOFTWARE OR DOCUMENTATION.
+
+The name and trademarks of copyright holders may NOT be used in advertising or publicity pertaining to the software without specific, written prior permission. Title to copyright in this software and any associated documentation will at all times remain with copyright holders.
+
+Notes
+
+This version: http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
+
+This formulation of W3C's notice and license became active on December 31 2002. This version removes the copyright ownership notice such that this license can be used with materials other than those owned by the W3C, reflects that ERCIM is now a host of the W3C, includes references to this specific dated version of the license, and removes the ambiguous grant of "use". Otherwise, this version is the same as the previous version and is written so as to preserve the Free Software Foundation's assessment of GPL compatibility and OSI's certification under the Open Source Definition.
+
+
+----
+
+File: jre_emul/android/platform/libcore/luni/src/main/java/org/xml/sax/AttributeList.java
+
+SAX Attribute List Interface.
+http://www.saxproject.org
+No warranty; no copyright -- use this as you will.
+
+SAX is free!
+
+In fact, it's not possible to own a license to SAX, since it's been placed in the public domain.
+
+No Warranty
+
+Because SAX is released to the public domain, there is no warranty for the design or for the software implementation, to the extent permitted by applicable law. Except when otherwise stated in writing the copyright holders and/or other parties provide SAX "as is" without warranty of any kind, either expressed or implied, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose. The entire risk as to the quality and performance of SAX is with you. Should SAX prove defective, you assume the cost of all necessary servicing, repair or correction.
+
+In no event unless required by applicable law or agreed to in writing will any copyright holder, or any other party who may modify and/or redistribute SAX, be liable to you for damages, including any general, special, incidental or consequential damages arising out of the use or inability to use SAX (including but not limited to loss of data or data being rendered inaccurate or losses sustained by you or third parties or a failure of the SAX to operate with any other programs), even if such holder or other party has been advised of the possibility of such damages.
+
+Copyright Disclaimers
+
+This page includes statements to that effect by David Megginson, who would have been able to claim copyright for the original work.
+
+SAX 1.0
+
+Version 1.0 of the Simple API for XML (SAX), created collectively by the membership of the XML-DEV mailing list, is hereby released into the public domain.
+
+No one owns SAX: you may use it freely in both commercial and non-commercial applications, bundle it with your software distribution, include it on a CD-ROM, list the source code in a book, mirror the documentation at your own web site, or use it in any other way you see fit.
+
+David Megginson, Megginson Technologies Ltd.
+1998-05-11
+
+SAX 2.0
+
+I hereby abandon any property rights to SAX 2.0 (the Simple API for XML), and release all of the SAX 2.0 source code, compiled code, and documentation contained in this distribution into the Public Domain. SAX comes with NO WARRANTY or guarantee of fitness for any purpose.
+
+David Megginson, Megginson Technologies Ltd.
+2000-05-05
+
+----
+
+Files: protobuf/*
+
+Copyright 2014, Google Inc.  All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+    * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above
+copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or other materials provided with the
+distribution.
+    * Neither the name of Google Inc. nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Code generated by the Protocol Buffer compiler is owned by the owner
+of the input file used when generating it.  This code is not
+standalone and requires a support library to be linked with it.  This
+support library is itself covered by the above license.
+
+---
+
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright [yyyy] [name of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its contributors
+  may be used to endorse or promote products derived from this software
+  without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+----
+
+Files: jre_emul/android/platform/external/icu/android_icu4j/src/main/tests/android/icu/dev/data/CollationTest_NON_IGNORABLE_SHORT.txt
+
+© 2016 Unicode®, Inc.
+Unicode and the Unicode Logo are registered trademarks of Unicode, Inc. in the U.S. and other countries.
+For terms of use, see http://www.unicode.org/terms_of_use.html
+
+Welcome to the website of Unicode, Inc. (dba The Unicode Consortium) (“Unicode”). Except as otherwise noted herein, these terms and conditions (“Terms of Use”) govern your use of the Unicode website and Unicode Products. Your use of this website and/or Unicode Products constitutes your agreement to follow and be bound by these Terms of Use. Unicode provides you with access to and use of this website and Unicode Products subject to your compliance with these Terms of Use. If you do not agree to these Terms of Use, you should not access or use this website or Unicode Products. Unicode reserves the right to make changes to the website, to Unicode Products, and to these Terms of Use at any time in its sole discretion.
+
+1. Unicode Copyright: Copyright © 1991-Present Unicode, Inc.
+
+2. Definitions
+  a. “Unicode Products” includes the Unicode website and its content, Data Files, Software, the Unicode Standard, all other Unicode standards, specifications, technical reports, technical notes, annexes, code charts, data files, software, publications, webinars, videos, course materials, online and in-person events, and all other Unicode products and services made available via this website or any other channel of distribution, including but not limited to Github, Maven, YouTube, and other third-party sites where Unicode maintains and provides products, materials, and services.
+
+  b. “Unicode Data Files” or "Data Files" include all computer data files under the following directories:
+
+    i. https://www.unicode.org/Public/
+    ii. https://www.unicode.org/reports/
+    iii. https://www.unicode.org/ivd/data/
+    iv. https://github.com/unicode-org/
+
+  but exclude any materials present in the above directories that are not computer data files, such as PDF code charts and Technical Reports.
+
+  c. “Unicode Software” or "Software" includes any source code or compiled code in any Unicode Product including but not limited to the code included in the following directories:
+
+    i. https://www.unicode.org/Public/PROGRAMS/
+    ii. https://www.unicode.org/Public/cldr/
+    iii. https://github.com/unicode-org/
+
+3. Permissions, Licenses, and Restrictions on Use
+
+  a. You are authorized to freely access and use this website and its content and all Unicode Products subject to these Terms of Use and subject to any restriction, permission, or license specifically associated with any specific material or content. No license is granted to copy or "mirror" this website. Linking to this website is permitted.
+
+  b. Except where otherwise more broadly permitted or licensed:
+
+    1. you may not make copies of or modifications to Unicode Products for public distribution, or incorporate Unicode Products in whole or in part into any product or publication, or otherwise publicly distribute them, without the express written permission of Unicode, and
+
+    2. you may not copy or extract fonts or font data from any Unicode Products, including but not limited to Unicode Code Charts.
+
+  c. All Unicode Data Files and Unicode Software are subject to the terms and conditions of the free and open-source Unicode License v3, unless otherwise indicated by specific restriction, permission, or license identified at the point of release or in such software, data file, or other documentation.
+
+  d. You may freely download and make copies of the Unicode® Standard Core Specification, Unicode Technical Reports, Unicode Technical Notes, Unicode Code Charts, and other portions of this website and may annotate and translate such permitted downloads and copies, provided that such downloads, copies, annotations, and translations are solely for personal or internal business purposes and not for public distribution, and further provided that any permitted copies and modifications fully reproduce all copyright and other legal notices contained in the original. Notwithstanding the foregoing, specific versions of the Unicode® Standard Core Specification, Unicode Technical Reports, Unicode Technical Notes, and Unicode Code Charts, as well as other Unicode publications, materials, and portions of this website may be subject to broader permissions and/or further reservations of rights and restrictions on use found in the title pages, cover sheets, front matter, and/or footnotes for each such version, report, chart, or other publication or material. Consult each version, report, chart, or other publication or material for any such permissions and further reservations of rights and restrictions on use.
+
+4. Restricted Rights Legend. Any Unicode Data Files or Software that are licensed to the United States of America, its agencies and/or instrumentalities under these Terms of Use is commercial technical data or commercial computer software developed exclusively at private expense as defined in FAR 2.101, or DFARS 252.227-7014, as applicable. For Unicode Data Files, use, duplication, or disclosure by the Government is subject to restrictions as set forth in DFARS 202.227-7015 Technical Data, Commercial and Items and these Terms of Use. For Unicode Software, in accordance with FAR 12-212 or DFARS 227-7202, as applicable, use, duplication or disclosure by the Government is subject to the restrictions set forth in these Terms of Use.
+
+5. Disclaimer of Warranties & Limitation of Liability
+
+  a. This website and the Unicode Products are provided “AS-IS” without charge as a convenience to visitors and users. While Unicode attempts to provide accurate, error-free, and timely information, there may be technical or factual inaccuracies and typographical or other errors in this website and in the Unicode Products. Unicode reserves the right to make corrections and changes to the website and the Unicode Products at any time without notice.
+
+  b. YOU ASSUME ALL RESPONSIBILITY AND RISK WITH RESPECT TO YOUR USE OF THIS WEBSITE AND THE UNICODE PRODUCTS, WHICH ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND EITHER EXPRESS, IMPLIED, OR STATUTORY, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF ACCURACY, COMPLETENESS, TITLE, MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT OF THIRD PARTY RIGHTS. UNICODE AND ITS LICENSORS AND CONTRIBUTORS ASSUME NO RESPONSIBILITY FOR ERRORS OR OMISSIONS IN THIS WEBSITE AND/OR THE UNICODE PRODUCTS. IF YOU ARE DISSATISFIED WITH THIS WEBSITE OR THE UNICODE PRODUCTS, YOUR SOLE REMEDY IS TO DISCONTINUE USE OF THE WEBSITE AND THE UNICODE PRODUCTS.
+
+  c. IN NO EVENT SHALL UNICODE, ITS MEMBERS, OR ITS LICENSORS OR CONTRIBUTORS BE LIABLE FOR ANY CLAIM OR DAMAGES WHATSOEVER OF ANY KIND, WHETHER DIRECT, INDIRECT, SPECIAL, INCIDENTAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, WHETHER OR NOT UNICODE WAS ADVISED OF THE POSSIBILITY OF SUCH DAMAGE, INCLUDING BUT NOT LIMITED TO DAMAGE RESULTING FROM LOSS OF USE, DATA, OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE, OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE, INABILITY TO USE, PERFORMANCE, FUNCTIONALITY, MODIFICATION, OR DISTRIBUTION OF THIS WEBSITE, THE UNICODE PRODUCTS, OR ANY DERIVATIVES THEREOF.
+
+  d. Unicode makes no warranties or representations of any kind regarding any non-Unicode sites to which you may be directed or hyperlinked from this website. Hyperlinks are included solely for your convenience and Unicode makes no warranties or representations with regard to the accuracy, availability, suitability, or safety of information, products, or services provided on such non-Unicode sites.
+
+6. Intellectual Property Contributions to Unicode. All contributions or submissions to Unicode are governed by The Unicode Consortium Intellectual Property, Licensing & Technical Contribution Policies. If you wish to make any contribution or submission to Unicode, refer to the foregoing Policies for further information on how to do so. In the absence of a signed contributor license or other agreement with Unicode that expressly governs a particular contribution or submission, the act of making a contribution or submission of any kind to Unicode by any communication channel constitutes a binding legal agreement by the contributor or submitter that they:
+
+  a. represent and agree that the contributed matter is not proprietary or confidential to the contributor or any third party, and
+
+  b. grant to Unicode and to recipients of products distributed by Unicode a perpetual, irrevocable, unrestricted, worldwide, nonexclusive, no-charge, royalty-free license, without obligation for accounting, to reproduce, prepare derivative works of, publicly display, publicly perform, distribute, make, use, sell, offer to sell, or import that matter for any purpose, with the unrestricted right to sublicense those rights.
+
+7. Compliance with Unicode Policies. These Terms of Use hereby incorporate by reference the following Unicode Policies. Your use of this website and/or Unicode Products and/or your participation in Unicode activities constitutes your agreement to these Policies which may be modified at any time in Unicode’s sole discretion:
+
+  a. The Unicode Consortium Code of Conduct
+  b. The Unicode Consortium Antitrust Policy & Guidelines
+  c. The Unicode Consortium Intellectual Property, Licensing & Technical Contribution Policies
+  d. The Unicode Consortium Name and Trademark Usage Policy
+  e. The Unicode Consortium Policy on Handling of Confidential Business Data
+  f. The Unicode Consortium General Privacy Policy
+  g. The Unicode Technical Group Procedures
+
+8. Trademarks & Logos. The Unicode Word Mark and the Unicode Logo are trademarks of Unicode, Inc. “The Unicode Consortium'' and “Unicode, Inc.” are trade names of Unicode, Inc. You hereby acknowledge and agree to respect Unicode’s exclusive worldwide rights in the Unicode Word Mark, the Unicode Logo, and the Unicode trade names. The Unicode Consortium Name and Trademark Usage Policy is incorporated herein by reference and you agree to abide by its provisions, which may be changed from time to time in Unicode’s sole discretion.
+
+9. Jurisdiction and Venue. This website is operated from, and the Unicode Products are made available from, locations in the United States of America. Unicode makes no representation that this website or Unicode Products are appropriate for use in other locations. If you access this website or the Unicode Products from other locations, you are responsible for compliance with local laws. These Terms of Use, all use of this website and Unicode Products, and any claims and damages resulting from use of this website or Unicode Products, are governed by the applicable laws of the United States of America and the State of California without regard to any principles which would apply the laws of different jurisdictions. You agree that any disputes regarding this website and the Unicode Products shall be resolved solely in the appropriate state and federal courts located in the counties of San Francisco, San Mateo, or Santa Clara, California. You agree that these courts have personal jurisdiction over you and agree to waive any right to transfer the dispute to any other forum.
+
+10. Severability. If any provision of these Terms of Use is declared invalid or unenforceable, the remaining provisions of these Terms of Use shall remain in effect.
