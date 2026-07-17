@@ -88,6 +88,9 @@ const std::set<absl::string_view> kKeywords = {
     "break",
     "case",
     "class",
+    // Avoid clashes with the kotlin-compatibility companion object when
+    // "swiftifying" enum members (PARTICIPATION_MODE_COMPANION -> companion).
+    "companion",
     "concept",
     "const",
     "continue",
