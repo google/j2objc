@@ -358,7 +358,14 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         VariableElement var = fragment.getVariableElement();
         TypeMirror type = var.asType();
         String accessorName = nameTable.getStaticAccessorName(var);
-        String objcType = paddedType(nameTable.getObjCTypeDeclaration(type), var).trim();
+        boolean allowGenerics = !typeUtil.isProtoClass(type);
+        boolean enableGenerics =
+            allowGenerics
+                && (generateObjectiveCGenerics(type)
+                    || generateObjectiveCGenerics(typeElement.asType()));
+        String objcType =
+            paddedType(nameTable.getObjCTypeDeclaration(type, enableGenerics, typeElement), var)
+                .trim();
         TypeElement declaringClass = ElementUtil.getDeclaringClass(var);
         String baseName = nameTable.getVariableBaseName(var);
         ExecutableElement getter =
@@ -579,7 +586,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   private void printStaticFieldFullDeclaration(VariableDeclarationFragment fragment) {
     VariableElement var = fragment.getVariableElement();
     boolean isVolatile = ElementUtil.isVolatile(var);
-    String objcType = nameTable.getObjCTypeDeclaration(var.asType());
+    boolean allowGenerics = !typeUtil.isProtoClass(var.asType());
+    boolean enableGenerics =
+        allowGenerics
+            && (generateObjectiveCGenerics(var.asType())
+                || generateObjectiveCGenerics(typeElement.asType()));
+    String objcType = nameTable.getObjCTypeDeclaration(var.asType(), enableGenerics, typeElement);
     String objcTypePadded = paddedType(objcType, var);
     String declType = paddedType(getDeclarationType(var), var);
     String name = nameTable.getVariableShortName(var);
@@ -610,8 +622,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       printStaticFieldDeclaration(
           fragment, UnicodeUtils.format("%s%s_%s", declType, typeName, name));
     }
-    printf(
-        "J2OBJC_STATIC_FIELD%s(%s, %s, %s)\n", qualifiers, typeName, name, objcTypePadded.trim());
+    String macroTypeArg = objcTypePadded.trim();
+    if (macroTypeArg.contains(",")) {
+      macroTypeArg = "J2OBJC_ARG(" + macroTypeArg + ')';
+    }
+    printf("J2OBJC_STATIC_FIELD%s(%s, %s, %s)\n", qualifiers, typeName, name, macroTypeArg);
   }
 
   // Overridden in TypePrivateDeclarationGenerator

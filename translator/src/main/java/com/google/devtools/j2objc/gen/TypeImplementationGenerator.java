@@ -297,7 +297,14 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
     for (VariableDeclarationFragment fragment : getStaticFields()) {
       VariableElement var = fragment.getVariableElement();
-      String objcTypePadded = paddedType(nameTable.getObjCTypeDeclaration(var.asType()), var);
+      boolean allowGenerics = !typeUtil.isProtoClass(var.asType());
+      boolean enableGenerics =
+          allowGenerics
+              && (generateObjectiveCGenerics(var.asType())
+                  || generateObjectiveCGenerics(typeElement.asType()));
+      String objcTypePadded =
+          paddedType(
+              nameTable.getObjCTypeDeclaration(var.asType(), enableGenerics, typeElement), var);
       String name = nameTable.getVariableShortName(var);
       newline();
       printf("extern %s%s_get_%s(void);\n", objcTypePadded, typeName, name);
