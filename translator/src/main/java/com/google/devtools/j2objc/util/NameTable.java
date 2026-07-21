@@ -23,6 +23,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
@@ -560,23 +561,29 @@ public class NameTable {
   }
 
   public @Nullable String getSwiftMethodNameFromAnnotation(MethodDeclaration method) {
+    ExecutableElement element = method.getExecutableElement();
     // Check if the method has the annotation
-    String annotationName = swiftNameFromAnnotation(method.getExecutableElement());
+    String annotationName = swiftNameFromAnnotation(element);
     if (annotationName != null) {
       return annotationName;
     }
 
-    if (method.getParameters().isEmpty()) {
-      return null;
-    }
-
+    TypeElement clazz = ElementUtil.getDeclaringClass(element);
     // Check if the class or package has the annotation
-    TypeElement clazz = ElementUtil.getDeclaringClass(method.getExecutableElement());
     if (!packageHasSwiftNameAnnotation(clazz) && !elementHasSwiftNameAnnotation(clazz)) {
       return null;
     }
 
-    ExecutableElement element = method.getExecutableElement();
+    String selector = getMethodSelector(element);
+    if (ElementUtil.isConstructor(element)) {
+      if (hasSuperConstructorWithSameSelector(selector, clazz)) {
+        return null;
+      }
+    } else {
+      if (hasSuperMethodWithSameSelector(selector, clazz)) {
+        return null;
+      }
+    }
 
     // If the annotation is still null after checking the names then it doesn't exist
     String methodName = element.getSimpleName().toString();
@@ -589,6 +596,42 @@ public class NameTable {
     }
 
     return addSwiftParamNames(method.getParameters(), methodName, ':');
+  }
+
+  private boolean hasSuperConstructorWithSameSelector(String selector, TypeElement clazz) {
+    TypeElement superClass = ElementUtil.getSuperclass(clazz);
+    if (superClass == null) {
+      return false;
+    }
+    if (Iterables.any(
+        ElementUtil.getConstructors(superClass), c -> getMethodSelector(c).equals(selector))) {
+      return true;
+    }
+    return hasSuperConstructorWithSameSelector(selector, superClass);
+  }
+
+  private boolean hasSuperMethodWithSameSelector(String selector, TypeElement clazz) {
+    TypeElement superClass = ElementUtil.getSuperclass(clazz);
+    if (superClass != null) {
+      if (hasMethodWithSelector(superClass, selector)
+          || hasSuperMethodWithSameSelector(selector, superClass)) {
+        return true;
+      }
+    }
+    for (TypeMirror interfaceMirror : clazz.getInterfaces()) {
+      TypeElement interfaceElement = TypeUtil.asTypeElement(interfaceMirror);
+      if (interfaceElement != null) {
+        if (hasMethodWithSelector(interfaceElement, selector)
+            || hasSuperMethodWithSameSelector(selector, interfaceElement)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private boolean hasMethodWithSelector(TypeElement clazz, String selector) {
+    return Iterables.any(ElementUtil.getMethods(clazz), m -> getMethodSelector(m).equals(selector));
   }
 
   public @Nullable String getSwiftClassNameFromAnnotation(TypeElement clazz, boolean getParents) {
@@ -605,8 +648,8 @@ public class NameTable {
     NestingKind nesting = clazz.getNestingKind();
     if (nesting == NestingKind.MEMBER) {
       Element parent = clazz.getEnclosingElement();
-        if (parent instanceof TypeElement && !parent.getKind().isInterface()) {
-          String parentName = getSwiftClassNameFromAnnotation((TypeElement) parent, false);
+        if (parent instanceof TypeElement parentElement && !parent.getKind().isInterface()) {
+          String parentName = getSwiftClassNameFromAnnotation(parentElement, false);
         if (parentName != null) {
             return (parentName + "." + clazz.getSimpleName()).replaceAll("$", "");
         }

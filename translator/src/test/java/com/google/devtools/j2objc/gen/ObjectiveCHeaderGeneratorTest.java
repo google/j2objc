@@ -1102,6 +1102,359 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar)");
   }
 
+  public void testSwiftNamePackagePrivateConstructor() throws IOException {
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class FooBar {
+          FooBar(int x) {}
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
+    // Package-private constructors should still generate NS_SWIFT_NAME annotations.
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(FooBar)",
+        "@interface ComFooBarFooBar : NSObject",
+        "",
+        "#pragma mark Package-Private",
+        "",
+        "- (instancetype)initWithInt:(int32_t)x NS_SWIFT_NAME(init(x:));",
+        "",
+        "// Disallowed inherited constructors, do not use.",
+        "",
+        "- (instancetype)init NS_UNAVAILABLE;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNameConstructorSuperConflictGrandparent() throws IOException {
+    addSourceFile(
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class GrandSuper {
+          public GrandSuper() {}
+          public GrandSuper(int x) {}
+        }
+        """,
+        "com/foo/bar/GrandSuper.java");
+    addSourceFile(
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class Super extends GrandSuper {
+        }
+        """,
+        "com/foo/bar/Super.java");
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class Sub extends Super {
+          public Sub(int y) {
+            super();
+          }
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "Sub", "com/foo/bar/Sub.h");
+    // Constructors should not generate NS_SWIFT_NAME annotations if there is a name conflict with a
+    // grandparent.
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(Sub)",
+        "@interface ComFooBarSub : ComFooBarSuper",
+        "",
+        "#pragma mark Public",
+        "",
+        "- (instancetype)initWithInt:(int32_t)y;",
+        "",
+        "// Disallowed inherited constructors, do not use.",
+        "",
+        "- (instancetype)init NS_UNAVAILABLE;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNameConstructorSuperConflict() throws IOException {
+    addSourceFile(
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class Super {
+          public Super(int x) {}
+        }
+        """,
+        "com/foo/bar/Super.java");
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class Sub extends Super {
+          public Sub(int y) {
+            super(y);
+          }
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "Sub", "com/foo/bar/Sub.h");
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(Sub)",
+        "@interface ComFooBarSub : ComFooBarSuper",
+        "",
+        "#pragma mark Public",
+        "",
+        "- (instancetype)initWithInt:(int32_t)y;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNameMethodSuperConflict() throws IOException {
+    addSourceFile(
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class GrandSuper {
+          public void foo(int x) {}
+        }
+        """,
+        "com/foo/bar/GrandSuper.java");
+    addSourceFile(
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class Super extends GrandSuper {
+        }
+        """,
+        "com/foo/bar/Super.java");
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class Sub extends Super {
+          @Override
+          public void foo(int y) {}
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "Sub", "com/foo/bar/Sub.h");
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(Sub)",
+        "@interface ComFooBarSub : ComFooBarSuper",
+        "",
+        "#pragma mark Public",
+        "",
+        "- (instancetype)init;",
+        "",
+        "- (void)fooWithInt:(int32_t)y;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNameSuperClassNotAnnotated() throws IOException {
+    addSourceFile(
+        """
+        package com.foo.bar;
+        public class Super {
+          public void foo(int x) {}
+        }
+        """,
+        "com/foo/bar/Super.java");
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class Sub extends Super {
+          @Override
+          public void foo(int y) {}
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "Sub", "com/foo/bar/Sub.h");
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(Sub)",
+        "@interface ComFooBarSub : ComFooBarSuper",
+        "",
+        "#pragma mark Public",
+        "",
+        "- (instancetype)init;",
+        "",
+        "- (void)fooWithInt:(int32_t)y;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNameClassImplementingInterface() throws IOException {
+    String interfaceSource =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public interface MyInterface {
+          void foo();
+        }
+        """;
+    addSourceFile(interfaceSource, "com/foo/bar/MyInterface.java");
+
+    String classSource =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class MyClass implements MyInterface {
+          public void foo() {}
+        }
+        """;
+
+    // Translate and assert interface header
+    String interfaceTranslation =
+        translateSourceFile(interfaceSource, "MyInterface", "com/foo/bar/MyInterface.h");
+    assertTranslatedLines(
+        interfaceTranslation,
+        "NS_SWIFT_NAME(MyInterface)",
+        "@protocol ComFooBarMyInterface < JavaObject >",
+        "",
+        "- (void)foo NS_SWIFT_NAME(foo());",
+        "",
+        "@end");
+
+    // Translate and assert class header
+    String classTranslation = translateSourceFile(classSource, "MyClass", "com/foo/bar/MyClass.h");
+    assertInTranslation(classTranslation, "#include \"com/foo/bar/MyInterface.h\"");
+    // Verify that ComFooBarMyClass has NS_SWIFT_NAME, but its foo method
+    // does not have NS_SWIFT_NAME because it overrides MyInterface.foo().
+    assertTranslatedLines(
+        classTranslation,
+        "NS_SWIFT_NAME(MyClass)",
+        "@interface ComFooBarMyClass : NSObject < ComFooBarMyInterface >",
+        "",
+        "#pragma mark Public",
+        "",
+        "- (instancetype)init;",
+        "",
+        "- (void)foo;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNamePackagePrivateClassConstructor() throws IOException {
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        class FooBar {
+          FooBar(int x) {}
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(FooBar)",
+        "@interface ComFooBarFooBar : NSObject",
+        "",
+        "#pragma mark Package-Private",
+        "",
+        "- (instancetype)initPackagePrivateWithInt:(int32_t)x NS_SWIFT_NAME(init(x:));",
+        "",
+        "// Disallowed inherited constructors, do not use.",
+        "",
+        "- (instancetype)init NS_UNAVAILABLE;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNamePackagePrivateConstructorZeroParams() throws IOException {
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class FooBar {
+          FooBar() {}
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
+    // Constructors package private constructors on public classes should not generate
+    // NS_SWIFT_NAME annotations, if it did it would conflict with the parent class.
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(FooBar)",
+        "@interface ComFooBarFooBar : NSObject",
+        "",
+        "#pragma mark Package-Private",
+        "",
+        "- (instancetype)init;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNamePackagePrivateClassConstructorZeroParams() throws IOException {
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        class FooBar {
+          FooBar() {}
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
+    // Constructors package private constructors on package-private classes should generate
+    // NS_SWIFT_NAME annotations, it doesn't conflict with the parent class because the parent class
+    // has a different constructor name (init).
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(FooBar)",
+        "@interface ComFooBarFooBar : NSObject",
+        "",
+        "#pragma mark Package-Private",
+        "",
+        "- (instancetype)initPackagePrivate NS_SWIFT_NAME(init());",
+        "",
+        "// Disallowed inherited constructors, do not use.",
+        "",
+        "- (instancetype)init NS_UNAVAILABLE;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNameZeroParamMethod() throws IOException {
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class FooBar {
+          public void foo() {}
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(FooBar)",
+        "@interface ComFooBarFooBar : NSObject",
+        "",
+        "#pragma mark Public",
+        "",
+        "- (instancetype)init;",
+        "",
+        "- (void)foo NS_SWIFT_NAME(foo());",
+        "",
+        "@end");
+  }
+
   public void testSwiftNameClassAnnotationOverride() throws IOException {
     String sourceContent =
         "  package com.foo.bar;"
@@ -1186,11 +1539,13 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
     assertInTranslation(
-        translation, "- (void)objcSetFooField:(NSString *)fooField NS_SWIFT_NAME(setFooField(fooField:));");
+        translation,
+        "- (void)objcSetFooField:(NSString *)fooField NS_SWIFT_NAME(setFooField(fooField:));");
     assertInTranslation(
         translation,
-        "+ (void)objcBuilderWithSize:(int32_t)expectedSize NS_SWIFT_NAME(builderWithExpectedSize(expectedSize:));");
-    assertInTranslation(translation, "- (void)objcDoAction;");
+        "+ (void)objcBuilderWithSize:(int32_t)expectedSize"
+            + " NS_SWIFT_NAME(builderWithExpectedSize(expectedSize:));");
+    assertInTranslation(translation, "- (void)objcDoAction NS_SWIFT_NAME(doAction());");
   }
 
   public void testSwiftNameAnnotationWithNestedTypes() throws IOException {
@@ -1269,10 +1624,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
     String fooHeader = translateCombinedFiles("com/Foo", ".h", "foo/FooBar.java");
     String barHeader = translateCombinedFiles("com/Bar", ".h", "bar/BarFoo.java");
-    assertTranslatedLines(
-        barHeader,
-        "- (NSString *)getElementByIndexWithInt:(int32_t)index"
-            + " NS_SWIFT_NAME(getElementByIndexWithInt(index:));");
+    assertTranslatedLines(barHeader, "- (NSString *)getElementByIndexWithInt:(int32_t)index;");
     assertTranslatedLines(
         fooHeader,
         "- (id)getElementByIndexWithInt:(int32_t)index NS_SWIFT_NAME(getElementByIndex(index:));");
@@ -1299,7 +1651,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "- (NSString *)fooBarWithNSString:(NSString *)fooBar NS_SWIFT_NAME(fooBar(fooBar:));");
     assertTranslatedLines(
         fooHeader,
-        "- (NSString *)setSomeValueWithNSString:(NSString *)value NS_SWIFT_NAME(setSomeValue(value:));");
+        "- (NSString *)setSomeValueWithNSString:(NSString *)value"
+            + " NS_SWIFT_NAME(setSomeValue(value:));");
     assertTranslatedLines(
         fooHeader,
         "- (NSString *)setSomeArgumentWithNSString:(NSString *)arg0"
@@ -1330,7 +1683,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.init())");
-    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.builderWithExpectedSize(expectedSize:))");
+    assertInTranslation(
+        translation, "NS_SWIFT_NAME(FooBar.builderWithExpectedSize(expectedSize:))");
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.builderWithName(name:))");
   }
 
