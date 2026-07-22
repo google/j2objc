@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.types;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.HashMap;
 import java.util.Map;
 import javax.lang.model.element.AnnotationMirror;
@@ -42,8 +43,9 @@ public class GeneratedAnnotationMirror implements AnnotationMirror {
     return values;
   }
 
-  public GeneratedAnnotationMirror addElementValue(ExecutableElement element,
-      AnnotationValue value) {
+  @CanIgnoreReturnValue
+  public GeneratedAnnotationMirror addElementValue(
+      ExecutableElement element, AnnotationValue value) {
     values.put(element, value);
     return this;
   }

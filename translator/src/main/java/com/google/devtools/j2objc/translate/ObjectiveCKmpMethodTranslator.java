@@ -48,12 +48,15 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionElement;
+import com.google.devtools.j2objc.types.GeneratedAnnotationMirror;
+import com.google.devtools.j2objc.types.GeneratedAnnotationValue;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+import com.google.j2objc.annotations.SwiftName;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -371,6 +374,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
   /** Context for processing a single method and generating its Objective-C adapter. */
   private class AdapterContext {
     private final String selector;
+    private final String swiftName;
     private final AbstractTypeDeclaration typeNode;
     private final ExecutableElement originalMethodExecutable;
     private final TypeMirror originalMethodReturnType;
@@ -394,6 +398,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       this.originalMethodParameters =
           ImmutableList.copyOf(originalMethodExecutable.getParameters());
       this.selector = (String) ElementUtil.getAnnotationValue(annotation, "selector");
+      this.swiftName = (String) ElementUtil.getAnnotationValue(annotation, "swiftName");
       this.adapter = (TypeMirror) ElementUtil.getAnnotationValue(annotation, "adapter");
       this.isInterface = isInterface;
       this.strategy = strategy;
@@ -479,6 +484,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       GeneratedExecutableElement adapterMethodExecutable =
           GeneratedExecutableElement.newAdapterMethod(
               selector, adapterReturnType, adapterParameters, originalMethodExecutable);
+      attachSwiftNameAnnotation(adapterMethodExecutable);
 
       FunctionInvocation methodFunctionInvocation =
           createFunctionInvocation(functionElement, adaptingArguments);
@@ -495,6 +501,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       GeneratedExecutableElement adapterMethodExecutable =
           GeneratedExecutableElement.newAdapterMethod(
               selector, adapterReturnType, adapterParameters, originalMethodExecutable);
+      attachSwiftNameAnnotation(adapterMethodExecutable);
 
       // Create a MethodInvocation to call the original instance Java method.
       MethodInvocation adaptingMethodInvocation =
@@ -504,6 +511,20 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
 
       addMethodDeclaration(
           adapterMethodExecutable, adaptingMethodInvocation, adapterReturnType, adapterParameters);
+    }
+
+    private void attachSwiftNameAnnotation(GeneratedExecutableElement adapterMethodExecutable) {
+      if (swiftName == null || swiftName.isEmpty()) {
+        return;
+      }
+      TypeElement swiftNameElement = typeUtil.resolveJavaType(SwiftName.class.getName());
+      DeclaredType swiftNameType = (DeclaredType) swiftNameElement.asType();
+      GeneratedAnnotationMirror annotationMirror = new GeneratedAnnotationMirror(swiftNameType);
+      ExecutableElement valueElement =
+          GeneratedExecutableElement.newMethodWithSelector(
+              "value", typeUtil.getJavaString().asType(), swiftNameElement);
+      adapterMethodExecutable.addAnnotationMirror(annotationMirror);
+      annotationMirror.addElementValue(valueElement, new GeneratedAnnotationValue(swiftName));
     }
 
     private void generateAbstractInstanceMethodDeclaration(TypeMirror adapterReturnType) {
@@ -651,6 +672,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       GeneratedExecutableElement adapterMethodExecutable =
           GeneratedExecutableElement.newAdapterMethod(
               selector, adapterReturnType, adapterParameters, originalMethodExecutable);
+      attachSwiftNameAnnotation(adapterMethodExecutable);
 
       List<Expression> args = functionInvocation.getArguments();
       args.add(new ThisExpression(declaringClass.asType()));

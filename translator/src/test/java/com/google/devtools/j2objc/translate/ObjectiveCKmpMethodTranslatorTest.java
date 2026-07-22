@@ -163,6 +163,53 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """);
   }
 
+  /** Tests swiftName attribute in @ObjectiveCKmpMethod for concrete methods. */
+  public void testSwiftNameInObjectiveCKmpMethod() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        public class SwiftNameTest {
+          @ObjectiveCKmpMethod(
+              selector = "setListWithNSArray:",
+              adapter = Adapter.class,
+              swiftName = "setList(array:)")
+          public void setList(List<String> list) {}
+        }
+        """,
+        "SwiftNameTest.java");
+
+    String testHeader = translateSourceFile("SwiftNameTest", "SwiftNameTest.h");
+    assertInTranslation(
+        testHeader,
+        "- (void)setListWithNSArray:(NSArray<NSString *> *)list NS_SWIFT_NAME(setList(array:));");
+  }
+
+  /** Tests swiftName attribute in @ObjectiveCKmpMethod for abstract methods. */
+  public void testSwiftNameInAbstractObjectiveCKmpMethod() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        public interface AbstractSwiftNameTest {
+          @ObjectiveCKmpMethod(
+              selector = "processListWithNSArray:",
+              adapter = Adapter.class,
+              swiftName = "processList(array:)")
+          void processList(List<String> list);
+        }
+        """,
+        "AbstractSwiftNameTest.java");
+
+    String testHeader = translateSourceFile("AbstractSwiftNameTest", "AbstractSwiftNameTest.h");
+    assertInTranslation(
+        testHeader,
+        "- (void)processListWithNSArray:(NSArray<NSString *> *)list"
+            + " NS_SWIFT_NAME(processList(array:));");
+  }
+
   /** Tests conversion of Set types with @ObjectiveCKmpMethod. */
   public void testSetConversion() throws IOException {
     addSourceFile(
