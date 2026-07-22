@@ -645,21 +645,20 @@ public class NameTable {
     }
 
     if (getParents) {
-    NestingKind nesting = clazz.getNestingKind();
-    if (nesting == NestingKind.MEMBER) {
-      Element parent = clazz.getEnclosingElement();
+      NestingKind nesting = clazz.getNestingKind();
+      if (nesting == NestingKind.MEMBER) {
+        Element parent = clazz.getEnclosingElement();
         if (parent instanceof TypeElement parentElement && !parent.getKind().isInterface()) {
           String parentName = getSwiftClassNameFromAnnotation(parentElement, false);
-        if (parentName != null) {
-            return (parentName + "." + clazz.getSimpleName()).replaceAll("$", "");
+          if (parentName != null) {
+            return (parentName + "." + clazz.getSimpleName()).replace("$", "");
+          }
         }
       }
     }
-    }
 
     String className = clazz.getSimpleName().toString();
-    className = className.replaceAll("$", "");
-    return className;
+    return className.replace("$", "");
   }
 
   public @Nullable String getSwiftFunctionNameFromAnnotation(FunctionDeclaration function) {

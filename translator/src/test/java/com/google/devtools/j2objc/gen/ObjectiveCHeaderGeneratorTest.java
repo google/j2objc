@@ -1102,6 +1102,33 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar)");
   }
 
+  /** Tests that classes containing $ have $ stripped in generated NS_SWIFT_NAME annotations. */
+  public void testSwiftNameDollarClass() throws IOException {
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class $AutoValue_FooBar {
+          public void doSomething() {}
+        }
+        """;
+    String translation =
+        translateSourceFile(sourceContent, "$AutoValue_FooBar", "com/foo/bar/$AutoValue_FooBar.h");
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(AutoValue_FooBar)",
+        "@interface ComFooBar_AutoValue_FooBar : NSObject",
+        "",
+        "#pragma mark Public",
+        "",
+        "- (instancetype)init;",
+        "",
+        "- (void)doSomething NS_SWIFT_NAME(doSomething());",
+        "",
+        "@end");
+  }
+
   public void testSwiftNamePackagePrivateConstructor() throws IOException {
     String sourceContent =
         """
