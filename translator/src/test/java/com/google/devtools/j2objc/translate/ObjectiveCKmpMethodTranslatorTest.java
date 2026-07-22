@@ -210,6 +210,64 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
             + " NS_SWIFT_NAME(processList(array:));");
   }
 
+  /** Tests default swiftName in @ObjectiveCKmpMethod when class has @SwiftName annotation. */
+  public void testDefaultSwiftNameInClassSwiftNameContext() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.j2objc.annotations.SwiftName;
+        import java.util.List;
+        import java.util.Map;
+
+        @SwiftName("DefaultSwiftNameClass")
+        public class DefaultSwiftNameTest {
+          @ObjectiveCKmpMethod(
+              selector = "calculateSignalDescriptionSignalArray:selfEmail:flagDictionary:",
+              adapter = Adapter.class)
+          public String calculateSignalDescription(
+              List<String> signals, String selfEmail, Map<String, String> flagMap) {
+            return "test";
+          }
+        }
+        """,
+        "DefaultSwiftNameTest.java");
+
+    String testHeader = translateSourceFile("DefaultSwiftNameTest", "DefaultSwiftNameTest.h");
+    assertInTranslation(
+        testHeader,
+        "- (NSString *)calculateSignalDescriptionSignalArray:(NSArray<NSString *> *)signals\n"
+            + "                                          selfEmail:(NSString *)selfEmail\n"
+            + "                                     flagDictionary:(NSDictionary<NSString *,"
+            + " NSString *> *)flagMap"
+            + " NS_SWIFT_NAME(calculateSignalDescriptionSignalArray(signals:selfEmail:flagMap:));");
+  }
+
+  /** Tests default swiftName in @ObjectiveCKmpMethod for abstract methods in @SwiftName context. */
+  public void testDefaultSwiftNameInAbstractObjectiveCKmpMethod() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.j2objc.annotations.SwiftName;
+        import java.util.List;
+
+        @SwiftName("AbstractDefaultSwiftNameInterface")
+        public interface AbstractDefaultSwiftNameTest {
+          @ObjectiveCKmpMethod(
+              selector = "processListWithNSArray:",
+              adapter = Adapter.class)
+          void processList(List<String> list);
+        }
+        """,
+        "AbstractDefaultSwiftNameTest.java");
+
+    String testHeader =
+        translateSourceFile("AbstractDefaultSwiftNameTest", "AbstractDefaultSwiftNameTest.h");
+    assertInTranslation(
+        testHeader,
+        "- (void)processListWithNSArray:(NSArray<NSString *> *)list"
+            + " NS_SWIFT_NAME(processListWithNSArray(list:));");
+  }
+
   /** Tests conversion of Set types with @ObjectiveCKmpMethod. */
   public void testSetConversion() throws IOException {
     addSourceFile(
