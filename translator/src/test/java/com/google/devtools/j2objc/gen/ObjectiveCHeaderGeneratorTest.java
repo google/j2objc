@@ -1076,30 +1076,38 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "com/foo/bar/package-info.java");
 
     String sourceContent =
-        "  package com.foo.bar;"
-            + ""
-            + "public abstract class FooBar {"
-            + ""
-            + "  public void setFooField(String fooField) {"
-            + " "
-            + "  }"
-            + "}";
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.Property;
+
+        public abstract class FooBar {
+          @Property public String fooProperty;
+          public void setFooField(String fooField) {}
+        }
+        """;
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar)");
     assertInTranslation(translation, "NS_SWIFT_NAME(setFooField(fooField:))");
+    assertInTranslation(translation, "NS_SWIFT_NAME(fooProperty)");
   }
 
   public void testSwiftNameClassAnnotation() throws IOException {
     String sourceContent =
-        "  package com.foo.bar;"
-            + "import com.google.j2objc.annotations.SwiftName;"
-            + ""
-            + "@SwiftName "
-            + "public abstract class FooBar {"
-            + "  public void setFooField(String fooField) {}"
-            + "}";
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.Property;
+        import com.google.j2objc.annotations.SwiftName;
+
+        @SwiftName
+        public abstract class FooBar {
+          @Property public String fooProperty;
+          public void setFooField(String fooField) {}
+        }
+        """;
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(setFooField(fooField:))");
+    assertInTranslation(translation, "NS_SWIFT_NAME(fooProperty)");
   }
 
   /** Tests that classes containing $ have $ stripped in generated NS_SWIFT_NAME annotations. */

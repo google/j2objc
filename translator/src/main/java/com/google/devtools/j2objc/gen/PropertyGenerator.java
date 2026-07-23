@@ -219,7 +219,12 @@ public final class PropertyGenerator {
       buffer.append(' ');
     }
     buffer.append(propertyName);
-    if (options.classProperties() && ElementUtil.isStatic(varElement)) {
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
+    boolean inSwiftNameContext =
+        declaringClass != null
+            && (nameTable.packageHasSwiftNameAnnotation(declaringClass)
+                || nameTable.elementHasSwiftNameAnnotation(declaringClass));
+    if ((options.classProperties() && ElementUtil.isStatic(varElement)) || inSwiftNameContext) {
       buffer.append(" NS_SWIFT_NAME(").append(propertyName).append(")");
     }
     buffer.append(";");
