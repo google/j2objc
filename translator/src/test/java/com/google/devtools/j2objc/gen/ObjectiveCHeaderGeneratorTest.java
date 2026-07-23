@@ -1690,29 +1690,32 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     options.setEmitWrapperMethods(false);
 
     addSourceFile(
-        "@SwiftName "
-            + "package com.foo.bar;"
-            + ""
-            + "import com.google.j2objc.annotations.SwiftName;",
+        """
+        @SwiftName
+        package com.foo.bar;
+
+        import com.google.j2objc.annotations.SwiftName;
+        """,
         "com/foo/bar/package-info.java");
 
     String sourceContent =
-        "  package com.foo.bar;"
-            + ""
-            + "public class FooBar {"
-            + "  FooBar() {}"
-            + "  public static final class NestedBar {}"
-            + "  public void setFooField(String fooField) {"
-            + " "
-            + "  }"
-            + "  public static String builderWithExpectedSize(int expectedSize){ return \"\"; }"
-            + "  public static String builderWithName(String name){ return \"\"; }"
-            + "}";
+        """
+        package com.foo.bar;
+
+        public class FooBar {
+          FooBar() {}
+          public static final class NestedBar {}
+          public void setFooField(String fooField) {}
+          public static String builderWithExpectedSize(int expectedSize){ return ""; }
+          public static String builderWithName(String name){ return ""; }
+        }
+        """;
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.init())");
-    assertInTranslation(
-        translation, "NS_SWIFT_NAME(FooBar.builderWithExpectedSize(expectedSize:))");
-    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.builderWithName(name:))");
+    // We don't expect the static functions to have NS_SWIFT_NAME annotations because
+    // there isn't a wrapper method available because emitWrapperMethods is false.
+    assertNotInTranslation(translation, "NS_SWIFT_NAME(FooBar.builderWithExpectedSize");
+    assertNotInTranslation(translation, "NS_SWIFT_NAME(FooBar.builderWithName");
   }
 
   public void testSwiftNameAnnotationWithStaticFunctionsWithWapperMethods() throws IOException {
