@@ -34,6 +34,7 @@
 
 #include <google/protobuf/compiler/j2objc/j2objc_oneof.h>
 
+#include <cctype>
 #include <string>
 
 #include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
@@ -140,20 +141,49 @@ void OneofGenerator::GenerateHeader(io::Printer* printer) {
   printer->Indent();
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
+    std::string camel_name(descriptor_->field(i)->camelcase_name());
     printer->Print(
-        "$classname$_Enum_$name$ = $value$,\n",
-        "classname", CaseClassName(descriptor_),
-        "name", CaseValueName(descriptor_->field(i)),
-        "value", SimpleItoa(i));
+        "$classname$_Enum_$name$ NS_SWIFT_NAME($camel_name$) = $value$,\n",
+        "classname", CaseClassName(descriptor_), "name",
+        CaseValueName(descriptor_->field(i)), "camel_name", camel_name, "value",
+        SimpleItoa(i));
   }
+  std::string not_set_instance_name = NotSetInstanceName(descriptor_);
   printer->Print(
-      "$classname$_Enum_$name$ = $value$,\n",
-      "classname", CaseClassName(descriptor_),
-      "name", NotSetName(descriptor_),
-      "value", SimpleItoa(descriptor_->field_count()));
+      "$classname$_Enum_$name$ NS_SWIFT_NAME($not_set_instance_name$) = "
+      "$value$,\n",
+      "classname", CaseClassName(descriptor_), "name", NotSetName(descriptor_),
+      "not_set_instance_name", not_set_instance_name, "value",
+      SimpleItoa(descriptor_->field_count()));
 
   printer->Outdent();
   printer->Print("};\n");
+
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+        "\n"
+        "typedef $classname$_Enum KNP$classname$_Enum;\n",
+        "classname", CaseClassName(descriptor_));
+    for (int i = 0; i < descriptor_->field_count(); i++) {
+      std::string camel_name(descriptor_->field(i)->camelcase_name());
+      if (!camel_name.empty()) {
+        camel_name[0] = toupper(camel_name[0]);
+      }
+      printer->Print(
+          "#define KNP$classname$_Enum$camel_name$ $classname$_Enum_$name$\n",
+          "classname", CaseClassName(descriptor_), "camel_name", camel_name,
+          "name", CaseValueName(descriptor_->field(i)));
+    }
+    std::string not_set_camel_name = NotSetInstanceName(descriptor_);
+    if (!not_set_camel_name.empty()) {
+      not_set_camel_name[0] = toupper(not_set_camel_name[0]);
+    }
+    printer->Print(
+        "#define KNP$classname$_Enum$not_set_camel_name$ "
+        "$classname$_Enum_$name$\n",
+        "classname", CaseClassName(descriptor_), "not_set_camel_name",
+        not_set_camel_name, "name", NotSetName(descriptor_));
+  }
 
   printer->Print(
       "\n"
@@ -172,6 +202,8 @@ void OneofGenerator::GenerateHeader(io::Printer* printer) {
       "classname", CaseClassName(descriptor_));
 
   if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print("@property(readonly) $classname$_Enum nsEnum;\n",
+                   "classname", CaseClassName(descriptor_));
     for (int i = 0; i < descriptor_->field_count(); i++) {
       printer->Print(
           "@property(class, readonly, retain) $classname$ *$name$;\n",
@@ -303,6 +335,11 @@ void OneofGenerator::GenerateSource(io::Printer* printer) {
       SimpleItoa(descriptor_->field_count() + 1));
 
   if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+        "- ($classname$_Enum)nsEnum {\n"
+        "  return ($classname$_Enum)[self ordinal];\n"
+        "}\n\n",
+        "classname", CaseClassName(descriptor_));
     for (int i = 0; i < descriptor_->field_count(); i++) {
       printer->Print(
           "+ ($classname$ *) $camel_case_name$ {\n"
