@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Type;
@@ -123,6 +124,61 @@ public class HeaderImportCollector extends UnitTreeVisitor {
     forwardDecls.addAll(Sets.difference(Import.getImports(type, unit.getEnv()), declaredTypes));
   }
 
+  private boolean isCoreJrePackage(String name) {
+    if (name.startsWith("java.")) {
+      return true;
+    }
+    if (name.startsWith("javax.")) {
+      return name.startsWith("javax.crypto.")
+          || name.equals("javax.crypto")
+          || name.startsWith("javax.net.")
+          || name.equals("javax.net")
+          || name.startsWith("javax.security.")
+          || name.equals("javax.security")
+          || name.startsWith("javax.xml.")
+          || name.equals("javax.xml");
+    }
+    return name.startsWith("android.")
+        || name.equals("android")
+        || name.startsWith("org.xml.")
+        || name.equals("org.xml")
+        || name.startsWith("org.w3c.")
+        || name.equals("org.w3c")
+        || name.startsWith("org.json.")
+        || name.equals("org.json");
+  }
+
+  private boolean isJreType(Import imp) {
+    String qName = imp.getJavaQualifiedName();
+    if (qName == null) {
+      return false;
+    }
+    return isCoreJrePackage(qName);
+  }
+
+  private boolean isCurrentUnitJre() {
+    PackageDeclaration pkg = unit.getPackage();
+    if (pkg == null || pkg.isDefaultPackage()) {
+      return false;
+    }
+    String pkgName = pkg.getName().getFullyQualifiedName();
+    return isCoreJrePackage(pkgName);
+  }
+
+  private void addGenericParameter(TypeMirror type) {
+    if (isCurrentUnitJre()) {
+      addForwardDecl(type);
+      return;
+    }
+    for (Import imp : Import.getImports(type, unit.getEnv())) {
+      if (isJreType(imp)) {
+        superTypes.add(imp);
+      } else {
+        forwardDecls.add(imp);
+      }
+    }
+  }
+
   private void addSuperType(TypeElement type) {
     if (type != null) {
       Import.addImports(type.asType(), superTypes, unit.getEnv());
@@ -145,6 +201,9 @@ public class HeaderImportCollector extends UnitTreeVisitor {
   public boolean visit(FieldDeclaration node) {
     if (filter.include(node) && includeInnerTypes) {
       addForwardDecl(node.getTypeMirror());
+      for (TypeMirror fieldGeneric : objCForwardDeclaredGenericParameters(node.getTypeMirror())) {
+        addGenericParameter(fieldGeneric);
+      }
     }
     return false;
   }
@@ -174,13 +233,13 @@ public class HeaderImportCollector extends UnitTreeVisitor {
       addForwardDecl(node.getReturnType());
       for (TypeMirror returnGeneric :
           objCForwardDeclaredGenericParameters(node.getReturnType().getTypeMirror())) {
-        addForwardDecl(returnGeneric);
+        addGenericParameter(returnGeneric);
       }
       for (SingleVariableDeclaration param : node.getParameters()) {
         addForwardDecl(param.getVariableElement().asType());
         for (TypeMirror paramGeneric :
             objCForwardDeclaredGenericParameters(param.getVariableElement().asType())) {
-          addForwardDecl(paramGeneric);
+          addGenericParameter(paramGeneric);
         }
       }
     }
@@ -193,12 +252,12 @@ public class HeaderImportCollector extends UnitTreeVisitor {
       addForwardDecl(node.getReturnTypeMirror());
       for (TypeMirror returnGeneric :
           objCForwardDeclaredGenericParameters(node.getReturnTypeMirror())) {
-        addForwardDecl(returnGeneric);
+        addGenericParameter(returnGeneric);
       }
       for (VariableElement param : node.getExecutableElement().getParameters()) {
         addForwardDecl(param.asType());
         for (TypeMirror paramGeneric : objCForwardDeclaredGenericParameters(param.asType())) {
-          addForwardDecl(paramGeneric);
+          addGenericParameter(paramGeneric);
         }
       }
     }

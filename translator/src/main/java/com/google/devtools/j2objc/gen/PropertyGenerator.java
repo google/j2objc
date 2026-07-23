@@ -213,13 +213,20 @@ public final class PropertyGenerator {
       buffer.append('(').append(PropertyAnnotation.toAttributeString(attributes)).append(") ");
     }
 
-    String objcType = nameTable.getObjCType(varType);
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
+    boolean allowGenerics = !typeUtil.isProtoClass(varType);
+    boolean enableGenerics =
+        allowGenerics
+            && (options.asObjCGenericDecl()
+                || TypeUtil.hasGenerateObjectiveCGenerics(varType)
+                || (declaringClass != null
+                    && TypeUtil.hasGenerateObjectiveCGenerics(declaringClass)));
+    String objcType = nameTable.getObjCTypeDeclaration(varType, enableGenerics, declaringClass);
     buffer.append(objcType);
     if (!objcType.endsWith("*")) {
       buffer.append(' ');
     }
     buffer.append(propertyName);
-    TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
     boolean inSwiftNameContext =
         declaringClass != null
             && (nameTable.packageHasSwiftNameAnnotation(declaringClass)

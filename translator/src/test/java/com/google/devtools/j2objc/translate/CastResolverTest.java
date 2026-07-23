@@ -318,4 +318,32 @@ public class CastResolverTest extends GenerationTest {
         "return (JavaLangNullPointerException *) "
             + "cast_chk(o, [JavaLangNullPointerException class]);");
   }
+
+  public void testGenericMethodAssignmentCast() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    addSourceFile("interface MessageLite {}", "MessageLite.java");
+    addSourceFile(
+        "class ActiveExperimentIds implements MessageLite {}", "ActiveExperimentIds.java");
+    addSourceFile(
+        "class SettingKey<V> {"
+            + "  static class Factory {"
+            + "    <M extends MessageLite> SettingKey<M> messageKeyWithDefault() { return null; }"
+            + "  }"
+            + "  static final Factory factory = new Factory();"
+            + "}",
+        "SettingKey.java");
+    String translation =
+        translateSourceFile(
+            "class Test {"
+                + "  static final SettingKey<ActiveExperimentIds> ACTIVE_EXPERIMENT_IDS ="
+                + "      SettingKey.factory.messageKeyWithDefault();"
+                + "}",
+            "Test",
+            "Test.m");
+    assertInTranslation(
+        translation,
+        "JreStrongAssign(&Test_ACTIVE_EXPERIMENT_IDS, ((SettingKey *) "
+            + "[((SettingKey_Factory *) nil_chk(JreLoadStatic(SettingKey, factory))) "
+            + "messageKeyWithDefault]));");
+  }
 }

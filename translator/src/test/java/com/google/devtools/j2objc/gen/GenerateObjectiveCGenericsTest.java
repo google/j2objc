@@ -37,7 +37,7 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertInTranslation(testHeader, "@interface Test<V> : NSObject");
+    assertInTranslation(testHeader, "@interface Test<__covariant V> : NSObject");
     assertInTranslation(testHeader, "- (V)getWithId:(V)input;");
     assertInTranslation(testSource, "- (id)getWithId:(id)input");
   }
@@ -56,7 +56,7 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertInTranslation(testHeader, "@interface Test<V> : NSObject");
+    assertInTranslation(testHeader, "@interface Test<__covariant V> : NSObject");
     assertInTranslation(testHeader, "- (V)getWithId:(V)input;");
     assertInTranslation(testSource, "- (id)getWithId:(id)input");
   }
@@ -74,7 +74,7 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertInTranslation(testHeader, "@interface Test<V> : NSObject");
+    assertInTranslation(testHeader, "@interface Test<__covariant V> : NSObject");
     assertInTranslation(testHeader, "- (V)getWithId:(V)input;");
     assertInTranslation(testSource, "@implementation Test\n");
     assertInTranslation(testSource, "- (id)getWithId:(id)input");
@@ -93,9 +93,9 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     String testHeader = translateSourceFile("Test", "Test.h");
     String testSource = translateSourceFile("Test", "Test.m");
 
-    assertInTranslation(testHeader, "@interface Test<V> : NSObject");
+    assertInTranslation(testHeader, "@interface Test<__covariant V> : NSObject");
     assertNotInTranslation(testHeader, "- (V)getWithId:(V)input;");
-    assertInTranslation(testSource, "@interface Test<V> ()");
+    assertInTranslation(testSource, "@interface Test<__covariant V> ()");
     assertInTranslation(testSource, "- (V)getWithId:(V)input;");
     assertInTranslation(testSource, "@implementation Test\n");
     assertInTranslation(testSource, "- (id)getWithId:(id)input");
@@ -262,7 +262,7 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
 
     String testHeader = translateSourceFile("Test", "Test.h");
 
-    assertInTranslation(testHeader, "@interface Test<U, V> : NSObject");
+    assertInTranslation(testHeader, "@interface Test<__covariant U, __covariant V> : NSObject");
     assertInTranslation(testHeader, "- (U)getFirst;");
     assertInTranslation(testHeader, "- (V)getSecond;");
   }
@@ -360,9 +360,9 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
 
     String testHeader = translateSourceFile("A", "A.h");
 
-    assertInTranslation(testHeader, "@interface A<X> : NSObject");
+    assertInTranslation(testHeader, "@interface A<__covariant X> : NSObject");
     assertInTranslation(testHeader, "- (X)getAXWithId:(X)input;");
-    assertInTranslation(testHeader, "@interface A_B<Y> : NSObject");
+    assertInTranslation(testHeader, "@interface A_B<__covariant Y> : NSObject");
     // Inner classes using generics from outer class presently unsupported.
     assertInTranslation(testHeader, "- (id)getBXWithId:(id)input;");
     assertInTranslation(testHeader, "- (Y)getBYWithId:(Y)input;");
@@ -384,7 +384,7 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
 
     String testHeader = translateSourceFile("A", "A.h");
 
-    assertInTranslation(testHeader, "@interface A<X> : NSObject");
+    assertInTranslation(testHeader, "@interface A<__covariant X> : NSObject");
     assertInTranslation(testHeader, "- (X)getAXWithId:(X)input;");
     assertInTranslation(testHeader, "@protocol A_B < JavaObject >");
     assertInTranslation(testHeader, "- (id)getBYWithId:(id)input;");
@@ -422,4 +422,119 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     assertInTranslation(testHeader, "@interface ComGoogleProtobufTest : NSObject");
     assertInTranslation(testHeader, "- (id)getWithId:(id)input;");
   }
+
+  public void testStaticPropertyGenerics() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    options.setClassProperties(true);
+    options.setStaticAccessorMethods(true);
+    addSourceFile(
+        "public class Test<T> { " + "  public static final Test<String> FOO = null; " + "}",
+        "Test.java");
+
+    String testHeader = translateSourceFile("Test", "Test.h");
+    assertInTranslation(
+        testHeader,
+        "@property (readonly, class, strong) Test<NSString *> *FOO NS_SWIFT_NAME(FOO);");
+  }
+
+  public void testStaticPropertyGenericsWithAnnotation() throws IOException {
+    options.setClassProperties(true);
+    options.setStaticAccessorMethods(true);
+    addSourceFile(
+        "import com.google.j2objc.annotations.GenerateObjectiveCGenerics; "
+            + "@GenerateObjectiveCGenerics "
+            + "public class Test<T> { "
+            + "  public static final Test<String> FOO = null; "
+            + "}",
+        "Test.java");
+
+    String testHeader = translateSourceFile("Test", "Test.h");
+    assertInTranslation(
+        testHeader,
+        "@property (readonly, class, strong) Test<NSString *> *FOO NS_SWIFT_NAME(FOO);");
+  }
+
+  public void testExplicitStaticPropertyGenerics() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    options.setStaticAccessorMethods(true);
+    addSourceFile(
+        "import com.google.j2objc.annotations.Property; "
+            + "public class Test<T> { "
+            + "  @Property public static final Test<String> FOO = null; "
+            + "}",
+        "Test.java");
+
+    String testHeader = translateSourceFile("Test", "Test.h");
+    assertInTranslation(testHeader, "@property (readonly, class, strong) Test<NSString *> *FOO;");
+  }
+
+  public void testDefaultStaticFieldTranslation() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    options.setClassProperties(false);
+    options.setStaticAccessorMethods(false);
+    addSourceFile(
+        "public class Test<T> { " + "  public static final Test<String> FOO = null; " + "}",
+        "Test.java");
+
+    String testHeader = translateSourceFile("Test", "Test.h");
+    assertNotInTranslation(testHeader, "@property");
+    assertInTranslation(testHeader, "inline Test<NSString *> *Test_get_FOO(void);");
+    assertInTranslation(testHeader, "FOUNDATION_EXPORT Test<NSString *> *Test_FOO;");
+  }
+
+  public void testStaticPropertyGenericsWithCommas() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    options.setClassProperties(false);
+    options.setStaticAccessorMethods(false);
+    addSourceFile("class Map<K, V> {}", "Map.java");
+    addSourceFile(
+        "public class Test { " + "  public static final Map<String, String> FOO = null; " + "}",
+        "Test.java");
+
+    String testHeader = translateSourceFile("Test", "Test.h");
+    assertInTranslation(testHeader, "typedef Map<NSString *, NSString *> * Test_FOO_typedef;");
+    assertInTranslation(testHeader, "inline Test_FOO_typedef Test_get_FOO(void);");
+    assertInTranslation(testHeader, "FOUNDATION_EXPORT Test_FOO_typedef Test_FOO;");
+    assertInTranslation(testHeader, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Test, FOO, Test_FOO_typedef)");
+  }
+
+  public void testStaticMethodCFunctionGenerics() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    addSourceFile("class List<T> {}", "List.java");
+    addSourceFile(
+        "public class Test { "
+            + "  public static List<String> foo(List<String> list) { return null; }"
+            + "}",
+        "Test.java");
+
+    String testHeader = translateSourceFile("Test", "Test.h");
+    assertInTranslation(
+        testHeader,
+        "FOUNDATION_EXPORT List<NSString *> *Test_fooWithList_(List<NSString *> *list);");
+  }
+
+  public void testStaticMethodCFunctionGenericsErased() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    addSourceFile("class List<T> {}", "List.java");
+    addSourceFile(
+        "public class Test { "
+            + "  public static <T> List<T> foo(List<T> list) { return null; }"
+            + "}",
+        "Test.java");
+
+    String testHeader = translateSourceFile("Test", "Test.h");
+    assertInTranslation(testHeader, "FOUNDATION_EXPORT List *Test_fooWithList_(List *list);");
+    assertNotInTranslation(testHeader, "List<id>");
+  }
+
+  public void testConstructorCFunctionGenericsErased() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    addSourceFile(
+        "public class Test<T> { " + "  public Test(Test<T> other) {} " + "}", "Test.java");
+
+    String testHeader = translateSourceFile("Test", "Test.h");
+    assertInTranslation(
+        testHeader, "FOUNDATION_EXPORT void Test_initWithTest_(Test *self, Test *other);");
+  }
 }
+
