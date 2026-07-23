@@ -56,4 +56,34 @@ public class HeaderImportCollectorTest extends GenerationTest {
     // because the method is private.
     assertNotInTranslation(translation, "Runnable");
   }
+
+  public void testFieldGenerics() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    addSourceFile("class Foo<T> {}", "Foo.java");
+    addSourceFile("class Bar {}", "Bar.java");
+    addSourceFile(
+        "import com.google.j2objc.annotations.Property; "
+            + "class Test { "
+            + "  @Property public Foo<Bar> field; "
+            + "}",
+        "Test.java");
+    String translation = translateSourceFile("Test", "Test.h");
+    assertInTranslation(translation, "@class Foo<T>;");
+    assertInTranslation(translation, "@class Bar;");
+  }
+
+  public void testFieldGenericsWithJreTypes() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    addSourceFile("class Foo<T> {}", "Foo.java");
+    addSourceFile(
+        "import com.google.j2objc.annotations.Property; "
+            + "class Test { "
+            + "  @Property public Foo<Boolean> field; "
+            + "}",
+        "Test.java");
+    String translation = translateSourceFile("Test", "Test.h");
+    assertInTranslation(translation, "@class Foo<T>;");
+    assertInTranslation(translation, "#include \"java/lang/Boolean.h\"");
+    assertNotInTranslation(translation, "@class JavaLangBoolean;");
+  }
 }

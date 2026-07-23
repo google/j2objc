@@ -310,7 +310,13 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     if (ElementUtil.isVolatile(var)) {
       return "volatile_" + NameTable.getPrimitiveObjCType(type);
     } else {
-      return nameTable.getObjCType(type);
+      boolean allowGenerics = !typeUtil.isProtoClass(type);
+      boolean enableGenerics =
+          allowGenerics
+              && ElementUtil.isStatic(var)
+              && (generateObjectiveCGenerics(type)
+                  || generateObjectiveCGenerics(typeElement.asType()));
+      return nameTable.getObjCTypeDeclaration(type, enableGenerics, typeElement);
     }
   }
 
