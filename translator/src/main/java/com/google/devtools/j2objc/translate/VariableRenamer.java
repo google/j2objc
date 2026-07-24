@@ -36,7 +36,7 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
@@ -52,15 +52,15 @@ import javax.lang.model.element.VariableElement;
 public class VariableRenamer extends UnitTreeVisitor {
 
   private final Deque<Set<String>> fieldNameStack = new ArrayDeque<>();
-  private final Set<TypeElement> renamedTypes = new HashSet<>();
+  private final Set<TypeElement> renamedTypes = new LinkedHashSet<>();
   // Keep track of the variables and names in a scope so we can rename variables in a
   // scope-aware manner; start with a sentinel empty scope.
   private final Deque<Scope> scopes = new ArrayDeque<>(ImmutableList.of(new Scope()));
 
   // Keep track of variables that are in scope and the names that have already been used.
   private static class Scope {
-    private final Set<VariableElement> variables = new HashSet<>();
-    private final Set<String> usedNames = new HashSet<>();
+    private final Set<VariableElement> variables = new LinkedHashSet<>();
+    private final Set<String> usedNames = new LinkedHashSet<>();
 
     private Scope(Scope enclosingScope) {
       this.variables.addAll(enclosingScope.variables);
@@ -94,12 +94,12 @@ public class VariableRenamer extends UnitTreeVisitor {
     collectAndRenameFields(ElementUtil.getSuperclass(type), fields);
     if (!renamedTypes.contains(type)) {
       renamedTypes.add(type);
-      Set<String> superFieldNames = new HashSet<>();
+      Set<String> superFieldNames = new LinkedHashSet<>();
       for (VariableElement superField : fields) {
         superFieldNames.add(superField.getSimpleName().toString());
       }
       // Look for methods that might conflict with a static variable when functionized.
-      Set<String> staticMethodNames = new HashSet<>();
+      Set<String> staticMethodNames = new LinkedHashSet<>();
       for (ExecutableElement method : ElementUtil.getExecutables(type)) {
         if (method.getParameters().size() == 0) {
           staticMethodNames.add(nameTable.getFunctionName(method));
@@ -135,9 +135,9 @@ public class VariableRenamer extends UnitTreeVisitor {
   }
 
   private void pushType(TypeElement type) {
-    Set<VariableElement> fields = new HashSet<>();
+    Set<VariableElement> fields = new LinkedHashSet<>();
     collectAndRenameFields(type, fields);
-    Set<String> fullFieldNames = new HashSet<>();
+    Set<String> fullFieldNames = new LinkedHashSet<>();
     for (VariableElement field : fields) {
       fullFieldNames.add(nameTable.getVariableShortName(field));
     }
@@ -173,7 +173,8 @@ public class VariableRenamer extends UnitTreeVisitor {
     }
     if (var.getKind().isField()) {
       // Make sure fields for the declaring type are renamed.
-      collectAndRenameFields(ElementUtil.getDeclaringClass(var), new HashSet<VariableElement>());
+      collectAndRenameFields(
+          ElementUtil.getDeclaringClass(var), new LinkedHashSet<VariableElement>());
     } else {
       // Local variable or parameter.
       handleVariable(var);
