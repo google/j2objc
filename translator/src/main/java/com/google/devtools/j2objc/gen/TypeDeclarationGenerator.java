@@ -290,7 +290,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (generateObjectiveCGenerics(typeElement.asType())) {
       List<String> genericNames = nameTable.getClassObjCGenericTypeNames(typeElement.asType());
       if (!genericNames.isEmpty()) {
-        printf("<%s>", String.join(", ", genericNames));
+        List<String> covariantNames = new java.util.ArrayList<>();
+        for (String name : genericNames) {
+          covariantNames.add("__covariant " + name);
+        }
+        printf("<%s>", String.join(", ", covariantNames));
       }
     }
   }
@@ -579,10 +583,22 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   private void printStaticFieldFullDeclaration(VariableDeclarationFragment fragment) {
     VariableElement var = fragment.getVariableElement();
     boolean isVolatile = ElementUtil.isVolatile(var);
-    String objcType = nameTable.getObjCTypeDeclaration(var.asType());
-    String objcTypePadded = paddedType(objcType, var);
-    String declType = paddedType(getDeclarationType(var), var);
+    boolean allowGenerics = !typeUtil.isProtoClass(var.asType());
+    boolean enableGenerics =
+        allowGenerics
+            && (generateObjectiveCGenerics(var.asType())
+                || generateObjectiveCGenerics(typeElement.asType()));
+    String objcType = nameTable.getObjCTypeDeclaration(var.asType(), enableGenerics, typeElement);
+    String declType = getDeclarationType(var);
     String name = nameTable.getVariableShortName(var);
+    if (objcType.contains(",")) {
+      String typedefName = typeName + "_" + name + "_typedef";
+      printf("typedef %s %s;\n", objcType, typedefName);
+      objcType = typedefName;
+      declType = typedefName;
+    }
+    String objcTypePadded = paddedType(objcType, var);
+    declType = paddedType(declType, var);
     boolean isFinal = ElementUtil.isFinal(var);
     boolean isPrimitive = var.asType().getKind().isPrimitive();
     boolean isConstant = ElementUtil.isPrimitiveConstant(var);

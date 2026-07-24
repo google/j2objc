@@ -186,6 +186,25 @@ public class CastResolver extends UnitTreeVisitor {
     }
   }
 
+  private boolean isObjcGenericAssignable(TypeMirror t1, TypeMirror t2) {
+    if (t1 instanceof DeclaredType && t2 instanceof DeclaredType) {
+      DeclaredType dt1 = (DeclaredType) t1;
+      DeclaredType dt2 = (DeclaredType) t2;
+      List<? extends TypeMirror> args1 = dt1.getTypeArguments();
+      List<? extends TypeMirror> args2 = dt2.getTypeArguments();
+      if (args1.size() == args2.size() && !args1.isEmpty()) {
+        for (int i = 0; i < args1.size(); i++) {
+          TypeMirror arg1 = args1.get(i);
+          TypeMirror arg2 = args2.get(i);
+          if (!typeUtil.isObjcAssignable(arg1, arg2) || !isObjcGenericAssignable(arg1, arg2)) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
+
   private boolean needsCast(Expression expr, TypeMirror expectedType, boolean shouldCastFromId) {
     TypeMirror declaredType = getDeclaredType(expr);
     if (declaredType == null) {
@@ -203,6 +222,12 @@ public class CastResolver extends UnitTreeVisitor {
         // expected type, then the compiler already has sufficient type info.
         || typeUtil.isObjcAssignable(declaredType, exprType)
         || (expectedType != null && typeUtil.isObjcAssignable(declaredType, expectedType))) {
+      if (options.asObjCGenericDecl()) {
+        if (!isObjcGenericAssignable(declaredType, exprType)
+            || (expectedType != null && !isObjcGenericAssignable(declaredType, expectedType))) {
+          return true;
+        }
+      }
       return false;
     }
     return true;

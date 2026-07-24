@@ -310,7 +310,13 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     if (ElementUtil.isVolatile(var)) {
       return "volatile_" + NameTable.getPrimitiveObjCType(type);
     } else {
-      return nameTable.getObjCType(type);
+      boolean allowGenerics = !typeUtil.isProtoClass(type);
+      boolean enableGenerics =
+          allowGenerics
+              && ElementUtil.isStatic(var)
+              && (generateObjectiveCGenerics(type)
+                  || generateObjectiveCGenerics(typeElement.asType()));
+      return nameTable.getObjCTypeDeclaration(type, enableGenerics, typeElement);
     }
   }
 
@@ -429,9 +435,18 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected String getFunctionSignature(
       FunctionDeclaration function, boolean isPrototype, boolean isPrivate) {
     StringBuilder sb = new StringBuilder();
+    boolean allowGenerics = options.asObjCGenericDecl();
     TypeMirror returnTypeMirror = function.getReturnType().getTypeMirror();
+    boolean allowReturnGenerics = allowGenerics && !hasTypeVariable(returnTypeMirror);
     String returnType =
-        paddedType(nameTable.getObjCType(returnTypeMirror), function.getExecutableElement());
+        paddedType(
+            nameTable.getObjCTypeDeclaration(
+                returnTypeMirror,
+                allowReturnGenerics
+                    && (generateObjectiveCGenerics(returnTypeMirror)
+                        || generateObjectiveCGenerics(typeElement.asType())),
+                typeElement),
+            function.getExecutableElement());
     String functionName = function.getName();
     sb.append(returnType).append(functionName).append('(');
     if (isPrototype && function.getParameters().isEmpty()) {
@@ -440,7 +455,17 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
            iter.hasNext(); ) {
         VariableElement var = iter.next().getVariableElement();
-        String paramType = paddedType(nameTable.getObjCType(var.asType()), var);
+        boolean allowParamGenerics =
+            allowGenerics && !typeUtil.isProtoClass(var.asType()) && !hasTypeVariable(var.asType());
+        String paramType =
+            paddedType(
+                nameTable.getObjCTypeDeclaration(
+                    var.asType(),
+                    allowParamGenerics
+                        && (generateObjectiveCGenerics(var.asType())
+                            || generateObjectiveCGenerics(typeElement.asType())),
+                    typeElement),
+                var);
         sb.append(paramType + nameTable.getVariableShortName(var));
         if (iter.hasNext()) {
           sb.append(", ");
@@ -488,6 +513,26 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       }
     }
     return type + suffix;
+  }
+
+  protected boolean hasTypeVariable(TypeMirror type) {
+    if (type == null) {
+      return false;
+    }
+    if (TypeUtil.isTypeVariable(type)) {
+      return true;
+    }
+    if (TypeUtil.isDeclaredType(type)) {
+      for (TypeMirror arg : TypeUtil.getTypeArguments(type)) {
+        if (hasTypeVariable(arg)) {
+          return true;
+        }
+      }
+    }
+    if (type instanceof javax.lang.model.type.ArrayType) {
+      return hasTypeVariable(((javax.lang.model.type.ArrayType) type).getComponentType());
+    }
+    return false;
   }
 
   // TODO: b/287612419 - Update call-sites to pass through a String representation of
