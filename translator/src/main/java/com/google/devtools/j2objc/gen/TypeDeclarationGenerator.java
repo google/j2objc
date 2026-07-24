@@ -224,6 +224,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       if (!printPrivateDeclarations()) {
         String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement, true);
         if (swiftName != null) {
+          if (typeNode instanceof EnumDeclaration) {
+            swiftName = swiftName + "_Enum";
+          }
           printf(" NS_SWIFT_NAME(%s)", swiftName);
         }
       }
@@ -336,9 +339,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement, true);
 
     if (swiftName != null) {
-      if (typeNode instanceof EnumDeclaration) {
-        swiftName = swiftName + "Class";
-      }
       printf(" NS_SWIFT_NAME(%s)\n", swiftName);
     }
   }
