@@ -143,8 +143,11 @@ public class HeaderImportCollector extends UnitTreeVisitor {
 
   @Override
   public boolean visit(FieldDeclaration node) {
-    if (filter.include(node) && includeInnerTypes) {
+    if (filter.include(node)) {
       addForwardDecl(node.getTypeMirror());
+      for (TypeMirror fieldGeneric : objCForwardDeclaredGenericParameters(node.getTypeMirror())) {
+        addForwardDecl(fieldGeneric);
+      }
     }
     return false;
   }

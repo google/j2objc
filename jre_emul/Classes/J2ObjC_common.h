@@ -340,34 +340,38 @@ FOUNDATION_EXPORT Class _Nullable objc_opt_class(id _Nullable obj);
 
 #ifdef J2OBJC_STRICT_FIELD_ASSIGN
 
-#define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE)                                                 \
-  __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-    return JreStrictFieldStrongAssign(&instance->FIELD, value);                                 \
+#define J2OBJC_FIELD_SETTER(CLASS, FIELD, ...)                                               \
+  __attribute__((unused)) static inline __VA_ARGS__ CLASS##_set_##FIELD(CLASS *instance,     \
+                                                                        __VA_ARGS__ value) { \
+    return JreStrictFieldStrongAssign(&instance->FIELD, value);                              \
   }
 
 #else  // J2OBJC_STRICT_FIELD_ASSIGN
 
 #if __has_feature(objc_arc)
-#define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-    return instance->FIELD = value; \
+#define J2OBJC_FIELD_SETTER(CLASS, FIELD, ...)                                               \
+  __attribute__((unused)) static inline __VA_ARGS__ CLASS##_set_##FIELD(CLASS *instance,     \
+                                                                        __VA_ARGS__ value) { \
+    return instance->FIELD = value;                                                          \
   }
 #else
-#define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-    return JreStrongAssign(&instance->FIELD, value); \
-  }\
-  __attribute__((unused)) static inline TYPE CLASS##_setAndConsume_##FIELD( \
-        CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) { \
-    return JreStrongAssignAndConsume(&instance->FIELD, value); \
+#define J2OBJC_FIELD_SETTER(CLASS, FIELD, ...)                                               \
+  __attribute__((unused)) static inline __VA_ARGS__ CLASS##_set_##FIELD(CLASS *instance,     \
+                                                                        __VA_ARGS__ value) { \
+    return JreStrongAssign(&instance->FIELD, value);                                         \
+  }                                                                                          \
+  __attribute__((unused)) static inline __VA_ARGS__ CLASS##_setAndConsume_##FIELD(           \
+      CLASS *instance, NS_RELEASES_ARGUMENT __VA_ARGS__ value) {                             \
+    return JreStrongAssignAndConsume(&instance->FIELD, value);                               \
   }
 #endif
 
 #endif  // J2OBJC_STRICT_FIELD_ASSIGN
 
-#define J2OBJC_VOLATILE_FIELD_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-    return JreVolatileStrongAssign(&instance->FIELD, value); \
+#define J2OBJC_VOLATILE_FIELD_SETTER(CLASS, FIELD, ...)                                      \
+  __attribute__((unused)) static inline __VA_ARGS__ CLASS##_set_##FIELD(CLASS *instance,     \
+                                                                        __VA_ARGS__ value) { \
+    return JreVolatileStrongAssign(&instance->FIELD, value);                                 \
   }
 
 /*!
