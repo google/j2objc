@@ -50,7 +50,7 @@
 static uint32_t Hash0(CGPValue value, CGPFieldJavaType type) {
 #define HASH_CASE(NAME) return HASH_##NAME(value.CGPValueField_##NAME);
 
-SWITCH_TYPES_NO_ENUM(type, HASH_CASE)
+  SWITCH_TYPES(type, HASH_CASE)
 
 #undef HASH_CASE
 }
@@ -76,7 +76,7 @@ static bool Equals(CGPValue a, CGPValue b, CGPFieldJavaType type) {
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BOOLEAN:
       return a.valueBool == b.valueBool;
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:
-      return a.valueId == b.valueId;
+      return [a.valueEnum isEqual:b.valueEnum];
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_FLOAT:
       return a.valueFloat == b.valueFloat;
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_DOUBLE:
@@ -322,11 +322,11 @@ CGPMapFieldEntry *CGPMapFieldGetWithKey(
 
 void CGPMapFieldPut(
     CGPMapField *field, CGPValue key, CGPFieldJavaType keyType, CGPValue value,
-    CGPFieldJavaType valueType, bool retainedKeyAndValue) {
+    CGPFieldJavaType valueType) {
   BOOL keyTypeIsRetainable = CGPIsRetainedType(keyType);
   BOOL valueTypeIsRetainable = CGPIsRetainedType(valueType);
   // The value is always added to the map so make sure it's retained.
-  if (valueTypeIsRetainable && !retainedKeyAndValue) {
+  if (valueTypeIsRetainable) {
     RETAIN_(value.valueId);
   }
   uint32_t hash = Hash(key, keyType);
@@ -337,10 +337,6 @@ void CGPMapFieldPut(
     entry = GetFromHashArray(data, key, keyType, hash);
   }
   if (entry) {
-    // Existing entry so the key is not added to the map and must not be retained.
-    if (keyTypeIsRetainable && retainedKeyAndValue) {
-      [key.valueId autorelease];
-    }
     // Release the previous value.
     if (valueTypeIsRetainable) {
       [entry->value.valueId autorelease];
@@ -348,7 +344,7 @@ void CGPMapFieldPut(
     entry->value = value;
   } else {
     // Creating a new entry using the passed in key which must be retained.
-    if (keyTypeIsRetainable && !retainedKeyAndValue) {
+    if (keyTypeIsRetainable) {
       RETAIN_(key.valueId);
     }
     EnsureAdditionalHashMapCapacity(field, 1, keyType, valueType);
@@ -507,6 +503,7 @@ static id BoxedValue(CGPValue value, CGPFieldJavaType type) {
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BOOLEAN:
       return JavaLangBoolean_valueOfWithBoolean_(value.valueBool);
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:
+      return value.valueEnum->enum_;
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING:
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BYTE_STRING:
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:
@@ -533,6 +530,8 @@ static CGPValue UnboxValue(id value, CGPFieldJavaType type) {
       result.valueBool = [value booleanValue];
       break;
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:
+      result.valueEnum = [value getValueDescriptor];
+      break;
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING:
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BYTE_STRING:
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:
@@ -546,8 +545,7 @@ static CGPValue UnboxValue(id value, CGPFieldJavaType type) {
 // java.lang.Integer using the enum number (not ordinal).
 static id BoxedReflectionValue(CGPValue value, CGPFieldJavaType type) {
   if (type == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM) {
-    return JavaLangInteger_valueOfWithInt_(
-        [(id<ComGoogleProtobufProtocolMessageEnum>)value.valueId getNumber]);
+    return JavaLangInteger_valueOfWithInt_([value.valueEnum getNumber]);
   }
   return BoxedValue(value, type);
 }
@@ -558,7 +556,7 @@ static CGPValue UnboxReflectionValue(id value, CGPFieldDescriptor *field) {
     CGPEnumValueDescriptor *valueDesc =
         CGPEnumValueDescriptorFromInt(field->valueType_, [value intValue]);
     CGPValue result;
-    result.valueId = valueDesc ? valueDesc->enum_ : nil;
+    result.valueEnum = valueDesc;
     return result;
   }
   return UnboxValue(value, type);
