@@ -160,26 +160,13 @@ typedef struct CGPOneofData {
 
 @end
 
-// Functions that convert a value from its field storage type to the type
-// expected by a reflection accessor. (accessing with a descriptor)
-// For enums, the reflection type is a EnumValueDescriptor.
-#define CGPToReflectionTypeInt(value, field) [JavaLangInteger valueOfWithInt:value]
-#define CGPToReflectionTypeLong(value, field) [JavaLangLong valueOfWithLong:value]
-#define CGPToReflectionTypeFloat(value, field) [JavaLangFloat valueOfWithFloat:value]
-#define CGPToReflectionTypeDouble(value, field) [JavaLangDouble valueOfWithDouble:value]
-#define CGPToReflectionTypeBool(value, field) [JavaLangBoolean valueOfWithBoolean:value]
-#define CGPToReflectionTypeEnum(value, field) \
-  ((CGPEnumDescriptor *)field->valueType_)->values_->buffer_[[(JavaLangEnum *)value ordinal]]
-#define CGPToReflectionTypeRetainable(value, field) RETAIN_AND_AUTORELEASE(value)
-
 CF_EXTERN_C_BEGIN
 
 NS_RETURNS_RETAINED CGPDescriptor *CGPInitDescriptor(Class messageClass, Class builderClass,
                                                      CGPMessageFlags flags, size_t storageSize);
 
-void CGPInitFields(
-    CGPDescriptor *descriptor, jint fieldCount, CGPFieldData *fieldData,
-    jint oneofCount, const CGPOneofData *oneofData);
+void CGPInitFields(CGPDescriptor *descriptor, jint fieldCount, CGPFieldData *fieldData,
+                   jint oneofCount, const CGPOneofData *oneofData);
 
 CGP_ALWAYS_INLINE BOOL CGPIsExtendable(const CGPDescriptor *descriptor) {
   return descriptor->flags_ & CGPMessageFlagExtendable;
@@ -305,5 +292,86 @@ J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_Type, javaType_
 @end
 
 J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, defaultDefault_, id)
+
+// Functions that box a value from its field storage type into an object type.
+// For enums, the boxed type is a Java enum object.
+CGP_ALWAYS_INLINE JavaLangInteger *CGPBoxedValueInt(jint value) {
+  return [JavaLangInteger valueOfWithInt:value];
+}
+CGP_ALWAYS_INLINE JavaLangLong *CGPBoxedValueLong(jlong value) {
+  return [JavaLangLong valueOfWithLong:value];
+}
+CGP_ALWAYS_INLINE JavaLangFloat *CGPBoxedValueFloat(jfloat value) {
+  return [JavaLangFloat valueOfWithFloat:value];
+}
+CGP_ALWAYS_INLINE JavaLangDouble *CGPBoxedValueDouble(jdouble value) {
+  return [JavaLangDouble valueOfWithDouble:value];
+}
+CGP_ALWAYS_INLINE JavaLangBoolean *CGPBoxedValueBool(bool value) {
+  return [JavaLangBoolean valueOfWithBoolean:value];
+}
+CGP_ALWAYS_INLINE JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *CGPBoxedValueEnum(
+    JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *value) {
+  return value;
+}
+CGP_ALWAYS_INLINE id CGPBoxedValueId(id value) { return value; }
+
+// Functions that unbox a value into its primitive type.
+CGP_ALWAYS_INLINE jint CGPUnboxValueInt(JavaLangInteger *value) { return [value intValue]; }
+CGP_ALWAYS_INLINE jlong CGPUnboxValueLong(JavaLangLong *value) { return [value longLongValue]; }
+CGP_ALWAYS_INLINE jfloat CGPUnboxValueFloat(JavaLangFloat *value) { return [value floatValue]; }
+CGP_ALWAYS_INLINE jdouble CGPUnboxValueDouble(JavaLangDouble *value) { return [value doubleValue]; }
+CGP_ALWAYS_INLINE bool CGPUnboxValueBool(JavaLangBoolean *value) { return [value booleanValue]; }
+CGP_ALWAYS_INLINE JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *CGPUnboxValueEnum(
+    JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *value) {
+  return value;
+}
+CGP_ALWAYS_INLINE id CGPUnboxValueRetainable(id value) { return value; }
+
+// Functions that convert a value from its reflection to its storage type.
+CGP_ALWAYS_INLINE jint CGPFromReflectionTypeInt(JavaLangInteger *value) { return [value intValue]; }
+CGP_ALWAYS_INLINE jlong CGPFromReflectionTypeLong(JavaLangLong *value) {
+  return [value longLongValue];
+}
+CGP_ALWAYS_INLINE jfloat CGPFromReflectionTypeFloat(JavaLangFloat *value) {
+  return [value floatValue];
+}
+CGP_ALWAYS_INLINE jdouble CGPFromReflectionTypeDouble(JavaLangDouble *value) {
+  return [value doubleValue];
+}
+CGP_ALWAYS_INLINE bool CGPFromReflectionTypeBool(JavaLangBoolean *value) {
+  return [value booleanValue];
+}
+CGP_ALWAYS_INLINE id CGPFromReflectionTypeEnum(CGPEnumValueDescriptor *value) {
+  return value->enum_;
+}
+CGP_ALWAYS_INLINE id CGPFromReflectionTypeRetainable(id value) { return value; }
+
+// Functions that convert a value from its field storage type to the type
+// expected by a reflection accessor. (accessing with a descriptor)
+// For enums, the reflection type is a EnumValueDescriptor.
+CGP_ALWAYS_INLINE JavaLangInteger *CGPToReflectionTypeInt(jint value, CGPFieldDescriptor *field) {
+  return [JavaLangInteger valueOfWithInt:value];
+}
+CGP_ALWAYS_INLINE JavaLangLong *CGPToReflectionTypeLong(jlong value, CGPFieldDescriptor *field) {
+  return [JavaLangLong valueOfWithLong:value];
+}
+CGP_ALWAYS_INLINE JavaLangFloat *CGPToReflectionTypeFloat(jfloat value, CGPFieldDescriptor *field) {
+  return [JavaLangFloat valueOfWithFloat:value];
+}
+CGP_ALWAYS_INLINE JavaLangDouble *CGPToReflectionTypeDouble(jdouble value,
+                                                            CGPFieldDescriptor *field) {
+  return [JavaLangDouble valueOfWithDouble:value];
+}
+CGP_ALWAYS_INLINE JavaLangBoolean *CGPToReflectionTypeBool(bool value, CGPFieldDescriptor *field) {
+  return [JavaLangBoolean valueOfWithBoolean:value];
+}
+CGP_ALWAYS_INLINE CGPEnumValueDescriptor *CGPToReflectionTypeEnum(
+    JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *value, CGPFieldDescriptor *field) {
+  return ((CGPEnumDescriptor *)field->valueType_)->values_->buffer_[[value ordinal]];
+}
+CGP_ALWAYS_INLINE id CGPToReflectionTypeRetainable(id value, CGPFieldDescriptor *field) {
+  return RETAIN_AND_AUTORELEASE(value);
+}
 
 #endif  // __ComGoogleProtobufDescriptors_PackagePrivate_H__
