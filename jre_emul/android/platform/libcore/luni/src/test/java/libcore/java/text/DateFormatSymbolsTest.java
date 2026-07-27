@@ -24,7 +24,6 @@ import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -156,10 +155,10 @@ public class DateFormatSymbolsTest extends junit.framework.TestCase {
             // Pacific/Apia is somewhat arbitrary; we just want a zone we have to generate
             // "GMT" strings for the short names.
             if (row[0].equals("Pacific/Apia")) {
-                assertEquals("Apia Standard Time", row[1]);
+        assertEquals("Samoa Standard Time", row[1]);
                 // assertEquals("GMT+13:00", row[2]); J2ObjC changed.
                 assertEquals("GMT+13", row[2]);
-                assertEquals("Apia Daylight Time", row[3]);
+        assertEquals("Samoa Daylight Time", row[3]);
                 // assertEquals("GMT+14:00", row[4]); J2ObjC changed.
                 //TODO(b/309905118): Fix the libcore/javax/xml tests issues
                 // assertEquals("GMT+14", row[4]); // Expected:<GMT+1[4]> but was:<GMT+1[3]>
