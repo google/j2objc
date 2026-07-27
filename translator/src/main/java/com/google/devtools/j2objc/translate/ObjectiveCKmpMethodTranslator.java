@@ -64,8 +64,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
@@ -513,8 +515,55 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
           adapterMethodExecutable, adaptingMethodInvocation, adapterReturnType, adapterParameters);
     }
 
+    private boolean isInSwiftNameContext() {
+      if (options.swiftNaming()) {
+        return true;
+      }
+      if (ElementUtil.getAnnotation(originalMethodExecutable, SwiftName.class) != null) {
+        return true;
+      }
+      Element current = typeNode.getTypeElement();
+      while (current != null) {
+        if (ElementUtil.getAnnotation(current, SwiftName.class) != null) {
+          return true;
+        }
+        current = current.getEnclosingElement();
+      }
+      PackageElement pkg = ElementUtil.getPackage(typeNode.getTypeElement());
+      return pkg != null && ElementUtil.getAnnotation(pkg, SwiftName.class) != null;
+    }
+
+    private @Nullable String getOrComputeSwiftName() {
+      if (swiftName != null && !swiftName.isEmpty()) {
+        return swiftName;
+      }
+      if (!isInSwiftNameContext()) {
+        return null;
+      }
+      String baseName = selector;
+      int firstColon = selector.indexOf(':');
+      if (firstColon != -1) {
+        baseName = selector.substring(0, firstColon);
+      }
+      if (originalMethodParameters.isEmpty()) {
+        return baseName + "()";
+      }
+      StringBuilder sb = new StringBuilder(baseName).append("(");
+      for (VariableElement param : originalMethodParameters) {
+        String paramName = param.getSimpleName().toString();
+        if (paramName.isEmpty()) {
+          sb.append("_:");
+        } else {
+          sb.append(paramName).append(":");
+        }
+      }
+      sb.append(")");
+      return sb.toString();
+    }
+
     private void attachSwiftNameAnnotation(GeneratedExecutableElement adapterMethodExecutable) {
-      if (swiftName == null || swiftName.isEmpty()) {
+      String effectiveSwiftName = getOrComputeSwiftName();
+      if (effectiveSwiftName == null || effectiveSwiftName.isEmpty()) {
         return;
       }
       TypeElement swiftNameElement = typeUtil.resolveJavaType(SwiftName.class.getName());
@@ -524,7 +573,8 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
           GeneratedExecutableElement.newMethodWithSelector(
               "value", typeUtil.getJavaString().asType(), swiftNameElement);
       adapterMethodExecutable.addAnnotationMirror(annotationMirror);
-      annotationMirror.addElementValue(valueElement, new GeneratedAnnotationValue(swiftName));
+      annotationMirror.addElementValue(
+          valueElement, new GeneratedAnnotationValue(effectiveSwiftName));
     }
 
     private void generateAbstractInstanceMethodDeclaration(TypeMirror adapterReturnType) {
@@ -535,6 +585,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       GeneratedExecutableElement adapterMethodExecutable =
           GeneratedExecutableElement.newAdapterMethod(
               selector, adapterReturnType, adapterParameters, originalMethodExecutable);
+      attachSwiftNameAnnotation(adapterMethodExecutable);
 
       Block adapterBodyBlock = new Block();
       String bodyCode =
