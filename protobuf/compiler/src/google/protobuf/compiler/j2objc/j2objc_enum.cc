@@ -178,6 +178,19 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
           CValuePreprocessorName(descriptor_));
   }
 
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+        "\n"
+        "@class $classname$;\n"
+        "@class $classname$Companion;\n"
+        "\n"
+        "@interface $classname$Companion : NSObject\n"
+        "- (nullable $classname$ *)forNumberWithInt:(int32_t)value "
+        "NS_SWIFT_NAME(forNumber(value:));\n"
+        "@end\n",
+        "classname", ClassName(descriptor_));
+  }
+
   printer->Print(
       "\n"
       "@interface $classname$ :"
@@ -196,10 +209,13 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
       CValuePreprocessorName(descriptor_));
 
   if (IsGenerateProperties(descriptor_->file())) {
-    printer->Print("@property(readonly) int number;\n");
-    printer->Print("@property(readonly) $ordinalpreprocessorname$ nsEnum;\n",
-                   "ordinalpreprocessorname",
-                   COrdinalPreprocessorName(descriptor_));
+    printer->Print(
+        "@property (nonnull, readonly, class) $classname$Companion "
+        "*companion;\n"
+        "@property(readonly) int number;\n"
+        "@property(readonly) $ordinalpreprocessorname$ nsEnum;\n",
+        "classname", ClassName(descriptor_), "ordinalpreprocessorname",
+        COrdinalPreprocessorName(descriptor_));
   }
 
   // We add an explicit Swift name to prevent weird implicit conversions
@@ -369,6 +385,16 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
 
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
+        "+ (nonnull $classname$Companion *)companion {\n"
+        "  static $classname$Companion *instance;\n"
+        "  static dispatch_once_t onceToken;\n"
+        "  dispatch_once(&onceToken, ^{\n"
+        "    instance = [[$classname$Companion alloc] init];\n"
+        "  });\n"
+        "  return instance;\n"
+        "}\n",
+        "classname", ClassName(descriptor_));
+    printer->Print(
         "- (int)number {\n"
         "  return (int) [self getNumber];\n"
         "}\n");
@@ -483,6 +509,21 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
         "  return $classname$_values_[$classname$_Enum_$name$];\n"
         "}\n",
         "classname", ClassName(descriptor_), "name", "UNRECOGNIZED");
+  }
+
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+        "\n"
+        "@implementation $classname$Companion\n"
+        "\n"
+        "- (nullable $classname$ *)forNumberWithInt:(int32_t)value {\n"
+        "  return "
+        "$classname$_forNumberWithInt_(($valuepreprocessorname$)value);\n"
+        "}\n"
+        "\n"
+        "@end\n",
+        "classname", ClassName(descriptor_), "valuepreprocessorname",
+        CValuePreprocessorName(descriptor_));
   }
 }
 
