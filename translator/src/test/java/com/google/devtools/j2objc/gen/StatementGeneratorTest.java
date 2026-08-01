@@ -3504,4 +3504,48 @@ public class StatementGeneratorTest extends GenerationTest {
               """);
         });
   }
+
+  public void testUnnamedLambdaParameters() throws IOException {
+    testOnJava22OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  """
+                  class Test {
+                    interface F {
+                      String f(String a, String b, String c);
+                    }
+                    void test() {
+                      F f;
+                      f = (a, _, c) -> c;
+                      f = (_, _, _) -> null;
+                    }
+                  }
+                  """,
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+              """
+              @interface Test_$Lambda$1 : NSObject < Test_F >
+
+              - (NSString *)fWithNSString:(NSString *)a
+                            withNSString:(NSString *)_
+                            withNSString:(NSString *)c;
+
+              @end
+              """);
+          assertTranslatedLines(
+              translation,
+              """
+              @interface Test_$Lambda$2 : NSObject < Test_F >
+
+              - (NSString *)fWithNSString:(NSString *)_
+                            withNSString:(NSString *)Arg
+                            withNSString:(NSString *)Arg_1;
+
+              @end
+              """);
+        });
+  }
 }

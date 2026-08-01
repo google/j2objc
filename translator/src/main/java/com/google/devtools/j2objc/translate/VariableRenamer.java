@@ -38,7 +38,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -303,14 +302,16 @@ public class VariableRenamer extends UnitTreeVisitor {
   }
 
   private void handleVariable(VariableElement variable) {
-    if (variable.getKind().isField() || ElementUtil.isUnnamed(variable)) {
-      // Do not rename fields or unnamed variables.
+    if (variable.getKind().isField()
+        || (ElementUtil.isUnnamed(variable) && !ElementUtil.isParameter(variable))) {
+      // Do not rename fields or unnamed local variables.
       return;
     }
     Scope scope = scopes.peek();
     if (scope.needsRenaming(variable)) {
       // Variable needs renaming. Preserve the logic that renames parameters with "Arg" suffix.
-      String baseName = ElementUtil.getName(variable) + (isParameter(variable) ? "Arg" : "");
+      String baseName =
+          ElementUtil.getName(variable) + (ElementUtil.isParameter(variable) ? "Arg" : "");
       String suffix = "";
       int count = 1;
       while (scope.usedNames.contains(baseName + suffix)) {
@@ -320,13 +321,5 @@ public class VariableRenamer extends UnitTreeVisitor {
       nameTable.setVariableName(variable, newName);
       scope.usedNames.add(newName);
     }
-  }
-
-  private boolean isParameter(VariableElement variable) {
-    Element element = variable.getEnclosingElement();
-    if (element instanceof ExecutableElement executableElement) {
-      return executableElement.getParameters().contains(variable);
-    }
-    return false;
   }
 }
