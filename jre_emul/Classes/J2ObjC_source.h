@@ -462,12 +462,12 @@ JRE_HANDLE_OVERFLOW_INFIX_OPERATIONS(Times, *)
 #define JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGN(NAME, LHSTYPENAME, RHSTYPENAME, LHSTYPE, RHSTYPE)  \
   __attribute__((always_inline)) inline LHSTYPE Jre##NAME##Assign##LHSTYPENAME##RHSTYPENAME(   \
       LHSTYPE *pLhs, RHSTYPE rhs) {                                                            \
-    return *pLhs = Jre##LHSTYPENAME##NAME(*pLhs, rhs);                                         \
+    return *pLhs = Jre##LHSTYPENAME##NAME(*pLhs, (LHSTYPE)rhs);                                \
   }                                                                                            \
   __attribute__((always_inline)) inline LHSTYPE                                                \
   Jre##NAME##AssignVolatile##LHSTYPENAME##RHSTYPENAME(volatile_##LHSTYPE *pLhs, RHSTYPE rhs) { \
     LHSTYPE lhs = __c11_atomic_load(pLhs, __ATOMIC_SEQ_CST);                                   \
-    LHSTYPE result = Jre##LHSTYPENAME##NAME(lhs, rhs);                                         \
+    LHSTYPE result = Jre##LHSTYPENAME##NAME(lhs, (LHSTYPE)rhs);                                \
     __c11_atomic_store(pLhs, result, __ATOMIC_SEQ_CST);                                        \
     return result;                                                                             \
   }
