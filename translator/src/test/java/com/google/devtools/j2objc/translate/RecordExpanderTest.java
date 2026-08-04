@@ -34,7 +34,10 @@ public class RecordExpanderTest extends GenerationTest {
     assertInTranslation(
         translation, "void Point_initWithInt_withInt_(Point *self, int32_t x, int32_t y);");
 
-    // Verify accessors declared for record's members.
+    // Verify properties declared for record's members and
+    assertInTranslation(translation, "@property (readonly, nonatomic) int32_t x;");
+    assertInTranslation(translation, "@property (readonly, nonatomic) int32_t y;");
+    // also as accessor methods
     assertInTranslation(translation, "- (int32_t)x;");
     assertInTranslation(translation, "- (int32_t)y;");
 
@@ -105,6 +108,8 @@ public class RecordExpanderTest extends GenerationTest {
             "Point",
             "Point.h");
     assertInTranslation(translation, "@interface Point : JavaLangRecord");
+    assertInTranslation(translation, "@property (readonly, nonatomic) int32_t x;");
+    assertInTranslation(translation, "@property (readonly, nonatomic) int32_t y;");
     assertInTranslation(translation, "- (int32_t)x;");
     assertInTranslation(translation, "- (int32_t)y;");
     assertInTranslation(translation, "- (bool)isEqual:(id)o;");

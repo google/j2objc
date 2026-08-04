@@ -17,13 +17,11 @@ package com.google.devtools.j2objc.gen;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
-import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
-import com.google.j2objc.annotations.Property;
 import com.google.j2objc.annotations.Weak;
 import java.util.Optional;
 import java.util.Set;
@@ -86,7 +84,11 @@ public final class PropertyGenerator {
     this.staticToInstance = staticToInstance;
     declaration = (FieldDeclaration) fragment.getParent();
     PropertyAnnotation annotation =
-        (PropertyAnnotation) TreeUtil.getAnnotation(Property.class, declaration.getAnnotations());
+        declaration.getAnnotations().stream()
+            .filter(PropertyAnnotation.class::isInstance)
+            .map(PropertyAnnotation.class::cast)
+            .findFirst()
+            .orElse(null);
     varElement = fragment.getVariableElement();
     if (annotation == null
         && options.classProperties()
@@ -148,8 +150,11 @@ public final class PropertyGenerator {
     if (getter != null) {
       // Update getter from its Java name to its selector. This is normally the
       // same since getters have no parameters, but the name may be reserved.
+      String getterSelector = nameTable.getMethodSelector(getter);
       attributes.remove("getter=" + annotation.getGetter());
-      attributes.add("getter=" + nameTable.getMethodSelector(getter));
+      if (!getterSelector.equals(propertyName)) {
+        attributes.add("getter=" + getterSelector);
+      }
       if (!ElementUtil.isSynchronized(getter)) {
         attributes.add("nonatomic");
       }
