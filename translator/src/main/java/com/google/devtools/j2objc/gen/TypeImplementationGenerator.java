@@ -297,15 +297,21 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
     for (VariableDeclarationFragment fragment : getStaticFields()) {
       VariableElement var = fragment.getVariableElement();
-      String objcTypePadded = paddedType(nameTable.getObjCTypeDeclaration(var.asType()), var);
+      boolean allowGenerics = !typeUtil.isProtoClass(var.asType());
+      boolean enableGenerics =
+          allowGenerics
+              && (generateObjectiveCGenerics(var.asType())
+                  || generateObjectiveCGenerics(typeElement.asType()));
+      String objcType = nameTable.getObjCTypeDeclaration(var.asType(), enableGenerics, typeElement);
+      String objcTypePadded = paddedType(objcType, var);
       String name = nameTable.getVariableShortName(var);
       newline();
       printf("extern %s%s_get_%s(void);\n", objcTypePadded, typeName, name);
       if (!ElementUtil.isFinal(var)) {
         printf("extern %s%s_set_%s(%svalue);\n", objcTypePadded, typeName, name, objcTypePadded);
         if (var.asType().getKind().isPrimitive() && !ElementUtil.isVolatile(var)) {
-          String objcType = nameTable.getObjCTypeDeclaration(var.asType());
-          printf("extern %s *%s_getRef_%s(void);\n", objcType, typeName, name);
+          String primitiveType = nameTable.getObjCTypeDeclaration(var.asType());
+          printf("extern %s *%s_getRef_%s(void);\n", primitiveType, typeName, name);
         }
       }
     }
