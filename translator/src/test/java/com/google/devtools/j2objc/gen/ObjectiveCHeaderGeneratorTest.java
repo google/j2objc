@@ -1624,7 +1624,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "  }"
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
-    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.MyEnumClass)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.MyEnumEnum)");
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.MyEnum)");
   }
 
@@ -1790,7 +1790,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "public enum Color { RED, WHITE, BLUE }";
     String translation = translateSourceFile(sourceContent, "Color", "com/foo/bar/Color.h");
     assertInTranslation(translation, "NS_SWIFT_NAME(Color)");
-    assertInTranslation(translation, "NS_SWIFT_NAME(ColorClass)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(ColorEnum)");
   }
 
   public void testSwiftNameInterfaceSubtype() throws IOException {
@@ -1810,7 +1810,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "  public final class NestedBar {}"
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
-    assertInTranslation(translation, "NS_SWIFT_NAME(MyEnumClass)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(MyEnumEnum)");
     assertInTranslation(translation, "NS_SWIFT_NAME(MyEnum)");
     assertInTranslation(translation, "NS_SWIFT_NAME(NestedBar)");
   }

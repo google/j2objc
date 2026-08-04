@@ -692,10 +692,6 @@ public class NameTable {
       className = getObjCType(owner.asType()).replace(" *", "");
     }
 
-    if (owner.getKind() == ElementKind.ENUM) {
-      className = className + "Class";
-    }
-
     StringBuilder sb = new StringBuilder();
 
     String annotationName = function.getExecutableElement().getSimpleName().toString();
