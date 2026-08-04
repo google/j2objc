@@ -135,7 +135,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       // refer to the companion type, so we need one forward declaration in any case.
       printf("\n@class %s;\n", typeName);
 
-      printf("\n@protocol %sCompanion\n", typeName);
+      printf("\n@protocol %sInternalCompanionProtocol\n", typeName);
       for (BodyDeclaration declaration : getInnerDeclarations()) {
         if (declaration.getKind().equals(TreeNode.Kind.METHOD_DECLARATION)) {
           printMethodDeclaration((MethodDeclaration) declaration, false, true);
@@ -162,7 +162,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       if (needsKotlinCompanionClass()) {
         printf("\n#pragma clang diagnostic push\n");
         printf("#pragma clang diagnostic ignored \"-Wincompatible-property-type\"\n");
-        printf("@property (readonly, class) id<%sCompanion> companion;\n", typeName);
+        printf(
+            "@property (readonly, class) id<%sInternalCompanionProtocol> companion;\n", typeName);
         printf("#pragma clang diagnostic pop\n");
       }
     }
@@ -485,7 +486,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (needsKotlinCompanionClass()) {
       printf("\n#pragma clang diagnostic push\n");
       printf("#pragma clang diagnostic ignored \"-Wincompatible-property-type\"\n");
-      printf("@property (readonly, class) id<%sCompanion> companion;\n", typeName);
+      printf("@property (readonly, class) id<%sInternalCompanionProtocol> companion;\n", typeName);
       printf("#pragma clang diagnostic pop\n");
     }
     println("\n@end");

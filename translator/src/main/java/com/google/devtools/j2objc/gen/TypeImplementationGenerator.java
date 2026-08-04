@@ -118,8 +118,8 @@ public class TypeImplementationGenerator extends TypeGenerator {
       printf("@implementation %s\n", typeName);
       printProperties();
       if (needsKotlinCompanionClass()) {
-        printf("\n+ (id<%sCompanion>)companion {", typeName);
-        printf("\n  return (id<%sCompanion>)self;\n}\n", typeName);
+        printf("\n+ (id<%sInternalCompanionProtocol>)companion {", typeName);
+        printf("\n  return (id<%sInternalCompanionProtocol>)self;\n}\n", typeName);
       }
       printStaticAccessors();
       printInnerDeclarations();
