@@ -671,6 +671,7 @@ public class NameTable {
     String functionName = function.getName();
 
     ExecutableElement method = function.getExecutableElement();
+
     if (method == null) {
       return null;
     }
@@ -683,6 +684,12 @@ public class NameTable {
     if (!packageHasSwiftNameAnnotation(owner)
         && !elementHasSwiftNameAnnotation(owner)
         && !elementHasSwiftNameAnnotation(method)) {
+      return null;
+    }
+
+    if (ElementUtil.isStatic(method)) {
+      // Static methods without emitWrapperMethods enabled should not generate NS_SWIFT_NAME
+      // annotations because there is no wrapper method to call.
       return null;
     }
 
