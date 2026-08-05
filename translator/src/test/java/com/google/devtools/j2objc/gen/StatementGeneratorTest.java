@@ -3339,11 +3339,11 @@ public class StatementGeneratorTest extends GenerationTest {
                   "Test",
                   "Test.m");
           // Verify that unnamed local variable are named "_", as javac uses an empty strings. Also
-          // verify that if there are multiple unnamed variables, they are not renamed.
+          // verify that if there are multiple unnamed variables, they are renamed.
           assertTranslatedLines(
               translation,
               "JavaUtilDate *_ = JreRetainedLocalValue([self getCurrentDate]);",
-              "NSNumber *_ = nil;");
+              "NSNumber *_1 = nil;");
         });
   }
 

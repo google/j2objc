@@ -302,9 +302,8 @@ public class VariableRenamer extends UnitTreeVisitor {
   }
 
   private void handleVariable(VariableElement variable) {
-    if (variable.getKind().isField()
-        || (ElementUtil.isUnnamed(variable) && !ElementUtil.isParameter(variable))) {
-      // Do not rename fields or unnamed local variables.
+    if (variable.getKind().isField()) {
+      // Do not rename fields.
       return;
     }
     Scope scope = scopes.peek();
