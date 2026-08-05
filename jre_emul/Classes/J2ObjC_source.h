@@ -462,12 +462,12 @@ JRE_HANDLE_OVERFLOW_INFIX_OPERATIONS(Times, *)
 #define JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGN(NAME, LHSTYPENAME, RHSTYPENAME, LHSTYPE, RHSTYPE)  \
   __attribute__((always_inline)) inline LHSTYPE Jre##NAME##Assign##LHSTYPENAME##RHSTYPENAME(   \
       LHSTYPE *pLhs, RHSTYPE rhs) {                                                            \
-    return *pLhs = Jre##LHSTYPENAME##NAME(*pLhs, rhs);                                         \
+    return *pLhs = (LHSTYPE)Jre##LHSTYPENAME##NAME(*pLhs, (LHSTYPE)rhs);                       \
   }                                                                                            \
   __attribute__((always_inline)) inline LHSTYPE                                                \
   Jre##NAME##AssignVolatile##LHSTYPENAME##RHSTYPENAME(volatile_##LHSTYPE *pLhs, RHSTYPE rhs) { \
     LHSTYPE lhs = __c11_atomic_load(pLhs, __ATOMIC_SEQ_CST);                                   \
-    LHSTYPE result = Jre##LHSTYPENAME##NAME(lhs, rhs);                                         \
+    LHSTYPE result = (LHSTYPE)Jre##LHSTYPENAME##NAME(lhs, (LHSTYPE)rhs);                       \
     __c11_atomic_store(pLhs, result, __ATOMIC_SEQ_CST);                                        \
     return result;                                                                             \
   }
@@ -488,26 +488,26 @@ JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGNS(Minus)
 JRE_HANDLE_OVERFLOW_COMPOUND_ASSIGNS(Times)
 
 // Support for ++ and -- operators handling overflow.
-#define JRE_HANDLE_OVERFLOW_POSTPREFIX_OPERATOR(TYPENAME, TYPE, OPNAME, OPERATION)        \
-  __attribute__((always_inline)) inline TYPE JrePost##OPNAME##TYPENAME(TYPE *pLhs) {      \
-    TYPE result = *pLhs;                                                                  \
-    *pLhs = Jre##TYPENAME##OPERATION(result, 1);                                          \
-    return result;                                                                        \
-  }                                                                                       \
-  __attribute__((always_inline)) inline TYPE JrePre##OPNAME##TYPENAME(TYPE *pLhs) {       \
-    return *pLhs = Jre##TYPENAME##OPERATION(*pLhs, 1);                                    \
-  }                                                                                       \
-  __attribute__((always_inline)) inline TYPE JrePost##OPNAME##Volatile##TYPENAME(         \
-      volatile_##TYPE *pLhs) {                                                            \
-    TYPE result = __c11_atomic_load(pLhs, __ATOMIC_SEQ_CST);                              \
-    __c11_atomic_store(pLhs, Jre##TYPENAME##OPERATION(result, 1), __ATOMIC_SEQ_CST);      \
-    return result;                                                                        \
-  }                                                                                       \
-  __attribute__((always_inline)) inline TYPE JrePre##OPNAME##Volatile##TYPENAME(          \
-      volatile_##TYPE *pLhs) {                                                            \
-    TYPE result = Jre##TYPENAME##OPERATION(__c11_atomic_load(pLhs, __ATOMIC_SEQ_CST), 1); \
-    __c11_atomic_store(pLhs, result, __ATOMIC_SEQ_CST);                                   \
-    return result;                                                                        \
+#define JRE_HANDLE_OVERFLOW_POSTPREFIX_OPERATOR(TYPENAME, TYPE, OPNAME, OPERATION)              \
+  __attribute__((always_inline)) inline TYPE JrePost##OPNAME##TYPENAME(TYPE *pLhs) {            \
+    TYPE result = *pLhs;                                                                        \
+    *pLhs = (TYPE)Jre##TYPENAME##OPERATION(result, 1);                                          \
+    return result;                                                                              \
+  }                                                                                             \
+  __attribute__((always_inline)) inline TYPE JrePre##OPNAME##TYPENAME(TYPE *pLhs) {             \
+    return *pLhs = (TYPE)Jre##TYPENAME##OPERATION(*pLhs, 1);                                    \
+  }                                                                                             \
+  __attribute__((always_inline)) inline TYPE JrePost##OPNAME##Volatile##TYPENAME(               \
+      volatile_##TYPE *pLhs) {                                                                  \
+    TYPE result = __c11_atomic_load(pLhs, __ATOMIC_SEQ_CST);                                    \
+    __c11_atomic_store(pLhs, (TYPE)Jre##TYPENAME##OPERATION(result, 1), __ATOMIC_SEQ_CST);      \
+    return result;                                                                              \
+  }                                                                                             \
+  __attribute__((always_inline)) inline TYPE JrePre##OPNAME##Volatile##TYPENAME(                \
+      volatile_##TYPE *pLhs) {                                                                  \
+    TYPE result = (TYPE)Jre##TYPENAME##OPERATION(__c11_atomic_load(pLhs, __ATOMIC_SEQ_CST), 1); \
+    __c11_atomic_store(pLhs, result, __ATOMIC_SEQ_CST);                                         \
+    return result;                                                                              \
   }
 
 #define JRE_HANDLE_OVERFLOW_POSTPREFIX_OPERATORS(TYPENAME, TYPE)     \
