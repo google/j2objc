@@ -1898,7 +1898,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String impl =  getTranslatedFile("Test.m");
 
     assertInTranslation(header, "@protocol Foo < JavaObject >");
-    assertTranslatedSegments(header, "@interface Foo : NSObject", "+ (void)f;", "@end");
+    assertTranslatedSegments(header, "@interface FooCompanion : NSObject", "+ (void)f;", "@end");
     // Should only have one occurrence from the companion class.
     assertOccurrences(header, "+ (void)f;", 1);
 

@@ -411,7 +411,7 @@ public class DefaultMethodsTest extends GenerationTest {
     addSourceFile("interface Sink<T> { default void test(long size) {}}", "Sink.java");
     String translation = translateSourceFile("class Test {"
         + "private interface AccumulatingSink<T> extends Sink<T> {}}", "Test", "Test.m");
-    assertTranslatedLines(translation, "@interface Test_AccumulatingSink : NSObject");
+    assertTranslatedLines(translation, "@interface Test_AccumulatingSinkCompanion : NSObject");
   }
 
   public void testExtraSelectorsFromMultipleOverrides() throws IOException {

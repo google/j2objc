@@ -36,14 +36,14 @@ public class GenerateObjCCompanionTest extends GenerationTest {
         """;
     String header = translateSourceFile(source, "Foo", "Foo.h");
     assertInTranslation(header, "@class Foo;");
-    assertInTranslation(header, "@protocol FooCompanion");
+    assertInTranslation(header, "@protocol FooCompanionProtocol");
     // The companion protocol method should be an instance method instead of class method
     assertInTranslation(header, "- (void)doSomething;");
-    assertInTranslation(header, "@property (readonly, class) id<FooCompanion> companion;");
+    assertInTranslation(header, "@property (readonly, class) id<FooCompanionProtocol> companion;");
 
     String impl = translateSourceFile(source, "Foo", "Foo.m");
-    assertInTranslation(impl, "+ (id<FooCompanion>)companion {");
-    assertInTranslation(impl, "return (id<FooCompanion>)self;");
+    assertInTranslation(impl, "+ (id<FooCompanionProtocol>)companion {");
+    assertInTranslation(impl, "return (id<FooCompanionProtocol>)self;");
   }
 
   public void testGenericVariablesAreLost() throws IOException {
@@ -56,9 +56,9 @@ public class GenerateObjCCompanionTest extends GenerationTest {
         """;
     String header = translateSourceFile(source, "Bar", "Bar.h");
     assertInTranslation(header, "@class Bar;");
-    assertInTranslation(header, "@protocol BarCompanion");
+    assertInTranslation(header, "@protocol BarCompanionProtocol");
     assertInTranslation(header, "- (id)doSomethingWithId:(id)arg;");
-    assertInTranslation(header, "@property (readonly, class) id<BarCompanion> companion;");
+    assertInTranslation(header, "@property (readonly, class) id<BarCompanionProtocol> companion;");
   }
 
   public void testBoundGenericMethodTypesArePreserved() throws IOException {
@@ -73,7 +73,7 @@ public class GenerateObjCCompanionTest extends GenerationTest {
         """;
     String header = translateSourceFile(source, "Baz", "Baz.h");
     assertInTranslation(header, "@class Baz;");
-    assertInTranslation(header, "@protocol BazCompanion");
+    assertInTranslation(header, "@protocol BazCompanionProtocol");
     assertInTranslation(
         header,
         "- (JavaLangThreadLocal<NSString *>"
@@ -92,7 +92,7 @@ public class GenerateObjCCompanionTest extends GenerationTest {
         }
         """;
     String header = translateSourceFile(source, "Foo", "Foo.h");
-    assertInTranslation(header, "@protocol FooCompanion");
+    assertInTranslation(header, "@protocol FooCompanionProtocol");
     // Should generate instance property for CONSTANT_VALUE in companion protocol.
     assertInTranslation(
         header, "@property (readonly) int32_t CONSTANT_VALUE NS_SWIFT_NAME(CONSTANT_VALUE);");
@@ -114,7 +114,7 @@ public class GenerateObjCCompanionTest extends GenerationTest {
         """;
     // This should compile successfully without throwing "types without static methods" exception.
     String header = translateSourceFile(source, "Foo", "Foo.h");
-    assertInTranslation(header, "@protocol FooCompanion");
+    assertInTranslation(header, "@protocol FooCompanionProtocol");
     assertInTranslation(
         header, "@property (readonly) int32_t CONSTANT_VALUE NS_SWIFT_NAME(CONSTANT_VALUE);");
   }
@@ -130,17 +130,17 @@ public class GenerateObjCCompanionTest extends GenerationTest {
         }
         """;
     String header = translateSourceFile(source, "Foo", "Foo.h");
-    assertInTranslation(header, "@protocol FooCompanion");
+    assertInTranslation(header, "@protocol FooCompanionProtocol");
     assertInTranslation(
         header, "@property (readonly) int32_t CONSTANT_VALUE NS_SWIFT_NAME(CONSTANT_VALUE);");
     assertInTranslation(header, "- (void)doSomething;");
-    assertInTranslation(header, "@interface Foo : NSObject");
-    assertInTranslation(header, "@property (readonly, class) id<FooCompanion> companion;");
+    assertInTranslation(header, "@interface FooCompanion : NSObject");
+    assertInTranslation(header, "@property (readonly, class) id<FooCompanionProtocol> shared;");
 
     String impl = translateSourceFile(source, "Foo", "Foo.m");
-    assertInTranslation(impl, "@implementation Foo");
-    assertInTranslation(impl, "+ (id<FooCompanion>)companion {");
-    assertInTranslation(impl, "return (id<FooCompanion>)self;");
+    assertInTranslation(impl, "@implementation FooCompanion");
+    assertInTranslation(impl, "+ (id<FooCompanionProtocol>)shared {");
+    assertInTranslation(impl, "return (id<FooCompanionProtocol>)self;");
   }
 
   public void testCompanionPropertiesForPropertyMethods() throws IOException {
@@ -156,7 +156,7 @@ public class GenerateObjCCompanionTest extends GenerationTest {
         }
         """;
     String header = translateSourceFile(source, "Foo", "Foo.h");
-    assertInTranslation(header, "@protocol FooCompanion");
+    assertInTranslation(header, "@protocol FooCompanionProtocol");
     assertInTranslation(header, "@property (nonatomic, getter=getBar, readonly) NSString * bar;");
     assertInTranslation(
         header, "@property (class, nonatomic, getter=getBar, readonly) NSString * bar;");

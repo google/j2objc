@@ -348,8 +348,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "package foo; public interface Compatible {}",
         "Compatible", "foo/Compatible.m");
-    assertInTranslation(translation, "@interface FooCompatible : NSObject");
-    assertInTranslation(translation, "@implementation FooCompatible");
+    assertInTranslation(translation, "@interface FooCompatibleCompanion : NSObject");
+    assertInTranslation(translation, "@implementation FooCompatibleCompanion");
     assertInTranslation(translation, "+ (const J2ObjcClassInfo *)__metadata");
   }
 

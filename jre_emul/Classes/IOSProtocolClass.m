@@ -32,7 +32,13 @@
 @implementation IOSProtocolClass
 
 static Class GetBackingClass(Protocol *protocol) {
-  return objc_lookUpClass(protocol_getName(protocol));
+  const char *name = protocol_getName(protocol);
+  Class cls = objc_lookUpClass(name);
+  if (!cls) {
+    NSString *companionName = [NSString stringWithFormat:@"%sCompanion", name];
+    cls = objc_lookUpClass([companionName UTF8String]);
+  }
+  return cls;
 }
 
 @synthesize objcProtocol = protocol_;

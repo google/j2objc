@@ -296,6 +296,10 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
         || !Iterables.isEmpty(Iterables.filter(typeNode.getBodyDeclarations(), HAS_INNER_IMPL));
   }
 
+  protected boolean hasCompanionSuffix() {
+    return typeElement.getKind().isInterface() && !ElementUtil.isGeneratedAnnotation(typeElement);
+  }
+
   protected boolean hasInitializeMethod() {
     return !typeNode.getClassInitStatements().isEmpty();
   }

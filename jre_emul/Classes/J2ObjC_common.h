@@ -282,6 +282,14 @@ FOUNDATION_EXPORT Class _Nullable objc_opt_class(id _Nullable obj);
       objc_opt_class(J2OBJC_CLASS_REFERENCE(CLASS));                                        \
     }                                                                                       \
   }
+#define J2OBJC_STATIC_INIT_COMPANION(CLASS, COMPANION_CLASS)                                \
+  J2OBJC_CLASS_DECLARATION(COMPANION_CLASS);                                                \
+  FOUNDATION_EXPORT _Atomic(bool) CLASS##__initialized;                                     \
+  __attribute__((always_inline)) inline void CLASS##_initialize(void) {                     \
+    if (__builtin_expect(!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE), 0)) { \
+      objc_opt_class(J2OBJC_CLASS_REFERENCE(COMPANION_CLASS));                              \
+    }                                                                                       \
+  }
 
 /*!
  * Defines an empty init function for a class that has no initialization code.

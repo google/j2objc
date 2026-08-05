@@ -135,9 +135,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (needsKotlinCompanionClass()) {
       // Companion methods might refer to the class type and the companion property will
       // refer to the companion type, so we need one forward declaration in any case.
-      printf("\n@class %s;\n", typeName);
+      printf(
+          typeElement.getKind().isInterface() ? "\n@protocol %s;\n" : "\n@class %s;\n", typeName);
 
-      printf("\n@protocol %sCompanion\n", typeName);
+      printf("\n@protocol %sCompanionProtocol\n", typeName);
       for (BodyDeclaration declaration : getInnerDeclarations()) {
         if (declaration.getKind().equals(TreeNode.Kind.METHOD_DECLARATION)) {
           printMethodDeclaration((MethodDeclaration) declaration, false, true);
@@ -164,7 +165,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       if (needsKotlinCompanionClass()) {
         printf("\n#pragma clang diagnostic push\n");
         printf("#pragma clang diagnostic ignored \"-Wincompatible-property-type\"\n");
-        printf("@property (readonly, class) id<%sCompanion> companion;\n", typeName);
+        printf("@property (readonly, class) id<%sCompanionProtocol> companion;\n", typeName);
         printf("#pragma clang diagnostic pop\n");
       }
     }
@@ -336,6 +337,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
 
     String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement, true);
+    // We need to force NS_SWIFT_NAME in this case; otherwise swift confuses this with some kind
+    // of legacy name that was not migrated and errors.
+    if (swiftName == null && typeElement.getKind().isInterface() && needsCompanionClass()) {
+      swiftName = typeName;
+    }
 
     if (swiftName != null) {
       printf(" NS_SWIFT_NAME(%s)\n", swiftName);
@@ -485,9 +491,13 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         || printPrivateDeclarations() == needsPublicCompanionClass()) {
       return;
     }
-    printf("\n@interface %s : NSObject", typeName);
-    if (ElementUtil.isGeneratedAnnotation(typeElement)) {
-      // Print annotation implementation interface.
+    if (hasCompanionSuffix()) {
+      String baseSwiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement, true);
+      String companionSwiftName = baseSwiftName != null ? baseSwiftName : typeName;
+      printf("\nNS_SWIFT_NAME(%sCompanion)", companionSwiftName);
+      printf("\n@interface %sCompanion : NSObject", typeName);
+    } else {
+      printf("\n@interface %s : NSObject", typeName);
       printf(" < %s >", typeName);
     }
     printInstanceVariables();
@@ -497,15 +507,23 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (needsKotlinCompanionClass()) {
       printf("\n#pragma clang diagnostic push\n");
       printf("#pragma clang diagnostic ignored \"-Wincompatible-property-type\"\n");
-      printf("@property (readonly, class) id<%sCompanion> companion;\n", typeName);
+      printf("@property (readonly, class) id<%sCompanionProtocol> shared;\n", typeName);
       printf("#pragma clang diagnostic pop\n");
     }
     println("\n@end");
+    if (hasCompanionSuffix()) {
+      println("__attribute__((swift_private))");
+      printf("typedef %sCompanion %s;\n", typeName, typeName);
+    }
   }
 
   private void printStaticInitFunction() {
     if (hasInitializeMethod()) {
-      printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
+      if (hasCompanionSuffix()) {
+        printf("\nJ2OBJC_STATIC_INIT_COMPANION(%s, %sCompanion)\n", typeName, typeName);
+      } else {
+        printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
+      }
     } else {
       printf("\nJ2OBJC_EMPTY_STATIC_INIT(%s)\n", typeName);
     }

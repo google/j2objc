@@ -115,11 +115,12 @@ public class TypeImplementationGenerator extends TypeGenerator {
     if (!typeElement.getKind().isInterface() || needsCompanionClass()) {
       newline();
       syncLineNumbers(typeNode.getName()); // avoid doc-comment
-      printf("@implementation %s\n", typeName);
+      printf("@implementation %s%s\n", typeName, hasCompanionSuffix() ? "Companion" : "");
       printProperties();
       if (needsKotlinCompanionClass()) {
-        printf("\n+ (id<%sCompanion>)companion {", typeName);
-        printf("\n  return (id<%sCompanion>)self;\n}\n", typeName);
+        String propertyName = typeElement.getKind().isInterface() ? "shared" : "companion";
+        printf("\n+ (id<%sCompanionProtocol>)%s {", typeName, propertyName);
+        printf("\n  return (id<%sCompanionProtocol>)self;\n}\n", typeName);
       }
       printStaticAccessors();
       printInnerDeclarations();
@@ -462,7 +463,8 @@ public class TypeImplementationGenerator extends TypeGenerator {
       return;
     }
     StringBuilder sb = new StringBuilder();
-    sb.append("{\nif (self == [" + typeName + " class]) {\n");
+    String implTypeName = typeName + (hasCompanionSuffix() ? "Companion" : "");
+    sb.append("{\nif (self == [" + implTypeName + " class]) {\n");
     for (Statement statement : initStatements) {
       sb.append(generateStatement(statement));
     }

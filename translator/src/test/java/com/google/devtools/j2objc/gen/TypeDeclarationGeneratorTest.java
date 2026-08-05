@@ -278,11 +278,13 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     // The static accessor must go in the companion class, not the @protocol.
     assertTranslatedLines(
         translation,
+        "NS_SWIFT_NAME(Test)",
         "@protocol Test < JavaObject >",
         "",
         "@end",
         "",
-        "@interface Test : NSObject",
+        "NS_SWIFT_NAME(TestCompanion)",
+        "@interface TestCompanion : NSObject",
         "",
         "+ (bool)FOO;");
   }
@@ -510,11 +512,13 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     // The property must go in the companion class, not the @protocol.
     assertTranslatedLines(
         translation,
+        "NS_SWIFT_NAME(Test)",
         "@protocol Test < JavaObject >",
         "",
         "@end",
         "",
-        "@interface Test : NSObject",
+        "NS_SWIFT_NAME(TestCompanion)",
+        "@interface TestCompanion : NSObject",
         "@property (readonly, class) bool FOO NS_SWIFT_NAME(FOO);");
   }
 
