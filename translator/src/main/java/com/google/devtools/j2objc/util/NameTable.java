@@ -685,6 +685,11 @@ public class NameTable {
         && !elementHasSwiftNameAnnotation(method)) {
       return null;
     }
+    // If no-wrapper-methods is set, and we are in a SwiftName context, but the method is not a
+    // constructor, return null, as we don't want to emit any SwiftName annotation.
+    if (!ElementUtil.isConstructor(method)) {
+      return null;
+    }
 
     String className = getSwiftClassNameFromAnnotation(owner, false);
     if (className == null) {

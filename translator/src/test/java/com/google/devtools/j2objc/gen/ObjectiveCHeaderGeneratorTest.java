@@ -1718,9 +1718,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.init())");
-    assertInTranslation(
+    assertNotInTranslation(
         translation, "NS_SWIFT_NAME(FooBar.builderWithExpectedSize(expectedSize:))");
-    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.builderWithName(name:))");
+    assertNotInTranslation(translation, "NS_SWIFT_NAME(FooBar.builderWithName(name:))");
   }
 
   public void testSwiftNameAnnotationWithStaticFunctionsWithWapperMethods() throws IOException {
