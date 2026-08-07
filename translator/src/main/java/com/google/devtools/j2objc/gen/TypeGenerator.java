@@ -452,14 +452,6 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       }
     }
     sb.append(')');
-
-    if (!isPrivate) {
-      String swiftName = nameTable.getSwiftFunctionNameFromAnnotation(function);
-      if (swiftName != null) {
-        sb.append(swiftName);
-      }
-    }
-
     return sb.toString();
   }
 

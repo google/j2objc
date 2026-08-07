@@ -1715,13 +1715,52 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "  }"
             + "  public static String builderWithExpectedSize(int expectedSize){ return \"\"; }"
             + "  public static String builderWithName(String name){ return \"\"; }"
+            + "  public static void doReset() {}"
+            + "  public static FooBar newFooBar() { return null; }"
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.init())");
+
     assertInTranslation(
-        translation, "NS_SWIFT_NAME(FooBar.builderWithExpectedSize(expectedSize:))");
-    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.builderWithName(name:))");
+        translation,
+        "FOUNDATION_EXPORT NSString *ComFooBarFooBar_builderWithExpectedSizeWithInt_(int32_t"
+            + " expectedSize);");
+    assertInTranslation(
+        translation,
+        "NS_INLINE NSString *ComFooBarFooBar_builderWithExpectedSizeWithInt__swiftName(int32_t"
+            + " expectedSize) NS_SWIFT_NAME(FooBar.builderWithExpectedSize(expectedSize:)) {\n"
+            + "  return ComFooBarFooBar_builderWithExpectedSizeWithInt_(expectedSize);\n"
+            + "}");
+
+    assertInTranslation(
+        translation,
+        "FOUNDATION_EXPORT NSString *ComFooBarFooBar_builderWithNameWithNSString_(NSString"
+            + " *name);");
+    assertInTranslation(
+        translation,
+        "NS_INLINE NSString *ComFooBarFooBar_builderWithNameWithNSString__swiftName(NSString *name)"
+            + " NS_SWIFT_NAME(FooBar.builderWithName(name:)) {\n"
+            + "  return ComFooBarFooBar_builderWithNameWithNSString_(name);\n"
+            + "}");
+
+    assertInTranslation(translation, "FOUNDATION_EXPORT void ComFooBarFooBar_doReset(void);");
+    assertInTranslation(
+        translation,
+        "NS_INLINE void ComFooBarFooBar_doReset_swiftName(void)"
+            + " NS_SWIFT_NAME(FooBar.doReset()) {\n"
+            + "  ComFooBarFooBar_doReset();\n"
+            + "}");
+
+    assertInTranslation(
+        translation, "FOUNDATION_EXPORT ComFooBarFooBar *ComFooBarFooBar_newFooBar(void);");
+    assertInTranslation(
+        translation,
+        "NS_INLINE ComFooBarFooBar *ComFooBarFooBar_newFooBar_swiftName(void)"
+            + " NS_SWIFT_NAME(FooBar.newFooBar()) {\n"
+            + "  return ComFooBarFooBar_newFooBar();\n"
+            + "}");
   }
+
 
   public void testSwiftNameAnnotationWithStaticFunctionsWithWapperMethods() throws IOException {
     options.setEmitWrapperMethods(true);

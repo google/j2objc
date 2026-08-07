@@ -44,6 +44,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -905,6 +906,30 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       print(" J2OBJC_TEXT_SEGMENT");
     }
     println(";");
+
+    String swiftName = nameTable.getSwiftFunctionNameFromAnnotation(function);
+    if (swiftName != null && !swiftName.isEmpty()) {
+      printSwiftNameInlineWrapper(function, swiftName);
+    }
+  }
+
+  private void printSwiftNameInlineWrapper(FunctionDeclaration function, String swiftName) {
+    String signature = getFunctionSignature(function, true, false);
+    String funcName = function.getName();
+    String inlineSignature = signature.replace(funcName + "(", funcName + "_swiftName(");
+
+    String args =
+        function.getParameters().stream()
+            .map(param -> nameTable.getVariableShortName(param.getVariableElement()))
+            .collect(Collectors.joining(", "));
+
+    boolean isVoid = TypeUtil.isVoid(function.getReturnType().getTypeMirror());
+    String returnPrefix = isVoid ? "" : "return ";
+    String returnsRetainedAttr = function.returnsRetained() ? " NS_RETURNS_RETAINED" : "";
+
+    printf(
+        "\nNS_INLINE %s%s%s {\n  %s%s(%s);\n}\n",
+        inlineSignature, returnsRetainedAttr, swiftName, returnPrefix, funcName, args);
   }
 
   protected void printNonnullAuditedRegion(AuditedRegion state) {
