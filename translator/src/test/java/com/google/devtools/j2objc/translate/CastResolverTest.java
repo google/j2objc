@@ -318,4 +318,24 @@ public class CastResolverTest extends GenerationTest {
         "return (JavaLangNullPointerException *) "
             + "cast_chk(o, [JavaLangNullPointerException class]);");
   }
+
+  public void testCastChkWithObjCGenerics() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    String translation =
+        translateSourceFile(
+            String.join(
+                "\n",
+                "import java.util.Map;",
+                "class Test {",
+                "  String test(Map.Entry<?, ?> entry) {",
+                "    return (String) entry.getKey();",
+                "  }",
+                "}"),
+            "Test",
+            "Test.m");
+    assertInTranslation(
+        translation,
+        "return (NSString *) cast_chk([((id<JavaUtilMap_Entry>) nil_chk(entry_)) getKey], [NSString"
+            + " class]);");
+  }
 }
