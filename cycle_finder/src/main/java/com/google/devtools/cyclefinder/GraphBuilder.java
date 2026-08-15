@@ -136,7 +136,17 @@ public class GraphBuilder {
   private void addSuperclassEdges() {
     for (TypeNode type : allTypes.values()) {
       TypeNode superclassNode = superclasses.get(type);
+      Set<TypeNode> visited = new HashSet<>();
+      visited.add(type);
       while (superclassNode != null) {
+        if (!visited.add(superclassNode)) {
+          System.err.println(
+              "CRITICAL ERROR: Cycle detected in superclasses map! Origin: "
+                  + type
+                  + ", Visited: "
+                  + visited);
+          throw new IllegalStateException("Cycle detected in superclasses map: " + type);
+        }
         for (Edge e : graph.getEdges(superclassNode)) {
           addEdge(Edge.newSuperclassEdge(e, type, superclassNode));
         }

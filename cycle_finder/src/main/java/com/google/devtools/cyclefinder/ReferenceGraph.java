@@ -66,7 +66,9 @@ public class ReferenceGraph {
     Map<TypeNode, Edge> backlinks = new HashMap<>();
     Set<TypeNode> visited = new HashSet<>();
     List<TypeNode> toVisit = Lists.newArrayList(root);
-    outer: while (true) {
+    boolean found = false;
+    outer:
+    while (!toVisit.isEmpty()) {
       List<TypeNode> visitNext = new ArrayList<>();
       for (TypeNode source : toVisit) {
         visited.add(source);
@@ -77,11 +79,15 @@ public class ReferenceGraph {
             backlinks.put(target, e);
           } else if (target.equals(root)) {
             backlinks.put(root, e);
+            found = true;
             break outer;
           }
         }
       }
       toVisit = visitNext;
+    }
+    if (!found) {
+      return Collections.emptyList();
     }
     List<Edge> cycle = new ArrayList<>();
     TypeNode curNode = root;
