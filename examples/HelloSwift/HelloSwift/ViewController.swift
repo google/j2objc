@@ -45,7 +45,7 @@ class ViewController: UIViewController {
     let h = JavaLangLong.toHexString(withLong: 100)
     let _: String = h
 
-    let it = JavaUtilArrayList().iterator()
+    let it = JavaUtilArrayList<AnyObject>().iterator()
     let _: JavaUtilIterator = it
 
     let t = JavaUtilCalendar.getInstance().getTime()
@@ -54,7 +54,7 @@ class ViewController: UIViewController {
     let c = JavaUtilCalendar_Builder().setDateWith(2019, with: 10, with: 18).build()
     let _: JavaUtilCalendar = c
 
-    let e = JavaUtilVector().elements()
+    let e = JavaUtilVector<AnyObject>().elements()
     let _: JavaUtilEnumeration = e
 
     let r = JavaUtilRegexPattern.compile(with: ".*")
