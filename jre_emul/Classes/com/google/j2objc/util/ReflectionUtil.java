@@ -66,4 +66,12 @@ public final class ReflectionUtil {
     // For more details about this behavior see {@link #matchClassNamePrefix}.
     return Boolean.TRUE.getClass().getName().equals("JavaLangBoolean");
   }
+
+  /**
+   * Checks if the given object is a NSNumber originating from ObjC by checking that it doesn't have
+   * class metadata. We use this for cross-language equality support, primarily for hashtable keys.
+   */
+  public static native boolean isObjCNumber(Object obj) /*-[
+    return [obj isKindOfClass:[NSNumber class]] && [[obj java_getClass] getMetadata] == NULL;
+  ]-*/;
 }

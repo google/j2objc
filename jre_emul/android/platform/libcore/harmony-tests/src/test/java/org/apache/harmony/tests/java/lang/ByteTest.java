@@ -40,10 +40,10 @@ public class ByteTest extends TestCase {
      * java.lang.Byte#hashCode()
      */
     public void test_hashCode() {
-        assertEquals(1, new Byte((byte) 1).hashCode());
-        assertEquals(2, new Byte((byte) 2).hashCode());
+    assertEquals(-1640531535, new Byte((byte) 1).hashCode());
+    assertEquals(1013871474, new Byte((byte) 2).hashCode());
         assertEquals(0, new Byte((byte) 0).hashCode());
-        assertEquals(-1, new Byte((byte) -1).hashCode());
+    assertEquals(-1640531535, new Byte((byte) -1).hashCode());
     }
 
     /**
@@ -510,8 +510,8 @@ public class ByteTest extends TestCase {
      * java.lang.Byte#hashCode()
      */
     public void test_hashCode2() {
-        // Test for method int java.lang.Byte.hashCode()
-        assertEquals("Incorrect hash returned", 127, new Byte((byte) 127).hashCode());
+    // Test for method int java.lang.Byte.hashCode()
+    assertEquals("Incorrect hash returned", 2118337775, new Byte((byte) 127).hashCode());
     }
 
     /**
