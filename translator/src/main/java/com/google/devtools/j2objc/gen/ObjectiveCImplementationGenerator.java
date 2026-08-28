@@ -149,8 +149,8 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       print(code);
     }
 
-    Set<String> seenTypes = Sets.newHashSet();
-    Set<Import> forwardDecls = Sets.newHashSet();
+    Set<String> seenTypes = Sets.newLinkedHashSet();
+    Set<Import> forwardDecls = Sets.newLinkedHashSet();
     for (GeneratedType generatedType : getOrderedTypes()) {
       String name = generatedType.getTypeName();
       seenTypes.add(name);

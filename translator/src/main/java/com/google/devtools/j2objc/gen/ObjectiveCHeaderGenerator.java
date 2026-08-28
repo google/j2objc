@@ -107,9 +107,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     pushIgnoreDeprecatedDeclarationsPragma();
     pushIgnoreNullabilityPragmas();
 
-    Set<String> seenTypes = Sets.newHashSet();
+    Set<String> seenTypes = Sets.newLinkedHashSet();
     Set<String> includeFiles = Sets.newTreeSet();
-    Set<Import> forwardDeclarations = Sets.newHashSet();
+    Set<Import> forwardDeclarations = Sets.newLinkedHashSet();
 
     includeFiles.add("J2ObjC_header.h");
 

@@ -90,11 +90,21 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
     Path sourceFilePath = toNormalizedSourcePath(sourceFilePathString);
     Path cwdPath = toNormalizedSourcePath(".");
-    if (!sourceFilePath.startsWith(cwdPath)) {
-      return sourceFilePathString;
+    if (sourceFilePath.startsWith(cwdPath)) {
+      return cwdPath.relativize(sourceFilePath).toString();
     }
 
-    return cwdPath.relativize(sourceFilePath).toString();
+    Path tempDir =
+        Paths.get(System.getProperty("java.io.tmpdir", "/tmp")).normalize().toAbsolutePath();
+    if (sourceFilePath.startsWith(tempDir)) {
+      Path relativeToTemp = tempDir.relativize(sourceFilePath);
+      if (relativeToTemp.getNameCount() > 1) {
+        return relativeToTemp.subpath(1, relativeToTemp.getNameCount()).toString();
+      }
+      return relativeToTemp.toString();
+    }
+
+    return sourceFilePathString;
   }
 
   protected void generate() {
