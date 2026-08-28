@@ -75,6 +75,8 @@ public class HeaderMap {
       "org.xml.sax",
       "org.xmlpull",
       "sun.misc",
+      "jsinterop.annotations",
+      "org.jspecify.nullness",
   });
 
   private static final String DEFAULT_HEADER_MAPPING_FILE = "mappings.j2objc";
