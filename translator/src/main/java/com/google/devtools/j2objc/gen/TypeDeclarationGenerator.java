@@ -226,7 +226,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       print("}");
 
       if (!printPrivateDeclarations()) {
-        String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement, true);
+        String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement);
         if (swiftName != null) {
           printf(" NS_SWIFT_NAME(%sEnum)", swiftName);
         }
@@ -337,7 +337,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       return;
     }
 
-    String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement, true);
+    String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement);
     // We need to force NS_SWIFT_NAME in this case; otherwise swift confuses this with some kind
     // of legacy name that was not migrated and errors.
     if (swiftName == null && typeElement.getKind().isInterface() && needsCompanionClass()) {
@@ -493,7 +493,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       return;
     }
     if (hasCompanionSuffix()) {
-      String baseSwiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement, true);
+      String baseSwiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement);
       String companionSwiftName = baseSwiftName != null ? baseSwiftName : typeName;
       printf("\nNS_SWIFT_NAME(%sCompanion)", companionSwiftName);
       printf("\n@interface %sCompanion : NSObject", typeName);

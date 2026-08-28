@@ -634,31 +634,60 @@ public class NameTable {
     return Iterables.any(ElementUtil.getMethods(clazz), m -> getMethodSelector(m).equals(selector));
   }
 
-  public @Nullable String getSwiftClassNameFromAnnotation(TypeElement clazz, boolean getParents) {
+  public @Nullable String getSwiftClassNameFromAnnotation(TypeElement clazz) {
     String annotationName = swiftNameFromAnnotation(clazz);
     if (annotationName != null) {
       return annotationName;
+    }
+
+    NestingKind nesting = clazz.getNestingKind();
+    if (nesting == NestingKind.MEMBER) {
+      Element parent = clazz.getEnclosingElement();
+      if (parent instanceof TypeElement parentElement) {
+        // Protocols are named by concatenating the interface name and names of the parent type
+        // hierarchy. Any types declared within an interface are also named by concatenating the
+        // inner type name to the parent interface name. E.g. FooBar rather than Foo.Bar.
+        if (clazz.getKind().isInterface() || parentElement.getKind().isInterface()) {
+          return getFlatSwiftClassName(clazz);
+        }
+        String parentName = getSwiftClassNameFromAnnotation(parentElement);
+        if (parentName != null) {
+          return (parentName + "." + clazz.getSimpleName()).replace("$", "");
+        }
+      }
     }
 
     if (!packageHasSwiftNameAnnotation(clazz) && !elementHasSwiftNameAnnotation(clazz)) {
       return null;
     }
 
-    if (getParents) {
-      NestingKind nesting = clazz.getNestingKind();
-      if (nesting == NestingKind.MEMBER) {
-        Element parent = clazz.getEnclosingElement();
-        if (parent instanceof TypeElement parentElement && !parent.getKind().isInterface()) {
-          String parentName = getSwiftClassNameFromAnnotation(parentElement, false);
-          if (parentName != null) {
-            return (parentName + "." + clazz.getSimpleName()).replace("$", "");
-          }
-        }
-      }
-    }
-
     String className = clazz.getSimpleName().toString();
     return className.replace("$", "");
+  }
+
+  private @Nullable String getFlatSwiftClassName(TypeElement clazz) {
+    List<String> hierarchy = new ArrayList<>();
+    Element current = clazz;
+    boolean hasSwiftName = packageHasSwiftNameAnnotation(clazz);
+    while (current instanceof TypeElement typeElement) {
+      String annotationName = swiftNameFromAnnotation(typeElement);
+      if (annotationName != null && !annotationName.isEmpty()) {
+        hierarchy.add(annotationName);
+        hasSwiftName = true;
+        break;
+      }
+      hierarchy.add(typeElement.getSimpleName().toString().replace("$", ""));
+      if (elementHasSwiftNameAnnotation(typeElement)) {
+        hasSwiftName = true;
+      }
+      current = typeElement.getEnclosingElement();
+    }
+
+    if (!hasSwiftName) {
+      return null;
+    }
+
+    return String.join("", hierarchy.reversed());
   }
 
   public @Nullable String getSwiftFunctionNameFromAnnotation(FunctionDeclaration function) {
@@ -686,7 +715,7 @@ public class NameTable {
       return null;
     }
 
-    String className = getSwiftClassNameFromAnnotation(owner, false);
+    String className = getSwiftClassNameFromAnnotation(owner);
     if (className == null) {
       // There isn't nice naming so fallback to the normal ObjC class name
       className = getObjCType(owner.asType()).replace(" *", "");

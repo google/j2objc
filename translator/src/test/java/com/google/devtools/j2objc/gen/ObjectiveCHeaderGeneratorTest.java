@@ -1849,9 +1849,128 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "  public final class NestedBar {}"
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
-    assertInTranslation(translation, "NS_SWIFT_NAME(MyEnumEnum)");
-    assertInTranslation(translation, "NS_SWIFT_NAME(MyEnum)");
-    assertInTranslation(translation, "NS_SWIFT_NAME(NestedBar)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBarMyEnumEnum)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBarMyEnum)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBarNestedBar)");
+  }
+
+  public void testSwiftNameDeepNestingInInterface() throws IOException {
+    addSourceFile(
+        "@SwiftName "
+            + "package com.foo.bar;"
+            + ""
+            + "import com.google.j2objc.annotations.SwiftName;",
+        "com/foo/bar/package-info.java");
+
+    String sourceContent =
+        """
+        package com.foo.bar;
+        public interface OuterInterface {
+          public class InnerClass {
+            public enum InnerEnum { A, B }
+          }
+        }
+        """;
+    String translation =
+        translateSourceFile(sourceContent, "OuterInterface", "com/foo/bar/OuterInterface.h");
+    assertInTranslation(translation, "NS_SWIFT_NAME(OuterInterfaceInnerClass)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(OuterInterfaceInnerClass.InnerEnum)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(OuterInterfaceInnerClass.InnerEnumEnum)");
+  }
+
+  public void testSwiftNameExplicitAnnotationOnNestedType() throws IOException {
+    addSourceFile(
+        "@SwiftName "
+            + "package com.foo.bar;"
+            + ""
+            + "import com.google.j2objc.annotations.SwiftName;",
+        "com/foo/bar/package-info.java");
+
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        public interface OuterInterface {
+          @SwiftName("CustomName")
+          public class InnerClass {
+            public enum InnerEnum { A, B }
+          }
+        }
+        """;
+    String translation =
+        translateSourceFile(sourceContent, "OuterInterface", "com/foo/bar/OuterInterface.h");
+    assertInTranslation(translation, "NS_SWIFT_NAME(CustomName)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(CustomName.InnerEnum)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(CustomName.InnerEnumEnum)");
+  }
+
+  public void testSwiftNameExplicitAnnotationOnInterface() throws IOException {
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName("CustomInterface")
+        public interface OuterInterface {
+          public enum InnerEnum { A, B }
+        }
+        """;
+    String translation =
+        translateSourceFile(sourceContent, "OuterInterface", "com/foo/bar/OuterInterface.h");
+    assertInTranslation(translation, "NS_SWIFT_NAME(CustomInterfaceInnerEnum)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(CustomInterfaceInnerEnumEnum)");
+  }
+
+  public void testSwiftNameInterfaceInsideClass() throws IOException {
+    addSourceFile(
+        "@SwiftName "
+            + "package com.foo.bar;"
+            + ""
+            + "import com.google.j2objc.annotations.SwiftName;",
+        "com/foo/bar/package-info.java");
+
+    String sourceContent =
+        """
+        package com.foo.bar;
+        public class Foo {
+          public interface Bar {
+            public enum Baz { A, B }
+          }
+          public class Biz {}
+        }
+        """;
+    String translation =
+        translateSourceFile(sourceContent, "Foo", "com/foo/bar/Foo.h");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBarBaz)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBarBazEnum)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(Foo.Biz)");
+  }
+
+  public void testSwiftNameInterfaceInsideNestedClass() throws IOException {
+    addSourceFile(
+        "@SwiftName "
+            + "package com.foo.bar;"
+            + ""
+            + "import com.google.j2objc.annotations.SwiftName;",
+        "com/foo/bar/package-info.java");
+
+    String sourceContent =
+        """
+        package com.foo.bar;
+        public class Outer {
+          public class Middle {
+            public interface Inner {
+              public enum Baz { A, B }
+            }
+          }
+        }
+        """;
+    String translation =
+        translateSourceFile(sourceContent, "Outer", "com/foo/bar/Outer.h");
+    assertInTranslation(translation, "NS_SWIFT_NAME(Outer.Middle)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(OuterMiddleInner)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(OuterMiddleInnerBaz)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(OuterMiddleInnerBazEnum)");
   }
 
   public void testMethodSorting() throws IOException {
