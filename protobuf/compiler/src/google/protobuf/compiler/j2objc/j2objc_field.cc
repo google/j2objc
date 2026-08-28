@@ -178,10 +178,6 @@ void CollectForwardDeclarationsForFieldType(std::set<std::string>* declarations,
     declarations->insert("@class ComGoogleProtobufDescriptors_EnumDescriptor");
     declarations->insert("J2OBJC_CLASS_DECLARATION(" +
                          ClassName(descriptor->enum_type()) + ")");
-    declarations->insert(
-        "FOUNDATION_EXPORT "
-        "ComGoogleProtobufDescriptors_EnumDescriptor * _Nonnull " +
-        ClassName(descriptor->enum_type()) + "_descriptor_");
   } else if (type == JAVATYPE_MESSAGE) {
     std::string classname = ClassName(descriptor->message_type());
     declarations->insert("@class " + classname);
@@ -279,7 +275,6 @@ void FieldGenerator::GenerateFieldData(io::Printer *printer) const {
   );
   GenerateFieldDataOffset(printer);
   GenerateClassNameOrMapData(printer);
-  GenerateStaticRefs(printer);
   printer->Print(variables_,
       "  .containingType = NULL,\n"  // Used by extensions.
       "  .optionsData = $options_data$,\n"
@@ -293,21 +288,6 @@ void FieldGenerator::GenerateFieldDataOffset(io::Printer *printer) const {
 
 void FieldGenerator::GenerateClassNameOrMapData(io::Printer *printer) const {
   GenerateObjcClassRef(printer, descriptor_);
-}
-
-void FieldGenerator::GenerateStaticRefs(io::Printer *printer) const {
-  JavaType type = GetJavaType(descriptor_);
-  std::string staticref;
-  if (type == JAVATYPE_MESSAGE) {
-    staticref = "&" +
-        GetParameterType(descriptor_) + "_descriptor_";
-  } else if (type == JAVATYPE_ENUM) {
-    staticref = "&" +
-        GetParameterType(descriptor_) + "_descriptor_";
-  } else {
-    staticref = "NULL";
-  }
-  printer->Print("  .descriptorRef = $staticref$,\n", "staticref", staticref);
 }
 
 SingleFieldGenerator::SingleFieldGenerator(
@@ -333,7 +313,7 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
       "- (nonnull $classname$_Builder *)clear$capitalized_name$;\n");
 
   if (IsGenerateProperties(descriptor_->file())) {
-    printer->Print(GetStorageType(descriptor_) == GetNonNullType(descriptor_) 
+    printer->Print(GetStorageType(descriptor_) == GetNonNullType(descriptor_)
                    ? "@property (" : "@property (nonnull, retain, ");
     printer->Print(
         variables_,
@@ -600,10 +580,6 @@ void MapEntryFieldGenerator::GenerateFieldDataOffset(io::Printer *printer)
   printer->Print(variables_, "  .offset = 0,\n");
 }
 
-void MapFieldGenerator::GenerateStaticRefs(io::Printer *printer) const {
-  printer->Print(variables_, "  .descriptorRef = NULL,\n");
-}
-
 void MapEntryFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
     const {
 }
@@ -613,10 +589,6 @@ void MapEntryFieldGenerator::GenerateMessageOrBuilderProtocol(
 }
 
 void MapEntryFieldGenerator::GenerateDeclaration(io::Printer* printer) const {
-}
-
-void MapEntryFieldGenerator::GenerateStaticRefs(io::Printer *printer) const {
-  printer->Print(variables_, "  .descriptorRef = NULL,\n");
 }
 
 FieldGeneratorMap::FieldGeneratorMap(const Descriptor* descriptor)
