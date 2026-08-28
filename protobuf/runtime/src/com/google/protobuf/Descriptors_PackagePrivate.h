@@ -264,7 +264,43 @@ CGP_ALWAYS_INLINE BOOL CGPJavaTypeIsEnum(CGPFieldJavaType type) {
   return type == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM;
 }
 
+// Gets the integer value of an enum.
+//
+// This function is updated to support preservation of unknown enum values in proto3.
+//
+// How it works:
+// - Valid enums are pointers to static singleton objects. Since objects are aligned
+//   to at least 8 bytes on 64-bit systems, the lowest bit of a valid pointer is always 0.
+// - Unrecognized enum values are stored by shifting the raw 32-bit value into the
+//   upper 32 bits and setting the lowest bit to 1 (tagging it).
+//   Representation: (raw_value << 32) | 0x1
+//
+// Why this is safe:
+// 1. ARC (Automatic Reference Counting): The J2ObjC runtime does not retain/release
+//    enum fields (see CGPIsRetainedType in Descriptors.m returning NO for enums).
+//    Therefore, storing a non-pointer value in the id field will not cause ARC to
+//    attempt to dereference it and crash.
+// 2. PAC (Pointer Authentication Codes): PAC uses the upper bits of pointers on
+//    ARM64e to store a signature. We do not touch the upper bits of VALID pointers.
+//    We only use the upper bits when the value is NOT a pointer (indicated by the
+//    lowest bit being 1). Since we don't try to authenticate this tagged value as a
+//    pointer, PAC is not triggered.
+//
+// Why this is correct:
+// - In proto3, the 0 value is always defined (required by spec). Thus, an unknown
+//   value can never be 0. The shifted raw value in the upper 32 bits will therefore
+//   always be non-zero for unknown values, ensuring we can distinguish it from a
+//   valid pointer where the upper 32 bits are naturally zero.
 CGP_ALWAYS_INLINE jint CGPEnumGetIntValue(CGPEnumDescriptor *descriptor, id enumObj) {
+  uintptr_t stored_val = (uintptr_t)(ARCBRIDGE void *)enumObj;
+
+  // Check the lowest bit. If it is 1, it is an unrecognized tagged value.
+  if (stored_val & 0x1) {
+    // Return the raw value stored in the upper 32 bits.
+    return (jint)(stored_val >> 32);
+  }
+
+  // Otherwise, it is a valid pointer to a static enum singleton.
   return *(jint *)((char *)(ARCBRIDGE void *)enumObj + descriptor->valueOffset_);
 }
 
