@@ -26,7 +26,6 @@
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
 #import "jni.h"
-#import "objc/runtime.h"
 
 #import <math.h>
 
