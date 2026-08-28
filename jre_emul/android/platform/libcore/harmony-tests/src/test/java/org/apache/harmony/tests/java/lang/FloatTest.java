@@ -207,16 +207,13 @@ public class FloatTest extends TestCase {
     public void test_hashCode() {
         // Test for method int java.lang.Float.hashCode()
         Float f = new Float(1908.8786f);
-        assertTrue("Returned invalid hash code for 1908.8786f", f.hashCode() == Float
-                .floatToIntBits(1908.8786f));
+        assertEquals("Returned invalid hash code for 1908.8786f", -743541531, f.hashCode());
 
         f = new Float(-1.112f);
-        assertTrue("Returned invalid hash code for -1.112", f.hashCode() == Float
-                .floatToIntBits(-1.112f));
+        assertEquals("Returned invalid hash code for -1.112", -1640531535, f.hashCode());
 
         f = new Float(0f);
-        assertTrue("Returned invalid hash code for 0", f.hashCode() == Float.floatToIntBits(0f));
-
+        assertEquals("Returned invalid hash code for 0", 0, f.hashCode());
     }
 
     /**

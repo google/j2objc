@@ -25,6 +25,8 @@
 
 package java.lang;
 
+import com.google.j2objc.util.ReflectionUtil;
+
 /* J2ObjC removed
 import jdk.internal.vm.annotation.IntrinsicCandidate;
 */
@@ -479,17 +481,16 @@ public final class Short extends Number implements Comparable<Short> {
         return Short.hashCode(value);
     }
 
-    /**
-     * Returns a hash code for a {@code short} value; compatible with
-     * {@code Short.hashCode()}.
-     *
-     * @param value the value to hash
-     * @return a hash code value for a {@code short} value.
-     * @since 1.8
-     */
-    public static int hashCode(short value) {
-        return (int)value;
-    }
+  /**
+   * Returns a hash code for a {@code short} value; compatible with {@code Short.hashCode()}.
+   *
+   * @param value the value to hash
+   * @return a hash code value for a {@code short} value.
+   * @since 1.8
+   */
+  public static native int hashCode(short value) /*-[
+        return (jint)[@(value) hash];
+    ]-*/;
 
     /**
      * Compares this object to the specified object.  The result is
@@ -502,8 +503,8 @@ public final class Short extends Number implements Comparable<Short> {
      *                  {@code false} otherwise.
      */
     public boolean equals(Object obj) {
-        if (obj instanceof Short) {
-            return value == ((Short)obj).shortValue();
+    if (obj instanceof Short || ReflectionUtil.isObjCNumber(obj)) {
+      return value == ((Number) obj).shortValue();
         }
         return false;
     }
