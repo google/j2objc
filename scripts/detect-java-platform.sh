@@ -38,7 +38,7 @@ if [ -f "$release" ]; then
   esac
 
   case "$arch" in
-    amd64|x86_64|x86-64) arch=x86_64 ;;
+    amd64|x86_64|x86-64) arch=x64 ;;
     aarch64|arm64)      arch=aarch64 ;;
     armv7l|armv7*)      arch=armv7l ;;
   esac
