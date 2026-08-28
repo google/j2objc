@@ -38,5 +38,22 @@
     <key>NSAllowsArbitraryLoads</key>
     <true/>
   </dict>
+  <key>UIApplicationSceneManifest</key>
+  <dict>
+    <key>UIApplicationSupportsMultipleScenes</key>
+    <false/>
+    <key>UISceneConfigurations</key>
+    <dict>
+      <key>UIWindowSceneSessionRoleApplication</key>
+      <array>
+        <dict>
+          <key>UISceneConfigurationName</key>
+          <string>Default Configuration</string>
+          <key>UISceneDelegateClassName</key>
+          <string>J2ObjCTestRunnerSceneDelegate</string>
+        </dict>
+      </array>
+    </dict>
+  </dict>
 </dict>
 </plist>
