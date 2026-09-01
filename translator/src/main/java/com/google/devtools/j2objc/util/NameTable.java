@@ -652,7 +652,17 @@ public class NameTable {
         }
         String parentName = getSwiftClassNameFromAnnotation(parentElement);
         if (parentName != null) {
-          return (parentName + "." + clazz.getSimpleName()).replace("$", "");
+          // TODO(b/555734134) - Remove nested class workaround once Xcode 26.4 is the minimum
+          // version.
+          String className = clazz.getSimpleName().toString().replace("$", "");
+          if (parentName.contains(".")) {
+            // NS_SWIFT_NAME may exhibit errors with nested parent classes prior to Xcode 26.4, but
+            // it does support referencing the parent type by its ObjC name.
+            String objcType = getObjCType(parentElement.asType());
+            return getNameOfObjCType(objcType) + "." + className;
+          } else {
+            return parentName + "." + className;
+          }
         }
       }
     }
@@ -716,9 +726,11 @@ public class NameTable {
     }
 
     String className = getSwiftClassNameFromAnnotation(owner);
-    if (className == null) {
-      // There isn't nice naming so fallback to the normal ObjC class name
-      className = getObjCType(owner.asType()).replace(" *", "");
+    if (className == null || className.contains(".")) {
+      // TODO(b/555734134) - Remove nested class workaround once Xcode 26.4 is the minimum version.
+      // NS_SWIFT_NAME may exhibit errors with nested parent classes prior to Xcode 26.4, but it
+      // does support referencing the parent type by its ObjC name.
+      className = getNameOfObjCType(getObjCType(owner.asType()));
     }
 
     StringBuilder sb = new StringBuilder();
@@ -887,6 +899,11 @@ public class NameTable {
       TypeElement genericUsageTypeElement) {
     return getObjcTypeInner(
         type, null, false, enableGenerics, genericUsageTypeElement);
+  }
+
+  /** Returns the name of the Objective-C type with the pointer and protocol syntax removed. */
+  private static String getNameOfObjCType(String objcType) {
+    return objcType.replace(" *", "").replace("id<", "").replace(">", "");
   }
 
   /**
