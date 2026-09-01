@@ -3580,6 +3580,11 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   [super dealloc];
 }
 
+- (id)copyWithZone:(NSZone *)zone {
+  // Generated messages are immutable.
+  return RETAIN_AND_AUTORELEASE(self);
+}
+
 + (BOOL)resolveInstanceMethod:(SEL)sel {
   if (!class_respondsToSelector(object_getClass(self), @selector(getDescriptor))) {
     return NO;
