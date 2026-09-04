@@ -18,12 +18,15 @@ import com.google.devtools.j2objc.ast.ArrayInitializer;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.EmptyStatement;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
+import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NativeExpression;
+import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
@@ -33,14 +36,12 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
-import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.List;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
-import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import org.jspecify.annotations.Nullable;
 
@@ -116,8 +117,7 @@ public class SwitchRewriter extends UnitTreeVisitor {
     List<Statement> blockStmts = block.getStatements();
     for (int i = 0; i < statements.size(); i++) {
       Statement stmt = statements.get(i);
-      if (stmt instanceof VariableDeclarationStatement) {
-        VariableDeclarationStatement declStmt = (VariableDeclarationStatement) stmt;
+      if (stmt instanceof VariableDeclarationStatement declStmt) {
         statements.remove(i--);
         List<VariableDeclarationFragment> fragments = declStmt.getFragments();
         for (VariableDeclarationFragment decl : fragments) {
@@ -181,9 +181,41 @@ public class SwitchRewriter extends UnitTreeVisitor {
     if (!TypeUtil.isEnum(type)) {
       return;
     }
-    DeclaredType enumType = typeUtil.getSuperclass(type);
-    ExecutablePair ordinalMethod = typeUtil.findMethod(enumType, "ordinal");
-    MethodInvocation invocation = new MethodInvocation(ordinalMethod, TreeUtil.remove(expr));
-    node.setExpression(invocation);
+
+    node.setExpression(handleEnumSwitch(type, expr, node.getStatements()));
+  }
+
+  private Expression handleEnumSwitch(
+      TypeMirror type, Expression selectorExpression, List<Statement> switchStatements) {
+    // Replace the the selector expression `expr` by `expr.ordinal()`;
+    var enumType = typeUtil.getSuperclass(type);
+    var ordinalMethod = typeUtil.findMethod(enumType, "ordinal");
+    var ordinalInvocation =
+        new MethodInvocation(ordinalMethod, TreeUtil.remove(selectorExpression));
+
+    for (Statement stmt : switchStatements) {
+      if (stmt instanceof SwitchCase caseStmt) {
+        var caseExprs = caseStmt.getExpressions();
+        for (int i = 0; i < caseExprs.size(); i++) {
+          if (caseExprs.get(i) instanceof NullLiteral) {
+            // There is `case null` in the switch statement, so replace `case null` with `case -1`
+            caseExprs.set(i, NumberLiteral.newIntLiteral(-1, typeUtil));
+            // And return `expr == null ? -1 : expr.ordinal()` as the new selector expression.
+            return new ConditionalExpression()
+                .setTypeMirror(typeUtil.getInt())
+                .setExpression(
+                    new InfixExpression(
+                        typeUtil.getBoolean(),
+                        InfixExpression.Operator.EQUALS,
+                        selectorExpression.copy(),
+                        new NullLiteral(typeUtil.getNull())))
+                .setThenExpression(NumberLiteral.newIntLiteral(-1, typeUtil))
+                .setElseExpression(ordinalInvocation);
+          }
+        }
+      }
+    }
+
+    return ordinalInvocation;
   }
 }

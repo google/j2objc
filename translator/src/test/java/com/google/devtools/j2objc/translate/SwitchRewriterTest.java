@@ -161,6 +161,54 @@ public class SwitchRewriterTest extends GenerationTest {
     assertInTranslation(translation, "case A_EnumType_Enum_ONE:");
   }
 
+  public void testEnumSwitchWithNull() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            public class A {
+              enum Foo { A, B }
+              public Foo testOnlyNull(Foo someFoo) {
+                switch (someFoo) {
+                  case null -> { return null; }
+                  default -> { return someFoo; }
+                }
+              }
+              public Foo testNullAndConstant(Foo someFoo) {
+                switch (someFoo) {
+                  case null -> { return null; }
+                  case A -> { return Foo.B; }
+                  default -> { return someFoo; }
+                }
+              }
+              public Foo testMethodCallWithNull() {
+                switch (getFoo()) {
+                  case null -> { return null; }
+                  default -> { return getFoo(); }
+                }
+              }
+              public int testSwitchExpressionWithNull(Foo someFoo) {
+                return switch (someFoo) {
+                  case null -> 0;
+                  case A -> 1;
+                  default -> 2;
+                };
+              }
+              public int testSwitchExpressionMethodCallWithNull() {
+                return switch (getFoo()) {
+                  case null -> 0;
+                  default -> 1;
+                };
+              }
+              private Foo getFoo() { return Foo.A; }
+            }
+            """,
+            "A",
+            "A.m");
+    assertInTranslation(translation, "switch (someFoo == nil ? -1 : [someFoo ordinal]) {");
+    assertInTranslation(translation, "case -1:");
+    assertInTranslation(translation, "switch (tmp == nil ? -1 : [tmp ordinal]) {");
+  }
+
   public void testPrimitiveConstantInSwitchCase() throws IOException {
     String translation =
         translateSourceFile(

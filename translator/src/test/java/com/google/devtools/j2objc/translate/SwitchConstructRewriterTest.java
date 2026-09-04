@@ -344,4 +344,43 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         }
         """);
   }
+
+  public void testEnumSwitchWithPatternAndConstant() throws IOException {
+    String source =
+        """
+        class Test {
+          enum Foo { A, B }
+          static int test(Foo someFoo) {
+            return switch (someFoo) {
+              case null -> 0;
+              case A -> 1;
+              case Foo f when f.toString().length() > 1 -> 2;
+              default -> 3;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t selector = 0;
+        Test_Foo *f = nil;
+        if (someFoo == nil) selector = 1;
+        else if (someFoo == JreLoadEnum(Test_Foo, A)) selector = 2;
+        else if ([someFoo isKindOfClass:[Test_Foo class]] && (f = someFoo, true)\
+            && [((NSString *) nil_chk([((Test_Foo *) nil_chk(f)) description])) java_length] > 1)\
+          selector = 3;
+        switch (selector) {
+          case 1:
+          return 0;
+          case 2:
+          return 1;
+          case 3:
+          return 2;
+          default:
+          return 3;
+        }
+        """);
+  }
 }
