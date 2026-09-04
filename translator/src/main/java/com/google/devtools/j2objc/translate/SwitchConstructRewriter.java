@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InfixExpression.Operator;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
+import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.Pattern;
 import com.google.devtools.j2objc.ast.ReturnStatement;
@@ -45,6 +46,7 @@ import com.google.devtools.j2objc.ast.YieldStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import java.util.List;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Rewrites switch constructs flattening expressions into multiple cases and rescopes statements.
@@ -177,6 +179,7 @@ public class SwitchConstructRewriter {
       implementationBlock.addStatement(
           new VariableDeclarationStatement(selectorVariable, new NumberLiteral(0, typeUtil)));
 
+      boolean hasNullCase = node.hasNullCase();
       IfStatement lastIfStatement = null;
       int caseNumber = 1; // Start case numbers at 1 since 0 will be the default case.
       for (Statement statement : node.getStatements()) {
@@ -190,7 +193,7 @@ public class SwitchConstructRewriter {
           continue;
         }
 
-        Expression condition = buildCondition(expression, switchCase);
+        Expression condition = buildCondition(expression, switchCase, hasNullCase);
 
         // if (condition) {
         //   selector = caseNumber;
@@ -231,43 +234,41 @@ public class SwitchConstructRewriter {
               .copyStatements(node.getStatements()));
     }
 
-    private Expression buildCondition(Expression switchExpression, SwitchCase switchCase) {
+    private Expression buildCondition(
+        Expression switchExpression, SwitchCase switchCase, boolean hasNullCase) {
       Expression condition = null;
       if (!switchCase.getExpressions().isEmpty()) {
         checkState(switchCase.getPattern() == null);
+        boolean requiresUnboxing = false;
         for (Expression expression : switchCase.getExpressions()) {
-          Expression expressionCondition =
-              new InfixExpression()
-                  .setTypeMirror(typeUtil.getBoolean())
-                  .setOperator(Operator.EQUALS)
-                  .addOperand(switchExpression.copy())
-                  .addOperand(expression.copy());
+          requiresUnboxing |=
+              !switchExpression.getTypeMirror().getKind().isPrimitive()
+                  && expression.getTypeMirror().getKind().isPrimitive();
           // caseExpression == expr1 || caseExpression == expr2 || ...
-          condition = orCondition(condition, expressionCondition);
+          condition =
+              orCondition(condition, equalsExpression(copy(switchExpression), copy(expression)));
+        }
+        // The comparison requires unboxing and the switch has `case null`, check for non-null
+        // before unboxing.
+        if (hasNullCase && requiresUnboxing) {
+          // caseExpression != null && (caseExpression == expr1 || caseExpression == expr2 || ...)
+          condition = andCondition(notNullExpression(copy(switchExpression)), condition);
         }
       } else {
         checkState(switchCase.getExpressions().isEmpty());
-        Pattern pattern = switchCase.getPattern();
-        if (pattern != null) {
-          condition =
-              andCondition(
-                  condition,
-                  new InstanceofExpression()
-                      .setTypeMirror(typeUtil.getBoolean())
-                      .setLeftOperand(switchExpression.copy())
-                      .setRightOperand(Type.newType(checkNotNull(pattern.getTypeMirror())))
-                      .setPattern(pattern.copy()));
-        }
+        condition =
+            andCondition(
+                condition,
+                instanceofPattern(copy(switchExpression), copy(switchCase.getPattern())));
       }
-      if (switchCase.getGuard() != null) {
-        condition = andCondition(condition, switchCase.getGuard().copy());
-      }
-      return condition;
+      return andCondition(condition, copy(switchCase.getGuard()));
     }
 
     private Expression andCondition(Expression lhs, Expression rhs) {
       if (lhs == null) {
         return rhs;
+      } else if (rhs == null) {
+        return lhs;
       }
       return new InfixExpression(typeUtil.getBoolean(), Operator.CONDITIONAL_AND, lhs, rhs);
     }
@@ -275,9 +276,33 @@ public class SwitchConstructRewriter {
     private Expression orCondition(Expression lhs, Expression rhs) {
       if (lhs == null) {
         return rhs;
+      } else if (rhs == null) {
+        return lhs;
       }
       return new InfixExpression(typeUtil.getBoolean(), Operator.CONDITIONAL_OR, lhs, rhs);
     }
+
+    private Expression equalsExpression(Expression lhs, Expression rhs) {
+      return new InfixExpression(typeUtil.getBoolean(), Operator.EQUALS, lhs, rhs);
+    }
+
+    private Expression notNullExpression(Expression lhs) {
+      return new InfixExpression(
+          typeUtil.getBoolean(), Operator.NOT_EQUALS, lhs, new NullLiteral(typeUtil.getNull()));
+    }
+
+    private Expression instanceofPattern(Expression expression, Pattern pattern) {
+      return new InstanceofExpression()
+          .setTypeMirror(typeUtil.getBoolean())
+          .setLeftOperand(expression)
+          .setRightOperand(Type.newType(checkNotNull(pattern.getTypeMirror())))
+          .setPattern(pattern);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <T extends TreeNode> T copy(T node) {
+    return node == null ? null : (T) node.copy();
   }
 
   private SwitchConstructRewriter() {}

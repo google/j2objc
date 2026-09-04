@@ -307,4 +307,41 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         }
         """);
   }
+
+  public void testBoxedIntSwitchWithNullAndConstant() throws IOException {
+    String source =
+        """
+        class Test {
+          static int test(Integer i) {
+            return switch (i) {
+              case 42 -> 1;
+              case Integer j when j > 0 -> 2;
+              case null -> 3;
+              default -> 4;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t selector = 0;
+        JavaLangInteger *j = nil;
+        if (i != nil && [i intValue] == 42) selector = 1;
+        else if ([i isKindOfClass:[JavaLangInteger class]] && (j = i, true)\
+            && [((JavaLangInteger *) nil_chk(j)) intValue] > 0) selector = 2;
+        else if (i == nil) selector = 3;
+        switch (selector) {
+          case 1:
+          return 1;
+          case 2:
+          return 2;
+          case 3:
+          return 3;
+          default:
+          return 4;
+        }
+        """);
+  }
 }
