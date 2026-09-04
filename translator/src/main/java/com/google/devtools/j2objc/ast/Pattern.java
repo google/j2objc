@@ -85,6 +85,7 @@ public abstract class Pattern extends TreeNode {
 
     public BindingPattern(BindingPattern other) {
       super(other);
+      typeMirror = other.getTypeMirror();
       var.copyFrom(other.getVariable());
     }
 

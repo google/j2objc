@@ -220,7 +220,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("LambdaRewriter");
 
     // Before: InstanceOfPatternRewriter - to handle instanceof patterns from the switch rewrite.
-    new SwitchConstructRewriter(unit).run();
+    SwitchConstructRewriter.run(unit);
     ticker.tick("SwitchConstructRewriter");
 
     // Before: VariableRenamer - VariableRenamer renames variables in a scope-aware manner.
