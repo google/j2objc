@@ -30,11 +30,9 @@ import java.io.OutputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.*;
-
 import javax.security.auth.x500.X500Principal;
-
-import sun.security.util.*;
 import sun.security.pkcs.PKCS9Attribute;
+import sun.security.util.*;
 
 /**
  * This class defines the Name Constraints Extension.
@@ -383,18 +381,20 @@ implements CertAttrSet<String>, Cloneable {
             }
         }
 
-        // Optional optimization: remove permitted subtrees that are excluded.
-        // This is not necessary for algorithm correctness, but it makes
-        // subsequent operations on the NameConstraints faster and require
-        // less space.
-        if (permitted != null) {
-            permitted.reduce(excluded);
-        }
+    // Optional optimization: remove permitted subtrees that are excluded.
+    // This is not necessary for algorithm correctness, but it makes
+    // subsequent operations on the NameConstraints faster and require
+    // less space.
+    // VULNERABILITY FIX: b/514770851
+    /*
+    if (permitted != null) {
+        permitted.reduce(excluded);
+    }
+    */
 
-        // The NameConstraints have been changed, so re-encode them.  Methods in
-        // this class assume that the encodings have already been done.
-        encodeThis();
-
+    // The NameConstraints have been changed, so re-encode them.  Methods in
+    // this class assume that the encodings have already been done.
+    encodeThis();
     }
 
     /**
