@@ -1102,7 +1102,12 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Example",
             "Example.m");
-    assertInTranslation(translation, "switch ([[self foo] ordinal])");
+    assertTranslatedLines(
+        translation,
+        """
+        Example_Test *tmp = [self foo];
+        switch ([tmp ordinal]) {
+        """);
   }
 
   public void testClassVariable() throws IOException {

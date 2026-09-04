@@ -184,4 +184,52 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         }();
         """);
   }
+
+  public void testExtractSelectorExpression() throws IOException {
+    String source =
+        """
+        class Test {
+          static int getInt() { return 1; }
+          static void testStmt() {
+            switch (getInt()) {
+              case 1:
+                break;
+            }
+          }
+          static int testExpr() {
+            return switch (getInt()) {
+              case 1 -> 10;
+              default -> 20;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        {
+          int32_t tmp = Test_getInt();
+          switch (tmp) {
+            case 1:
+            break;
+          }
+        }
+        """);
+    assertTranslatedLines(
+        translation,
+        """
+        return ^ int32_t (){
+          {
+            int32_t tmp = Test_getInt();
+            switch (tmp) {
+              case 1:
+              return 10;
+              default:
+              return 20;
+            }
+          }
+        }();
+        """);
+  }
 }

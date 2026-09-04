@@ -58,6 +58,9 @@ public class SwitchConstructRewriter {
     // Rewrite switch expressions into switch statements.
     new RewriteSwitchExpressionToSwitchStatement(unit).run();
 
+    // Extract complex selector switch expression to prevent double evaluation.
+    new ExtractSwitchExpression(unit).run();
+
     // Desugar switch patterns and guards.
     new DesugarSwitchPatterns(unit).run();
   }
@@ -88,6 +91,44 @@ public class SwitchConstructRewriter {
     public void endVisit(YieldStatement node) {
       // Yield statements become returns from the block expression.
       node.replaceWith(new ReturnStatement(node.getExpression().copy()));
+    }
+  }
+
+  /** Extracts the selector expression from a switch construct unless it is a simple name. */
+  public static class ExtractSwitchExpression extends UnitTreeVisitor {
+    public ExtractSwitchExpression(CompilationUnit unit) {
+      super(unit);
+    }
+
+    @Override
+    public void endVisit(SwitchStatement node) {
+      if (!(node.getExpression() instanceof SimpleName)) {
+        Block replacement = new Block();
+        extractSelectorExpression(node, replacement);
+        node.replaceWith(replacement);
+        replacement.addStatement(node);
+      }
+    }
+
+    /**
+     * Extracts the selector expression of {@code node} into a temporary variable declared in {@code
+     * block} so that passes that rewrite switch statements don't have to worry about double
+     * evaluation.
+     */
+    private void extractSelectorExpression(SwitchConstruct node, Block block) {
+      Expression expression = node.getExpression();
+      if (expression instanceof SimpleName) {
+        return;
+      }
+      // Generate a temporary variable to preserve evaluation semantics since we can't guarantee
+      // that the expression doesn't have side effects and can be evaluated multiple times.
+      VariableElement tempVariable =
+          GeneratedVariableElement.newLocalVar(
+              "tmp", expression.getTypeMirror(), TreeUtil.getEnclosingElement((TreeNode) node));
+      // Type tmp = expr
+      block.addStatement(
+          new VariableDeclarationStatement(tempVariable, TreeUtil.remove(expression)));
+      node.setExpression(new SimpleName(tempVariable));
     }
   }
 
@@ -126,17 +167,6 @@ public class SwitchConstructRewriter {
      */
     private void generateSelectorLogic(SwitchConstruct node, Block implementationBlock) {
       Expression expression = node.getExpression();
-      if (!(expression instanceof SimpleName)) {
-        // Generate a temporary variable to preserve evaluation semantics since we can't guarantee
-        // that the expression doesn't have side effects and can be evaluated multiple times.
-        VariableElement tempVariable =
-            GeneratedVariableElement.newLocalVar(
-                "tmp", expression.getTypeMirror(), TreeUtil.getEnclosingElement((TreeNode) node));
-        // Type tmp = expr
-        implementationBlock.addStatement(
-            new VariableDeclarationStatement(tempVariable, expression.copy()));
-        expression = new SimpleName(tempVariable);
-      }
 
       // Generate an integer variable that will be the expression of the transformed switch.
       VariableElement selectorVariable =

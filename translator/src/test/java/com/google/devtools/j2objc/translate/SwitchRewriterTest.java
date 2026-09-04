@@ -534,14 +534,17 @@ public class SwitchRewriterTest extends GenerationTest {
         translation,
         """
         return ^ int64_t (){
-          switch ((int32_t) b) {
-            case 2:
-            {
-              Test_checkNoOverflowWithBoolean_withNSString_withLong_withLong_(k < JreIntMinus(JavaLangLong_SIZE, 1), @"checkedPow", b, k);
-              return JreLShift64(1LL, k);
+          {
+            int32_t tmp = (int32_t) b;
+            switch (tmp) {
+              case 2:
+              {
+                Test_checkNoOverflowWithBoolean_withNSString_withLong_withLong_(k < JreIntMinus(JavaLangLong_SIZE, 1), @"checkedPow", b, k);
+                return JreLShift64(1LL, k);
+              }
+              default:
+              @throw create_JavaLangAssertionError_init();
             }
-            default:
-            @throw create_JavaLangAssertionError_init();
           }
         }();
         """);
