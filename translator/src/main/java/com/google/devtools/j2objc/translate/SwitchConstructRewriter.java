@@ -27,7 +27,6 @@ import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InfixExpression.Operator;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
-import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.Pattern;
 import com.google.devtools.j2objc.ast.ReturnStatement;
@@ -234,19 +233,18 @@ public class SwitchConstructRewriter {
 
     private Expression buildCondition(Expression switchExpression, SwitchCase switchCase) {
       Expression condition = null;
-      if (switchCase.getExpressions().size() == 1) {
-        // This is case null.
-        Expression expression = switchCase.getExpressions().getFirst();
+      if (!switchCase.getExpressions().isEmpty()) {
         checkState(switchCase.getPattern() == null);
-        checkState(expression instanceof NullLiteral);
-        condition =
-            andCondition(
-                condition,
-                new InfixExpression()
-                    .setTypeMirror(typeUtil.getBoolean())
-                    .setOperator(Operator.EQUALS)
-                    .addOperand(switchExpression.copy())
-                    .addOperand(expression.copy()));
+        for (Expression expression : switchCase.getExpressions()) {
+          Expression expressionCondition =
+              new InfixExpression()
+                  .setTypeMirror(typeUtil.getBoolean())
+                  .setOperator(Operator.EQUALS)
+                  .addOperand(switchExpression.copy())
+                  .addOperand(expression.copy());
+          // caseExpression == expr1 || caseExpression == expr2 || ...
+          condition = orCondition(condition, expressionCondition);
+        }
       } else {
         checkState(switchCase.getExpressions().isEmpty());
         Pattern pattern = switchCase.getPattern();
@@ -272,6 +270,13 @@ public class SwitchConstructRewriter {
         return rhs;
       }
       return new InfixExpression(typeUtil.getBoolean(), Operator.CONDITIONAL_AND, lhs, rhs);
+    }
+
+    private Expression orCondition(Expression lhs, Expression rhs) {
+      if (lhs == null) {
+        return rhs;
+      }
+      return new InfixExpression(typeUtil.getBoolean(), Operator.CONDITIONAL_OR, lhs, rhs);
     }
   }
 

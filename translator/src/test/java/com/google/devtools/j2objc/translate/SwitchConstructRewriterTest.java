@@ -232,4 +232,79 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         }();
         """);
   }
+
+  public void testSwitchCaseWithMultipleExpressions() throws IOException {
+    String source =
+        """
+        class Test {
+          enum Foo { A, B, C }
+          static int test(Foo someFoo) {
+            return switch (someFoo) {
+              case A, B -> 1;
+              case Foo f when f.toString().length() > 1 -> 2;
+              case null -> 3;
+              default -> 4;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t selector = 0;
+        Test_Foo *f = nil;
+        if (someFoo == JreLoadEnum(Test_Foo, A) || someFoo == JreLoadEnum(Test_Foo, B)) selector = 1;
+        else if ([someFoo isKindOfClass:[Test_Foo class]] && (f = someFoo, true) && [((NSString *) nil_chk([((Test_Foo *) nil_chk(f)) description])) java_length] > 1) selector = 2;
+        else if (someFoo == nil) selector = 3;
+        switch (selector) {
+          case 1:
+          return 1;
+          case 2:
+          return 2;
+          case 3:
+          return 3;
+          default:
+          return 4;
+          }
+        """);
+  }
+
+  public void testSwitchCaseWithMultipleExpressionsColonSyntax() throws IOException {
+    String source =
+        """
+        class Test {
+          enum Foo { A, B, C }
+          static int test(Foo someFoo) {
+            switch (someFoo) {
+              case A, B:
+                return 1;
+              case Foo f when f.toString().length() > 1:
+                return 2;
+              case null, default:
+                return 3;
+            }
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t selector = 0;
+        Test_Foo *f = nil;
+        if (someFoo == JreLoadEnum(Test_Foo, A) || someFoo == JreLoadEnum(Test_Foo, B)) selector = 1;
+        else if ([someFoo isKindOfClass:[Test_Foo class]] && (f = someFoo, true)\
+            && [((NSString *) nil_chk([((Test_Foo *) nil_chk(f)) description])) java_length] > 1)\
+          selector = 2;
+        switch (selector) {
+          case 1:
+          return 1;
+          case 2:
+          return 2;
+          default:
+          return 3;
+        }
+        """);
+  }
 }

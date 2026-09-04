@@ -1020,6 +1020,36 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTrue(result.contains("case 1:"));
   }
 
+  public void testSwitchCaseWithMultipleExpressions() throws IOException {
+    String source =
+        """
+        int c = 1;
+        switch (c) {
+          case 1, 2, 3:
+            c = 0;
+            break;
+          default:
+            break;
+        }
+        """;
+    List<Statement> stmts = translateStatements(source);
+    assertEquals(2, stmts.size());
+    String result = generateStatement(stmts.get(1));
+    assertTranslatedLines(
+        result,
+        """
+        switch (c) {
+          case 1:
+          case 2:
+          case 3:
+          c = 0;
+          break;
+          default:
+          break;
+        }
+        """);
+  }
+
   public void testEnhancedForStatement() throws IOException {
     String source =
         """
