@@ -775,7 +775,7 @@ public class FormatterTest extends TestCase {
         formatter.format(
                 "xx%1$s22%2$s%s%<s%5$s%<s&%7$h%2$s%8$s%<s%s%s%<ssuffix", "1",
                 "2", "3", "4", "5", "6", 7, "8", "9", "10", "11");
-        assertEquals("xx12221155&7288233suffix", formatter.toString());
+        assertEquals("xx12221155&538453d7288233suffix", formatter.toString());
 
         try {
             formatter.format("%<s", "hello");

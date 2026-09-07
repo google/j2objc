@@ -17,7 +17,6 @@
 package org.apache.harmony.tests.java.lang;
 
 import java.util.Properties;
-
 import junit.framework.TestCase;
 
 public class LongTest extends TestCase {
@@ -315,9 +314,9 @@ public class LongTest extends TestCase {
      * java.lang.Long#toBinaryString(long)
      */
     public void test_toBinaryStringJ() {
-        // Test for method java.lang.String java.lang.Long.toBinaryString(long)
-        assertEquals("Incorrect binary string returned", "11011001010010010000", Long.toBinaryString(
-                890000L));
+    // Test for method java.lang.String java.lang.Long.toBinaryString(long)
+    assertEquals(
+        "Incorrect binary string returned", "11011001010010010000", Long.toBinaryString(890000L));
         assertEquals("Incorrect binary string returned",
 
                 "1000000000000000000000000000000000000000000000000000000000000000", Long
@@ -378,10 +377,9 @@ public class LongTest extends TestCase {
 
         assertEquals("Returned incorrect String", "89000000005", Long.toString(89000000005L)
         );
-        assertEquals("Returned incorrect String", "-9223372036854775808", Long.toString(Long.MIN_VALUE)
-        );
-        assertEquals("Returned incorrect String", "9223372036854775807", Long.toString(Long.MAX_VALUE)
-        );
+    assertEquals(
+        "Returned incorrect String", "-9223372036854775808", Long.toString(Long.MIN_VALUE));
+    assertEquals("Returned incorrect String", "9223372036854775807", Long.toString(Long.MAX_VALUE));
     }
 
     /**
@@ -526,10 +524,10 @@ public class LongTest extends TestCase {
      * java.lang.Long#hashCode()
      */
     public void test_hashCode() {
-        assertEquals((int) (1L ^ (1L >>> 32)), new Long(1).hashCode());
-        assertEquals((int) (2L ^ (2L >>> 32)), new Long(2).hashCode());
-        assertEquals((int) (0L ^ (0L >>> 32)), new Long(0).hashCode());
-        assertEquals((int) (-1L ^ (-1L >>> 32)), new Long(-1).hashCode());
+    assertEquals(-1640531535, new Long(1).hashCode());
+    assertEquals(1013871474, new Long(2).hashCode());
+    assertEquals(0, new Long(0).hashCode());
+    assertEquals(-1640531535, new Long(-1).hashCode());
     }
 
     /**
