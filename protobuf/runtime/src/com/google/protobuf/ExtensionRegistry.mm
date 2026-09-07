@@ -122,7 +122,7 @@ ComGoogleProtobufExtensionRegistry_newExtensionInfoWithComGoogleProtobufExtensio
     descriptor_ = field;
     if (CGPFieldTypeIsMessage(field)) {
       // No need to retain. Default message values are eternal.
-      defaultInstance_ = CGPFieldGetDefaultValue(field);
+      defaultInstance_ = CGPFieldGetDefaultValueObject(field);
     }
   }
   return self;
