@@ -90,14 +90,6 @@ CGP_ALWAYS_INLINE void CGPRepeatedFieldCheckBounds(CGPRepeatedField *field, jint
   }
 }
 
-CGP_ALWAYS_INLINE void CGPRepeatedFieldAddRetainedId(CGPRepeatedField *field, id value) {
-  uint32_t total_size = CGPRepeatedFieldTotalSize(field);
-  if (CGPRepeatedFieldSize(field) == total_size) {
-    CGPRepeatedFieldReserve(field, total_size + 1, sizeof(id));
-  }
-  ((void **)field->data->buffer)[field->data->size++] =  (ARCBRIDGE void *)(value);
-}
-
 id<JavaUtilList> CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaType type);
 
 NSArray *CGPNewRepeatedFieldArray(CGPRepeatedField *field, CGPFieldJavaType type);
