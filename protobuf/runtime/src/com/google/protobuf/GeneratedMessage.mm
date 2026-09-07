@@ -71,8 +71,8 @@
 #define NIL_CHECK_Float(value)
 #define NIL_CHECK_Double(value)
 #define NIL_CHECK_Bool(value)
-#define NIL_CHECK_Enum(value) (void)nil_chk(value);
-#define NIL_CHECK_Retainable(value) (void)nil_chk(value);
+#define NIL_CHECK_Enum(value) (void)nil_chk(value)
+#define NIL_CHECK_Retainable(value) (void)nil_chk(value)
 
 // Forward declarations.
 class CGPExtensionValue;
@@ -508,7 +508,8 @@ static BOOL AddClearMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
 #define GET_SINGULAR_SETTER_IMP(NAME)                                          \
   static IMP GetSingularSetterImp##NAME(size_t offset, CGPHasLocator hasLoc) { \
     return imp_implementationWithBlock(^id(id msg, TYPE_##NAME value) {        \
-      NIL_CHECK_##NAME(value) SingularSet##NAME(msg, value, offset, hasLoc);   \
+      NIL_CHECK_##NAME(value);                                                 \
+      SingularSet##NAME(msg, value, offset, hasLoc);                           \
       return msg;                                                              \
     });                                                                        \
   }
@@ -520,8 +521,8 @@ FOR_EACH_TYPE_WITH_ENUM(GET_SINGULAR_SETTER_IMP)
 #define GET_REPEATED_SETTER_IMP(NAME)                                             \
   static IMP GetRepeatedSetterImp##NAME(size_t offset) {                          \
     return imp_implementationWithBlock(^id(id msg, jint idx, TYPE_##NAME value) { \
-      NIL_CHECK_##NAME(value)                                                     \
-          CGPRepeatedFieldSet##NAME(REPEATED_FIELD_PTR(msg, offset), idx, value); \
+      NIL_CHECK_##NAME(value);                                                    \
+      CGPRepeatedFieldSet##NAME(REPEATED_FIELD_PTR(msg, offset), idx, value);     \
       return msg;                                                                 \
     });                                                                           \
   }
@@ -572,12 +573,13 @@ static BOOL AddBuilderSetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field
   return class_addMethod(cls, sel, imp, "@@:@");
 }
 
-#define GET_ADDER_IMP(NAME)                                                                      \
-  static IMP GetAdderImp##NAME(size_t offset) {                                                  \
-    return imp_implementationWithBlock(^id(id msg, TYPE_##NAME value) {                          \
-      NIL_CHECK_##NAME(value) CGPRepeatedFieldAdd##NAME(REPEATED_FIELD_PTR(msg, offset), value); \
-      return msg;                                                                                \
-    });                                                                                          \
+#define GET_ADDER_IMP(NAME)                                              \
+  static IMP GetAdderImp##NAME(size_t offset) {                          \
+    return imp_implementationWithBlock(^id(id msg, TYPE_##NAME value) {  \
+      NIL_CHECK_##NAME(value);                                           \
+      CGPRepeatedFieldAdd##NAME(REPEATED_FIELD_PTR(msg, offset), value); \
+      return msg;                                                        \
+    });                                                                  \
   }
 
 FOR_EACH_TYPE_WITH_ENUM(GET_ADDER_IMP)
