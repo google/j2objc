@@ -31,6 +31,7 @@ import jdk.internal.math.DoubleConsts;
 import jdk.internal.vm.annotation.IntrinsicCandidate;
 */
 
+import com.google.j2objc.util.ReflectionUtil;
 import sun.misc.FloatingDecimal;
 import sun.misc.DoubleConsts;
 
@@ -897,10 +898,9 @@ public final class Double extends Number
      * @return a hash code value for a {@code double} value.
      * @since 1.8
      */
-    public static int hashCode(double value) {
-        long bits = doubleToLongBits(value);
-        return (int)(bits ^ (bits >>> 32));
-    }
+    public static native int hashCode(double value) /*-[
+        return (jint)[@(value) hash];
+    ]-*/;
 
     /**
      * Compares this object against the specified object.  The result
@@ -927,8 +927,8 @@ public final class Double extends Number
      * @jls 15.21.1 Numerical Equality Operators == and !=
      */
     public boolean equals(Object obj) {
-        return (obj instanceof Double)
-               && (doubleToLongBits(((Double)obj).value) ==
+        return (obj instanceof Double || ReflectionUtil.isObjCNumber(obj))
+               && (doubleToLongBits(((Number) obj).doubleValue()) ==
                       doubleToLongBits(value));
     }
 
