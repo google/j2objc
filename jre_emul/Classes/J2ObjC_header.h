@@ -44,25 +44,25 @@ CF_EXTERN_C_END
  * @param FIELD The name of the static variable prefixed with an underscore.
  * @param TYPE The type of the static variable.
  */
-#define J2OBJC_STATIC_FIELD_BASIC_GETTER(CLASS, FIELD, TYPE)            \
-  __attribute__((always_inline)) inline TYPE CLASS##_get##FIELD(void) { \
-    CLASS##_initialize();                                               \
-    return CLASS##FIELD;                                                \
+#define J2OBJC_STATIC_FIELD_BASIC_GETTER(CLASS, FIELD, ...)                    \
+  __attribute__((always_inline)) inline __VA_ARGS__ CLASS##_get##FIELD(void) { \
+    CLASS##_initialize();                                                      \
+    return CLASS##FIELD;                                                       \
   }
-#define J2OBJC_STATIC_FIELD_PRIMITIVE_REF_GETTER(CLASS, FIELD, TYPE) \
-  __attribute__((always_inline)) inline TYPE *CLASS##_getRef##FIELD(void) { \
-    CLASS##_initialize(); \
-    return &CLASS##FIELD; \
+#define J2OBJC_STATIC_FIELD_PRIMITIVE_REF_GETTER(CLASS, FIELD, ...)                \
+  __attribute__((always_inline)) inline __VA_ARGS__ *CLASS##_getRef##FIELD(void) { \
+    CLASS##_initialize();                                                          \
+    return &CLASS##FIELD;                                                          \
   }
-#define J2OBJC_STATIC_FIELD_PRIMITIVE_VOLATILE_GETTER(CLASS, FIELD, TYPE) \
-  __attribute__((always_inline)) inline TYPE CLASS##_get##FIELD(void) { \
-    CLASS##_initialize(); \
-    return __c11_atomic_load(&CLASS##FIELD, __ATOMIC_SEQ_CST); \
+#define J2OBJC_STATIC_FIELD_PRIMITIVE_VOLATILE_GETTER(CLASS, FIELD, ...)       \
+  __attribute__((always_inline)) inline __VA_ARGS__ CLASS##_get##FIELD(void) { \
+    CLASS##_initialize();                                                      \
+    return __c11_atomic_load(&CLASS##FIELD, __ATOMIC_SEQ_CST);                 \
   }
-#define J2OBJC_STATIC_FIELD_OBJ_VOLATILE_GETTER(CLASS, FIELD, TYPE) \
-  __attribute__((always_inline)) inline TYPE CLASS##_get##FIELD(void) { \
-    CLASS##_initialize(); \
-    return JreLoadVolatileId(&CLASS##FIELD); \
+#define J2OBJC_STATIC_FIELD_OBJ_VOLATILE_GETTER(CLASS, FIELD, ...)             \
+  __attribute__((always_inline)) inline __VA_ARGS__ CLASS##_get##FIELD(void) { \
+    CLASS##_initialize();                                                      \
+    return JreLoadVolatileId(&CLASS##FIELD);                                   \
   }
 
 /*!
@@ -79,38 +79,39 @@ CF_EXTERN_C_END
  * @param FIELD The name of the static variable prefixed with an underscore.
  * @param TYPE The type of the static variable.
  */
-#define J2OBJC_STATIC_FIELD_PRIMITIVE_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((always_inline)) inline TYPE CLASS##_set##FIELD(TYPE value) { \
-    CLASS##_initialize(); \
-    return CLASS##FIELD = value; \
+#define J2OBJC_STATIC_FIELD_PRIMITIVE_SETTER(CLASS, FIELD, ...)                             \
+  __attribute__((always_inline)) inline __VA_ARGS__ CLASS##_set##FIELD(__VA_ARGS__ value) { \
+    CLASS##_initialize();                                                                   \
+    return CLASS##FIELD = value;                                                            \
   }
-#define J2OBJC_STATIC_FIELD_PRIMITIVE_VOLATILE_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((always_inline)) inline TYPE CLASS##_set##FIELD(TYPE value) { \
-    CLASS##_initialize(); \
-    __c11_atomic_store(&CLASS##FIELD, value, __ATOMIC_SEQ_CST); \
-    return value; \
+#define J2OBJC_STATIC_FIELD_PRIMITIVE_VOLATILE_SETTER(CLASS, FIELD, ...)                    \
+  __attribute__((always_inline)) inline __VA_ARGS__ CLASS##_set##FIELD(__VA_ARGS__ value) { \
+    CLASS##_initialize();                                                                   \
+    __c11_atomic_store(&CLASS##FIELD, value, __ATOMIC_SEQ_CST);                             \
+    return value;                                                                           \
   }
 #if __has_feature(objc_arc)
-#define J2OBJC_STATIC_FIELD_OBJ_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((always_inline)) inline TYPE CLASS##_set##FIELD(TYPE value) { \
-    CLASS##_initialize(); \
-    return CLASS##FIELD = value; \
+#define J2OBJC_STATIC_FIELD_OBJ_SETTER(CLASS, FIELD, ...)                                   \
+  __attribute__((always_inline)) inline __VA_ARGS__ CLASS##_set##FIELD(__VA_ARGS__ value) { \
+    CLASS##_initialize();                                                                   \
+    return CLASS##FIELD = value;                                                            \
   }
 #else
-#define J2OBJC_STATIC_FIELD_OBJ_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((always_inline)) inline TYPE CLASS##_set##FIELD(TYPE value) { \
-    CLASS##_initialize(); \
-    return JreStrongAssign(&CLASS##FIELD, value); \
-  } \
-  __attribute__((always_inline)) inline TYPE CLASS##_setAndConsume##FIELD(TYPE value) { \
-    CLASS##_initialize(); \
-    return JreStrongAssignAndConsume(&CLASS##FIELD, value); \
+#define J2OBJC_STATIC_FIELD_OBJ_SETTER(CLASS, FIELD, ...)                                   \
+  __attribute__((always_inline)) inline __VA_ARGS__ CLASS##_set##FIELD(__VA_ARGS__ value) { \
+    CLASS##_initialize();                                                                   \
+    return JreStrongAssign(&CLASS##FIELD, value);                                           \
+  }                                                                                         \
+  __attribute__((always_inline)) inline __VA_ARGS__ CLASS##_setAndConsume##FIELD(           \
+      __VA_ARGS__ value) {                                                                  \
+    CLASS##_initialize();                                                                   \
+    return JreStrongAssignAndConsume(&CLASS##FIELD, value);                                 \
   }
 #endif
-#define J2OBJC_STATIC_FIELD_OBJ_VOLATILE_SETTER(CLASS, FIELD, TYPE) \
-  __attribute__((always_inline)) inline TYPE CLASS##_set##FIELD(TYPE value) { \
-    CLASS##_initialize(); \
-    return JreVolatileStrongAssign(&CLASS##FIELD, value); \
+#define J2OBJC_STATIC_FIELD_OBJ_VOLATILE_SETTER(CLASS, FIELD, ...)                          \
+  __attribute__((always_inline)) inline __VA_ARGS__ CLASS##_set##FIELD(__VA_ARGS__ value) { \
+    CLASS##_initialize();                                                                   \
+    return JreVolatileStrongAssign(&CLASS##FIELD, value);                                   \
   }
 
 /*!
@@ -131,25 +132,27 @@ CF_EXTERN_C_END
  * @param TYPE The type of the static variable.
  */
 // Java constants do not cause static initialization.
-#define J2OBJC_STATIC_FIELD_CONSTANT(CLASS, FIELD, TYPE) \
-  __attribute__((always_inline)) inline TYPE CLASS##_get_##FIELD(void) { return CLASS##_##FIELD; }
-#define J2OBJC_STATIC_FIELD_PRIMITIVE(CLASS, FIELD, TYPE) \
-  J2OBJC_STATIC_FIELD_BASIC_GETTER(CLASS, _##FIELD, TYPE) \
-  J2OBJC_STATIC_FIELD_PRIMITIVE_SETTER(CLASS, _##FIELD, TYPE) \
-  J2OBJC_STATIC_FIELD_PRIMITIVE_REF_GETTER(CLASS, _##FIELD, TYPE)
-#define J2OBJC_STATIC_FIELD_PRIMITIVE_VOLATILE(CLASS, FIELD, TYPE) \
-  J2OBJC_STATIC_FIELD_PRIMITIVE_VOLATILE_GETTER(CLASS, _##FIELD, TYPE) \
-  J2OBJC_STATIC_FIELD_PRIMITIVE_VOLATILE_SETTER(CLASS, _##FIELD, TYPE)
-#define J2OBJC_STATIC_FIELD_PRIMITIVE_FINAL(CLASS, FIELD, TYPE) \
-  J2OBJC_STATIC_FIELD_BASIC_GETTER(CLASS, _##FIELD, TYPE)
-#define J2OBJC_STATIC_FIELD_OBJ(CLASS, FIELD, TYPE) \
-  J2OBJC_STATIC_FIELD_BASIC_GETTER(CLASS, _##FIELD, TYPE) \
-  J2OBJC_STATIC_FIELD_OBJ_SETTER(CLASS, _##FIELD, TYPE)
-#define J2OBJC_STATIC_FIELD_OBJ_VOLATILE(CLASS, FIELD, TYPE) \
-  J2OBJC_STATIC_FIELD_OBJ_VOLATILE_GETTER(CLASS, _##FIELD, TYPE) \
-  J2OBJC_STATIC_FIELD_OBJ_VOLATILE_SETTER(CLASS, _##FIELD, TYPE)
-#define J2OBJC_STATIC_FIELD_OBJ_FINAL(CLASS, FIELD, TYPE) \
-  J2OBJC_STATIC_FIELD_BASIC_GETTER(CLASS, _##FIELD, TYPE)
+#define J2OBJC_STATIC_FIELD_CONSTANT(CLASS, FIELD, ...)                         \
+  __attribute__((always_inline)) inline __VA_ARGS__ CLASS##_get_##FIELD(void) { \
+    return CLASS##_##FIELD;                                                     \
+  }
+#define J2OBJC_STATIC_FIELD_PRIMITIVE(CLASS, FIELD, ...)             \
+  J2OBJC_STATIC_FIELD_BASIC_GETTER(CLASS, _##FIELD, __VA_ARGS__)     \
+  J2OBJC_STATIC_FIELD_PRIMITIVE_SETTER(CLASS, _##FIELD, __VA_ARGS__) \
+  J2OBJC_STATIC_FIELD_PRIMITIVE_REF_GETTER(CLASS, _##FIELD, __VA_ARGS__)
+#define J2OBJC_STATIC_FIELD_PRIMITIVE_VOLATILE(CLASS, FIELD, ...)             \
+  J2OBJC_STATIC_FIELD_PRIMITIVE_VOLATILE_GETTER(CLASS, _##FIELD, __VA_ARGS__) \
+  J2OBJC_STATIC_FIELD_PRIMITIVE_VOLATILE_SETTER(CLASS, _##FIELD, __VA_ARGS__)
+#define J2OBJC_STATIC_FIELD_PRIMITIVE_FINAL(CLASS, FIELD, ...) \
+  J2OBJC_STATIC_FIELD_BASIC_GETTER(CLASS, _##FIELD, __VA_ARGS__)
+#define J2OBJC_STATIC_FIELD_OBJ(CLASS, FIELD, ...)               \
+  J2OBJC_STATIC_FIELD_BASIC_GETTER(CLASS, _##FIELD, __VA_ARGS__) \
+  J2OBJC_STATIC_FIELD_OBJ_SETTER(CLASS, _##FIELD, __VA_ARGS__)
+#define J2OBJC_STATIC_FIELD_OBJ_VOLATILE(CLASS, FIELD, ...)             \
+  J2OBJC_STATIC_FIELD_OBJ_VOLATILE_GETTER(CLASS, _##FIELD, __VA_ARGS__) \
+  J2OBJC_STATIC_FIELD_OBJ_VOLATILE_SETTER(CLASS, _##FIELD, __VA_ARGS__)
+#define J2OBJC_STATIC_FIELD_OBJ_FINAL(CLASS, FIELD, ...) \
+  J2OBJC_STATIC_FIELD_BASIC_GETTER(CLASS, _##FIELD, __VA_ARGS__)
 
 /*!
  * Defines the getter for an enum constant. For enum class "FooEnum" and constant "BAR"

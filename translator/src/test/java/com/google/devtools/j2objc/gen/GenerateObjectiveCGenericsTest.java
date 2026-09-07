@@ -422,4 +422,25 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     assertInTranslation(testHeader, "@interface ComGoogleProtobufTest : NSObject");
     assertInTranslation(testHeader, "- (id)getWithId:(id)input;");
   }
+
+  public void testStaticPropertyGenerics() throws IOException {
+    options.setClassProperties(true);
+    addSourceFile(
+        "import com.google.j2objc.annotations.GenerateObjectiveCGenerics; "
+            + "@GenerateObjectiveCGenerics "
+            + "public class Box<T> {}",
+        "Box.java");
+    addSourceFile(
+        "import com.google.j2objc.annotations.GenerateObjectiveCGenerics; "
+            + "@GenerateObjectiveCGenerics "
+            + "public class Test {"
+            + "  public static final Box<String> STRING_BOX = new Box<>();"
+            + "}",
+        "Test.java");
+
+    String testSystemHeader = translateSourceFile("Test", "Test.h");
+    assertInTranslation(
+        testSystemHeader, "@property (readonly, class, strong) Box<NSString *> *STRING_BOX");
+    assertInTranslation(testSystemHeader, "inline Box<NSString *> *Test_get_STRING_BOX(void);");
+  }
 }
