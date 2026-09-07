@@ -135,8 +135,9 @@ public class GraphBuilder {
 
   private void addSuperclassEdges() {
     for (TypeNode type : allTypes.values()) {
+      Set<TypeNode> visited = new HashSet<>();
       TypeNode superclassNode = superclasses.get(type);
-      while (superclassNode != null) {
+      while (superclassNode != null && visited.add(superclassNode)) {
         for (Edge e : graph.getEdges(superclassNode)) {
           addEdge(Edge.newSuperclassEdge(e, type, superclassNode));
         }
