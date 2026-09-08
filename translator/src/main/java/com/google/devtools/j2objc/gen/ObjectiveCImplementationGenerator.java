@@ -81,6 +81,11 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     // by this switch.
     println("#pragma clang diagnostic ignored \"-Wswitch\"");
 
+    // Java interfaces with @Property generate Objective-C protocol properties. Objective-C
+    // protocols do not auto-synthesize properties in conforming classes. Disable the Clang
+    // warning since accessors are implemented by methods rather than synthesized ivars.
+    println("#pragma clang diagnostic ignored \"-Wobjc-protocol-property-synthesis\"");
+
     newline();
   }
 

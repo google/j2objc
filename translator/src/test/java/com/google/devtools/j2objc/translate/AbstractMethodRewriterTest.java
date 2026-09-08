@@ -34,6 +34,46 @@ public class AbstractMethodRewriterTest extends GenerationTest {
             + "public boolean hasNext() { return true; } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertInTranslation(translation, "#pragma clang diagnostic ignored \"-Wprotocol\"");
+    assertInTranslation(
+        translation, "#pragma clang diagnostic ignored \"-Wobjc-protocol-property-synthesis\"");
+  }
+
+  public void testAbstractClassImplementingPropertyInterface() throws IOException {
+    addSourceFile(
+        "import com.google.j2objc.annotations.Property;\n"
+            + "@Property\n"
+            + "public interface PromptBoxActionRegistry {\n"
+            + "  String getSubmitAction();\n"
+            + "}",
+        "PromptBoxActionRegistry.java");
+    addSourceFile(
+        "public abstract class PromptBoxActionRegistryImpl implements PromptBoxActionRegistry {\n"
+            + "  @Override\n"
+            + "  public abstract String getSubmitAction();\n"
+            + "}",
+        "PromptBoxActionRegistryImpl.java");
+    String header = translateSourceFile("PromptBoxActionRegistry", "PromptBoxActionRegistry.h");
+    assertInTranslation(
+        header, "@property (nonatomic, getter=getSubmitAction, readonly) NSString * submitAction;");
+    String translation =
+        translateSourceFile("PromptBoxActionRegistryImpl", "PromptBoxActionRegistryImpl.m");
+    // Verify that -Wobjc-protocol-property-synthesis is suppressed alongside compiler similarity
+    // pragmas in the generated implementation.
+    assertInTranslation(
+        translation,
+        "#pragma clang diagnostic error \"-Wreturn-type\"\n"
+            + "#pragma clang diagnostic ignored \"-Wswitch\"\n"
+            + "#pragma clang diagnostic ignored \"-Wobjc-protocol-property-synthesis\"");
+    // Verify that an abstract method stub is generated for reflection support. Because this stub
+    // provides a method body, J2ObjC does not treat the protocol as incomplete, making global
+    // suppression of -Wobjc-protocol-property-synthesis necessary.
+    assertInTranslation(
+        translation,
+        "- (NSString *)getSubmitAction {\n"
+            + "  // can't call an abstract method\n"
+            + "  [self doesNotRecognizeSelector:_cmd];\n"
+            + "  return 0;\n"
+            + "}");
   }
 
   /**
