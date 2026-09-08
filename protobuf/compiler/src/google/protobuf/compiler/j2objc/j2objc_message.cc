@@ -211,11 +211,16 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
         "\n"
-        "@class $classname$;"
+        "@class $classname$;\n"
+        "@class IOSByteArray;\n"
         "\n"
         "@protocol $classname$CompanionProtocol\n"
         "- (nonnull $classname$_Builder *)newBuilder OBJC_METHOD_FAMILY_NONE;\n"
         "- (nonnull $classname$ *)getDefaultInstance;\n"
+        "- (nonnull $classname$ *)parseFromWithByteArray:"
+        "(nonnull IOSByteArray *)data"
+        " withComGoogleProtobufExtensionRegistryLite:(nullable"
+        " ComGoogleProtobufExtensionRegistryLite *)registry;\n"
         "- (nonnull $classname$ *)parseFromWithComGoogleProtobufByteString:"
         "(nonnull ComGoogleProtobufByteString *)data"
         " withComGoogleProtobufExtensionRegistryLite:(nullable"
