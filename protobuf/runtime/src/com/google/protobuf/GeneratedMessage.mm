@@ -71,8 +71,8 @@
 #define NIL_CHECK_Float(value)
 #define NIL_CHECK_Double(value)
 #define NIL_CHECK_Bool(value)
-#define NIL_CHECK_Enum(value) (void)nil_chk(value);
-#define NIL_CHECK_Retainable(value) (void)nil_chk(value);
+#define NIL_CHECK_Enum(value) (void)nil_chk(value)
+#define NIL_CHECK_Id(value) (void)nil_chk(value)
 
 // Forward declarations.
 class CGPExtensionValue;
@@ -90,33 +90,17 @@ static void WriteMessage(id msg, CGPDescriptor *descriptor, CGPCodedOutputStream
 static void MessageToString(id msg, CGPDescriptor *descriptor, NSMutableString *builder,
                             int indent);
 
-#define REPEATED_PRIMITIVE_FIELD_GETTER_IMP(NAME)                                              \
-  CGP_ALWAYS_INLINE TYPE_##NAME CGPRepeatedFieldGet##NAME(CGPRepeatedField *field, jint idx) { \
-    CGPRepeatedFieldCheckBounds(field, idx);                                                   \
-    return ((TYPE_##NAME *)field->data->buffer)[idx];                                          \
-  }
-
-#define REPEATED_RETAINABLE_FIELD_GETTER_IMP(NAME)                                             \
-  CGP_ALWAYS_INLINE TYPE_##NAME CGPRepeatedFieldGet##NAME(CGPRepeatedField *field, jint idx) { \
-    CGPRepeatedFieldCheckBounds(field, idx);                                                   \
-    return RETAIN_AND_AUTORELEASE(((TYPE_##NAME *)field->data->buffer)[idx]);                  \
-  }
-
-FOR_EACH_TYPE_NO_ENUM(REPEATED_PRIMITIVE_FIELD_GETTER_IMP, REPEATED_RETAINABLE_FIELD_GETTER_IMP)
-
-#undef REPEATED_PRIMITIVE_FIELD_GETTER_IMP
-#undef REPEATED_RETAINABLE_FIELD_GETTER_IMP
-
 #define REPEATED_FIELD_ADDER_IMP(NAME)                                                           \
   CGP_ALWAYS_INLINE void CGPRepeatedFieldAdd##NAME(CGPRepeatedField *field, TYPE_##NAME value) { \
     uint32_t total_size = CGPRepeatedFieldTotalSize(field);                                      \
     if (CGPRepeatedFieldSize(field) == total_size) {                                             \
       CGPRepeatedFieldReserve(field, total_size + 1, sizeof(TYPE_##NAME));                       \
     }                                                                                            \
-    ((TYPE_##NAME *)field->data->buffer)[field->data->size++] = TYPE_RETAIN_##NAME(value);       \
+    TYPE_##NAME *ptr = &((TYPE_##NAME *)field->data->buffer)[field->data->size++];               \
+    TYPE_ASSIGN_##NAME(ptr, value);                                                              \
   }
 
-FOR_EACH_TYPE_WITH_ENUM(REPEATED_FIELD_ADDER_IMP)
+FOR_EACH_TYPE(REPEATED_FIELD_ADDER_IMP)
 
 #undef REPEATED_FIELD_ADDER_IMP
 
@@ -125,10 +109,10 @@ FOR_EACH_TYPE_WITH_ENUM(REPEATED_FIELD_ADDER_IMP)
                                                    TYPE_##NAME value) {               \
     CGPRepeatedFieldCheckBounds(field, idx);                                          \
     TYPE_##NAME *ptr = &((TYPE_##NAME *)field->data->buffer)[idx];                    \
-    TYPE_ASSIGN_##NAME(*ptr, value);                                                  \
+    TYPE_ASSIGN_##NAME(ptr, value);                                                   \
   }
 
-FOR_EACH_TYPE_WITH_ENUM(REPEATED_FIELD_SETTER_IMP)
+FOR_EACH_TYPE(REPEATED_FIELD_SETTER_IMP)
 
 #undef REPEATED_FIELD_SETTER_IMP
 
@@ -302,23 +286,37 @@ static inline BOOL ClearPreviousOneof(id msg, CGPHasLocator loc, uintptr_t ptr) 
   return wasCleared;
 }
 
-#define REPEATED_FIELD_PTR(msg, offset) ((CGPRepeatedField *)((uint8_t *)msg + offset))
-#define MAP_FIELD_PTR(msg, offset) ((CGPMapField *)((uint8_t *)msg + offset))
+CGP_ALWAYS_INLINE CGPRepeatedField *REPEATED_FIELD_PTR(id msg, ptrdiff_t offset) {
+  return (CGPRepeatedField *)((uint8_t *)msg + offset);
+}
+CGP_ALWAYS_INLINE CGPMapField *MAP_FIELD_PTR(id msg, ptrdiff_t offset) {
+  return (CGPMapField *)((uint8_t *)msg + offset);
+}
 #define FIELD_PTR(TYPE, msg, offset) ((TYPE *)((uint8_t *)msg + offset))
 
 #define SINGULAR_SETTER_IMP(NAME)                                                                 \
   static void SingularSet##NAME(id msg, TYPE_##NAME value, size_t offset, CGPHasLocator hasLoc) { \
     TYPE_##NAME *ptr = FIELD_PTR(TYPE_##NAME, msg, offset);                                       \
     ClearPreviousOneof(msg, hasLoc, (uintptr_t)ptr);                                              \
-    TYPE_ASSIGN_##NAME(*ptr, value);                                                              \
+    TYPE_ASSIGN_##NAME(ptr, value);                                                               \
     SetHas(msg, hasLoc);                                                                          \
   }
 
-FOR_EACH_TYPE_NO_RETAINABLE(SINGULAR_SETTER_IMP)
+FOR_EACH_PRIMITIVE_TYPE(SINGULAR_SETTER_IMP)
 
-static void SingularSetRetainable(id msg, TYPE_Retainable value, size_t offset,
-                                  CGPHasLocator hasLoc) {
-  TYPE_Retainable *ptr = FIELD_PTR(TYPE_Retainable, msg, offset);
+static void SingularSetId(id msg, TYPE_Id value, size_t offset, CGPHasLocator hasLoc) {
+  TYPE_Id *ptr = FIELD_PTR(TYPE_Id, msg, offset);
+  if (!ClearPreviousOneof(msg, hasLoc, (uintptr_t)ptr)) {
+    // If it is not a one of field, we need to release the previous value.
+    // Otherwise ClearPreviousOneof has already done it for us if necessary.
+    AUTORELEASE(*ptr);
+  }
+  *ptr = RETAIN_(value);
+  SetHas(msg, hasLoc);
+}
+
+static void SingularSetEnum(id msg, TYPE_Enum value, size_t offset, CGPHasLocator hasLoc) {
+  TYPE_Enum *ptr = FIELD_PTR(TYPE_Enum, msg, offset);
   if (!ClearPreviousOneof(msg, hasLoc, (uintptr_t)ptr)) {
     // If it is not a one of field, we need to release the previous value.
     // Otherwise ClearPreviousOneof has already done it for us if necessary.
@@ -334,45 +332,84 @@ static void SingularSetRetainable(id msg, TYPE_Retainable value, size_t offset,
 // ********** Dynamic field accessors ******************************************
 // *****************************************************************************
 
-#define SINGULAR_PRIMITIVE_GETTER_IMP(NAME)                                  \
-  static IMP GetSingularGetterImp##NAME(size_t offset, CGPHasLocator hasLoc, \
-                                        TYPE_##NAME defaultValue) {          \
-    return imp_implementationWithBlock(^TYPE_##NAME(id msg) {                \
-      if (GetHas(msg, hasLoc)) {                                             \
-        return *FIELD_PTR(TYPE_##NAME, msg, offset);                         \
-      }                                                                      \
-      return defaultValue;                                                   \
-    });                                                                      \
+#define SINGULAR_GETTER_IMP(NAME)                                                    \
+  static IMP GetSingularGetterImp##NAME(size_t offset, CGPHasLocator hasLoc,         \
+                                        TYPE_##NAME defaultValue) {                  \
+    return imp_implementationWithBlock(^EXTERNAL_TYPE_##NAME(id msg) {               \
+      TYPE_##NAME value =                                                            \
+          GetHas(msg, hasLoc) ? *FIELD_PTR(TYPE_##NAME, msg, offset) : defaultValue; \
+      return ToExternalType##NAME(value);                                            \
+    });                                                                              \
   }
 
-#define SINGULAR_RETAINABLE_GETTER_IMP(NAME)                                 \
-  static IMP GetSingularGetterImp##NAME(size_t offset, CGPHasLocator hasLoc, \
-                                        TYPE_##NAME defaultValue) {          \
-    return imp_implementationWithBlock(^TYPE_##NAME(id msg) {                \
-      if (GetHas(msg, hasLoc)) {                                             \
-        return RETAIN_AND_AUTORELEASE(*FIELD_PTR(TYPE_##NAME, msg, offset)); \
-      }                                                                      \
-      return defaultValue;                                                   \
-    });                                                                      \
+FOR_EACH_TYPE(SINGULAR_GETTER_IMP)
+
+#undef SINGULAR_GETTER_IMP
+
+#define REPEATED_GETTER_IMP(NAME)                                                \
+  static IMP GetRepeatedGetterImp##NAME(size_t offset) {                         \
+    return imp_implementationWithBlock(^EXTERNAL_TYPE_##NAME(id msg, jint idx) { \
+      CGPRepeatedField *field = REPEATED_FIELD_PTR(msg, offset);                 \
+      CGPRepeatedFieldCheckBounds(field, idx);                                   \
+      return ToExternalType##NAME(((TYPE_##NAME *)field->data->buffer)[idx]);    \
+    });                                                                          \
   }
 
-FOR_EACH_TYPE_NO_ENUM(SINGULAR_PRIMITIVE_GETTER_IMP, SINGULAR_RETAINABLE_GETTER_IMP)
-
-#undef SINGULAR_PRIMITIVE_GETTER_IMP
-#undef SINGULAR_RETAINABLE_GETTER_IMP
-
-#define REPEATED_GETTER_IMP(NAME)                                             \
-  static IMP GetRepeatedGetterImp##NAME(size_t offset) {                      \
-    return imp_implementationWithBlock(^TYPE_##NAME(id msg, jint idx) {       \
-      return CGPRepeatedFieldGet##NAME(REPEATED_FIELD_PTR(msg, offset), idx); \
-    });                                                                       \
-  }
-
-// Same macro for all types, uses getter functions defined earlier that
-// already handle primitive vs retainable.
-FOR_EACH_TYPE_NO_ENUM(REPEATED_GETTER_IMP, REPEATED_GETTER_IMP)
+FOR_EACH_TYPE(REPEATED_GETTER_IMP)
 
 #undef REPEATED_GETTER_IMP
+
+static IMP GetSingularGetterImpEnumValue(size_t offset, CGPHasLocator hasLoc,
+                                         jint defaultValueNum) {
+  return imp_implementationWithBlock(^jint(id msg) {
+    if (GetHas(msg, hasLoc)) {
+      ComGoogleProtobufDescriptors_EnumValueDescriptor *valueDesc =
+          *FIELD_PTR(ComGoogleProtobufDescriptors_EnumValueDescriptor *, msg, offset);
+      return valueDesc != nil ? [valueDesc getNumber] : defaultValueNum;
+    }
+    return defaultValueNum;
+  });
+}
+
+static IMP GetRepeatedGetterImpEnumValue(size_t offset, jint defaultValueNum) {
+  return imp_implementationWithBlock(^jint(id msg, jint idx) {
+    CGPRepeatedField *field = REPEATED_FIELD_PTR(msg, offset);
+    CGPRepeatedFieldCheckBounds(field, idx);
+    ComGoogleProtobufDescriptors_EnumValueDescriptor *valueDesc =
+        ((ComGoogleProtobufDescriptors_EnumValueDescriptor **)field->data->buffer)[idx];
+    return valueDesc != nil ? [valueDesc getNumber] : defaultValueNum;
+  });
+}
+
+static IMP GetRepeatedListGetterImpEnumValue(size_t offset) {
+  return imp_implementationWithBlock(^id(id msg) {
+    return AUTORELEASE(CGPNewRepeatedEnumValueFieldList(REPEATED_FIELD_PTR(msg, offset)));
+  });
+}
+
+static BOOL AddEnumValueGetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
+  BOOL repeated = CGPFieldIsRepeated(field);
+  size_t offset = CGPFieldGetOffset(field, cls);
+  CGPHasLocator hasLoc = GetHasLocator(cls, field);
+  CGPEnumValueDescriptor *defaultDesc = CGPFieldGetDefaultValue(field).valueEnum;
+  jint defaultValueNum = defaultDesc != nil ? [defaultDesc getNumber] : 0;
+
+  IMP imp = repeated ? GetRepeatedGetterImpEnumValue(offset, defaultValueNum)
+                     : GetSingularGetterImpEnumValue(offset, hasLoc, defaultValueNum);
+  char encoding[64];
+  strcpy(encoding, @encode(jint));
+  strcat(encoding, "@:");
+  if (repeated) {
+    strcat(encoding, @encode(int));
+  }
+  return class_addMethod(cls, sel, imp, encoding);
+}
+
+static BOOL AddEnumValueListGetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
+  size_t offset = CGPFieldGetOffset(field, cls);
+  IMP imp = GetRepeatedListGetterImpEnumValue(offset);
+  return class_addMethod(cls, sel, imp, "@@:");
+}
 
 static BOOL AddGetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   BOOL repeated = CGPFieldIsRepeated(field);
@@ -381,14 +418,13 @@ static BOOL AddGetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   size_t offset = CGPFieldGetOffset(field, cls);
   CGPHasLocator hasLoc = GetHasLocator(cls, field);
 
-#define ADD_GETTER_METHOD_CASE(NAME)                                                              \
-  imp = repeated                                                                                  \
-            ? GetRepeatedGetterImp##NAME(offset)                                                  \
-            : GetSingularGetterImp##NAME(offset, hasLoc, field->data_->defaultValue.value##NAME); \
-  strcpy(encoding, @encode(TYPE_##NAME));                                                         \
-  break;
+#define ADD_GETTER_METHOD_CASE(NAME)                                                       \
+  imp = repeated ? GetRepeatedGetterImp##NAME(offset)                                      \
+                 : GetSingularGetterImp##NAME(offset, hasLoc,                              \
+                                              CGPFieldGetDefaultValue(field).value##NAME); \
+  strcpy(encoding, @encode(TYPE_##NAME));
 
-  SWITCH_TYPES_NO_ENUM(CGPFieldGetJavaType(field), ADD_GETTER_METHOD_CASE)
+  SWITCH_TYPES(CGPFieldGetJavaType(field), ADD_GETTER_METHOD_CASE)
 
 #undef ADD_GETTER_METHOD_CASE
 
@@ -505,30 +541,73 @@ static BOOL AddClearMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   return class_addMethod(cls, sel, imp, "@@:");
 }
 
-#define GET_SINGULAR_SETTER_IMP(NAME)                                          \
-  static IMP GetSingularSetterImp##NAME(size_t offset, CGPHasLocator hasLoc) { \
-    return imp_implementationWithBlock(^id(id msg, TYPE_##NAME value) {        \
-      NIL_CHECK_##NAME(value) SingularSet##NAME(msg, value, offset, hasLoc);   \
-      return msg;                                                              \
-    });                                                                        \
+#define GET_SINGULAR_SETTER_IMP(NAME)                                            \
+  static IMP GetSingularSetterImp##NAME(size_t offset, CGPHasLocator hasLoc) {   \
+    return imp_implementationWithBlock(^id(id msg, EXTERNAL_TYPE_##NAME value) { \
+      NIL_CHECK_##NAME(value);                                                   \
+      TYPE_##NAME internalValue = ToType##NAME(value);                           \
+      SingularSet##NAME(msg, internalValue, offset, hasLoc);                     \
+      return msg;                                                                \
+    });                                                                          \
   }
 
-FOR_EACH_TYPE_WITH_ENUM(GET_SINGULAR_SETTER_IMP)
+FOR_EACH_TYPE(GET_SINGULAR_SETTER_IMP)
 
 #undef GET_SINGULAR_SETTER_IMP
 
-#define GET_REPEATED_SETTER_IMP(NAME)                                             \
-  static IMP GetRepeatedSetterImp##NAME(size_t offset) {                          \
-    return imp_implementationWithBlock(^id(id msg, jint idx, TYPE_##NAME value) { \
-      NIL_CHECK_##NAME(value)                                                     \
-          CGPRepeatedFieldSet##NAME(REPEATED_FIELD_PTR(msg, offset), idx, value); \
-      return msg;                                                                 \
-    });                                                                           \
+#define GET_REPEATED_SETTER_IMP(NAME)                                                      \
+  static IMP GetRepeatedSetterImp##NAME(size_t offset) {                                   \
+    return imp_implementationWithBlock(^id(id msg, jint idx, EXTERNAL_TYPE_##NAME value) { \
+      NIL_CHECK_##NAME(value);                                                             \
+      TYPE_##NAME internalValue = ToType##NAME(value);                                     \
+      CGPRepeatedFieldSet##NAME(REPEATED_FIELD_PTR(msg, offset), idx, internalValue);      \
+      return msg;                                                                          \
+    });                                                                                    \
   }
 
-FOR_EACH_TYPE_WITH_ENUM(GET_REPEATED_SETTER_IMP)
+FOR_EACH_TYPE(GET_REPEATED_SETTER_IMP)
 
 #undef GET_REPEATED_SETTER_IMP
+
+static IMP GetSingularSetterImpEnumValue(size_t offset, CGPHasLocator hasLoc,
+                                         CGPEnumDescriptor *enumType) {
+  return imp_implementationWithBlock(^id(id msg, jint value) {
+    ComGoogleProtobufDescriptors_EnumValueDescriptor *valueDesc =
+        CGPEnumValueDescriptorFromInt(enumType, value);
+    SingularSetEnum(msg, valueDesc, offset, hasLoc);
+    return msg;
+  });
+}
+
+static IMP GetRepeatedSetterImpEnumValue(size_t offset, CGPEnumDescriptor *enumType) {
+  return imp_implementationWithBlock(^id(id msg, jint idx, jint value) {
+    CGPRepeatedField *field = REPEATED_FIELD_PTR(msg, offset);
+    CGPRepeatedFieldCheckBounds(field, idx);
+    ComGoogleProtobufDescriptors_EnumValueDescriptor *valueDesc =
+        CGPEnumValueDescriptorFromInt(enumType, value);
+    ComGoogleProtobufDescriptors_EnumValueDescriptor **ptr =
+        &((ComGoogleProtobufDescriptors_EnumValueDescriptor **)field->data->buffer)[idx];
+    TYPE_ASSIGN_Enum(ptr, valueDesc);
+    return msg;
+  });
+}
+
+static BOOL AddEnumValueSetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
+  BOOL repeated = CGPFieldIsRepeated(field);
+  size_t offset = CGPFieldGetOffset(field, cls);
+  CGPEnumDescriptor *enumType = [field getEnumType];
+  CGPHasLocator hasLoc = GetHasLocator(cls, field);
+
+  IMP imp = repeated ? GetRepeatedSetterImpEnumValue(offset, enumType)
+                     : GetSingularSetterImpEnumValue(offset, hasLoc, enumType);
+  char encoding[64];
+  strcpy(encoding, "@@:");
+  if (repeated) {
+    strcat(encoding, @encode(int));
+  }
+  strcat(encoding, @encode(jint));
+  return class_addMethod(cls, sel, imp, encoding);
+}
 
 static BOOL AddSetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   BOOL repeated = CGPFieldIsRepeated(field);
@@ -543,10 +622,9 @@ static BOOL AddSetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
 #define ADD_SETTER_METHOD_CASE(NAME)                                              \
   imp = repeated ? GetRepeatedSetterImp##NAME(offset)                             \
                  : GetSingularSetterImp##NAME(offset, GetHasLocator(cls, field)); \
-  strcat(encoding, @encode(TYPE_##NAME));                                         \
-  break;
+  strcat(encoding, @encode(TYPE_##NAME));
 
-  SWITCH_TYPES_WITH_ENUM(CGPFieldGetJavaType(field), ADD_SETTER_METHOD_CASE)
+  SWITCH_TYPES(CGPFieldGetJavaType(field), ADD_SETTER_METHOD_CASE)
 
 #undef ADD_SETTER_METHOD_CASE
 
@@ -572,17 +650,39 @@ static BOOL AddBuilderSetterMethod(Class cls, SEL sel, CGPFieldDescriptor *field
   return class_addMethod(cls, sel, imp, "@@:@");
 }
 
-#define GET_ADDER_IMP(NAME)                                                                      \
-  static IMP GetAdderImp##NAME(size_t offset) {                                                  \
-    return imp_implementationWithBlock(^id(id msg, TYPE_##NAME value) {                          \
-      NIL_CHECK_##NAME(value) CGPRepeatedFieldAdd##NAME(REPEATED_FIELD_PTR(msg, offset), value); \
-      return msg;                                                                                \
-    });                                                                                          \
+#define GET_ADDER_IMP(NAME)                                                      \
+  static IMP GetAdderImp##NAME(size_t offset) {                                  \
+    return imp_implementationWithBlock(^id(id msg, EXTERNAL_TYPE_##NAME value) { \
+      NIL_CHECK_##NAME(value);                                                   \
+      TYPE_##NAME internalValue = ToType##NAME(value);                           \
+      CGPRepeatedFieldAdd##NAME(REPEATED_FIELD_PTR(msg, offset), internalValue); \
+      return msg;                                                                \
+    });                                                                          \
   }
 
-FOR_EACH_TYPE_WITH_ENUM(GET_ADDER_IMP)
+FOR_EACH_TYPE(GET_ADDER_IMP)
 
 #undef GET_ADDER_IMP
+
+static IMP GetAdderImpEnumValue(size_t offset, CGPEnumDescriptor *enumType) {
+  return imp_implementationWithBlock(^id(id msg, jint value) {
+    ComGoogleProtobufDescriptors_EnumValueDescriptor *valueDesc =
+        CGPEnumValueDescriptorFromInt(enumType, value);
+    CGPRepeatedField *field = REPEATED_FIELD_PTR(msg, offset);
+    CGPRepeatedFieldAddEnum(field, valueDesc);
+    return msg;
+  });
+}
+
+static BOOL AddEnumValueAdderMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
+  size_t offset = CGPFieldGetOffset(field, cls);
+  CGPEnumDescriptor *enumType = [field getEnumType];
+  IMP imp = GetAdderImpEnumValue(offset, enumType);
+  char encoding[64];
+  strcpy(encoding, "@@:");
+  strcat(encoding, @encode(jint));
+  return class_addMethod(cls, sel, imp, encoding);
+}
 
 static BOOL AddAdderMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   IMP imp = NULL;
@@ -590,12 +690,11 @@ static BOOL AddAdderMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   strcpy(encoding, "@@:");
   size_t offset = CGPFieldGetOffset(field, cls);
 
-#define ADD_ADDER_METHOD_CASE(NAME)       \
-  imp = GetAdderImp##NAME(offset);        \
-  strcat(encoding, @encode(TYPE_##NAME)); \
-  break;
+#define ADD_ADDER_METHOD_CASE(NAME) \
+  imp = GetAdderImp##NAME(offset);  \
+  strcat(encoding, @encode(TYPE_##NAME));
 
-  SWITCH_TYPES_WITH_ENUM(CGPFieldGetJavaType(field), ADD_ADDER_METHOD_CASE)
+  SWITCH_TYPES(CGPFieldGetJavaType(field), ADD_ADDER_METHOD_CASE)
 
 #undef ADD_ADDER_METHOD_CASE
 
@@ -607,7 +706,7 @@ static BOOL AddBuilderAdderMethod(Class cls, SEL sel, CGPFieldDescriptor *field)
   IMP imp =
       imp_implementationWithBlock(^id(id msg, ComGoogleProtobufGeneratedMessage_Builder *value) {
         (void)nil_chk(value);
-        CGPRepeatedFieldAddRetainable(REPEATED_FIELD_PTR(msg, offset), [value build]);
+        CGPRepeatedFieldAddId(REPEATED_FIELD_PTR(msg, offset), [value build]);
         return msg;
       });
   return class_addMethod(cls, sel, imp, "@@:@");
@@ -618,25 +717,43 @@ static BOOL AddBuilderAdderMethod(Class cls, SEL sel, CGPFieldDescriptor *field)
     return imp_implementationWithBlock(^id(id msg, id<NSFastEnumeration> values) {     \
       CGPRepeatedField *repeatedField = REPEATED_FIELD_PTR(msg, offset);               \
       for (id value in nil_chk(values)) {                                              \
-        CGPRepeatedFieldAdd##NAME(repeatedField, CGPUnboxValue##NAME(nil_chk(value))); \
+        CGPRepeatedFieldAdd##NAME(repeatedField, ToRepeated##NAME(nil_chk(value)));   \
       }                                                                                \
       return msg;                                                                      \
     });                                                                                \
   }
 
-FOR_EACH_TYPE_WITH_ENUM(GET_ADD_ALL_IMP)
+FOR_EACH_TYPE(GET_ADD_ALL_IMP)
 
 #undef GET_ADD_ALL_IMP
+
+static IMP GetAddAllImpEnumValue(size_t offset, CGPEnumDescriptor *enumType) {
+  return imp_implementationWithBlock(^id(id msg, id<NSFastEnumeration> values) {
+    CGPRepeatedField *repeatedField = REPEATED_FIELD_PTR(msg, offset);
+    for (id value in nil_chk(values)) {
+      jint val = [((JavaLangInteger *)nil_chk(value)) intValue];
+      ComGoogleProtobufDescriptors_EnumValueDescriptor *valueDesc =
+          CGPEnumValueDescriptorFromInt(enumType, val);
+      CGPRepeatedFieldAddEnum(repeatedField, valueDesc);
+    }
+    return msg;
+  });
+}
+
+static BOOL AddEnumValueAddAllMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
+  size_t offset = CGPFieldGetOffset(field, cls);
+  CGPEnumDescriptor *enumType = [field getEnumType];
+  IMP imp = GetAddAllImpEnumValue(offset, enumType);
+  return class_addMethod(cls, sel, imp, "@@:@");
+}
 
 static BOOL AddAddAllMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   IMP imp = NULL;
   size_t offset = CGPFieldGetOffset(field, cls);
 
-#define ADD_ALL_METHOD_CASE(NAME)   \
-  imp = GetAddAllImp##NAME(offset); \
-  break;
+#define ADD_ALL_METHOD_CASE(NAME) imp = GetAddAllImp##NAME(offset);
 
-  SWITCH_TYPES_WITH_ENUM(CGPFieldGetJavaType(field), ADD_ALL_METHOD_CASE)
+  SWITCH_TYPES(CGPFieldGetJavaType(field), ADD_ALL_METHOD_CASE)
 
 #undef ADD_ALL_METHOD_CASE
 
@@ -646,9 +763,9 @@ static BOOL AddAddAllMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
 #define GET_CONTAINS_IMP(NAME)                                                                  \
   static IMP GetContainsImp##NAME(size_t offset, CGPFieldJavaType keyType,                      \
                                   CGPFieldJavaType valueType) {                                 \
-    return imp_implementationWithBlock(^bool(id msg, TYPE_##NAME pKey) {                        \
+    return imp_implementationWithBlock(^bool(id msg, EXTERNAL_TYPE_##NAME pKey) {               \
       CGPValue key;                                                                             \
-      key.CGPValueField_##NAME = pKey;                                                          \
+      key.CGPValueField_##NAME = ToType##NAME(pKey);                                            \
       return CGPMapFieldGetWithKey(MAP_FIELD_PTR(msg, offset), key, keyType, valueType) != nil; \
     });                                                                                         \
   }
@@ -696,83 +813,46 @@ static BOOL AddContainsMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   return class_addMethod(cls, sel, imp, encoding);
 }
 
-#define GET_MAP_PRIMITIVE_GETTER_IMP(KEY_NAME, VALUE_NAME)                                        \
+#define GET_MAP_GETTER_IMP(KEY_NAME, VALUE_NAME)                                                  \
   static IMP GetMapGetOrThrowImp##KEY_NAME##VALUE_NAME(size_t offset, CGPFieldJavaType keyType,   \
                                                        CGPFieldJavaType valueType) {              \
-    return imp_implementationWithBlock(^TYPE_##VALUE_NAME(id msg, TYPE_##KEY_NAME pKey) {         \
-      CGPValue key;                                                                               \
-      key.CGPValueField_##KEY_NAME = pKey;                                                        \
-      CGPMapFieldEntry *entry =                                                                   \
-          CGPMapFieldGetWithKey(MAP_FIELD_PTR(msg, offset), key, keyType, valueType);             \
-      if (entry) {                                                                                \
-        return entry->value.CGPValueField_##VALUE_NAME;                                           \
-      }                                                                                           \
-      @throw create_JavaLangIllegalArgumentException_init();                                      \
-    });                                                                                           \
-  }                                                                                               \
-  static IMP GetMapGetOrDefaultImp##KEY_NAME##VALUE_NAME(size_t offset, CGPFieldJavaType keyType, \
-                                                         CGPFieldJavaType valueType) {            \
     return imp_implementationWithBlock(                                                           \
-        ^TYPE_##VALUE_NAME(id msg, TYPE_##KEY_NAME pKey, TYPE_##VALUE_NAME defaultValue) {        \
+        ^EXTERNAL_TYPE_##VALUE_NAME(id msg, EXTERNAL_TYPE_##KEY_NAME pKey) {                      \
           CGPValue key;                                                                           \
-          key.CGPValueField_##KEY_NAME = pKey;                                                    \
+          key.CGPValueField_##KEY_NAME = ToType##KEY_NAME(pKey);                                  \
           CGPMapFieldEntry *entry =                                                               \
               CGPMapFieldGetWithKey(MAP_FIELD_PTR(msg, offset), key, keyType, valueType);         \
           if (entry) {                                                                            \
-            return entry->value.CGPValueField_##VALUE_NAME;                                       \
+            return ToExternalType##VALUE_NAME(entry->value.CGPValueField_##VALUE_NAME);           \
           }                                                                                       \
-          return defaultValue;                                                                    \
+          @throw create_JavaLangIllegalArgumentException_init();                                  \
         });                                                                                       \
-  }
-
-#define GET_MAP_RETAINABLE_GETTER_IMP(KEY_NAME, VALUE_NAME)                                       \
-  static IMP GetMapGetOrThrowImp##KEY_NAME##VALUE_NAME(size_t offset, CGPFieldJavaType keyType,   \
-                                                       CGPFieldJavaType valueType) {              \
-    return imp_implementationWithBlock(^TYPE_##VALUE_NAME(id msg, TYPE_##KEY_NAME pKey) {         \
-      CGPValue key;                                                                               \
-      key.CGPValueField_##KEY_NAME = pKey;                                                        \
-      CGPMapFieldEntry *entry =                                                                   \
-          CGPMapFieldGetWithKey(MAP_FIELD_PTR(msg, offset), key, keyType, valueType);             \
-      if (entry) {                                                                                \
-        return RETAIN_AND_AUTORELEASE(entry->value.CGPValueField_##VALUE_NAME);                   \
-      }                                                                                           \
-      @throw create_JavaLangIllegalArgumentException_init();                                      \
-    });                                                                                           \
   }                                                                                               \
   static IMP GetMapGetOrDefaultImp##KEY_NAME##VALUE_NAME(size_t offset, CGPFieldJavaType keyType, \
                                                          CGPFieldJavaType valueType) {            \
-    return imp_implementationWithBlock(                                                           \
-        ^TYPE_##VALUE_NAME(id msg, TYPE_##KEY_NAME pKey, TYPE_##VALUE_NAME defaultValue) {        \
-          CGPValue key;                                                                           \
-          key.CGPValueField_##KEY_NAME = pKey;                                                    \
-          CGPMapFieldEntry *entry =                                                               \
-              CGPMapFieldGetWithKey(MAP_FIELD_PTR(msg, offset), key, keyType, valueType);         \
-          if (entry) {                                                                            \
-            return RETAIN_AND_AUTORELEASE(entry->value.CGPValueField_##VALUE_NAME);               \
-          }                                                                                       \
-          return defaultValue;                                                                    \
-        });                                                                                       \
+    return imp_implementationWithBlock(^EXTERNAL_TYPE_##VALUE_NAME(                               \
+        id msg, EXTERNAL_TYPE_##KEY_NAME pKey, TYPE_##VALUE_NAME defaultValue) {                  \
+      CGPValue key;                                                                               \
+      key.CGPValueField_##KEY_NAME = ToType##KEY_NAME(pKey);                                      \
+      CGPMapFieldEntry *entry =                                                                   \
+          CGPMapFieldGetWithKey(MAP_FIELD_PTR(msg, offset), key, keyType, valueType);             \
+      if (entry) {                                                                                \
+        return ToExternalType##VALUE_NAME(entry->value.CGPValueField_##VALUE_NAME);               \
+      }                                                                                           \
+      return ToExternalType##VALUE_NAME(defaultValue);                                            \
+    });                                                                                           \
   }
 
-#define GET_MAP_PRIMITIVE_GETTER_IMP_FOR_VALUE(VALUE_NAME) \
-  GET_MAP_PRIMITIVE_GETTER_IMP(Int, VALUE_NAME)            \
-  GET_MAP_PRIMITIVE_GETTER_IMP(Long, VALUE_NAME)           \
-  GET_MAP_PRIMITIVE_GETTER_IMP(Bool, VALUE_NAME)           \
-  GET_MAP_PRIMITIVE_GETTER_IMP(Id, VALUE_NAME)
+#define GET_MAP_GETTER_IMP_FOR_VALUE(VALUE_NAME) \
+  GET_MAP_GETTER_IMP(Int, VALUE_NAME)            \
+  GET_MAP_GETTER_IMP(Long, VALUE_NAME)           \
+  GET_MAP_GETTER_IMP(Bool, VALUE_NAME)           \
+  GET_MAP_GETTER_IMP(Id, VALUE_NAME)
 
-#define GET_MAP_RETAINABLE_GETTER_IMP_FOR_VALUE(VALUE_NAME) \
-  GET_MAP_RETAINABLE_GETTER_IMP(Int, VALUE_NAME)            \
-  GET_MAP_RETAINABLE_GETTER_IMP(Long, VALUE_NAME)           \
-  GET_MAP_RETAINABLE_GETTER_IMP(Bool, VALUE_NAME)           \
-  GET_MAP_RETAINABLE_GETTER_IMP(Id, VALUE_NAME)
+FOR_EACH_TYPE(GET_MAP_GETTER_IMP_FOR_VALUE)
 
-FOR_EACH_TYPE_NO_ENUM(GET_MAP_PRIMITIVE_GETTER_IMP_FOR_VALUE,
-                      GET_MAP_RETAINABLE_GETTER_IMP_FOR_VALUE)
-
-#undef GET_MAP_PRIMITIVE_GETTER_IMP
-#undef GET_MAP_RETAINABLE_GETTER_IMP
-#undef GET_MAP_PRIMITIVE_GETTER_IMP_FOR_VALUE
-#undef GET_MAP_RETAINABLE_GETTER_IMP_FOR_VALUE
+#undef GET_MAP_GETTER_IMP
+#undef GET_MAP_GETTER_IMP_FOR_VALUE
 
 static BOOL AddMapGetWithKeyMethod(Class cls, SEL sel, CGPFieldDescriptor *field, bool orDefault) {
   IMP imp = NULL;
@@ -808,10 +888,9 @@ static BOOL AddMapGetWithKeyMethod(Class cls, SEL sel, CGPFieldDescriptor *field
   }                                                                              \
   if (orDefault) {                                                               \
     strcat(encoding, @encode(TYPE_##VALUE_NAME));                                \
-  }                                                                              \
-  break;
+  }
 
-  SWITCH_TYPES_NO_ENUM(valueType, MAP_GETTER_INNER_SWITCH)
+  SWITCH_TYPES(valueType, MAP_GETTER_INNER_SWITCH)
 
 #undef MAP_GETTER_CASE
 #undef MAP_GETTER_INNER_SWITCH
@@ -819,19 +898,97 @@ static BOOL AddMapGetWithKeyMethod(Class cls, SEL sel, CGPFieldDescriptor *field
   return class_addMethod(cls, sel, imp, encoding);
 }
 
-#define GET_PUT_IMP(KEY_NAME, VALUE_NAME)                                             \
-  static IMP GetPutImp##KEY_NAME##VALUE_NAME(size_t offset, CGPFieldJavaType keyType, \
-                                             CGPFieldJavaType valueType) {            \
-    return imp_implementationWithBlock(                                               \
-        ^id(id msg, TYPE_##KEY_NAME pKey, TYPE_##VALUE_NAME pValue) {                 \
-          CGPValue key;                                                               \
-          key.CGPValueField_##KEY_NAME = pKey;                                        \
-          CGPValue value;                                                             \
-          value.CGPValueField_##VALUE_NAME = pValue;                                  \
-          CGPMapFieldPut(MAP_FIELD_PTR(msg, offset), key, keyType, value, valueType,  \
-                         /* retainedKeyAndValue */ false);                            \
-          return msg;                                                                 \
-        });                                                                           \
+#define GET_MAP_ENUM_VALUE_GETTER_IMP(KEY_NAME)                                                   \
+  static IMP GetMapEnumValueGetOrThrowImp##KEY_NAME(size_t offset, CGPFieldJavaType keyType,      \
+                                                    CGPFieldJavaType valueType) {                 \
+    return imp_implementationWithBlock(^jint(id msg, EXTERNAL_TYPE_##KEY_NAME pKey) {             \
+      CGPValue key;                                                                               \
+      key.CGPValueField_##KEY_NAME = ToType##KEY_NAME(pKey);                                      \
+      CGPMapFieldEntry *entry =                                                                   \
+          CGPMapFieldGetWithKey(MAP_FIELD_PTR(msg, offset), key, keyType, valueType);             \
+      if (entry) {                                                                                \
+        ComGoogleProtobufDescriptors_EnumValueDescriptor *valueDesc = entry->value.valueEnum;     \
+        return valueDesc != nil ? [valueDesc getNumber] : 0;                                      \
+      }                                                                                           \
+      @throw create_JavaLangIllegalArgumentException_init();                                      \
+    });                                                                                           \
+  }                                                                                               \
+  static IMP GetMapEnumValueGetOrDefaultImp##KEY_NAME(size_t offset, CGPFieldJavaType keyType,    \
+                                                      CGPFieldJavaType valueType) {               \
+    return imp_implementationWithBlock(                                                           \
+        ^jint(id msg, EXTERNAL_TYPE_##KEY_NAME pKey, jint defaultValue) {                         \
+          CGPValue key;                                                                           \
+          key.CGPValueField_##KEY_NAME = ToType##KEY_NAME(pKey);                                  \
+          CGPMapFieldEntry *entry =                                                               \
+              CGPMapFieldGetWithKey(MAP_FIELD_PTR(msg, offset), key, keyType, valueType);         \
+          if (entry) {                                                                            \
+            ComGoogleProtobufDescriptors_EnumValueDescriptor *valueDesc = entry->value.valueEnum; \
+            return valueDesc != nil ? [valueDesc getNumber] : defaultValue;                       \
+          }                                                                                       \
+          return defaultValue;                                                                    \
+        });                                                                                       \
+  }
+
+GET_MAP_ENUM_VALUE_GETTER_IMP(Int)
+GET_MAP_ENUM_VALUE_GETTER_IMP(Long)
+GET_MAP_ENUM_VALUE_GETTER_IMP(Bool)
+GET_MAP_ENUM_VALUE_GETTER_IMP(Id)
+
+#undef GET_MAP_ENUM_VALUE_GETTER_IMP
+
+static BOOL AddMapEnumValueGetWithKeyMethod(Class cls, SEL sel, CGPFieldDescriptor *field,
+                                            bool orDefault) {
+  IMP imp = NULL;
+  char encoding[64];
+  size_t offset = CGPFieldGetOffset(field, cls);
+  CGPFieldJavaType keyType = CGPFieldGetJavaType(CGPFieldMapKey(field));
+  CGPFieldJavaType valueType = CGPFieldGetJavaType(CGPFieldMapValue(field));
+
+#define MAP_ENUM_VALUE_GETTER_CASE(KEY_NAME)                                             \
+  imp = orDefault ? GetMapEnumValueGetOrDefaultImp##KEY_NAME(offset, keyType, valueType) \
+                  : GetMapEnumValueGetOrThrowImp##KEY_NAME(offset, keyType, valueType);  \
+  strcat(encoding, @encode(TYPE_##KEY_NAME));                                            \
+  break;
+
+  strcpy(encoding, @encode(jint));
+  strcat(encoding, "@:");
+  switch (keyType) {
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_INT:
+      MAP_ENUM_VALUE_GETTER_CASE(Int)
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_LONG:
+      MAP_ENUM_VALUE_GETTER_CASE(Long)
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BOOLEAN:
+      MAP_ENUM_VALUE_GETTER_CASE(Bool)
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING:
+      MAP_ENUM_VALUE_GETTER_CASE(Id)
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_FLOAT:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_DOUBLE:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BYTE_STRING:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:
+      return NO;
+  }
+  if (orDefault) {
+    strcat(encoding, @encode(jint));
+  }
+
+#undef MAP_ENUM_VALUE_GETTER_CASE
+
+  return class_addMethod(cls, sel, imp, encoding);
+}
+
+#define GET_PUT_IMP(KEY_NAME, VALUE_NAME)                                               \
+  static IMP GetPutImp##KEY_NAME##VALUE_NAME(size_t offset, CGPFieldJavaType keyType,   \
+                                             CGPFieldJavaType valueType) {              \
+    return imp_implementationWithBlock(                                                 \
+        ^id(id msg, EXTERNAL_TYPE_##KEY_NAME pKey, EXTERNAL_TYPE_##VALUE_NAME pValue) { \
+          CGPValue key;                                                                 \
+          key.CGPValueField_##KEY_NAME = ToType##KEY_NAME(pKey);                        \
+          CGPValue value;                                                               \
+          value.CGPValueField_##VALUE_NAME = ToType##VALUE_NAME(pValue);                \
+          CGPMapFieldPut(MAP_FIELD_PTR(msg, offset), key, keyType, value, valueType);   \
+          return msg;                                                                   \
+        });                                                                             \
   }
 
 #define GET_PUT_IMP_FOR_VALUE(VALUE_NAME) \
@@ -841,7 +998,7 @@ static BOOL AddMapGetWithKeyMethod(Class cls, SEL sel, CGPFieldDescriptor *field
   GET_PUT_IMP(Id, VALUE_NAME)
 
 // No difference in put implementation by type, CGPMapFieldPut() handles both types.
-FOR_EACH_TYPE_NO_ENUM(GET_PUT_IMP_FOR_VALUE, GET_PUT_IMP_FOR_VALUE)
+FOR_EACH_TYPE(GET_PUT_IMP_FOR_VALUE)
 
 #undef GET_PUT_IMP
 #undef GET_PUT_IMP_FOR_VALUE
@@ -876,10 +1033,9 @@ static BOOL AddPutMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
     case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:     \
       return NO;                                                                 \
   }                                                                              \
-  strcat(encoding, @encode(TYPE_##VALUE_NAME));                                  \
-  break;
+  strcat(encoding, @encode(TYPE_##VALUE_NAME));
 
-  SWITCH_TYPES_NO_ENUM(valueType, PUT_METHOD_INNER_SWITCH)
+  SWITCH_TYPES(valueType, PUT_METHOD_INNER_SWITCH)
 
 #undef PUT_METHOD_CASE
 #undef PUT_METHOD_INNER_SWITCH
@@ -887,15 +1043,72 @@ static BOOL AddPutMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   return class_addMethod(cls, sel, imp, encoding);
 }
 
-#define GET_MAP_REMOVE_IMP(NAME)                                              \
-  static IMP GetMapRemoveImp##NAME(size_t offset, CGPFieldJavaType keyType,   \
-                                   CGPFieldJavaType valueType) {              \
-    return imp_implementationWithBlock(^id(id msg, TYPE_##NAME pKey) {        \
-      CGPValue key;                                                           \
-      key.CGPValueField_##NAME = pKey;                                        \
-      CGPMapFieldRemove(MAP_FIELD_PTR(msg, offset), key, keyType, valueType); \
-      return msg;                                                             \
-    });                                                                       \
+#define GET_MAP_ENUM_VALUE_PUT_IMP(KEY_NAME)                                                     \
+  static IMP GetMapEnumValuePutImp##KEY_NAME(size_t offset, CGPFieldJavaType keyType,            \
+                                             CGPEnumDescriptor *enumType) {                      \
+    return imp_implementationWithBlock(^id(id msg, EXTERNAL_TYPE_##KEY_NAME pKey, jint pValue) { \
+      CGPValue key;                                                                              \
+      key.CGPValueField_##KEY_NAME = ToType##KEY_NAME(pKey);                                     \
+      CGPValue value;                                                                            \
+      value.valueEnum = CGPEnumValueDescriptorFromInt(enumType, pValue);                         \
+      CGPMapFieldPut(MAP_FIELD_PTR(msg, offset), key, keyType, value,                            \
+                     ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM);           \
+      return msg;                                                                                \
+    });                                                                                          \
+  }
+
+GET_MAP_ENUM_VALUE_PUT_IMP(Int)
+GET_MAP_ENUM_VALUE_PUT_IMP(Long)
+GET_MAP_ENUM_VALUE_PUT_IMP(Bool)
+GET_MAP_ENUM_VALUE_PUT_IMP(Id)
+
+#undef GET_MAP_ENUM_VALUE_PUT_IMP
+
+static BOOL AddMapEnumValuePutMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
+  IMP imp = NULL;
+  char encoding[64];
+  strcpy(encoding, "@@:");
+  size_t offset = CGPFieldGetOffset(field, cls);
+  CGPFieldJavaType keyType = CGPFieldGetJavaType(CGPFieldMapKey(field));
+  CGPEnumDescriptor *enumType = [CGPFieldMapValue(field) getEnumType];
+
+#define MAP_ENUM_VALUE_PUT_CASE(KEY_NAME)                           \
+  imp = GetMapEnumValuePutImp##KEY_NAME(offset, keyType, enumType); \
+  strcat(encoding, @encode(TYPE_##KEY_NAME));                       \
+  break;
+
+  switch (keyType) {
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_INT:
+      MAP_ENUM_VALUE_PUT_CASE(Int)
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_LONG:
+      MAP_ENUM_VALUE_PUT_CASE(Long)
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BOOLEAN:
+      MAP_ENUM_VALUE_PUT_CASE(Bool)
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING:
+      MAP_ENUM_VALUE_PUT_CASE(Id)
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_FLOAT:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_DOUBLE:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BYTE_STRING:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:
+      return NO;
+  }
+  strcat(encoding, @encode(jint));
+
+#undef MAP_ENUM_VALUE_PUT_CASE
+
+  return class_addMethod(cls, sel, imp, encoding);
+}
+
+#define GET_MAP_REMOVE_IMP(NAME)                                                \
+  static IMP GetMapRemoveImp##NAME(size_t offset, CGPFieldJavaType keyType,     \
+                                   CGPFieldJavaType valueType) {                \
+    return imp_implementationWithBlock(^id(id msg, EXTERNAL_TYPE_##NAME pKey) { \
+      CGPValue key;                                                             \
+      key.CGPValueField_##NAME = ToType##NAME(pKey);                            \
+      CGPMapFieldRemove(MAP_FIELD_PTR(msg, offset), key, keyType, valueType);   \
+      return msg;                                                               \
+    });                                                                         \
   }
 
 GET_MAP_REMOVE_IMP(Int)
@@ -1064,8 +1277,23 @@ static BOOL ResolveGetAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, co
     if (!MatchesName(&tail, field)) {
       continue;
     }
+    BOOL isEnum = CGPFieldGetJavaType(field) ==
+        ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM;
     const char *tail2 = tail;
     if (CGPFieldIsMap(field)) {
+      BOOL isEnumValue = CGPFieldGetJavaType(CGPFieldMapValue(field)) ==
+                         ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM;
+      const char *tailThrow = tail;
+      if (isEnumValue && Matches(&tailThrow, "ValueOrThrowWith", 16) &&
+          MatchesKeyword(&tailThrow, CGPFieldMapKey(field)) && MatchesEnd(tailThrow, ":")) {
+        return AddMapEnumValueGetWithKeyMethod(cls, sel, field, false);
+      }
+      const char *tailDefault = tail;
+      if (isEnumValue && Matches(&tailDefault, "ValueOrDefaultWith", 18) &&
+          MatchesKeyword(&tailDefault, CGPFieldMapKey(field)) &&
+          MatchesEnd(tailDefault, ":withInt:")) {
+        return AddMapEnumValueGetWithKeyMethod(cls, sel, field, true);
+      }
       if (MatchesEnd(tail, "Count")) {
         return AddCountMethod(cls, sel, field);
       } else if (MatchesEnd(tail, "Map")) {
@@ -1083,16 +1311,22 @@ static BOOL ResolveGetAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, co
     } else if (CGPFieldIsRepeated(field)) {
       if (MatchesEnd(tail, "WithInt:") || MatchesEnd(tail, "Index:")) {
         return AddGetterMethod(cls, sel, field);
+      } else if (MatchesEnd(tail, "ValueWithInt:") && isEnum) {
+        return AddEnumValueGetterMethod(cls, sel, field);
       } else if (MatchesEnd(tail, "Count")) {
         return AddCountMethod(cls, sel, field);
       } else if (MatchesEnd(tail, "List")) {
         return AddListGetterMethod(cls, sel, field);
+      } else if (MatchesEnd(tail, "ValueList") && isEnum) {
+        return AddEnumValueListGetterMethod(cls, sel, field);
       } else if (MatchesEnd(tail, "Array")) {
         return AddArrayGetterMethod(cls, sel, field);
       }
     } else {
       if (*tail == 0) {
         return AddGetterMethod(cls, sel, field);
+      } else if (MatchesEnd(tail, "Value") && isEnum) {
+        return AddEnumValueGetterMethod(cls, sel, field);
       }
     }
   }
@@ -1136,14 +1370,27 @@ static BOOL ResolveSetAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, co
       continue;
     }
     const char *tail = selName;
-    if (MatchesName(&tail, field) &&
-        (CGPFieldIsRepeated(field) ? Matches(&tail, "WithInt:with", 12)
-                                   : Matches(&tail, "With", 4)) &&
-        MatchesKeyword(&tail, field)) {
-      if (MatchesEnd(tail, ":")) {
-        return AddSetterMethod(cls, sel, field);
-      } else if (MatchesEnd(tail, "_Builder:")) {
-        return AddBuilderSetterMethod(cls, sel, field);
+    bool matchesName = MatchesName(&tail, field);
+    if (matchesName) {
+      BOOL isEnum = CGPFieldGetJavaType(field) ==
+          ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM;
+      if (CGPFieldIsRepeated(field)) {
+        if (MatchesEnd(tail, "ValueWithInt:withInt:") && isEnum) {
+          return AddEnumValueSetterMethod(cls, sel, field);
+        }
+      } else {
+        if (MatchesEnd(tail, "ValueWithInt:") && isEnum) {
+          return AddEnumValueSetterMethod(cls, sel, field);
+        }
+      }
+      if ((CGPFieldIsRepeated(field) ? Matches(&tail, "WithInt:with", 12)
+                                     : Matches(&tail, "With", 4)) &&
+          MatchesKeyword(&tail, field)) {
+        if (MatchesEnd(tail, ":")) {
+          return AddSetterMethod(cls, sel, field);
+        } else if (MatchesEnd(tail, "_Builder:")) {
+          return AddBuilderSetterMethod(cls, sel, field);
+        }
       }
     }
   }
@@ -1171,12 +1418,19 @@ static BOOL ResolveAddAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, co
   for (NSUInteger i = 0; i < count; ++i) {
     ComGoogleProtobufDescriptors_FieldDescriptor *field = fieldsBuf[i];
     const char *tail = selName;
-    if (MatchesName(&tail, field) &&
-        (Matches(&tail, "With", 4) ? MatchesKeyword(&tail, field) : true)) {
-      if (MatchesEnd(tail, ":")) {
-        return AddAdderMethod(cls, sel, field);
-      } else if (MatchesEnd(tail, "_Builder:")) {
-        return AddBuilderAdderMethod(cls, sel, field);
+    bool matchesName = MatchesName(&tail, field);
+    if (matchesName) {
+      BOOL isEnum = CGPFieldGetJavaType(field) ==
+          ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM;
+      if (MatchesEnd(tail, "Value:") && isEnum) {
+        return AddEnumValueAdderMethod(cls, sel, field);
+      }
+      if ((Matches(&tail, "With", 4) ? MatchesKeyword(&tail, field) : true)) {
+        if (MatchesEnd(tail, ":")) {
+          return AddAdderMethod(cls, sel, field);
+        } else if (MatchesEnd(tail, "_Builder:")) {
+          return AddBuilderAdderMethod(cls, sel, field);
+        }
       }
     }
   }
@@ -1191,9 +1445,16 @@ static BOOL ResolveAddAllAccessor(Class cls, CGPDescriptor *descriptor, SEL sel,
   for (NSUInteger i = 0; i < count; ++i) {
     ComGoogleProtobufDescriptors_FieldDescriptor *field = fieldsBuf[i];
     const char *tail = selName;
-    if (MatchesName(&tail, field) &&
-        (MatchesEnd(tail, "WithJavaLangIterable:") || MatchesEnd(tail, ":"))) {
-      return AddAddAllMethod(cls, sel, field);
+    bool matchesName = MatchesName(&tail, field);
+    if (matchesName) {
+      BOOL isEnum = CGPFieldGetJavaType(field) ==
+          ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM;
+      if ((MatchesEnd(tail, "Value:") || MatchesEnd(tail, "ValueWithJavaLangIterable:")) && isEnum) {
+        return AddEnumValueAddAllMethod(cls, sel, field);
+      }
+      if (MatchesEnd(tail, "WithJavaLangIterable:") || MatchesEnd(tail, ":")) {
+        return AddAddAllMethod(cls, sel, field);
+      }
     }
   }
   return NO;
@@ -1222,7 +1483,16 @@ static BOOL ResolvePutAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, co
   for (NSUInteger i = 0; i < count; ++i) {
     CGPFieldDescriptor *field = fieldsBuf[i];
     const char *tail = selName;
-    if (CGPFieldIsMap(field) && MatchesName(&tail, field)) {
+    bool matchesName = MatchesName(&tail, field);
+    if (CGPFieldIsMap(field) && matchesName) {
+      BOOL isEnumValue = CGPFieldGetJavaType(CGPFieldMapValue(field)) ==
+                         ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM;
+      const char *tailPutValue = tail;
+      if (isEnumValue && Matches(&tailPutValue, "ValueWith", 9) &&
+          MatchesKeyword(&tailPutValue, CGPFieldMapKey(field)) &&
+          MatchesEnd(tailPutValue, ":withInt:")) {
+        return AddMapEnumValuePutMethod(cls, sel, field);
+      }
       if (Matches(&tail, "With", 4) && MatchesKeyword(&tail, CGPFieldMapKey(field)) &&
           Matches(&tail, ":with", 5) && MatchesKeyword(&tail, CGPFieldMapValue(field)) &&
           MatchesEnd(tail, ":")) {
@@ -1244,14 +1514,15 @@ static BOOL ResolveRemoveAccessor(Class cls, CGPDescriptor *descriptor, SEL sel,
   for (NSUInteger i = 0; i < count; ++i) {
     CGPFieldDescriptor *field = fieldsBuf[i];
     const char *tail = selName;
-    if (CGPFieldIsMap(field) && MatchesName(&tail, field) && Matches(&tail, "With", 4) &&
-        MatchesKeyword(&tail, CGPFieldMapKey(field)) && MatchesEnd(tail, ":")) {
-      return AddMapRemoveMethod(cls, sel, field);
-    }
-    tail = selName;
-    if (CGPFieldIsRepeated(field) && CGPFieldTypeIsMessage(field) && MatchesName(&tail, field) &&
-        MatchesEnd(tail, "WithInt:")) {
-      return AddRepeatedMessageRemoveMethod(cls, sel, field);
+    bool matchesName = MatchesName(&tail, field);
+    if (matchesName) {
+      if (CGPFieldIsMap(field) && Matches(&tail, "With", 4) &&
+          MatchesKeyword(&tail, CGPFieldMapKey(field)) && MatchesEnd(tail, ":")) {
+        return AddMapRemoveMethod(cls, sel, field);
+      }
+      if (CGPFieldIsRepeated(field) && CGPFieldTypeIsMessage(field) && MatchesEnd(tail, "WithInt:")) {
+        return AddRepeatedMessageRemoveMethod(cls, sel, field);
+      }
     }
   }
   return NO;
@@ -1296,14 +1567,14 @@ static id GetSingularField(id msg, CGPFieldDescriptor *field) {
   bool isSet = GetHas(msg, GetHasLocator(msgCls, field));
   size_t offset = CGPFieldGetOffset(field, msgCls);
 
-#define GET_FIELD_CASE(NAME)                                                     \
-  {                                                                              \
-    TYPE_##NAME value = isSet ? *FIELD_PTR(TYPE_##NAME, msg, offset)             \
-                              : field->data_->defaultValue.CGPValueField_##NAME; \
-    return CGPToReflectionType##NAME(value, field);                              \
+#define GET_FIELD_CASE(NAME)                                                         \
+  {                                                                                  \
+    TYPE_##NAME value = isSet ? *FIELD_PTR(TYPE_##NAME, msg, offset)                 \
+                              : CGPFieldGetDefaultValue(field).CGPValueField_##NAME; \
+    return CGPToReflectionType##NAME(value);                                         \
   }
 
-  SWITCH_TYPES_WITH_ENUM(CGPFieldGetJavaType(field), GET_FIELD_CASE)
+  SWITCH_TYPES(CGPFieldGetJavaType(field), GET_FIELD_CASE)
 
 #undef GET_FIELD_CASE
 
@@ -1501,13 +1772,10 @@ static void MergeFieldsFromMessage(id msg, id other, CGPDescriptor *descriptor) 
       }
       ClearPreviousOneof(msg, hasLoc, fieldPtr);
 
-#define MERGE_FIELD_CASE(NAME)                                                   \
-  {                                                                              \
-    TYPE_ASSIGN_##NAME(*(TYPE_##NAME *)fieldPtr, *(TYPE_##NAME *)otherFieldPtr); \
-    break;                                                                       \
-  }
+#define MERGE_FIELD_CASE(NAME) \
+  TYPE_ASSIGN_##NAME((TYPE_##NAME *)fieldPtr, *(TYPE_##NAME *)otherFieldPtr);
 
-      SWITCH_TYPES_WITH_ENUM(type, MERGE_FIELD_CASE)
+      SWITCH_TYPES(type, MERGE_FIELD_CASE)
 
 #undef MERGE_FIELD_CASE
 
@@ -1572,18 +1840,10 @@ ComGoogleProtobufGeneratedMessage_Builder *CGPBuilderFromPrototype(
 // *****************************************************************************
 
 static inline BOOL ReadEnumValueDescriptor(CGPCodedInputStream *input, CGPEnumDescriptor *enumType,
-                                           id *valueDescriptor) {
+                                           CGPEnumValueDescriptor **valueDescriptor) {
   jint value;
   if (!CGPReadEnum(input, &value)) return NO;
   *valueDescriptor = CGPEnumValueDescriptorFromInt(enumType, value);
-  return YES;
-}
-
-static BOOL ReadEnumJavaValue(CGPCodedInputStream *input, CGPEnumDescriptor *enumType,
-                              id *javaValue) {
-  CGPEnumValueDescriptor *valueDescriptor;
-  if (!ReadEnumValueDescriptor(input, enumType, &valueDescriptor)) return NO;
-  *javaValue = valueDescriptor == nil ? nil : valueDescriptor->enum_;
   return YES;
 }
 
@@ -1642,8 +1902,16 @@ static BOOL ReadMapEntryField(CGPCodedInputStream *stream, CGPFieldDescriptor *f
       return CGPReadFloat(stream, &value->valueFloat);
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_DOUBLE:
       return CGPReadDouble(stream, &value->valueDouble);
-    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_ENUM:
-      return ReadEnumJavaValue(stream, field->valueType_, &value->valueId) && value->valueId != nil;
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_ENUM: {
+      CGPEnumValueDescriptor *enumValueDescriptor;
+      BOOL result = ReadEnumValueDescriptor(stream, field->valueType_, &enumValueDescriptor);
+      if (result && enumValueDescriptor != nil) {
+        value->valueEnum = RETAIN_(enumValueDescriptor);
+        return YES;
+      } else {
+        return NO;
+      }
+    }
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_BYTES:
       return stream->ReadRetainedByteString(&value->valueId);
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_STRING:
@@ -1671,28 +1939,34 @@ static BOOL MergeMapEntryFromStream(CGPMapField *field, CGPCodedInputStream *str
   if (!CGPReadInt32(stream, &length)) return NO;
   CGPCodedInputStream::Limit limit = stream->PushLimit(length);
   CGPFieldDescriptor *keyField = entry->fields_->buffer_[0];
+  CGPFieldJavaType keyType = CGPFieldGetJavaType(keyField);
   CGPFieldDescriptor *valueField = entry->fields_->buffer_[1];
-  BOOL hasKey = NO;
-  BOOL hasValue = NO;
+  CGPFieldJavaType valueType = CGPFieldGetJavaType(valueField);
   CGPValue key;
+  key.valueId = nil;
   CGPValue value;
+  value.valueId = nil;
   while (YES) {
     uint32_t tag = stream->ReadTag();
     if (tag == 0) break;
     switch (CGPWireFormatGetTagFieldNumber(tag)) {
       case 1:
-        if (hasKey && CGPIsRetainedType(CGPFieldGetJavaType(keyField))) {
-          RELEASE_(key.valueId);
+        if (ReadMapEntryField(stream, keyField, tag, registry, &key)) {
+          if (CGPIsRetainedType(keyType)) {
+            AUTORELEASE(key.valueId);
+          }
+        } else {
+          return NO;
         }
-        ReadMapEntryField(stream, keyField, tag, registry, &key);
-        hasKey = YES;
         break;
       case 2:
-        if (hasValue && CGPIsRetainedType(CGPFieldGetJavaType(valueField))) {
-          RELEASE_(value.valueId);
+        if (ReadMapEntryField(stream, valueField, tag, registry, &value)) {
+          if (CGPIsRetainedType(valueType)) {
+            AUTORELEASE(value.valueId);
+          }
+        } else {
+          return NO;
         }
-        ReadMapEntryField(stream, valueField, tag, registry, &value);
-        hasValue = YES;
         break;
       default:
         if (!CGPWireFormatSkipField(stream, tag)) return NO;
@@ -1701,8 +1975,44 @@ static BOOL MergeMapEntryFromStream(CGPMapField *field, CGPCodedInputStream *str
   }
   if (!stream->ConsumedEntireMessage()) return NO;
   stream->PopLimit(limit);
-  CGPMapFieldPut(field, key, CGPFieldGetJavaType(keyField), value, CGPFieldGetJavaType(valueField),
-                 /* retainedKeyAndValue */ true);
+  // Strings are the only retained type that can be a key.
+  // https://protobuf.dev/programming-guides/proto3/#maps
+  if (keyType == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING) {
+    if (key.valueId == nil) {
+      key.valueId = @"";
+    }
+  } else if (CGPIsRetainedType(keyType)) {
+    // Should not happen, but protect against crash.
+    return NO;
+  }
+  if ((CGPIsRetainedType(valueType)) && (value.valueId == nil)) {
+    switch (valueType) {
+      case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING:
+        value.valueId = @"";
+        break;
+      case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BYTE_STRING:
+        value.valueId = [CGPByteString empty];
+        break;
+      case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:
+        if (valueField->valueType_ == nil) {
+          // Should not happen, but protect against crash.
+          return NO;
+        }
+        // Force the class to be initialized.
+        [valueField->valueType_ class];
+        value.valueId = AUTORELEASE(CGPNewMessage(valueField->valueType_));
+        break;
+      case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:
+        value.valueEnum = [valueField getDefaultValue];
+        break;
+      default:
+        // Should not happen, but we don't trust potential undefined behavior
+        // in CGPIsRetainedType.
+        return NO;
+        break;
+    }
+  }
+  CGPMapFieldPut(field, key, keyType, value, valueType);
   return YES;
 }
 
@@ -1726,7 +2036,7 @@ static BOOL MergeExtensionValueFromStream(CGPCodedInputStream *stream, CGPFieldD
   case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_##ENUM_NAME: { \
     TYPE_##JAVA_NAME value;                                                  \
     if (!CGPRead##WIRE_NAME(stream, &value)) return NO;                      \
-    *result = CGPToReflectionType##JAVA_NAME(value, field);                  \
+    *result = CGPToReflectionType##JAVA_NAME(value);                         \
     *isRetained = NO;                                                        \
     return YES;                                                              \
   }
@@ -1914,8 +2224,7 @@ static BOOL MergeFieldFromStream(id msg, CGPFieldDescriptor *field, CGPCodedInpu
   BOOL alreadyCleared = NO;
   if (!repeated) {
     hasLoc = GetHasLocator(msgCls, field);
-    ClearPreviousOneof(msg, hasLoc, fieldPtr);
-    alreadyCleared = YES;
+    alreadyCleared = ClearPreviousOneof(msg, hasLoc, fieldPtr);
   }
   switch (CGPFieldGetType(field)) {
 #define MERGE_FIELD_CASE(NAME, ENUM_NAME, JAVA_NAME)                         \
@@ -1967,22 +2276,26 @@ static BOOL MergeFieldFromStream(id msg, CGPFieldDescriptor *field, CGPCodedInpu
           CGPRepeatedFieldReserveAdditionalCapacity(repeatedField, length, sizeof(id));
           CGPCodedInputStream::Limit limit = stream->PushLimit(length);
           while (stream->BytesUntilLimit() > 0) {
-            if (!ReadEnumJavaValue(stream, enumType, &value)) return NO;
+            if (!ReadEnumValueDescriptor(stream, enumType, &value)) return NO;
             if (value != nil) {
               CGPRepeatedFieldAddEnum(repeatedField, value);
             }
           }
           stream->PopLimit(limit);
         } else {
-          if (!ReadEnumJavaValue(stream, enumType, &value)) return NO;
+          if (!ReadEnumValueDescriptor(stream, enumType, &value)) return NO;
           if (value != nil) {
             CGPRepeatedFieldAddEnum(repeatedField, value);
           }
         }
       } else {
-        if (!ReadEnumJavaValue(stream, enumType, &value)) return NO;
+        if (!ReadEnumValueDescriptor(stream, enumType, &value)) return NO;
         if (value == nil) return YES;  // Skip setting has-bit.
-        *(id *)fieldPtr = value;
+        id *ptr = (id *)fieldPtr;
+        if (!alreadyCleared) {
+          AUTORELEASE(*ptr);
+        }
+        *ptr = RETAIN_(value);
         SetHas(msg, hasLoc);
       }
     }
@@ -1991,7 +2304,8 @@ static BOOL MergeFieldFromStream(id msg, CGPFieldDescriptor *field, CGPCodedInpu
       CGPByteString *value;
       if (!stream->ReadRetainedByteString(&value)) return NO;
       if (repeated) {
-        CGPRepeatedFieldAddRetainedId((CGPRepeatedField *)fieldPtr, value);
+        CGPRepeatedFieldAddId((CGPRepeatedField *)fieldPtr, value);
+        RELEASE_(value);
       } else {
         id *ptr = (id *)fieldPtr;
         if (!alreadyCleared) {
@@ -2006,7 +2320,8 @@ static BOOL MergeFieldFromStream(id msg, CGPFieldDescriptor *field, CGPCodedInpu
       NSString *value;
       if (!stream->ReadRetainedNSString(&value)) return NO;
       if (repeated) {
-        CGPRepeatedFieldAddRetainedId((CGPRepeatedField *)fieldPtr, value);
+        CGPRepeatedFieldAddId((CGPRepeatedField *)fieldPtr, value);
+        RELEASE_(value);
       } else {
         id *ptr = (id *)fieldPtr;
         if (!alreadyCleared) {
@@ -2027,7 +2342,8 @@ static BOOL MergeFieldFromStream(id msg, CGPFieldDescriptor *field, CGPCodedInpu
       }
       ComGoogleProtobufGeneratedMessage *msgField = CGPNewMessage(fieldType);
       if (repeated) {
-        CGPRepeatedFieldAddRetainedId((CGPRepeatedField *)fieldPtr, msgField);
+        CGPRepeatedFieldAddId((CGPRepeatedField *)fieldPtr, msgField);
+        RELEASE_(msgField);
       } else {
         id *ptr = (id *)fieldPtr;
         if (GetHas(msg, hasLoc)) {
@@ -2266,7 +2582,7 @@ static int SerializedSizeForMapEntryField(CGPFieldDescriptor *field, CGPValue va
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_BOOL:
       return tagSize + 1;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_ENUM:
-      return tagSize + CGPGetEnumSize(CGPEnumGetIntValue(field->valueType_, value.valueId));
+      return tagSize + CGPGetEnumSize(CGPEnumGetIntValue(field->valueType_, value.valueEnum));
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_BYTES:
       return tagSize + CGPGetBytesSize(value.valueId);
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_STRING:
@@ -2348,7 +2664,7 @@ static int SerializedSizeForRepeatedField(id msg, CGPFieldDescriptor *field) {
       break;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_ENUM: {
       CGPEnumDescriptor *enumType = field->valueType_;
-      id *buffer = (id *)data->buffer;
+      TYPE_Enum *buffer = (TYPE_Enum *)data->buffer;
       for (uint32_t i = 0; i < arrayLen; i++) {
         arraySize += CGPGetEnumSize(CGPEnumGetIntValue(enumType, buffer[i]));
       }
@@ -2496,8 +2812,8 @@ static void WriteSingularExtensionValue(CGPFieldDescriptor *field, id value,
     WRITE_SINGULAR_EXTENSION_CASE(Bool, BOOL, Bool)
     WRITE_SINGULAR_EXTENSION_CASE(Float, FLOAT, Float)
     WRITE_SINGULAR_EXTENSION_CASE(Double, DOUBLE, Double)
-    WRITE_SINGULAR_EXTENSION_CASE(Bytes, BYTES, Retainable)
-    WRITE_SINGULAR_EXTENSION_CASE(String, STRING, Retainable)
+    WRITE_SINGULAR_EXTENSION_CASE(Bytes, BYTES, Id)
+    WRITE_SINGULAR_EXTENSION_CASE(String, STRING, Id)
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_ENUM:
       CGPWriteEnum(((CGPEnumValueDescriptor *)value)->number_, output);
       return;
@@ -2640,7 +2956,7 @@ static void WriteMapEntryField(CGPFieldDescriptor *field, CGPValue value,
       CGPWriteDouble(value.valueDouble, output);
       return;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_ENUM:
-      CGPWriteEnum(CGPEnumGetIntValue(field->valueType_, value.valueId), output);
+      CGPWriteEnum(CGPEnumGetIntValue(field->valueType_, value.valueEnum), output);
       return;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_BYTES:
       CGPWriteBytes(value.valueId, output);
@@ -2743,7 +3059,7 @@ static void WriteRepeatedField(id msg, CGPFieldDescriptor *field, CGPCodedOutput
     WRITE_REPEATED_FIELD_FIXED_LENGTH_CASE(Float, FLOAT, Float, sizeof(uint32_t))
     WRITE_REPEATED_FIELD_FIXED_LENGTH_CASE(Double, DOUBLE, Double, sizeof(uint64_t))
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_ENUM: {
-      id *buffer = (id *)data->buffer;
+      TYPE_Enum *buffer = (TYPE_Enum *)data->buffer;
       CGPEnumDescriptor *enumType = field->valueType_;
       if (CGPFieldIsPacked(field)) {
         std::vector<jint> intValues(arrayLen);
@@ -3041,7 +3357,7 @@ void ValueToString(CGPValue value, CGPFieldDescriptor *field, NSMutableString *b
       [builder appendFormat:@"%s%s: %g\n", padding, fieldName, value.valueDouble];
       return;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_ENUM:
-      [builder appendFormat:@"%s%s: %@\n", padding, fieldName, value.valueId];
+      [builder appendFormat:@"%s%s: %@\n", padding, fieldName, value.valueEnum];
       return;
     case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_BYTES:
       [builder appendFormat:@"%s%s: %@\n", padding, fieldName, BytesToString(value.valueId)];
@@ -3193,20 +3509,20 @@ static void MessageToString(id msg, CGPDescriptor *descriptor, NSMutableString *
 // ********** isEqual and hash *************************************************
 // *****************************************************************************
 
-#define FieldIsEqualInt(a, b) a == b
-#define FieldIsEqualLong(a, b) a == b
-#define FieldIsEqualFloat(a, b) a == b
-#define FieldIsEqualDouble(a, b) a == b
-#define FieldIsEqualBool(a, b) a == b
-#define FieldIsEqualEnum(a, b) a == b
-#define FieldIsEqualRetainable(a, b) a == b || [a isEqual:b]
+CGP_ALWAYS_INLINE BOOL FieldIsEqualInt(jint a, jint b) { return a == b; }
+CGP_ALWAYS_INLINE BOOL FieldIsEqualLong(jlong a, jlong b) { return a == b; }
+CGP_ALWAYS_INLINE BOOL FieldIsEqualFloat(jfloat a, jfloat b) { return a == b; }
+CGP_ALWAYS_INLINE BOOL FieldIsEqualDouble(jdouble a, jdouble b) { return a == b; }
+CGP_ALWAYS_INLINE BOOL FieldIsEqualBool(bool a, bool b) { return a == b; }
+CGP_ALWAYS_INLINE BOOL FieldIsEqualEnum(id a, id b) { return a == b || [a isEqual:b]; }
+CGP_ALWAYS_INLINE BOOL FieldIsEqualId(id a, id b) { return a == b || [a isEqual:b]; }
 
 static BOOL FieldIsEqual(id self, id other, size_t offset, CGPFieldJavaType type) {
 #define IS_FIELD_EQUAL_CASE(NAME)                                  \
   return FieldIsEqual##NAME(*FIELD_PTR(TYPE_##NAME, self, offset), \
                             *FIELD_PTR(TYPE_##NAME, other, offset));
 
-  SWITCH_TYPES_WITH_ENUM(type, IS_FIELD_EQUAL_CASE)
+  SWITCH_TYPES(type, IS_FIELD_EQUAL_CASE)
 
 #undef IS_FIELD_EQUAL_CASE
 
@@ -3290,10 +3606,9 @@ static int RepeatedFieldHash(id msg, CGPFieldDescriptor *field, int hash) {
       TYPE_##NAME value = buffer[i];                                  \
       hash = 31 * hash + HASH_##NAME(value);                          \
     }                                                                 \
-  }                                                                   \
-  break;
+  }
 
-  SWITCH_TYPES_NO_ENUM(CGPFieldGetJavaType(field), REPEATED_FIELD_HASH_CASE)
+  SWITCH_TYPES(CGPFieldGetJavaType(field), REPEATED_FIELD_HASH_CASE)
 
 #undef REPEATED_FIELD_HASH_CASE
 
@@ -3314,7 +3629,7 @@ static int SingularFieldHash(id msg, CGPFieldDescriptor *field, int hash) {
     return 53 * hash + HASH_##NAME(value);                    \
   }
 
-  SWITCH_TYPES_NO_ENUM(CGPFieldGetJavaType(field), SINGULAR_FIELD_HASH_CASE)
+  SWITCH_TYPES(CGPFieldGetJavaType(field), SINGULAR_FIELD_HASH_CASE)
 
 #undef SINGULAR_FIELD_HASH_CASE
 
@@ -3702,11 +4017,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   } else {
     CGPHasLocator hasLoc = GetHasLocator(cls, descriptor);
 
-#define SET_SINGULAR_FIELD_CASE(NAME)                                           \
-  SingularSet##NAME(self, CGPFromReflectionType##NAME(object), offset, hasLoc); \
-  break;
+#define SET_SINGULAR_FIELD_CASE(NAME) \
+  SingularSet##NAME(self, CGPFromReflectionType##NAME(object), offset, hasLoc);
 
-    SWITCH_TYPES_WITH_ENUM(javaType, SET_SINGULAR_FIELD_CASE)
+    SWITCH_TYPES(javaType, SET_SINGULAR_FIELD_CASE)
 
 #undef SET_SINGULAR_FIELD_CASE
   }
@@ -3955,7 +4269,7 @@ static id GetSingularExtension(CGPExtensionMap *extensionMap,
   if (it != extensionMap->end()) {
     value = it->second.get();
   } else {
-    value = CGPFieldGetDefaultValue(field);
+    value = CGPFieldGetDefaultValueObject(field);
   }
   return FromReflectionType(field, value);
 }
