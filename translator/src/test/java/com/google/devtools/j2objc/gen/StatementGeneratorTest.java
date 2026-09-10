@@ -1135,7 +1135,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        Example_Test *tmp = [self foo];
+        Example_Test *tmp = nil_chk([self foo]);
         switch ([tmp ordinal]) {
         """);
   }
@@ -3335,16 +3335,19 @@ public class StatementGeneratorTest extends GenerationTest {
         translation,
         """
         - (void)goodEnumSwitch1WithCurrency:(id<Currency>)c {
-          switch (c) {
-            case Coin_Enum_HEADS:
-            {
-              [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Heads"];
-              break;
-            }
-            case Coin_Enum_TAILS:
-            {
-              [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Tails"];
-              break;
+          {
+            id<Currency> tmp = nil_chk(c);
+            switch (tmp) {
+              case Coin_Enum_HEADS:
+              {
+                [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Heads"];
+                break;
+              }
+              case Coin_Enum_TAILS:
+              {
+                [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Tails"];
+                break;
+              }
             }
           }
         }
@@ -3405,11 +3408,13 @@ public class StatementGeneratorTest extends GenerationTest {
           assertTranslatedLines(
               translation,
               """
-              int32_t selector = 0;
-              if ([obj isKindOfClass:[JavaLangInteger class]]) selector = 1;
-              else if ([obj isKindOfClass:[JavaLangFloat class]]) selector = 2;
-              else if ([obj isKindOfClass:[NSString class]]) selector = 3;
-              switch (selector) {
+              id tmp = nil_chk(obj);
+              {
+                int32_t selector = 0;
+                if ([tmp isKindOfClass:[JavaLangInteger class]]) selector = 1;
+                else if ([tmp isKindOfClass:[JavaLangFloat class]]) selector = 2;
+                else if ([tmp isKindOfClass:[NSString class]]) selector = 3;
+                switch (selector) {
                 case 1:
                 {
                   [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Is an integer"];

@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EmbeddedStatementExpression;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InfixExpression.Operator;
@@ -43,10 +44,11 @@ import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.YieldStatement;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.List;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeMirror;
 
 /**
  * Rewrites switch constructs flattening expressions into multiple cases and rescopes statements.
@@ -95,17 +97,27 @@ public class SwitchConstructRewriter {
     }
   }
 
-  /** Extracts the selector expression from a switch construct unless it is a simple name. */
+  /**
+   * Extracts the selector expression from a switch construct unless it is a simple name and does
+   * not require a null check.
+   */
   public static class ExtractSwitchExpression extends UnitTreeVisitor {
+    private static final FunctionElement NIL_CHK_ELEM =
+        new FunctionElement("nil_chk", TypeUtil.ID_TYPE, null)
+            .addParameters(TypeUtil.ID_TYPE)
+            .setIsMacro(true);
+
     public ExtractSwitchExpression(CompilationUnit unit) {
       super(unit);
     }
 
     @Override
     public void endVisit(SwitchStatement node) {
-      if (!(node.getExpression() instanceof SimpleName)) {
+      boolean needsNilCheck =
+          !node.hasNullCase() && TypeUtil.isReferenceType(node.getExpression().getTypeMirror());
+      if (needsNilCheck || !(node.getExpression() instanceof SimpleName)) {
         Block replacement = new Block();
-        extractSelectorExpression(node, replacement);
+        extractSelectorExpression(node, replacement, needsNilCheck);
         node.replaceWith(replacement);
         replacement.addStatement(node);
       }
@@ -114,22 +126,31 @@ public class SwitchConstructRewriter {
     /**
      * Extracts the selector expression of {@code node} into a temporary variable declared in {@code
      * block} so that passes that rewrite switch statements don't have to worry about double
-     * evaluation.
+     * evaluation, or to enforce null checking for reference types when there is no null case.
      */
-    private void extractSelectorExpression(SwitchConstruct node, Block block) {
+    private void extractSelectorExpression(
+        SwitchConstruct node, Block block, boolean wrapWithNilCheck) {
       Expression expression = node.getExpression();
-      if (expression instanceof SimpleName) {
-        return;
-      }
       // Generate a temporary variable to preserve evaluation semantics since we can't guarantee
-      // that the expression doesn't have side effects and can be evaluated multiple times.
+      // that the expression doesn't have side effects and can be evaluated multiple times, or to
+      // enforce null checking if the selector is a reference type and there is no null case.
       VariableElement tempVariable =
           GeneratedVariableElement.newLocalVar(
               "tmp", expression.getTypeMirror(), TreeUtil.getEnclosingElement((TreeNode) node));
-      // Type tmp = expr
-      block.addStatement(
-          new VariableDeclarationStatement(tempVariable, TreeUtil.remove(expression)));
+      Expression initializer = TreeUtil.remove(expression);
+      if (wrapWithNilCheck) {
+        initializer = nilCheck(initializer);
+      }
+      // Type tmp = [nil_chk](expr)
+      block.addStatement(new VariableDeclarationStatement(tempVariable, initializer));
       node.setExpression(new SimpleName(tempVariable));
+    }
+
+    private static Expression nilCheck(Expression expression) {
+      FunctionInvocation nilChkInvocation =
+          new FunctionInvocation(NIL_CHK_ELEM, expression.getTypeMirror());
+      nilChkInvocation.addArgument(expression);
+      return nilChkInvocation;
     }
   }
 

@@ -587,7 +587,8 @@ public class AutoboxerTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(translation, "switch ([i intValue]) {");
+    assertInTranslation(translation, "JavaLangInteger *tmp = nil_chk(i);");
+    assertInTranslation(translation, "switch ([tmp intValue]) {");
   }
 
   public void testInvokeSuperMethodAutoboxing() throws IOException {

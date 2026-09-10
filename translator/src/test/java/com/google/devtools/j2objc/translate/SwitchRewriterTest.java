@@ -157,7 +157,8 @@ public class SwitchRewriterTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertInTranslation(translation, "switch ([e ordinal]) {");
+    assertInTranslation(translation, "A_EnumType *tmp = nil_chk(e);");
+    assertInTranslation(translation, "switch ([tmp ordinal]) {");
     assertInTranslation(translation, "case A_EnumType_Enum_ONE:");
   }
 
@@ -265,7 +266,8 @@ public class SwitchRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        switch (JreIndexOfStr(s, (id[]){ @"foo", @"bar", Test_constant, Foo_TEST, Bar_TEST }, 5)) {
+        NSString *tmp = nil_chk(s);
+        switch (JreIndexOfStr(tmp, (id[]){ @"foo", @"bar", Test_constant, Foo_TEST, Bar_TEST }, 5)) {
           case 0:
           return 42;
           case 1:
@@ -539,18 +541,21 @@ public class SwitchRewriterTest extends GenerationTest {
         translation,
         """
         - (bool)hasNext {
-          switch ([state_ ordinal]) {
-            case Test_State_Enum_DONE:
-            {
-              return false;
-            }
-            case Test_State_Enum_READY:
-            {
-              return true;
-            }
-            default:
-            {
-              break;
+          {
+            Test_State *tmp = nil_chk(state_);
+            switch ([tmp ordinal]) {
+              case Test_State_Enum_DONE:
+              {
+                return false;
+              }
+              case Test_State_Enum_READY:
+              {
+                return true;
+              }
+              default:
+              {
+                break;
+              }
             }
           }
           return Test_tryToComputeNext(self);
@@ -623,7 +628,8 @@ public class SwitchRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        switch ([mode ordinal]) {
+        JavaMathRoundingMode *tmp = nil_chk(mode);
+        switch ([tmp ordinal]) {
           case JavaMathRoundingMode_Enum_DOWN:
             return JavaLangDouble_MAX_VALUE;
           default:
@@ -659,23 +665,26 @@ public class SwitchRewriterTest extends GenerationTest {
         translation,
         """
         return ^ NSString * (){
-          switch ([unit ordinal]) {
-            case JavaUtilConcurrentTimeUnit_Enum_NANOSECONDS:
-            return @"ns";
-            case JavaUtilConcurrentTimeUnit_Enum_MICROSECONDS:
-            return @"\\u03bcs";
-            case JavaUtilConcurrentTimeUnit_Enum_MILLISECONDS:
-            return @"ms";
-            case JavaUtilConcurrentTimeUnit_Enum_SECONDS:
-            return @"s";
-            case JavaUtilConcurrentTimeUnit_Enum_MINUTES:
-            return @"min";
-            case JavaUtilConcurrentTimeUnit_Enum_HOURS:
-            return @"h";
-            case JavaUtilConcurrentTimeUnit_Enum_DAYS:
-            return @"d";
-            default:
-            __builtin_unreachable();
+          {
+            JavaUtilConcurrentTimeUnit *tmp = nil_chk(unit);
+            switch ([tmp ordinal]) {
+              case JavaUtilConcurrentTimeUnit_Enum_NANOSECONDS:
+              return @"ns";
+              case JavaUtilConcurrentTimeUnit_Enum_MICROSECONDS:
+              return @"\\u03bcs";
+              case JavaUtilConcurrentTimeUnit_Enum_MILLISECONDS:
+              return @"ms";
+              case JavaUtilConcurrentTimeUnit_Enum_SECONDS:
+              return @"s";
+              case JavaUtilConcurrentTimeUnit_Enum_MINUTES:
+              return @"min";
+              case JavaUtilConcurrentTimeUnit_Enum_HOURS:
+              return @"h";
+              case JavaUtilConcurrentTimeUnit_Enum_DAYS:
+              return @"d";
+              default:
+              __builtin_unreachable();
+            }
           }
         }();
         """);
@@ -749,7 +758,8 @@ public class SwitchRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        switch (JreIndexOfStr(component, (id[]){ @".", @".." }, 2)) {
+        NSString *tmp = nil_chk(component);
+        switch (JreIndexOfStr(tmp, (id[]){ @".", @".." }, 2)) {
           case 0:
           {
             continue;
@@ -766,7 +776,6 @@ public class SwitchRewriterTest extends GenerationTest {
             break;
           }
         }
-
         """);
   }
 

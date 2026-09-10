@@ -41,24 +41,28 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         translation,
         """
         return ^ NSString * (){
-        {
-          int32_t selector = 0;
-          NSString *s = nil;
-          JavaLangInteger *i = nil;
-          if ([obj isKindOfClass:[NSString class]] && (s = (NSString *) obj, true))\
-            selector = 1;
-          else if ([obj isKindOfClass:[JavaLangInteger class]]\
-              && (i = (JavaLangInteger *) obj, true))\
-            selector = 2;
-          switch (selector) {
-            case 1:
-            return JreStrcat("$$", @"It's a String: ", s);
-            case 2:
-            return JreStrcat("$@", @"It's an Integer: ", i);
-            default:
-            return @"It's something else.";
+          {
+            id tmp = nil_chk(obj);
+            {
+              int32_t selector = 0;
+              NSString *s = nil;
+              JavaLangInteger *i = nil;
+              if ([tmp isKindOfClass:[NSString class]] && (s = (NSString *) tmp, true))\
+                selector = 1;
+              else if ([tmp isKindOfClass:[JavaLangInteger class]]\
+                  && (i = (JavaLangInteger *) tmp, true))\
+                selector = 2;
+              switch (selector) {
+                case 1:
+                return JreStrcat("$$", @"It's a String: ", s);
+                case 2:
+                return JreStrcat("$@", @"It's an Integer: ", i);
+                default:
+                return @"It's something else.";
+              }
+            }
           }
-        }
+        }();
         """);
   }
 
@@ -87,46 +91,50 @@ public class SwitchConstructRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        NSString *s = nil;
-        NSString *s_1 = nil;
-        NSString *s_2 = nil;
-        JavaLangInteger *i = nil;
-        if ([obj isKindOfClass:[NSString class]] && (s = (NSString *) obj, true)\
-            && [((NSString *) nil_chk(s)) java_length] > 25)\
-          selector = 1;
-        else if ([obj isKindOfClass:[NSString class]] && (s_1 = (NSString *) obj, true)\
-            && [((NSString *) nil_chk(s_1)) java_length] > 5)\
-          selector = 2;
-        else if ([obj isKindOfClass:[NSString class]] && (s_2 = (NSString *) obj, true))\
-          selector = 3;
-        else if ([obj isKindOfClass:[JavaLangInteger class]]\
-            && (i = (JavaLangInteger *) obj, true))\
-          selector = 4;
-        switch (selector) {
-          case 1:
-          {
-            Test_logWithNSString_(@"Long string");
-            break;
-          }
-          case 2:
-          {
-            Test_logWithNSString_(@"Medium string");
-            break;
-          }
-          case 3:
-          {
-            Test_logWithNSString_(@"Short string");
-            break;
-          }
-          case 4:
-          {
-            Test_logWithNSString_(JreStrcat("$@", @"An integer: ", i));
-            break;
-          }
-          default:
-          {
-            Test_logWithNSString_(@"Something else");
-            break;
+        id tmp = nil_chk(obj);
+        {
+          int32_t selector = 0;
+          NSString *s = nil;
+          NSString *s_1 = nil;
+          NSString *s_2 = nil;
+          JavaLangInteger *i = nil;
+          if ([tmp isKindOfClass:[NSString class]] && (s = (NSString *) tmp, true)\
+              && [((NSString *) nil_chk(s)) java_length] > 25)\
+            selector = 1;
+          else if ([tmp isKindOfClass:[NSString class]] && (s_1 = (NSString *) tmp, true)\
+              && [((NSString *) nil_chk(s_1)) java_length] > 5)\
+            selector = 2;
+          else if ([tmp isKindOfClass:[NSString class]] && (s_2 = (NSString *) tmp, true))\
+            selector = 3;
+          else if ([tmp isKindOfClass:[JavaLangInteger class]]\
+              && (i = (JavaLangInteger *) tmp, true))\
+            selector = 4;
+          switch (selector) {
+            case 1:
+            {
+              Test_logWithNSString_(@"Long string");
+              break;
+            }
+            case 2:
+            {
+              Test_logWithNSString_(@"Medium string");
+              break;
+            }
+            case 3:
+            {
+              Test_logWithNSString_(@"Short string");
+              break;
+            }
+            case 4:
+            {
+              Test_logWithNSString_(JreStrcat("$@", @"An integer: ", i));
+              break;
+            }
+            default:
+            {
+              Test_logWithNSString_(@"Something else");
+              break;
+            }
           }
         }
         """);
@@ -153,32 +161,35 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         """
         return ^ NSString * (){
           {
-            int32_t selector = 0;
-            JavaLangInteger *i = nil;
-            NSString *s = nil;
-            JavaLangInteger *i_1 = nil;
-            id x = nil;
-            if ([o isKindOfClass:[JavaLangInteger class]] && (i = (JavaLangInteger *) o, true)\
-                && [((JavaLangInteger *) nil_chk(i)) intValue] == 0 && [i intValue] < 1\
-                && [o2 isKindOfClass:[NSString class]] && (s = (NSString *) o2, true))\
-              selector = 1;
-            else if ([o isKindOfClass:[JavaLangInteger class]]\
-                && (i_1 = (JavaLangInteger *) o, true)\
-                && [((JavaLangInteger *) nil_chk(i_1)) intValue] == 0 || [i_1 intValue] > 1)\
-              selector = 2;
-            else if ([o isKindOfClass:[NSObject class]] && (x = o, true))\
-              selector = 3;
-            switch (selector) {
-              case 1:
-              o = JreStrcat("$$", s, NSString_java_valueOf_(i));
-              return @"true";
-              case 2:
-              o = NSString_java_valueOf_(i_1);
-              return @"second";
-              case 3:
-              return @"any";
-              default:
-              __builtin_unreachable();
+            id tmp = nil_chk(o);
+            {
+              int32_t selector = 0;
+              JavaLangInteger *i = nil;
+              NSString *s = nil;
+              JavaLangInteger *i_1 = nil;
+              id x = nil;
+              if ([tmp isKindOfClass:[JavaLangInteger class]] && (i = (JavaLangInteger *) tmp, true)\
+                  && [((JavaLangInteger *) nil_chk(i)) intValue] == 0 && [i intValue] < 1\
+                  && [o2 isKindOfClass:[NSString class]] && (s = (NSString *) o2, true))\
+                selector = 1;
+              else if ([tmp isKindOfClass:[JavaLangInteger class]]\
+                  && (i_1 = (JavaLangInteger *) tmp, true)\
+                  && [((JavaLangInteger *) nil_chk(i_1)) intValue] == 0 || [i_1 intValue] > 1)\
+                selector = 2;
+              else if ([tmp isKindOfClass:[NSObject class]] && (x = tmp, true))\
+                selector = 3;
+              switch (selector) {
+                case 1:
+                o = JreStrcat("$$", s, NSString_java_valueOf_(i));
+                return @"true";
+                case 2:
+                o = NSString_java_valueOf_(i_1);
+                return @"second";
+                case 3:
+                return @"any";
+                default:
+                __builtin_unreachable();
+              }
             }
           }
         }();
@@ -230,6 +241,40 @@ public class SwitchConstructRewriterTest extends GenerationTest {
             }
           }
         }();
+        """);
+  }
+
+  public void testExtractSelectorExpressionWithNilCheck() throws IOException {
+    String source =
+        """
+        class Test {
+          enum Foo { A, B }
+          static int testWithoutNullCase(Foo foo) {
+            return switch (foo) {
+              case A -> 1;
+              default -> 2;
+            };
+          }
+          static int testWithNullCase(Foo foo) {
+            return switch (foo) {
+              case null -> 0;
+              case A -> 1;
+              default -> 2;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        Test_Foo *tmp = nil_chk(foo);
+        switch ([tmp ordinal]) {
+        """);
+    assertTranslatedLines(
+        translation,
+        """
+        switch (foo == nil ? -1 : [foo ordinal]) {
         """);
   }
 
