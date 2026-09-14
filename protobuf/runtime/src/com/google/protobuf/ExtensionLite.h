@@ -46,7 +46,7 @@ struct CGPFieldData;
   CGPFieldDescriptor *fieldDescriptor_;
 }
 
-- (instancetype)initWithFieldData:(struct CGPFieldData *)data;
+- (instancetype)initWithFieldData:(const struct CGPFieldData *)data;
 
 - (ComGoogleProtobufDescriptors_FieldDescriptor *)getDescriptor;
 
@@ -60,7 +60,7 @@ typedef ComGoogleProtobufExtensionLite CGPExtensionLite;
 
 CF_EXTERN_C_BEGIN
 void ComGoogleProtobufExtensionLite_initWithFieldData_(CGPExtensionLite *self,
-                                                      struct CGPFieldData *data);
+                                                      const struct CGPFieldData *data);
 CF_EXTERN_C_END
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufExtensionLite)
