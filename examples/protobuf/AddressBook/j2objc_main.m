@@ -77,7 +77,14 @@ int j2objc_main(const char* className, int argc, const char *argv[]) {
       IOSClass *clazz = [IOSClass forName:[NSString stringWithUTF8String:className]];
       IOSObjectArray *mainArgs = JreEmulationMainArguments(argc, argv);
       SEL mainSelector = sel_registerName("mainWithNSStringArray:");
+#if __has_feature(objc_arc)
+      // Avoid a -Warc-performSelector-leaks false-positive warning.
+      IMP imp = [clazz.objcClass methodForSelector:mainSelector];
+      void (*func)(id, SEL, id) = (void *)imp;
+      func(nil, mainSelector, mainArgs);
+#else
       [clazz.objcClass performSelector:mainSelector withObject:mainArgs];
+#endif
     }
     @catch (JavaLangClassNotFoundException *e) {
       fprintf(stderr, "Error: could not find or load main class %s\n", className);
