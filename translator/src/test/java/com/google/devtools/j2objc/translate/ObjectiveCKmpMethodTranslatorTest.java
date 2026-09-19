@@ -2143,5 +2143,29 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         }
         """);
   }
+
+  public void testRecordComponentAnnotation() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        public record TestRecord(
+            @ObjectiveCKmpMethod(selector = "itemsAsList", adapter = Adapter.class)
+            List<String> items) {}
+        """,
+        "TestRecord.java");
+    String header = translateSourceFile("TestRecord", "TestRecord.h");
+    assertInTranslation(header, "- (NSArray<NSString *> *)itemsAsList;");
+
+    String impl = translateSourceFile("TestRecord", "TestRecord.m");
+    assertInTranslation(
+        impl,
+        """
+        - (NSArray<NSString *> *)itemsAsList {
+          return (NSArray<NSString *> *) [Adapter fromJavaUtilListWithJavaUtilList:[self items]];
+        }
+        """);
+  }
 }
 
