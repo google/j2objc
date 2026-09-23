@@ -768,7 +768,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertTranslatedLines(
-        translation, "@property (nonatomic, getter=getFooField, readonly) NSString * fooField;");
+        translation,
+        "@property (readonly, copy, nonatomic, getter=getFooField) NSString *fooField;");
   }
 
   public void testPropertiesOfGetTypesWithSetters() throws IOException {
@@ -789,8 +790,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (nonatomic, getter=getFooField, setter=setFooFieldWithNSString:) NSString *"
-            + " fooField;");
+        "@property (copy, nonatomic, getter=getFooField, setter=setFooFieldWithNSString:) NSString"
+            + " *fooField;");
   }
 
   public void testPropertyAnnotationSuppression() throws IOException {
@@ -815,7 +816,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertNotInTranslation(
-        translation, "@property (nonatomic, getter=getBar, readonly) NSString * bar;");
+        translation, "@property (readonly, copy, nonatomic, getter=getBar) NSString *bar;");
   }
 
   public void testPropertiesStaticMethods() throws IOException {
@@ -831,7 +832,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (class, nonatomic, getter=getFieldFoo, readonly) NSString * fieldFoo;");
+        "@property (readonly, copy, nonatomic, getter=getFieldFoo, class) NSString *fieldFoo;");
   }
 
   public void testPropertiesOfGetTypesDuplicateNames() throws IOException {
@@ -885,8 +886,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "foo.bar.FooBar", "foo/bar/FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (nonatomic, getter=getFooField, setter=setFooFieldWithNSString:, nullable)"
-            + " NSString * fooField;");
+        "@property (copy, nonatomic, getter=getFooField, setter=setFooFieldWithNSString:, nullable)"
+            + " NSString *fooField;");
   }
 
   public void testPropertyAnnotationIgnoresVoidMethod() throws IOException {
@@ -919,8 +920,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (nonatomic, getter=getFooField, setter=setFooFieldWithNSString:)"
-            + " NSString * fooField;");
+        "@property (copy, nonatomic, getter=getFooField, setter=setFooFieldWithNSString:)"
+            + " NSString *fooField;");
   }
 
   public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()

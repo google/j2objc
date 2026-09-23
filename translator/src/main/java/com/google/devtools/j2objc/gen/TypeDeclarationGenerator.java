@@ -461,8 +461,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         // Synthesize a declaration as if it was annotated with @Property.
         FieldDeclaration componentDeclaration = new FieldDeclaration(var, null);
         PropertyAnnotation componentAnnotation = new PropertyAnnotation();
-        componentAnnotation.getPropertyAttributes().add("readonly");
-        componentAnnotation.getPropertyAttributes().add("nonatomic");
+        componentAnnotation.addAttribute("readonly");
+        componentAnnotation.addAttribute("nonatomic");
         componentDeclaration.addAnnotation(componentAnnotation);
         fragment = componentDeclaration.getFragment();
       }
@@ -754,34 +754,13 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printPseudoProperty(MethodDeclaration m, boolean isKotlinCompanion) {
-    ExecutableElement methodElement = m.getExecutableElement();
-    String methodName = nameTable.getMethodSelector(methodElement);
-    String propertyName = NameTable.lowercaseFirst(methodName.replaceFirst("get", ""));
-
-    TypeElement declaringClass = ElementUtil.getDeclaringClass(methodElement);
-    if (NameTable.isReservedName(propertyName)) {
-      return;
-    }
-    // Check if there is a existing property with the same name
-    if (ElementUtil.findField(declaringClass, propertyName) != null) {
-      return;
-    }
-
-    TypeMirror returnType = m.getReturnTypeMirror();
-    ExecutableElement setter =
-        ElementUtil.findSetterMethod(
-            propertyName, returnType, declaringClass, ElementUtil.isStatic(methodElement));
-
-    newline();
-    printf(
-        "@property (%snonatomic, %s, %s%s) %s %s;",
-        ElementUtil.isStatic(methodElement) && !isKotlinCompanion ? "class, " : "",
-        "getter=" + methodName,
-        setter != null ? "setter=" + nameTable.getMethodSelector(setter) : "readonly",
-        shouldAddNullableAnnotation(methodElement) ? ", nullable" : "",
-        getReturnType(m, true), // Generics allowed in headers.
-        propertyName);
-    newline();
+    PropertyGenerator.generate(
+            m, isKotlinCompanion, options, nameTable, typeUtil, parametersNonnullByDefault)
+        .ifPresent(
+            property -> {
+              newline();
+              println(property);
+            });
   }
 
   /**
