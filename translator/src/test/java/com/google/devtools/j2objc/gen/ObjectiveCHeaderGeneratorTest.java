@@ -768,7 +768,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertTranslatedLines(
-        translation, "@property (nonatomic, getter=getFooField, readonly) NSString * fooField;");
+        translation,
+        "@property (copy, nonatomic, getter=getFooField, readonly) NSString * fooField;");
   }
 
   public void testPropertiesOfGetTypesWithSetters() throws IOException {
@@ -789,8 +790,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (nonatomic, getter=getFooField, setter=setFooFieldWithNSString:) NSString *"
-            + " fooField;");
+        "@property (copy, nonatomic, getter=getFooField, setter=setFooFieldWithNSString:) NSString"
+            + " * fooField;");
   }
 
   public void testPropertyAnnotationSuppression() throws IOException {
@@ -815,7 +816,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertNotInTranslation(
-        translation, "@property (nonatomic, getter=getBar, readonly) NSString * bar;");
+        translation, "@property (copy, nonatomic, getter=getBar, readonly) NSString * bar;");
   }
 
   public void testPropertiesStaticMethods() throws IOException {
@@ -831,7 +832,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (class, nonatomic, getter=getFieldFoo, readonly) NSString * fieldFoo;");
+        "@property (class, copy, nonatomic, getter=getFieldFoo, readonly) NSString * fieldFoo;");
   }
 
   public void testPropertiesOfGetTypesDuplicateNames() throws IOException {
@@ -885,7 +886,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "foo.bar.FooBar", "foo/bar/FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (nonatomic, getter=getFooField, setter=setFooFieldWithNSString:, nullable)"
+        "@property (copy, nonatomic, getter=getFooField, setter=setFooFieldWithNSString:, nullable)"
             + " NSString * fooField;");
   }
 
@@ -919,8 +920,38 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (nonatomic, getter=getFooField, setter=setFooFieldWithNSString:)"
+        "@property (copy, nonatomic, getter=getFooField, setter=setFooFieldWithNSString:)"
             + " NSString * fooField;");
+  }
+
+  public void testRecordImplementingPropertyInterface() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.Property;
+        public interface HasIdentifier {
+          @Property
+          String identifier();
+        }
+        """,
+        "HasIdentifier.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.Property;
+        public record ItemRecord(
+            String identifier,
+            @Property("assign") String rawName,
+            @Property.Suppress String suppressedProp) implements HasIdentifier {}
+        """,
+        "ItemRecord.java");
+    String protocolHeader = translateSourceFile("HasIdentifier", "HasIdentifier.h");
+    assertInTranslation(
+        protocolHeader,
+        "@property (copy, nonatomic, getter=identifier, readonly) NSString * identifier;");
+    String recordHeader = translateSourceFile("ItemRecord", "ItemRecord.h");
+    assertInTranslation(
+        recordHeader, "@property (readonly, copy, nonatomic) NSString *identifier;");
+    assertInTranslation(recordHeader, "@property (readonly, assign, nonatomic) NSString *rawName;");
+    assertNotInTranslation(recordHeader, "*suppressedProp;");
   }
 
   public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()
