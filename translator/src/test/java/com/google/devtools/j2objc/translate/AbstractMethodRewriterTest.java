@@ -54,7 +54,8 @@ public class AbstractMethodRewriterTest extends GenerationTest {
         "PromptBoxActionRegistryImpl.java");
     String header = translateSourceFile("PromptBoxActionRegistry", "PromptBoxActionRegistry.h");
     assertInTranslation(
-        header, "@property (nonatomic, getter=getSubmitAction, readonly) NSString * submitAction;");
+        header,
+        "@property (copy, nonatomic, getter=getSubmitAction, readonly) NSString * submitAction;");
     String translation =
         translateSourceFile("PromptBoxActionRegistryImpl", "PromptBoxActionRegistryImpl.m");
     // Verify that -Wobjc-protocol-property-synthesis is suppressed alongside compiler similarity
