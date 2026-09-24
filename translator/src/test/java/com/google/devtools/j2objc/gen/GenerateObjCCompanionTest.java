@@ -157,9 +157,10 @@ public class GenerateObjCCompanionTest extends GenerationTest {
         """;
     String header = translateSourceFile(source, "Foo", "Foo.h");
     assertInTranslation(header, "@protocol FooCompanionProtocol");
-    assertInTranslation(header, "@property (nonatomic, getter=getBar, readonly) NSString * bar;");
     assertInTranslation(
-        header, "@property (class, nonatomic, getter=getBar, readonly) NSString * bar;");
+        header, "@property (copy, nonatomic, getter=getBar, readonly) NSString * bar;");
+    assertInTranslation(
+        header, "@property (class, copy, nonatomic, getter=getBar, readonly) NSString * bar;");
   }
 }
 
