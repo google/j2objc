@@ -442,6 +442,13 @@ public class NameTable {
 
   private String addSwiftParamNames(
       List<SingleVariableDeclaration> parameters, String name, char delim) {
+    int paramCount = parameters.size();
+    if (paramCount > 0
+        && parameters.get(paramCount - 1).getVariableElement().asType()
+            instanceof NativeType nativeType
+        && nativeType.getName().equals("NSError **")) {
+      parameters = parameters.subList(0, paramCount - 1);
+    }
     if (parameters.isEmpty()) {
       return name + "()";
     }
