@@ -120,6 +120,12 @@ public abstract class GeneratedElement implements Element {
     return this;
   }
 
+  @CanIgnoreReturnValue
+  public GeneratedElement removeAnnotationMirror(AnnotationMirror annotation) {
+    annotationMirrors.remove(annotation);
+    return this;
+  }
+
   @Override
   public String toString() {
     return name.toString();

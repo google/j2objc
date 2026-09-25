@@ -186,6 +186,71 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         "- (void)setListWithNSArray:(NSArray<NSString *> *)list NS_SWIFT_NAME(setList(array:));");
   }
 
+  /**
+   * Tests that an explicit swiftName in @ObjectiveCKmpMethod is used for the adapter method even
+   * when @SwiftName is also present on the Java method to rename the original method.
+   */
+  public void testSwiftNameInObjectiveCKmpMethodWithMethodLevelSwiftName() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.j2objc.annotations.SwiftName;
+        import java.util.List;
+
+        @SwiftName
+        public class SwiftNameConflictTest {
+          @ObjectiveCKmpMethod(
+              selector = "setListWithArray:",
+              adapter = Adapter.class,
+              swiftName = "setList(list:)")
+          @SwiftName("setList(listWithList:)")
+          public void setList(List<String> list) {}
+        }
+        """,
+        "SwiftNameConflictTest.java");
+
+    String testHeader = translateSourceFile("SwiftNameConflictTest", "SwiftNameConflictTest.h");
+    assertInTranslation(
+        testHeader,
+        "- (void)setListWithJavaUtilList:(id<JavaUtilList>)list"
+            + " NS_SWIFT_NAME(setList(listWithList:));");
+    assertInTranslation(
+        testHeader,
+        "- (void)setListWithArray:(NSArray<NSString *> *)list NS_SWIFT_NAME(setList(list:));");
+  }
+
+  /**
+   * Tests that a method-level @SwiftName only applies to the original Java method and does not
+   * apply to the adapter method when swiftName is not specified in @ObjectiveCKmpMethod.
+   */
+  public void testMethodLevelSwiftNameOnlyAppliesToOriginalMethod() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.j2objc.annotations.SwiftName;
+        import java.util.List;
+
+        public class MethodLevelSwiftNameOnlyOriginalTest {
+          @ObjectiveCKmpMethod(
+              selector = "getSummarizeItemsPromptWith:",
+              adapter = Adapter.class)
+          @SwiftName("getSummarizeItemsPrompt(items:)")
+          public void getSummarizeItemsPrompt(List<String> items) {}
+        }
+        """,
+        "MethodLevelSwiftNameOnlyOriginalTest.java");
+
+    String testHeader =
+        translateSourceFile(
+            "MethodLevelSwiftNameOnlyOriginalTest", "MethodLevelSwiftNameOnlyOriginalTest.h");
+    assertInTranslation(
+        testHeader,
+        "- (void)getSummarizeItemsPromptWithJavaUtilList:(id<JavaUtilList>)items"
+            + " NS_SWIFT_NAME(getSummarizeItemsPrompt(items:));");
+    assertInTranslation(
+        testHeader, "- (void)getSummarizeItemsPromptWith:(NSArray<NSString *> *)items;");
+  }
+
   /** Tests swiftName attribute in @ObjectiveCKmpMethod for abstract methods. */
   public void testSwiftNameInAbstractObjectiveCKmpMethod() throws IOException {
     addSourceFile(

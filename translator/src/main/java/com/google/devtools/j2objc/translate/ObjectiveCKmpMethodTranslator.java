@@ -519,9 +519,6 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       if (options.swiftNaming()) {
         return true;
       }
-      if (ElementUtil.getAnnotation(originalMethodExecutable, SwiftName.class) != null) {
-        return true;
-      }
       Element current = typeNode.getTypeElement();
       while (current != null) {
         if (ElementUtil.getAnnotation(current, SwiftName.class) != null) {
@@ -562,6 +559,11 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     }
 
     private void attachSwiftNameAnnotation(GeneratedExecutableElement adapterMethodExecutable) {
+      AnnotationMirror existingSwiftName =
+          ElementUtil.getAnnotation(adapterMethodExecutable, SwiftName.class);
+      if (existingSwiftName != null) {
+        adapterMethodExecutable.removeAnnotationMirror(existingSwiftName);
+      }
       String effectiveSwiftName = getOrComputeSwiftName();
       if (effectiveSwiftName == null || effectiveSwiftName.isEmpty()) {
         return;
