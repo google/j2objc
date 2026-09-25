@@ -526,10 +526,10 @@ public class LongTest extends TestCase {
      * java.lang.Long#hashCode()
      */
     public void test_hashCode() {
-        assertEquals((int) (1L ^ (1L >>> 32)), new Long(1).hashCode());
-        assertEquals((int) (2L ^ (2L >>> 32)), new Long(2).hashCode());
-        assertEquals((int) (0L ^ (0L >>> 32)), new Long(0).hashCode());
-        assertEquals((int) (-1L ^ (-1L >>> 32)), new Long(-1).hashCode());
+        assertEquals(-1640531535, new Long(1).hashCode());
+        assertEquals(1013904226, new Long(2).hashCode());
+        assertEquals(0, new Long(0).hashCode());
+        assertEquals(-1640531535, new Long(-1).hashCode());
     }
 
     /**
