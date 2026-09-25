@@ -67,6 +67,9 @@ public class ReferenceGraph {
     Set<TypeNode> visited = new HashSet<>();
     List<TypeNode> toVisit = Lists.newArrayList(root);
     outer: while (true) {
+      if (toVisit.isEmpty()) {
+        return Collections.emptyList();
+      }
       List<TypeNode> visitNext = new ArrayList<>();
       for (TypeNode source : toVisit) {
         visited.add(source);

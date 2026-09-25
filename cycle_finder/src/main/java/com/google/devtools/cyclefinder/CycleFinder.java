@@ -220,6 +220,10 @@ public class CycleFinder {
       TypeNode root = Iterables.getFirst(unusedTypes, null);
       assert root != null;
       List<Edge> cycle = subgraph.findShortestCycle(root);
+      if (cycle.isEmpty()) {
+        unusedTypes.remove(root);
+        continue;
+      }
       if (shouldAddCycle(cycle)) {
         cycles.add(cycle);
       }
