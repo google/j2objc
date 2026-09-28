@@ -71,14 +71,14 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.TYPE, ElementType.RECORD_COMPONENT})
 public @interface Property {
 
   /**
    * Prevents a method from being converted to a property when its class is annotated with
    * `@Property`.
    */
-  @Target({ElementType.METHOD})
+  @Target({ElementType.METHOD, ElementType.RECORD_COMPONENT})
   public @interface Suppress {
 
     String reason() default "";

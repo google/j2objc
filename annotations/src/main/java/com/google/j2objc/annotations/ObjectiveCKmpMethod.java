@@ -67,7 +67,7 @@ import java.lang.annotation.Target;
  * not found, it will fallback to a method that matches {@code List<?>}.
  */
 @Documented
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
+@Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.RECORD_COMPONENT})
 @Retention(RetentionPolicy.CLASS)
 public @interface ObjectiveCKmpMethod {
   /**
