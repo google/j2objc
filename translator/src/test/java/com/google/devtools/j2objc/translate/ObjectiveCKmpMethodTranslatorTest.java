@@ -2278,5 +2278,65 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         }
         """);
   }
+
+  public void testTranslate_nonNullParameterizedContainerParameter() throws IOException {
+    addSourceFile("public class CustomFuture<T> {}", "CustomFuture.java");
+    addSourceFile("public class UnadaptedFlow<T> {}", "UnadaptedFlow.java");
+    addSourceFile(
+        """
+        public class FutureAdapter {
+          public static native CustomFuture<Boolean> toBooleanFuture(CustomFuture<Number> future)
+              /*-[ return nil; ]-*/;
+          public static native CustomFuture<Number> fromBooleanFuture(CustomFuture<Boolean> future)
+              /*-[ return nil; ]-*/;
+        }
+        """,
+        "FutureAdapter.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import org.jspecify.annotations.NullMarked;
+        import org.jspecify.annotations.Nullable;
+
+        @NullMarked
+        public class FutureTestClass {
+          @ObjectiveCKmpMethod(selector = "echoBooleanFuture:", adapter = FutureAdapter.class)
+          public @Nullable CustomFuture<Boolean> echoBooleanFuture(
+              CustomFuture<Boolean> future) {
+            return future;
+          }
+
+          @ObjectiveCKmpMethod(selector = "processFlow:", adapter = FutureAdapter.class)
+          public void processFlow(UnadaptedFlow<ImmutableList<Foo>> flow) {}
+        }
+        """,
+        "FutureTestClass.java");
+
+    String header = translateSourceFile("FutureTestClass", "FutureTestClass.h");
+    assertInTranslation(
+        header,
+        "- (CustomFuture<NSNumber *> * _Nullable)echoBooleanFuture:"
+            + "(CustomFuture<NSNumber *> *)future;");
+    assertInTranslation(
+        header,
+        "- (void)processFlow:(UnadaptedFlow<ComGoogleCommonCollectImmutableList<Foo *> *> *)flow;");
+
+    String impl = translateSourceFile("FutureTestClass", "FutureTestClass.m");
+    assertInTranslation(
+        impl,
+        """
+        - (CustomFuture<NSNumber *> * _Nullable)echoBooleanFuture:(CustomFuture<NSNumber *> *)future {
+          return (CustomFuture<NSNumber *> * _Nullable) [FutureAdapter fromBooleanFutureWithCustomFuture:[self echoBooleanFutureWithCustomFuture:[FutureAdapter toBooleanFutureWithCustomFuture:(CustomFuture *) future]]];
+        }
+        """);
+    assertInTranslation(
+        impl,
+        """
+        - (void)processFlow:(UnadaptedFlow *)flow {
+          [self processFlowWithUnadaptedFlow:flow];
+        }
+        """);
+  }
 }
 

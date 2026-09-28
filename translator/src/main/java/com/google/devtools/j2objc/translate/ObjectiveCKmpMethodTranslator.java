@@ -807,8 +807,9 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       if (adapterElement == null) {
         return false;
       }
-      return strategy.findConverter(adapterLookup, adapterElement, type, isParam).converter()
-          != null;
+      var match = strategy.findConverter(adapterLookup, adapterElement, type, isParam);
+      return match.converter() != null
+          || match.matchType() == AdapterLookup.MatchType.NONE_EXACT_REQUIRED;
     }
 
     private Statement createReturnStatement(
