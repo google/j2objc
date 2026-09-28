@@ -332,10 +332,10 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertNoWarnings();
     assertNoErrors();
 
-    assertInTranslation(testHeader, "- (bool)doSomethingAndReturnError:(NSError **)error;");
+    assertInTranslation(testHeader, "- (BOOL)doSomethingAndReturnError:(NSError **)error;");
     assertTranslatedLines(
         testSource,
-        "- (bool)doSomethingAndReturnError:(NSError **)error {",
+        "- (BOOL)doSomethingAndReturnError:(NSError **)error {",
         "@try {",
         "  [self _doSomething]; ",
         "  return YES; ",
@@ -732,8 +732,8 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertNoWarnings();
     assertNoErrors();
 
-    assertInTranslation(testHeader, "- (bool)doSomethingAndReturnError:(NSError **)error;");
-    assertInTranslation(testSource, "- (bool)doSomethingAndReturnError:(NSError **)error {");
+    assertInTranslation(testHeader, "- (BOOL)doSomethingAndReturnError:(NSError **)error;");
+    assertInTranslation(testSource, "- (BOOL)doSomethingAndReturnError:(NSError **)error {");
   }
 
   public void testThrowsAsErrorMultiArgNaming() throws IOException {
@@ -755,10 +755,10 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertNoErrors();
 
     assertTranslatedLines(
-        testHeader, "- (bool)doSomethingWithInt:(int32_t)somenumber", "error:(NSError **)error;");
+        testHeader, "- (BOOL)doSomethingWithInt:(int32_t)somenumber", "error:(NSError **)error;");
     assertTranslatedLines(
         testSource,
-        "- (bool)doSomethingWithInt:(int32_t)somenumber",
+        "- (BOOL)doSomethingWithInt:(int32_t)somenumber",
         "error:(NSError **)error {",
         "@try {",
         "[self doSomethingWithInt:somenumber];",
@@ -768,5 +768,194 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "return NO;",
         "}",
         "}");
+  }
+
+  public void testThrowsInSwiftNameContext_companionAndNullMarked() throws IOException {
+    options.setNullability(true);
+    options.setNullMarked(true);
+    addSourceFile(
+        """
+        import com.google.j2kt.annotations.Throws;
+        import com.google.j2objc.annotations.GenerateObjCCompanion;
+        import com.google.j2objc.annotations.ObjectiveCName;
+        import com.google.j2objc.annotations.SwiftName;
+        import org.jspecify.annotations.NullMarked;
+        import org.jspecify.annotations.Nullable;
+
+        @NullMarked
+        @SwiftName
+        @GenerateObjCCompanion
+        public final class Foo {
+          @SwiftName("Foo_Bar")
+          public interface Bar {}
+
+          @Throws
+          @ObjectiveCName("createWithBar:")
+          public static Foo create(@Nullable Bar bar) {
+            return new Foo();
+          }
+
+          @Throws
+          public void doWork() {}
+        }
+        """,
+        "Foo.java");
+
+    String testHeader = translateSourceFile("Foo", "Foo.h");
+    String testSource = getTranslatedFile("Foo.m");
+
+    assertNoWarnings();
+    assertNoErrors();
+
+    // 1. Original non-throwing companion protocol method is marked NS_SWIFT_UNAVAILABLE.
+    assertTranslatedLines(
+        testHeader,
+        "- (Foo *)createWithBar:(id<Foo_Bar> _Nullable)bar"
+            + " NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\");");
+
+    // 2. Companion protocol EXCEPTIONS_AS_ERRORS adapter method has _Nullable return type
+    //    and clean NS_SWIFT_NAME(create(bar:)) without error:.
+    assertTranslatedLines(
+        testHeader,
+        "- (Foo * _Nullable)createWithBar:(id<Foo_Bar> _Nullable)bar",
+        "error:(NSError **)error NS_SWIFT_NAME(create(bar:));");
+
+    // 3. Instance void @Throws method is marked NS_SWIFT_UNAVAILABLE and its adapter has
+    //    NS_SWIFT_NAME(doWork()).
+    assertTranslatedLines(
+        testHeader, "- (void)doWork NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\");");
+    assertTranslatedLines(
+        testHeader, "- (BOOL)doWorkAndReturnError:(NSError **)error NS_SWIFT_NAME(doWork());");
+
+    // 4. Class methods on @interface Foo in Foo.h and implementation in Foo.m.
+    assertTranslatedLines(
+        testHeader,
+        "+ (Foo *)createWithBar:(id<Foo_Bar> _Nullable)bar"
+            + " NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\");");
+    assertTranslatedLines(
+        testHeader,
+        "+ (Foo * _Nullable)createWithBar:(id<Foo_Bar> _Nullable)bar",
+        "error:(NSError **)error NS_SWIFT_NAME(create(bar:));");
+    assertTranslatedLines(
+        testSource,
+        "+ (Foo *)createWithBar:(id<Foo_Bar>)bar",
+        "error:(NSError **)error {",
+        "@try {",
+        "return [Foo createWithBar:bar];",
+        "} @catch (NSException *e) {",
+        "if (error) { *error = JREErrorFromException(e); }",
+        "return nil;",
+        "}",
+        "}");
+  }
+
+  public void testThrowsOutsideSwiftNameContext_nullabilityAndSwiftUnavailable()
+      throws IOException {
+    options.setNullability(true);
+    options.setNullMarked(true);
+    addSourceFile(
+        """
+        import com.google.j2kt.annotations.Throws;
+        import com.google.j2objc.annotations.GenerateObjCCompanion;
+        import com.google.j2objc.annotations.ObjectiveCName;
+        import org.jspecify.annotations.NullMarked;
+        import org.jspecify.annotations.Nullable;
+
+        @NullMarked
+        @GenerateObjCCompanion
+        public final class NonSwiftFoo {
+          public interface Bar {}
+
+          @Throws
+          @ObjectiveCName("createWithBar:")
+          public static NonSwiftFoo create(@Nullable Bar bar) {
+            return new NonSwiftFoo();
+          }
+        }
+        """,
+        "NonSwiftFoo.java");
+
+    String testHeader = translateSourceFile("NonSwiftFoo", "NonSwiftFoo.h");
+    assertNoWarnings();
+    assertNoErrors();
+
+    // Outside a @SwiftName context, the original method is preserved without NS_SWIFT_UNAVAILABLE
+    // while the error: adapter method still gets a _Nullable return type for Objective-C callers.
+    assertTranslatedLines(
+        testHeader, "- (NonSwiftFoo *)createWithBar:(id<NonSwiftFoo_Bar> _Nullable)bar;");
+    assertTranslatedLines(
+        testHeader,
+        "- (NonSwiftFoo * _Nullable)createWithBar:(id<NonSwiftFoo_Bar> _Nullable)bar",
+        "error:(NSError **)error;");
+    assertTranslatedLines(
+        testHeader, "+ (NonSwiftFoo *)createWithBar:(id<NonSwiftFoo_Bar> _Nullable)bar;");
+    assertTranslatedLines(
+        testHeader,
+        "+ (NonSwiftFoo * _Nullable)createWithBar:(id<NonSwiftFoo_Bar> _Nullable)bar",
+        "error:(NSError **)error;");
+  }
+
+  public void testThrowsWithMethodSwiftName() throws IOException {
+    options.setNullability(true);
+    options.setNullMarked(true);
+    addSourceFile(
+        """
+        import com.google.j2kt.annotations.Throws;
+        import com.google.j2objc.annotations.GenerateObjCCompanion;
+        import com.google.j2objc.annotations.ObjectiveCName;
+        import com.google.j2objc.annotations.SwiftName;
+        import org.jspecify.annotations.NullMarked;
+        import org.jspecify.annotations.Nullable;
+
+        @NullMarked
+        @SwiftName
+        @GenerateObjCCompanion
+        public final class MethodSwiftFoo {
+          @SwiftName("MethodSwiftFoo_Bar")
+          public interface Bar {}
+
+          @Throws
+          @ObjectiveCName("createWithBar:")
+          @SwiftName("customCreate(bar:)")
+          public static MethodSwiftFoo create(@Nullable Bar bar) {
+            return new MethodSwiftFoo();
+          }
+
+          @Throws
+          @SwiftName("customDoWork()")
+          public void doWork() {}
+        }
+        """,
+        "MethodSwiftFoo.java");
+
+    String testHeader = translateSourceFile("MethodSwiftFoo", "MethodSwiftFoo.h");
+    assertNoWarnings();
+    assertNoErrors();
+
+    // Companion protocol methods: original is NS_SWIFT_UNAVAILABLE, adapter has custom Swift name.
+    assertTranslatedLines(
+        testHeader,
+        "- (MethodSwiftFoo *)createWithBar:(id<MethodSwiftFoo_Bar> _Nullable)bar"
+            + " NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\");");
+    assertTranslatedLines(
+        testHeader,
+        "- (MethodSwiftFoo * _Nullable)createWithBar:(id<MethodSwiftFoo_Bar> _Nullable)bar",
+        "error:(NSError **)error NS_SWIFT_NAME(customCreate(bar:));");
+
+    // Instance method with @SwiftName("customDoWork()") + @Throws:
+    assertTranslatedLines(
+        testHeader, "- (void)doWork NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\");");
+    assertTranslatedLines(
+        testHeader, "- (BOOL)doWorkAndReturnError:(NSError **)error NS_SWIFT_NAME(customDoWork());");
+
+    // Class methods on @interface MethodSwiftFoo:
+    assertTranslatedLines(
+        testHeader,
+        "+ (MethodSwiftFoo *)createWithBar:(id<MethodSwiftFoo_Bar> _Nullable)bar"
+            + " NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\");");
+    assertTranslatedLines(
+        testHeader,
+        "+ (MethodSwiftFoo * _Nullable)createWithBar:(id<MethodSwiftFoo_Bar> _Nullable)bar",
+        "error:(NSError **)error NS_SWIFT_NAME(customCreate(bar:));");
   }
 }

@@ -36,6 +36,7 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionElement;
+import com.google.devtools.j2objc.types.GeneratedAnnotationMirror;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
@@ -58,12 +59,13 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import org.jspecify.annotations.Nullable;
 
 /** Implements the ObjectiveCAdapterMethod annotation. */
 public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
-  
+
   private final List<String> adapterMethodSelectors = new ArrayList<>();
 
   public ObjectiveCAdapterMethodAnnotation(CompilationUnit unit) {
@@ -90,6 +92,12 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
       this.adaptedMethodArguments = adaptedMethodArguments;
       this.adaptedMethodInvocation = adaptedMethodInvocation;
       this.returnValueExpression = returnValueExpression;
+    }
+
+    boolean hasObjectReturnType() {
+      return TypeUtil.isDeclaredType(adapterMethodReturnType)
+          || TypeUtil.isInterface(adapterMethodReturnType)
+          || TypeUtil.isEnum(adapterMethodReturnType);
     }
   }
 
@@ -217,14 +225,14 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
     Statement catchReturnStatement = null;
     boolean wasVoidReturn = false;
     if (TypeUtil.isVoid(adapterConfig.adapterMethodReturnType)) {
-      adapterConfig.adapterMethodReturnType = TypeUtil.BOOL_TYPE;
+      // Using new NativeType("BOOL") instead of TypeUtil.BOOL_TYPE so that clang-swift-interop
+      // can resolve it to Swift's native Bool.
+      adapterConfig.adapterMethodReturnType = new NativeType("BOOL");
       wasVoidReturn = true;
       catchReturnStatement = new NativeStatement("return NO;");
     } else if (TypeUtil.isPrimitiveOrVoid(adapterConfig.adapterMethodReturnType)) {
       catchReturnStatement = new NativeStatement("return 0;");
-    } else if (TypeUtil.isDeclaredType(adapterConfig.adapterMethodReturnType)
-        || TypeUtil.isInterface(adapterConfig.adapterMethodReturnType)
-        || TypeUtil.isEnum(adapterConfig.adapterMethodReturnType)) {
+    } else if (adapterConfig.hasObjectReturnType()) {
       catchReturnStatement = new NativeStatement("return nil;");
     } else if (TypeUtil.isNativeType(adapterConfig.adapterMethodReturnType)) {
       Expression nativeDefaultExpression =
@@ -530,7 +538,7 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
     if (!isMethodAnnotatedForAdapter(methodExecutable)) {
       return;
     }
-    
+
     // Check if the adapter method has already been added.
     String adapterSelector = adapterSelectorForMethod(methodExecutable);
     if (adapterMethodSelectors.contains(adapterSelector)) {
@@ -614,6 +622,17 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
     adapterMethodDeclaration.getParameters().clear();
     for (VariableElement adapterParam : adapterConfig.adapterMethodParameters) {
       adapterMethodDeclaration.addParameter(new SingleVariableDeclaration(adapterParam));
+    }
+    // Object-returning exception adapter methods return nil when an NSException is caught,
+    // so their return type is inherently nullable (and Clang requires _Nullable inside
+    // NS_ASSUME_NONNULL_BEGIN to import NSError ** methods as `throws` in Swift).
+    if (methodAdaptsExceptionsAsError(methodExecutable)
+        && adapterConfig.hasObjectReturnType()
+        && !ElementUtil.hasNullableAnnotation(adapterMethodExecutable)) {
+      TypeElement nullableElement =
+          GeneratedTypeElement.newEmulatedInterface(Nullable.class.getName());
+      adapterMethodExecutable.addAnnotationMirror(
+          new GeneratedAnnotationMirror((DeclaredType) nullableElement.asType()));
     }
 
     typeDeclaration.addBodyDeclaration(adapterMethodDeclaration);
