@@ -779,6 +779,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
         // nullable, we still go through the computation of the type as we will be adding more
         // information than just the type name (id brackets and nullability marker).
         if (!isTypeSupported(parameterType)
+            && !hasConverter(parameterType, /* isParam= */ true)
             && !isNullable(parameterType)
             && !TypeUtil.isInterface(parameterType)) {
           adaptingArguments.add(new SimpleName(parameter));
@@ -799,6 +800,16 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
         adaptingArguments.add(converterMethodInvocation);
       }
       return new ParameterMapping(adaptingArguments, adapterParameters);
+    }
+
+    private boolean hasConverter(TypeMirror type, boolean isParam) {
+      TypeElement adapterElement = TypeUtil.asTypeElement(adapter);
+      if (adapterElement == null) {
+        return false;
+      }
+      var match = strategy.findConverter(adapterLookup, adapterElement, type, isParam);
+      return match.converter() != null
+          || match.matchType() == AdapterLookup.MatchType.NONE_EXACT_REQUIRED;
     }
 
     private Statement createReturnStatement(
