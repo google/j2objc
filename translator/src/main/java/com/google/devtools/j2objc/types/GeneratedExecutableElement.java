@@ -100,11 +100,9 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
       TypeMirror adapterReturnType,
       List<VariableElement> adapterParameters,
       ExecutableElement method) {
-    AnnotationMirror throwsAnnotation =
-        ElementUtil.getQualifiedNamedAnnotation(method, "com.google.j2kt.annotations.Throws");
     GeneratedExecutableElement generatedMethod =
         new GeneratedExecutableElement(
-            throwsAnnotation != null ? method.getSimpleName().toString() : selector,
+            selector,
             selector,
             method.getKind(),
             adapterReturnType,
@@ -112,8 +110,6 @@ public class GeneratedExecutableElement extends GeneratedElement implements Exec
             method.isVarArgs(),
             ElementUtil.isSynthetic(method));
     generatedMethod.addAnnotationMirrors(method.getAnnotationMirrors());
-    // Remove the Throws annotation as it is not needed on the adapter method.
-    generatedMethod.getAnnotationMirrors().remove(throwsAnnotation);
     Set<Modifier> modifiers = Sets.newHashSet(method.getModifiers());
     modifiers.remove(Modifier.ABSTRACT); // Adapter methods are always concrete.
     generatedMethod.addModifiers(modifiers);
