@@ -850,12 +850,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (!printPrivateDeclarations()) {
       String swiftName = nameTable.getSwiftMethodNameFromAnnotation(m);
       if (swiftName != null) {
-        if (ElementUtil.hasQualifiedNamedAnnotation(
-            methodElement, "com.google.j2kt.annotations.Throws")) {
-          print(" NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\")");
-        } else {
-          print(" NS_SWIFT_NAME(" + swiftName + ")");
-        }
+        print(" NS_SWIFT_NAME(" + swiftName + ")");
       }
     }
     if (needsDeprecatedAttribute(m.getAnnotations())) {
