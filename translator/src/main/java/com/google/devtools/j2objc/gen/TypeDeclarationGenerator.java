@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
@@ -39,11 +40,13 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
+import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -457,12 +460,30 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       VariableElement var = fragment.getVariableElement();
       if (typeNode instanceof RecordDeclaration && !ElementUtil.isStatic(var)) {
         // Instance fields of a record are its components.
+        ExecutableElement accessor =
+            ElementUtil.findMethod(typeElement, var.getSimpleName().toString());
+        if (ElementUtil.hasAnnotation(var, Property.Suppress.class)
+            || (accessor != null && ElementUtil.hasAnnotation(accessor, Property.Suppress.class))) {
+          continue;
+        }
+        FieldDeclaration existingFieldDecl = (FieldDeclaration) fragment.getParent();
+        PropertyAnnotation existingAnnotation =
+            existingFieldDecl.getAnnotations().stream()
+                .filter(PropertyAnnotation.class::isInstance)
+                .map(PropertyAnnotation.class::cast)
+                .findFirst()
+                .orElse(null);
 
         // Synthesize a declaration as if it was annotated with @Property.
         FieldDeclaration componentDeclaration = new FieldDeclaration(var, null);
-        PropertyAnnotation componentAnnotation = new PropertyAnnotation();
-        componentAnnotation.getPropertyAttributes().add("readonly");
-        componentAnnotation.getPropertyAttributes().add("nonatomic");
+        PropertyAnnotation componentAnnotation =
+            existingAnnotation != null
+                ? new PropertyAnnotation(existingAnnotation)
+                : new PropertyAnnotation();
+        componentAnnotation.addAttribute("readonly");
+        if (!componentAnnotation.hasAttribute("atomic")) {
+          componentAnnotation.addAttribute("nonatomic");
+        }
         componentDeclaration.addAnnotation(componentAnnotation);
         fragment = componentDeclaration.getFragment();
       }
@@ -772,10 +793,40 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         ElementUtil.findSetterMethod(
             propertyName, returnType, declaringClass, ElementUtil.isStatic(methodElement));
 
+    PropertyAnnotation propertyAnnotation =
+        m.getAnnotations().stream()
+            .filter(PropertyAnnotation.class::isInstance)
+            .map(PropertyAnnotation.class::cast)
+            .findFirst()
+            .orElseGet(
+                () ->
+                    typeNode.getAnnotations().stream()
+                        .filter(PropertyAnnotation.class::isInstance)
+                        .map(PropertyAnnotation.class::cast)
+                        .findFirst()
+                        .orElse(null));
+    Set<String> customAttributes =
+        propertyAnnotation != null ? propertyAnnotation.getPropertyAttributes() : ImmutableSet.of();
+    String memoryManagementAttribute = "";
+    if (PropertyAnnotation.hasMemoryManagementAttribute(customAttributes)) {
+      for (String attr : customAttributes) {
+        if (PropertyAnnotation.hasMemoryManagementAttribute(ImmutableSet.of(attr))) {
+          if (!attr.equals("strong") || !options.useARC()) {
+            memoryManagementAttribute = attr + ", ";
+          }
+          break;
+        }
+      }
+    } else if (typeUtil.isString(returnType)) {
+      memoryManagementAttribute = "copy, ";
+    }
+
     newline();
     printf(
-        "@property (%snonatomic, %s, %s%s) %s %s;",
+        "@property (%s%s%s, %s, %s%s) %s %s;",
         ElementUtil.isStatic(methodElement) && !isKotlinCompanion ? "class, " : "",
+        memoryManagementAttribute,
+        customAttributes.contains("atomic") ? "atomic" : "nonatomic",
         "getter=" + methodName,
         setter != null ? "setter=" + nameTable.getMethodSelector(setter) : "readonly",
         shouldAddNullableAnnotation(methodElement) ? ", nullable" : "",
