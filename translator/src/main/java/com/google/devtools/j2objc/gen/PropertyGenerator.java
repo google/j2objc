@@ -15,8 +15,11 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -25,14 +28,15 @@ import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Weak;
 import java.util.Optional;
 import java.util.Set;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 
 /**
- * Generate an Objective-C property based on a variable declaration and Property annotation (if
- * present)
+ * Generate an Objective-C property based on a variable declaration or method declaration and
+ * Property annotation (if present)
  */
 public final class PropertyGenerator {
 
@@ -57,13 +61,26 @@ public final class PropertyGenerator {
         .build();
   }
 
+  public static Optional<String> generate(
+      MethodDeclaration method,
+      boolean isKotlinCompanion,
+      Options options,
+      NameTable nameTable,
+      TypeUtil typeUtil,
+      boolean parametersNonnullByDefault) {
+    return new PropertyGenerator(
+            method, isKotlinCompanion, options, nameTable, typeUtil, parametersNonnullByDefault)
+        .build();
+  }
+
   private final VariableDeclarationFragment fragment;
+  private final MethodDeclaration method;
   private final Options options;
   private final NameTable nameTable;
   private final TypeUtil typeUtil;
   private final boolean parametersNonnullByDefault;
   private final PropertyAnnotation annotation;
-  private final VariableElement varElement;
+  private final Element element;
   private final TypeMirror varType;
   private final String propertyName;
   private final FieldDeclaration declaration;
@@ -77,6 +94,7 @@ public final class PropertyGenerator {
       boolean parametersNonnullByDefault,
       boolean staticToInstance) {
     this.fragment = fragment;
+    this.method = null;
     this.options = options;
     this.nameTable = nameTable;
     this.typeUtil = typeUtil;
@@ -89,7 +107,8 @@ public final class PropertyGenerator {
             .map(PropertyAnnotation.class::cast)
             .findFirst()
             .orElse(null);
-    varElement = fragment.getVariableElement();
+    VariableElement varElement = fragment.getVariableElement();
+    this.element = varElement;
     if (annotation == null
         && options.classProperties()
         && ElementUtil.isStatic(varElement)
@@ -100,6 +119,49 @@ public final class PropertyGenerator {
     this.annotation = annotation;
     varType = varElement.asType();
     propertyName = nameTable.getStaticAccessorName(varElement);
+  }
+
+  private PropertyGenerator(
+      MethodDeclaration method,
+      boolean isKotlinCompanion,
+      Options options,
+      NameTable nameTable,
+      TypeUtil typeUtil,
+      boolean parametersNonnullByDefault) {
+    this.fragment = null;
+    this.method = method;
+    this.options = options;
+    this.nameTable = nameTable;
+    this.typeUtil = typeUtil;
+    this.parametersNonnullByDefault = parametersNonnullByDefault;
+    this.staticToInstance = isKotlinCompanion;
+    this.declaration = null;
+    ExecutableElement methodElement = method.getExecutableElement();
+    this.element = methodElement;
+    this.varType = method.getReturnTypeMirror();
+    String methodName = nameTable.getMethodSelector(methodElement);
+    this.propertyName = NameTable.lowercaseFirst(methodName.replaceFirst("get", ""));
+
+    PropertyAnnotation annotation =
+        method.getAnnotations().stream()
+            .filter(PropertyAnnotation.class::isInstance)
+            .map(PropertyAnnotation.class::cast)
+            .findFirst()
+            .orElseGet(
+                () -> {
+                  AbstractTypeDeclaration enclosingType = TreeUtil.getEnclosingType(method);
+                  return enclosingType != null
+                      ? enclosingType.getAnnotations().stream()
+                          .filter(PropertyAnnotation.class::isInstance)
+                          .map(PropertyAnnotation.class::cast)
+                          .findFirst()
+                          .orElse(null)
+                      : null;
+                });
+    if (annotation == null) {
+      annotation = new PropertyAnnotation();
+    }
+    this.annotation = annotation;
   }
 
   private Optional<String> build() {
@@ -118,10 +180,12 @@ public final class PropertyGenerator {
   }
 
   private boolean processMemoryManagementAttributes(Set<String> attributes) {
-    VariableDeclarationFragment firstVarNode = declaration.getFragment();
     if (typeUtil.isString(varType)) {
-      attributes.add("copy");
-    } else if (ElementUtil.hasAnnotation(firstVarNode.getVariableElement(), Weak.class)) {
+      if (!PropertyAnnotation.hasMemoryManagementAttribute(attributes)) {
+        attributes.add("copy");
+      }
+    } else if (declaration != null
+        && ElementUtil.hasAnnotation(declaration.getFragment().getVariableElement(), Weak.class)) {
       if (attributes.contains("strong")) {
         ErrorUtil.error(
             declaration, "Weak field annotation conflicts with strong Property attribute");
@@ -141,9 +205,31 @@ public final class PropertyGenerator {
   }
 
   private void processAccessorAttributes(Set<String> attributes) {
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(element);
+    if (method != null) {
+      ExecutableElement methodElement = (ExecutableElement) element;
+      String methodName = nameTable.getMethodSelector(methodElement);
+      attributes.add("getter=" + methodName);
+      ExecutableElement setter =
+          ElementUtil.findSetterMethod(
+              propertyName, varType, declaringClass, ElementUtil.isStatic(methodElement));
+      if (setter != null) {
+        attributes.add("setter=" + nameTable.getMethodSelector(setter));
+        if (!ElementUtil.isSynchronized(setter)) {
+          attributes.add("nonatomic");
+        }
+      } else {
+        attributes.add("readonly");
+        if (!ElementUtil.isSynchronized(methodElement)) {
+          attributes.add("nonatomic");
+        }
+      }
+      return;
+    }
+
     // Add default getter/setter here, as each fragment needs its own attributes
     // to support its unique accessors.
-    TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
+    VariableElement varElement = (VariableElement) element;
     ExecutableElement getter =
         ElementUtil.findGetterMethod(
             propertyName, varType, declaringClass, ElementUtil.isStatic(varElement));
@@ -173,12 +259,12 @@ public final class PropertyGenerator {
   }
 
   private void processClassAttribute(Set<String> attributes) {
-    if (ElementUtil.isStatic(varElement) && !staticToInstance) {
+    if (ElementUtil.isStatic(element) && !staticToInstance) {
       attributes.add("class");
-    } else if (attributes.contains("class")) {
+    } else if (attributes.contains("class") && fragment != null) {
       ErrorUtil.error(fragment, "Only static fields can be translated to class properties");
     }
-    if (attributes.contains("class")) {
+    if (attributes.contains("class") && fragment != null) {
       if (!options.staticAccessorMethods()) {
         // Class property accessors must be present, as they are not synthesized by runtime.
         ErrorUtil.error(
@@ -192,10 +278,10 @@ public final class PropertyGenerator {
   }
 
   private void processNullabilityAttributes(Set<String> attributes) {
-    if (options.nullability() && !varElement.asType().getKind().isPrimitive()) {
-      if (ElementUtil.hasNullableAnnotation(varElement)) {
+    if (options.nullability() && !varType.getKind().isPrimitive()) {
+      if (ElementUtil.hasNullableAnnotation(element)) {
         attributes.add("nullable");
-      } else if (ElementUtil.isNonnull(varElement, parametersNonnullByDefault)) {
+      } else if (ElementUtil.isNonnull(element, parametersNonnullByDefault)) {
         attributes.add("nonnull");
       }
     }
@@ -206,7 +292,7 @@ public final class PropertyGenerator {
     attributes.remove("readwrite");
     attributes.remove("atomic");
 
-    if (ElementUtil.isFinal(varElement)) {
+    if (fragment != null && ElementUtil.isFinal((VariableElement) element)) {
       attributes.add("readonly");
     }
   }
@@ -224,13 +310,15 @@ public final class PropertyGenerator {
       buffer.append(' ');
     }
     buffer.append(propertyName);
-    TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
-    boolean inSwiftNameContext =
-        declaringClass != null
-            && (nameTable.packageHasSwiftNameAnnotation(declaringClass)
-                || nameTable.elementHasSwiftNameAnnotation(declaringClass));
-    if ((options.classProperties() && ElementUtil.isStatic(varElement)) || inSwiftNameContext) {
-      buffer.append(" NS_SWIFT_NAME(").append(propertyName).append(")");
+    if (fragment != null) {
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(element);
+      boolean inSwiftNameContext =
+          declaringClass != null
+              && (nameTable.packageHasSwiftNameAnnotation(declaringClass)
+                  || nameTable.elementHasSwiftNameAnnotation(declaringClass));
+      if ((options.classProperties() && ElementUtil.isStatic(element)) || inSwiftNameContext) {
+        buffer.append(" NS_SWIFT_NAME(").append(propertyName).append(")");
+      }
     }
     buffer.append(";");
     return buffer.toString();

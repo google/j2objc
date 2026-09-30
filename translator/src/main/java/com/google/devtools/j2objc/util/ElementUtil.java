@@ -705,7 +705,7 @@ public final class ElementUtil {
   }
 
   public static boolean isRuntimeAnnotation(AnnotationMirror mirror) {
-    return isRuntimeAnnotation(mirror.getAnnotationType().asElement());
+    return mirror != null && isRuntimeAnnotation(mirror.getAnnotationType().asElement());
   }
 
   public static boolean isRuntimeAnnotation(Element e) {
@@ -713,7 +713,7 @@ public final class ElementUtil {
   }
 
   public static boolean isGeneratedAnnotation(AnnotationMirror mirror) {
-    return isGeneratedAnnotation(mirror.getAnnotationType().asElement());
+    return mirror != null && isGeneratedAnnotation(mirror.getAnnotationType().asElement());
   }
 
   public static boolean isToBeRemovedAnnotations(Element e, Options options) {

@@ -90,6 +90,9 @@ public class TreeUtil {
 
   public static Annotation getAnnotation(Class<?> annotationClass, List<Annotation> annotations) {
     for (Annotation annotation : annotations) {
+      if (annotation.getAnnotationMirror() == null) {
+        continue;
+      }
       TypeMirror annotationType = annotation.getAnnotationMirror().getAnnotationType();
       if (TypeUtil.getQualifiedName(annotationType).equals(annotationClass.getName())) {
         return annotation;

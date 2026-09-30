@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
@@ -29,6 +30,7 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
@@ -45,9 +47,11 @@ import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -98,7 +102,62 @@ public class RecordExpander extends UnitTreeVisitor {
     maybeAddEquals(node);
     maybeAddHashCode(node);
     maybeAddToString(node);
+    addRecordProperties(node);
     node.validate();
+  }
+
+  private void addRecordProperties(RecordDeclaration node) {
+    TypeElement record = node.getTypeElement();
+    for (BodyDeclaration decl : node.getBodyDeclarations()) {
+      if (decl.getKind() == TreeNode.Kind.FIELD_DECLARATION) {
+        FieldDeclaration fieldDecl = (FieldDeclaration) decl;
+        VariableElement var = fieldDecl.getFragment().getVariableElement();
+        if (ElementUtil.isStatic(var)) {
+          continue;
+        }
+        ExecutableElement accessor =
+            ElementUtil.findMethod(record, var.getSimpleName().toString());
+        if (ElementUtil.hasAnnotation(var, Property.Suppress.class)
+            || (accessor != null && ElementUtil.hasAnnotation(accessor, Property.Suppress.class))) {
+          fieldDecl.getAnnotations().removeIf(PropertyAnnotation.class::isInstance);
+          continue;
+        }
+
+        PropertyAnnotation propertyAnnotation =
+            fieldDecl.getAnnotations().stream()
+                .filter(PropertyAnnotation.class::isInstance)
+                .map(PropertyAnnotation.class::cast)
+                .findFirst()
+                .orElse(null);
+
+        if (propertyAnnotation == null && accessor != null) {
+          AnnotationMirror accessorAnnotation = ElementUtil.getAnnotation(accessor, Property.class);
+          if (accessorAnnotation != null) {
+            propertyAnnotation = new PropertyAnnotation();
+            propertyAnnotation.setAnnotationMirror(accessorAnnotation);
+            for (String attr : ElementUtil.parsePropertyAttribute(accessorAnnotation)) {
+              propertyAnnotation.addAttribute(attr);
+            }
+            fieldDecl.addAnnotation(propertyAnnotation);
+          }
+        }
+
+        if (propertyAnnotation == null) {
+          propertyAnnotation = new PropertyAnnotation();
+          fieldDecl.addAnnotation(propertyAnnotation);
+        }
+
+        propertyAnnotation.addAttribute("readonly");
+        if (!propertyAnnotation.hasAttribute("atomic")) {
+          propertyAnnotation.addAttribute("nonatomic");
+        }
+        if (typeUtil.isString(var.asType())
+            && !PropertyAnnotation.hasMemoryManagementAttribute(
+                propertyAnnotation.getPropertyAttributes())) {
+          propertyAnnotation.addAttribute("copy");
+        }
+      }
+    }
   }
 
   private void maybeAddFieldInitialization(
