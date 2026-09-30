@@ -879,16 +879,21 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertNoWarnings();
     assertNoErrors();
 
-    // Outside a @SwiftName context, the original method is preserved without NS_SWIFT_UNAVAILABLE
-    // while the error: adapter method still gets a _Nullable return type for Objective-C callers.
+    // Even outside a @SwiftName context, the original non-throwing method is marked
+    // NS_SWIFT_UNAVAILABLE("Use throwing method instead") while the error: adapter method
+    // gets a _Nullable return type.
     assertTranslatedLines(
-        testHeader, "- (NonSwiftFoo *)createWithBar:(id<NonSwiftFoo_Bar> _Nullable)bar;");
+        testHeader,
+        "- (NonSwiftFoo *)createWithBar:(id<NonSwiftFoo_Bar> _Nullable)bar"
+            + " NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\");");
     assertTranslatedLines(
         testHeader,
         "- (NonSwiftFoo * _Nullable)createWithBar:(id<NonSwiftFoo_Bar> _Nullable)bar",
         "error:(NSError **)error;");
     assertTranslatedLines(
-        testHeader, "+ (NonSwiftFoo *)createWithBar:(id<NonSwiftFoo_Bar> _Nullable)bar;");
+        testHeader,
+        "+ (NonSwiftFoo *)createWithBar:(id<NonSwiftFoo_Bar> _Nullable)bar"
+            + " NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\");");
     assertTranslatedLines(
         testHeader,
         "+ (NonSwiftFoo * _Nullable)createWithBar:(id<NonSwiftFoo_Bar> _Nullable)bar",
