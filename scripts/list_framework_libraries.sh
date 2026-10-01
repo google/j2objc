@@ -41,7 +41,7 @@ do
 done
 for platform in $SINGLE_PLATFORMS
 do
-  library=build_result/objs-$platform/lib{LIBRARY_NAME}.a
+  library=build_result/objs-$platform/lib${LIBRARY_NAME}.a
   if [ -f $library ]; then
     echo $library
   fi
