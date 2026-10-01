@@ -44,6 +44,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
     addSourceFile("public class Foo {}", "Foo.java");
     addSourceFile("public class Bar implements Baz {}", "Bar.java");
     addSourceFile("public interface Baz {}", "Baz.java");
+    addSourceFile("public class Container<T> {}", "Container.java");
     addSourceFile(
         """
         import java.util.List;
@@ -93,6 +94,8 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
           public static native <T> Object fromJavaUtilSet(Set<T> set, Function<T, Object> conv) /*-[ return nil; ]-*/;
           public static native <K, V> Map<K, V> toJavaUtilMap(Object map, Function<Object, K> kConv, Function<Object, V> vConv) /*-[ return nil; ]-*/;
           public static native <K, V> Object fromJavaUtilMap(Map<K, V> map, Function<K, Object> kConv, Function<V, Object> vConv) /*-[ return nil; ]-*/;
+          public static native <T, S> Container<T> toContainer(Container<S> c, Function<S, T> conv) /*-[ return nil; ]-*/;
+          public static native <S, T> Container<T> fromContainer(Container<S> c, Function<S, T> conv) /*-[ return nil; ]-*/;
         }
         """,
         "Adapter.java");
@@ -2205,6 +2208,73 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """
         - (id)applyWithId:(id)elem {
           return (id<JavaUtilList>) Adapter_toJavaUtilList_JavaUtilList_WithId_(elem);
+        }
+        """);
+  }
+
+  public void testTranslate_genericContainerWithNullableNumberTypeArgument() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import org.jspecify.annotations.Nullable;
+        public class TestClass {
+          @ObjectiveCKmpMethod(selector = "getNsNumberContainer", adapter = Adapter.class)
+          public Container<@Nullable Float> getFloatContainer() {
+            return null;
+          }
+
+          @ObjectiveCKmpMethod(selector = "setNsNumberContainer:", adapter = Adapter.class)
+          public void setFloatContainer(Container<@Nullable Float> c) {}
+        }
+        """,
+        "TestClass.java");
+
+    String header = translateSourceFile("TestClass", "TestClass.h");
+    assertInTranslation(header, "- (Container<id> *)getNsNumberContainer;");
+    assertInTranslation(header, "- (void)setNsNumberContainer:(Container<id> *)c;");
+
+    String impl = translateSourceFile("TestClass", "TestClass.m");
+    assertInTranslation(
+        impl,
+        """
+        - (Container<id> *)getNsNumberContainer {
+          return (Container<id> *) [Adapter fromContainerWithContainer:(Container *) \
+        [self getFloatContainer] withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$Lambda$1, instance)];
+        }
+        """);
+    assertInTranslation(
+        impl,
+        """
+        - (void)setNsNumberContainer:(Container<id> *)c {
+          [self setFloatContainerWithContainer:(Container *) [Adapter \
+        toContainerWithContainer:(Container *) c \
+        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$Lambda$2, instance)]];
+        }
+        """);
+  }
+
+  public void testTranslate_genericContainerWithBooleanParameter() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        public class TestClass {
+          @ObjectiveCKmpMethod(selector = "setBooleanContainer:", adapter = Adapter.class)
+          public void setBooleanContainer(Container<Boolean> c) {}
+        }
+        """,
+        "TestClass.java");
+
+    String header = translateSourceFile("TestClass", "TestClass.h");
+    assertInTranslation(header, "- (void)setBooleanContainer:(Container<NSNumber *> *)c;");
+
+    String impl = translateSourceFile("TestClass", "TestClass.m");
+    assertInTranslation(
+        impl,
+        """
+        - (void)setBooleanContainer:(Container<NSNumber *> *)c {
+          [self setBooleanContainerWithContainer:(Container *) [Adapter \
+        toContainerWithContainer:(Container *) c \
+        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$Lambda$1, instance)]];
         }
         """);
   }
