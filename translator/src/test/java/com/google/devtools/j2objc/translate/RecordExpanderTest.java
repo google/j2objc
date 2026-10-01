@@ -76,6 +76,91 @@ public class RecordExpanderTest extends GenerationTest {
         """);
   }
 
+  public void testComponentProperties() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            import com.google.j2objc.annotations.Property;
+            public record Person(int key, @Property("nonnull") String name, String nickname) {
+              public String nickname() {
+                return nickname;
+              }
+            }
+            """,
+            "Person",
+            "Person.h");
+    assertTranslatedLines(
+        translation,
+        """
+        @interface Person : JavaLangRecord
+        @property (readonly, nonatomic) int32_t key;
+        @property (readonly, copy, nonatomic, nonnull) NSString *name;
+        @property (readonly, copy, nonatomic) NSString *nickname;
+
+        #pragma mark Public
+
+        - (instancetype)initWithInt:(int32_t)key
+                       withNSString:(NSString *)name
+                       withNSString:(NSString *)nickname;
+
+        - (int32_t)key;
+
+        - (NSString *)name;
+
+        - (NSString *)nickname;
+
+        // Disallowed inherited constructors, do not use.
+
+        - (instancetype)init NS_UNAVAILABLE;
+
+        @end
+        """);
+
+    translation = getTranslatedFile("Person.m");
+    assertTranslatedLines(
+        translation,
+        """
+        @implementation Person
+
+        @synthesize key = key_;
+        @synthesize name = name_;
+        @synthesize nickname = nickname_;
+
+        - (instancetype)initWithInt:(int32_t)key
+                       withNSString:(NSString *)name
+                       withNSString:(NSString *)nickname {
+          Person_initWithInt_withNSString_withNSString_(self, key, name, nickname);
+          return self;
+        }
+
+        - (NSString *)nickname {
+          return nickname_;
+        }
+
+        - (int32_t)key {
+          return key_;
+        }
+
+        - (NSString *)name {
+          return name_;
+        }
+
+        - (bool)isEqual:(id)o {
+          if (!([o isKindOfClass:[Person class]])) return false;
+          Person *other = (Person *) cast_chk(o, [Person class]);
+          return ((Person *) nil_chk(other))->key_ == key_ && JavaUtilObjects_equalsWithId_withId_(other->name_, name_) && JavaUtilObjects_equalsWithId_withId_(other->nickname_, nickname_);
+        }
+
+        - (NSUInteger)hash {
+          return JavaUtilObjects_hash__WithNSObjectArray_([IOSObjectArray arrayWithObjects:(id[]){ JavaLangInteger_valueOfWithInt_(key_), name_, nickname_ } count:3 type:NSObject_class_()]);
+        }
+
+        - (NSString *)description {
+          return JreStrcat("$I$$$$C", @"Person[key=", key_, @", name=", name_, @", nickname=", nickname_, ']');
+        }
+        """);
+  }
+
   public void testExplicitlyDeclaredRecord() throws IOException {
     options.setDisallowInheritedConstructors(true);
     String translation =

@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
@@ -29,6 +30,7 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
@@ -38,19 +40,25 @@ import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeNode.Kind;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.GeneratedAnnotationMirror;
+import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.ExternalAnnotations;
+import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -95,10 +103,31 @@ public class RecordExpander extends UnitTreeVisitor {
       }
     }
 
+    // Expose the components as Objective-C properties, unless already annotated with @Property.
+    for (FieldDeclaration fieldDeclaration : TreeUtil.getFieldDeclarations(node)) {
+      VariableElement field = fieldDeclaration.getFragment().getVariableElement();
+      if (!ElementUtil.isStatic(field) && !ElementUtil.hasAnnotation(field, Property.class)) {
+        GeneratedAnnotationMirror annotationMirror = createPropertyAnnotationMirror();
+        ExternalAnnotations.add(field, annotationMirror);
+        fieldDeclaration.addAnnotation(
+            new PropertyAnnotation().setAnnotationMirror(annotationMirror));
+      }
+    }
+
     maybeAddEquals(node);
     maybeAddHashCode(node);
     maybeAddToString(node);
     node.validate();
+  }
+
+  private GeneratedAnnotationMirror createPropertyAnnotationMirror() {
+    String propertyName = Property.class.getName();
+    TypeElement propertyElement = elementUtil.getTypeElement(propertyName);
+    if (propertyElement == null) {
+      // The j2objc annotations might not be in the classpath.
+      propertyElement = GeneratedTypeElement.newEmulatedInterface(propertyName);
+    }
+    return new GeneratedAnnotationMirror((DeclaredType) propertyElement.asType());
   }
 
   private void maybeAddFieldInitialization(
