@@ -245,16 +245,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   private boolean hasStaticAccessorMethods() {
-    if (!options.staticAccessorMethods()) {
-      return false;
-    }
-    for (VariableDeclarationFragment fragment : TreeUtil.getAllFields(typeNode)) {
-      if (ElementUtil.isStatic(fragment.getVariableElement())
-          && !((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration()) {
-        return true;
-      }
-    }
-    return false;
+    return options.staticAccessorMethods() && hasStaticFields();
   }
 
   private boolean hasStaticMethods() {
@@ -262,8 +253,18 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
         Iterables.filter(ElementUtil.getMethods(typeElement), ElementUtil::isStatic));
   }
 
+  // Inspects all fields on typeNode rather than using getStaticFields(), because getStaticFields()
+  // filters `declarations`, which is scoped to shouldPrintDeclaration(). When called from
+  // TypePrivateDeclarationGenerator (where printPrivateDeclarations() is true), `declarations` only
+  // contains private declarations and excludes public static fields.
   private boolean hasStaticFields() {
-    return !Iterables.isEmpty(getStaticFields());
+    for (VariableDeclarationFragment fragment : TreeUtil.getAllFields(typeNode)) {
+      if (ElementUtil.isGlobalVar(fragment.getVariableElement())
+          && !((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   protected boolean needsKotlinCompanionClass() {
@@ -274,6 +275,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       throw new IllegalStateException("@GenerateObjCCompanion not supported for private classes.");
     }
     if (!hasStaticMethods() && !hasStaticFields()) {
+      if (ElementUtil.hasNamedAnnotation(typeElement, "Generated")) {
+        return false;
+      }
       throw new IllegalStateException(
           "@GenerateObjCCompanion not supported for types without static members.");
     }

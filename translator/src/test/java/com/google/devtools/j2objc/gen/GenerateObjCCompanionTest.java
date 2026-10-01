@@ -161,5 +161,46 @@ public class GenerateObjCCompanionTest extends GenerationTest {
     assertInTranslation(
         header, "@property (class, nonatomic, getter=getBar, readonly) NSString * bar;");
   }
+
+  public void testGeneratedTypeWithoutStaticMembersIgnored() throws IOException {
+    String source =
+        """
+        import com.google.j2objc.annotations.GenerateObjCCompanion;
+        import javax.annotation.processing.Generated;
+        @Generated("com.google.auto.value.processor.AutoValueProcessor")
+        @GenerateObjCCompanion
+        public class AutoValue_Foo {
+          public int value() {
+            return 1;
+          }
+        }
+        """;
+    String header = translateSourceFile(source, "AutoValue_Foo", "AutoValue_Foo.h");
+    assertInTranslation(header, "@interface AutoValue_Foo : NSObject");
+    assertNotInTranslation(header, "AutoValue_FooCompanionProtocol");
+  }
+
+  public void testInterfaceCompanionWithOnlyStaticFields() throws IOException {
+    options.setClassProperties(true);
+    String source =
+        """
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        public interface Foo {
+          public static final int CONSTANT_VALUE = 1;
+        }
+        """;
+    String header = translateSourceFile(source, "Foo", "Foo.h");
+    assertInTranslation(header, "@protocol FooCompanionProtocol");
+    assertInTranslation(
+        header, "@property (readonly) int32_t CONSTANT_VALUE NS_SWIFT_NAME(CONSTANT_VALUE);");
+    assertInTranslation(header, "@interface FooCompanion : NSObject");
+    assertInTranslation(header, "@property (readonly, class) id<FooCompanionProtocol> shared;");
+
+    String impl = translateSourceFile(source, "Foo", "Foo.m");
+    assertInTranslation(impl, "@implementation FooCompanion");
+    assertInTranslation(impl, "+ (id<FooCompanionProtocol>)shared {");
+    assertInTranslation(impl, "return (id<FooCompanionProtocol>)self;");
+  }
 }
+
 
