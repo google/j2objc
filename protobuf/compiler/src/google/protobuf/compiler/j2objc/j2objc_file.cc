@@ -35,6 +35,8 @@
 #include "google/protobuf/compiler/j2objc/j2objc_file.h"
 
 #include <memory>
+#include <set>
+#include <string>
 
 #include "google/protobuf/compiler/j2objc/j2objc_enum.h"
 #include "google/protobuf/compiler/j2objc/j2objc_extension.h"
@@ -91,6 +93,24 @@ void PrintForwardDeclarations(const std::set<std::string>* declarations,
   for (std::set<std::string>::const_iterator it = declarations->begin();
        it != declarations->end(); it++) {
     printer->Print("$declaration$;\n", "declaration", *it);
+  }
+}
+
+// Adds the headers declaring the top-level types of each file that "file"
+// publicly imports. Each of those headers imports its own public imports in
+// turn, so only direct public imports are visited. Types nested in a message
+// live in the header of their top-level container.
+void CollectPublicImportHeaders(const FileDescriptor* file,
+                                std::set<std::string>* headers) {
+  for (int i = 0; i < file->public_dependency_count(); i++) {
+    const FileDescriptor* dependency = file->public_dependency(i);
+    headers->insert(GetHeader(dependency));
+    for (int j = 0; j < dependency->message_type_count(); j++) {
+      headers->insert(GetHeader(dependency->message_type(j)));
+    }
+    for (int j = 0; j < dependency->enum_type_count(); j++) {
+      headers->insert(GetHeader(dependency->enum_type(j)));
+    }
   }
 }
 
@@ -180,6 +200,10 @@ void FileGenerator::GenerateHeader(GeneratorContext* context) {
     generator->CollectForwardDeclarations(&declarations);
     generator->CollectMessageOrBuilderForwardDeclarations(&declarations);
   }
+
+  // Types reached through `import public` are part of this file's API, so the
+  // headers that declare them must be visible to anyone importing this header.
+  CollectPublicImportHeaders(file_, &headers);
 
   PrintImports(&headers, &printer);
   PrintForwardDeclarations(&declarations, &printer);
@@ -412,6 +436,15 @@ void FileGenerator::GenerateSource(GeneratorContext* context) {
       MessageGenerator(file_->message_type(i))
           .GenerateExtensionRegistrationCode(&printer);
     }
+  }
+  // Extensions reached through `import public` are part of this file's API, so
+  // they are registered too. Forwarding to the direct public imports suffices:
+  // each of those forwards to its own in turn.
+  for (int i = 0; i < file_->public_dependency_count(); i++) {
+    printer.Print(
+        "$classname$_registerAllExtensionsWith"
+        "ComGoogleProtobufExtensionRegistryLite_(extensionRegistry);\n",
+        "classname", ClassName(file_->public_dependency(i)));
   }
   printer.Outdent();
   printer.Print("}\n");

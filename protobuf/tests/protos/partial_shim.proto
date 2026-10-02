@@ -1,0 +1,15 @@
+edition = "2023";
+
+// A partial shim: keeps a declaration of its own and re-exports the file the
+// other types moved to.
+package protos;
+
+import public "moved.proto";
+
+option java_package = "com.google.j2objctest.partial";
+option java_multiple_files = true;
+
+message Gadget {
+  moved.Widget widget = 1;
+  moved.Color color = 2;
+}
