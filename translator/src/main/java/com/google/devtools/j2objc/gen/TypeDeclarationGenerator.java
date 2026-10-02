@@ -965,7 +965,27 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   @Override
   protected void printInnerDeclarations() {
     // Everything is public in interfaces.
-    if (isInterfaceType() || typeNode.hasPrivateDeclaration()) {
+    if (isInterfaceType()) {
+      List<BodyDeclaration> requiredDecls = Lists.newArrayList();
+      List<BodyDeclaration> optionalDecls = Lists.newArrayList();
+      for (BodyDeclaration decl : getInnerDeclarations()) {
+        if (decl instanceof MethodDeclaration methodDecl && methodDecl.isOptional()) {
+          optionalDecls.add(decl);
+        } else {
+          requiredDecls.add(decl);
+        }
+      }
+      printDeclarations(requiredDecls);
+      if (!optionalDecls.isEmpty()) {
+        newline();
+        println("#if !defined(__swift__)");
+        println("@optional");
+        println("#endif");
+        printDeclarations(optionalDecls);
+      }
+      return;
+    }
+    if (typeNode.hasPrivateDeclaration()) {
       super.printInnerDeclarations();
       return;
     }
