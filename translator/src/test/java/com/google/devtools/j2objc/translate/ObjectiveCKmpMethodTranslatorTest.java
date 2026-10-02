@@ -1149,6 +1149,44 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """,
         "ConcreteClassInherits.java");
 
+    String interfaceHeader = translateSourceFile("InterfaceWithDefault", "InterfaceWithDefault.h");
+    assertInTranslation(
+        interfaceHeader,
+        """
+        @protocol InterfaceWithDefault < JavaObject >
+
+        - (NSArray<NSString *> *)getItemsAsNsArray;
+
+        #if !defined(__swift__)
+        @optional
+        #endif
+
+        - (ComGoogleCommonCollectImmutableList<NSString *> *)getItems;
+
+        @end
+        """);
+    assertInTranslation(
+        interfaceHeader,
+        "FOUNDATION_EXPORT ComGoogleCommonCollectImmutableList *"
+            + "InterfaceWithDefault_getItems_kmp(id<InterfaceWithDefault> self);");
+
+    String interfaceImpl = translateSourceFile("InterfaceWithDefault", "InterfaceWithDefault.m");
+    assertInTranslation(
+        interfaceImpl,
+        """
+        ComGoogleCommonCollectImmutableList *InterfaceWithDefault_getItems_kmp(id<InterfaceWithDefault> self) {
+          if ([self respondsToSelector:@selector(getItems)]) {
+            return [self getItems];
+          }
+          else if ([self respondsToSelector:@selector(getItemsAsNsArray)]) {
+            return [ImmutableListAdapter toImmutableListWithId:[self getItemsAsNsArray]];
+          }
+          else {
+            return InterfaceWithDefault_getItems(self);
+          }
+        }
+        """);
+
     // Translate ConcreteClassOverrides and verify it generates getItems adapter
     String overridesHeader =
         translateSourceFile("ConcreteClassOverrides", "ConcreteClassOverrides.h");
@@ -2717,5 +2755,303 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         translation, "- (void)setCountWithJavaLangInteger:(JavaLangInteger *)arg0");
     assertNotInTranslation(translation, "[self doesNotRecognizeSelector:_cmd]");
   }
-}
 
+  public void testInterfaceDispatchHelperGeneration() throws IOException {
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ImmutableListAdapter {
+          public static native Object fromImmutableList(ImmutableList<String> list) /*-[ return nil; ]-*/;
+          public static native ImmutableList<String> toImmutableList(Object list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "ImmutableListAdapter.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public interface MyInterface {
+          @ObjectiveCKmpMethod(selector = "setItems:", adapter = ImmutableListAdapter.class)
+          void setItems(ImmutableList<String> items);
+
+          @ObjectiveCKmpMethod(selector = "getItemsAsNSArray", adapter = ImmutableListAdapter.class)
+          ImmutableList<String> getItems();
+        }
+        """,
+        "MyInterface.java");
+
+    String interfaceHeader = translateSourceFile("MyInterface", "MyInterface.h");
+    assertInTranslation(
+        interfaceHeader,
+        """
+        @protocol MyInterface < JavaObject >
+
+        - (void)setItems:(NSArray<NSString *> *)items;
+
+        - (NSArray<NSString *> *)getItemsAsNSArray;
+
+        #if !defined(__swift__)
+        @optional
+        #endif
+
+        - (void)setItemsWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList<NSString *> *)items;
+
+        - (ComGoogleCommonCollectImmutableList<NSString *> *)getItems;
+
+        @end
+        """);
+    assertInTranslation(
+        interfaceHeader,
+        "FOUNDATION_EXPORT void"
+            + " MyInterface_setItemsWithComGoogleCommonCollectImmutableList_(id<MyInterface>"
+            + " self, ComGoogleCommonCollectImmutableList *items);");
+    assertInTranslation(
+        interfaceHeader,
+        "FOUNDATION_EXPORT ComGoogleCommonCollectImmutableList *"
+            + "MyInterface_getItems(id<MyInterface> self);");
+
+    String interfaceImpl = translateSourceFile("MyInterface", "MyInterface.m");
+    assertInTranslation(
+        interfaceImpl,
+        """
+        void MyInterface_setItemsWithComGoogleCommonCollectImmutableList_(id<MyInterface> self, ComGoogleCommonCollectImmutableList *items) {
+          if ([self respondsToSelector:@selector(setItemsWithComGoogleCommonCollectImmutableList:)]) {
+            [self setItemsWithComGoogleCommonCollectImmutableList:items];
+          }
+          else {
+            [self setItems:(NSArray<NSString *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:items]];
+          }
+        }
+        """);
+    assertInTranslation(
+        interfaceImpl,
+        """
+        ComGoogleCommonCollectImmutableList *MyInterface_getItems(id<MyInterface> self) {
+          if ([self respondsToSelector:@selector(getItems)]) {
+            return [self getItems];
+          }
+          else {
+            return [ImmutableListAdapter toImmutableListWithId:[self getItemsAsNSArray]];
+          }
+        }
+        """);
+  }
+
+  public void testInterfaceMethodCallSiteRewriting() throws IOException {
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ImmutableListAdapter {
+          public static native Object fromImmutableList(ImmutableList<String> list) /*-[ return nil; ]-*/;
+          public static native ImmutableList<String> toImmutableList(Object list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "ImmutableListAdapter.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public interface MyInterface {
+          @ObjectiveCKmpMethod(selector = "echoItems:", adapter = ImmutableListAdapter.class)
+          ImmutableList<String> echoItems(ImmutableList<String> items);
+        }
+        """,
+        "MyInterface.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class Caller {
+          public static ImmutableList<String> callEcho(MyInterface instance, ImmutableList<String> items) {
+            return instance.echoItems(items);
+          }
+        }
+        """,
+        "Caller.java");
+
+    String callerImpl = translateSourceFile("Caller", "Caller.m");
+    assertInTranslation(
+        callerImpl,
+        """
+        ComGoogleCommonCollectImmutableList *Caller_callEchoWithMyInterface_withComGoogleCommonCollectImmutableList_(id<MyInterface> instance, ComGoogleCommonCollectImmutableList *items) {
+          Caller_initialize();
+          return MyInterface_echoItemsWithComGoogleCommonCollectImmutableList_(((id<MyInterface>) nil_chk(instance)), items);
+        }
+        """);
+  }
+
+  public void testSubInterfaceMethodCallSiteRewriting() throws IOException {
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ImmutableListAdapter {
+          public static native Object fromImmutableList(ImmutableList<String> list) /*-[ return nil; ]-*/;
+          public static native ImmutableList<String> toImmutableList(Object list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "ImmutableListAdapter.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public interface SuperInterface {
+          @ObjectiveCKmpMethod(selector = "echoItems:", adapter = ImmutableListAdapter.class)
+          ImmutableList<String> echoItems(ImmutableList<String> items);
+        }
+        """,
+        "SuperInterface.java");
+    addSourceFile(
+        """
+        public interface SubInterface extends SuperInterface {}
+        """,
+        "SubInterface.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class SubCaller {
+          public static ImmutableList<String> callSubEcho(SubInterface instance, ImmutableList<String> items) {
+            return instance.echoItems(items);
+          }
+        }
+        """,
+        "SubCaller.java");
+
+    String subCallerImpl = translateSourceFile("SubCaller", "SubCaller.m");
+    assertInTranslation(subCallerImpl, "#include \"SuperInterface.h\"");
+    assertInTranslation(
+        subCallerImpl,
+        """
+        ComGoogleCommonCollectImmutableList *SubCaller_callSubEchoWithSubInterface_withComGoogleCommonCollectImmutableList_(id<SubInterface> instance, ComGoogleCommonCollectImmutableList *items) {
+          SubCaller_initialize();
+          return SuperInterface_echoItemsWithComGoogleCommonCollectImmutableList_(((id<SubInterface>) nil_chk(instance)), items);
+        }
+        """);
+  }
+
+  public void testSubInterfaceOverrideWithoutAnnotation() throws IOException {
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ImmutableListAdapter {
+          public static native Object fromImmutableList(ImmutableList<String> list) /*-[ return nil; ]-*/;
+          public static native ImmutableList<String> toImmutableList(Object list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "ImmutableListAdapter.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public interface SuperInterface {
+          @ObjectiveCKmpMethod(selector = "echoItems:", adapter = ImmutableListAdapter.class)
+          ImmutableList<String> echoItems(ImmutableList<String> items);
+        }
+        """,
+        "SuperInterface.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public interface SubInterface extends SuperInterface {
+          @Override
+          ImmutableList<String> echoItems(ImmutableList<String> items);
+        }
+        """,
+        "SubInterface.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class SubCaller {
+          public static ImmutableList<String> callSubEcho(SubInterface instance, ImmutableList<String> items) {
+            return instance.echoItems(items);
+          }
+        }
+        """,
+        "SubCaller.java");
+
+    String subInterfaceHeader = translateSourceFile("SubInterface", "SubInterface.h");
+    assertInTranslation(
+        subInterfaceHeader,
+        """
+        @protocol SubInterface < SuperInterface, JavaObject >
+
+        #if !defined(__swift__)
+        @optional
+        #endif
+
+        - (ComGoogleCommonCollectImmutableList<NSString *> *)echoItemsWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList<NSString *> *)items;
+
+        @end
+        """);
+    assertNotInTranslation(
+        subInterfaceHeader, "SubInterface_echoItemsWithComGoogleCommonCollectImmutableList_");
+
+    String subCallerImpl = translateSourceFile("SubCaller", "SubCaller.m");
+    assertInTranslation(subCallerImpl, "#include \"SuperInterface.h\"");
+    assertInTranslation(
+        subCallerImpl,
+        """
+        ComGoogleCommonCollectImmutableList *SubCaller_callSubEchoWithSubInterface_withComGoogleCommonCollectImmutableList_(id<SubInterface> instance, ComGoogleCommonCollectImmutableList *items) {
+          SubCaller_initialize();
+          return SuperInterface_echoItemsWithComGoogleCommonCollectImmutableList_(((id<SubInterface>) nil_chk(instance)), items);
+        }
+        """);
+  }
+
+  public void testInterfaceDefaultMethodCallSiteRewriting() throws IOException {
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ImmutableListAdapter {
+          public static native Object fromImmutableList(ImmutableList<String> list) /*-[ return nil; ]-*/;
+          public static native ImmutableList<String> toImmutableList(Object list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "ImmutableListAdapter.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public interface InterfaceWithDefault {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          default ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "InterfaceWithDefault.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class DefaultCaller {
+          public static ImmutableList<String> callGetItems(InterfaceWithDefault instance) {
+            return instance.getItems();
+          }
+        }
+        """,
+        "DefaultCaller.java");
+
+    String callerImpl = translateSourceFile("DefaultCaller", "DefaultCaller.m");
+    assertInTranslation(
+        callerImpl,
+        """
+        ComGoogleCommonCollectImmutableList *DefaultCaller_callGetItemsWithInterfaceWithDefault_(id<InterfaceWithDefault> instance) {
+          DefaultCaller_initialize();
+          return InterfaceWithDefault_getItems_kmp(((id<InterfaceWithDefault>) nil_chk(instance)));
+        }
+        """);
+  }
+}
