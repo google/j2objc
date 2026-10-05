@@ -144,8 +144,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         }
       }
       for (VariableDeclarationFragment fragment : getStaticFields()) {
-        PropertyGenerator.generate(
-                fragment, options, nameTable, typeUtil, parametersNonnullByDefault, true)
+        PropertyGenerator.generate(this, fragment, /* staticToInstance= */ true)
             .ifPresent(this::println);
       }
       println("\n@end\n");
@@ -450,8 +449,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   protected void printProperties() {
     for (VariableDeclarationFragment fragment : getAllFields()) {
-      PropertyGenerator.generate(fragment, options, nameTable, typeUtil, parametersNonnullByDefault)
-          .ifPresent(this::println);
+      PropertyGenerator.generate(this, fragment).ifPresent(this::println);
     }
 
     if (options.classProperties() && typeNode instanceof EnumDeclaration enumDeclaration) {

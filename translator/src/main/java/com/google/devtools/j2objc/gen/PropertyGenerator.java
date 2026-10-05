@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
@@ -23,12 +24,14 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.Weak;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Generate an Objective-C property based on a variable declaration and Property annotation (if
@@ -36,76 +39,99 @@ import javax.lang.model.type.TypeMirror;
  */
 public final class PropertyGenerator {
 
+  /**
+   * Generates the property for a field, if it is annotated with {@code @Property} or is a static
+   * field exposed as a class property.
+   */
   public static Optional<String> generate(
-      VariableDeclarationFragment fragment,
-      Options options,
-      NameTable nameTable,
-      TypeUtil typeUtil,
-      boolean parametersNonnullByDefault) {
-    return generate(fragment, options, nameTable, typeUtil, parametersNonnullByDefault, false);
+      TypeGenerator generator, VariableDeclarationFragment fragment) {
+    return generate(generator, fragment, /* staticToInstance= */ false);
   }
 
+  /**
+   * Generates the property for a field, if it is annotated with {@code @Property} or is a static
+   * field exposed as a class property.
+   *
+   * @param staticToInstance whether a static field is exposed as an instance property
+   */
   public static Optional<String> generate(
-      VariableDeclarationFragment fragment,
-      Options options,
-      NameTable nameTable,
-      TypeUtil typeUtil,
-      boolean parametersNonnullByDefault,
-      boolean staticToInstance) {
-    return new PropertyGenerator(
-            fragment, options, nameTable, typeUtil, parametersNonnullByDefault, staticToInstance)
-        .build();
-  }
-
-  private final VariableDeclarationFragment fragment;
-  private final Options options;
-  private final NameTable nameTable;
-  private final TypeUtil typeUtil;
-  private final boolean parametersNonnullByDefault;
-  private final PropertyAnnotation annotation;
-  private final VariableElement varElement;
-  private final TypeMirror varType;
-  private final String propertyName;
-  private final FieldDeclaration declaration;
-  private final boolean staticToInstance;
-
-  private PropertyGenerator(
-      VariableDeclarationFragment fragment,
-      Options options,
-      NameTable nameTable,
-      TypeUtil typeUtil,
-      boolean parametersNonnullByDefault,
-      boolean staticToInstance) {
-    this.fragment = fragment;
-    this.options = options;
-    this.nameTable = nameTable;
-    this.typeUtil = typeUtil;
-    this.parametersNonnullByDefault = parametersNonnullByDefault;
-    this.staticToInstance = staticToInstance;
-    declaration = (FieldDeclaration) fragment.getParent();
-    PropertyAnnotation annotation =
-        declaration.getAnnotations().stream()
-            .filter(PropertyAnnotation.class::isInstance)
-            .map(PropertyAnnotation.class::cast)
-            .findFirst()
-            .orElse(null);
-    varElement = fragment.getVariableElement();
+      TypeGenerator generator, VariableDeclarationFragment fragment, boolean staticToInstance) {
+    FieldDeclaration declaration = (FieldDeclaration) fragment.getParent();
+    PropertyAnnotation annotation = findPropertyAnnotation(declaration.getAnnotations());
     if (annotation == null
-        && options.classProperties()
-        && ElementUtil.isStatic(varElement)
+        && generator.options.classProperties()
+        && ElementUtil.isStatic(fragment.getVariableElement())
         && !declaration.hasPrivateDeclaration()) {
       // Generate the property for a static variable by simulating the @Property annotation.
       annotation = new PropertyAnnotation();
     }
-    this.annotation = annotation;
-    varType = varElement.asType();
-    propertyName = nameTable.getStaticAccessorName(varElement);
-  }
-
-  private Optional<String> build() {
     if (annotation == null) {
       return Optional.empty();
     }
+    return new PropertyGenerator(generator, fragment, annotation, staticToInstance).build();
+  }
+
+  private static @Nullable PropertyAnnotation findPropertyAnnotation(List<Annotation> annotations) {
+    return annotations.stream()
+        .filter(PropertyAnnotation.class::isInstance)
+        .map(PropertyAnnotation.class::cast)
+        .findFirst()
+        .orElse(null);
+  }
+
+  private final Options options;
+  private final NameTable nameTable;
+  private final TypeUtil typeUtil;
+  private final boolean parametersNonnullByDefault;
+  private final VariableDeclarationFragment member;
+  /** The field declaration, used to report errors about the attributes. */
+  private final FieldDeclaration declaration;
+  private final VariableElement element;
+  private final TypeMirror type;
+  private final boolean isStatic;
+  private final String propertyName;
+  private final String objcType;
+  private final ExecutableElement getter;
+  private final ExecutableElement setter;
+  private final PropertyAnnotation annotation;
+  private final boolean staticToInstance;
+
+  private PropertyGenerator(
+      TypeGenerator generator,
+      VariableDeclarationFragment member,
+      PropertyAnnotation annotation,
+      boolean staticToInstance) {
+    this.options = generator.options;
+    this.nameTable = generator.nameTable;
+    this.typeUtil = generator.typeUtil;
+    this.parametersNonnullByDefault = generator.parametersNonnullByDefault;
+    this.member = member;
+    this.annotation = annotation;
+    this.staticToInstance = staticToInstance;
+    this.declaration = (FieldDeclaration) member.getParent();
+    this.element = member.getVariableElement();
+    this.type = element.asType();
+    this.isStatic = ElementUtil.isStatic(element);
+    this.propertyName = nameTable.getStaticAccessorName(element);
+    this.objcType = nameTable.getObjCType(type);
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(element);
+    this.getter = ElementUtil.findGetterMethod(propertyName, type, declaringClass, isStatic);
+    this.setter = ElementUtil.findSetterMethod(propertyName, type, declaringClass, isStatic);
+  }
+
+  private boolean isReadonly() {
+    return ElementUtil.isFinal(element);
+  }
+
+  private boolean isWeak() {
+    return ElementUtil.hasAnnotation(declaration.getFragment().getVariableElement(), Weak.class);
+  }
+
+  private boolean hasPrivateDeclaration() {
+    return declaration.hasPrivateDeclaration();
+  }
+
+  private Optional<String> build() {
     Set<String> attributes = annotation.getPropertyAttributes();
     if (!processMemoryManagementAttributes(attributes)) {
       return Optional.empty();
@@ -118,10 +144,9 @@ public final class PropertyGenerator {
   }
 
   private boolean processMemoryManagementAttributes(Set<String> attributes) {
-    VariableDeclarationFragment firstVarNode = declaration.getFragment();
-    if (typeUtil.isString(varType)) {
+    if (typeUtil.isString(type)) {
       attributes.add("copy");
-    } else if (ElementUtil.hasAnnotation(firstVarNode.getVariableElement(), Weak.class)) {
+    } else if (isWeak()) {
       if (attributes.contains("strong")) {
         ErrorUtil.error(
             declaration, "Weak field annotation conflicts with strong Property attribute");
@@ -133,7 +158,7 @@ public final class PropertyGenerator {
     // strong is the default when using ARC; otherwise, assign is the default.
     if (options.useARC()) {
       attributes.remove("strong");
-    } else if (!varType.getKind().isPrimitive()
+    } else if (!type.getKind().isPrimitive()
         && !PropertyAnnotation.hasMemoryManagementAttribute(attributes)) {
       attributes.add("strong");
     }
@@ -141,12 +166,6 @@ public final class PropertyGenerator {
   }
 
   private void processAccessorAttributes(Set<String> attributes) {
-    // Add default getter/setter here, as each fragment needs its own attributes
-    // to support its unique accessors.
-    TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
-    ExecutableElement getter =
-        ElementUtil.findGetterMethod(
-            propertyName, varType, declaringClass, ElementUtil.isStatic(varElement));
     if (getter != null) {
       // Update getter from its Java name to its selector. This is normally the
       // same since getters have no parameters, but the name may be reserved.
@@ -159,9 +178,6 @@ public final class PropertyGenerator {
         attributes.add("nonatomic");
       }
     }
-    ExecutableElement setter =
-        ElementUtil.findSetterMethod(
-            propertyName, varType, declaringClass, ElementUtil.isStatic(varElement));
     if (setter != null) {
       // Update setter from its Java name to its selector.
       attributes.remove("setter=" + annotation.getSetter());
@@ -173,29 +189,29 @@ public final class PropertyGenerator {
   }
 
   private void processClassAttribute(Set<String> attributes) {
-    if (ElementUtil.isStatic(varElement) && !staticToInstance) {
+    if (isStatic && !staticToInstance) {
       attributes.add("class");
     } else if (attributes.contains("class")) {
-      ErrorUtil.error(fragment, "Only static fields can be translated to class properties");
+      ErrorUtil.error(member, "Only static fields can be translated to class properties");
     }
     if (attributes.contains("class")) {
       if (!options.staticAccessorMethods()) {
         // Class property accessors must be present, as they are not synthesized by runtime.
         ErrorUtil.error(
-            fragment,
+            member,
             "Class properties require any of these flags: "
                 + "--swift-friendly, --class-properties or --static-accessor-methods");
-      } else if (declaration.hasPrivateDeclaration()) {
-        ErrorUtil.error(fragment, "Properties are not supported for private static fields.");
+      } else if (hasPrivateDeclaration()) {
+        ErrorUtil.error(member, "Properties are not supported for private static fields.");
       }
     }
   }
 
   private void processNullabilityAttributes(Set<String> attributes) {
-    if (options.nullability() && !varElement.asType().getKind().isPrimitive()) {
-      if (ElementUtil.hasNullableAnnotation(varElement)) {
+    if (options.nullability() && !type.getKind().isPrimitive()) {
+      if (ElementUtil.hasNullableAnnotation(element)) {
         attributes.add("nullable");
-      } else if (ElementUtil.isNonnull(varElement, parametersNonnullByDefault)) {
+      } else if (ElementUtil.isNonnull(element, parametersNonnullByDefault)) {
         attributes.add("nonnull");
       }
     }
@@ -206,7 +222,7 @@ public final class PropertyGenerator {
     attributes.remove("readwrite");
     attributes.remove("atomic");
 
-    if (ElementUtil.isFinal(varElement)) {
+    if (isReadonly()) {
       attributes.add("readonly");
     }
   }
@@ -218,18 +234,17 @@ public final class PropertyGenerator {
       buffer.append('(').append(PropertyAnnotation.toAttributeString(attributes)).append(") ");
     }
 
-    String objcType = nameTable.getObjCType(varType);
     buffer.append(objcType);
     if (!objcType.endsWith("*")) {
       buffer.append(' ');
     }
     buffer.append(propertyName);
-    TypeElement declaringClass = ElementUtil.getDeclaringClass(varElement);
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(element);
     boolean inSwiftNameContext =
         declaringClass != null
             && (nameTable.packageHasSwiftNameAnnotation(declaringClass)
                 || nameTable.elementHasSwiftNameAnnotation(declaringClass));
-    if ((options.classProperties() && ElementUtil.isStatic(varElement)) || inSwiftNameContext) {
+    if ((options.classProperties() && isStatic) || inSwiftNameContext) {
       buffer.append(" NS_SWIFT_NAME(").append(propertyName).append(")");
     }
     buffer.append(";");
