@@ -452,7 +452,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "import com.google.j2objc.annotations.Property; "
         + "public class Test {  "
         + "@Property(\"class\") int test; }", "Test", "Test.h");
-    assertError("Test.java:-1: Only static fields can be translated to class properties");
+    assertError("Test.java:-1: Only static members can be translated to class properties");
 
     // Verify static accessor generation must be enabled for class properties.
     ErrorUtil.reset();

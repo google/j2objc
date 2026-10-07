@@ -719,50 +719,19 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       return false;
     }
 
-    ExecutableElement methodElement = m.getExecutableElement();
-    String methodName = nameTable.getMethodSelector(methodElement);
-    String propertyName = NameTable.lowercaseFirst(methodName.replaceFirst("get", ""));
-
-    TypeElement declaringClass = ElementUtil.getDeclaringClass(methodElement);
+    String propertyName = PropertyGenerator.getPseudoPropertyName(nameTable, m);
     if (NameTable.isReservedName(propertyName)) {
       return false;
     }
     // Check if there is a existing property with the same name
-    if (ElementUtil.findField(declaringClass, propertyName) != null) {
-      return false;
-    }
-
-    return true;
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(m.getExecutableElement());
+    return ElementUtil.findField(declaringClass, propertyName) == null;
   }
 
   private void printPseudoProperty(MethodDeclaration m, boolean isKotlinCompanion) {
-    ExecutableElement methodElement = m.getExecutableElement();
-    String methodName = nameTable.getMethodSelector(methodElement);
-    String propertyName = NameTable.lowercaseFirst(methodName.replaceFirst("get", ""));
-
-    TypeElement declaringClass = ElementUtil.getDeclaringClass(methodElement);
-    if (NameTable.isReservedName(propertyName)) {
-      return;
-    }
-    // Check if there is a existing property with the same name
-    if (ElementUtil.findField(declaringClass, propertyName) != null) {
-      return;
-    }
-
-    TypeMirror returnType = m.getReturnTypeMirror();
-    ExecutableElement setter =
-        ElementUtil.findSetterMethod(
-            propertyName, returnType, declaringClass, ElementUtil.isStatic(methodElement));
-
     newline();
-    printf(
-        "@property (%snonatomic, %s, %s%s) %s %s;",
-        ElementUtil.isStatic(methodElement) && !isKotlinCompanion ? "class, " : "",
-        "getter=" + methodName,
-        setter != null ? "setter=" + nameTable.getMethodSelector(setter) : "readonly",
-        shouldAddNullableAnnotation(methodElement) ? ", nullable" : "",
-        getReturnType(m, true), // Generics allowed in headers.
-        propertyName);
+    PropertyGenerator.generate(this, m, /* staticToInstance= */ isKotlinCompanion)
+        .ifPresent(this::print);
     newline();
   }
 

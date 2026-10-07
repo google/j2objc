@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.gen;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.HeaderMap;
 import java.io.File;
 import java.io.IOException;
@@ -757,18 +758,30 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testPropertiesOfGetTypes() throws IOException {
     String sourceContent =
-        "  import com.google.j2objc.annotations.Property;"
-            + "public class FooBar {"
-            + "  private String fieldFoo = \"test\";"
-            + "  "
-            + "  @Property"
-            + "  public String getFooField() {"
-            + "     return fieldFoo;"
-            + "  }"
-            + "}";
+        """
+        import com.google.j2objc.annotations.Property;
+        public class FooBar {
+          private String fieldFoo = "test";
+          @Property
+          public String getFooField() {
+            return fieldFoo;
+          }
+          @Property
+          public int budget() {
+            return 0;
+          }
+          @Property
+          public String getaway() {
+            return "";
+          }
+        }
+        """;
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
-    assertTranslatedLines(
-        translation, "@property (nonatomic, getter=getFooField, readonly) NSString * fooField;");
+    assertInTranslation(
+        translation,
+        "@property (readonly, copy, nonatomic, getter=getFooField) NSString *fooField;");
+    assertInTranslation(translation, "@property (readonly, nonatomic) int32_t budget;");
+    assertInTranslation(translation, "@property (readonly, copy, nonatomic) NSString *getaway;");
   }
 
   public void testPropertiesOfGetTypesWithSetters() throws IOException {
@@ -789,8 +802,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (nonatomic, getter=getFooField, setter=setFooFieldWithNSString:) NSString *"
-            + " fooField;");
+        "@property (copy, nonatomic, getter=getFooField, setter=setFooFieldWithNSString:) NSString"
+            + " *fooField;");
   }
 
   public void testPropertyAnnotationSuppression() throws IOException {
@@ -814,8 +827,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "  "
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
-    assertNotInTranslation(
-        translation, "@property (nonatomic, getter=getBar, readonly) NSString * bar;");
+    assertInTranslation(translation, "fieldFoo;");
+    assertNotInTranslation(translation, "getter=getBar");
   }
 
   public void testPropertiesStaticMethods() throws IOException {
@@ -831,7 +844,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (class, nonatomic, getter=getFieldFoo, readonly) NSString * fieldFoo;");
+        "@property (readonly, copy, nonatomic, getter=getFieldFoo, class) NSString *fieldFoo;");
   }
 
   public void testPropertiesOfGetTypesDuplicateNames() throws IOException {
@@ -885,8 +898,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "foo.bar.FooBar", "foo/bar/FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (nonatomic, getter=getFooField, setter=setFooFieldWithNSString:, nullable)"
-            + " NSString * fooField;");
+        "@property (copy, nonatomic, getter=getFooField, setter=setFooFieldWithNSString:, nullable)"
+            + " NSString *fooField;");
   }
 
   public void testPropertyAnnotationIgnoresVoidMethod() throws IOException {
@@ -919,8 +932,144 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (nonatomic, getter=getFooField, setter=setFooFieldWithNSString:)"
-            + " NSString * fooField;");
+        "@property (copy, nonatomic, getter=getFooField, setter=setFooFieldWithNSString:)"
+            + " NSString *fooField;");
+  }
+
+  public void testPseudoPropertyExplicitAttributes() throws IOException {
+    String sourceContent =
+        """
+        import com.google.j2objc.annotations.Property;
+        public class FooBar {
+          @Property("atomic") public String getAtomicString() { return ""; }
+          @Property("retain") public String getRetainedString() { return ""; }
+          @Property("weak") public Object getWeakObject() { return null; }
+          @Property public Object getStrongObject() { return null; }
+          @Property public synchronized Object getSynchronizedObject() { return null; }
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertInTranslation(
+        translation,
+        "@property (readonly, copy, getter=getAtomicString) NSString *atomicString;");
+    assertInTranslation(
+        translation,
+        "@property (readonly, nonatomic, getter=getRetainedString, retain) NSString"
+            + " *retainedString;");
+    assertInTranslation(
+        translation, "@property (weak, readonly, nonatomic, getter=getWeakObject) id weakObject;");
+    assertInTranslation(
+        translation,
+        "@property (readonly, nonatomic, getter=getStrongObject, strong) id strongObject;");
+    assertInTranslation(
+        translation,
+        "@property (readonly, getter=getSynchronizedObject, strong) id synchronizedObject;");
+  }
+
+  public void testPseudoPropertyExplicitAttributesWithArc() throws IOException {
+    options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
+    String sourceContent =
+        """
+        import com.google.j2objc.annotations.Property;
+        public class FooBar {
+          @Property("strong") public Object getStrongObject() { return null; }
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertInTranslation(
+        translation, "@property (readonly, nonatomic, getter=getStrongObject) id strongObject;");
+  }
+
+  public void testPseudoPropertyTypeLevelAttributes() throws IOException {
+    String sourceContent =
+        """
+        import com.google.j2objc.annotations.Property;
+        @Property("weak")
+        public class FooBar {
+          public Object getWeakObject() { return null; }
+          public int getCount() { return 0; }
+          @Property public Object getStrongObject() { return null; }
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertInTranslation(
+        translation, "@property (weak, readonly, nonatomic, getter=getWeakObject) id weakObject;");
+    // Type level memory management attributes are not applied to primitive getters.
+    assertInTranslation(
+        translation, "@property (readonly, nonatomic, getter=getCount) int32_t count;");
+    // Method level annotations take precedence over the type level annotation.
+    assertInTranslation(
+        translation,
+        "@property (readonly, nonatomic, getter=getStrongObject, strong) id strongObject;");
+  }
+
+  public void testPseudoPropertyConflictingMemoryManagementAttributes() throws IOException {
+    String sourceContent =
+        """
+        import com.google.j2objc.annotations.Property;
+        public class FooBar {
+          @Property("weak, copy") public String getFoo() { return ""; }
+        }
+        """;
+    translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertErrorRegex(".*Conflicting memory management Property attributes: weak, copy");
+  }
+
+  public void testNullabilityAttributesIgnoredForPrimitives() throws IOException {
+    String sourceContent =
+        """
+        import com.google.j2objc.annotations.Property;
+        public class FooBar {
+          @Property("nonnull") int primitiveField;
+          @Property("nonnull") Object objectField;
+          @Property("readonly, nonnull") public int getCount() { return 0; }
+          @Property("readonly, nonnull") public Object getObject() { return null; }
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertInTranslation(translation, "@property int32_t primitiveField;");
+    assertInTranslation(translation, "@property (nonnull, strong) id objectField;");
+    assertInTranslation(
+        translation, "@property (readonly, nonatomic, getter=getCount) int32_t count;");
+    assertInTranslation(
+        translation,
+        "@property (readonly, nonatomic, getter=getObject, nonnull, strong) id object;");
+  }
+
+  public void testConflictingNullabilityAttributes() throws IOException {
+    options.setNullMarked(true);
+    options.setNullability(true);
+    addSourceFile(
+        """
+        @NullMarked package foo.bar;
+        import org.jspecify.annotations.NullMarked;
+        """,
+        "foo/bar/package-info.java");
+    String sourceContent =
+        """
+        package foo.bar;
+        import com.google.j2objc.annotations.Property;
+        import org.jspecify.annotations.NonNull;
+        import org.jspecify.annotations.Nullable;
+        public class FooBar {
+          @Property("readonly, nonnull") public @Nullable Object getAnnotatedNullable() {
+            return null;
+          }
+          @Property("readonly, nullable") public @NonNull Object getAnnotatedNonnull() {
+            return new Object();
+          }
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "foo.bar.FooBar", "foo/bar/FooBar.h");
+    // Java nullness annotations take precedence over the explicit attributes.
+    assertInTranslation(
+        translation,
+        "@property (readonly, nonatomic, getter=getAnnotatedNullable, nullable, strong)"
+            + " id annotatedNullable;");
+    assertInTranslation(
+        translation,
+        "@property (readonly, nonatomic, getter=getAnnotatedNonnull, nonnull, strong)"
+            + " id annotatedNonnull;");
   }
 
   public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()

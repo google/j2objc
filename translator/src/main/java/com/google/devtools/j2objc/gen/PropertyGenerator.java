@@ -14,10 +14,13 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -27,17 +30,25 @@ import com.google.j2objc.annotations.Weak;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Generate an Objective-C property based on a variable declaration and Property annotation (if
- * present)
+ * Generates an Objective-C property declaration.
+ *
+ * <p>Properties are generated either for fields (annotated with {@code @Property} or static fields
+ * exposed as class properties) or for getter methods (pseudo-properties, i.e. methods annotated
+ * with {@code @Property} directly or through their enclosing type). Both kinds share the same
+ * attribute computation; they only differ in where the property name, type, accessors and
+ * read-only-ness come from.
  */
 public final class PropertyGenerator {
+
+  private static final ImmutableSet<String> NULLABILITY_ATTRIBUTES =
+      ImmutableSet.of("nonnull", "nullable", "null_resettable", "null_unspecified");
 
   /**
    * Generates the property for a field, if it is annotated with {@code @Property} or is a static
@@ -71,6 +82,55 @@ public final class PropertyGenerator {
     return new PropertyGenerator(generator, fragment, annotation, staticToInstance).build();
   }
 
+  /**
+   * Generates the pseudo-property for a getter method.
+   *
+   * @param staticToInstance whether a static getter is exposed as an instance property
+   */
+  public static Optional<String> generate(
+      TypeGenerator generator, MethodDeclaration method, boolean staticToInstance) {
+    return new PropertyGenerator(
+            generator, method, getPseudoPropertyAnnotation(generator, method), staticToInstance)
+        .build();
+  }
+
+  /** Returns the name of the pseudo-property for a getter method. */
+  public static String getPseudoPropertyName(NameTable nameTable, MethodDeclaration method) {
+    String methodName = nameTable.getMethodSelector(method.getExecutableElement());
+    if (methodName.length() > 3
+        && methodName.startsWith("get")
+        && Character.isUpperCase(methodName.charAt(3))) {
+      methodName = methodName.substring(3);
+    }
+    return NameTable.lowercaseFirst(methodName);
+  }
+
+  /**
+   * Returns the {@code @Property} annotation that applies to a pseudo-property, which is either
+   * declared on the method itself or on its enclosing type.
+   */
+  private static PropertyAnnotation getPseudoPropertyAnnotation(
+      TypeGenerator generator, MethodDeclaration method) {
+    PropertyAnnotation methodAnnotation = findPropertyAnnotation(method.getAnnotations());
+    if (methodAnnotation != null) {
+      return methodAnnotation;
+    }
+    PropertyAnnotation typeAnnotation = findPropertyAnnotation(generator.typeNode.getAnnotations());
+    if (typeAnnotation == null) {
+      return new PropertyAnnotation();
+    }
+    if (method.getReturnTypeMirror().getKind().isPrimitive()) {
+      // Type level memory management attributes only apply to the getters that return objects.
+      typeAnnotation = typeAnnotation.copy();
+      for (String attribute :
+          PropertyAnnotation.getMemoryManagementAttributes(
+              typeAnnotation.getPropertyAttributes())) {
+        typeAnnotation.removeAttribute(attribute);
+      }
+    }
+    return typeAnnotation;
+  }
+
   private static @Nullable PropertyAnnotation findPropertyAnnotation(List<Annotation> annotations) {
     return annotations.stream()
         .filter(PropertyAnnotation.class::isInstance)
@@ -83,10 +143,16 @@ public final class PropertyGenerator {
   private final NameTable nameTable;
   private final TypeUtil typeUtil;
   private final boolean parametersNonnullByDefault;
-  private final VariableDeclarationFragment member;
-  /** The field declaration, used to report errors about the attributes. */
-  private final FieldDeclaration declaration;
-  private final VariableElement element;
+  private final boolean nullMarked;
+
+  /** The field fragment or the getter method declaration. */
+  private final TreeNode member;
+
+  /** The field or method declaration, used to report errors about the attributes. */
+  private final TreeNode declaration;
+
+  private final boolean isField;
+  private final Element element;
   private final TypeMirror type;
   private final boolean isStatic;
   private final String propertyName;
@@ -96,39 +162,62 @@ public final class PropertyGenerator {
   private final PropertyAnnotation annotation;
   private final boolean staticToInstance;
 
+  /**
+   * Creates a generator for {@code member}, which is either a field {@link
+   * VariableDeclarationFragment} or a getter {@link MethodDeclaration}.
+   */
   private PropertyGenerator(
       TypeGenerator generator,
-      VariableDeclarationFragment member,
+      TreeNode member,
       PropertyAnnotation annotation,
       boolean staticToInstance) {
     this.options = generator.options;
     this.nameTable = generator.nameTable;
     this.typeUtil = generator.typeUtil;
     this.parametersNonnullByDefault = generator.parametersNonnullByDefault;
+    this.nullMarked = generator.nullMarked;
     this.member = member;
     this.annotation = annotation;
     this.staticToInstance = staticToInstance;
-    this.declaration = (FieldDeclaration) member.getParent();
-    this.element = member.getVariableElement();
-    this.type = element.asType();
-    this.isStatic = ElementUtil.isStatic(element);
-    this.propertyName = nameTable.getStaticAccessorName(element);
-    this.objcType = nameTable.getObjCType(type);
-    TypeElement declaringClass = ElementUtil.getDeclaringClass(element);
-    this.getter = ElementUtil.findGetterMethod(propertyName, type, declaringClass, isStatic);
-    this.setter = ElementUtil.findSetterMethod(propertyName, type, declaringClass, isStatic);
+    if (member instanceof VariableDeclarationFragment fragment) {
+      this.isField = true;
+      this.declaration = fragment.getParent();
+      this.element = fragment.getVariableElement();
+      this.type = element.asType();
+      this.isStatic = ElementUtil.isStatic(element);
+      this.propertyName = nameTable.getStaticAccessorName(fragment.getVariableElement());
+      this.objcType = nameTable.getObjCType(type);
+      this.getter =
+          ElementUtil.findGetterMethod(
+              propertyName, type, ElementUtil.getDeclaringClass(element), isStatic);
+    } else {
+      MethodDeclaration method = (MethodDeclaration) member;
+      this.isField = false;
+      this.declaration = method;
+      this.element = method.getExecutableElement();
+      this.type = method.getReturnTypeMirror();
+      this.isStatic = ElementUtil.isStatic(element);
+      this.propertyName = getPseudoPropertyName(nameTable, method);
+      this.objcType = generator.getReturnType(method, true); // Generics allowed in headers.
+      this.getter = method.getExecutableElement();
+    }
+    this.setter =
+        ElementUtil.findSetterMethod(
+            propertyName, type, ElementUtil.getDeclaringClass(element), isStatic);
   }
 
   private boolean isReadonly() {
-    return ElementUtil.isFinal(element);
+    return isField ? ElementUtil.isFinal(element) : setter == null;
   }
 
   private boolean isWeak() {
-    return ElementUtil.hasAnnotation(declaration.getFragment().getVariableElement(), Weak.class);
+    return isField
+        && ElementUtil.hasAnnotation(
+            ((FieldDeclaration) declaration).getFragment().getVariableElement(), Weak.class);
   }
 
   private boolean hasPrivateDeclaration() {
-    return declaration.hasPrivateDeclaration();
+    return isField && ((FieldDeclaration) declaration).hasPrivateDeclaration();
   }
 
   private Optional<String> build() {
@@ -144,28 +233,44 @@ public final class PropertyGenerator {
   }
 
   private boolean processMemoryManagementAttributes(Set<String> attributes) {
-    if (typeUtil.isString(type)) {
-      attributes.add("copy");
-    } else if (isWeak()) {
-      if (attributes.contains("strong")) {
-        ErrorUtil.error(
-            declaration, "Weak field annotation conflicts with strong Property attribute");
-        return false;
+    ImmutableSet<String> explicitAttributes =
+        PropertyAnnotation.getMemoryManagementAttributes(attributes);
+    if (explicitAttributes.size() > 1) {
+      ErrorUtil.error(
+          declaration,
+          "Conflicting memory management Property attributes: "
+              + PropertyAnnotation.toAttributeString(explicitAttributes));
+      return false;
+    }
+    boolean isPrimitive = type.getKind().isPrimitive();
+    if (isWeak() && !explicitAttributes.isEmpty() && !explicitAttributes.contains("weak")) {
+      ErrorUtil.error(
+          declaration,
+          "Weak field annotation conflicts with "
+              + explicitAttributes.iterator().next()
+              + " Property attribute");
+      return false;
+    }
+
+    if (explicitAttributes.isEmpty()) {
+      if (typeUtil.isString(type)) {
+        attributes.add("copy");
+      } else if (isWeak()) {
+        attributes.add("weak");
       }
-      attributes.add("weak");
     }
 
     // strong is the default when using ARC; otherwise, assign is the default.
     if (options.useARC()) {
       attributes.remove("strong");
-    } else if (!type.getKind().isPrimitive()
-        && !PropertyAnnotation.hasMemoryManagementAttribute(attributes)) {
+    } else if (!isPrimitive && !PropertyAnnotation.hasMemoryManagementAttribute(attributes)) {
       attributes.add("strong");
     }
     return true;
   }
 
   private void processAccessorAttributes(Set<String> attributes) {
+    boolean isAtomic = attributes.contains("atomic");
     if (getter != null) {
       // Update getter from its Java name to its selector. This is normally the
       // same since getters have no parameters, but the name may be reserved.
@@ -174,7 +279,7 @@ public final class PropertyGenerator {
       if (!getterSelector.equals(propertyName)) {
         attributes.add("getter=" + getterSelector);
       }
-      if (!ElementUtil.isSynchronized(getter)) {
+      if (!isAtomic && !ElementUtil.isSynchronized(getter)) {
         attributes.add("nonatomic");
       }
     }
@@ -182,7 +287,7 @@ public final class PropertyGenerator {
       // Update setter from its Java name to its selector.
       attributes.remove("setter=" + annotation.getSetter());
       attributes.add("setter=" + nameTable.getMethodSelector(setter));
-      if (!ElementUtil.isSynchronized(setter)) {
+      if (!isAtomic && !ElementUtil.isSynchronized(setter)) {
         attributes.add("nonatomic");
       }
     }
@@ -192,9 +297,9 @@ public final class PropertyGenerator {
     if (isStatic && !staticToInstance) {
       attributes.add("class");
     } else if (attributes.contains("class")) {
-      ErrorUtil.error(member, "Only static fields can be translated to class properties");
+      ErrorUtil.error(member, "Only static members can be translated to class properties");
     }
-    if (attributes.contains("class")) {
+    if (isField && attributes.contains("class")) {
       if (!options.staticAccessorMethods()) {
         // Class property accessors must be present, as they are not synthesized by runtime.
         ErrorUtil.error(
@@ -208,12 +313,19 @@ public final class PropertyGenerator {
   }
 
   private void processNullabilityAttributes(Set<String> attributes) {
-    if (options.nullability() && !type.getKind().isPrimitive()) {
-      if (ElementUtil.hasNullableAnnotation(element)) {
-        attributes.add("nullable");
-      } else if (ElementUtil.isNonnull(element, parametersNonnullByDefault)) {
-        attributes.add("nonnull");
-      }
+    if (type.getKind().isPrimitive()) {
+      // Nullability specifiers can only be applied to pointer types.
+      attributes.removeAll(NULLABILITY_ATTRIBUTES);
+      return;
+    }
+    // Java nullness annotations are authoritative, they replace any explicit specifier.
+    if (ElementUtil.hasNullableAnnotation(element) && (options.nullability() || nullMarked)) {
+      attributes.removeAll(NULLABILITY_ATTRIBUTES);
+      attributes.add("nullable");
+    } else if (options.nullability()
+        && ElementUtil.isNonnull(element, parametersNonnullByDefault)) {
+      attributes.removeAll(NULLABILITY_ATTRIBUTES);
+      attributes.add("nonnull");
     }
   }
 

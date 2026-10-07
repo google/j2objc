@@ -104,6 +104,11 @@ public class PropertyAnnotation extends Annotation {
     return !Sets.intersection(attributes, MEMORY_MANAGEMENT_ATTRIBUTES).isEmpty();
   }
 
+  /** Returns the memory management attributes present in {@code attributes}. */
+  public static ImmutableSet<String> getMemoryManagementAttributes(Set<String> attributes) {
+    return Sets.intersection(attributes, MEMORY_MANAGEMENT_ATTRIBUTES).immutableCopy();
+  }
+
   public void removeAttribute(String attribute) {
     for (Iterator<String> iter = attributes.iterator(); iter.hasNext(); ) {
       String attr = iter.next();

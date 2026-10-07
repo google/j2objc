@@ -156,10 +156,35 @@ public class GenerateObjCCompanionTest extends GenerationTest {
         }
         """;
     String header = translateSourceFile(source, "Foo", "Foo.h");
-    assertInTranslation(header, "@protocol FooCompanionProtocol");
-    assertInTranslation(header, "@property (nonatomic, getter=getBar, readonly) NSString * bar;");
-    assertInTranslation(
-        header, "@property (class, nonatomic, getter=getBar, readonly) NSString * bar;");
+    assertTranslatedLines(
+        header,
+        """
+        @protocol FooCompanionProtocol
+
+
+        @property (readonly, copy, nonatomic, getter=getBar, nonnull) NSString *bar;
+
+        @end
+        """);
+    assertTranslatedLines(
+        header,
+        """
+        @interface Foo : NSObject
+
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wincompatible-property-type"
+        @property (readonly, class) id<FooCompanionProtocol> companion;
+        #pragma clang diagnostic pop
+
+        #pragma mark Public
+
+        - (instancetype)init;
+
+
+        @property (readonly, copy, nonatomic, getter=getBar, class, nonnull) NSString *bar;
+
+        @end
+        """);
   }
 
   public void testGeneratedTypeWithoutStaticMembersIgnored() throws IOException {
