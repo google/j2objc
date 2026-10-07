@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.ast.InfixExpression.Operator;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.NumberLiteral;
+import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.Pattern;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
@@ -162,9 +163,11 @@ public class SwitchConstructRewriter {
 
     @Override
     public void endVisit(SwitchStatement node) {
-      if (hasPatternsOrGuards(node.getStatements())) {
-        // The switch expression with patterns or guards will be replaced by a nest of if statements
-        // followed by a switch statement on an integer.
+      if (hasPatternsOrGuards(node.getStatements())
+          // Boxed primitive switches with a null case cannot be unboxed directly.
+          || (node.hasNullCase() && typeUtil.isBoxedType(node.getExpression().getTypeMirror()))) {
+        // The switch construct will be replaced by a nest of if statements followed by a switch
+        // statement on an integer.
         Block replacement = new Block();
         generateSelectorLogic(node, replacement);
         node.replaceWith(replacement);
@@ -291,7 +294,21 @@ public class SwitchConstructRewriter {
       } else if (rhs == null) {
         return lhs;
       }
-      return new InfixExpression(typeUtil.getBoolean(), Operator.CONDITIONAL_AND, lhs, rhs);
+      return new InfixExpression(
+          typeUtil.getBoolean(),
+          Operator.CONDITIONAL_AND,
+          maybeParenthesize(lhs),
+          maybeParenthesize(rhs));
+    }
+
+    private static Expression maybeParenthesize(Expression expression) {
+      // TODO(b/571131256): J2ObjC's code generator does not insert parentheses based on operator
+      // precedence; parentheses must be explicitly represented in the AST.
+      if (expression instanceof InfixExpression infixExpression
+          && infixExpression.getOperator() == Operator.CONDITIONAL_OR) {
+        return ParenthesizedExpression.parenthesize(expression);
+      }
+      return expression;
     }
 
     private Expression orCondition(Expression lhs, Expression rhs) {

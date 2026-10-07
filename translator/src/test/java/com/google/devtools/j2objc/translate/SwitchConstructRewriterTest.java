@@ -174,7 +174,7 @@ public class SwitchConstructRewriterTest extends GenerationTest {
                 selector = 1;
               else if ([tmp isKindOfClass:[JavaLangInteger class]]\
                   && (i_1 = (JavaLangInteger *) tmp, true)\
-                  && [((JavaLangInteger *) nil_chk(i_1)) intValue] == 0 || [i_1 intValue] > 1)\
+                  && ([((JavaLangInteger *) nil_chk(i_1)) intValue] == 0 || [i_1 intValue] > 1))\
                 selector = 2;
               else if ([tmp isKindOfClass:[NSObject class]] && (x = tmp, true))\
                 selector = 3;
@@ -425,6 +425,64 @@ public class SwitchConstructRewriterTest extends GenerationTest {
           return 2;
           default:
           return 3;
+        }
+        """);
+  }
+
+  public void testBoxedSwitchWithNullCase() throws IOException {
+    String source =
+        """
+        class Test {
+          static int test(Byte b) {
+            return switch (b) {
+              case 0, 1 -> 1;
+              case null -> 2;
+              default -> 3;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t selector = 0;
+        if (b != nil && ([b charValue] == 0 || [b charValue] == 1)) selector = 1;
+        else if (b == nil) selector = 2;
+        switch (selector) {
+          case 1:
+          return 1;
+          case 2:
+          return 2;
+          default:
+          return 3;
+        }
+        """);
+  }
+
+  public void testBoxedSwitchWithNullDefaultCase() throws IOException {
+    String source =
+        """
+        class Test {
+          static int test(Integer i) {
+            return switch (i) {
+              case 0, 1 -> 1;
+              case null, default -> 2;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t selector = 0;
+        if (i != nil && ([i intValue] == 0 || [i intValue] == 1)) selector = 1;
+        switch (selector) {
+          case 1:
+          return 1;
+          default:
+          return 2;
         }
         """);
   }
