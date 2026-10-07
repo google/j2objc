@@ -36,7 +36,6 @@ import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NullLiteral;
-import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.ReturnStatement;
@@ -909,12 +908,7 @@ class MethodTranslator implements IAstVisitor<Void, TreeNode> {
   @Override
   public TreeNode visitParenthesizedExpression(
       com.strobel.decompiler.languages.java.ast.ParenthesizedExpression node, Void data) {
-    Expression innerExpr = (Expression) node.getExpression().acceptVisitor(this, null);
-    // Remove unnecessary parentheses, added by Procyon 0.6+ decompiler.
-    if (innerExpr.getKind() == TreeNode.Kind.SIMPLE_NAME) {
-      return innerExpr;
-    }
-    return ParenthesizedExpression.parenthesize(innerExpr);
+    return node.getExpression().acceptVisitor(this, null);
   }
 
   @Override

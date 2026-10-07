@@ -388,12 +388,6 @@ public class TreeVisitor {
 
   public void endVisit(ParameterizedType node) {}
 
-  public boolean visit(ParenthesizedExpression node) {
-    return true;
-  }
-
-  public void endVisit(ParenthesizedExpression node) {}
-
   public boolean visit(PostfixExpression node) {
     return true;
   }

@@ -82,7 +82,7 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { boolean b; void test(int i) { if (b = i == 0) {} } }",
         "Test", "Test.m");
-    assertInTranslation(translation, "if ((b_ = (i == 0))) {");
+    assertInTranslation(translation, "if ((b_ = i == 0)) {");
   }
 
   public void testIfAssignExpression() throws IOException {
@@ -114,7 +114,7 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
         + "  boolean test(int b) { return (((((foo == b))))); } "
         + "  int test2(int b) { if ((bar == b)) { return 42; } else { return 666; }}}",
         "Test", "Test.m");
-    assertInTranslation(translation, "return (foo_ == b);");
+    assertInTranslation(translation, "return foo_ == b;");
     assertInTranslation(translation, "if (bar_ == b) {");
   }
 }

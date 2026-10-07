@@ -55,6 +55,32 @@ public class DebugASTPrinter extends TreeVisitor {
 //    }
   }
 
+  private void printWithParens(Expression expr) {
+    if (needsParentheses(expr)) {
+      sb.print('(');
+      expr.accept(this);
+      sb.print(')');
+    } else {
+      expr.accept(this);
+    }
+  }
+
+  /** Returns whether {@code expr} is not a Java primary expression. */
+  private static boolean needsParentheses(Expression expr) {
+    return switch (expr.getKind()) {
+      case ASSIGNMENT,
+          CAST_EXPRESSION,
+          CONDITIONAL_EXPRESSION,
+          INFIX_EXPRESSION,
+          INSTANCEOF_EXPRESSION,
+          LAMBDA_EXPRESSION,
+          PREFIX_EXPRESSION,
+          SWITCH_EXPRESSION ->
+          true;
+      default -> false;
+    };
+  }
+
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
     sb.printIndent();
@@ -91,7 +117,7 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(ArrayAccess node) {
-    node.getArray().accept(this);
+    printWithParens(node.getArray());
     sb.print('[');
     node.getIndex().accept(this);
     sb.print(']');
@@ -202,7 +228,7 @@ public class DebugASTPrinter extends TreeVisitor {
     sb.print('(');
     node.getType().accept(this);
     sb.print(')');
-    node.getExpression().accept(this);
+    printWithParens(node.getExpression());
     return false;
   }
 
@@ -272,11 +298,11 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(ConditionalExpression node) {
-    node.getExpression().accept(this);
+    printWithParens(node.getExpression());
     sb.print(" ? ");
-    node.getThenExpression().accept(this);
+    printWithParens(node.getThenExpression());
     sb.print(" : ");
-    node.getElseExpression().accept(this);
+    printWithParens(node.getElseExpression());
     return false;
   }
 
@@ -432,7 +458,7 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(FieldAccess node) {
-    node.getExpression().accept(this);
+    printWithParens(node.getExpression());
     sb.print('.');
     node.getName().accept(this);
     return false;
@@ -545,8 +571,8 @@ public class DebugASTPrinter extends TreeVisitor {
       if (!isFirst) {
         sb.print(op);
       }
+      printWithParens(operand);
       isFirst = false;
-      operand.accept(this);
     }
     return false;
   }
@@ -561,7 +587,7 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(InstanceofExpression node) {
-    node.getLeftOperand().accept(this);
+    printWithParens(node.getLeftOperand());
     sb.print(" instanceof ");
     node.getRightOperand().accept(this);
     Pattern pattern = node.getPattern();
@@ -684,7 +710,7 @@ public class DebugASTPrinter extends TreeVisitor {
   @Override
   public boolean visit(MethodInvocation node) {
     if (node.getExpression() != null) {
-      node.getExpression().accept(this);
+      printWithParens(node.getExpression());
       sb.print(".");
     }
     printTypeParameters(node.getExecutableElement().getTypeParameters());
@@ -768,16 +794,8 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
-  public boolean visit(ParenthesizedExpression node) {
-    sb.print('(');
-    node.getExpression().accept(this);
-    sb.print(')');
-    return false;
-  }
-
-  @Override
   public boolean visit(PostfixExpression node) {
-    node.getOperand().accept(this);
+    printWithParens(node.getOperand());
     sb.print(node.getOperator().toString());
     return false;
   }
@@ -785,7 +803,7 @@ public class DebugASTPrinter extends TreeVisitor {
   @Override
   public boolean visit(PrefixExpression node) {
     sb.print(node.getOperator().toString());
-    node.getOperand().accept(this);
+    printWithParens(node.getOperand());
     return false;
   }
 
