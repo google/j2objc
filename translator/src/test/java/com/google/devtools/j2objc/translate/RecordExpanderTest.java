@@ -117,14 +117,11 @@ public class RecordExpanderTest extends GenerationTest {
         """);
 
     translation = getTranslatedFile("Person.m");
+    assertNotInTranslation(translation, "@synthesize");
     assertTranslatedLines(
         translation,
         """
         @implementation Person
-
-        @synthesize key = key_;
-        @synthesize name = name_;
-        @synthesize nickname = nickname_;
 
         - (instancetype)initWithInt:(int32_t)key
                        withNSString:(NSString *)name

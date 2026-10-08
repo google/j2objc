@@ -213,14 +213,46 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation, "+ (TestEnum *)TWO");
   }
 
-  // Verify that specified properties are synthesized.
+  // Verify that specified properties are synthesized only when accessors need to be generated.
   public void testSynthesizeProperties() throws IOException {
-    String source = "import com.google.j2objc.annotations.Property; class Test { "
-        + "@Property(\"getter=getFoo\") private final Integer foo = 42;"
-        + "private final Integer bar = 84; }";
+    String source =
+        """
+        import com.google.j2objc.annotations.Property;
+        class Test {
+          @Property("getter=getFoo") private final Integer foo = 42;
+          private final Integer bar = 84;
+          @Property private final Integer finalWithGetter = 1;
+          public Integer getFinalWithGetter() { return finalWithGetter; }
+          @Property("readonly") private Integer readonlyWithGetter = 2;
+          public Integer getReadonlyWithGetter() { return readonlyWithGetter; }
+          @Property private Integer readwriteWithOnlyGetter = 3;
+          public Integer getReadwriteWithOnlyGetter() { return readwriteWithOnlyGetter; }
+          @Property private Integer readwriteWithBoth = 4;
+          public Integer getReadwriteWithBoth() { return readwriteWithBoth; }
+          public void setReadwriteWithBoth(Integer v) { readwriteWithBoth = v; }
+        }
+        """;
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertInTranslation(translation, "@synthesize foo = foo_;");
     assertNotInTranslation(translation, "@synthesize bar");
+    assertNotInTranslation(translation, "@synthesize finalWithGetter");
+    assertNotInTranslation(translation, "@synthesize readonlyWithGetter");
+    assertInTranslation(translation, "@synthesize readwriteWithOnlyGetter = readwriteWithOnlyGetter_;");
+    assertNotInTranslation(translation, "@synthesize readwriteWithBoth");
+  }
+
+  public void testSynthesizeProperties_explicitGetterMatchesStaticMethod() throws IOException {
+    String source =
+        """
+        import com.google.j2objc.annotations.Property;
+        class Test {
+          @Property("getter=customFoo") private final Integer foo = 1;
+          public static Integer customFoo() { return 0; }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertNotInTranslation(translation, "- (JavaLangInteger *)customFoo");
+    assertInTranslation(translation, "@synthesize foo = foo_;");
   }
 
   public void testPrivateClassesPackageSwiftName() throws IOException {

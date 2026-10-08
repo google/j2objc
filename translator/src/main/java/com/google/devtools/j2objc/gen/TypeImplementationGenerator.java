@@ -32,7 +32,6 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
-import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -140,29 +139,16 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
   }
 
-  private static final Predicate<VariableDeclarationFragment> PROPERTIES =
-      new Predicate<VariableDeclarationFragment>() {
-    @Override
-    public boolean apply(VariableDeclarationFragment fragment) {
-      VariableElement varElement = fragment.getVariableElement();
-      return ElementUtil.hasAnnotation(varElement, Property.class)
-          && !ElementUtil.isStatic(varElement);
-    }
-  };
-
   private void printProperties() {
-    Iterable<VariableDeclarationFragment> fields =
-        Iterables.filter(getInstanceFields(), PROPERTIES);
-    if (Iterables.isEmpty(fields)) {
+    List<String> statements = new ArrayList<>();
+    for (VariableDeclarationFragment fragment : getInstanceFields()) {
+      PropertyGenerator.generateSynthesizeStatement(this, fragment).ifPresent(statements::add);
+    }
+    if (statements.isEmpty()) {
       return;
     }
     newline();
-    for (VariableDeclarationFragment fragment : fields) {
-      VariableElement varElement = fragment.getVariableElement();
-      String propertyName = nameTable.getVariableBaseName(varElement);
-      String varName = nameTable.getVariableShortName(varElement);
-      println("@synthesize " + propertyName + " = " + varName + ";");
-    }
+    statements.forEach(this::println);
   }
 
   private static final Predicate<VariableDeclarationFragment> NEEDS_DEFINITION =

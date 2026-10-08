@@ -33,6 +33,7 @@ import java.util.Set;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import org.jspecify.annotations.Nullable;
 
@@ -92,6 +93,21 @@ public final class PropertyGenerator {
     return new PropertyGenerator(
             generator, method, getPseudoPropertyAnnotation(generator, method), staticToInstance)
         .build();
+  }
+
+  /**
+   * Generates the {@code @synthesize} statement for an instance field annotated with
+   * {@code @Property}, if Objective-C needs to synthesize at least one of its accessors.
+   */
+  public static Optional<String> generateSynthesizeStatement(
+      TypeGenerator generator, VariableDeclarationFragment fragment) {
+    FieldDeclaration declaration = (FieldDeclaration) fragment.getParent();
+    return Optional.ofNullable(findPropertyAnnotation(declaration.getAnnotations()))
+        .map(
+            annotation ->
+                new PropertyGenerator(
+                        generator, fragment, annotation, /* staticToInstance= */ false)
+                    .buildSynthesizeStatement());
   }
 
   /** Returns the name of the pseudo-property for a getter method. */
@@ -187,9 +203,7 @@ public final class PropertyGenerator {
       this.isStatic = ElementUtil.isStatic(element);
       this.propertyName = nameTable.getStaticAccessorName(fragment.getVariableElement());
       this.objcType = nameTable.getObjCType(type);
-      this.getter =
-          ElementUtil.findGetterMethod(
-              propertyName, type, ElementUtil.getDeclaringClass(element), isStatic);
+      this.getter = findGetterMethod();
     } else {
       MethodDeclaration method = (MethodDeclaration) member;
       this.isField = false;
@@ -201,13 +215,32 @@ public final class PropertyGenerator {
       this.objcType = generator.getReturnType(method, true); // Generics allowed in headers.
       this.getter = method.getExecutableElement();
     }
-    this.setter =
-        ElementUtil.findSetterMethod(
-            propertyName, type, ElementUtil.getDeclaringClass(element), isStatic);
+    this.setter = findSetterMethod();
+  }
+
+  private @Nullable ExecutableElement findGetterMethod() {
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(element);
+    ExecutableElement getter =
+        annotation.getGetter() != null
+            ? ElementUtil.findMethod(declaringClass, annotation.getGetter())
+            : ElementUtil.findGetterMethod(propertyName, type, declaringClass, isStatic);
+    return getter != null && ElementUtil.isStatic(getter) == isStatic ? getter : null;
+  }
+
+  private @Nullable ExecutableElement findSetterMethod() {
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(element);
+    ExecutableElement setter =
+        annotation.getSetter() != null
+            ? ElementUtil.findMethod(
+                declaringClass, annotation.getSetter(), TypeUtil.getQualifiedName(type))
+            : ElementUtil.findSetterMethod(propertyName, type, declaringClass, isStatic);
+    return setter != null && ElementUtil.isStatic(setter) == isStatic ? setter : null;
   }
 
   private boolean isReadonly() {
-    return isField ? ElementUtil.isFinal(element) : setter == null;
+    return isField
+        ? ElementUtil.isFinal(element) || annotation.hasAttribute("readonly")
+        : setter == null;
   }
 
   private boolean isWeak() {
@@ -230,6 +263,15 @@ public final class PropertyGenerator {
     processNullabilityAttributes(attributes);
     processOtherAttributes(attributes);
     return Optional.of(getStringRepresentation(attributes));
+  }
+
+  private @Nullable String buildSynthesizeStatement() {
+    if (isStatic || (getter != null && (isReadonly() || setter != null))) {
+      // All required accessors are already defined as methods on the class.
+      return null;
+    }
+    String varName = nameTable.getVariableShortName((VariableElement) element);
+    return "@synthesize " + propertyName + " = " + varName + ";";
   }
 
   private boolean processMemoryManagementAttributes(Set<String> attributes) {
