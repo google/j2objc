@@ -117,9 +117,13 @@ public class TypeImplementationGenerator extends TypeGenerator {
       printf("@implementation %s%s\n", typeName, hasCompanionSuffix() ? "Companion" : "");
       printProperties();
       if (needsKotlinCompanionClass()) {
-        String propertyName = typeElement.getKind().isInterface() ? "shared" : "companion";
-        printf("\n+ (id<%sCompanionProtocol>)%s {", typeName, propertyName);
-        printf("\n  return (id<%sCompanionProtocol>)self;\n}\n", typeName);
+        printCompanionPropertyImplementation(
+            typeElement.getKind().isInterface() ? "shared" : "companion");
+        if (needsKotlinSharedProperty()) {
+          // Does not clash with the statement above because needsKotlinSharedProperty() is false
+          // for interfaces.
+          printCompanionPropertyImplementation("shared");
+        }
       }
       printStaticAccessors();
       printInnerDeclarations();
@@ -137,6 +141,11 @@ public class TypeImplementationGenerator extends TypeGenerator {
     if (hasInitializeMethod()) {
       printf("\nJ2OBJC_INITIALIZED_DEFN(%s)\n", typeName);
     }
+  }
+
+  private void printCompanionPropertyImplementation(String propertyName) {
+    printf("\n+ (id<%sCompanionProtocol>)%s {", typeName, propertyName);
+    printf("\n  return (id<%sCompanionProtocol>)self;\n}\n", typeName);
   }
 
   private void printProperties() {
