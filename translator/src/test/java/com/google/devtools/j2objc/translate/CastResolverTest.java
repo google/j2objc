@@ -41,7 +41,7 @@ public class CastResolverTest extends GenerationTest {
         "Test", "Test.m");
     assertInTranslation(
         translation,
-        "JreStrcat(\"$I$I$\", @\"foo\", ((int32_t) [a hash]), @\"bar\", ((int32_t) [a hash]),"
+        "JreStrcat(\"$I$I$\", @\"foo\", (int32_t) [a hash], @\"bar\", (int32_t) [a hash],"
             + " @\"baz\")");
   }
 
@@ -50,7 +50,7 @@ public class CastResolverTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("int32_t i = ((int32_t) [create_JavaLangThrowable_init() hash]);", result);
+    assertEquals("int32_t i = (int32_t) [create_JavaLangThrowable_init() hash];", result);
   }
 
   // b/5872710: generic return type needs to be cast if chaining invocations.
@@ -62,8 +62,8 @@ public class CastResolverTest extends GenerationTest {
       "Test", "Test.m");
     assertInTranslation(
         translation,
-        "((int32_t) [((NSString *) "
-            + "nil_chk([((JavaUtilArrayList *) nil_chk(Test_strings)) getWithInt:1])) hash]);");
+        "(int32_t) [((NSString *) "
+            + "nil_chk([((JavaUtilArrayList *) nil_chk(Test_strings)) getWithInt:1])) hash];");
   }
 
   // Verify that Object.hashCode() return value is cast when used.
@@ -78,7 +78,7 @@ public class CastResolverTest extends GenerationTest {
     // Verify unused return value isn't.
     assertInTranslation(translation, "[nil_chk(o) hash];");
     // Verify that super call to hashCode() is cast.
-    assertInTranslation(translation, "return ((int32_t) [super hash]);");
+    assertInTranslation(translation, "return (int32_t) [super hash];");
   }
 
   public void testDerivedTypeVariableInvocation() throws IOException {
@@ -147,7 +147,7 @@ public class CastResolverTest extends GenerationTest {
         + " Node getNext() { return null; }"
         + " int test() { return (next = getNext()).key; } }", "Test", "Test.m");
     assertInTranslation(
-        translation, "return ((Test_Node *) (JreStrongAssign(&Test_next, [self getNext])))->key_;");
+        translation, "return ((Test_Node *) JreStrongAssign(&Test_next, [self getNext]))->key_;");
   }
 
   public void testCastOfInferredWildcardType() throws IOException {
@@ -181,8 +181,8 @@ public class CastResolverTest extends GenerationTest {
         + "class A<T extends I1> { T foo; }"
         + "class B<T extends I2> extends A<T> {}", "Test", "Test.m");
     // Test that access of "foo" from subclass B is cast to id<I2>.
-    assertInTranslation(translation, "[self test1WithI2:((id<I2>) ((B *) nil_chk(b))->foo_)];");
-    assertInTranslation(translation, "Test_test2WithI2_(self, ((id<I2>) b->foo_));");
+    assertInTranslation(translation, "[self test1WithI2:(id<I2>) ((B *) nil_chk(b))->foo_];");
+    assertInTranslation(translation, "Test_test2WithI2_(self, (id<I2>) b->foo_);");
   }
 
   /**
@@ -242,7 +242,7 @@ public class CastResolverTest extends GenerationTest {
         "class Test implements java.io.Serializable {"
         + " static class A<T extends java.io.Serializable> { T foo; }"
         + " void test (A<Test> a, Test t) { if (a != null) { t = a.foo; } } }", "Test", "Test.m");
-    assertInTranslation(translation, "t = ((Test *) a->foo_);");
+    assertInTranslation(translation, "t = (Test *) a->foo_;");
   }
 
   public void testCastInConditionalExpression() throws IOException {
@@ -262,7 +262,7 @@ public class CastResolverTest extends GenerationTest {
         "class Test { Integer test(Bar<Integer> bar) { return bar.foo(); } }", "Test", "Test.m");
     // Needs the JavaLangInteger cast.
     assertInTranslation(
-        translation, "return ((JavaLangInteger *) [((id<Bar>) nil_chk(bar)) foo]);");
+        translation, "return (JavaLangInteger *) [((id<Bar>) nil_chk(bar)) foo];");
   }
 
   public void testCastInSuperFieldAccess() throws IOException {

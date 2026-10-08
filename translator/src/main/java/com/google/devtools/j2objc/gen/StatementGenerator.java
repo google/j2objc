@@ -61,7 +61,6 @@ import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.NumberLiteral;
-import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.PrimitiveType;
@@ -142,6 +141,51 @@ public class StatementGenerator extends UnitTreeVisitor {
     return buffer.toString();
   }
 
+  /** Prints an operand of a compound expression, parenthesizing it if it is not primary. */
+  private void printWithParens(Expression expr) {
+    printWithParens(expr, needsParentheses(expr));
+  }
+
+  private void printWithParens(Expression expr, boolean parenthesize) {
+    if (parenthesize) {
+      buffer.append('(');
+      expr.accept(this);
+      buffer.append(')');
+    } else {
+      expr.accept(this);
+    }
+  }
+
+  /** Returns whether the generated code for {@code expr} is not a primary expression. */
+  private static boolean needsParentheses(Expression expr) {
+    return switch (expr.getKind()) {
+      // Operators with lower precedence than the postfix operators, emitted without their own
+      // parentheses.
+      case ASSIGNMENT,
+          CAST_EXPRESSION,
+          CONDITIONAL_EXPRESSION,
+          INFIX_EXPRESSION,
+          PREFIX_EXPRESSION ->
+          true;
+      // Names, literals, self, function calls, message sends ([...]), member accesses (->) and
+      // postfix expressions are primary or postfix expressions in C. Comma expressions add their
+      // own parentheses. Negative number literals are handled in visit(PrefixExpression), the only
+      // place where their leading '-' matters.
+      default -> false;
+    };
+  }
+
+  /** Prints the condition of a control statement. */
+  private void printCondition(Expression expr) {
+    if (expr instanceof Assignment) {
+      // Avoid clang's -Wparentheses warning for assignments used as conditions.
+      printWithParens(expr);
+    } else {
+      // The condition is already enclosed in the statement's parentheses.
+      expr.accept(this);
+    }
+  }
+
   private void printMethodInvocationNameAndArgs(String selector, List<Expression> args) {
     String[] selParts = selector.split(":");
     if (args.isEmpty()) {
@@ -154,6 +198,8 @@ public class StatementGenerator extends UnitTreeVisitor {
         buffer.append(' ');
         buffer.append(selParts[i]);
         buffer.append(':');
+        // Message arguments are parsed as assignment expressions, delimited by the next selector
+        // keyword or ']'. CommaExpression adds its own parentheses.
         args.get(i).accept(this);
       }
     }
@@ -184,6 +230,7 @@ public class StatementGenerator extends UnitTreeVisitor {
     TypeMirror componentType = type.getComponentType();
     buffer.append(UnicodeUtils.format("(%s[]){ ", NameTable.getPrimitiveObjCType(componentType)));
     for (Iterator<Expression> it = node.getExpressions().iterator(); it.hasNext(); ) {
+      // Elements are comma-separated inside '{ ... }'. CommaExpression adds its own parentheses.
       it.next().accept(this);
       if (it.hasNext()) {
         buffer.append(", ");
@@ -203,6 +250,7 @@ public class StatementGenerator extends UnitTreeVisitor {
   @Override
   public boolean visit(AssertStatement node) {
     buffer.append("JreAssert(");
+    // JreAssert is a macro; see acceptMacroArgument.
     acceptMacroArgument(node.getExpression());
     buffer.append(", ");
     if (node.getMessage() != null) {
@@ -224,6 +272,9 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(Assignment node) {
+    // Assignment is right-associative and has the lowest precedence other than ',' (which
+    // CommaExpression parenthesizes), so neither the lvalue nor the right-hand side needs
+    // parentheses.
     node.getLeftHandSide().accept(this);
     buffer.append(' ');
     buffer.append(node.getOperator().toString());
@@ -285,7 +336,9 @@ public class StatementGenerator extends UnitTreeVisitor {
     buffer.append("(");
     buffer.append(nameTable.getObjCType(node.getType().getTypeMirror()));
     buffer.append(") ");
-    node.getExpression().accept(this);
+    // Parenthesize anything with lower precedence than a cast. Unary operators and casts don't
+    // strictly need it but are parenthesized for readability, e.g. "(int) (-x)".
+    printWithParens(node.getExpression());
     return false;
   }
 
@@ -305,6 +358,7 @@ public class StatementGenerator extends UnitTreeVisitor {
     buffer.append('(');
     for (Iterator<Expression> it = node.getExpressions().iterator(); it.hasNext(); ) {
       Expression e = it.next();
+      // ',' has the lowest precedence, so no subexpression needs parentheses.
       e.accept(this);
       if (it.hasNext()) {
         buffer.append(", ");
@@ -316,11 +370,14 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(ConditionalExpression node) {
-    node.getExpression().accept(this);
+    // C allows an assignment in the middle operand but not in the last one, and clang warns about
+    // some unparenthesized conditions (e.g. -Wbitwise-conditional-parentheses), so all non-primary
+    // operands are parenthesized.
+    printWithParens(node.getExpression());
     buffer.append(" ? ");
-    node.getThenExpression().accept(this);
+    printWithParens(node.getThenExpression());
     buffer.append(" : ");
-    node.getElseExpression().accept(this);
+    printWithParens(node.getElseExpression());
     return false;
   }
 
@@ -352,7 +409,8 @@ public class StatementGenerator extends UnitTreeVisitor {
     buffer.append("do ");
     node.getBody().accept(this);
     buffer.append(" while (");
-    node.getExpression().accept(this);
+    // See printCondition.
+    printCondition(node.getExpression());
     buffer.append(");\n");
     return false;
   }
@@ -388,6 +446,7 @@ public class StatementGenerator extends UnitTreeVisitor {
     buffer.append("for (");
     node.getParameter().accept(this);
     buffer.append(" in ");
+    // The collection is delimited by "in" and ')'.
     node.getExpression().accept(this);
     buffer.append(") ");
     node.getBody().accept(this);
@@ -410,6 +469,8 @@ public class StatementGenerator extends UnitTreeVisitor {
       // Avoid clang warning that the return value is unused.
       buffer.append("(void) ");
     }
+    // A full expression needs no parentheses. When "(void) " is prepended the expression is an
+    // invocation, which binds tighter than the cast.
     expression.accept(this);
     buffer.append(";\n");
     return false;
@@ -417,8 +478,10 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(FieldAccess node) {
-    node.getExpression().accept(this);
+    // '->' is a postfix operator, so any non-primary receiver must be parenthesized.
+    printWithParens(node.getExpression());
     buffer.append("->");
+    // The field name is a SimpleName.
     node.getName().accept(this);
     return false;
   }
@@ -428,6 +491,8 @@ public class StatementGenerator extends UnitTreeVisitor {
     buffer.append("for (");
     for (Iterator<Expression> it = node.getInitializers().iterator(); it.hasNext(); ) {
       Expression next = it.next();
+      // Initializers are full expressions separated by ',' and terminated by ';'. CommaExpression
+      // adds its own parentheses.
       next.accept(this);
       if (it.hasNext()) {
         buffer.append(", ");
@@ -435,10 +500,13 @@ public class StatementGenerator extends UnitTreeVisitor {
     }
     buffer.append("; ");
     if (node.getExpression() != null) {
-      node.getExpression().accept(this);
+      // See printCondition.
+      printCondition(node.getExpression());
     }
     buffer.append("; ");
     for (Iterator<Expression> it = node.getUpdaters().iterator(); it.hasNext(); ) {
+      // Updaters are full expressions separated by ',' and terminated by ')'. CommaExpression adds
+      // its own parentheses.
       it.next().accept(this);
       if (it.hasNext()) {
         buffer.append(", ");
@@ -461,6 +529,8 @@ public class StatementGenerator extends UnitTreeVisitor {
       if (isMacro) {
         acceptMacroArgument(arg);
       } else {
+        // Function arguments are separated by ',' inside '(...)'. CommaExpression adds its own
+        // parentheses.
         arg.accept(this);
       }
       if (iter.hasNext()) {
@@ -474,7 +544,8 @@ public class StatementGenerator extends UnitTreeVisitor {
   @Override
   public boolean visit(IfStatement node) {
     buffer.append("if (");
-    node.getExpression().accept(this);
+    // See printCondition.
+    printCondition(node.getExpression());
     buffer.append(") ");
     node.getThenStatement().accept(this);
     if (node.getElseStatement() != null) {
@@ -496,7 +567,10 @@ public class StatementGenerator extends UnitTreeVisitor {
         buffer.append(opStr);
       }
       isFirst = false;
-      operand.accept(this);
+      // Every non-primary operand is parenthesized, so no operator precedence table is needed and
+      // clang's -Wparentheses family of warnings (e.g. '&&' within '||') can't trigger. Operand
+      // lists are only flattened for chains of the same left-associative operator.
+      printWithParens(operand);
     }
     return false;
   }
@@ -507,12 +581,15 @@ public class StatementGenerator extends UnitTreeVisitor {
     if (type != null && type.getKind().isInterface()) {
       // Our version of "isInstance" is faster than "conformsToProtocol".
       buffer.append(UnicodeUtils.format("[%s_class_() isInstance:", nameTable.getFullName(type)));
+      // The operand is a message argument; see printMethodInvocationNameAndArgs.
       node.getLeftOperand().accept(this);
       buffer.append(']');
     } else {
       buffer.append('[');
-      node.getLeftOperand().accept(this);
+      // The operand is a message receiver; see visit(MethodInvocation).
+      printWithParens(node.getLeftOperand());
       buffer.append(" isKindOfClass:[");
+      // The right operand is a type, which prints as a class name.
       node.getRightOperand().accept(this);
       buffer.append(" class]]");
     }
@@ -556,7 +633,9 @@ public class StatementGenerator extends UnitTreeVisitor {
     if (ElementUtil.isStatic(element)) {
       buffer.append(nameTable.getFullName(ElementUtil.getDeclaringClass(element)));
     } else if (receiver != null) {
-      receiver.accept(this);
+      // Parenthesize non-primary receivers so the receiver is clearly delimited from the selector,
+      // e.g. "[(c ? a : b) foo]" or "[((Foo *) x) bar]".
+      printWithParens(receiver);
     } else {
       buffer.append("self");
     }
@@ -591,26 +670,21 @@ public class StatementGenerator extends UnitTreeVisitor {
 
   @Override
   public boolean visit(NumberLiteral node) {
-    String token = node.getToken();
-    if (token != null) {
-      buffer.append(LiteralGenerator.fixNumberToken(token, node.getTypeMirror().getKind()));
-    } else {
-      buffer.append(LiteralGenerator.generate(node.getValue()));
-    }
+    buffer.append(getNumberLiteralText(node));
     return false;
   }
 
-  @Override
-  public boolean visit(ParenthesizedExpression node) {
-    buffer.append("(");
-    node.getExpression().accept(this);
-    buffer.append(")");
-    return false;
+  private static String getNumberLiteralText(NumberLiteral node) {
+    String token = node.getToken();
+    return token != null
+        ? LiteralGenerator.fixNumberToken(token, node.getTypeMirror().getKind())
+        : LiteralGenerator.generate(node.getValue());
   }
 
   @Override
   public boolean visit(PostfixExpression node) {
-    node.getOperand().accept(this);
+    // Postfix operators bind tightest, so any non-primary operand must be parenthesized.
+    printWithParens(node.getOperand());
     buffer.append(node.getOperator().toString());
     return false;
   }
@@ -618,8 +692,17 @@ public class StatementGenerator extends UnitTreeVisitor {
   @Override
   public boolean visit(PrefixExpression node) {
     buffer.append(node.getOperator().toString());
-    node.getOperand().accept(this);
+    Expression operand = node.getOperand();
+    // Binary, conditional and assignment operands must be parenthesized. Nested prefix operators
+    // are parenthesized so "-(-x)" doesn't become "--x", and casts for readability.
+    // Negative literals are prefix expressions in C, e.g. "-(-1)" must not become "--1".
+    printWithParens(operand, needsParentheses(operand) || isNegativeNumberLiteral(operand));
     return false;
+  }
+
+  private static boolean isNegativeNumberLiteral(Expression expr) {
+    return expr instanceof NumberLiteral
+        && getNumberLiteralText((NumberLiteral) expr).startsWith("-");
   }
 
   @Override
@@ -643,6 +726,7 @@ public class StatementGenerator extends UnitTreeVisitor {
       return false;
     }
     Name qualifier = node.getQualifier();
+    // The qualifier is a Name, which prints as an identifier or a left-associative '->' chain.
     qualifier.accept(this);
     buffer.append("->");
     node.getName().accept(this);
@@ -665,6 +749,7 @@ public class StatementGenerator extends UnitTreeVisitor {
     Expression expr = node.getExpression();
     if (expr != null) {
       buffer.append(' ');
+      // A full expression terminated by ';'.
       expr.accept(this);
     }
     buffer.append(";\n");
@@ -717,6 +802,8 @@ public class StatementGenerator extends UnitTreeVisitor {
     }
     if (node.getInitializer() != null) {
       buffer.append(" = ");
+      // An initializer is an assignment expression, delimited by ',' or ';' or ')'.
+      // CommaExpression adds its own parentheses.
       node.getInitializer().accept(this);
     }
     return false;
@@ -764,6 +851,7 @@ public class StatementGenerator extends UnitTreeVisitor {
       buffer.append("  case ");
       Iterator<Expression> caseIter = node.getExpressions().iterator();
       while (caseIter.hasNext()) {
+        // Case labels are constant expressions, delimited by "case" and ':'.
         caseIter.next().accept(this);
         if (caseIter.hasNext()) {
           buffer.println(':');
@@ -794,6 +882,7 @@ public class StatementGenerator extends UnitTreeVisitor {
   public boolean visit(SwitchStatement node) {
     Expression expr = node.getExpression();
     buffer.append("switch (");
+    // The selector is already enclosed in the statement's parentheses.
     expr.accept(this);
     buffer.append(") ");
     buffer.append("{\n");
@@ -811,6 +900,7 @@ public class StatementGenerator extends UnitTreeVisitor {
   @Override
   public boolean visit(SynchronizedStatement node) {
     buffer.append("@synchronized(");
+    // The lock expression is already enclosed in the statement's parentheses.
     node.getExpression().accept(this);
     buffer.append(") ");
     node.getBody().accept(this);
@@ -826,6 +916,7 @@ public class StatementGenerator extends UnitTreeVisitor {
   @Override
   public boolean visit(ThrowStatement node) {
     buffer.append("@throw ");
+    // A full expression terminated by ';'.
     node.getExpression().accept(this);
     buffer.append(";\n");
     return false;
@@ -939,6 +1030,8 @@ public class StatementGenerator extends UnitTreeVisitor {
     Expression initializer = node.getInitializer();
     if (initializer != null) {
       buffer.append(" = ");
+      // An initializer is an assignment expression, delimited by ',' or ';'. CommaExpression adds
+      // its own parentheses.
       initializer.accept(this);
     }
     return false;
@@ -980,7 +1073,8 @@ public class StatementGenerator extends UnitTreeVisitor {
   @Override
   public boolean visit(WhileStatement node) {
     buffer.append("while (");
-    node.getExpression().accept(this);
+    // See printCondition.
+    printCondition(node.getExpression());
     buffer.append(") ");
     node.getBody().accept(this);
     return false;
@@ -1000,7 +1094,14 @@ public class StatementGenerator extends UnitTreeVisitor {
   }
 
   private void acceptMacroArgument(Expression expr) {
-    if (needsParenthesesForMacro(expr)) {
+    // Macro parameters may be expanded unparenthesized, e.g. nil_chk(p) expands to (p ?: ...), so
+    // parenthesize the expressions that bind more loosely than a binary operator, as well as
+    // arguments containing top-level commas, which would otherwise split the macro argument.
+    // Binary, prefix, cast and postfix expressions bind tighter than the operators used in the
+    // macro expansions, so they are not parenthesized.
+    if (expr instanceof Assignment
+        || expr instanceof ConditionalExpression
+        || needsParenthesesForMacro(expr)) {
       buffer.append('(');
       expr.accept(this);
       buffer.append(')');

@@ -1377,8 +1377,74 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(translation, "-0x7fffffff - 1");
-    assertInTranslation(translation, "-0x7fffffffffffffffLL - 1");
+    assertInTranslation(translation, "(-0x7fffffff - 1)");
+    assertInTranslation(translation, "(-0x7fffffffffffffffLL - 1)");
+  }
+
+  public void testNegativeLiteralOperands() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              void test() {
+                int a = -(-1);
+                long b = -(-1L);
+                int c = ~(0x80000000);
+                int d = - -2147483648;
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t a = -(-1);
+        int64_t b = -(-1LL);
+        int32_t c = ~(-0x7fffffff - 1);
+        int32_t d = -(-0x7fffffff - 1);
+        """);
+  }
+
+  public void testAssignmentConditionsAreParenthesized() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              boolean next() { return false; }
+              void test() {
+                boolean b;
+                for (; b = next(); ) {}
+                while (b = next()) {}
+                do {} while (b = next());
+                if (b = next()) {}
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
+    assertInTranslation(translation, "for (; (b = [self next]); ) {");
+    assertInTranslation(translation, "while ((b = [self next])) {");
+    assertInTranslation(translation, "while ((b = [self next]));");
+    assertInTranslation(translation, "if ((b = [self next])) {");
+  }
+
+  public void testConditionalMacroArgumentIsParenthesized() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              int test(boolean c, String s1, String s2) {
+                switch (c ? s1 : s2) {
+                  case "a": return 1;
+                  default: return 2;
+                }
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
+    assertInTranslation(translation, "NSString *tmp = nil_chk((c ? s1 : s2));");
   }
 
   public void testInnerNewStatement() throws IOException {
@@ -2680,7 +2746,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(translation, "(r != nil ? r : (id) @\"bar\")");
+    assertInTranslation(translation, "(r != nil) ? r : ((id) @\"bar\")");
   }
 
   // Verify that when a method invocation returns an object that is ignored,
@@ -3220,7 +3286,7 @@ public class StatementGeneratorTest extends GenerationTest {
         translation,
         """
         Point *p = nil;
-        if ([o isKindOfClass:[Point class]] && (p = (Point *) o, true) && x_ == ((Point *) nil_chk(p))->x_ && y_ == p->y_) {
+        if (([o isKindOfClass:[Point class]] && (p = (Point *) o, true)) && (x_ == ((Point *) nil_chk(p))->x_) && (y_ == p->y_)) {
           return true;
         }
         else {
@@ -3261,9 +3327,9 @@ public class StatementGeneratorTest extends GenerationTest {
               int selector=0;
               java.lang.String s=null;
               java.lang.String s=null;
-              if (str instanceof java.lang.String && (s=str, true) && ((java.lang.String)nil_chk(s)).length() > 10)         selector=1;
+              if (((str instanceof java.lang.String) && (s=str, true)) && (((java.lang.String)nil_chk(s)).length() > 10))         selector=1;
               else if (str == null)         selector=2;
-              else if (str instanceof java.lang.String && (s=str, true))         selector=3;
+              else if ((str instanceof java.lang.String) && (s=str, true))         selector=3;
               switch (selector) {
                 case 1: return JreStrcat($$, "Long string: ", s);
                 case 2: return "null";
@@ -3537,8 +3603,8 @@ public class StatementGeneratorTest extends GenerationTest {
               id o = create_Test_B_initWithId_withInt_withInt_(nil, 3, 4);
               Test_B *rec = nil;
               int32_t i2 = 0;
-              if ([o isKindOfClass:[Test_B class]] && (rec = (Test_B *) o, true)\
-               && ([((Test_B *) nil_chk(rec)) a1], true) && ([((Test_B *) nil_chk(rec)) i], true)\
+              if (((([o isKindOfClass:[Test_B class]] && (rec = (Test_B *) o, true))\
+               && ([((Test_B *) nil_chk(rec)) a1], true)) && ([((Test_B *) nil_chk(rec)) i], true))\
                && (i2 = (int32_t) [((Test_B *) nil_chk(rec)) i2], true)) {
               }
               """);
@@ -3587,5 +3653,74 @@ public class StatementGeneratorTest extends GenerationTest {
               @end
               """);
         });
+  }
+
+  public void testOperatorPrecedence() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              void testArithmetic(double a, double b, double c) {
+                double r1 = (a + b) + c;
+                double r2 = a + (b + c);
+                double r3 = (a - b) - c;
+                double r4 = a - (b - c);
+                double r5 = (a + b) * c;
+                double r6 = a + (b * c);
+                double r7 = (a / b) / c;
+                double r8 = a / (b / c);
+              }
+              void testConditional(boolean a, boolean b, int x, int y, int z) {
+                int r1 = a ? x : (b ? y : z);
+                int r2 = (a ? b : false) ? x : y;
+              }
+              void testPrefixAndCast(double a, double b, int i) {
+                double r1 = -(-a);
+                double r2 = -(a + b);
+                float r3 = (float) (a + b);
+                int r4 = ~i;
+              }
+              void testRelationalAndEquality(int a, int b, boolean c, boolean d) {
+                boolean r1 = (a < b) == (c == d);
+                boolean r2 = a == b && c != d;
+                boolean r3 = (a == b || c) && d;
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        double r1 = (a + b) + c;
+        double r2 = a + (b + c);
+        double r3 = (a - b) - c;
+        double r4 = a - (b - c);
+        double r5 = (a + b) * c;
+        double r6 = a + (b * c);
+        double r7 = (a / b) / c;
+        double r8 = a / (b / c);
+        """);
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t r1 = a ? x : (b ? y : z);
+        int32_t r2 = (a ? b : false) ? x : y;
+        """);
+    assertTranslatedLines(
+        translation,
+        """
+        double r1 = -(-a);
+        double r2 = -(a + b);
+        float r3 = (float) (a + b);
+        int32_t r4 = ~i;
+        """);
+    assertTranslatedLines(
+        translation,
+        """
+        bool r1 = (a < b) == (c == d);
+        bool r2 = (a == b) && (c != d);
+        bool r3 = ((a == b) || c) && d;
+        """);
   }
 }

@@ -98,7 +98,7 @@ public class LineDirectivesTest extends GenerationTest {
         translation,
         "for (int32_t i = 0; i < 10; JrePostIncInt(&i))",
         "#line 4",
-        "if ((JreIntMod(n, 2)) == 0)",
+        "if (JreIntMod(n, 2) == 0)",
         "#line 5",
         "JrePlusAssignIntI(&n, i);",
         "",

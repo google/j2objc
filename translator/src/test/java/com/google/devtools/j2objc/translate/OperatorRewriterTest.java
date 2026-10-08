@@ -150,7 +150,7 @@ public class OperatorRewriterTest extends GenerationTest {
     String translation =
         translateSourceFile(
             "class Test { String s; void test(String s2) { (s) = s2; } }", "Test", "Test.m");
-    assertInTranslation(translation, "JreStrongAssign(&(s_), s2);");
+    assertInTranslation(translation, "JreStrongAssign(&s_, s2);");
   }
 
   public void testParenthesizedLeftHandSideStrictField() throws IOException {
@@ -159,7 +159,7 @@ public class OperatorRewriterTest extends GenerationTest {
     String translation =
         translateSourceFile(
             "class Test { String s; void test(String s2) { (s) = s2; } }", "Test", "Test.m");
-    assertInTranslation(translation, "JreStrictFieldStrongAssign(&(s_), s2);");
+    assertInTranslation(translation, "JreStrictFieldStrongAssign(&s_, s2);");
   }
 
   public void testVolatileLoadAndAssign() throws IOException {
@@ -636,7 +636,7 @@ public class OperatorRewriterTest extends GenerationTest {
             + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
     assertInTranslation(
         translation,
-        "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2) =="
+        "return JavaLangBoolean_valueOfWithBoolean_((!JreObjectEqualsEquals(b1, b2)) =="
             + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
     assertInTranslation(
         translation,
@@ -646,7 +646,7 @@ public class OperatorRewriterTest extends GenerationTest {
         translation, "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2));");
     assertInTranslation(
         translation,
-        "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2) !="
+        "return JavaLangBoolean_valueOfWithBoolean_((!JreObjectEqualsEquals(b1, b2)) !="
             + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
   }
 

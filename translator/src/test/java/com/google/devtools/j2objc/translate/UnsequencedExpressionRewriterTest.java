@@ -57,11 +57,11 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         "bool unseq$1;",
-        "if (!(unseq$1 = (i == 0 || i == 1))) {",
+        "if (!(unseq$1 = (i == 0) || (i == 1))) {",
         "  int32_t unseq$2 = JrePreIncInt(&i);",
-        "  if (!(unseq$1 = (JreIntPlus(unseq$2, i) == 2))) {",
+        "  if (!(unseq$1 = JreIntPlus(unseq$2, i) == 2)) {",
         "    int32_t unseq$3 = JrePostIncInt(&i);",
-        "    unseq$1 = (unseq$1 || JreIntPlus(unseq$3, i) == 3 || i == 4);",
+        "    unseq$1 = unseq$1 || (JreIntPlus(unseq$3, i) == 3) || (i == 4);",
         "  }",
         "}",
         "return unseq$1;");
@@ -80,14 +80,14 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "  if (i == 0) {",
         "    int32_t unseq$2 = JrePostIncInt(&i);",
         "    bool unseq$3;",
-        "    if (!(unseq$3 = (JreIntPlus(unseq$2, i) == 0))) {",
+        "    if (!(unseq$3 = JreIntPlus(unseq$2, i) == 0)) {",
         "      int32_t unseq$4 = JrePostIncInt(&i);",
-        "      unseq$3 = (unseq$3 || JreIntPlus(unseq$4, i) == 0);",
+        "      unseq$3 = unseq$3 || (JreIntPlus(unseq$4, i) == 0);",
         "    }",
         "    unseq$1 = unseq$3;",
         "  }",
         "  else {",
-        "    unseq$1 = (JrePreIncInt(&i) == 1);",
+        "    unseq$1 = JrePreIncInt(&i) == 1;",
         "  }",
         "  return unseq$1;",
         "}");
@@ -96,14 +96,14 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "- (bool)test2WithInt:(int32_t)i {",
         "  bool unseq$1;",
         "  if (i == 0) {",
-        "    unseq$1 = (JrePreIncInt(&i) == 1);",
+        "    unseq$1 = JrePreIncInt(&i) == 1;",
         "  }",
         "  else {",
         "    int32_t unseq$2 = JrePostIncInt(&i);",
         "    bool unseq$3;",
-        "    if (!(unseq$3 = (JreIntPlus(unseq$2, i) == 0))) {",
+        "    if (!(unseq$3 = JreIntPlus(unseq$2, i) == 0)) {",
         "      int32_t unseq$4 = JrePostIncInt(&i);",
-        "      unseq$3 = (unseq$3 || JreIntPlus(unseq$4, i) == 0);",
+        "      unseq$3 = unseq$3 || (JreIntPlus(unseq$4, i) == 0);",
         "    }",
         "    unseq$1 = unseq$3;",
         "  }",
@@ -162,9 +162,9 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "int32_t unseq$3 = JrePostIncInt(&p);",
         "unseq$1 = IOSByteArray_Get(nil_chk(input), unseq$3);",
         "}",
-        "return (JreLShift32(((unseq$1) & (int32_t) 0xff), 10)) "
-            + "| (JreLShift32(((tailLen > 0 ? IOSByteArray_Get(nil_chk(tail), JrePostIncInt(&t)) "
-            + ": IOSByteArray_Get(nil_chk(input), JrePostIncInt(&p))) & (int32_t) 0xff), 2));");
+        "return JreLShift32(unseq$1 & (int32_t) 0xff, 10) "
+            + "| JreLShift32(((tailLen > 0) ? IOSByteArray_Get(nil_chk(tail), JrePostIncInt(&t)) "
+            + ": IOSByteArray_Get(nil_chk(input), JrePostIncInt(&p))) & (int32_t) 0xff, 2);");
   }
 
   public void testVariableDeclarationStatementIsSplit() throws IOException {
@@ -291,7 +291,7 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "bool unseq$1;",
         "if (!(unseq$1 = b)) {",
         "  int32_t unseq$2 = i;",
-        "  unseq$1 = (unseq$1 || [self fooWithInt:unseq$2 withInt:JrePostIncInt(&i)]);",
+        "  unseq$1 = unseq$1 || [self fooWithInt:unseq$2 withInt:JrePostIncInt(&i)];",
         "}",
         "return unseq$1;");
     // test2
