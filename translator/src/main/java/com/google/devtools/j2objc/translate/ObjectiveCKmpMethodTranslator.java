@@ -263,12 +263,19 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
           shouldGenerate = ElementUtil.getDeclaringClass(method.element()).equals(typeElem);
         } else {
           AdapterGenerator superGen = getSupertypeAdapterGenerator(signature);
-          shouldGenerate =
-              superGen == null
-                  || ElementUtil.isAbstract(superGen.allMethods.get(signature).element())
-                  || ElementUtil.isDefault(superGen.allMethods.get(signature).element());
           if (ElementUtil.isAbstract(method.element())) {
             strategy = MappingStrategy.ABSTRACT;
+            // Generate if declared on this class, or if inherited by an abstract class from an
+            // interface rather than an abstract superclass that already generated them.
+            shouldGenerate =
+                ElementUtil.getDeclaringClass(method.element()).equals(typeElem)
+                    || (ElementUtil.isAbstract(typeElem)
+                        && (superGen == null || superGen.typeElem.getKind().isInterface()));
+          } else {
+            shouldGenerate =
+                superGen == null
+                    || ElementUtil.isAbstract(superGen.allMethods.get(signature).element())
+                    || ElementUtil.isDefault(superGen.allMethods.get(signature).element());
           }
         }
 
@@ -380,7 +387,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     private final AbstractTypeDeclaration typeNode;
     private final ExecutableElement originalMethodExecutable;
     private final TypeMirror originalMethodReturnType;
-    private final ImmutableList<? extends VariableElement> originalMethodParameters;
+    private final ImmutableList<VariableElement> originalMethodParameters;
     private final TypeMirror adapter;
     private final boolean isInterface;
     private final MappingStrategy strategy;
@@ -397,13 +404,30 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       this.typeNode = typeNode;
       this.originalMethodExecutable = originalMethod.element();
       this.originalMethodReturnType = originalMethod.type().getReturnType();
-      this.originalMethodParameters =
-          ImmutableList.copyOf(originalMethodExecutable.getParameters());
+      this.originalMethodParameters = resolveMethodParameters(originalMethod);
       this.selector = (String) ElementUtil.getAnnotationValue(annotation, "selector");
       this.swiftName = (String) ElementUtil.getAnnotationValue(annotation, "swiftName");
       this.adapter = (TypeMirror) ElementUtil.getAnnotationValue(annotation, "adapter");
       this.isInterface = isInterface;
       this.strategy = strategy;
+    }
+
+    /** Substitutes generic parameter types when the method is inherited from a supertype. */
+    private ImmutableList<VariableElement> resolveMethodParameters(ExecutablePair originalMethod) {
+      List<? extends VariableElement> params = originalMethod.element().getParameters();
+      List<? extends TypeMirror> resolvedTypes = originalMethod.type().getParameterTypes();
+      ImmutableList.Builder<VariableElement> resolvedParams = ImmutableList.builder();
+      for (int i = 0; i < params.size(); i++) {
+        VariableElement param = params.get(i);
+        TypeMirror resolvedType = resolvedTypes.get(i);
+        resolvedParams.add(
+            typeUtil.isSameType(param.asType(), resolvedType)
+                ? param
+                : GeneratedVariableElement.newParameter(
+                        ElementUtil.getName(param), resolvedType, param.getEnclosingElement())
+                    .addAnnotationMirrors(param.getAnnotationMirrors()));
+      }
+      return resolvedParams.build();
     }
 
     /** Orchestrates the parameter conversion and adapter method creation. */
@@ -612,15 +636,50 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       bodyBlock.addStatement(
           createReturnStatement(adaptingMethodInvocation, originalMethodReturnType));
 
-      // Find the method declaration in typeNode and update it
+      // Find the method declaration in typeNode and update it, or synthesize a bridge declaration
+      // if the abstract class inherited the method without redeclaring it.
       for (BodyDeclaration decl : typeNode.getBodyDeclarations()) {
         if (decl instanceof MethodDeclaration md
             && md.getExecutableElement().equals(originalMethodExecutable)) {
           md.setBody(bodyBlock);
           md.removeModifiers(ABSTRACT);
-          break;
+          return;
         }
       }
+      // Remove any abstract return-type-narrowing stub added earlier by AbstractMethodRewriter.
+      typeNode
+          .getBodyDeclarations()
+          .removeIf(
+              decl ->
+                  decl instanceof MethodDeclaration md
+                      && md.getExecutableElement() instanceof GeneratedExecutableElement gee
+                      && ElementUtil.isAbstract(gee)
+                      && originalMethodExecutable.equals(gee.getOriginalElement()));
+      typeNode.addBodyDeclaration(createBridgeMethodDeclaration(bodyBlock));
+    }
+
+    /** Creates a concrete Java bridge method that delegates to the abstract KMP adapter stub. */
+    private MethodDeclaration createBridgeMethodDeclaration(Block bodyBlock) {
+      String originalSelector = nameTable.getMethodSelector(originalMethodExecutable);
+      GeneratedExecutableElement bridgeExecutable =
+          GeneratedExecutableElement.newMethodWithSelector(
+                  originalSelector, originalMethodReturnType, typeNode.getTypeElement())
+              .addModifiers(originalMethodExecutable.getModifiers())
+              .removeModifiers(Modifier.ABSTRACT, Modifier.DEFAULT)
+              .setOriginalElement(originalMethodExecutable);
+      bridgeExecutable
+          .addAnnotationMirrors(originalMethodExecutable.getAnnotationMirrors())
+          .removeAnnotationMirror(
+              ElementUtil.getAnnotation(bridgeExecutable, ObjectiveCKmpMethod.class))
+          .removeAnnotationMirror(ElementUtil.getAnnotation(bridgeExecutable, SwiftName.class));
+
+      MethodDeclaration bridgeDeclaration =
+          new MethodDeclaration(bridgeExecutable).setBody(bodyBlock);
+      for (VariableElement param : originalMethodParameters) {
+        bridgeExecutable.addParameter(param);
+        bridgeDeclaration.addParameter(new SingleVariableDeclaration(param));
+      }
+      return bridgeDeclaration;
     }
 
     private FunctionInvocation createConstructorInvocation(TypeElement declaringClass) {

@@ -2338,5 +2338,344 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         }
         """);
   }
+
+  public void testAbstractClassImplementingInterface_withoutRedeclaring() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public interface CountService {
+          @ObjectiveCKmpMethod(selector = "updateCount:", adapter = Adapter.class)
+          void setCount(Integer count);
+
+          @ObjectiveCKmpMethod(selector = "fetchCount", adapter = Adapter.class)
+          Integer getCount();
+        }
+        """,
+        "CountService.java");
+    addSourceFile(
+        "public abstract class AbstractCountService implements CountService {}",
+        "AbstractCountService.java");
+    addSourceFile(
+        """
+        public class ConcreteCountService extends AbstractCountService {
+          @Override
+          public void setCount(Integer count) {}
+
+          @Override
+          public Integer getCount() {
+            return 0;
+          }
+        }
+        """,
+        "ConcreteCountService.java");
+
+    String abstractHeader = translateSourceFile("AbstractCountService", "AbstractCountService.h");
+    assertInTranslation(abstractHeader, "- (void)updateCount:(NSNumber *)count;");
+    assertInTranslation(abstractHeader, "- (NSNumber *)fetchCount;");
+    assertInTranslation(
+        abstractHeader, "- (void)setCountWithJavaLangInteger:(JavaLangInteger *)count;");
+    assertInTranslation(abstractHeader, "- (JavaLangInteger *)getCount;");
+
+    String abstractImpl = translateSourceFile("AbstractCountService", "AbstractCountService.m");
+    assertInTranslation(
+        abstractImpl,
+        """
+        - (void)updateCount:(NSNumber *)count {
+          // can't call an abstract method
+          [self doesNotRecognizeSelector:_cmd];
+        }
+
+        - (void)setCountWithJavaLangInteger:(JavaLangInteger *)count {
+          [self updateCount:(NSNumber *) [Adapter fromIntegerWithJavaLangInteger:count]];
+        }
+
+        - (NSNumber *)fetchCount {
+          // can't call an abstract method
+          [self doesNotRecognizeSelector:_cmd];
+          return 0;
+        }
+
+        - (JavaLangInteger *)getCount {
+          return [Adapter toIntegerWithId:[self fetchCount]];
+        }
+        """);
+
+    String concreteImpl = translateSourceFile("ConcreteCountService", "ConcreteCountService.m");
+    assertInTranslation(
+        concreteImpl,
+        """
+        - (void)setCountWithJavaLangInteger:(JavaLangInteger *)count {
+        }
+
+        - (JavaLangInteger *)getCount {
+          return JavaLangInteger_valueOfWithInt_(0);
+        }
+        """);
+    assertInTranslation(
+        concreteImpl,
+        """
+        - (void)updateCount:(NSNumber *)count {
+          [self setCountWithJavaLangInteger:[Adapter toIntegerWithId:count]];
+        }
+
+        - (NSNumber *)fetchCount {
+          return (NSNumber *) [Adapter fromIntegerWithJavaLangInteger:[self getCount]];
+        }
+        """);
+  }
+
+  public void testAbstractClassImplementingInterface_withRedeclaring() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public interface CountService {
+          @ObjectiveCKmpMethod(selector = "fetchCount", adapter = Adapter.class)
+          Integer getCount();
+        }
+        """,
+        "CountService.java");
+    addSourceFile(
+        """
+        public abstract class AbstractCountService implements CountService {
+          @Override
+          public abstract Integer getCount();
+        }
+        """,
+        "AbstractCountService.java");
+
+    String abstractHeader = translateSourceFile("AbstractCountService", "AbstractCountService.h");
+    assertOccurrences(abstractHeader, "- (NSNumber *)fetchCount;", 1);
+    assertOccurrences(abstractHeader, "- (JavaLangInteger *)getCount;", 1);
+
+    String abstractImpl = translateSourceFile("AbstractCountService", "AbstractCountService.m");
+    assertInTranslation(
+        abstractImpl,
+        """
+        - (JavaLangInteger *)getCount {
+          return [Adapter toIntegerWithId:[self fetchCount]];
+        }
+        """);
+    // An Objective-C subclass would be expected to implement this method.
+    assertInTranslation(
+        abstractImpl,
+        """
+        - (NSNumber *)fetchCount {
+          // can't call an abstract method
+          [self doesNotRecognizeSelector:_cmd];
+          return 0;
+        }
+        """);
+  }
+
+  public void testAbstractClassImplementingInterface_subclassHierarchy() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public interface CountService {
+          @ObjectiveCKmpMethod(selector = "fetchCount", adapter = Adapter.class)
+          Integer getCount();
+        }
+        """,
+        "CountService.java");
+    addSourceFile(
+        "public abstract class AbstractBase implements CountService {}", "AbstractBase.java");
+    addSourceFile("public abstract class AbstractSub extends AbstractBase {}", "AbstractSub.java");
+    addSourceFile(
+        """
+        public class ConcreteSub extends AbstractSub {
+          @Override
+          public Integer getCount() {
+            return 0;
+          }
+        }
+        """,
+        "ConcreteSub.java");
+
+    String baseImpl = translateSourceFile("AbstractBase", "AbstractBase.m");
+    assertInTranslation(
+        baseImpl,
+        """
+        - (JavaLangInteger *)getCount {
+          return [Adapter toIntegerWithId:[self fetchCount]];
+        }
+        """);
+
+    // Check that the abstract methods are not translated in the header or implementation of
+    // AbstractSub.
+    String subHeader = translateSourceFile("AbstractSub", "AbstractSub.h");
+    assertNotInTranslation(subHeader, "fetchCount");
+    assertNotInTranslation(subHeader, "getCount");
+
+    String subImpl = translateSourceFile("AbstractSub", "AbstractSub.m");
+    assertNotInTranslation(subImpl, "fetchCount");
+    assertNotInTranslation(subImpl, "getCount");
+
+    String concreteImpl = translateSourceFile("ConcreteSub", "ConcreteSub.m");
+    assertInTranslation(
+        concreteImpl,
+        """
+        - (NSNumber *)fetchCount {
+          return (NSNumber *) [Adapter fromIntegerWithJavaLangInteger:[self getCount]];
+        }
+        """);
+  }
+
+  public void testAbstractClassImplementingInterface_genericInterface() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public interface GenericService<T> {
+          @ObjectiveCKmpMethod(selector = "echoValue:", adapter = Adapter.class)
+          T echo(T value);
+        }
+        """,
+        "GenericService.java");
+    addSourceFile(
+        "public abstract class AbstractIntService implements GenericService<Integer> {}",
+        "AbstractIntService.java");
+
+    String abstractHeader = translateSourceFile("AbstractIntService", "AbstractIntService.h");
+    assertInTranslation(abstractHeader, "- (NSNumber *)echoValue:(NSNumber *)value;");
+    assertOccurrences(
+        abstractHeader, "- (JavaLangInteger *)echoWithId:(JavaLangInteger *)value;", 1);
+
+    String abstractImpl = translateSourceFile("AbstractIntService", "AbstractIntService.m");
+    assertInTranslation(
+        abstractImpl,
+        """
+        - (JavaLangInteger *)echoWithId:(JavaLangInteger *)value {
+          return [Adapter toIntegerWithId:[self echoValue:(NSNumber *) [Adapter fromIntegerWithJavaLangInteger:value]]];
+        }
+        """);
+  }
+
+  public void testAbstractClassImplementingInterface_annotations() throws IOException {
+    options.load(new String[] {"--nullability"});
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.j2objc.annotations.ObjectiveCName;
+        import com.google.j2objc.annotations.SwiftName;
+        import org.jspecify.annotations.NullMarked;
+        import org.jspecify.annotations.Nullable;
+
+        @NullMarked
+        @SwiftName("AnnotatedService")
+        public interface AnnotatedService {
+          @ObjectiveCKmpMethod(
+              selector = "echoCount:",
+              adapter = Adapter.class,
+              swiftName = "echo(count:)")
+          @ObjectiveCName("customEchoCount:")
+          @SwiftName("customEcho(count:)")
+          @Nullable Integer echo(@Nullable Integer count);
+        }
+        """,
+        "AnnotatedService.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.SwiftName;
+        import org.jspecify.annotations.NullMarked;
+
+        @NullMarked
+        @SwiftName("AbstractAnnotatedService")
+        public abstract class AbstractAnnotatedService implements AnnotatedService {}
+        """,
+        "AbstractAnnotatedService.java");
+
+    String abstractHeader =
+        translateSourceFile("AbstractAnnotatedService", "AbstractAnnotatedService.h");
+    assertInTranslation(
+        abstractHeader,
+        """
+        - (NSNumber * _Nullable)echoCount:(NSNumber * _Nullable)count NS_SWIFT_NAME(echo(count:));\
+        """);
+    assertInTranslation(
+        abstractHeader,
+        "- (JavaLangInteger * _Nullable)customEchoCount:(JavaLangInteger * _Nullable)count;");
+    assertNotInTranslation(abstractHeader, "NS_SWIFT_NAME(customEcho");
+
+    String abstractImpl =
+        translateSourceFile("AbstractAnnotatedService", "AbstractAnnotatedService.m");
+    assertInTranslation(
+        abstractImpl,
+        """
+        - (JavaLangInteger *)customEchoCount:(JavaLangInteger *)count {
+          return [Adapter toIntegerWithId:[self echoCount:(NSNumber * _Nullable) [Adapter fromIntegerWithJavaLangInteger:count]]];
+        }
+        """);
+  }
+
+  public void testAbstractClassImplementingInterface_composableConverter() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public interface ContainerService {
+          @ObjectiveCKmpMethod(selector = "echoBooleanContainer:", adapter = Adapter.class)
+          Container<Boolean> echo(Container<Boolean> c);
+        }
+        """,
+        "ContainerService.java");
+    addSourceFile(
+        "public abstract class AbstractContainerService implements ContainerService {}",
+        "AbstractContainerService.java");
+
+    String abstractHeader =
+        translateSourceFile("AbstractContainerService", "AbstractContainerService.h");
+    assertInTranslation(
+        abstractHeader,
+        "- (Container<NSNumber *> *)echoBooleanContainer:(Container<NSNumber *> *)c;");
+    assertInTranslation(
+        abstractHeader,
+        "- (Container<JavaLangBoolean *> *)echoWithContainer:(Container<JavaLangBoolean *> *)c;");
+
+    String abstractImpl =
+        translateSourceFile("AbstractContainerService", "AbstractContainerService.m");
+    assertInTranslation(
+        abstractImpl,
+        """
+        - (Container *)echoWithContainer:(Container *)c {
+          return (Container *) [Adapter \
+        toContainerWithContainer:(Container *) [self echoBooleanContainer:(Container<NSNumber *> *) [Adapter \
+        fromContainerWithContainer:(Container *) c \
+        withJavaUtilFunctionFunction:JreLoadStatic(AbstractContainerService_$Lambda$1, instance)]] \
+        withJavaUtilFunctionFunction:JreLoadStatic(AbstractContainerService_$Lambda$2, instance)];
+        }
+        """);
+  }
+
+  public void testLambdaImplementingInterface_doesNotDuplicateBridgeMethod() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public interface CountService {
+          @ObjectiveCKmpMethod(selector = "setCountWithNumber:", adapter = Adapter.class)
+          void setCount(Integer count);
+        }
+        """,
+        "CountService.java");
+    addSourceFile(
+        """
+        public class LambdaConsumer {
+          public CountService getService() {
+            return count -> {};
+          }
+        }
+        """,
+        "LambdaConsumer.java");
+
+    String translation = translateSourceFile("LambdaConsumer", "LambdaConsumer.m");
+    assertInTranslation(
+        translation, "- (void)setCountWithJavaLangInteger:(JavaLangInteger *)count;");
+    assertNotInTranslation(
+        translation, "- (void)setCountWithJavaLangInteger:(JavaLangInteger *)arg0");
+    assertNotInTranslation(translation, "[self doesNotRecognizeSelector:_cmd]");
+  }
 }
 
