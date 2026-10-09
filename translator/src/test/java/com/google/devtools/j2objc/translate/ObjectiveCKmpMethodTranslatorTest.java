@@ -2212,7 +2212,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """);
   }
 
-  public void testTranslate_genericContainerWithNullableNumberTypeArgument() throws IOException {
+  public void testTranslate_genericContainerWithNullableNumberReturn() throws IOException {
     addSourceFile(
         """
         import com.google.j2objc.annotations.ObjectiveCKmpMethod;
@@ -2222,7 +2222,30 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
           public Container<@Nullable Float> getFloatContainer() {
             return null;
           }
+        }
+        """,
+        "TestClass.java");
 
+    String header = translateSourceFile("TestClass", "TestClass.h");
+    assertInTranslation(header, "- (Container<NSNumber *> *)getNsNumberContainer;");
+
+    String impl = translateSourceFile("TestClass", "TestClass.m");
+    assertInTranslation(
+        impl,
+        """
+        - (Container<NSNumber *> *)getNsNumberContainer {
+          return (Container<NSNumber *> *) [Adapter fromContainerWithContainer:(Container *) \
+        [self getFloatContainer] withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$Lambda$1, instance)];
+        }
+        """);
+  }
+
+  public void testTranslate_genericContainerWithNullableNumberParameter() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import org.jspecify.annotations.Nullable;
+        public class TestClass {
           @ObjectiveCKmpMethod(selector = "setNsNumberContainer:", adapter = Adapter.class)
           public void setFloatContainer(Container<@Nullable Float> c) {}
         }
@@ -2230,25 +2253,16 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         "TestClass.java");
 
     String header = translateSourceFile("TestClass", "TestClass.h");
-    assertInTranslation(header, "- (Container<id> *)getNsNumberContainer;");
-    assertInTranslation(header, "- (void)setNsNumberContainer:(Container<id> *)c;");
+    assertInTranslation(header, "- (void)setNsNumberContainer:(Container<NSNumber *> *)c;");
 
     String impl = translateSourceFile("TestClass", "TestClass.m");
     assertInTranslation(
         impl,
         """
-        - (Container<id> *)getNsNumberContainer {
-          return (Container<id> *) [Adapter fromContainerWithContainer:(Container *) \
-        [self getFloatContainer] withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$Lambda$1, instance)];
-        }
-        """);
-    assertInTranslation(
-        impl,
-        """
-        - (void)setNsNumberContainer:(Container<id> *)c {
+        - (void)setNsNumberContainer:(Container<NSNumber *> *)c {
           [self setFloatContainerWithContainer:(Container *) [Adapter \
         toContainerWithContainer:(Container *) c \
-        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$Lambda$2, instance)]];
+        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$Lambda$1, instance)]];
         }
         """);
   }

@@ -1004,10 +1004,8 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
 
     private Expression maybeCast(TypeMirror targetType, Expression expression) {
       // If the target type is Object (id), we don't need to cast the expression.
-      if ((TypeUtil.isDeclaredType(targetType)
-              && TypeUtil.getQualifiedName(targetType).equals("java.lang.Object"))
-          || (targetType instanceof NativeType nativeTarget
-              && nativeTarget.getName().equals("id"))) {
+      if (TypeUtil.isDeclaredType(targetType)
+          && TypeUtil.getQualifiedName(targetType).equals("java.lang.Object")) {
         return expression;
       }
       if (!typeUtil.isSameType(expression.getTypeMirror(), targetType)
@@ -1067,10 +1065,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     boolean isNullable = isNullable(typeMirror);
     String nativeType = JAVA_TO_NATIVE_TYPE_MAP.get(fullyQualifiedNameJavaName);
     if (nativeType != null) {
-      if (isTypeArgument && isNullable && nativeType.equals("NSNumber")) {
-        return new PrintableNativeType("id", false, false);
-      }
-      return new PrintableNativeType(nativeType, false, isNullable);
+      return new PrintableNativeType(nativeType, false, !isTypeArgument && isNullable);
     }
     TypeElement typeElement = TypeUtil.asTypeElement(typeMirror);
     if (typeElement != null) {
@@ -1135,10 +1130,6 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     public Void visitDeclared(DeclaredType type, StringBuilder builder) {
       PrintableNativeType nativeType =
           toNativeType(type, methodExecutable, referencedTypes, isTypeArgument);
-      if (nativeType.nativeTypeName.equals("id")) {
-        builder.append("id");
-        return null;
-      }
       if (nativeType.isUntranslatedInterface) {
         builder.append("id<");
       }
