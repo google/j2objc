@@ -1846,8 +1846,34 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """
         + (void)initialize {
           if (self == [TestSetOfBoolean_$Lambda$1 class]) {
-            TestSetOfBoolean_$Lambda$1_instance = create_TestSetOfBoolean_$Lambda$1_init();
+            JreStrongAssignAndConsume(&TestSetOfBoolean_$Lambda$1_instance, new_TestSetOfBoolean_$Lambda$1_init());
             J2OBJC_SET_INITIALIZED(TestSetOfBoolean_$Lambda$1)
+          }
+        }
+        """);
+  }
+
+  public void testTranslate_composableReturn_retainsSynthesizedLambdaSingleton()
+      throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.Set;
+        public class TestReturnSetOfBoolean {
+          @ObjectiveCKmpMethod(selector="getBooleanSet", adapter=Adapter.class)
+          public Set<Boolean> getBooleanSet() { return null; }
+        }
+        """,
+        "TestReturnSetOfBoolean.java");
+
+    String impl = translateSourceFile("TestReturnSetOfBoolean", "TestReturnSetOfBoolean.m");
+    assertInTranslation(
+        impl,
+        """
+        + (void)initialize {
+          if (self == [TestReturnSetOfBoolean_$Lambda$1 class]) {
+            JreStrongAssignAndConsume(&TestReturnSetOfBoolean_$Lambda$1_instance, new_TestReturnSetOfBoolean_$Lambda$1_init());
+            J2OBJC_SET_INITIALIZED(TestReturnSetOfBoolean_$Lambda$1)
           }
         }
         """);

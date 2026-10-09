@@ -180,13 +180,17 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     Functionizer functionizer = new Functionizer(unit);
     var unused = functionizer.visit(unit);
     InitializationNormalizer initNormalizer = new InitializationNormalizer(unit);
+    OperatorRewriter operatorRewriter = new OperatorRewriter(unit);
 
-    // Pass 1: Run Functionizer and InitializationNormalizer exclusively over newly introduced
-    // lambda type declarations created during this translation pass.
+    // Pass 1: Run InitializationNormalizer, Functionizer, and OperatorRewriter exclusively over
+    // newly introduced lambda type declarations created during this translation pass.
     for (AbstractTypeDeclaration type : unit.getTypes()) {
       if (!existingTypes.contains(type)) {
-        type.accept(functionizer);
         type.accept(initNormalizer);
+        type.accept(functionizer);
+        for (Statement stmt : type.getClassInitStatements()) {
+          stmt.accept(operatorRewriter);
+        }
       }
     }
 
