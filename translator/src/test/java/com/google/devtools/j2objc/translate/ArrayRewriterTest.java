@@ -48,10 +48,10 @@ public class ArrayRewriterTest extends GenerationTest {
     assertEquals(7, stmts.size());
     assertEquals("JrePreIncInt(IOSIntArray_GetRef(x, 0));", generateStatement(stmts.get(1)));
     assertEquals("JrePostIncInt(IOSIntArray_GetRef(x, 0));", generateStatement(stmts.get(2)));
-    assertEquals("JrePreIncInt(&(*IOSIntArray_GetRef(x, 0)));", generateStatement(stmts.get(3)));
-    assertEquals("JrePostIncInt(&(*IOSIntArray_GetRef(x, 0)));", generateStatement(stmts.get(4)));
-    assertEquals("JrePreIncInt(&((*IOSIntArray_GetRef(x, 0))));", generateStatement(stmts.get(5)));
-    assertEquals("JrePostIncInt(&((*IOSIntArray_GetRef(x, 0))));", generateStatement(stmts.get(6)));
+    assertEquals("JrePreIncInt(IOSIntArray_GetRef(x, 0));", generateStatement(stmts.get(3)));
+    assertEquals("JrePostIncInt(IOSIntArray_GetRef(x, 0));", generateStatement(stmts.get(4)));
+    assertEquals("JrePreIncInt(IOSIntArray_GetRef(x, 0));", generateStatement(stmts.get(5)));
+    assertEquals("JrePostIncInt(IOSIntArray_GetRef(x, 0));", generateStatement(stmts.get(6)));
   }
 
   public void testArrayCastFromGenericMethodReturn() throws IOException {

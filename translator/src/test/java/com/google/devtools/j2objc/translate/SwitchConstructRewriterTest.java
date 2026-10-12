@@ -98,11 +98,11 @@ public class SwitchConstructRewriterTest extends GenerationTest {
           NSString *s_1 = nil;
           NSString *s_2 = nil;
           JavaLangInteger *i = nil;
-          if ([tmp isKindOfClass:[NSString class]] && (s = (NSString *) tmp, true)\
-              && [((NSString *) nil_chk(s)) java_length] > 25)\
+          if (([tmp isKindOfClass:[NSString class]] && (s = (NSString *) tmp, true))\
+              && ([((NSString *) nil_chk(s)) java_length] > 25))\
             selector = 1;
-          else if ([tmp isKindOfClass:[NSString class]] && (s_1 = (NSString *) tmp, true)\
-              && [((NSString *) nil_chk(s_1)) java_length] > 5)\
+          else if (([tmp isKindOfClass:[NSString class]] && (s_1 = (NSString *) tmp, true))\
+              && ([((NSString *) nil_chk(s_1)) java_length] > 5))\
             selector = 2;
           else if ([tmp isKindOfClass:[NSString class]] && (s_2 = (NSString *) tmp, true))\
             selector = 3;
@@ -168,13 +168,13 @@ public class SwitchConstructRewriterTest extends GenerationTest {
               NSString *s = nil;
               JavaLangInteger *i_1 = nil;
               id x = nil;
-              if ([tmp isKindOfClass:[JavaLangInteger class]] && (i = (JavaLangInteger *) tmp, true)\
-                  && [((JavaLangInteger *) nil_chk(i)) intValue] == 0 && [i intValue] < 1\
-                  && [o2 isKindOfClass:[NSString class]] && (s = (NSString *) o2, true))\
+              if (([tmp isKindOfClass:[JavaLangInteger class]] && (i = (JavaLangInteger *) tmp, true))\
+                  && (([((JavaLangInteger *) nil_chk(i)) intValue] == 0) && ([i intValue] < 1)\
+                  && ([o2 isKindOfClass:[NSString class]] && (s = (NSString *) o2, true))))\
                 selector = 1;
-              else if ([tmp isKindOfClass:[JavaLangInteger class]]\
-                  && (i_1 = (JavaLangInteger *) tmp, true)\
-                  && ([((JavaLangInteger *) nil_chk(i_1)) intValue] == 0 || [i_1 intValue] > 1))\
+              else if (([tmp isKindOfClass:[JavaLangInteger class]]\
+                  && (i_1 = (JavaLangInteger *) tmp, true))\
+                  && (([((JavaLangInteger *) nil_chk(i_1)) intValue] == 0) || ([i_1 intValue] > 1)))\
                 selector = 2;
               else if ([tmp isKindOfClass:[NSObject class]] && (x = tmp, true))\
                 selector = 3;
@@ -274,7 +274,7 @@ public class SwitchConstructRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        switch (foo == nil ? -1 : [foo ordinal]) {
+        switch ((foo == nil) ? -1 : [foo ordinal]) {
         """);
   }
 
@@ -299,8 +299,8 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         """
         int32_t selector = 0;
         Test_Foo *f = nil;
-        if (someFoo == JreLoadEnum(Test_Foo, A) || someFoo == JreLoadEnum(Test_Foo, B)) selector = 1;
-        else if ([someFoo isKindOfClass:[Test_Foo class]] && (f = someFoo, true) && [((NSString *) nil_chk([((Test_Foo *) nil_chk(f)) description])) java_length] > 1) selector = 2;
+        if ((someFoo == JreLoadEnum(Test_Foo, A)) || (someFoo == JreLoadEnum(Test_Foo, B))) selector = 1;
+        else if (([someFoo isKindOfClass:[Test_Foo class]] && (f = someFoo, true)) && ([((NSString *) nil_chk([((Test_Foo *) nil_chk(f)) description])) java_length] > 1)) selector = 2;
         else if (someFoo == nil) selector = 3;
         switch (selector) {
           case 1:
@@ -338,9 +338,9 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         """
         int32_t selector = 0;
         Test_Foo *f = nil;
-        if (someFoo == JreLoadEnum(Test_Foo, A) || someFoo == JreLoadEnum(Test_Foo, B)) selector = 1;
-        else if ([someFoo isKindOfClass:[Test_Foo class]] && (f = someFoo, true)\
-            && [((NSString *) nil_chk([((Test_Foo *) nil_chk(f)) description])) java_length] > 1)\
+        if ((someFoo == JreLoadEnum(Test_Foo, A)) || (someFoo == JreLoadEnum(Test_Foo, B))) selector = 1;
+        else if (([someFoo isKindOfClass:[Test_Foo class]] && (f = someFoo, true))\
+            && ([((NSString *) nil_chk([((Test_Foo *) nil_chk(f)) description])) java_length] > 1))\
           selector = 2;
         switch (selector) {
           case 1:
@@ -373,9 +373,9 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         """
         int32_t selector = 0;
         JavaLangInteger *j = nil;
-        if (i != nil && [i intValue] == 42) selector = 1;
-        else if ([i isKindOfClass:[JavaLangInteger class]] && (j = i, true)\
-            && [((JavaLangInteger *) nil_chk(j)) intValue] > 0) selector = 2;
+        if ((i != nil) && ([i intValue] == 42)) selector = 1;
+        else if (([i isKindOfClass:[JavaLangInteger class]] && (j = i, true))\
+            && ([((JavaLangInteger *) nil_chk(j)) intValue] > 0)) selector = 2;
         else if (i == nil) selector = 3;
         switch (selector) {
           case 1:
@@ -413,8 +413,8 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         Test_Foo *f = nil;
         if (someFoo == nil) selector = 1;
         else if (someFoo == JreLoadEnum(Test_Foo, A)) selector = 2;
-        else if ([someFoo isKindOfClass:[Test_Foo class]] && (f = someFoo, true)\
-            && [((NSString *) nil_chk([((Test_Foo *) nil_chk(f)) description])) java_length] > 1)\
+        else if (([someFoo isKindOfClass:[Test_Foo class]] && (f = someFoo, true))\
+            && ([((NSString *) nil_chk([((Test_Foo *) nil_chk(f)) description])) java_length] > 1))\
           selector = 3;
         switch (selector) {
           case 1:
@@ -447,7 +447,7 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         translation,
         """
         int32_t selector = 0;
-        if (b != nil && ([b charValue] == 0 || [b charValue] == 1)) selector = 1;
+        if ((b != nil) && (([b charValue] == 0) || ([b charValue] == 1))) selector = 1;
         else if (b == nil) selector = 2;
         switch (selector) {
           case 1:
@@ -477,7 +477,7 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         translation,
         """
         int32_t selector = 0;
-        if (i != nil && ([i intValue] == 0 || [i intValue] == 1)) selector = 1;
+        if ((i != nil) && (([i intValue] == 0) || ([i intValue] == 1))) selector = 1;
         switch (selector) {
           case 1:
           return 1;

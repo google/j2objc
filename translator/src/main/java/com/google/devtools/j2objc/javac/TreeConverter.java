@@ -75,7 +75,6 @@ import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.ParameterizedType;
-import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.Pattern;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
@@ -785,7 +784,7 @@ public class TreeConverter {
   private TreeNode convertDoStatement(DoWhileLoopTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
     return new DoStatement()
-        .setExpression(convertWithoutParens(node.getCondition(), path))
+        .setExpression((Expression) convert(node.getCondition(), path))
         .setBody((Statement) convert(node.getStatement(), path));
   }
 
@@ -1000,7 +999,7 @@ public class TreeConverter {
   private TreeNode convertIf(IfTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
     return new IfStatement()
-        .setExpression(convertWithoutParens(node.getCondition(), path))
+        .setExpression((Expression) convert(node.getCondition(), path))
         .setThenStatement((Statement) convert(node.getThenStatement(), path))
         .setElseStatement((Statement) convert(node.getElseStatement(), path));
   }
@@ -1339,8 +1338,7 @@ public class TreeConverter {
   }
 
   private TreeNode convertParens(ParenthesizedTree node, TreePath parent) {
-    return new ParenthesizedExpression()
-        .setExpression((Expression) convert(node.getExpression(), getTreePath(parent, node)));
+    return convert(node.getExpression(), getTreePath(parent, node));
   }
 
   private TreeNode convertPostExpr(UnaryTree node, TreePath parent) {
@@ -1400,7 +1398,7 @@ public class TreeConverter {
   private TreeNode convertSwitch(SwitchTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
     SwitchStatement switchStatement =
-        new SwitchStatement().setExpression(convertWithoutParens(node.getExpression(), path));
+        new SwitchStatement().setExpression((Expression) convert(node.getExpression(), path));
     for (CaseTree caseTree : node.getCases()) {
       TreePath switchCasePath = getTreePath(parent, caseTree);
       SwitchCase switchCase = convertSwitchCaseLabel(caseTree, switchCasePath);
@@ -1416,7 +1414,7 @@ public class TreeConverter {
 
     SwitchExpression switchExpression =
         new SwitchExpression()
-            .setExpression(convertWithoutParens(node.getExpression(), path))
+            .setExpression((Expression) convert(node.getExpression(), path))
             .setTypeMirror(getTypeMirror(path));
 
     for (CaseTree caseTree : node.getCases()) {
@@ -1524,7 +1522,7 @@ public class TreeConverter {
 
   private TreeNode convertSynchronized(SynchronizedTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
-    Expression expr = convertWithoutParens(node.getExpression(), path);
+    Expression expr = (Expression) convert(node.getExpression(), path);
     expr.setPosition(getPosition(node));
     return new SynchronizedStatement()
         .setExpression(expr)
@@ -1668,7 +1666,7 @@ public class TreeConverter {
   private TreeNode convertWhileLoop(WhileLoopTree node, TreePath parent) {
     TreePath path = getTreePath(parent, node);
     return new WhileStatement()
-        .setExpression(convertWithoutParens(node.getCondition(), path))
+        .setExpression((Expression) convert(node.getCondition(), path))
         .setBody((Statement) convert(node.getStatement(), path));
   }
 
@@ -1770,15 +1768,6 @@ public class TreeConverter {
     } catch (IOException e) {
       return node.toString();
     }
-  }
-
-  // javac uses a ParenthesizedExpression for the if, do, and while statements, while JDT doesn't.
-  private Expression convertWithoutParens(ExpressionTree condition, TreePath parent) {
-    Expression result = (Expression) convert(condition, parent);
-    if (result.getKind() == TreeNode.Kind.PARENTHESIZED_EXPRESSION) {
-      result = TreeUtil.remove(((ParenthesizedExpression) result).getExpression());
-    }
-    return result;
   }
 
   private SourcePosition getSourcePosition(int start, int end) {

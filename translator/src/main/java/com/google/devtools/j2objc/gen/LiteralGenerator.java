@@ -111,8 +111,8 @@ public class LiteralGenerator {
 
   public static String fixLongToken(String token) {
     if (token.equals("0x8000000000000000L") || token.equals("-9223372036854775808L")) {
-      // Convert min long literal to an expression
-      token = "-0x7fffffffffffffffLL - 1";
+      // Convert min long literal to a parenthesized expression.
+      token = "(-0x7fffffffffffffffLL - 1)";
     } else {
       // Convert Java long literals to long long for Obj-C
       if (token.startsWith("0x")) {
@@ -134,8 +134,8 @@ public class LiteralGenerator {
 
   public static String fixIntToken(String token) {
     if (token.equals("0x80000000") || token.equals("-2147483648")) {
-      // Convert min int literal to an expression
-      token = "-0x7fffffff - 1";
+      // Convert min int literal to a parenthesized expression.
+      token = "(-0x7fffffff - 1)";
     } else if (token.startsWith("0x")) {
       token = "(int32_t) " + token;  // Ensure constant is treated as signed.
     }

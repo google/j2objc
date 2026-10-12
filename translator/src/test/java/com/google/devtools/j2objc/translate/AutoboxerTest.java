@@ -241,7 +241,7 @@ public class AutoboxerTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(translation, "b != nil ? [b booleanValue] : false");
+    assertInTranslation(translation, "(b != nil) ? [b booleanValue] : false");
   }
 
   public void testConditionalOnBoxedValue() throws IOException {
@@ -992,6 +992,6 @@ public class AutoboxerTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(translation, "return [(JavaLangCharacter *) o charValue];");
+    assertInTranslation(translation, "return [((JavaLangCharacter *) o) charValue];");
   }
 }

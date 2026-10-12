@@ -29,7 +29,6 @@ import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
-import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
@@ -225,11 +224,6 @@ public final class TranslationUtil {
   public static boolean isAssigned(Expression node) {
     TreeNode parent = node.getParent();
 
-    while (parent instanceof ParenthesizedExpression) {
-      node = (Expression) parent;
-      parent = node.getParent();
-    }
-
     if (parent instanceof PostfixExpression) {
       PostfixExpression.Operator op = ((PostfixExpression) parent).getOperator();
       if (op == PostfixExpression.Operator.INCREMENT
@@ -286,8 +280,6 @@ public final class TranslationUtil {
           }
         }
         return false;
-      case PARENTHESIZED_EXPRESSION:
-        return hasSideEffect(((ParenthesizedExpression) expr).getExpression());
       case PREFIX_EXPRESSION:
         {
           PrefixExpression preExpr = (PrefixExpression) expr;
@@ -310,7 +302,7 @@ public final class TranslationUtil {
   public String getOperatorFunctionModifier(Expression expr) {
     VariableElement var = TreeUtil.getVariableElement(expr);
     if (var == null) {
-      assert TreeUtil.trimParentheses(expr) instanceof ArrayAccess
+      assert expr instanceof ArrayAccess
           : "Expression cannot be resolved to a variable or array access.";
       return "Array";
     }

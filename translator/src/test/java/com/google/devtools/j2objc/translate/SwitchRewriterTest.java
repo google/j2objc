@@ -205,9 +205,9 @@ public class SwitchRewriterTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertInTranslation(translation, "switch (someFoo == nil ? -1 : [someFoo ordinal]) {");
+    assertInTranslation(translation, "switch ((someFoo == nil) ? -1 : [someFoo ordinal]) {");
     assertInTranslation(translation, "case -1:");
-    assertInTranslation(translation, "switch (tmp == nil ? -1 : [tmp ordinal]) {");
+    assertInTranslation(translation, "switch ((tmp == nil) ? -1 : [tmp ordinal]) {");
   }
 
   public void testPrimitiveConstantInSwitchCase() throws IOException {
@@ -488,7 +488,7 @@ public class SwitchRewriterTest extends GenerationTest {
               case 0x2007:
               return false;
               default:
-              return c >= 0x2000 && c <= 0x200a;
+              return (c >= 0x2000) && (c <= 0x200a);
             }
           }();
         }
