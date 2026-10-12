@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -1095,5 +1096,45 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     // Automatically generated annotation methods.
     assertTranslatedLines(translation, "- (bool)isEqual:(id)obj J2OBJC_TEXT_SEGMENT;");
     assertTranslatedLines(translation, "- (NSUInteger)hash J2OBJC_TEXT_SEGMENT;");
+  }
+
+  public void testOptionalProtocolMethodDeclaration() throws IOException {
+    CompilationUnit unit =
+        translateType(
+            "Test",
+            """
+            interface Test {
+              void requiredMethod();
+              void optionalMethod();
+            }
+            """);
+    unit.accept(
+        new TreeVisitor() {
+          @Override
+          public void endVisit(MethodDeclaration node) {
+            if (node.getName().toString().equals("optionalMethod")) {
+              node.setOptional(true);
+            }
+          }
+        });
+    AbstractTypeDeclaration typeNode = (AbstractTypeDeclaration) unit.getTypes().get(0);
+    SourceBuilder builder = new SourceBuilder(false);
+    TypeDeclarationGenerator.generate(builder, typeNode);
+    String header = builder.toString();
+    assertInTranslation(
+        header,
+        """
+        @protocol Test < JavaObject >
+
+        - (void)requiredMethod;
+
+        #if !defined(__swift__)
+        @optional
+        #endif
+
+        - (void)optionalMethod;
+
+        @end
+        """);
   }
 }
