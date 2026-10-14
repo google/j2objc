@@ -34,7 +34,6 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.lang.model.element.Element;
@@ -80,7 +79,7 @@ public class HeaderImportCollector extends UnitTreeVisitor {
   // Supertypes of the below declared types that haven't been seen by this collector.
   private Set<Import> superTypes = new LinkedHashSet<>();
   // Declared types seen by this collector.
-  private Set<Import> declaredTypes = new HashSet<>();
+  private Set<Import> declaredTypes = new LinkedHashSet<>();
   // The current type declarations is annotated for ObjC generics.
   private boolean wantsGenerateObjectiveCGenerics = false;
   private final boolean includeInnerTypes;
@@ -152,10 +151,10 @@ public class HeaderImportCollector extends UnitTreeVisitor {
   private Set<TypeMirror> objCForwardDeclaredGenericParameters(TypeMirror type) {
     // Parameters only needed with ObjC generics are on.
     if (!unit.getEnv().options().asObjCGenericDecl() && !wantsGenerateObjectiveCGenerics) {
-      return new HashSet<>();
+      return new LinkedHashSet<>();
     }
 
-    HashSet<TypeMirror> vistedTypes = new HashSet<>();
+    Set<TypeMirror> vistedTypes = new LinkedHashSet<>();
     vistedTypes.add(type);
     for (TypeElement bound : unit.getEnv().typeUtil().getObjcUpperBounds(type)) {
       vistedTypes.add(bound.asType());
