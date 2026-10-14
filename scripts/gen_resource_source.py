@@ -25,6 +25,7 @@ import functools
 import os
 import subprocess
 import sys
+import zlib
 
 # Used by argparse to build help string.
 USAGE_STRING = """
@@ -64,7 +65,7 @@ def ProcessResourceFile(resource_path, output_file):
       "-", "_")
   if array_name[0] != "_":
     array_name = "_" + array_name
-  array_name_hash = "0x{:02x}".format(hash(array_name) & (2**32 - 1))
+  array_name_hash = "0x{:02x}".format(zlib.crc32(array_name.encode("utf-8")))
   output_file.write("\nstatic jbyte {}[] = {{".format(array_name))
   length = 0
   file_path = os.path.join(args.sourcepath, resource_path)
