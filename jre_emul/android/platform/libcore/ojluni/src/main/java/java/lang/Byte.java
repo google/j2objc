@@ -25,6 +25,8 @@
 
 package java.lang;
 
+import com.google.j2objc.util.ReflectionUtil;
+
 /* J2ObjC removed
 import jdk.internal.vm.annotation.IntrinsicCandidate;
 import libcore.util.HexEncoding;
@@ -475,17 +477,16 @@ public final class Byte extends Number implements Comparable<Byte>
         return Byte.hashCode(value);
     }
 
-    /**
-     * Returns a hash code for a {@code byte} value; compatible with
-     * {@code Byte.hashCode()}.
-     *
-     * @param value the value to hash
-     * @return a hash code value for a {@code byte} value.
-     * @since 1.8
-     */
-    public static int hashCode(byte value) {
-        return (int)value;
-    }
+  /**
+   * Returns a hash code for a {@code byte} value; compatible with {@code Byte.hashCode()}.
+   *
+   * @param value the value to hash
+   * @return a hash code value for a {@code byte} value.
+   * @since 1.8
+   */
+  public static native int hashCode(byte value) /*-[
+        return (jint)[@(value) hash];
+    ]-*/;
 
     /**
      * Compares this object to the specified object.  The result is
@@ -498,8 +499,8 @@ public final class Byte extends Number implements Comparable<Byte>
      *                  {@code false} otherwise.
      */
     public boolean equals(Object obj) {
-        if (obj instanceof Byte) {
-            return value == ((Byte)obj).byteValue();
+    if (obj instanceof Byte || ReflectionUtil.isObjCNumber(obj)) {
+      return value == ((Number) obj).byteValue();
         }
         return false;
     }
