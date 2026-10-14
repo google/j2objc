@@ -41,9 +41,15 @@ import javax.lang.model.element.VariableElement;
 public class LambdaTypeElementAdder extends UnitTreeVisitor {
 
   private Map<TypeElement, Integer> lambdaCounts = new HashMap<>();
+  private final String lambdaPrefix;
 
   public LambdaTypeElementAdder(CompilationUnit unit) {
+    this(unit, "$Lambda$");
+  }
+
+  public LambdaTypeElementAdder(CompilationUnit unit, String lambdaPrefix) {
     super(unit);
+    this.lambdaPrefix = lambdaPrefix;
   }
 
   private String getLambdaUniqueName(FunctionalExpression node) {
@@ -53,7 +59,7 @@ public class LambdaTypeElementAdder extends UnitTreeVisitor {
       count = 0;
     }
     lambdaCounts.put(enclosingType, ++count);
-    return "$Lambda$" + count;
+    return lambdaPrefix + count;
   }
 
   private boolean handleFunctionalExpression(FunctionalExpression node) {

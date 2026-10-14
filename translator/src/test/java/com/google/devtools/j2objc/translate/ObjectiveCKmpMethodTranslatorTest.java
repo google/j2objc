@@ -1831,7 +1831,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         impl,
         """
         - (void)setBooleanSet:(NSSet<NSNumber *> *)set {
-          [self setBooleanSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set withJavaUtilFunctionFunction:JreLoadStatic(TestSetOfBoolean_$Lambda$1, instance)]];
+          [self setBooleanSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set withJavaUtilFunctionFunction:JreLoadStatic(TestSetOfBoolean_$KmpLambda$1, instance)]];
         }
         """);
     assertInTranslation(
@@ -1845,9 +1845,9 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         impl,
         """
         + (void)initialize {
-          if (self == [TestSetOfBoolean_$Lambda$1 class]) {
-            JreStrongAssignAndConsume(&TestSetOfBoolean_$Lambda$1_instance, new_TestSetOfBoolean_$Lambda$1_init());
-            J2OBJC_SET_INITIALIZED(TestSetOfBoolean_$Lambda$1)
+          if (self == [TestSetOfBoolean_$KmpLambda$1 class]) {
+            JreStrongAssignAndConsume(&TestSetOfBoolean_$KmpLambda$1_instance, new_TestSetOfBoolean_$KmpLambda$1_init());
+            J2OBJC_SET_INITIALIZED(TestSetOfBoolean_$KmpLambda$1)
           }
         }
         """);
@@ -1871,9 +1871,9 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         impl,
         """
         + (void)initialize {
-          if (self == [TestReturnSetOfBoolean_$Lambda$1 class]) {
-            JreStrongAssignAndConsume(&TestReturnSetOfBoolean_$Lambda$1_instance, new_TestReturnSetOfBoolean_$Lambda$1_init());
-            J2OBJC_SET_INITIALIZED(TestReturnSetOfBoolean_$Lambda$1)
+          if (self == [TestReturnSetOfBoolean_$KmpLambda$1 class]) {
+            JreStrongAssignAndConsume(&TestReturnSetOfBoolean_$KmpLambda$1_instance, new_TestReturnSetOfBoolean_$KmpLambda$1_init());
+            J2OBJC_SET_INITIALIZED(TestReturnSetOfBoolean_$KmpLambda$1)
           }
         }
         """);
@@ -1898,7 +1898,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         impl,
         """
         - (void)setBooleanSet:(NSSet<NSNumber *> *)set {
-          [self setBooleanSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set withJavaUtilFunctionFunction:JreLoadStatic(TestSetLeaf_$Lambda$1, instance)]];
+          [self setBooleanSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set withJavaUtilFunctionFunction:JreLoadStatic(TestSetLeaf_$KmpLambda$1, instance)]];
         }
         """);
     assertInTranslation(
@@ -1929,7 +1929,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         impl,
         """
         - (void)setBooleanList:(NSArray<NSNumber *> *)list {
-          [self setBooleanListWithJavaUtilList:(id<JavaUtilList>) [Adapter toJavaUtilListWithId:list withJavaUtilFunctionFunction:JreLoadStatic(TestListParam_$Lambda$1, instance)]];
+          [self setBooleanListWithJavaUtilList:(id<JavaUtilList>) [Adapter toJavaUtilListWithId:list withJavaUtilFunctionFunction:JreLoadStatic(TestListParam_$KmpLambda$1, instance)]];
         }
         """);
     assertInTranslation(
@@ -1961,7 +1961,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         impl,
         """
         - (void)setListSet:(NSSet<NSArray<NSString *> *> *)set {
-          [self setListSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set withJavaUtilFunctionFunction:JreLoadStatic(TestSetOfList_$Lambda$1, instance)]];
+          [self setListSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set withJavaUtilFunctionFunction:JreLoadStatic(TestSetOfList_$KmpLambda$1, instance)]];
         }
         """);
     assertInTranslation(
@@ -2226,7 +2226,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """
         - (void)verifyList:(NSArray<NSArray<NSArray<Foo *> *> *> *)list {
           [self verifyListWithJavaUtilList:(id<JavaUtilList>) [Adapter toJavaUtilListWithId:list \
-        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$Lambda$1, instance)]];
+        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$KmpLambda$1, instance)]];
         }
         """);
     assertInTranslation(
@@ -2261,7 +2261,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """
         - (Container<NSNumber *> *)getNsNumberContainer {
           return (Container<NSNumber *> *) [Adapter fromContainerWithContainer:(Container *) \
-        [self getFloatContainer] withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$Lambda$1, instance)];
+        [self getFloatContainer] withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$KmpLambda$1, instance)];
         }
         """);
   }
@@ -2288,7 +2288,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         - (void)setNsNumberContainer:(Container<NSNumber *> *)c {
           [self setFloatContainerWithContainer:(Container *) [Adapter \
         toContainerWithContainer:(Container *) c \
-        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$Lambda$1, instance)]];
+        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$KmpLambda$1, instance)]];
         }
         """);
   }
@@ -2314,7 +2314,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         - (void)setBooleanContainer:(Container<NSNumber *> *)c {
           [self setBooleanContainerWithContainer:(Container *) [Adapter \
         toContainerWithContainer:(Container *) c \
-        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$Lambda$1, instance)]];
+        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$KmpLambda$1, instance)]];
         }
         """);
   }
@@ -2683,8 +2683,8 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
           return (Container *) [Adapter \
         toContainerWithContainer:(Container *) [self echoBooleanContainer:(Container<NSNumber *> *) [Adapter \
         fromContainerWithContainer:(Container *) c \
-        withJavaUtilFunctionFunction:JreLoadStatic(AbstractContainerService_$Lambda$1, instance)]] \
-        withJavaUtilFunctionFunction:JreLoadStatic(AbstractContainerService_$Lambda$2, instance)];
+        withJavaUtilFunctionFunction:JreLoadStatic(AbstractContainerService_$KmpLambda$1, instance)]] \
+        withJavaUtilFunctionFunction:JreLoadStatic(AbstractContainerService_$KmpLambda$2, instance)];
         }
         """);
   }
@@ -2716,6 +2716,30 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
     assertNotInTranslation(
         translation, "- (void)setCountWithJavaLangInteger:(JavaLangInteger *)arg0");
     assertNotInTranslation(translation, "[self doesNotRecognizeSelector:_cmd]");
+  }
+
+  public void testComposableConverter_withPreexistingLambdasInClass() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.Map;
+        import java.util.function.Function;
+
+        public class StateService {
+          public Function<String, String> helper() {
+            return s -> s.trim();
+          }
+
+          @ObjectiveCKmpMethod(selector = "commitStates:", adapter = Adapter.class)
+          public void commitStates(Map<Foo, Boolean> states) {}
+        }
+        """,
+        "StateService.java");
+
+    String impl = translateSourceFile("StateService", "StateService.m");
+    assertInTranslation(impl, "StateService_$Lambda$1");
+    assertInTranslation(impl, "StateService_$KmpLambda$1");
+    assertInTranslation(impl, "StateService_$KmpLambda$2");
   }
 }
 

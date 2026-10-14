@@ -173,7 +173,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
   public void run() {
     Set<AbstractTypeDeclaration> existingTypes = new HashSet<>(unit.getTypes());
     super.run();
-    new LambdaTypeElementAdder(unit).run();
+    new LambdaTypeElementAdder(unit, "$KmpLambda$").run();
     new LambdaRewriter(unit).run();
     new InnerClassExtractor(unit).run();
 
