@@ -195,6 +195,140 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "}");
   }
 
+  public void testInterfaceMethods_inheritedFromSuperInterface() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2kt.annotations.Throws;
+        public interface SuperInterface {
+          @Throws
+          void superMethod();
+        }
+        """,
+        "SuperInterface.java");
+    addSourceFile(
+        """
+        import com.google.j2kt.annotations.Throws;
+        public interface SubInterface extends SuperInterface {
+          @Throws
+          void subMethod(String arg);
+        }
+        """,
+        "SubInterface.java");
+    addSourceFile(
+        """
+        public class Impl implements SubInterface {
+          @Override
+          public void subMethod(String arg) {}
+
+          @Override
+          public void superMethod() {}
+        }
+        """,
+        "Impl.java");
+
+    String testHeader = translateSourceFile("Impl", "Impl.h");
+    String testSource = getTranslatedFile("Impl.m");
+
+    assertNoWarnings();
+    assertNoErrors();
+    assertTranslatedLines(
+        testHeader, "- (BOOL)subMethodWithNSString:(NSString *)arg", "error:(NSError **)error;");
+    assertInTranslation(testHeader, "- (BOOL)superMethodAndReturnError:(NSError **)error;");
+    assertTranslatedLines(
+        testSource,
+        "- (BOOL)superMethodAndReturnError:(NSError **)error {",
+        "@try {",
+        "[self superMethod];",
+        "return YES;",
+        "} @catch (NSException *e) {",
+        "if (error) { *error = JREErrorFromException(e); }",
+        "return NO;",
+        "}",
+        "}");
+  }
+
+  public void testInterfaceMethods_notDuplicatedInSubclass() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2kt.annotations.Throws;
+        public interface BaseInterface {
+          @Throws
+          void doSomething();
+        }
+        """,
+        "BaseInterface.java");
+    addSourceFile(
+        """
+        public abstract class BaseClass implements BaseInterface {
+          @Override
+          public void doSomething() {}
+        }
+        """,
+        "BaseClass.java");
+    addSourceFile(
+        """
+        public class SubClass extends BaseClass {}
+        """,
+        "SubClass.java");
+
+    String baseHeader = translateSourceFile("BaseClass", "BaseClass.h");
+    String subHeader = translateSourceFile("SubClass", "SubClass.h");
+    String subSource = getTranslatedFile("SubClass.m");
+
+    assertNoWarnings();
+    assertNoErrors();
+    assertInTranslation(baseHeader, "- (BOOL)doSomethingAndReturnError:(NSError **)error;");
+    assertNotInTranslation(subHeader, "doSomethingAndReturnError:");
+    assertNotInTranslation(subSource, "doSomethingAndReturnError:");
+  }
+
+  public void testInterfaceMethods_notDuplicatedWhenSubinterfaceExtendsBaseInterface()
+      throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2kt.annotations.Throws;
+        public interface BaseInterface {
+          @Throws
+          void baseMethod();
+        }
+        """,
+        "BaseInterface.java");
+    addSourceFile(
+        """
+        import com.google.j2kt.annotations.Throws;
+        public interface SubInterface extends BaseInterface {
+          @Throws
+          void subMethod();
+        }
+        """,
+        "SubInterface.java");
+    addSourceFile(
+        """
+        public abstract class BaseClass implements BaseInterface {
+          @Override
+          public void baseMethod() {}
+        }
+        """,
+        "BaseClass.java");
+    addSourceFile(
+        """
+        public class SubClass extends BaseClass implements SubInterface {
+          @Override
+          public void subMethod() {}
+        }
+        """,
+        "SubClass.java");
+
+    String subHeader = translateSourceFile("SubClass", "SubClass.h");
+    String subSource = getTranslatedFile("SubClass.m");
+
+    assertNoWarnings();
+    assertNoErrors();
+    assertInTranslation(subHeader, "subMethodAndReturnError:");
+    assertNotInTranslation(subHeader, "baseMethodAndReturnError:");
+    assertNotInTranslation(subSource, "baseMethodAndReturnError:");
+  }
+
   public void testNullAnnotations() throws IOException {
     options.setNullability(true);
 
@@ -951,7 +1085,8 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertTranslatedLines(
         testHeader, "- (void)doWork NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\");");
     assertTranslatedLines(
-        testHeader, "- (BOOL)doWorkAndReturnError:(NSError **)error NS_SWIFT_NAME(customDoWork());");
+        testHeader,
+        "- (BOOL)doWorkAndReturnError:(NSError **)error NS_SWIFT_NAME(customDoWork());");
 
     // Class methods on @interface MethodSwiftFoo:
     assertTranslatedLines(

@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.translate;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -52,7 +53,10 @@ import com.google.j2objc.annotations.ObjectiveCAdapterMethod.Adaptation;
 import com.google.j2objc.annotations.ObjectiveCAdapterProtocol;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
@@ -639,8 +643,8 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
   }
 
   /**
-   * Returns a unique name based on a suggested name and a list of existing parameters.
-   * If the suggested name is already in the parameters list, add a "_" suffix and check again.
+   * Returns a unique name based on a suggested name and a list of existing parameters. If the
+   * suggested name is already in the parameters list, add a "_" suffix and check again.
    */
   private String getUniqueName(String suggestedName, List<VariableElement> parameters) {
     String uniqueName = suggestedName;
@@ -667,16 +671,24 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
     if (typeDeclaration.isInterface()) {
       return;
     }
-    for (TypeMirror supertype :
-        typeUtil.directSupertypes(typeDeclaration.getTypeElement().asType())) {
-      TypeElement superTypeElement = TypeUtil.asTypeElement(supertype);
-      if (superTypeElement.getKind().isInterface()) {
+    TypeElement typeElement = typeDeclaration.getTypeElement();
+    Set<TypeElement> newlyImplementedTypes =
+        Sets.difference(
+            getInheritedTypeElements(typeElement.asType()),
+            getInheritedTypeElements(typeElement.getSuperclass()));
+    for (TypeElement type : newlyImplementedTypes) {
+      if (type.getKind().isInterface()) {
         for (ExecutableElement superMethodExecutable :
-            Iterables.filter(
-                ElementUtil.getMethods(superTypeElement), ElementUtil::isInstanceMethod)) {
+            Iterables.filter(ElementUtil.getMethods(type), ElementUtil::isInstanceMethod)) {
           addAdapterMethod(typeDeclaration, superMethodExecutable);
         }
       }
     }
+  }
+
+  private LinkedHashSet<TypeElement> getInheritedTypeElements(TypeMirror type) {
+    return typeUtil.getObjcOrderedInheritedTypes(type).stream()
+        .map(TypeUtil::asTypeElement)
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 }
