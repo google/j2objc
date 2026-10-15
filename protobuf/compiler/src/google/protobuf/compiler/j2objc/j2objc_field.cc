@@ -228,8 +228,7 @@ FieldGenerator::FieldGenerator(const FieldDescriptor *descriptor)
   SetCommonFieldVariables(descriptor, &variables_);
 }
 
-FieldGenerator::~FieldGenerator() {
-}
+FieldGenerator::~FieldGenerator() = default;
 
 void FieldGenerator::CollectForwardDeclarations(
     std::set<std::string>* declarations) const {
@@ -658,8 +657,7 @@ FieldGenerator* FieldGeneratorMap::MakeGenerator(
   }
 }
 
-FieldGeneratorMap::~FieldGeneratorMap() {
-}
+FieldGeneratorMap::~FieldGeneratorMap() = default;
 
 const FieldGenerator& FieldGeneratorMap::get(
   const FieldDescriptor* field) const {

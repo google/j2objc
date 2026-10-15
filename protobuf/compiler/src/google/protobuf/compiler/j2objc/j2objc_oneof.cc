@@ -93,8 +93,7 @@ OneofGenerator::OneofGenerator(const OneofDescriptor* descriptor)
   : descriptor_(descriptor) {
 }
 
-OneofGenerator::~OneofGenerator() {
-}
+OneofGenerator::~OneofGenerator() = default;
 
 void OneofGenerator::CollectMessageOrBuilderForwardDeclarations(
     std::set<std::string>* declarations) const {

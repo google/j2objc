@@ -41,8 +41,8 @@ namespace protobuf {
 namespace compiler {
 namespace j2objc {
 
-J2ObjCGenerator::J2ObjCGenerator() {}
-J2ObjCGenerator::~J2ObjCGenerator() {}
+J2ObjCGenerator::J2ObjCGenerator() = default;
+J2ObjCGenerator::~J2ObjCGenerator() = default;
 
 bool J2ObjCGenerator::Generate(const FileDescriptor* file,
                                const std::string& parameter,
