@@ -3897,7 +3897,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 
 - (id)copyWithZone:(NSZone *)zone {
   // Generated messages are immutable.
-  return RETAIN_AND_AUTORELEASE(self);
+  return RETAIN_(self);
 }
 
 + (BOOL)resolveInstanceMethod:(SEL)sel {
