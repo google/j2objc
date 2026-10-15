@@ -94,12 +94,44 @@ public class NilCheckResolverTest extends GenerationTest {
         "[nil_chk(o2) description];",
         "}");
     assertTranslatedLines(translation,
-        "if (o3 != nil || b) {",
+        "if ((o3 != nil) || b) {",
         "[nil_chk(o3) description];",
         "}",
         "else {",
         "[nil_chk(o3) description];",
         "}");
+  }
+
+  public void testParenthesizedNullChecks() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              String test(Object o1, Object o2, Object o3, boolean b) {
+                if ((o1 != null) && b) {
+                  o1.toString();
+                }
+                if ((o2 instanceof String) && b) {
+                  o2.toString();
+                }
+                return (o3 != null) ? o3.toString() : "";
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
+    // Parentheses are not represented in the AST, so they don't hide the checks.
+    assertTranslatedLines(
+        translation,
+        """
+        if ((o1 != nil) && b) {
+          [o1 description];
+        }
+        if ([o2 isKindOfClass:[NSString class]] && b) {
+          [o2 description];
+        }
+        return (o3 != nil) ? [o3 description] : @"";
+        """);
   }
 
   public void testNilCheckAfterWhileLoop() throws IOException {
@@ -260,7 +292,7 @@ public class NilCheckResolverTest extends GenerationTest {
         + " if (o != null ? false : true) { o.toString(); }"
         + " if (foo(o != null)) { o.toString(); } } }", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "if (o != nil ? false : true) {",
+        "if ((o != nil) ? false : true) {",
         "  [nil_chk(o) description];",
         "}",
         "if ([self fooWithBoolean:o != nil]) {",

@@ -33,7 +33,7 @@ public class EnhancedForRewriterTest extends GenerationTest {
         + "void test() { for (char c : charArray) {} for (char c : charList) {} } }";
     String translation = translateSourceFile(source, "A", "A.m");
     assertInTranslation(
-        translation, "unichar c = [((JavaLangCharacter *) nil_chk(*b__++)) charValue];");
+        translation, "unichar c = [((JavaLangCharacter *) nil_chk((*b__++))) charValue];");
     assertInTranslation(
         translation, "unichar c = [((JavaLangCharacter *) nil_chk(boxed__)) charValue];");
   }
@@ -77,7 +77,7 @@ public class EnhancedForRewriterTest extends GenerationTest {
         "  id const *e__ = b__ + a__->size_;",
         "  while (b__ < e__) {",
         "    {",
-        "      id o = RETAIN_AND_AUTORELEASE(*b__++);",
+        "      id o = RETAIN_AND_AUTORELEASE((*b__++));",
         "      if (b) {",
         "        goto break_testLabel1;",
         "      }",

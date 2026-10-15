@@ -59,9 +59,9 @@ public class RecordExpanderTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        if (!([o isKindOfClass:[Point class]])) return false;
+        if (![o isKindOfClass:[Point class]]) return false;
         Point *other = (Point *) cast_chk(o, [Point class]);
-        return ((Point *) nil_chk(other))->x_ == x_ && other->y_ == y_;
+        return (((Point *) nil_chk(other))->x_ == x_) && (other->y_ == y_);
         """);
     assertInTranslation(
         translation,
@@ -143,9 +143,9 @@ public class RecordExpanderTest extends GenerationTest {
         }
 
         - (bool)isEqual:(id)o {
-          if (!([o isKindOfClass:[Person class]])) return false;
+          if (![o isKindOfClass:[Person class]]) return false;
           Person *other = (Person *) cast_chk(o, [Person class]);
-          return ((Person *) nil_chk(other))->key_ == key_ && JavaUtilObjects_equalsWithId_withId_(other->name_, name_) && JavaUtilObjects_equalsWithId_withId_(other->nickname_, nickname_);
+          return (((Person *) nil_chk(other))->key_ == key_) && JavaUtilObjects_equalsWithId_withId_(other->name_, name_) && JavaUtilObjects_equalsWithId_withId_(other->nickname_, nickname_);
         }
 
         - (NSUInteger)hash {
@@ -225,9 +225,9 @@ public class RecordExpanderTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        if (!([o isKindOfClass:[Point class]])) return false;
+        if (![o isKindOfClass:[Point class]]) return false;
         Point *other = (Point *) cast_chk(o, [Point class]);
-        return ((Point *) nil_chk(other))->x_ == x_ && other->y_ == y_;
+        return (((Point *) nil_chk(other))->x_ == x_) && (other->y_ == y_);
         """);
     assertInTranslation(
         translation,
@@ -279,9 +279,9 @@ public class RecordExpanderTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        if (!([o isKindOfClass:[Point class]])) return false;
+        if (![o isKindOfClass:[Point class]]) return false;
         Point *other = (Point *) cast_chk(o, [Point class]);
-        return ((Point *) nil_chk(other))->x_ == x_ && other->y_ == y_;
+        return (((Point *) nil_chk(other))->x_ == x_) && (other->y_ == y_);
         """);
     assertInTranslation(
         translation,
@@ -308,10 +308,10 @@ public class RecordExpanderTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        if (!([o isKindOfClass:[Point class]])) return false;
+        if (![o isKindOfClass:[Point class]]) return false;
         Point *other = (Point *) cast_chk(o, [Point class]);
         return JavaUtilObjects_equalsWithId_withId_(((Point *) nil_chk(other))->s_, s_)\
-         && other->i_ == i_\
+         && (other->i_ == i_)\
          && JavaUtilObjects_equalsWithId_withId_(other->l_, l_);
         """);
   }

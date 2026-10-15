@@ -335,7 +335,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertInTranslation(
         translation,
-        "[((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
+        "[((JavaIoPrintStream *) nil_chk((JreLoadStatic(JavaLangSystem, out)))) "
             + "printlnWithNSString:val$s_];");
   }
 

@@ -47,7 +47,7 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
         + "  }}", "A", "A.m");
     assertTranslatedLines(translation,
         "#line 3", "void A_test() {", "A_initialize();", "", "#line 4",
-        "[((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
+        "[((JavaIoPrintStream *) nil_chk((JreLoadStatic(JavaLangSystem, out)))) "
           + "printlnWithId:A_class_()];");
   }
 

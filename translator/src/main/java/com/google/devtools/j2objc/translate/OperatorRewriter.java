@@ -30,7 +30,6 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NumberLiteral;
-import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
@@ -472,8 +471,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     CommaExpression commaExpr =
         new CommaExpression(
             new CastExpression(
-                typeUtil.getVoid(),
-                new ParenthesizedExpression(new Assignment(new SimpleName(targetVar), target))));
+                typeUtil.getVoid(), new Assignment(new SimpleName(targetVar), target)));
     node.replaceWith(commaExpr);
     commaExpr.addExpression(node);
     return new SimpleName(targetVar);

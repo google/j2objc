@@ -44,7 +44,6 @@ import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NullLiteral;
-import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.Statement;
@@ -403,8 +402,6 @@ public class NilCheckResolver extends UnitTreeVisitor {
     switch (e.getKind()) {
       case CAST_EXPRESSION:
         return needsNilCheck(((CastExpression) e).getExpression());
-      case PARENTHESIZED_EXPRESSION:
-        return needsNilCheck(((ParenthesizedExpression) e).getExpression());
       case ARRAY_ACCESS:
       case NULL_LITERAL:
       case PREFIX_EXPRESSION:

@@ -202,7 +202,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "void test() { Bar.FOO=2; } } class Bar { public static int FOO=1; }",
        "Example", "Example.m");
     assertInTranslation(translation, "int32_t Bar_FOO = 1;");
-    assertInTranslation(translation, "*JreLoadStaticRef(Bar, FOO) = 2;");
+    assertInTranslation(translation, "*(JreLoadStaticRef(Bar, FOO)) = 2;");
   }
 
   public void testNSObjectMessageRename() throws IOException {
@@ -281,13 +281,13 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertInTranslation(translation, "@implementation Color");
     assertInTranslation(
         translation,
-        "Color_initWithInt_withNSString_withInt_(e, (int32_t) 0xff0000, @\"RED\", 0);");
+        "Color_initWithInt_withNSString_withInt_(e, ((int32_t) 0xff0000), @\"RED\", 0);");
     assertInTranslation(
         translation,
-        "Color_initWithInt_withNSString_withInt_(e, (int32_t) 0xffffff, @\"WHITE\", 1);");
+        "Color_initWithInt_withNSString_withInt_(e, ((int32_t) 0xffffff), @\"WHITE\", 1);");
     assertInTranslation(
         translation,
-        "Color_initWithInt_withNSString_withInt_(e, (int32_t) 0x0000ff, @\"BLUE\", 2);");
+        "Color_initWithInt_withNSString_withInt_(e, ((int32_t) 0x0000ff), @\"BLUE\", 2);");
     assertInTranslation(translation, "- (int32_t)getRgb {");
     assertInTranslation(translation, "return rgb_;");
     assertInTranslation(translation, "int32_t newValue_;");

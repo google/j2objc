@@ -793,7 +793,7 @@ public class StatementGeneratorTest extends GenerationTest {
         translation,
         """
         return [((id<JavaUtilMap_Entry>)\
-         nil_chk([((id<JavaUtilIterator>) nil_chk(iterator_)) next])) getKey];
+         nil_chk(([((id<JavaUtilIterator>) nil_chk(iterator_)) next]))) getKey];
         """);
   }
 
@@ -821,7 +821,8 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test.m");
     assertInTranslation(translation, "return [((id<JavaUtilIterator>) nil_chk(it_)) hasNext];");
     assertInTranslation(
-        translation, "return JreRetainedLocalValue([((id<JavaUtilIterator>) nil_chk(it_)) next]);");
+        translation,
+        "return JreRetainedLocalValue([((id<JavaUtilIterator>) nil_chk(it_)) next]);");
     assertFalse(translation.contains("Test *this$0;"));
   }
 
@@ -875,7 +876,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(translation, "return ttt == JreLoadEnum(Test_TicTacToe, X);");
+    assertInTranslation(translation, "return ttt == (JreLoadEnum(Test_TicTacToe, X));");
   }
 
   public void testArrayLocalVariable() throws IOException {
@@ -1067,7 +1068,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "NSString * const *b__ = a__->buffer_;",
         "NSString * const *e__ = b__ + a__->size_;",
         "while (b__ < e__) {",
-        "NSString *string = RETAIN_AND_AUTORELEASE(*b__++);",
+        "NSString *string = RETAIN_AND_AUTORELEASE((*b__++));",
         "}",
         "}");
   }
@@ -1135,7 +1136,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        Example_Test *tmp = nil_chk([self foo]);
+        Example_Test *tmp = nil_chk(([self foo]));
         switch ([tmp ordinal]) {
         """);
   }
@@ -1377,8 +1378,105 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(translation, "-0x7fffffff - 1");
-    assertInTranslation(translation, "-0x7fffffffffffffffLL - 1");
+    assertInTranslation(translation, "(-0x7fffffff - 1)");
+    assertInTranslation(translation, "(-0x7fffffffffffffffLL - 1)");
+  }
+
+  public void testNegativeLiteralOperands() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              void test(double x) {
+                int a = -(-1);
+                long b = -(-1L);
+                int c = ~(0x80000000);
+                int d = ~ -2147483648;
+                double e = x * -2147483648;
+                double f = x / 0x8000000000000000L;
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t a = -(-1);
+        int64_t b = -(-1LL);
+        int32_t c = ~(-0x7fffffff - 1);
+        int32_t d = ~(-0x7fffffff - 1);
+        double e = x * (-0x7fffffff - 1);
+        double f = x / (-0x7fffffffffffffffLL - 1);
+        """);
+  }
+
+  public void testIncrementOfDereferencedLvalues() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              static class Holder {
+                static double d;
+              }
+              void test(double[] doubles, float[] floats) {
+                doubles[0]++;
+                --floats[0];
+                Holder.d++;
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
+    // Postfix operators bind tighter than '*', so "*f()++" would not compile.
+    assertTranslatedLines(
+        translation,
+        """
+        (*IOSDoubleArray_GetRef(nil_chk(doubles), 0))++;
+        --(*IOSFloatArray_GetRef(nil_chk(floats), 0));
+        (*(JreLoadStaticRef(Test_Holder, d)))++;
+        """);
+  }
+
+  public void testAssignmentConditionsAreParenthesized() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              boolean next() { return false; }
+              void test() {
+                boolean b;
+                for (; b = next(); ) {}
+                while (b = next()) {}
+                do {} while (b = next());
+                if (b = next()) {}
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
+    assertInTranslation(translation, "for (; (b = [self next]); ) {");
+    assertInTranslation(translation, "while ((b = [self next])) {");
+    assertInTranslation(translation, "while ((b = [self next]));");
+    assertInTranslation(translation, "if ((b = [self next])) {");
+  }
+
+  public void testConditionalMacroArgumentIsParenthesized() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              int test(boolean c, String s1, String s2) {
+                switch (c ? s1 : s2) {
+                  case "a": return 1;
+                  default: return 2;
+                }
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
+    assertInTranslation(translation, "NSString *tmp = nil_chk((c ? s1 : s2));");
   }
 
   public void testInnerNewStatement() throws IOException {
@@ -2317,7 +2415,7 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test",
             "Test.m");
     assertInTranslation(
-        translation, "JreAssert(a < b, @\"Test.java:5 condition failed: assert a < b;\")");
+        translation, "JreAssert((a < b), @\"Test.java:5 condition failed: assert a < b;\")");
   }
 
   public void testAssertWithDescription() throws IOException {
@@ -2334,7 +2432,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(translation, "JreAssert(a < b, @\"a should be lower than b\")");
+    assertInTranslation(translation, "JreAssert((a < b), (@\"a should be lower than b\"))");
   }
 
   public void testAssertWithDynamicDescription() throws IOException {
@@ -2352,7 +2450,8 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test",
             "Test.m");
     assertInTranslation(
-        translation, "JreAssert(a < b, JreStrcat(\"I$I\", a, @\" should be lower than \", b));");
+        translation,
+        "JreAssert((a < b), JreStrcat(\"I$I\", a, @\" should be lower than \", b));");
   }
 
   // Verify that a Unicode escape sequence is preserved with string
@@ -2554,9 +2653,9 @@ public class StatementGeneratorTest extends GenerationTest {
     assertInTranslation(translation, "creditCardNumber_ = 1234567890123456LL;");
     assertInTranslation(translation, "socialSecurityNumber_ = 999999999LL;");
     assertInTranslation(translation, "pi_ = 3.1415f;");
-    assertInTranslation(translation, "hexBytes_ = (int32_t) 0xFFECDE5E;");
-    assertInTranslation(translation, "hexWords_ = (int32_t) 0xCAFEBABE;");
-    assertInTranslation(translation, "maxLong_ = (int64_t) 0x7fffffffffffffffLL;");
+    assertInTranslation(translation, "hexBytes_ = ((int32_t) 0xFFECDE5E);");
+    assertInTranslation(translation, "hexWords_ = ((int32_t) 0xCAFEBABE);");
+    assertInTranslation(translation, "maxLong_ = ((int64_t) 0x7fffffffffffffffLL);");
     assertInTranslation(translation, "nybbles_ = 0b00100101;");
     assertInTranslation(translation, "bytes_ = 0b11010010011010011001010010010010;");
   }
@@ -2680,7 +2779,7 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(translation, "(r != nil ? r : (id) @\"bar\")");
+    assertInTranslation(translation, "(r != nil) ? r : ((id) @\"bar\")");
   }
 
   // Verify that when a method invocation returns an object that is ignored,
@@ -2746,7 +2845,7 @@ public class StatementGeneratorTest extends GenerationTest {
             "Test",
             "Test.m");
     assertInTranslation(
-        translation, "[((Test_Foo *) nil_chk([((Test *) nil_chk(t)) getObj])) foo]");
+        translation, "[((Test_Foo *) nil_chk(([((Test *) nil_chk(t)) getObj]))) foo]");
   }
 
   public void testCastResultWhenInterfaceDeclaresMoreGenericType() throws IOException {
@@ -3220,7 +3319,7 @@ public class StatementGeneratorTest extends GenerationTest {
         translation,
         """
         Point *p = nil;
-        if ([o isKindOfClass:[Point class]] && (p = (Point *) o, true) && x_ == ((Point *) nil_chk(p))->x_ && y_ == p->y_) {
+        if ([o isKindOfClass:[Point class]] && (p = (Point *) o, true) && (x_ == ((Point *) nil_chk(p))->x_) && (y_ == p->y_)) {
           return true;
         }
         else {
@@ -3261,9 +3360,9 @@ public class StatementGeneratorTest extends GenerationTest {
               int selector=0;
               java.lang.String s=null;
               java.lang.String s=null;
-              if (str instanceof java.lang.String && (s=str, true) && ((java.lang.String)nil_chk(s)).length() > 10)         selector=1;
-              else if (str == null)         selector=2;
-              else if (str instanceof java.lang.String && (s=str, true))         selector=3;
+              if ((((str) instanceof java.lang.String) && ((s=str, true))) && ((((java.lang.String)(nil_chk(s))).length()) > (10)))         selector=1;
+              else if ((str) == (null))         selector=2;
+              else if (((str) instanceof java.lang.String) && ((s=str, true)))         selector=3;
               switch (selector) {
                 case 1: return JreStrcat($$, "Long string: ", s);
                 case 2: return "null";
@@ -3340,12 +3439,12 @@ public class StatementGeneratorTest extends GenerationTest {
             switch (tmp) {
               case Coin_Enum_HEADS:
               {
-                [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Heads"];
+                [(JreLoadStatic(JavaLangSystem, out)) printlnWithNSString:@"Heads"];
                 break;
               }
               case Coin_Enum_TAILS:
               {
-                [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Tails"];
+                [(JreLoadStatic(JavaLangSystem, out)) printlnWithNSString:@"Tails"];
                 break;
               }
             }
@@ -3417,22 +3516,22 @@ public class StatementGeneratorTest extends GenerationTest {
                 switch (selector) {
                 case 1:
                 {
-                  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Is an integer"];
+                  [(JreLoadStatic(JavaLangSystem, out)) printlnWithNSString:@"Is an integer"];
                   break;
                 }
                 case 2:
                 {
-                  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Is a float"];
+                  [(JreLoadStatic(JavaLangSystem, out)) printlnWithNSString:@"Is a float"];
                   break;
                 }
                 case 3:
                 {
-                  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Is a String"];
+                  [(JreLoadStatic(JavaLangSystem, out)) printlnWithNSString:@"Is a String"];
                   break;
                 }
                 default:
                 {
-                  [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"Default"];
+                  [(JreLoadStatic(JavaLangSystem, out)) printlnWithNSString:@"Default"];
                   break;
                 }
               }
@@ -3587,5 +3686,78 @@ public class StatementGeneratorTest extends GenerationTest {
               @end
               """);
         });
+  }
+
+  public void testOperatorPrecedence() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              void testArithmetic(double a, double b, double c) {
+                double r1 = (a + b) + c;
+                double r2 = a + (b + c);
+                double r3 = (a - b) - c;
+                double r4 = a - (b - c);
+                double r5 = (a + b) * c;
+                double r6 = a + (b * c);
+                double r7 = (a / b) / c;
+                double r8 = a / (b / c);
+              }
+              void testConditional(boolean a, boolean b, int x, int y, int z) {
+                int r1 = a ? x : (b ? y : z);
+                int r2 = (a ? b : false) ? x : y;
+              }
+              void testPrefixAndCast(double a, double b, int i) {
+                double r1 = -(-a);
+                double r2 = -(a + b);
+                float r3 = (float) (a + b);
+                int r4 = ~i;
+              }
+              void testRelationalAndEquality(int a, int b, boolean c, boolean d) {
+                boolean r1 = (a < b) == (c == d);
+                boolean r2 = a == b && c != d;
+                boolean r3 = (a == b || c) && d;
+                boolean r4 = (a == b && c) && d;
+                boolean r5 = c && (a == b && d);
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        double r1 = a + b + c;
+        double r2 = a + (b + c);
+        double r3 = (a - b) - c;
+        double r4 = a - (b - c);
+        double r5 = (a + b) * c;
+        double r6 = a + (b * c);
+        double r7 = (a / b) / c;
+        double r8 = a / (b / c);
+        """);
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t r1 = a ? x : (b ? y : z);
+        int32_t r2 = (a ? b : false) ? x : y;
+        """);
+    assertTranslatedLines(
+        translation,
+        """
+        double r1 = -(-a);
+        double r2 = -(a + b);
+        float r3 = (float) (a + b);
+        int32_t r4 = ~i;
+        """);
+    assertTranslatedLines(
+        translation,
+        """
+        bool r1 = (a < b) == (c == d);
+        bool r2 = (a == b) && (c != d);
+        bool r3 = ((a == b) || c) && d;
+        bool r4 = (a == b) && c && d;
+        bool r5 = c && ((a == b) && d);
+        """);
   }
 }

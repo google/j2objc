@@ -241,7 +241,7 @@ public class AutoboxerTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(translation, "b != nil ? [b booleanValue] : false");
+    assertInTranslation(translation, "(b != nil) ? [b booleanValue] : false");
   }
 
   public void testConditionalOnBoxedValue() throws IOException {
@@ -512,7 +512,8 @@ public class AutoboxerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertInTranslation(
         translation,
-        "*IOSIntArray_GetRef(array, [((JavaLangInteger *) nil_chk([self index])) intValue]) = 2;");
+        "*IOSIntArray_GetRef(array, [((JavaLangInteger *) nil_chk(([self index]))) intValue])"
+            + " = 2;");
   }
 
   public void testPrefixExpression() throws IOException {
@@ -689,8 +690,8 @@ public class AutoboxerTest extends GenerationTest {
     assertInTranslation(
         translation,
         """
-        int64_t l = [((JavaLangLong *) nil_chk([((id<Test_Entry>) nil_chk(entry_))\
-         getValue])) longLongValue];\
+        int64_t l = [((JavaLangLong *) nil_chk(([((id<Test_Entry>) nil_chk(entry_))\
+         getValue]))) longLongValue];\
         """);
   }
 
@@ -722,7 +723,7 @@ public class AutoboxerTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(translation, "JreAssert(i == 0, JavaLangInteger_valueOfWithInt_(i));");
+    assertInTranslation(translation, "JreAssert((i == 0), JavaLangInteger_valueOfWithInt_(i));");
   }
 
   public void testCharacterWrapperCastToPrimitive() throws IOException {
@@ -740,7 +741,8 @@ public class AutoboxerTest extends GenerationTest {
             "Test",
             "Test.m");
 
-    assertInTranslation(translation, "return [((JavaLangCharacter *) nil_chk(toChar)) charValue];");
+    assertInTranslation(
+        translation, "return [((JavaLangCharacter *) nil_chk(toChar)) charValue];");
     assertInTranslation(
         translation, "return (int32_t) [((JavaLangCharacter *) nil_chk(toInt)) charValue];");
     assertInTranslation(
@@ -831,8 +833,8 @@ public class AutoboxerTest extends GenerationTest {
             "Test.m");
     assertInTranslation(
         translation,
-        "return [((JavaLangInteger *) nil_chk((JavaLangInteger *) "
-            + "cast_chk(o, [JavaLangInteger class]))) intValue];");
+        "return [((JavaLangInteger *) nil_chk(((JavaLangInteger *) "
+            + "cast_chk(o, [JavaLangInteger class])))) intValue];");
     // Make sure we don't unnecessarily add a cast check if the object type
     // matches the primitive cast type.
     assertInTranslation(translation, "return [((JavaLangInteger *) nil_chk(i)) intValue];");
@@ -969,7 +971,7 @@ public class AutoboxerTest extends GenerationTest {
         @implementation Test_$Lambda$1
 
         - (int64_t)nowMillis {
-          return [nil_chk([target$_ get]) longLongValue];
+          return [nil_chk(([target$_ get])) longLongValue];
         """);
   }
 
@@ -992,6 +994,6 @@ public class AutoboxerTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(translation, "return [(JavaLangCharacter *) o charValue];");
+    assertInTranslation(translation, "return [((JavaLangCharacter *) o) charValue];");
   }
 }

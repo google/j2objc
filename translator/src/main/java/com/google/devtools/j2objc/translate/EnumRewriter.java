@@ -32,7 +32,6 @@ import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.NumberLiteral;
-import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
@@ -211,12 +210,12 @@ public class EnumRewriter extends UnitTreeVisitor {
 
       initStatements.add(new ExpressionStatement(
           new CommaExpression(
-              new CastExpression(voidType, new ParenthesizedExpression(
+              new CastExpression(voidType,
                   new Assignment(new SimpleName(varElement),
                   new Assignment(new SimpleName(localEnum),
                   new NativeExpression(
                       UnicodeUtils.format("objc_constructInstance(%s, (void *)ptr)", classExpr),
-                      type.asType()))))),
+                      type.asType())))),
               new NativeExpression("ptr += " + sizeName, voidType))));
       String initName = nameTable.getFullFunctionName(methodElement);
       FunctionElement initElement = new FunctionElement(initName, voidType, valueType)

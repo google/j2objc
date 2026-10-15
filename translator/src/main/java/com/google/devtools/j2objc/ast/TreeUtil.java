@@ -120,16 +120,6 @@ public class TreeUtil {
     return null;
   }
 
-  /**
-   * Returns the first descendant of the given node that is not a ParenthesizedExpression.
-   */
-  public static Expression trimParentheses(Expression node) {
-    while (node instanceof ParenthesizedExpression) {
-      node = ((ParenthesizedExpression) node).getExpression();
-    }
-    return node;
-  }
-
   public static MethodDeclaration getEnclosingMethod(TreeNode node) {
     return getNearestAncestorWithType(MethodDeclaration.class, node);
   }
@@ -238,7 +228,6 @@ public class TreeUtil {
    * represents a variable. Returns null otherwise.
    */
   public static VariableElement getVariableElement(Expression node) {
-    node = trimParentheses(node);
     switch (node.getKind()) {
       case FIELD_ACCESS:
         return ((FieldAccess) node).getVariableElement();

@@ -31,7 +31,6 @@ import com.google.devtools.j2objc.ast.InfixExpression.Operator;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
-import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
@@ -169,7 +168,7 @@ public class CastResolver extends UnitTreeVisitor {
 
   private void addCast(Expression expr) {
     CastExpression castExpr = new CastExpression(expr.getTypeMirror(), null);
-    expr.replaceWith(ParenthesizedExpression.parenthesize(castExpr));
+    expr.replaceWith(castExpr);
     castExpr.setExpression(expr);
   }
 
@@ -229,8 +228,6 @@ public class CastResolver extends UnitTreeVisitor {
             : ElementUtil.getDeclaringClass(method).asType();
         return getDeclaredReturnType(method, receiverType);
       }
-      case PARENTHESIZED_EXPRESSION:
-        return getDeclaredType(((ParenthesizedExpression) expr).getExpression());
       case SUPER_METHOD_INVOCATION: {
         SuperMethodInvocation invocation = (SuperMethodInvocation) expr;
         return getDeclaredReturnType(

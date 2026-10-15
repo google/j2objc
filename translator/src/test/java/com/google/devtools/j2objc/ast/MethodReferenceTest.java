@@ -274,8 +274,8 @@ public class MethodReferenceTest extends GenerationTest {
         "- (void)fWithId:(X *)a",
         "   withNSString:(NSString *)b",
         "   withNSString:(NSString *)c {",
-        "  [((X *) nil_chk(a)) gWithNSStringArray:[IOSObjectArray arrayWithObjects:(id[]){ b, c } "
-            + "count:2 type:NSString_class_()]];",
+        "  [((X *) nil_chk(a)) gWithNSStringArray:[IOSObjectArray "
+            + "arrayWithObjects:(id[]){ b, c } count:2 type:NSString_class_()]];",
         "}");
 
     // Pass the varargs array to the referenced method.
@@ -352,7 +352,7 @@ public class MethodReferenceTest extends GenerationTest {
         "}");
     assertTranslatedLines(translation,
         "- (int32_t)a {",
-        "  return [((JavaLangInteger *) nil_chk([target$_ size2])) intValue];",
+        "  return [((JavaLangInteger *) nil_chk(([target$_ size2]))) intValue];",
         "}");
   }
 

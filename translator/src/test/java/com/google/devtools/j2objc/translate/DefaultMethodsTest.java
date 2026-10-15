@@ -402,7 +402,7 @@ public class DefaultMethodsTest extends GenerationTest {
         + "interface OfInt extends OfPrimitive<Integer, OfInt> {}"
         + "static class OfIntImpl implements OfInt {}}", "Node", "Node.m");
     assertTranslatedLines(translation,
-        "return ((id<Node_OfInt>) Node_OfPrimitive_getChildWithInt_(self, arg0));");
+        "return (id<Node_OfInt>) Node_OfPrimitive_getChildWithInt_(self, arg0);");
   }
 
   // Regression test simplified from java.util.stream.ReduceOps, where @interface for

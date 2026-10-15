@@ -179,7 +179,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         + (void)initialize {
           if (self == [Test class]) {
             {
-              [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) printlnWithNSString:@"foo"];
+              [((JavaIoPrintStream *) nil_chk((JreLoadStatic(JavaLangSystem, out)))) printlnWithNSString:@"foo"];
             }
             J2OBJC_SET_INITIALIZED(Test)
           }
@@ -221,7 +221,7 @@ public class InitializationNormalizerTest extends GenerationTest {
           {
             JreStrongAssignAndConsume(&self->date_, new_JavaUtilDate_init());
           }
-          [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) printlnWithInt:i];
+          [((JavaIoPrintStream *) nil_chk((JreLoadStatic(JavaLangSystem, out)))) printlnWithInt:i];
         }
         """);
   }

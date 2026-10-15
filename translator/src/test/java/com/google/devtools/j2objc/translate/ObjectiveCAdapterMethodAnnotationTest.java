@@ -453,13 +453,13 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
 
     assertInTranslation(testHeader, "- (bool)isItTrue;");
     assertTranslatedLines(
-        testSource, "- (bool)isItTrue {", "  return [self _getTrue] ? YES : NO;", "}");
+        testSource, "- (bool)isItTrue {", "  return [self _getTrue] ? (YES) : (NO);", "}");
 
     assertInTranslation(testHeader, "+ (bool)isSomethingElse;");
     assertTranslatedLines(
         testSource,
         "+ (bool)isSomethingElse {",
-        "  return [BooleanMethods _getSomethingElse] ? YES : NO;",
+        "  return [BooleanMethods _getSomethingElse] ? (YES) : (NO);",
         "}");
 
     assertInTranslation(testHeader, "- (void)makeIt:(bool)value;");

@@ -599,10 +599,10 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertInTranslation(
         translation,
         "Color_initWithInt_withBoolean_withNSString_withInt_("
-            + "e, (int32_t) 0xffffff, false, @\"WHITE\", 1);");
+            + "e, ((int32_t) 0xffffff), false, @\"WHITE\", 1);");
     assertInTranslation(
         translation,
-        "Color_initWithInt_withNSString_withInt_(e, (int32_t) 0x0000ff, @\"BLUE\", 2);");
+        "Color_initWithInt_withNSString_withInt_(e, ((int32_t) 0x0000ff), @\"BLUE\", 2);");
   }
 
   public void testEnumInitialization() throws IOException {

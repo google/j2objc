@@ -150,7 +150,7 @@ public class OperatorRewriterTest extends GenerationTest {
     String translation =
         translateSourceFile(
             "class Test { String s; void test(String s2) { (s) = s2; } }", "Test", "Test.m");
-    assertInTranslation(translation, "JreStrongAssign(&(s_), s2);");
+    assertInTranslation(translation, "JreStrongAssign(&s_, s2);");
   }
 
   public void testParenthesizedLeftHandSideStrictField() throws IOException {
@@ -159,7 +159,7 @@ public class OperatorRewriterTest extends GenerationTest {
     String translation =
         translateSourceFile(
             "class Test { String s; void test(String s2) { (s) = s2; } }", "Test", "Test.m");
-    assertInTranslation(translation, "JreStrictFieldStrongAssign(&(s_), s2);");
+    assertInTranslation(translation, "JreStrictFieldStrongAssign(&s_, s2);");
   }
 
   public void testVolatileLoadAndAssign() throws IOException {
@@ -249,7 +249,7 @@ public class OperatorRewriterTest extends GenerationTest {
         // The getTest() call must be extracted so that it can be passed as the parent ref without
         // duplicating the expression.
         "t *__rw$0;",
-        "((void) (__rw$0 = nil_chk([self getTest])), "
+        "((void) (__rw$0 = nil_chk(([self getTest]))), "
           + "JreRetainedWithAssign(__rw$0, &__rw$0->rwo_, create_NSObject_init()));");
     // Test the dealloc calls too.
     assertInTranslation(translation, "JreRetainedWithRelease(self, rwo_);");
@@ -276,7 +276,7 @@ public class OperatorRewriterTest extends GenerationTest {
         // The getTest() call must be extracted so that it can be passed as the parent ref without
         // duplicating the expression.
         "t *__rw$0;",
-        "((void) (__rw$0 = nil_chk([self getTest])), "
+        "((void) (__rw$0 = nil_chk(([self getTest]))), "
             + "JreRetainedWithAssign(__rw$0, &__rw$0->rwo_, create_NSObject_init()));");
     // Test the dealloc calls too.
     assertInTranslation(translation, "JreStrictFieldRetainedWithRelease(self, &rwo_);");
@@ -307,7 +307,7 @@ public class OperatorRewriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "Test_Thing *thing = JreRetainedLocalValue(t);",
         "thing = JreRetainedLocalValue(t2);",
-        "return [((id<JavaUtilComparator>) nil_chk(((Test_Thing *) nil_chk(thing))->comp_)) "
+        "return [((id<JavaUtilComparator>) nil_chk((((Test_Thing *) nil_chk(thing))->comp_))) "
           + "compareWithId:s1 withId:s2] == 0;");
   }
 
@@ -636,7 +636,7 @@ public class OperatorRewriterTest extends GenerationTest {
             + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
     assertInTranslation(
         translation,
-        "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2) =="
+        "return JavaLangBoolean_valueOfWithBoolean_((!JreObjectEqualsEquals(b1, b2)) =="
             + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
     assertInTranslation(
         translation,
@@ -646,7 +646,7 @@ public class OperatorRewriterTest extends GenerationTest {
         translation, "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2));");
     assertInTranslation(
         translation,
-        "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2) !="
+        "return JavaLangBoolean_valueOfWithBoolean_((!JreObjectEqualsEquals(b1, b2)) !="
             + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
   }
 

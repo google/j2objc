@@ -30,8 +30,8 @@ public class StaticVarRewriterTest extends GenerationTest {
         + "static class Other { void test() { test.obj.toString(); test.obj.toString(); } } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "[nil_chk(((Test *) nil_chk(JreLoadStatic(Test, test)))->obj_) description];",
-        "[nil_chk(((Test *) nil_chk(JreLoadStatic(Test, test)))->obj_) description];");
+        "[nil_chk((((Test *) nil_chk((JreLoadStatic(Test, test))))->obj_)) description];",
+        "[nil_chk((((Test *) nil_chk((JreLoadStatic(Test, test))))->obj_)) description];");
   }
 
   public void testAssignmentToNewObject() throws IOException {
@@ -86,7 +86,7 @@ public class StaticVarRewriterTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(
         translation,
-        "*IOSIntArray_GetRef(nil_chk(JreLoadStatic(Test_Inner, ints)), 0) = 1;",
+        "*IOSIntArray_GetRef(nil_chk((JreLoadStatic(Test_Inner, ints))), 0) = 1;",
         "JrePlusAssignIntI(IOSIntArray_GetRef(JreLoadStatic(Test_Inner, ints), 0), 2);",
         "return IOSIntArray_Get(JreLoadStatic(Test_Inner, ints), 0);");
   }
@@ -102,8 +102,8 @@ public class StaticVarRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "*IOSIntArray_GetRef(nil_chk(JreStrictFieldStrongLoad(JreLoadStaticRef(Test_Inner, ints))),"
-            + " 0) = 1;",
+        "*IOSIntArray_GetRef(nil_chk(JreStrictFieldStrongLoad("
+            + "JreLoadStaticRef(Test_Inner, ints))), 0) = 1;",
         "JrePlusAssignIntI(IOSIntArray_GetRef(JreStrictFieldStrongLoad("
             + "JreLoadStaticRef(Test_Inner, ints)), 0), 2);",
         "return IOSIntArray_Get(JreStrictFieldStrongLoad(JreLoadStaticRef(Test_Inner, ints)), 0);");

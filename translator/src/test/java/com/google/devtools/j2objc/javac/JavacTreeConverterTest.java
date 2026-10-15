@@ -15,12 +15,42 @@
 package com.google.devtools.j2objc.javac;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.TreeVisitor;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Tests for {@link TreeConverter}.
  */
 public class JavacTreeConverterTest extends GenerationTest {
+
+  public void testParenthesizedExpressionKeepsItsSourcePosition() {
+    String source =
+        """
+        class Test {
+          int test(int a, int b) {
+            return (a + b) * 2;
+          }
+        }
+        """;
+    CompilationUnit unit = compileType("Test", source);
+    List<InfixExpression> sums = new ArrayList<>();
+    unit.accept(
+        new TreeVisitor() {
+          @Override
+          public void endVisit(InfixExpression node) {
+            if (node.getOperator() == InfixExpression.Operator.PLUS) {
+              sums.add(node);
+            }
+          }
+        });
+    assertEquals(1, sums.size());
+    assertEquals(source.indexOf("a + b"), sums.get(0).getStartPosition());
+    assertEquals("a + b".length(), sums.get(0).getLength());
+  }
 
   public void testThisDotConstant() throws IOException {
     // Verify this.CONSTANT translates without a ClassCastException thrown.

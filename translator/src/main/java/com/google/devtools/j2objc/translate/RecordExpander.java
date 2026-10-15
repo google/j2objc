@@ -28,7 +28,6 @@ import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
-import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.RecordDeclaration;
@@ -202,11 +201,9 @@ public class RecordExpander extends UnitTreeVisitor {
               .setTypeMirror(typeUtil.getBoolean())
               .setLeftOperand(new SimpleName(arg))
               .setRightOperand(new SimpleType(recordType));
-      ParenthesizedExpression parenthesizedExpression =
-          new ParenthesizedExpression(instanceofExpression);
       PrefixExpression prefixExpression =
           new PrefixExpression(
-              typeUtil.getBoolean(), PrefixExpression.Operator.NOT, parenthesizedExpression);
+              typeUtil.getBoolean(), PrefixExpression.Operator.NOT, instanceofExpression);
       ifStatement.setExpression(prefixExpression);
       ifStatement.setThenStatement(
           new ReturnStatement(new BooleanLiteral(false, typeUtil.getBoolean())));

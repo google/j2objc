@@ -180,7 +180,7 @@ public class ConstantBranchPrunerTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         "- (int32_t)testWithBoolean:(bool)b {",
-        "  b && ([self getB]);",
+        "  b && [self getB];",
         "  return 0;",
         "}");
   }
@@ -206,7 +206,7 @@ public class ConstantBranchPrunerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { volatile int i; boolean test() { return i == 1 && false; } }",
         "Test", "Test.m");
-    assertInTranslation(translation, "return JreLoadVolatileInt(&i_) == 1 && false;");
+    assertInTranslation(translation, "return (JreLoadVolatileInt(&i_) == 1) && false;");
   }
 
   // The JDT parser provides limited type information for local types declared
