@@ -26,6 +26,11 @@ import java.lang.annotation.Target;
  *
  * <p>The purpose of this is to provide kotlin-compatible access to static methods, preserving
  * generic type information.
+ *
+ * <p>Classes which only have static members and private, never invoked constructors are translated
+ * by J2KT as Kotlin objects, which Kotlin/Native exposes via a class property named "shared" rather
+ * than "companion". For such classes both properties are generated, so that Swift code can use
+ * "shared" with either the J2ObjC or the J2KT translation.
  */
 @Documented
 @Target({ElementType.TYPE})

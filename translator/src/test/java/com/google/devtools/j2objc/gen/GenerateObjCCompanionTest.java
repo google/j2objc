@@ -226,6 +226,188 @@ public class GenerateObjCCompanionTest extends GenerationTest {
     assertInTranslation(impl, "+ (id<FooCompanionProtocol>)shared {");
     assertInTranslation(impl, "return (id<FooCompanionProtocol>)self;");
   }
+
+  // J2KT translates classes with only static members and private, never invoked constructors as
+  // Kotlin objects, which are exposed to Objective-C via `shared` rather than `companion`.
+  public void testSharedPropertyForStaticOnlyClass() throws IOException {
+    String source =
+        """
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        public class Foo {
+          private Foo() {}
+          public static void doSomething() {}
+        }
+        """;
+    String header = translateSourceFile(source, "Foo", "Foo.h");
+    assertTranslatedLines(
+        header,
+        """
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wincompatible-property-type"
+        @property (readonly, class) id<FooCompanionProtocol> companion;
+        @property (readonly, class) id<FooCompanionProtocol> shared;
+        #pragma clang diagnostic pop
+        """);
+
+    String impl = translateSourceFile(source, "Foo", "Foo.m");
+    assertTranslatedLines(
+        impl,
+        """
+        + (id<FooCompanionProtocol>)companion {
+          return (id<FooCompanionProtocol>)self;
+        }
+
+        + (id<FooCompanionProtocol>)shared {
+          return (id<FooCompanionProtocol>)self;
+        }
+        """);
+  }
+
+  public void testNoSharedPropertyForClassWithImplicitConstructor() throws IOException {
+    String source =
+        """
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        public class Foo {
+          public static void doSomething() {}
+        }
+        """;
+    assertNoSharedProperty(source);
+  }
+
+  // An instance initializer is dead code in a class that is never instantiated: J2KT drops it from
+  // the object, and J2ObjC has folded it into the (private, never invoked) constructor by now.
+  public void testSharedPropertyForClassWithInstanceInitializer() throws IOException {
+    String source =
+        """
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        public class Foo {
+          public static int count = 0;
+          { count++; }
+          private Foo() {}
+          public static void doSomething() {}
+        }
+        """;
+    String header = translateSourceFile(source, "Foo", "Foo.h");
+    assertInTranslation(header, "@property (readonly, class) id<FooCompanionProtocol> shared;");
+  }
+
+  public void testNoSharedPropertyForClassWithInstanceMembers() throws IOException {
+    String source =
+        """
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        public class Foo {
+          private Foo() {}
+          public static void doSomething() {}
+          public void doSomethingElse() {}
+        }
+        """;
+    assertNoSharedProperty(source);
+  }
+
+  public void testNoSharedPropertyForInstantiatedClass() throws IOException {
+    String source =
+        """
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        public class Foo {
+          private static final Object INSTANCE = new Foo();
+          private Foo() {}
+          public static void doSomething() {}
+        }
+        """;
+    assertNoSharedProperty(source);
+  }
+
+  public void testNoSharedPropertyForSubclassedClass() throws IOException {
+    String source =
+        """
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        public class Foo {
+          private Foo() {}
+          public static void doSomething() {}
+          static class Bar extends Foo {}
+        }
+        """;
+    assertNoSharedProperty(source);
+  }
+
+  public void testNoSharedPropertyForClassWithSuperTypes() throws IOException {
+    String source =
+        """
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        public class Foo implements Runnable {
+          private Foo() {}
+          public static void doSomething() {}
+          public void run() {}
+        }
+        """;
+    assertNoSharedProperty(source);
+  }
+
+  public void testNoSharedPropertyForKtNativeClassWithCompanionName() throws IOException {
+    addSourceFile(
+        """
+        package javaemul.internal.annotations;
+        public @interface KtNative {
+          String name() default "<auto>";
+          String companionName() default "<auto>";
+        }
+        """,
+        "javaemul/internal/annotations/KtNative.java");
+    String source =
+        """
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        @javaemul.internal.annotations.KtNative(companionName = "foo.FooCompanion")
+        public class Foo {
+          private Foo() {}
+          public static native void doSomething();
+        }
+        """;
+    assertNoSharedProperty(source);
+  }
+
+  public void testNoSharedPropertyForClassWithInstanceField() throws IOException {
+    String source =
+        """
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        public class Foo {
+          private static final Object INSTANCE = new Object();
+          private Foo() {}
+          public static void doSomething() {}
+        }
+        """;
+    assertNoSharedProperty(source);
+  }
+
+  public void testNoSharedPropertyForNativeJsType() throws IOException {
+    addSourceFile(
+        """
+        package jsinterop.annotations;
+        public @interface JsType {
+          boolean isNative() default false;
+        }
+        """,
+        "jsinterop/annotations/JsType.java");
+    String source =
+        """
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        @jsinterop.annotations.JsType(isNative = true)
+        public class Foo {
+          private Foo() {}
+          public static native void doSomething();
+        }
+        """;
+    assertNoSharedProperty(source);
+  }
+
+  private void assertNoSharedProperty(String source) throws IOException {
+    String header = translateSourceFile(source, "Foo", "Foo.h");
+    assertInTranslation(header, "@property (readonly, class) id<FooCompanionProtocol> companion;");
+    assertNotInTranslation(header, "id<FooCompanionProtocol> shared;");
+
+    String impl = translateSourceFile(source, "Foo", "Foo.m");
+    assertInTranslation(impl, "+ (id<FooCompanionProtocol>)companion {");
+    assertNotInTranslation(impl, "+ (id<FooCompanionProtocol>)shared {");
+  }
 }
 
 
