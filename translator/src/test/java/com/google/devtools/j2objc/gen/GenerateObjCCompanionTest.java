@@ -55,7 +55,7 @@ public class GenerateObjCCompanionTest extends GenerationTest {
         }
         """;
     String header = translateSourceFile(source, "Bar", "Bar.h");
-    assertInTranslation(header, "@class Bar;");
+    assertInTranslation(header, "@class Bar<T>;");
     assertInTranslation(header, "@protocol BarCompanionProtocol");
     assertInTranslation(header, "- (id)doSomethingWithId:(id)arg;");
     assertInTranslation(header, "@property (readonly, class) id<BarCompanionProtocol> companion;");
@@ -101,6 +101,51 @@ public class GenerateObjCCompanionTest extends GenerationTest {
         header, "@property int32_t mutableStaticField NS_SWIFT_NAME(mutableStaticField);");
     // Should NOT generate property for privateStaticField.
     assertNotInTranslation(header, "privateStaticField");
+  }
+
+  public void testCompanionPropertiesPreserveGenericTypesOfStaticFields() throws IOException {
+    options.setClassProperties(true);
+    String source =
+        """
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        public class Foo {
+          public static final ThreadLocal<java.util.Random> LOCAL = new ThreadLocal<>();
+        }
+        """;
+    String header = translateSourceFile(source, "Foo", "Foo.h");
+    // Like companion methods, companion properties keep the generic type of the static field.
+    assertInTranslation(
+        header,
+        "@property (readonly, strong) JavaLangThreadLocal<JavaUtilRandom *> *LOCAL"
+            + " NS_SWIFT_NAME(LOCAL);");
+    // The type argument is forward declared for the companion property.
+    assertInTranslation(header, "@class JavaUtilRandom;");
+    // The class property is unchanged.
+    assertInTranslation(
+        header,
+        "@property (readonly, class, strong) JavaLangThreadLocal *LOCAL NS_SWIFT_NAME(LOCAL);");
+  }
+
+  public void testCompanionMembersCanReferToParameterizedSelfType() throws IOException {
+    options.setClassProperties(true);
+    String source =
+        """
+        @com.google.j2objc.annotations.GenerateObjCCompanion
+        public class Foo<A, B> {
+          public static final Foo<String, Integer> DEFAULT = new Foo<>();
+          public static <B> Foo<String, B> create() { return new Foo<>(); }
+        }
+        """;
+    String header = translateSourceFile(source, "Foo", "Foo.h");
+    // The companion protocol precedes the @interface, so its forward declaration of the class
+    // must declare the type parameters for Foo<NSString *, ...> to be valid in the protocol.
+    assertInTranslation(header, "@class Foo<A, B>;");
+    assertInTranslation(
+        header,
+        "@property (readonly, strong) Foo<NSString *, JavaLangInteger *> *DEFAULT"
+            + " NS_SWIFT_NAME(DEFAULT);");
+    assertInTranslation(header, "- (Foo<NSString *, id> *)create;");
+    assertInTranslation(header, "@interface Foo<A, B> : NSObject");
   }
 
   public void testCompanionWithOnlyStaticFields() throws IOException {

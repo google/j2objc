@@ -34,6 +34,7 @@ import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
+import com.google.j2objc.annotations.GenerateObjCCompanion;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -144,9 +145,26 @@ public class HeaderImportCollector extends UnitTreeVisitor {
   @Override
   public boolean visit(FieldDeclaration node) {
     if (filter.include(node) && includeInnerTypes) {
-      addForwardDecl(node.getTypeMirror());
+      TypeMirror type = node.getTypeMirror();
+      addForwardDecl(type);
+      if (isCompanionProperty(node)) {
+        // Companion properties keep Objective-C generics, so their type arguments need forward
+        // declarations too.
+        for (TypeMirror generic : objCForwardDeclaredGenericParameters(type)) {
+          addForwardDecl(generic);
+        }
+      }
     }
     return false;
+  }
+
+  /** Returns whether the field is also exposed as a property of a generated companion. */
+  private static boolean isCompanionProperty(FieldDeclaration node) {
+    VariableElement var = node.getFragment().getVariableElement();
+    return ElementUtil.isStatic(var)
+        && !node.hasPrivateDeclaration()
+        && ElementUtil.hasAnnotation(
+            ElementUtil.getDeclaringClass(var), GenerateObjCCompanion.class);
   }
 
   private Set<TypeMirror> objCForwardDeclaredGenericParameters(TypeMirror type) {

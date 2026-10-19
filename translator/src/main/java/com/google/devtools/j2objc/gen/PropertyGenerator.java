@@ -202,7 +202,12 @@ public final class PropertyGenerator {
       this.type = element.asType();
       this.isStatic = ElementUtil.isStatic(element);
       this.propertyName = nameTable.getStaticAccessorName(fragment.getVariableElement());
-      this.objcType = nameTable.getObjCType(type);
+      // Companion properties keep Objective-C generics like companion methods do; class
+      // properties remain erased.
+      this.objcType =
+          staticToInstance
+              ? generator.getCompanionPropertyType(fragment.getVariableElement())
+              : nameTable.getObjCType(type);
       this.getter = findGetterMethod();
     } else {
       MethodDeclaration method = (MethodDeclaration) member;

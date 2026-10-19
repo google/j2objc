@@ -334,6 +334,22 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
         typeElement);
   }
 
+  /**
+   * Returns the Objective-C type of a static field exposed as a companion property. Like the
+   * companion method signatures, it preserves Objective-C generics, so that the companion API
+   * matches the one exported by Kotlin/Native.
+   */
+  protected String getCompanionPropertyType(VariableElement var) {
+    TypeMirror type = var.asType();
+    boolean allowGenerics = !typeUtil.isProtoClass(type);
+    return nameTable.getObjCTypeDeclaration(
+        type,
+        allowGenerics
+            && (generateObjectiveCGenerics(type)
+                || generateObjectiveCGenerics(typeElement.asType())),
+        typeElement);
+  }
+
   /** Create an Objective-C method signature string. */
   protected String getMethodSignature(
       MethodDeclaration m, boolean generatorAllowsGenerics, boolean staticToInstance) {

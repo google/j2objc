@@ -134,8 +134,15 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (needsKotlinCompanionClass()) {
       // Companion methods might refer to the class type and the companion property will
       // refer to the companion type, so we need one forward declaration in any case.
-      printf(
-          typeElement.getKind().isInterface() ? "\n@protocol %s;\n" : "\n@class %s;\n", typeName);
+      if (typeElement.getKind().isInterface()) {
+        printf("\n@protocol %s;\n", typeName);
+      } else {
+        // Declare the class's type parameters too, so that companion members can refer to
+        // parameterized instances of the class itself (e.g. a static Foo<String> in Foo<T>).
+        printf("\n@class %s", typeName);
+        printInterfaceGenerics();
+        print(";\n");
+      }
 
       printf("\n@protocol %sCompanionProtocol\n", typeName);
       for (BodyDeclaration declaration : getInnerDeclarations()) {
