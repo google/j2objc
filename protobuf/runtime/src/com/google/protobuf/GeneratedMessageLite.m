@@ -19,7 +19,7 @@ J2OBJC_IGNORE_DESIGNATED_END
 
 - (id)copyWithZone:(NSZone *)zone {
   // Generated messages are immutable.
-  return RETAIN_AND_AUTORELEASE(self);
+  return RETAIN_(self);
 }
 
 @end
