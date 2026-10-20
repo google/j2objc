@@ -171,6 +171,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         printf("\n#pragma clang diagnostic push\n");
         printf("#pragma clang diagnostic ignored \"-Wincompatible-property-type\"\n");
         printf("@property (readonly, class) id<%sCompanionProtocol> companion;\n", typeName);
+        if (needsKotlinSharedProperty()) {
+          printf("@property (readonly, class) id<%sCompanionProtocol> shared;\n", typeName);
+        }
         printf("#pragma clang diagnostic pop\n");
       }
     }
