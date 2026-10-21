@@ -132,6 +132,7 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
     AnnotationMirror annotation =
         ElementUtil.getAnnotation(methodExecutable, ObjectiveCAdapterMethod.class);
     if (annotation != null) {
+      // Safe cast: 'adaptations' annotation attribute returns an array of enum values.
       @SuppressWarnings("unchecked")
       List<? extends AnnotationValue> annotationValues =
           (List<? extends AnnotationValue>)
@@ -254,9 +255,9 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
       return;
     }
 
-    // Preceed any conversion body.
+    // Precede any conversion body.
     adapterConfig.adapterMethodBody.addStatement(0, new NativeStatement("@try {"));
-    // Everthing else is after updated body.
+    // Everything else is after updated body.
     if (wasVoidReturn) {
       adapterConfig.adapterMethodBody.addStatement(
           new ExpressionStatement(adapterConfig.returnValueExpression));
@@ -564,15 +565,15 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
       configParameters.add(errorParam);
     }
 
-    MethodInvocation orginalMethodInvocation =
+    MethodInvocation originalMethodInvocation =
         new MethodInvocation(new ExecutablePair(methodExecutable), null);
     AdapterConfig adapterConfig =
         new AdapterConfig(
             methodExecutable.getReturnType(),
             configParameters,
             configArguments,
-            orginalMethodInvocation,
-            orginalMethodInvocation);
+            originalMethodInvocation,
+            originalMethodInvocation);
 
     if (methodAdaptsBooleanReturns(methodExecutable)) {
       adaptBooleanReturns(adapterConfig);
