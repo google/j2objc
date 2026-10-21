@@ -849,6 +849,7 @@ JRE_CORE_NATIVE_HEADERS_QUALIFIED = [
     "Classes/J2ObjC_types.h",
     "Classes/JavaObject.h",
     "Classes/JreEmulation.h",
+    "Classes/JreExceptionAdapters.h",
     "Classes/JreRetainedWith.h",
     "Classes/NSCopying+JavaCloneable.h",
     "Classes/NSDataInputStream.h",

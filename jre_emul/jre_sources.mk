@@ -2382,6 +2382,7 @@ PUBLIC_NATIVE_HEADERS = \
   J2ObjC_types.h \
   JavaObject.h \
   JreEmulation.h \
+  JreExceptionAdapters.h \
   JreRetainedWith.h \
   NSCopying+JavaCloneable.h \
   NSDataInputStream.h \
