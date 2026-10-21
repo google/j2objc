@@ -293,6 +293,7 @@ public class GenerateObjCCompanionTest extends GenerationTest {
         @property (readonly, class) id<FooCompanionProtocol> shared;
         #pragma clang diagnostic pop
         """);
+    assertInTranslation(header, "@compatibility_alias FooCompanion Foo;");
 
     String impl = translateSourceFile(source, "Foo", "Foo.m");
     assertTranslatedLines(
@@ -448,6 +449,7 @@ public class GenerateObjCCompanionTest extends GenerationTest {
     String header = translateSourceFile(source, "Foo", "Foo.h");
     assertInTranslation(header, "@property (readonly, class) id<FooCompanionProtocol> companion;");
     assertNotInTranslation(header, "id<FooCompanionProtocol> shared;");
+    assertNotInTranslation(header, "@compatibility_alias FooCompanion Foo;");
 
     String impl = translateSourceFile(source, "Foo", "Foo.m");
     assertInTranslation(impl, "+ (id<FooCompanionProtocol>)companion {");

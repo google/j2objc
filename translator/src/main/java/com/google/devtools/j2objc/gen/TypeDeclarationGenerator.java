@@ -479,9 +479,15 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   protected void printCompanionClassDeclaration() {
-    if (!typeElement.getKind().isInterface()
-        || !needsCompanionClass()
-        || printPrivateDeclarations() == needsPublicCompanionClass()) {
+    if (!typeElement.getKind().isInterface()) {
+      // TODO: b/571946602 - Remove once all FooCompanion.shared users have been migrated to
+      // Foo.shared.
+      if (needsKotlinSharedProperty() && !printPrivateDeclarations()) {
+        printf("\n@compatibility_alias %sCompanion %s;\n", typeName, typeName);
+      }
+      return;
+    }
+    if (!needsCompanionClass() || printPrivateDeclarations() == needsPublicCompanionClass()) {
       return;
     }
     if (hasCompanionSuffix()) {
