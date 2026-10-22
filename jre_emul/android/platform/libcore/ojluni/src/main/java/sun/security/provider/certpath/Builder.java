@@ -26,15 +26,13 @@
 package sun.security.provider.certpath;
 
 import java.io.IOException;
-import java.security.AccessController;
 import java.security.GeneralSecurityException;
 import java.security.cert.*;
 import java.util.*;
-
 import sun.security.provider.certpath.PKIX.BuilderParams;
 import sun.security.util.Debug;
-import sun.security.x509.GeneralNames;
 import sun.security.x509.GeneralNameInterface;
+import sun.security.x509.GeneralNames;
 import sun.security.x509.GeneralSubtrees;
 import sun.security.x509.NameConstraintsExtension;
 import sun.security.x509.SubjectAlternativeNameExtension;
@@ -344,9 +342,9 @@ public abstract class Builder {
                 constraints.get(NameConstraintsExtension.PERMITTED_SUBTREES);
         GeneralSubtrees excluded =
                 constraints.get(NameConstraintsExtension.EXCLUDED_SUBTREES);
-        if (permitted != null) {
-            permitted.reduce(excluded);
-        }
+    if (permitted != null) {
+      // permitted.reduce(excluded); // VULNERABILITY FIX: b/514770851
+    }
         if (debug != null) {
             debug.println("Builder.targetDistance() reduced constraints: "
                 + permitted);
