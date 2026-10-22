@@ -205,7 +205,8 @@ public class OperatorRewriter extends UnitTreeVisitor {
     boolean isRetainableReturnType = expr != null && TypeUtil.isReferenceType(expr.getTypeMirror());
     if (options.useRetainAutoreleaseReturns() && isRetainableReturnType) {
       rewriteRetainedAutoreleaseReturnValue(expr);
-    } else if ((maybeRetainMethodReturn || !retainedLocalCandidateStack.isEmpty())
+    } else if (options.useReferenceCounting()
+        && (maybeRetainMethodReturn || !retainedLocalCandidateStack.isEmpty())
         && isRetainableReturnType) {
       rewriteRetainedLocal(expr);
     }
@@ -312,17 +313,18 @@ public class OperatorRewriter extends UnitTreeVisitor {
         && ElementUtil.hasAnnotation(var, RetainedLocalRef.class)) {
       return true;
     }
-    for (Set<VariableElement> candidates : retainedLocalCandidateStack) {
-      if (candidates.contains(var)) {
-        return true;
+    if (options.useReferenceCounting()) {
+      for (Set<VariableElement> candidates : retainedLocalCandidateStack) {
+        if (candidates.contains(var)) {
+          return true;
+        }
       }
     }
     return false;
   }
 
   private void rewriteRetainedLocal(Expression expr) {
-    if (options.useARC()  // ARC generates an equivalent function call.
-        || expr.getKind() == TreeNode.Kind.STRING_LITERAL
+    if (expr.getKind() == TreeNode.Kind.STRING_LITERAL
         || expr.getKind() == TreeNode.Kind.FUNCTION_INVOCATION) {
       return;
     }
