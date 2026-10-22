@@ -201,4 +201,51 @@ public class ReflectionTest extends TestCase {
     assertEquals("hello", a.annotationValue().value());
     assertEquals(Iterable.class, a.classValue());
   }
+
+  private static native Object getNativeNumber(long val) /*-[
+    return [NSNumber numberWithLongLong:(long long)val];
+  ]-*/;
+
+  public void testIsObjCNumber() {
+    Object nativeNum = getNativeNumber(42);
+    Object javaNum = Integer.valueOf(42);
+    Object decimalNum = new java.math.BigDecimal("1.23");
+
+    assertTrue(com.google.j2objc.util.ReflectionUtil.isObjCNumber(nativeNum));
+    assertFalse(com.google.j2objc.util.ReflectionUtil.isObjCNumber(javaNum));
+    assertFalse(com.google.j2objc.util.ReflectionUtil.isObjCNumber(decimalNum));
+    assertFalse(com.google.j2objc.util.ReflectionUtil.isObjCNumber("not a number"));
+    assertFalse(com.google.j2objc.util.ReflectionUtil.isObjCNumber(null));
+  }
+
+  public void testNumberHashMapCompatibility() {
+    java.util.HashMap<Number, String> map = new java.util.HashMap<>();
+
+    // Test with positive number (sign bit not set)
+    Object javaInt = Integer.valueOf(42);
+    Object objcInt = getNativeNumber(42);
+
+    map.put((Number) javaInt, "success");
+    assertEquals(1, map.size());
+    assertEquals("success", map.get(objcInt));
+
+    // Overwrite existing key (proves equals() and hashCode() consistency in map bucket resolution)
+    map.put((Number) objcInt, "success_reverse");
+    assertEquals(1, map.size());
+    assertEquals("success_reverse", map.get(javaInt));
+
+    // Test with negative number (sign bit set in the hash code)
+    map.clear();
+    Object javaIntMinus1 = Integer.valueOf(-1);
+    Object objcIntMinus1 = getNativeNumber(-1);
+
+    map.put((Number) javaIntMinus1, "success_minus1");
+    assertEquals(1, map.size());
+    assertEquals("success_minus1", map.get(objcIntMinus1));
+
+    // Overwrite existing key
+    map.put((Number) objcIntMinus1, "success_minus1_reverse");
+    assertEquals(1, map.size());
+    assertEquals("success_minus1_reverse", map.get(javaIntMinus1));
+  }
 }
