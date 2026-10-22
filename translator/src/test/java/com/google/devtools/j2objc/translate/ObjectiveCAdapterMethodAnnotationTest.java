@@ -1098,4 +1098,185 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "+ (MethodSwiftFoo * _Nullable)createWithBar:(id<MethodSwiftFoo_Bar> _Nullable)bar",
         "error:(NSError **)error NS_SWIFT_NAME(customCreate(bar:));");
   }
+
+  public void testThrowsWithArrayReturnType() throws IOException {
+    options.setNullability(true);
+    options.setNullMarked(true);
+    addSourceFile(
+        """
+        import com.google.j2kt.annotations.Throws;
+        import org.jspecify.annotations.NullMarked;
+
+        @NullMarked
+        public final class ArrayThrows {
+          @Throws
+          public String[] getStrings() {
+            return new String[0];
+          }
+
+          @Throws
+          public byte[] getBytes() {
+            return new byte[0];
+          }
+        }
+        """,
+        "ArrayThrows.java");
+
+    String testHeader = translateSourceFile("ArrayThrows", "ArrayThrows.h");
+    String testSource = getTranslatedFile("ArrayThrows.m");
+
+    assertNoWarnings();
+    assertNoErrors();
+
+    assertTranslatedLines(
+        testHeader,
+        "- (IOSObjectArray *)getStrings NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\");");
+    assertTranslatedLines(
+        testHeader,
+        "- (IOSObjectArray * _Nullable)getStringsAndReturnError:(NSError **)error;");
+    assertTranslatedLines(
+        testHeader,
+        "- (IOSByteArray *)getBytes NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\");");
+    assertTranslatedLines(
+        testHeader,
+        "- (IOSByteArray * _Nullable)getBytesAndReturnError:(NSError **)error;");
+
+    assertTranslatedLines(
+        testSource,
+        "- (IOSObjectArray *)getStringsAndReturnError:(NSError **)error {",
+        "@try {",
+        "return [self getStrings];",
+        "} @catch (NSException *e) {",
+        "if (error) { *error = JREErrorFromException(e); }",
+        "return nil;",
+        "}",
+        "}");
+    assertTranslatedLines(
+        testSource,
+        "- (IOSByteArray *)getBytesAndReturnError:(NSError **)error {",
+        "@try {",
+        "return [self getBytes];",
+        "} @catch (NSException *e) {",
+        "if (error) { *error = JREErrorFromException(e); }",
+        "return nil;",
+        "}",
+        "}");
+  }
+
+  public void testThrowsWithTypeVariableReturnType() throws IOException {
+    options.setNullability(true);
+    options.setNullMarked(true);
+    options.setAsObjCGenericDecl(true);
+    addSourceFile(
+        """
+        import com.google.j2kt.annotations.Throws;
+        import org.jspecify.annotations.NullMarked;
+
+        @NullMarked
+        public final class GenericThrows<T> {
+          @Throws
+          public T getValue(T defaultValue) {
+            return defaultValue;
+          }
+
+          @Throws
+          public <U> U getItem(U defaultItem) {
+            return defaultItem;
+          }
+        }
+        """,
+        "GenericThrows.java");
+
+    String testHeader = translateSourceFile("GenericThrows", "GenericThrows.h");
+    String testSource = getTranslatedFile("GenericThrows.m");
+
+    assertNoWarnings();
+    assertNoErrors();
+
+    assertTranslatedLines(
+        testHeader,
+        "- (T)getValueWithId:(T)defaultValue NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\");");
+    assertTranslatedLines(
+        testHeader,
+        "- (T _Nullable)getValueWithId:(T)defaultValue",
+        "error:(NSError **)error;");
+    assertTranslatedLines(
+        testHeader,
+        "- (id)getItemWithId:(id)defaultItem NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\");");
+    assertTranslatedLines(
+        testHeader,
+        "- (id _Nullable)getItemWithId:(id)defaultItem",
+        "error:(NSError **)error;");
+
+    assertTranslatedLines(
+        testSource,
+        "- (id)getValueWithId:(id)defaultValue",
+        "error:(NSError **)error {",
+        "@try {",
+        "return [self getValueWithId:defaultValue];",
+        "} @catch (NSException *e) {",
+        "if (error) { *error = JREErrorFromException(e); }",
+        "return nil;",
+        "}",
+        "}");
+    assertTranslatedLines(
+        testSource,
+        "- (id)getItemWithId:(id)defaultItem",
+        "error:(NSError **)error {",
+        "@try {",
+        "return [self getItemWithId:defaultItem];",
+        "} @catch (NSException *e) {",
+        "if (error) { *error = JREErrorFromException(e); }",
+        "return nil;",
+        "}",
+        "}");
+  }
+
+  public void testThrowsWithNativeCollectionReturnType() throws IOException {
+    options.setNullability(true);
+    options.setNullMarked(true);
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCAdapterMethod;
+        import com.google.j2objc.annotations.ObjectiveCAdapterMethod.Adaptation;
+        import java.util.ArrayList;
+        import java.util.List;
+        import org.jspecify.annotations.NullMarked;
+
+        @NullMarked
+        public final class CollectionThrows {
+          @ObjectiveCAdapterMethod(
+              selector = "stringArrayAndReturnError:",
+              adaptations = {
+                Adaptation.RETURN_LISTS_AS_NATIVE_ARRAYS,
+                Adaptation.EXCEPTIONS_AS_ERRORS
+              })
+          public List<String> getStrings() {
+            return new ArrayList<>();
+          }
+        }
+        """,
+        "CollectionThrows.java");
+
+    String testHeader = translateSourceFile("CollectionThrows", "CollectionThrows.h");
+    String testSource = getTranslatedFile("CollectionThrows.m");
+
+    assertNoWarnings();
+    assertNoErrors();
+
+    assertTranslatedLines(
+        testHeader,
+        "- (NSArray * _Nullable)stringArrayAndReturnError:(NSError **)error;");
+
+    assertTranslatedLines(
+        testSource,
+        "- (NSArray *)stringArrayAndReturnError:(NSError **)error {",
+        "@try {",
+        "return JREAdaptedArrayFromJavaList([self _getStrings]);",
+        "} @catch (NSException *e) {",
+        "if (error) { *error = JREErrorFromException(e); }",
+        "return nil;",
+        "}",
+        "}");
+  }
 }
