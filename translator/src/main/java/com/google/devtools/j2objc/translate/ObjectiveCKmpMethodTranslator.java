@@ -24,7 +24,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
-import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -43,6 +42,7 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.ThisExpression;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
@@ -55,6 +55,7 @@ import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.j2objc.annotations.ObjectiveCKmpMethod;
 import com.google.j2objc.annotations.SwiftName;
 import java.util.ArrayList;
@@ -219,20 +220,30 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
   }
 
   private class AdapterGenerator {
-    private final AbstractTypeDeclaration typeNode;
+    private final @Nullable AbstractTypeDeclaration typeNode;
     private final TypeElement typeElem;
-    private final Set<TypeElement> visitedTypes = new HashSet<>();
-    private final Map<String, ExecutablePair> allMethods = new LinkedHashMap<>();
-    private final Map<String, AnnotationMirror> annotatedSignatures = new LinkedHashMap<>();
+    private final ImmutableMap<String, ExecutablePair> allMethods;
+    private final ImmutableMap<String, AnnotationMirror> annotatedSignatures;
 
     private AdapterGenerator(AbstractTypeDeclaration node) {
-      typeNode = node;
-      typeElem = node.getTypeElement();
+      this(node, node.getTypeElement(), (DeclaredType) node.getTypeElement().asType());
     }
 
-    private AdapterGenerator(TypeElement typeElem) {
-      typeNode = null;
+    private AdapterGenerator(TypeElement typeElem, DeclaredType declaredType) {
+      this(null, typeElem, declaredType);
+    }
+
+    private AdapterGenerator(
+        @Nullable AbstractTypeDeclaration typeNode,
+        TypeElement typeElem,
+        DeclaredType declaredType) {
+      this.typeNode = typeNode;
       this.typeElem = typeElem;
+      Map<String, ExecutablePair> methods = new LinkedHashMap<>();
+      Map<String, AnnotationMirror> annotations = new LinkedHashMap<>();
+      collectMethods(declaredType, methods, annotations);
+      this.allMethods = ImmutableMap.copyOf(methods);
+      this.annotatedSignatures = ImmutableMap.copyOf(annotations);
     }
 
     private @Nullable AdapterGenerator getSupertypeAdapterGenerator(String signature) {
@@ -241,8 +252,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
         if (superElement == null) {
           continue;
         }
-        AdapterGenerator superGen = new AdapterGenerator(superElement);
-        superGen.collectMethods((DeclaredType) supertype);
+        AdapterGenerator superGen = new AdapterGenerator(superElement, (DeclaredType) supertype);
         if (superGen.annotatedSignatures.containsKey(signature)) {
           return superGen;
         }
@@ -251,8 +261,6 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     }
 
     private void visit() {
-      collectMethods((DeclaredType) typeElem.asType());
-
       boolean isInterface = typeElem.getKind().isInterface();
 
       for (Map.Entry<String, AnnotationMirror> entry : annotatedSignatures.entrySet()) {
@@ -315,16 +323,30 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       }
     }
 
-    private void collectMethods(DeclaredType type) {
-      if (TypeUtil.isNone(type)) {
-        return;
-      }
-      TypeElement element = TypeUtil.asTypeElement(type);
-      if (element == null || visitedTypes.contains(element)) {
-        return;
-      }
-      visitedTypes.add(element);
+    /**
+     * Traverses {@code type} and its supertypes to populate {@code allMethods} and {@code
+     * annotatedSignatures}.
+     */
+    private void collectMethods(
+        DeclaredType type,
+        Map<String, ExecutablePair> allMethods,
+        Map<String, AnnotationMirror> annotatedSignatures) {
+      visitTypeHierarchy(
+          type,
+          typeUtil,
+          new HashSet<>(),
+          declaredType -> collectMethodsFromType(declaredType, allMethods, annotatedSignatures));
+    }
 
+    /**
+     * Records methods declared on {@code type}, keeping the most specific implementation per
+     * override signature and the first {@link ObjectiveCKmpMethod} annotation encountered.
+     */
+    private boolean collectMethodsFromType(
+        DeclaredType type,
+        Map<String, ExecutablePair> allMethods,
+        Map<String, AnnotationMirror> annotatedSignatures) {
+      TypeElement element = TypeUtil.asTypeElement(type);
       for (ExecutableElement methodElem : ElementUtil.getExecutables(element)) {
         ExecutablePair method =
             new ExecutablePair(methodElem, typeUtil.asMemberOf(type, methodElem));
@@ -345,13 +367,10 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
           annotatedSignatures.put(signature, annotation);
         }
       }
-
-      for (TypeMirror supertype : typeUtil.directSupertypes(type)) {
-        collectMethods((DeclaredType) supertype);
-      }
+      return true;
     }
 
-    private boolean takesPrecedence(ExecutablePair a, ExecutablePair b) {
+    private static boolean takesPrecedence(ExecutablePair a, ExecutablePair b) {
       if (b == null) {
         return true;
       }
@@ -362,6 +381,44 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       boolean aIsClass = ElementUtil.getDeclaringClass(a.element()).getKind().isClass();
       boolean bIsClass = ElementUtil.getDeclaringClass(b.element()).getKind().isClass();
       return aIsClass && !bIsClass;
+    }
+
+    /** A visitor for types in a type hierarchy. */
+    @FunctionalInterface
+    private interface TypeHierarchyVisitor {
+      /**
+       * Visits a type in a type hierarchy.
+       *
+       * @param declaredType the parameterized {@link DeclaredType} as referenced in the hierarchy
+       *     (preserving type arguments for {@link TypeUtil#asMemberOf})
+       * @return {@code true} to continue visiting supertypes, or {@code false} to stop traversal
+       *     early
+       */
+      boolean visit(DeclaredType declaredType);
+    }
+
+    @CanIgnoreReturnValue
+    private static boolean visitTypeHierarchy(
+        DeclaredType type,
+        TypeUtil typeUtil,
+        Set<TypeElement> visited,
+        TypeHierarchyVisitor visitor) {
+      if (TypeUtil.isNone(type)) {
+        return true;
+      }
+      TypeElement element = TypeUtil.asTypeElement(type);
+      if (element == null || !visited.add(element)) {
+        return true;
+      }
+      if (!visitor.visit(type)) {
+        return false;
+      }
+      for (TypeMirror supertype : typeUtil.directSupertypes(type)) {
+        if (!visitTypeHierarchy((DeclaredType) supertype, typeUtil, visited, visitor)) {
+          return false;
+        }
+      }
+      return true;
     }
   }
 
@@ -382,6 +439,19 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       return;
     }
     new AdapterGenerator(node).visit();
+  }
+
+  private static @Nullable MethodDeclaration findMethodDeclaration(
+      @Nullable AbstractTypeDeclaration typeNode, ExecutableElement element) {
+    if (typeNode == null) {
+      return null;
+    }
+    for (MethodDeclaration methodDecl : TreeUtil.getMethodDeclarations(typeNode)) {
+      if (methodDecl.getExecutableElement().equals(element)) {
+        return methodDecl;
+      }
+    }
+    return null;
   }
 
   /** Context for processing a single method and generating its Objective-C adapter. */
@@ -632,34 +702,38 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       typeNode.addBodyDeclaration(adapterMethodDeclaration);
 
       // Now modify original method to call adapter
-      MethodInvocation adaptingMethodInvocation =
-          new MethodInvocation(new ExecutablePair(adapterMethodExecutable), null);
-      adaptingArguments.forEach(adaptingMethodInvocation::addArgument);
-
-      Block bodyBlock = new Block();
-      bodyBlock.addStatement(
-          createReturnStatement(adaptingMethodInvocation, originalMethodReturnType));
+      Block bodyBlock =
+          createAdaptedInvocationBlock(
+              adapterMethodExecutable, /* receiver= */ null, adaptingArguments);
 
       // Find the method declaration in typeNode and update it, or synthesize a bridge declaration
       // if the abstract class inherited the method without redeclaring it.
-      for (BodyDeclaration decl : typeNode.getBodyDeclarations()) {
-        if (decl instanceof MethodDeclaration md
-            && md.getExecutableElement().equals(originalMethodExecutable)) {
-          md.setBody(bodyBlock);
-          md.removeModifiers(ABSTRACT);
-          return;
-        }
+      MethodDeclaration md = findMethodDeclaration(typeNode, originalMethodExecutable);
+      if (md != null) {
+        md.setBody(bodyBlock);
+        md.removeModifiers(ABSTRACT);
+        return;
       }
       // Remove any abstract return-type-narrowing stub added earlier by AbstractMethodRewriter.
       typeNode
           .getBodyDeclarations()
           .removeIf(
               decl ->
-                  decl instanceof MethodDeclaration md
-                      && md.getExecutableElement() instanceof GeneratedExecutableElement gee
+                  decl instanceof MethodDeclaration methodDecl
+                      && methodDecl.getExecutableElement() instanceof GeneratedExecutableElement gee
                       && ElementUtil.isAbstract(gee)
                       && originalMethodExecutable.equals(gee.getOriginalElement()));
       typeNode.addBodyDeclaration(createBridgeMethodDeclaration(bodyBlock));
+    }
+
+    private Block createAdaptedInvocationBlock(
+        GeneratedExecutableElement targetMethod,
+        @Nullable Expression receiver,
+        List<Expression> arguments) {
+      MethodInvocation invocation =
+          new MethodInvocation(new ExecutablePair(targetMethod), receiver);
+      arguments.forEach(invocation::addArgument);
+      return new Block().addStatement(createReturnStatement(invocation, originalMethodReturnType));
     }
 
     /** Creates a concrete Java bridge method that delegates to the abstract KMP adapter stub. */
