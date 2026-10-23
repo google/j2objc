@@ -49,6 +49,7 @@ import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.List;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Rewrites switch constructs flattening expressions into multiple cases and rescopes statements.
@@ -163,6 +164,10 @@ public class SwitchConstructRewriter {
     @Override
     public void endVisit(SwitchStatement node) {
       if (hasPatternsOrGuards(node.getStatements())
+          // A switch on a selector whose type is not valid in a non-enhanced switch, e.g.
+          // `Object`, is an enhanced switch and needs to be rewritten even if all its case labels
+          // are constants, e.g. qualified enum constants.
+          || requiresEnhancedSwitch(node.getExpression().getTypeMirror())
           // Boxed primitive switches with a null case cannot be unboxed directly.
           || (node.hasNullCase() && typeUtil.isBoxedType(node.getExpression().getTypeMirror()))) {
         // The switch construct will be replaced by a nest of if statements followed by a switch
@@ -182,6 +187,25 @@ public class SwitchConstructRewriter {
         }
       }
       return false;
+    }
+
+    /**
+     * Returns true if a switch on {@code type} is an enhanced switch regardless of its cases, i.e.
+     * the type is not char, byte, short, int, Character, Byte, Short, Integer, String or an enum
+     * type (JLS 14.11.2).
+     */
+    private boolean requiresEnhancedSwitch(TypeMirror type) {
+      if (typeUtil.isString(type) || TypeUtil.isEnum(type)) {
+        return false;
+      }
+      TypeMirror primitiveType = type.getKind().isPrimitive() ? type : typeUtil.unboxedType(type);
+      if (primitiveType == null) {
+        return true;
+      }
+      return switch (primitiveType.getKind()) {
+        case CHAR, BYTE, SHORT, INT -> false;
+        default -> true;
+      };
     }
 
     /**

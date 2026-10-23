@@ -486,4 +486,71 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         }
         """);
   }
+
+  public void testObjectSwitchWithOnlyEnumConstants() throws IOException {
+    String source =
+        """
+        class Test {
+          enum Foo { A, B }
+          static int test(Object o) {
+            return switch (o) {
+              case Foo.A -> 1;
+              case Foo.B -> 2;
+              default -> 3;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        id tmp = nil_chk(o);
+        {
+          int32_t selector = 0;
+          if (tmp == (JreLoadEnum(Test_Foo, A))) selector = 1;
+          else if (tmp == (JreLoadEnum(Test_Foo, B))) selector = 2;
+          switch (selector) {
+            case 1:
+            return 1;
+            case 2:
+            return 2;
+            default:
+            return 3;
+          }
+        }
+        """);
+  }
+
+  public void testObjectSwitchWithOnlyEnumConstantsAndNullCase() throws IOException {
+    String source =
+        """
+        class Test {
+          enum Foo { A, B }
+          static int test(Object o) {
+            return switch (o) {
+              case Foo.A -> 1;
+              case null -> 2;
+              default -> 3;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t selector = 0;
+        if (o == (JreLoadEnum(Test_Foo, A))) selector = 1;
+        else if (o == nil) selector = 2;
+        switch (selector) {
+          case 1:
+          return 1;
+          case 2:
+          return 2;
+          default:
+          return 3;
+        }
+        """);
+  }
 }

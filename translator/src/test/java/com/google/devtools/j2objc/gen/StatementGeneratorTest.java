@@ -3436,16 +3436,21 @@ public class StatementGeneratorTest extends GenerationTest {
         - (void)goodEnumSwitch1WithCurrency:(id<Currency>)c {
           {
             id<Currency> tmp = nil_chk(c);
-            switch (tmp) {
-              case Coin_Enum_HEADS:
-              {
-                [(JreLoadStatic(JavaLangSystem, out)) printlnWithNSString:@"Heads"];
-                break;
-              }
-              case Coin_Enum_TAILS:
-              {
-                [(JreLoadStatic(JavaLangSystem, out)) printlnWithNSString:@"Tails"];
-                break;
+            {
+              int32_t selector = 0;
+              if (tmp == (JreLoadEnum(Coin, HEADS))) selector = 1;
+              else if (tmp == (JreLoadEnum(Coin, TAILS))) selector = 2;
+              switch (selector) {
+                case 1:
+                {
+                  [(JreLoadStatic(JavaLangSystem, out)) printlnWithNSString:@"Heads"];
+                  break;
+                }
+                case 2:
+                {
+                  [(JreLoadStatic(JavaLangSystem, out)) printlnWithNSString:@"Tails"];
+                  break;
+                }
               }
             }
           }
