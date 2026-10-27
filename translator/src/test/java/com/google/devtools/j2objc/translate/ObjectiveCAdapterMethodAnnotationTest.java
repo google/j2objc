@@ -1098,4 +1098,115 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "+ (MethodSwiftFoo * _Nullable)createWithBar:(id<MethodSwiftFoo_Bar> _Nullable)bar",
         "error:(NSError **)error NS_SWIFT_NAME(customCreate(bar:));");
   }
+
+  public void testThrowsWithNonNullTypeVariable_methodNullabilityOverridesTypeParameter()
+      throws IOException {
+    options.setNullability(true);
+    options.setAsObjCGenericDecl(true);
+    addSourceFile(
+        """
+        import com.google.j2kt.annotations.Throws;
+        import org.jspecify.annotations.NonNull;
+        import org.jspecify.annotations.Nullable;
+
+        public final class Box<@NonNull T> {
+          private final T value;
+
+          public Box(T value) {
+            this.value = value;
+          }
+
+          public T get() {
+            return value;
+          }
+
+          public @Nullable T peekOrNull() {
+            return null;
+          }
+
+          @Throws
+          public T getOrThrow() {
+            return value;
+          }
+        }
+        """,
+        "Box.java");
+
+    String testHeader = translateSourceFile("Box", "Box.h");
+    String testSource = getTranslatedFile("Box.m");
+
+    assertNoWarnings();
+    assertNoErrors();
+
+    // Unannotated method inherits _Nonnull from <@NonNull T>:
+    assertTranslatedLines(testHeader, "- (T _Nonnull)get;");
+    // Explicit @Nullable on the method overrides <@NonNull T>:
+    assertTranslatedLines(testHeader, "- (T _Nullable)peekOrNull;");
+    // Original @Throws method inherits _Nonnull from <@NonNull T>, while its
+    // error: adapter method's @Nullable overrides <@NonNull T>:
+    assertTranslatedLines(
+        testHeader,
+        "- (T _Nonnull)getOrThrow NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\");");
+    assertTranslatedLines(
+        testHeader, "- (T _Nullable)getOrThrowAndReturnError:(NSError **)error;");
+
+    assertTranslatedLines(
+        testSource,
+        "- (id)getOrThrowAndReturnError:(NSError **)error {",
+        "@try {",
+        "return [self getOrThrow];",
+        "} @catch (NSException *e) {",
+        "if (error) { *error = JREErrorFromException(e); }",
+        "return nil;",
+        "}",
+        "}");
+  }
+
+  public void testThrowsWithNativeCollectionReturnType() throws IOException {
+    options.setNullability(true);
+    options.setNullMarked(true);
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCAdapterMethod;
+        import com.google.j2objc.annotations.ObjectiveCAdapterMethod.Adaptation;
+        import java.util.ArrayList;
+        import java.util.List;
+        import org.jspecify.annotations.NullMarked;
+
+        @NullMarked
+        public final class CollectionThrows {
+          @ObjectiveCAdapterMethod(
+              selector = "stringArrayAndReturnError:",
+              adaptations = {
+                Adaptation.RETURN_LISTS_AS_NATIVE_ARRAYS,
+                Adaptation.EXCEPTIONS_AS_ERRORS
+              })
+          public List<String> getStrings() {
+            return new ArrayList<>();
+          }
+        }
+        """,
+        "CollectionThrows.java");
+
+    String testHeader = translateSourceFile("CollectionThrows", "CollectionThrows.h");
+    String testSource = getTranslatedFile("CollectionThrows.m");
+
+    assertNoWarnings();
+    assertNoErrors();
+
+    assertTranslatedLines(
+        testHeader,
+        "- (NSArray * _Nullable)stringArrayAndReturnError:(NSError **)error;");
+
+    assertTranslatedLines(
+        testSource,
+        "- (NSArray *)stringArrayAndReturnError:(NSError **)error {",
+        "@try {",
+        "return JREAdaptedArrayFromJavaList([self _getStrings]);",
+        "} @catch (NSException *e) {",
+        "if (error) { *error = JREErrorFromException(e); }",
+        "return nil;",
+        "}",
+        "}");
+  }
 }

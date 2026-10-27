@@ -101,7 +101,9 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
     boolean hasObjectReturnType() {
       return TypeUtil.isDeclaredType(adapterMethodReturnType)
           || TypeUtil.isInterface(adapterMethodReturnType)
-          || TypeUtil.isEnum(adapterMethodReturnType);
+          || TypeUtil.isEnum(adapterMethodReturnType)
+          || TypeUtil.isTypeVariable(adapterMethodReturnType)
+          || adapterMethodReturnType instanceof NativeCollectionType;
     }
   }
 

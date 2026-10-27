@@ -511,7 +511,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     }
     String methodReturnNullability = nullability(element);
     String returnNullability =
-        returnTypeNullability.isEmpty() ? methodReturnNullability : returnTypeNullability;
+        methodReturnNullability.isEmpty() ? returnTypeNullability : methodReturnNullability;
     sb.append(
         UnicodeUtils.format(
             "%c (%s%s%s)",
