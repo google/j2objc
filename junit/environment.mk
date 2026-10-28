@@ -36,7 +36,7 @@ RUNNER_LIB_DIST = $(ARCH_LIB_DIR)/libjunit_runner.a
 
 # The -fobjc flags match XCode (a link fails without them because of
 # missing symbols of the form OBJC_CLASS_$_[classname]).
-OBJCFLAGS := -ObjC $(CC_WARNINGS) \
+OBJCFLAGS := -ObjC $(CC_WARNINGS) -fobjc-weak \
   -fobjc-abi-version=2 -fobjc-legacy-dispatch $(DEBUGFLAGS) \
   -I/System/Library/Frameworks/ExceptionHandling.framework/Headers
 
@@ -47,5 +47,5 @@ ifeq ("$(strip $(CLANG_ENABLE_OBJC_ARC))", "YES")
 J2OBJC := $(J2OBJC) -use-arc
 OBJCFLAGS := $(OBJCFLAGS) -fobjc-arc -fobjc-arc-exceptions\
  -Wno-arc-bridge-casts-disallowed-in-nonarc \
- -Xclang -fobjc-runtime-has-weak
+ -Xclang
 endif
