@@ -815,15 +815,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
 
     if (!printPrivateDeclarations()) {
-      if (ElementUtil.hasQualifiedNamedAnnotation(
-          methodElement, "com.google.j2kt.annotations.Throws")) {
-        print(" NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\")");
-      } else {
-        String swiftName = nameTable.getSwiftMethodNameFromAnnotation(m);
-        if (swiftName != null) {
-          print(" NS_SWIFT_NAME(" + swiftName + ")");
-        }
-      }
+      printSwiftMethodAttribute(m);
     }
     if (needsDeprecatedAttribute(m.getAnnotations())) {
       print(" " + DEPRECATED_ATTRIBUTE);
@@ -840,6 +832,19 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   @Override
   protected void printMethodDeclaration(MethodDeclaration m) {
     printMethodDeclaration(m, false, false);
+  }
+
+  private void printSwiftMethodAttribute(MethodDeclaration m) {
+    if (!isInterfaceType()
+        && ElementUtil.hasQualifiedNamedAnnotation(
+            m.getExecutableElement(), "com.google.j2kt.annotations.Throws")) {
+      print(" NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\")");
+      return;
+    }
+    String swiftName = nameTable.getSwiftMethodNameFromAnnotation(m);
+    if (swiftName != null) {
+      print(" NS_SWIFT_NAME(" + swiftName + ")");
+    }
   }
 
   private boolean needsDeprecatedAttribute(List<Annotation> annotations) {
