@@ -96,7 +96,8 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
   }
 
   printer->Outdent();
-  printer->Print("};\n\n");
+  printer->Print("} NS_SWIFT_NAME($classname$Enum);\n\n", "classname",
+                 ClassName(descriptor_));
 
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print("typedef $ordinalenumname$ KNP$ordinalenumname$;\n",

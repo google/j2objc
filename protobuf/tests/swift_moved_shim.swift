@@ -11,6 +11,6 @@ func movedShimColor() -> ComGoogleJ2objctestMovedColor {
   return ComGoogleJ2objctestMovedColor_get_RED()
 }
 
-func movedShimColorOrdinal() -> ComGoogleJ2objctestMovedColor_Enum {
+func movedShimColorOrdinal() -> ComGoogleJ2objctestMovedColorEnum {
   return .red
 }

@@ -156,7 +156,8 @@ void OneofGenerator::GenerateHeader(io::Printer* printer) {
       SimpleItoa(descriptor_->field_count()));
 
   printer->Outdent();
-  printer->Print("};\n");
+  printer->Print("} NS_SWIFT_NAME($classname$Enum);\n", "classname",
+                 CaseClassName(descriptor_));
 
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
