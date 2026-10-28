@@ -12,6 +12,7 @@ JAVA_TESTS = \
   ByteStringTest.java \
   CompatibilityTest.java \
   EnumsTest.java \
+  LeakTest.java \
   MapsTest.java \
   MessagesTest.java \
   OneofTest.java \
