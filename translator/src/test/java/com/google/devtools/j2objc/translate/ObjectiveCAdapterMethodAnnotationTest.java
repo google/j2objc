@@ -1209,4 +1209,39 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "}",
         "}");
   }
+
+  public void testAdapterMethodSelectorDeduplicatedPerType() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCAdapterMethod;
+        import com.google.j2objc.annotations.ObjectiveCAdapterMethod.Adaptation;
+
+        public class MultipleTypesSameSelector {
+          public static class First {
+            @ObjectiveCAdapterMethod(
+                selector = "doSomethingAndReturnError:",
+                adaptations = {Adaptation.EXCEPTIONS_AS_ERRORS})
+            public void doSomething() {}
+          }
+
+          public static class Second {
+            @ObjectiveCAdapterMethod(
+                selector = "doSomethingAndReturnError:",
+                adaptations = {Adaptation.EXCEPTIONS_AS_ERRORS})
+            public void doSomething() {}
+          }
+        }
+        """,
+        "MultipleTypesSameSelector.java");
+
+    String testHeader =
+        translateSourceFile("MultipleTypesSameSelector", "MultipleTypesSameSelector.h");
+    String testSource = getTranslatedFile("MultipleTypesSameSelector.m");
+
+    assertNoWarnings();
+    assertNoErrors();
+
+    assertOccurrences(testHeader, "- (BOOL)doSomethingAndReturnError:(NSError **)error;", 2);
+    assertOccurrences(testSource, "- (BOOL)doSomethingAndReturnError:(NSError **)error {", 2);
+  }
 }

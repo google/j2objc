@@ -53,8 +53,11 @@ import com.google.j2objc.annotations.ObjectiveCAdapterMethod.Adaptation;
 import com.google.j2objc.annotations.ObjectiveCAdapterProtocol;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.lang.model.element.AnnotationMirror;
@@ -70,7 +73,7 @@ import org.jspecify.annotations.Nullable;
 /** Implements the ObjectiveCAdapterMethod annotation. */
 public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
 
-  private final List<String> adapterMethodSelectors = new ArrayList<>();
+  private final Map<TypeElement, Set<String>> adapterMethodSelectorsByType = new HashMap<>();
 
   public ObjectiveCAdapterMethodAnnotation(CompilationUnit unit) {
     super(unit);
@@ -546,12 +549,14 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
       return;
     }
 
-    // Check if the adapter method has already been added.
+    // Check if the adapter method has already been added to this type.
     String adapterSelector = adapterSelectorForMethod(methodExecutable);
-    if (adapterMethodSelectors.contains(adapterSelector)) {
+    Set<String> selectors =
+        adapterMethodSelectorsByType.computeIfAbsent(
+            typeDeclaration.getTypeElement(), k -> new HashSet<>());
+    if (!selectors.add(adapterSelector)) {
       return;
     }
-    adapterMethodSelectors.add(adapterSelector);
 
     List<VariableElement> configParameters = new ArrayList<>();
     List<Expression> configArguments = new ArrayList<>();
