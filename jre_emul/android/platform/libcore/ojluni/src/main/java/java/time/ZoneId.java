@@ -61,6 +61,7 @@
  */
 package java.time;
 
+import com.google.j2objc.annotations.GenerateObjCCompanion;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.InvalidObjectException;
@@ -170,6 +171,7 @@ import static java.util.Map.entry;
  *
  * @since 1.8
  */
+@GenerateObjCCompanion
 public abstract class ZoneId implements Serializable {
 
     /**
