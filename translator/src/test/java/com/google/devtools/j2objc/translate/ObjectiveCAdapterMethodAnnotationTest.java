@@ -1244,4 +1244,37 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
     assertOccurrences(testHeader, "- (BOOL)doSomethingAndReturnError:(NSError **)error;", 2);
     assertOccurrences(testSource, "- (BOOL)doSomethingAndReturnError:(NSError **)error {", 2);
   }
+
+  public void testThrowsOnInterfaceMethod() throws IOException {
+    options.setNullability(true);
+    options.setNullMarked(true);
+    String header =
+        translateSourceFile(
+            """
+            import com.google.j2kt.annotations.Throws;
+            import com.google.j2objc.annotations.SwiftName;
+            import org.jspecify.annotations.NullMarked;
+
+            @NullMarked
+            @SwiftName
+            public interface ThrowingService {
+              @Throws
+              void performAction();
+
+              @Throws
+              String fetchResult(String input);
+            }
+            """,
+            "ThrowingService",
+            "ThrowingService.h");
+
+    assertNoWarnings();
+    assertNoErrors();
+    assertTranslatedLines(header, "- (void)performAction NS_SWIFT_NAME(performAction());");
+    assertTranslatedLines(
+        header,
+        "- (NSString *)fetchResultWithNSString:(NSString *)input"
+            + " NS_SWIFT_NAME(fetchResult(input:));");
+    assertNotInTranslation(header, "NS_SWIFT_UNAVAILABLE");
+  }
 }
