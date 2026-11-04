@@ -20,8 +20,13 @@ import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.j2objc.annotations.ObjectiveCName;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.util.ElementFilter;
 
 /**
  * UnitTests for the {@link ElementUtil} class.
@@ -134,5 +139,61 @@ public class ElementUtilTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { @javax.annotation.Nullable void foo() {} }", "Test", "Test.m");
     assertInTranslation(translation, "- (void)foo"); // not (void _Nullable)foo
+  }
+
+  private static final String NULLABILITY_SOURCE =
+      """
+      import java.util.List;
+      import org.jspecify.annotations.Nullable;
+
+      public class %s<T> {
+        public class Inner<U> {}
+
+        public List<@Nullable String> listOfNullable;
+        public @Nullable List<String> nullableList;
+        public List<? extends @Nullable String> wildcardOfNullable;
+        public @Nullable String[] arrayOfNullable;
+        public String @Nullable [] nullableArray;
+        public @Nullable %<s<String>.Inner<Integer> enclosingNullable;
+        public %<s<@Nullable String>.Inner<Integer> outerArgNullable;
+        public %<s<String>.@Nullable Inner<Integer> innerNullable;
+
+        public <V> void method(
+            @Nullable V nullableTypeVar, List<@Nullable V> listOfNullableTypeVar) {}
+      }
+      """;
+
+  public void testHasNullableAnnotationOnlyConsidersTopLevelType_source() throws IOException {
+    CompilationUnit unit =
+        translateType("FromSource", String.format(NULLABILITY_SOURCE, "FromSource"));
+    assertTopLevelNullability(unit.getTypes().get(0).getTypeElement());
+  }
+
+  public void testHasNullableAnnotationOnlyConsidersTopLevelType_classFile() throws IOException {
+    createClassFile("FromClassFile", String.format(NULLABILITY_SOURCE, "FromClassFile"));
+    CompilationUnit unit = translateType("Client", "class Client { FromClassFile<String> ref; }");
+    assertTopLevelNullability(unit.getEnv().elementUtil().getTypeElement("FromClassFile"));
+  }
+
+  private static void assertTopLevelNullability(TypeElement type) {
+    Map<String, VariableElement> vars = new HashMap<>();
+    for (VariableElement field : ElementFilter.fieldsIn(type.getEnclosedElements())) {
+      vars.put(field.getSimpleName().toString(), field);
+    }
+    for (ExecutableElement method : ElementFilter.methodsIn(type.getEnclosedElements())) {
+      for (VariableElement param : method.getParameters()) {
+        vars.put(param.getSimpleName().toString(), param);
+      }
+    }
+    assertFalse(ElementUtil.hasNullableAnnotation(vars.get("listOfNullable")));
+    assertTrue(ElementUtil.hasNullableAnnotation(vars.get("nullableList")));
+    assertFalse(ElementUtil.hasNullableAnnotation(vars.get("wildcardOfNullable")));
+    assertFalse(ElementUtil.hasNullableAnnotation(vars.get("arrayOfNullable")));
+    assertTrue(ElementUtil.hasNullableAnnotation(vars.get("nullableArray")));
+    assertFalse(ElementUtil.hasNullableAnnotation(vars.get("enclosingNullable")));
+    assertFalse(ElementUtil.hasNullableAnnotation(vars.get("outerArgNullable")));
+    assertTrue(ElementUtil.hasNullableAnnotation(vars.get("innerNullable")));
+    assertTrue(ElementUtil.hasNullableAnnotation(vars.get("nullableTypeVar")));
+    assertFalse(ElementUtil.hasNullableAnnotation(vars.get("listOfNullableTypeVar")));
   }
 }

@@ -315,4 +315,90 @@ public class RecordExpanderTest extends GenerationTest {
          && JavaUtilObjects_equalsWithId_withId_(other->l_, l_);
         """);
   }
+
+  public void testRecordComponentNullability() throws IOException {
+    options.setNullability(true);
+    options.setNullMarked(true);
+    addSourceFile(
+        """
+        import org.jspecify.annotations.NullMarked;
+        import org.jspecify.annotations.Nullable;
+        @NullMarked
+        public interface Action<T extends @Nullable Object> {}
+        """,
+        "Action.java");
+    String translation =
+        translateSourceFile(
+            """
+            import java.util.List;
+            import org.jspecify.annotations.NullMarked;
+            import org.jspecify.annotations.Nullable;
+            @NullMarked
+            public record Holder(
+                List<@Nullable String> items,
+                Action<@Nullable Void> innerNullable,
+                @Nullable Action<String> outerNullable,
+                @Nullable String[] arrayOfNullable,
+                String @Nullable [] nullableArray) {}
+            """,
+            "Holder",
+            "Holder.h");
+
+    assertInTranslation(
+        translation, "@property (readonly, nonatomic, strong) id<JavaUtilList> items;");
+    assertInTranslation(
+        translation, "@property (readonly, nonatomic, strong) id<Action> innerNullable;");
+    assertInTranslation(
+        translation, "@property (readonly, nonatomic, nullable, strong) id<Action> outerNullable;");
+    assertInTranslation(
+        translation, "@property (readonly, nonatomic, strong) IOSObjectArray *arrayOfNullable;");
+    assertInTranslation(
+        translation,
+        "@property (readonly, nonatomic, nullable, strong) IOSObjectArray *nullableArray;");
+    assertInTranslation(translation, "- (id<Action>)innerNullable;");
+    assertInTranslation(translation, "- (id<Action> _Nullable)outerNullable;");
+    assertTranslatedLines(
+        translation,
+        "- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)items",
+        "withAction:(id<Action>)innerNullable",
+        "withAction:(id<Action> _Nullable)outerNullable",
+        "withNSStringArray:(IOSObjectArray *)arrayOfNullable",
+        "withNSStringArray:(IOSObjectArray * _Nullable)nullableArray;");
+  }
+
+  public void testRecordComponentNullabilityWithObjCGenerics() throws IOException {
+    options.setNullability(true);
+    options.setNullMarked(true);
+    options.setAsObjCGenericDecl(true);
+    addSourceFile(
+        """
+        import org.jspecify.annotations.NullMarked;
+        import org.jspecify.annotations.Nullable;
+        @NullMarked
+        public class Box<T extends @Nullable Object> {}
+        """,
+        "Box.java");
+    String translation =
+        translateSourceFile(
+            """
+            import org.jspecify.annotations.NullMarked;
+            import org.jspecify.annotations.Nullable;
+            @NullMarked
+            public record BoxRecord(
+                Box<@Nullable String> innerNullable, @Nullable Box<String> outerNullable) {}
+            """,
+            "BoxRecord",
+            "BoxRecord.h");
+
+    assertInTranslation(
+        translation, "@property (readonly, nonatomic, strong) Box *innerNullable;");
+    assertInTranslation(
+        translation, "@property (readonly, nonatomic, nullable, strong) Box *outerNullable;");
+    assertInTranslation(translation, "- (Box<NSString *> *)innerNullable;");
+    assertInTranslation(translation, "- (Box<NSString *> * _Nullable)outerNullable;");
+    assertTranslatedLines(
+        translation,
+        "- (instancetype)initWithBox:(Box<NSString *> *)innerNullable",
+        "withBox:(Box<NSString *> * _Nullable)outerNullable;");
+  }
 }
