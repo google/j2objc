@@ -315,4 +315,22 @@ public class RecordExpanderTest extends GenerationTest {
          && JavaUtilObjects_equalsWithId_withId_(other->l_, l_);
         """);
   }
+
+  public void testRecordComponentPropertiesPreserveObjectiveCGenerics() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    addSourceFile("public class Box<T> {}", "Box.java");
+    String translation =
+        translateSourceFile(
+            """
+            public record Container<V>(Box<String> stringBox, V value) {}
+            """,
+            "Container",
+            "Container.h");
+    assertInTranslation(translation, "@interface Container<V> : JavaLangRecord");
+    assertInTranslation(
+        translation, "@property (readonly, nonatomic, strong) Box<NSString *> *stringBox;");
+    assertInTranslation(translation, "@property (readonly, nonatomic, strong) V value;");
+    assertInTranslation(translation, "- (Box<NSString *> *)stringBox;");
+    assertInTranslation(translation, "- (V)value;");
+  }
 }

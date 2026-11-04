@@ -53,7 +53,6 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.NestingKind;
 import javax.lang.model.element.PackageElement;
@@ -942,8 +941,8 @@ public class NameTable {
     }
 
     Element enclosingElement = typeParamElement.getEnclosingElement();
-    // Skip method type parameters.
-    if (enclosingElement.getKind() != ElementKind.CLASS) {
+    // Skip method and interface type parameters.
+    if (!enclosingElement.getKind().isClass()) {
       return false;
     }
 
