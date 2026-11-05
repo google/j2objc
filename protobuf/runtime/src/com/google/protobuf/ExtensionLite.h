@@ -57,6 +57,7 @@ struct CGPFieldData;
 @end
 
 typedef ComGoogleProtobufExtensionLite CGPExtensionLite;
+typedef ComGoogleProtobufExtensionLite KNPComGoogleProtobufExtensionLite;
 
 CF_EXTERN_C_BEGIN
 void ComGoogleProtobufExtensionLite_initWithFieldData_(CGPExtensionLite *self,

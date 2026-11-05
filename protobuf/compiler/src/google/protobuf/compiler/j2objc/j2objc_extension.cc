@@ -80,6 +80,25 @@ void ExtensionGenerator::GenerateMembersHeader(io::Printer* printer) const {
       ContainingClassName(descriptor_));
 }
 
+void ExtensionGenerator::GenerateCompanionHeader(io::Printer* printer) const {
+  printer->Print(
+      "@property (nonnull, readonly) "
+      "ComGoogleProtobufGeneratedMessage_GeneratedExtension "
+      "*$property_name$;\n",
+      "property_name", PropertyName(descriptor_));
+}
+
+void ExtensionGenerator::GenerateCompanionSource(io::Printer* printer) const {
+  printer->Print(
+      "+ (nonnull ComGoogleProtobufGeneratedMessage_GeneratedExtension *)"
+      "$property_name$ {\n"
+      "  return $classname$_$name$;\n"
+      "}\n",
+      "property_name", PropertyName(descriptor_), "classname",
+      ContainingClassName(descriptor_), "name",
+      UnderscoresToCamelCase(descriptor_));
+}
+
 void ExtensionGenerator::GenerateSourceDefinition(io::Printer* printer) const {
   printer->Print(
       "ComGoogleProtobufGeneratedMessage_GeneratedExtension"
