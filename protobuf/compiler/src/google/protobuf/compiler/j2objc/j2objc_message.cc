@@ -224,7 +224,13 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
         "- (nonnull $classname$ *)parseFromWithComGoogleProtobufByteString:"
         "(nonnull ComGoogleProtobufByteString *)data"
         " withComGoogleProtobufExtensionRegistryLite:(nullable"
-        " ComGoogleProtobufExtensionRegistryLite *)registry;\n"
+        " ComGoogleProtobufExtensionRegistryLite *)registry;\n",
+        "classname", ClassName(descriptor_));
+    for (int i = 0; i < descriptor_->extension_count(); i++) {
+      ExtensionGenerator(descriptor_->extension(i))
+          .GenerateCompanionHeader(printer);
+    }
+    printer->Print(
         "@end\n\n"
         "\n"
         "// in j2objc_message.cc \n"
@@ -425,6 +431,10 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
         "  return (id<$classname$CompanionProtocol>) [self class];\n"
         "}\n",
         "classname", ClassName(descriptor_));
+    for (int i = 0; i < descriptor_->extension_count(); i++) {
+      ExtensionGenerator(descriptor_->extension(i))
+          .GenerateCompanionSource(printer);
+    }
     for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
       printer->Print(
           "@dynamic $camelcase_name$Case;\n", "camelcase_name",
