@@ -1149,6 +1149,44 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """,
         "ConcreteClassInherits.java");
 
+    String interfaceHeader = translateSourceFile("InterfaceWithDefault", "InterfaceWithDefault.h");
+    assertInTranslation(
+        interfaceHeader,
+        """
+        @protocol InterfaceWithDefault < JavaObject >
+
+        - (NSArray<NSString *> *)getItemsAsNsArray;
+
+        #if !defined(__swift__)
+        @optional
+        #endif
+
+        - (ComGoogleCommonCollectImmutableList<NSString *> *)getItems;
+
+        @end
+        """);
+    assertInTranslation(
+        interfaceHeader,
+        "FOUNDATION_EXPORT ComGoogleCommonCollectImmutableList *"
+            + "InterfaceWithDefault_getItems_dispatch(id<InterfaceWithDefault> self);");
+
+    String interfaceImpl = translateSourceFile("InterfaceWithDefault", "InterfaceWithDefault.m");
+    assertInTranslation(
+        interfaceImpl,
+        """
+        ComGoogleCommonCollectImmutableList *InterfaceWithDefault_getItems_dispatch(id<InterfaceWithDefault> self) {
+          if ([self respondsToSelector:@selector(getItems)]) {
+            return [self getItems];
+          }
+          else if ([self respondsToSelector:@selector(getItemsAsNsArray)]) {
+            return [ImmutableListAdapter toImmutableListWithId:[self getItemsAsNsArray]];
+          }
+          else {
+            return InterfaceWithDefault_getItems(self);
+          }
+        }
+        """);
+
     // Translate ConcreteClassOverrides and verify it generates getItems adapter
     String overridesHeader =
         translateSourceFile("ConcreteClassOverrides", "ConcreteClassOverrides.h");
@@ -2993,5 +3031,52 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
     assertInTranslation(
         interfaceHeader,
         "- (void)setItems:(NSArray<NSString *> *)items NS_SWIFT_NAME(set(items:));");
+  }
+
+  public void testInterfaceDefaultMethodCallSiteRewriting() throws IOException {
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ImmutableListAdapter {
+          public static native Object fromImmutableList(ImmutableList<String> list) /*-[ return nil; ]-*/;
+          public static native ImmutableList<String> toImmutableList(Object list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "ImmutableListAdapter.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public interface InterfaceWithDefault {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          default ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "InterfaceWithDefault.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class DefaultCaller {
+          public static ImmutableList<String> callGetItems(InterfaceWithDefault instance) {
+            return instance.getItems();
+          }
+        }
+        """,
+        "DefaultCaller.java");
+
+    String callerImpl = translateSourceFile("DefaultCaller", "DefaultCaller.m");
+    assertInTranslation(
+        callerImpl,
+        """
+        ComGoogleCommonCollectImmutableList *DefaultCaller_callGetItemsWithInterfaceWithDefault_(id<InterfaceWithDefault> instance) {
+          DefaultCaller_initialize();
+          return InterfaceWithDefault_getItems_dispatch((id<InterfaceWithDefault>) nil_chk(instance));
+        }
+        """);
   }
 }

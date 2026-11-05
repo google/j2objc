@@ -514,9 +514,17 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
 
   /** Creates the function element for the static interface dispatch helper. */
   private FunctionElement createInterfaceDispatchElement(ExecutableElement method) {
+    return createInterfaceFunctionElement(getInterfaceDispatchName(method), method);
+  }
+
+  private FunctionElement createDefaultMethodFunctionElement(ExecutableElement method) {
+    return createInterfaceFunctionElement(nameTable.getFullFunctionName(method), method);
+  }
+
+  private FunctionElement createInterfaceFunctionElement(
+      String functionName, ExecutableElement method) {
     TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
-    return new FunctionElement(
-            getInterfaceDispatchName(method), method.getReturnType(), declaringClass)
+    return new FunctionElement(functionName, method.getReturnType(), declaringClass)
         .addParameters(declaringClass.asType())
         .addParameters(ElementUtil.asTypes(method.getParameters()));
   }
@@ -826,7 +834,10 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       // 2. Generate the static C dispatch helper function that checks respondsToSelector:
       // at runtime to dispatch to either the JVM selector or the adapted Objective-C selector.
       typeNode.addBodyDeclaration(
-          generateInterfaceDispatchHelper(adapterMethodExecutable, mapping.adaptingArguments()));
+          generateInterfaceDispatchHelper(
+              adapterMethodExecutable,
+              mapping.adaptingArguments(),
+              ElementUtil.isDefault(originalMethodExecutable)));
     }
 
     private void generateAbstractInstanceMethodDeclaration(TypeMirror adapterReturnType) {
@@ -906,9 +917,16 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
      * <p>The helper checks {@code [self respondsToSelector:]} on the unadapted selector first. If
      * implemented, it dispatches directly; otherwise, it adapts arguments and invokes the adapted
      * selector.
+     *
+     * <p>When {@code isDefaultMethod} is true, a 3-way fallback is generated: if the receiver
+     * implements neither the unadapted nor the adapted selector (e.g. a native Objective-C class
+     * that inherits the protocol default method without overriding it), the helper falls back to
+     * invoking the interface's default method implementation function.
      */
     private FunctionDeclaration generateInterfaceDispatchHelper(
-        GeneratedExecutableElement adapterMethodExecutable, List<Expression> adaptingArguments) {
+        GeneratedExecutableElement adapterMethodExecutable,
+        List<Expression> adaptingArguments,
+        boolean isDefaultMethod) {
       TypeElement declaringClass = ElementUtil.getDeclaringClass(originalMethodExecutable);
       // 1. Build the static C function declaration with `self` as the first parameter.
       // Example:
@@ -946,13 +964,19 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
           createAdaptedInvocationBlock(
               adapterMethodExecutable, new SimpleName(selfParam), adaptingArguments);
 
-      // 4. Runtime check routing between direct invocation and adapted fallback:
+      // 4. Runtime check routing between direct invocation and fallback:
       //   if ([self
       // respondsToSelector:@selector(setItemsWithComGoogleCommonCollectImmutableList:)]) {
       //     [self setItemsWithComGoogleCommonCollectImmutableList:items];
+      //   } else if (isDefaultMethod && ![self respondsToSelector:@selector(setItems:)]) {
+      //     Interface_setItems(self, items); // default method implementation
       //   } else {
       //     [self setItems:(NSArray *) [ImmutableListAdapter fromImmutableListWith...:items]];
       //   }
+      Statement elseStatement =
+          isDefaultMethod
+              ? createDefaultMethodFallback(selfName, selfParam, adaptedBlock)
+              : adaptedBlock;
       String originalSelector = nameTable.getMethodSelector(originalMethodExecutable);
       IfStatement ifStatement =
           new IfStatement()
@@ -961,9 +985,28 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
                       "[" + selfName + " respondsToSelector:@selector(" + originalSelector + ")]",
                       typeUtil.getBoolean()))
               .setThenStatement(createReturnOrExpressionBlock(directInvocation))
-              .setElseStatement(adaptedBlock);
+              .setElseStatement(elseStatement);
       functionDecl.setBody(new Block().addStatement(ifStatement));
       return functionDecl;
+    }
+
+    private Statement createDefaultMethodFallback(
+        String selfName, VariableElement selfParam, Block adaptedBlock) {
+      FunctionElement defaultFuncElement =
+          createDefaultMethodFunctionElement(originalMethodExecutable);
+      FunctionInvocation defaultInvocation =
+          new FunctionInvocation(defaultFuncElement, originalMethodReturnType);
+      defaultInvocation.addArgument(new SimpleName(selfParam));
+      for (VariableElement param : originalMethodParameters) {
+        defaultInvocation.addArgument(new SimpleName(param));
+      }
+      return new IfStatement()
+          .setExpression(
+              new NativeExpression(
+                  "[" + selfName + " respondsToSelector:@selector(" + selector + ")]",
+                  typeUtil.getBoolean()))
+          .setThenStatement(adaptedBlock)
+          .setElseStatement(createReturnOrExpressionBlock(defaultInvocation));
     }
 
     /** Wraps {@code expression} in a return statement, or an expression statement if void. */
