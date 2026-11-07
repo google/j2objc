@@ -422,4 +422,24 @@ public class GenerateObjectiveCGenericsTest extends GenerationTest {
     assertInTranslation(testHeader, "@interface ComGoogleProtobufTest : NSObject");
     assertInTranslation(testHeader, "- (id)getWithId:(id)input;");
   }
+
+  public void testInstancePropertiesPreserveObjectiveCGenerics() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    addSourceFile("public class Box<T> {}", "Box.java");
+    addSourceFile("public class Item {}", "Item.java");
+    addSourceFile(
+        "import com.google.j2objc.annotations.Property;"
+            + "public class Test<V> {"
+            + "  @Property(\"readonly, nonatomic\") private final Box<Item> box = null;"
+            + "  @Property(\"readonly, nonatomic\") private final V value = null;"
+            + "}",
+        "Test.java");
+
+    String testHeader = translateSourceFile("Test", "Test.h");
+
+    assertInTranslation(testHeader, "@class Item;");
+    assertInTranslation(testHeader, "@interface Test<V> : NSObject");
+    assertInTranslation(testHeader, "@property (readonly, nonatomic, strong) Box<Item *> *box;");
+    assertInTranslation(testHeader, "@property (readonly, nonatomic, strong) V value;");
+  }
 }

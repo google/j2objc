@@ -35,6 +35,7 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.GenerateObjCCompanion;
+import com.google.j2objc.annotations.Property;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -144,18 +145,32 @@ public class HeaderImportCollector extends UnitTreeVisitor {
 
   @Override
   public boolean visit(FieldDeclaration node) {
-    if (filter.include(node) && includeInnerTypes) {
+    if ((filter.include(node) || (filter.includePublic && isPublicInstanceProperty(node)))
+        && includeInnerTypes) {
       TypeMirror type = node.getTypeMirror();
       addForwardDecl(type);
-      if (isCompanionProperty(node)) {
-        // Companion properties keep Objective-C generics, so their type arguments need forward
-        // declarations too.
+      if (isInstanceProperty(node) || isCompanionProperty(node)) {
+        // Instance and companion properties keep Objective-C generics, so their type arguments
+        // need forward declarations too.
         for (TypeMirror generic : objCForwardDeclaredGenericParameters(type)) {
           addForwardDecl(generic);
         }
       }
     }
     return false;
+  }
+
+  /** Returns whether the field is exposed as an instance Objective-C property. */
+  private static boolean isInstanceProperty(FieldDeclaration node) {
+    VariableElement var = node.getFragment().getVariableElement();
+    return !ElementUtil.isStatic(var) && ElementUtil.hasAnnotation(var, Property.class);
+  }
+
+  /** Returns whether the field is exposed as an instance property on a public type. */
+  private static boolean isPublicInstanceProperty(FieldDeclaration node) {
+    return isInstanceProperty(node)
+        && node.getParent() instanceof AbstractTypeDeclaration typeDecl
+        && !typeDecl.hasPrivateDeclaration();
   }
 
   /** Returns whether the field is also exposed as a property of a generated companion. */
@@ -169,7 +184,9 @@ public class HeaderImportCollector extends UnitTreeVisitor {
 
   private Set<TypeMirror> objCForwardDeclaredGenericParameters(TypeMirror type) {
     // Parameters only needed with ObjC generics are on.
-    if (!unit.getEnv().options().asObjCGenericDecl() && !wantsGenerateObjectiveCGenerics) {
+    if (!unit.getEnv().options().asObjCGenericDecl()
+        && !wantsGenerateObjectiveCGenerics
+        && !TypeUtil.hasGenerateObjectiveCGenerics(type)) {
       return new HashSet<>();
     }
 
@@ -271,6 +288,13 @@ public class HeaderImportCollector extends UnitTreeVisitor {
 
   @Override
   public boolean visit(RecordDeclaration node) {
+    wantsGenerateObjectiveCGenerics =
+        TypeUtil.hasGenerateObjectiveCGenerics(node.getTypeElement().asType());
     return visitTypeDeclaration(node);
+  }
+
+  @Override
+  public void endVisit(RecordDeclaration node) {
+    wantsGenerateObjectiveCGenerics = false;
   }
 }
