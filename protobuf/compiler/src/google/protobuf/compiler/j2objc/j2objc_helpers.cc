@@ -85,8 +85,10 @@ const std::set<absl::string_view> kKeywords = {
     "accessibilityLabel",
     "and",
     "auto",
+    "bool",
     "break",
     "case",
+    "char",
     "class",
     // Avoid clashes with the kotlin-compatibility companion object when
     // "swiftifying" enum members (PARTICIPATION_MODE_COMPANION -> companion).
@@ -125,6 +127,7 @@ const std::set<absl::string_view> kKeywords = {
     "return",
     "self",
     "shared",
+    "short",
     "signed",
     "static",
     "struct",
