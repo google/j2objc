@@ -7296,8 +7296,8 @@ class Character implements java.io.Serializable, Comparable<Character> {
         if (codePoint < 0x1000) {
             return false;
         }
-        // OGHAM SPACE MARK or MONGOLIAN VOWEL SEPARATOR?
-        if (codePoint == 0x1680 || codePoint == 0x180e) {
+        // OGHAM SPACE MARK?
+        if (codePoint == 0x1680) {
             return true;
         }
         if (codePoint < 0x2000) {
@@ -7393,8 +7393,8 @@ class Character implements java.io.Serializable, Comparable<Character> {
         if (codePoint < 0x1000) {
             return false;
         }
-        // OGHAM SPACE MARK or MONGOLIAN VOWEL SEPARATOR?
-        if (codePoint == 0x1680 || codePoint == 0x180e) {
+        // OGHAM SPACE MARK?
+        if (codePoint == 0x1680) {
             return true;
         }
         if (codePoint < 0x2000) {
