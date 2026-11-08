@@ -34,6 +34,7 @@ import java.util.Optional;
 */
 // END Android-removed: dynamic constants not supported on Android.
 
+import com.google.j2objc.util.ReflectionUtil;
 import sun.misc.FloatingDecimal;
 
 /**
@@ -720,9 +721,9 @@ public final class Float extends Number
      * @return a hash code value for a {@code float} value.
      * @since 1.8
      */
-    public static int hashCode(float value) {
-        return floatToIntBits(value);
-    }
+    public static native int hashCode(float value) /*-[
+        return (jint)[@(value) hash];
+    ]-*/;
 
     /**
      * Compares this object against the specified object.  The result
@@ -752,8 +753,8 @@ public final class Float extends Number
      * @jls 15.21.1 Numerical Equality Operators == and !=
      */
     public boolean equals(Object obj) {
-        return (obj instanceof Float)
-               && (floatToIntBits(((Float)obj).value) == floatToIntBits(value));
+        return (obj instanceof Float || ReflectionUtil.isObjCNumber(obj))
+               && (floatToIntBits(((Number) obj).floatValue()) == floatToIntBits(value));
     }
 
     /**
