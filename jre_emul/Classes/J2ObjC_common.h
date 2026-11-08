@@ -124,7 +124,7 @@ __attribute__((always_inline)) inline id JreRetainedAutoreleasedReturnValue(id v
 #if __has_feature(objc_arc_weak)
 # define WEAK_ __weak
 #else
-# define WEAK_ __unsafe_unretained
+# error j2objc requires zeroing Objective-C weak references.
 #endif
 
 CF_EXTERN_C_BEGIN
