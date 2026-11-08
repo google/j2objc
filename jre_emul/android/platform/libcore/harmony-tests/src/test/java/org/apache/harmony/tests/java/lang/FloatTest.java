@@ -207,16 +207,13 @@ public class FloatTest extends TestCase {
     public void test_hashCode() {
         // Test for method int java.lang.Float.hashCode()
         Float f = new Float(1908.8786f);
-        assertTrue("Returned invalid hash code for 1908.8786f", f.hashCode() == Float
-                .floatToIntBits(1908.8786f));
+    assertEquals("Returned invalid hash code for 1908.8786f", 397309157, f.hashCode());
 
         f = new Float(-1.112f);
-        assertTrue("Returned invalid hash code for -1.112", f.hashCode() == Float
-                .floatToIntBits(-1.112f));
+    assertEquals("Returned invalid hash code for -1.112", -987694671, f.hashCode());
 
         f = new Float(0f);
-        assertTrue("Returned invalid hash code for 0", f.hashCode() == Float.floatToIntBits(0f));
-
+    assertEquals("Returned invalid hash code for 0", 0, f.hashCode());
     }
 
     /**
@@ -315,12 +312,14 @@ public class FloatTest extends TestCase {
         assertEquals("Incorrect float returned, expected minimum float.", Float.MIN_VALUE,
                 Float.parseFloat("7.0064923216240853546186479164496e-46"), 0.0);
 
-        doTestCompareRawBits(
-                "0.000000000000000000000000000000000000011754942807573642917278829910357665133228589927589904276829631184250030649651730385585324256680905818939208984375",
-                0x800000, "1.17549435E-38");
-        doTestCompareRawBits(
-                "0.00000000000000000000000000000000000001175494280757364291727882991035766513322858992758990427682963118425003064965173038558532425668090581893920898437499999f",
-                0x7fffff, "1.1754942E-38");
+    doTestCompareRawBits(
+        "0.000000000000000000000000000000000000011754942807573642917278829910357665133228589927589904276829631184250030649651730385585324256680905818939208984375",
+        0x800000,
+        "1.17549435E-38");
+    doTestCompareRawBits(
+        "0.00000000000000000000000000000000000001175494280757364291727882991035766513322858992758990427682963118425003064965173038558532425668090581893920898437499999f",
+        0x7fffff,
+        "1.1754942E-38");
 
         /* Test a set of regular floats with exponents from -38 to +38 */
         for (int i = 38; i > 3; i--) {
@@ -432,7 +431,9 @@ public class FloatTest extends TestCase {
     public void test_parseFloat_LString_Unusual() {
         float actual;
 
-        actual = Float.parseFloat("0x00000000000000000000000000000000000000000.0000000000000000000000000000000000000p0000000000000000000000000000000000");
+    actual =
+        Float.parseFloat(
+            "0x00000000000000000000000000000000000000000.0000000000000000000000000000000000000p0000000000000000000000000000000000");
         assertEquals("Returned incorrect value", 0.0f, actual, 0.0F);
 
         actual = Float.parseFloat("+0Xfffff.fffffffffffffffffffffffffffffffp+99F");
@@ -444,10 +445,14 @@ public class FloatTest extends TestCase {
         actual = Float.parseFloat("-0X123456789abcdef.p+1f");
         assertEquals("Returned incorrect value", -1.63971062E17f, actual, 0.0F);
 
-        actual = Float.parseFloat("-0X000000000000000000000000000001abcdef.0000000000000000000000000001abefp00000000000000000000000000000000000000000004f");
+    actual =
+        Float.parseFloat(
+            "-0X000000000000000000000000000001abcdef.0000000000000000000000000001abefp00000000000000000000000000000000000000000004f");
         assertEquals("Returned incorrect value", -4.48585472E8f, actual, 0.0F);
 
-        actual = Float.parseFloat("0X0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001234p600f");
+    actual =
+        Float.parseFloat(
+            "0X0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001234p600f");
         assertEquals("Returned incorrect value", 5.907252E33f, actual, 0.0F);
 
         actual = Float.parseFloat("0x1.p9223372036854775807");
@@ -574,21 +579,20 @@ public class FloatTest extends TestCase {
                 0xff800000,
         };
 
-        String[] inputs = {
-                "0x1.fffffep127",
-                "0x1.fffffe000000000000000000000000000000000000000000000001p127",
-                "0x1.fffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp127",
-                "0x1.ffffffp127",
-                "0x1.ffffff000000000000000000000000000000000000000000000001p127",
-                "0x1.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp127",
-
-                "-0x1.fffffep127",
-                "-0x1.fffffe000000000000000000000000000000000000000000000001p127",
-                "-0x1.fffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp127",
-                "-0x1.ffffffp127",
-                "-0x1.ffffff000000000000000000000000000000000000000000000001p127",
-                "-0x1.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp127",
-        };
+    String[] inputs = {
+      "0x1.fffffep127",
+      "0x1.fffffe000000000000000000000000000000000000000000000001p127",
+      "0x1.fffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp127",
+      "0x1.ffffffp127",
+      "0x1.ffffff000000000000000000000000000000000000000000000001p127",
+      "0x1.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp127",
+      "-0x1.fffffep127",
+      "-0x1.fffffe000000000000000000000000000000000000000000000001p127",
+      "-0x1.fffffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp127",
+      "-0x1.ffffffp127",
+      "-0x1.ffffff000000000000000000000000000000000000000000000001p127",
+      "-0x1.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp127",
+    };
 
         for (int i = 0; i < inputs.length; i++) {
             float actual = Float.parseFloat(inputs[i]);
@@ -624,21 +628,20 @@ public class FloatTest extends TestCase {
                 0x80800001,
         };
 
-        String inputs[] = {
-                "0x1.0p-126",
-                "0x1.00000000000000000000000000000000000000000000001p-126",
-                "0x1.000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-                "0x1.000001p-126",
-                "0x1.000001000000000000000000000000000000000000000001p-126",
-                "0x1.000001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-
-                "-0x1.0p-126",
-                "-0x1.00000000000000000000000000000000000000000000001p-126",
-                "-0x1.000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-                "-0x1.000001p-126",
-                "-0x1.000001000000000000000000000000000000000000000001p-126",
-                "-0x1.000001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-        };
+    String inputs[] = {
+      "0x1.0p-126",
+      "0x1.00000000000000000000000000000000000000000000001p-126",
+      "0x1.000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+      "0x1.000001p-126",
+      "0x1.000001000000000000000000000000000000000000000001p-126",
+      "0x1.000001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+      "-0x1.0p-126",
+      "-0x1.00000000000000000000000000000000000000000000001p-126",
+      "-0x1.000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+      "-0x1.000001p-126",
+      "-0x1.000001000000000000000000000000000000000000000001p-126",
+      "-0x1.000001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+    };
 
         for (int i = 0; i < inputs.length; i++) {
             float actual = Float.parseFloat(inputs[i]);
@@ -674,21 +677,20 @@ public class FloatTest extends TestCase {
                 0x80800000,
         };
 
-        String inputs[] = {
-                "0x0.fffffep-126",
-                "0x0.fffffe000000000000000000000000000000000000000000000000000001p-126",
-                "0x0.fffffefffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-                "0x0.ffffffp-126",
-                "0x0.ffffff0000000000000000000000000000000000000000000000000000001p-126",
-                "0x0.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-
-                "-0x0.fffffep-126",
-                "-0x0.fffffe000000000000000000000000000000000000000000000000000001p-126",
-                "-0x0.fffffefffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-                "-0x0.ffffffp-126",
-                "-0x0.ffffff0000000000000000000000000000000000000000000000000000001p-126",
-                "-0x0.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-        };
+    String inputs[] = {
+      "0x0.fffffep-126",
+      "0x0.fffffe000000000000000000000000000000000000000000000000000001p-126",
+      "0x0.fffffefffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+      "0x0.ffffffp-126",
+      "0x0.ffffff0000000000000000000000000000000000000000000000000000001p-126",
+      "0x0.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+      "-0x0.fffffep-126",
+      "-0x0.fffffe000000000000000000000000000000000000000000000000000001p-126",
+      "-0x0.fffffefffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+      "-0x0.ffffffp-126",
+      "-0x0.ffffff0000000000000000000000000000000000000000000000000000001p-126",
+      "-0x0.ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+    };
 
         for (int i = 0; i < inputs.length; i++) {
             float actual = Float.parseFloat(inputs[i]);
@@ -724,21 +726,20 @@ public class FloatTest extends TestCase {
                 0x80000002,
         };
 
-        String inputs[] = {
-                "0x0.000002p-126",
-                "0x0.00000200000000000000000000000000000000000001p-126",
-                "0x0.000002ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-                "0x0.000003p-126",
-                "0x0.000003000000000000000000000000000000000000001p-126",
-                "0x0.000003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-
-                "-0x0.000002p-126",
-                "-0x0.00000200000000000000000000000000000000000001p-126",
-                "-0x0.000002ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-                "-0x0.000003p-126",
-                "-0x0.000003000000000000000000000000000000000000001p-126",
-                "-0x0.000003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-        };
+    String inputs[] = {
+      "0x0.000002p-126",
+      "0x0.00000200000000000000000000000000000000000001p-126",
+      "0x0.000002ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+      "0x0.000003p-126",
+      "0x0.000003000000000000000000000000000000000000001p-126",
+      "0x0.000003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+      "-0x0.000002p-126",
+      "-0x0.00000200000000000000000000000000000000000001p-126",
+      "-0x0.000002ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+      "-0x0.000003p-126",
+      "-0x0.000003000000000000000000000000000000000000001p-126",
+      "-0x0.000003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+    };
 
         for (int i = 0; i < inputs.length; i++) {
             float actual = Float.parseFloat(inputs[i]);
@@ -774,21 +775,20 @@ public class FloatTest extends TestCase {
                 0x80000001,
         };
 
-        String inputs[] = {
-                "0x0.000000000000000p-126",
-                "0x0.000000000000000000000000000000000000000000000001p-126",
-                "0x0.000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-                "0x0.000001p-126",
-                "0x0.000001000000000000000000000000000000000000000001p-126",
-                "0x0.000001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-
-                "-0x0.000000000000000p-126",
-                "-0x0.000000000000000000000000000000000000000000000001p-126",
-                "-0x0.000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-                "-0x0.000001p-126",
-                "-0x0.000001000000000000000000000000000000000000000001p-126",
-                "-0x0.000001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
-        };
+    String inputs[] = {
+      "0x0.000000000000000p-126",
+      "0x0.000000000000000000000000000000000000000000000001p-126",
+      "0x0.000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+      "0x0.000001p-126",
+      "0x0.000001000000000000000000000000000000000000000001p-126",
+      "0x0.000001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+      "-0x0.000000000000000p-126",
+      "-0x0.000000000000000000000000000000000000000000000001p-126",
+      "-0x0.000000fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+      "-0x0.000001p-126",
+      "-0x0.000001000000000000000000000000000000000000000001p-126",
+      "-0x0.000001fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffp-126",
+    };
 
         for (int i = 0; i < inputs.length; i++) {
             float actual = Float.parseFloat(inputs[i]);

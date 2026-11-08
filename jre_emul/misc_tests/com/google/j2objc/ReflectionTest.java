@@ -201,4 +201,58 @@ public class ReflectionTest extends TestCase {
     assertEquals("hello", a.annotationValue().value());
     assertEquals(Iterable.class, a.classValue());
   }
+
+  private static native Object getNativeNumber(long val) /*-[
+    return [NSNumber numberWithLongLong:(long long)val];
+  ]-*/;
+
+  private static native Object getNativeUnsignedByte(int val) /*-[
+    return [NSNumber numberWithUnsignedChar:(unsigned char)val];
+  ]-*/;
+
+  private static native Object getNativeUnsignedShort(int val) /*-[
+    return [NSNumber numberWithUnsignedShort:(unsigned short)val];
+  ]-*/;
+
+  public void testIsObjCNumber() {
+    Object nativeNum = getNativeNumber(42);
+    Object javaNum = Integer.valueOf(42);
+    Object decimalNum = new java.math.BigDecimal("1.23");
+
+    assertTrue(com.google.j2objc.util.ReflectionUtil.isObjCNumber(nativeNum));
+    assertFalse(com.google.j2objc.util.ReflectionUtil.isObjCNumber(javaNum));
+    assertFalse(com.google.j2objc.util.ReflectionUtil.isObjCNumber(decimalNum));
+    assertFalse(com.google.j2objc.util.ReflectionUtil.isObjCNumber("not a number"));
+    assertFalse(com.google.j2objc.util.ReflectionUtil.isObjCNumber(null));
+  }
+
+  public void testNumberHashMapCompatibility() {
+    java.util.HashMap<Number, String> map = new java.util.HashMap<>();
+
+    Object javaInt = Integer.valueOf(42);
+    Object objcInt = getNativeNumber(42);
+
+    map.put((Number) javaInt, "success");
+    assertEquals("success", map.get(objcInt));
+
+    map.clear();
+    map.put((Number) objcInt, "success_reverse");
+    assertEquals("success_reverse", map.get(javaInt));
+  }
+
+  public void testSignedUnsignedMismatches() {
+    Object objcUnsignedByte = getNativeUnsignedByte(200);
+    Object javaByte = Byte.valueOf((byte) -56);
+
+    if (javaByte.equals(objcUnsignedByte)) {
+      assertEquals(javaByte.hashCode(), objcUnsignedByte.hashCode());
+    }
+
+    Object objcUnsignedShort = getNativeUnsignedShort(45000);
+    Object javaShort = Short.valueOf((short) -20536);
+
+    if (javaShort.equals(objcUnsignedShort)) {
+      assertEquals(javaShort.hashCode(), objcUnsignedShort.hashCode());
+    }
+  }
 }
