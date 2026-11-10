@@ -502,4 +502,72 @@ public class InitializationNormalizerTest extends GenerationTest {
               """);
         });
   }
+
+  public void testInstanceofPatternInThisConstructorCall() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              int f = 1;
+              Test(Object o) {
+                this(o instanceof String s ? s.length() : 0);
+              }
+              Test(int i) {}
+            }
+            """,
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        void Test_initWithId_(Test *self, id o) {
+          NSString *s = nil;
+          Test_initWithInt_(self, ([o isKindOfClass:[NSString class]] && (s = (NSString *) o, true)) ? [((NSString *) nil_chk(s)) java_length] : 0);
+        }
+        """);
+    assertTranslatedLines(
+        translation,
+        """
+        void Test_initWithInt_(Test *self, int32_t i) {
+          NSObject_init(self);
+          self->f_ = 1;
+        }
+        """);
+  }
+
+  public void testFlexibleConstructorBodiesWithThisCall() throws IOException {
+    testOnJava25OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  """
+                  class Test {
+                    int f = 1;
+                    Test() {
+                      int a = 1;
+                      this(a);
+                    }
+                    Test(int i) {}
+                  }
+                  """,
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+              """
+              void Test_init(Test *self) {
+                int32_t a = 1;
+                Test_initWithInt_(self, a);
+              }
+              """);
+          assertTranslatedLines(
+              translation,
+              """
+              void Test_initWithInt_(Test *self, int32_t i) {
+                NSObject_init(self);
+                self->f_ = 1;
+              }
+              """);
+        });
+  }
 }

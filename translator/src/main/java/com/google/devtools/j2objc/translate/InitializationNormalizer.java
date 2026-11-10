@@ -220,8 +220,11 @@ public class InitializationNormalizer extends UnitTreeVisitor {
   }
 
   /**
-   * Returns true if this is a constructor that doesn't call "this(...)".  This constructors are
+   * Returns true if this is a constructor that doesn't call "this(...)". These constructors are
    * skipped so initializers aren't run more than once per instance creation.
+   *
+   * <p>Note that the "this(...)" call is not necessarily the first statement, e.g. with flexible
+   * constructor bodies or when variable declarations have been hoisted before it.
    */
   public static boolean isDesignatedConstructor(MethodDeclaration node) {
     if (!node.isConstructor()) {
@@ -231,7 +234,6 @@ public class InitializationNormalizer extends UnitTreeVisitor {
     if (body == null) {
       return false;
     }
-    List<Statement> stmts = body.getStatements();
-    return (stmts.isEmpty() || !(stmts.get(0) instanceof ConstructorInvocation));
+    return body.getStatements().stream().noneMatch(ConstructorInvocation.class::isInstance);
   }
 }
