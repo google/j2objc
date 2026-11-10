@@ -52,6 +52,8 @@ class ExtensionGenerator {
 
   void CollectSourceImports(std::set<std::string>* imports) const;
   void GenerateMembersHeader(io::Printer* printer) const;
+  void GenerateCompanionHeader(io::Printer* printer) const;
+  void GenerateCompanionSource(io::Printer* printer) const;
   void GenerateSourceDefinition(io::Printer* printer) const;
   void GenerateFieldData(io::Printer* printer) const;
   void GenerateClassReference(io::Printer *printer) const;
