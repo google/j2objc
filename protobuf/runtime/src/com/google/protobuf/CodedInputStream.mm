@@ -84,6 +84,22 @@ CGPCodedInputStream::Limit CGPCodedInputStream::PushLimit(int byte_limit) {
   return old_limit;
 }
 
+bool CGPCodedInputStream::TryPushLimit(int byte_limit, Limit* old_limit) {
+  // Reject negative lengths and lengths exceeding the remaining bytes before current_limit_.
+  // Because current_limit_ <= INT_MAX, subtracting current_position checks both INT_MAX
+  // overflow and enclosing submessage limits without signed overflow.
+  int current_position = CurrentPosition();
+  if (byte_limit < 0 || current_position < 0 || current_limit_ < current_position ||
+      byte_limit > current_limit_ - current_position) {
+    return false;
+  }
+
+  *old_limit = current_limit_;
+  current_limit_ = current_position + byte_limit;
+  RecomputeBufferLimits();
+  return true;
+}
+
 void CGPCodedInputStream::PopLimit(Limit limit) {
   // The limit passed in is actually the *old* limit, which we returned from
   // PushLimit().
@@ -117,29 +133,49 @@ bool CGPCodedInputStream::Skip(int count) {
 }
 
 bool CGPCodedInputStream::ReadRaw(void* buffer, int size) {
+  // Reject negative sizes before unsigned memcpy conversion, and skip
+  // zero-length copies when buffer_ may be NULL.
+  if (size < 0) return false;
+
   int current_buffer_size;
   while ((current_buffer_size = BufferSize()) < size) {
+    if (current_buffer_size < 0) return false;
     // Reading past end of buffer.  Copy what we have, then refresh.
-    memcpy(buffer, buffer_, current_buffer_size);
-    buffer = reinterpret_cast<uint8*>(buffer) + current_buffer_size;
-    size -= current_buffer_size;
-    Advance(current_buffer_size);
+    if (current_buffer_size > 0) {
+      memcpy(buffer, buffer_, current_buffer_size);
+      buffer = reinterpret_cast<uint8*>(buffer) + current_buffer_size;
+      size -= current_buffer_size;
+      Advance(current_buffer_size);
+    }
     if (!Refresh()) return false;
   }
 
-  memcpy(buffer, buffer_, size);
-  Advance(size);
+  if (size > 0) {
+    memcpy(buffer, buffer_, size);
+    Advance(size);
+  }
 
   return true;
 }
 
 bool CGPCodedInputStream::ReadStringFallback(string* buffer, int size) {
+  // Reject negative sizes and sizes exceeding the remaining bytes before current_limit_.
+  // Subtracting current_position from current_limit_ avoids signed addition overflow.
+  if (size < 0) return false;
+
+  int current_position = CurrentPosition();
+  if (current_limit_ != INT_MAX &&
+      (current_limit_ < current_position || size > current_limit_ - current_position)) {
+    return false;
+  }
+
   if (!buffer->empty()) {
     buffer->clear();
   }
 
   int current_buffer_size;
   while ((current_buffer_size = BufferSize()) < size) {
+    if (current_buffer_size < 0) return false;
     // Some STL implementations "helpfully" crash on buffer->append(NULL, 0).
     if (current_buffer_size != 0) {
       // Note:  string1.append(string2) is O(string2.size()) (as opposed to
@@ -152,8 +188,10 @@ bool CGPCodedInputStream::ReadStringFallback(string* buffer, int size) {
     if (!Refresh()) return false;
   }
 
-  buffer->append(reinterpret_cast<const char*>(buffer_), size);
-  Advance(size);
+  if (size != 0) {
+    buffer->append(reinterpret_cast<const char*>(buffer_), size);
+    Advance(size);
+  }
 
   return true;
 }
@@ -260,7 +298,10 @@ uint32_t CGPCodedInputStream::ReadTagSlow() {
   if (buffer_ == buffer_end_) {
     // Call refresh.
     if (!Refresh()) {
-      legitimate_message_end_ = true;
+      // EOF is only a valid message end when input_limit_ is non-negative and
+      // either no submessage limit is active or the stream reached current_limit_ exactly.
+      legitimate_message_end_ =
+          (input_limit_ >= 0 && (current_limit_ == INT_MAX || CurrentPosition() == current_limit_));
       return 0;
     }
   }
@@ -366,8 +407,7 @@ bool CGPCodedInputStream::ReadVarint64Fallback(uint64* value) {
 bool CGPCodedInputStream::Refresh() {
   NSCAssert(BufferSize() == 0, @"Expected end of buffer.");
 
-  if (buffer_size_after_limit_ > 0 ||
-      total_bytes_read_ == current_limit_) {
+  if (input_limit_ < 0 || buffer_size_after_limit_ > 0 || total_bytes_read_ == current_limit_) {
     // We've hit a limit.  Stop.
     return false;
   }
@@ -424,40 +464,54 @@ static NSString *RetainedStringFromBytes(const uint8 *bytes, uint32_t size) {
 }
 
 bool CGPCodedInputStream::ReadRetainedNSString(NSString **value) {
-  uint32_t size;
-  if (!ReadVarint32(&size)) return false;
+  uint32_t raw_size;
+  // Wire varints are unsigned 32-bit, while stream offsets and J2ObjC sizes are signed ints.
+  // Reject lengths above INT_MAX before casting so they cannot truncate to negative values.
+  if (!ReadVarint32(&raw_size) || raw_size > static_cast<uint32_t>(INT_MAX)) {
+    return false;
+  }
+  int byte_size = static_cast<int>(raw_size);
 
-  if ((unsigned)BufferSize() >= size) {
-    *value = RetainedStringFromBytes(buffer_, size);
-    Advance(size);
+  if (BufferSize() >= byte_size) {
+    *value = RetainedStringFromBytes(buffer_, raw_size);
+    Advance(byte_size);
     return true;
   }
 
   // If there aren't enough bytes in the buffer, fallback to reading into a C++
   // string then copying into a CFStringRef.
-  string string;
-  if (!ReadStringFallback(&string, size)) return false;
-  *value = RetainedStringFromBytes(reinterpret_cast<const uint8*>(string.data()), size);
+  string string_buffer;
+  if (!ReadStringFallback(&string_buffer, byte_size)) return false;
+  *value = RetainedStringFromBytes(reinterpret_cast<const uint8*>(string_buffer.data()), raw_size);
   return true;
 }
 
 bool CGPCodedInputStream::ReadRetainedByteString(CGPByteString **value) {
-  uint32_t size;
-  if (!ReadVarint32(&size)) return false;
+  uint32_t raw_size;
+  // Wire varints are unsigned 32-bit, while stream offsets and J2ObjC sizes are signed ints.
+  // Reject lengths above INT_MAX before casting so they cannot truncate to negative values.
+  if (!ReadVarint32(&raw_size) || raw_size > static_cast<uint32_t>(INT_MAX)) {
+    return false;
+  }
+  int byte_size = static_cast<int>(raw_size);
 
-  if ((unsigned)BufferSize() >= size) {
-    *value = CGPNewByteString(size);
-    memcpy((*value)->buffer_, buffer_, size);
-    Advance(size);
+  if (BufferSize() >= byte_size) {
+    *value = CGPNewByteString(byte_size);
+    if (byte_size > 0) {
+      memcpy((*value)->buffer_, buffer_, byte_size);
+    }
+    Advance(byte_size);
     return true;
   }
 
   // If there aren't enough bytes in the buffer, fallback to reading into a C++
   // string then copying into a new ByteString.
-  string string;
-  if (!ReadStringFallback(&string, size)) return false;
-  *value = CGPNewByteString(size);
-  memcpy((*value)->buffer_, string.data(), size);
+  string string_buffer;
+  if (!ReadStringFallback(&string_buffer, byte_size)) return false;
+  *value = CGPNewByteString(byte_size);
+  if (byte_size > 0) {
+    memcpy((*value)->buffer_, string_buffer.data(), byte_size);
+  }
   return true;
 }
 
@@ -466,28 +520,31 @@ bool CGPCodedInputStream::ReadRetainedByteString(CGPByteString **value) {
 // is yet and we can't read past the end of the message.
 bool CGPCodedInputStream::ReadVarint32(
     int firstByte, JavaIoInputStream *input, uint32_t *value) {
-  *value = firstByte & (int) 0x7f;
-  if ((firstByte & (int) 0x80) == 0) {
+  // Varints store 7 payload bits per byte (0x7f) with bit 7 (0x80) set while more bytes follow.
+  *value = static_cast<uint32_t>(firstByte & 0x7f);
+  if ((firstByte & 0x80) == 0) {
     return true;
   }
   int offset = 7;
+  // Cast to uint32_t before shifting so bit 31 at offset 28 does not shift a signed int.
   for (; offset < 32; offset += 7) {
-    int b = [input read];
-    if (b == -1) {
+    int next_byte = [input read];
+    if (next_byte == -1) {
       return false;
     }
-    *value |= (b & (int) 0x7f) << offset;
-    if ((b & (int) 0x80) == 0) {
+    *value |= static_cast<uint32_t>(next_byte & 0x7f) << offset;
+    if ((next_byte & 0x80) == 0) {
       return true;
     }
   }
-  // Keep reading up to 64 bits.
+  // Negative int32 values are sign-extended to 10-byte (64-bit) varints; consume and discard upper
+  // bits.
   for (; offset < 64; offset += 7) {
-    int b = [input read];
-    if (b == -1) {
+    int next_byte = [input read];
+    if (next_byte == -1) {
       return false;
     }
-    if ((b & (int) 0x80) == 0) {
+    if ((next_byte & 0x80) == 0) {
       return true;
     }
   }

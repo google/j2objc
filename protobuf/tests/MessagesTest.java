@@ -325,4 +325,63 @@ public class MessagesTest extends ProtobufTest {
   // Invalid "proto" bytes from b/297559868.
   private static final byte[] INVALID_MESSAGES_BYTES =
       asBytes(new int[] {0x7b, 0x1b, 0x5e, 0xae, 0x76, 0xa5});
+
+  public void testParseMessageAndExtensionWithInvalidLengthThrowsException() throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.newInstance();
+    MessageFields.registerAllExtensions(registry);
+
+    byte[][] invalidPayloads = {
+      // Singular msg_f (tag 0x0A) with 0x80000000 length and empty trailing payload.
+      asBytes(new int[] {0x0A, 0x80, 0x80, 0x80, 0x80, 0x08}),
+      // Singular msg_f (tag 0x0A) with 0x80000000 length and valid submessage body.
+      asBytes(new int[] {0x0A, 0x80, 0x80, 0x80, 0x80, 0x08, 0x08, 0x01}),
+      // Singular msg_f (tag 0x0A) with 0xFFFFFFFF length and valid submessage body.
+      asBytes(new int[] {0x0A, 0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0x08, 0x01}),
+      // Singular msg_f (tag 0x0A) with 10-byte varint -1 and valid submessage body.
+      asBytes(
+          new int[] {0x0A, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x08, 0x01}),
+      // Singular msg_f (tag 0x0A) with INT_MAX (0x7FFFFFFF) overflowing relative limit.
+      asBytes(new int[] {0x0A, 0xFF, 0xFF, 0xFF, 0xFF, 0x07, 0x08, 0x01}),
+      // Singular msg_f (tag 0x0A) with truncated positive length (claims 5 bytes, only 2 present).
+      asBytes(new int[] {0x0A, 0x05, 0x08, 0x01}),
+      // Nested msg_f (0x0A) inside recursive_msg_f (0x1A) claiming length exceeding outer limit.
+      asBytes(new int[] {0x1A, 0x06, 0x0A, 0x10, 0x08, 0x01, 0x08, 0x02}),
+      // Message extension msg_fe (tag 0xCA, 0x3E) with 0x80000000 length.
+      asBytes(new int[] {0xCA, 0x3E, 0x80, 0x80, 0x80, 0x80, 0x08, 0x08, 0x29}),
+      // Message extension msg_fe (tag 0xCA, 0x3E) with INT_MAX length.
+      asBytes(new int[] {0xCA, 0x3E, 0xFF, 0xFF, 0xFF, 0xFF, 0x07, 0x08, 0x29}),
+      // Message extension msg_fe (tag 0xCA, 0x3E) with truncated positive length.
+      asBytes(new int[] {0xCA, 0x3E, 0x05, 0x08, 0x29}),
+    };
+
+    for (byte[] payload : invalidPayloads) {
+      assertInvalidMessageDataThrows(payload, registry);
+    }
+  }
+
+  private static void assertInvalidMessageDataThrows(byte[] wireBytes, ExtensionRegistry registry)
+      throws Exception {
+    try {
+      MessageData.parseFrom(wireBytes, registry);
+      fail("Expected InvalidProtocolBufferException");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected for negative, overflowing, or truncated submessage lengths.
+    }
+
+    try {
+      MessageData.parseFrom(new ByteArrayInputStream(wireBytes), registry);
+      fail("Expected InvalidProtocolBufferException");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected for negative, overflowing, or truncated submessage lengths.
+    }
+
+    try {
+      @SuppressWarnings("unused")
+      MessageData unusedMessage =
+          MessageData.newBuilder().mergeFrom(new ByteArrayInputStream(wireBytes), registry).build();
+      fail("Expected InvalidProtocolBufferException");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected for negative, overflowing, or truncated submessage lengths.
+    }
+  }
 }
