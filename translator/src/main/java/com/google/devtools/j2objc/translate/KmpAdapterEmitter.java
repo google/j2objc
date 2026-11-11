@@ -1,0 +1,1047 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.devtools.j2objc.translate;
+
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static java.lang.reflect.Modifier.ABSTRACT;
+import static java.lang.reflect.Modifier.STATIC;
+
+import com.google.common.collect.ImmutableList;
+import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.FunctionDeclaration;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
+import com.google.devtools.j2objc.ast.IfStatement;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.NativeExpression;
+import com.google.devtools.j2objc.ast.NativeStatement;
+import com.google.devtools.j2objc.ast.ReturnStatement;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.ThisExpression;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.translate.KmpMethodHierarchy.ConcreteKmpOwner;
+import com.google.devtools.j2objc.translate.KmpTypeConverter.MappingStrategy;
+import com.google.devtools.j2objc.translate.KmpTypeConverter.ParameterMapping;
+import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.FunctionElement;
+import com.google.devtools.j2objc.types.GeneratedAnnotationMirror;
+import com.google.devtools.j2objc.types.GeneratedAnnotationValue;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.types.NativeType;
+import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TypeUtil;
+import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+import com.google.j2objc.annotations.SwiftName;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeMirror;
+import org.jspecify.annotations.Nullable;
+
+/**
+ * Generates Objective-C KMP adapter methods, C helper functions, bridge methods, protocol dispatch
+ * helpers, and {@link SwiftName} annotations for {@link ObjectiveCKmpMethodTranslator}.
+ */
+final class KmpAdapterEmitter {
+
+  private static final TypeMirror SEL_TYPE = new NativeType("SEL");
+
+  private final TypeUtil typeUtil;
+  private final NameTable nameTable;
+  private final Options options;
+  private final KmpTypeConverter typeConverter;
+  private final Set<TypeElement> emittedOverrideCheckTypes = new HashSet<>();
+
+  KmpAdapterEmitter(
+      TypeUtil typeUtil, NameTable nameTable, Options options, KmpTypeConverter typeConverter) {
+    this.typeUtil = typeUtil;
+    this.nameTable = nameTable;
+    this.options = options;
+    this.typeConverter = typeConverter;
+  }
+
+  /** Emits all Objective-C adapter declarations required for {@code originalMethod}. */
+  void emit(
+      AbstractTypeDeclaration typeNode,
+      ExecutablePair originalMethod,
+      AnnotationMirror annotation,
+      boolean isInterface,
+      MappingStrategy strategy) {
+    new AdapterContext(typeNode, originalMethod, annotation, isInterface, strategy).processMethod();
+  }
+
+  /**
+   * Prepends a native-override check to an overriding or default-shim method on a subclass so Java
+   * callers delegate to {@code baseOwner}'s adapted Objective-C selector when overridden natively.
+   */
+  void prependSubclassOverrideCheck(
+      AbstractTypeDeclaration typeNode, ExecutablePair method, ConcreteKmpOwner baseOwner) {
+    new AdapterContext(
+            typeNode,
+            method,
+            baseOwner.annotation(),
+            /* isInterface= */ false,
+            MappingStrategy.JAVA_TO_NATIVE)
+        .prependSubclassOverrideCheck(baseOwner);
+  }
+
+  @Nullable MethodDeclaration findMethodDeclaration(
+      @Nullable AbstractTypeDeclaration typeNode, ExecutableElement element) {
+    if (typeNode == null) {
+      return null;
+    }
+    String targetSelector = nameTable.getMethodSelector(element);
+    for (MethodDeclaration methodDecl : TreeUtil.getMethodDeclarations(typeNode)) {
+      ExecutableElement declElem = methodDecl.getExecutableElement();
+      if (declElem.equals(element)
+          || (declElem instanceof GeneratedExecutableElement gee
+              && !ElementUtil.isAbstract(gee)
+              && element.equals(gee.getOriginalElement())
+              && targetSelector.equals(nameTable.getMethodSelector(gee)))) {
+        return methodDecl;
+      }
+    }
+    return null;
+  }
+
+  private static boolean canOverrideInNative(TypeElement type, ExecutableElement method) {
+    return type.getKind() == ElementKind.CLASS
+        && !ElementUtil.isFinal(type)
+        && !ElementUtil.isLocal(type)
+        && !ElementUtil.isFinal(method)
+        && !ElementUtil.isPrivate(method);
+  }
+
+  private static ImmutableList<VariableElement> getParameterElements(MethodDeclaration decl) {
+    return decl.getParameters().stream()
+        .map(SingleVariableDeclaration::getVariableElement)
+        .collect(toImmutableList());
+  }
+
+  private boolean supportsNativeOverride(
+      TypeElement ownerType, ExecutablePair method, @Nullable TypeMirror adapter) {
+    return canOverrideInNative(ownerType, method.element())
+        && typeConverter.canReverseAdapt(method, adapter);
+  }
+
+  private TypeMirror getAdapterReturnType(ExecutablePair method) {
+    TypeMirror returnType = method.type().getReturnType();
+    return TypeUtil.isVoid(returnType)
+        ? returnType
+        : typeConverter.calculateNativeType(returnType, method.element());
+  }
+
+  /** Emits {@code <Class>_isOverride} at most once per class declaration. */
+  private void ensureOverrideCheckHelper(AbstractTypeDeclaration typeNode) {
+    TypeElement ownerType = typeNode.getTypeElement();
+    if (emittedOverrideCheckTypes.add(ownerType)) {
+      typeNode.addBodyDeclaration(generateOverrideCheckHelper(ownerType));
+    }
+  }
+
+  private String getOverrideCheckName(TypeElement ownerType) {
+    return nameTable.getFullName(ownerType) + "_isOverride";
+  }
+
+  private FunctionElement createOverrideCheckElement(TypeElement ownerType) {
+    return new FunctionElement(getOverrideCheckName(ownerType), typeUtil.getBoolean(), ownerType)
+        .addParameters(ownerType.asType(), SEL_TYPE);
+  }
+
+  /**
+   * Generates a class-level helper {@code bool <Class>_isOverride(<Class> *self, SEL selector)}
+   * that returns true when {@code selector}'s implementation differs from {@code ownerType}.
+   *
+   * <p>Java subclasses override the unadapted method directly (prepending their own check against
+   * {@code ownerType}), so Java overrides never execute the base class implementation and only
+   * native subclass overrides reach the dispatch helper.
+   *
+   * <p>Note: Calling {@code [super <adaptedSelector>]} or {@code [super <javaSelector>]} from a
+   * native Objective-C or Swift subclass override is intentionally unsupported. Because {@code
+   * super} dispatch preserves {@code self}, {@code [self methodForSelector:selector]} still
+   * resolves to the subclass override and would recurse back into the native override.
+   */
+  private FunctionDeclaration generateOverrideCheckHelper(TypeElement ownerType) {
+    FunctionDeclaration functionDecl =
+        new FunctionDeclaration(
+            getOverrideCheckName(ownerType),
+            typeUtil.getBoolean(),
+            /* executableElement= */ null);
+    VariableElement selfParam =
+        GeneratedVariableElement.newParameter(NameTable.SELF_NAME, ownerType.asType(), null);
+    VariableElement selectorParam =
+        GeneratedVariableElement.newParameter("selector", SEL_TYPE, null);
+    functionDecl.addParameter(new SingleVariableDeclaration(selfParam));
+    functionDecl.addParameter(new SingleVariableDeclaration(selectorParam));
+    String selfName = nameTable.getVariableShortName(selfParam);
+    String selectorName = nameTable.getVariableShortName(selectorParam);
+    String baseClassName = nameTable.getFullName(ownerType);
+    // Calling [super <adaptedSelector>] or [super <javaSelector>] from a native subclass override
+    // is unsupported because `self` still resolves to the subclass implementation here.
+    String condition =
+        selfName
+            + " != nil && ["
+            + selfName
+            + " methodForSelector:"
+            + selectorName
+            + "] != ["
+            + baseClassName
+            + " instanceMethodForSelector:"
+            + selectorName
+            + "]";
+    functionDecl.setBody(
+        new Block()
+            .addStatement(
+                new ReturnStatement(new NativeExpression(condition, typeUtil.getBoolean()))));
+    return functionDecl;
+  }
+
+  /**
+   * Returns the function name for the C dispatch helper of an interface or concrete method owned by
+   * {@code ownerType}.
+   *
+   * <p>Appends {@code "_dispatch"} to avoid colliding with functions generated by J2ObjC (such as
+   * default method implementation bodies).
+   */
+  private String getDispatchFunctionName(TypeElement ownerType, ExecutableElement method) {
+    return nameTable.getFullName(ownerType) + "_" + nameTable.getFunctionName(method) + "_dispatch";
+  }
+
+  /** Creates the function element for the C dispatch helper. */
+  FunctionElement createDispatchElement(TypeElement ownerType, ExecutableElement method) {
+    return createInstanceFunctionElement(
+        getDispatchFunctionName(ownerType, method), ownerType, method);
+  }
+
+  private FunctionElement createDefaultMethodFunctionElement(ExecutableElement method) {
+    TypeElement declaringInterface = ElementUtil.getDeclaringClass(method);
+    return createInstanceFunctionElement(
+        nameTable.getFullFunctionName(method), declaringInterface, method);
+  }
+
+  private FunctionElement createInstanceFunctionElement(
+      String functionName, TypeElement ownerType, ExecutableElement method) {
+    ExecutableType methodType = typeUtil.asMemberOf((DeclaredType) ownerType.asType(), method);
+    return new FunctionElement(functionName, methodType.getReturnType(), ownerType)
+        .addParameters(ownerType.asType())
+        .addParameters(methodType.getParameterTypes());
+  }
+
+  /** Context for processing a single method and generating its Objective-C adapter. */
+  private class AdapterContext {
+    private final String selector;
+    private final String swiftName;
+    private final AbstractTypeDeclaration typeNode;
+    private final ExecutablePair originalMethod;
+    private final ExecutableElement originalMethodExecutable;
+    private final TypeMirror originalMethodReturnType;
+    private final ImmutableList<VariableElement> originalMethodParameters;
+    private final TypeMirror adapter;
+    private final boolean isInterface;
+    private final MappingStrategy strategy;
+
+    private AdapterContext(
+        AbstractTypeDeclaration typeNode,
+        ExecutablePair originalMethod,
+        AnnotationMirror annotation,
+        boolean isInterface,
+        MappingStrategy strategy) {
+      this.typeNode = typeNode;
+      this.originalMethod = originalMethod;
+      this.originalMethodExecutable = originalMethod.element();
+      this.originalMethodReturnType = originalMethod.type().getReturnType();
+      this.originalMethodParameters =
+          resolveParameters(originalMethod, originalMethod.element().getParameters());
+      this.selector = (String) ElementUtil.getAnnotationValue(annotation, "selector");
+      this.swiftName = (String) ElementUtil.getAnnotationValue(annotation, "swiftName");
+      this.adapter = (TypeMirror) ElementUtil.getAnnotationValue(annotation, "adapter");
+      this.isInterface = isInterface;
+      this.strategy = strategy;
+    }
+
+    /**
+     * Pairs {@code contractMethod}'s resolved parameter types and annotations with {@code
+     * nameSources}' variable names and enclosing elements.
+     */
+    private ImmutableList<VariableElement> resolveParameters(
+        ExecutablePair contractMethod, List<? extends VariableElement> nameSources) {
+      List<? extends VariableElement> contractParams = contractMethod.element().getParameters();
+      List<? extends TypeMirror> contractTypes = contractMethod.type().getParameterTypes();
+      ImmutableList.Builder<VariableElement> resolved = ImmutableList.builder();
+      for (int i = 0; i < contractParams.size(); i++) {
+        VariableElement contractParam = contractParams.get(i);
+        TypeMirror contractType = contractTypes.get(i);
+        VariableElement nameSource = nameSources.get(i);
+        if (nameSource == contractParam
+            && typeUtil.isSameType(contractParam.asType(), contractType)) {
+          resolved.add(contractParam);
+        } else {
+          String paramName =
+              nameSource == contractParam
+                  ? ElementUtil.getName(contractParam)
+                  : nameTable.getVariableShortName(nameSource);
+          resolved.add(
+              GeneratedVariableElement.newParameter(
+                      paramName, contractType, nameSource.getEnclosingElement())
+                  .addAnnotationMirrors(contractParam.getAnnotationMirrors()));
+        }
+      }
+      return resolved.build();
+    }
+
+    /** Orchestrates the parameter conversion and adapter method creation. */
+    private void processMethod() {
+      // Calculate the return type of the adapter method. If the original method returns void,
+      // the adapter method also returns void. Otherwise, calculate the native Objective-C type.
+      TypeMirror adapterReturnType = getAdapterReturnType(originalMethod);
+
+      // For static methods and constructors, we always generate calls to the C-style function
+      // generated by J2ObjC for the static method, rather than an Objective-C class method. This is
+      // because some clients have no-wrapper-methods enabled, in which case the class methods might
+      // not be generated. We also generate an Objective-C class method or initializer if wrapper
+      // methods are. enabled.
+      if (ElementUtil.isConstructor(originalMethodExecutable)) {
+        generateConstructorFunctionDeclaration();
+        if (options.emitWrapperMethods()) {
+          generateConstructorMethodDeclaration(adapterReturnType);
+        }
+      } else if (ElementUtil.isStatic(originalMethodExecutable)) {
+        // Create an FunctionInvocation to call the original static Java method.
+        FunctionElement functionElement =
+            new FunctionElement(
+                nameTable.getFullFunctionName(originalMethodExecutable),
+                originalMethodExecutable.getReturnType(),
+                typeNode.getTypeElement());
+        generateStaticFunctionDeclaration(adapterReturnType, functionElement);
+        if (options.emitWrapperMethods()) {
+          generateStaticMethodDeclaration(adapterReturnType, functionElement);
+        }
+      } else if (isInterface) {
+        generateInterfaceMethodDeclaration(adapterReturnType);
+      } else if (strategy == MappingStrategy.JAVA_TO_NATIVE) {
+        generateAbstractInstanceMethodDeclaration(adapterReturnType);
+      } else {
+        generateInstanceMethodDeclaration(adapterReturnType);
+      }
+    }
+
+    private void generateStaticFunctionDeclaration(
+        TypeMirror adapterReturnType, FunctionElement functionElement) {
+      ParameterMapping mapping = processParameters();
+      List<Expression> adaptingArguments = mapping.adaptingArguments();
+      List<VariableElement> adapterParameters = mapping.adapterParameters();
+
+      FunctionInvocation functionInvocation =
+          createFunctionInvocation(functionElement, adaptingArguments);
+
+      Block functionBodyBlock = new Block();
+      // Create the return statement for the adapter method body.
+      functionBodyBlock.addStatement(createReturnStatement(functionInvocation, adapterReturnType));
+
+      // Add the new function declaration to the type node.
+      String selectorName = selector.replaceAll(":", "_");
+      String functionName = nameTable.getFullName(typeNode.getTypeElement()) + "_" + selectorName;
+      FunctionDeclaration functionDecl =
+          new FunctionDeclaration(functionName, adapterReturnType, originalMethodExecutable);
+      functionDecl.setBody(functionBodyBlock);
+      for (VariableElement adapterParam : adapterParameters) {
+        functionDecl.getParameters().add(new SingleVariableDeclaration(adapterParam));
+      }
+      typeNode.addBodyDeclaration(functionDecl);
+    }
+
+    private FunctionInvocation createFunctionInvocation(
+        FunctionElement functionElement, List<Expression> adaptingArguments) {
+      // Create a FunctionInvocation to call the original static Java method.
+      FunctionInvocation invocation =
+          new FunctionInvocation(functionElement, originalMethodExecutable.getReturnType());
+      adaptingArguments.forEach(invocation::addArgument);
+      return invocation;
+    }
+
+    private void generateStaticMethodDeclaration(
+        TypeMirror adapterReturnType, FunctionElement functionElement) {
+      ParameterMapping mapping = processParameters();
+      List<Expression> adaptingArguments = mapping.adaptingArguments();
+      List<VariableElement> adapterParameters = mapping.adapterParameters();
+
+      GeneratedExecutableElement adapterMethodExecutable =
+          GeneratedExecutableElement.newAdapterMethod(
+              selector, adapterReturnType, adapterParameters, originalMethodExecutable);
+      attachSwiftNameAnnotation(adapterMethodExecutable);
+
+      FunctionInvocation methodFunctionInvocation =
+          createFunctionInvocation(functionElement, adaptingArguments);
+
+      addMethodDeclaration(
+          adapterMethodExecutable, methodFunctionInvocation, adapterReturnType, adapterParameters);
+    }
+
+    private void generateInstanceMethodDeclaration(TypeMirror adapterReturnType) {
+      ParameterMapping mapping = processParameters();
+      List<Expression> adaptingArguments = mapping.adaptingArguments();
+      List<VariableElement> adapterParameters = mapping.adapterParameters();
+
+      MethodDeclaration originalDecl = findMethodDeclaration(typeNode, originalMethodExecutable);
+
+      GeneratedExecutableElement adapterMethodExecutable =
+          GeneratedExecutableElement.newAdapterMethod(
+              selector, adapterReturnType, adapterParameters, originalMethodExecutable);
+      attachSwiftNameAnnotation(adapterMethodExecutable);
+
+      // Create a MethodInvocation to call the original instance Java method.
+      MethodInvocation adaptingMethodInvocation =
+          new MethodInvocation(new ExecutablePair(originalMethodExecutable), null);
+      // Add the (potentially converted) arguments to the MethodInvocation.
+      adaptingArguments.forEach(adaptingMethodInvocation::addArgument);
+
+      addMethodDeclaration(
+          adapterMethodExecutable, adaptingMethodInvocation, adapterReturnType, adapterParameters);
+
+      TypeElement ownerType = typeNode.getTypeElement();
+      if (typeNode instanceof TypeDeclaration
+          && supportsNativeOverride(ownerType, originalMethod, adapter)) {
+        if (originalDecl == null
+            && !ElementUtil.isDefault(originalMethodExecutable)
+            && !ElementUtil.getDeclaringClass(originalMethodExecutable).equals(ownerType)) {
+          SuperMethodInvocation superCall =
+              new SuperMethodInvocation(new ExecutablePair(originalMethodExecutable));
+          for (VariableElement param : originalMethodParameters) {
+            superCall.addArgument(new SimpleName(param));
+          }
+          Expression superExpr = typeConverter.maybeCast(originalMethodReturnType, superCall);
+          originalDecl = createBridgeMethodDeclaration(createReturnOrExpressionBlock(superExpr));
+          originalDecl.setHasDeclaration(false);
+          typeNode.addBodyDeclaration(originalDecl);
+        }
+        if (originalDecl != null && originalDecl.getBody() != null) {
+          ParameterMapping reverseMapping = processParameters(MappingStrategy.JAVA_TO_NATIVE);
+          ensureOverrideCheckHelper(typeNode);
+          typeNode.addBodyDeclaration(
+              generateConcreteDispatchHelper(
+                  adapterMethodExecutable, reverseMapping.adaptingArguments()));
+          prependConcreteOverrideCheck(originalDecl, ownerType, originalMethodExecutable, null);
+        }
+      }
+    }
+
+    private void prependSubclassOverrideCheck(ConcreteKmpOwner baseOwner) {
+      TypeElement ownerType = baseOwner.ownerType();
+      ExecutablePair baseMethodPair = baseOwner.method();
+      if (!(typeNode instanceof TypeDeclaration)
+          || !supportsNativeOverride(ownerType, baseMethodPair, adapter)
+          || !canOverrideInNative(typeNode.getTypeElement(), originalMethodExecutable)) {
+        return;
+      }
+      MethodDeclaration originalDecl = findMethodDeclaration(typeNode, originalMethodExecutable);
+      if (originalDecl == null || originalDecl.getBody() == null) {
+        return;
+      }
+      ExecutableType instantiatedBaseType =
+          typeUtil.asMemberOf(
+              (DeclaredType) typeNode.getTypeElement().asType(), baseMethodPair.element());
+      Block customThenBlock = null;
+      if (!typeUtil.isSameType(
+          typeUtil.erasure(originalMethodReturnType),
+          typeUtil.erasure(instantiatedBaseType.getReturnType()))) {
+        if (!typeConverter.canReverseAdaptReturnType(originalMethodReturnType, adapter)) {
+          return;
+        }
+        List<VariableElement> baseContractParams =
+            resolveParameters(baseMethodPair, getParameterElements(originalDecl));
+        ParameterMapping mapping =
+            typeConverter.processParameters(
+                adapter, strategy, baseMethodPair.element(), baseContractParams);
+        GeneratedExecutableElement adapterMethodExecutable =
+            GeneratedExecutableElement.newAdapterMethod(
+                selector,
+                getAdapterReturnType(baseMethodPair),
+                mapping.adapterParameters(),
+                baseMethodPair.element());
+        customThenBlock =
+            createAdaptedInvocationBlock(
+                adapterMethodExecutable, /* receiver= */ null, mapping.adaptingArguments());
+      }
+      prependConcreteOverrideCheck(
+          originalDecl, ownerType, baseMethodPair.element(), customThenBlock);
+    }
+
+    private void prependConcreteOverrideCheck(
+        MethodDeclaration originalDecl,
+        TypeElement ownerType,
+        ExecutableElement baseMethod,
+        @Nullable Block customThenBlock) {
+      FunctionInvocation checkInvocation =
+          new FunctionInvocation(createOverrideCheckElement(ownerType), typeUtil.getBoolean());
+      checkInvocation.addArgument(new ThisExpression(typeNode.getTypeElement().asType()));
+      checkInvocation.addArgument(new NativeExpression("@selector(" + selector + ")", SEL_TYPE));
+      Block thenBlock = customThenBlock;
+      if (thenBlock == null) {
+        FunctionElement dispatchElement = createDispatchElement(ownerType, baseMethod);
+        FunctionInvocation dispatchInvocation =
+            createForwardingFunctionInvocation(
+                dispatchElement,
+                typeUtil.erasure(dispatchElement.getReturnType()),
+                new ThisExpression(typeNode.getTypeElement().asType()),
+                getParameterElements(originalDecl));
+        Expression dispatchExpr =
+            typeConverter.maybeCast(
+                typeUtil.erasure(originalMethodReturnType), dispatchInvocation);
+        thenBlock = createReturnOrExpressionBlock(dispatchExpr);
+      }
+      if (TypeUtil.isVoid(originalMethodReturnType)) {
+        thenBlock.addStatement(new ReturnStatement());
+      }
+      IfStatement overrideCheck =
+          new IfStatement().setExpression(checkInvocation).setThenStatement(thenBlock);
+      originalDecl.getBody().getStatements().add(0, overrideCheck);
+    }
+
+    private boolean isInSwiftNameContext() {
+      if (options.swiftNaming()) {
+        return true;
+      }
+      Element current = typeNode.getTypeElement();
+      while (current != null) {
+        if (ElementUtil.getAnnotation(current, SwiftName.class) != null) {
+          return true;
+        }
+        current = current.getEnclosingElement();
+      }
+      PackageElement pkg = ElementUtil.getPackage(typeNode.getTypeElement());
+      return pkg != null && ElementUtil.getAnnotation(pkg, SwiftName.class) != null;
+    }
+
+    private @Nullable String getOrComputeSwiftName() {
+      if (swiftName != null && !swiftName.isEmpty()) {
+        return swiftName;
+      }
+      if (!isInSwiftNameContext()) {
+        return null;
+      }
+      String baseName = selector;
+      int firstColon = selector.indexOf(':');
+      if (firstColon != -1) {
+        baseName = selector.substring(0, firstColon);
+      }
+      if (originalMethodParameters.isEmpty()) {
+        return baseName + "()";
+      }
+      StringBuilder sb = new StringBuilder(baseName).append("(");
+      for (VariableElement param : originalMethodParameters) {
+        String paramName = param.getSimpleName().toString();
+        if (paramName.isEmpty()) {
+          sb.append("_:");
+        } else {
+          sb.append(paramName).append(":");
+        }
+      }
+      sb.append(")");
+      return sb.toString();
+    }
+
+    private void attachSwiftNameAnnotation(GeneratedExecutableElement adapterMethodExecutable) {
+      AnnotationMirror existingSwiftName =
+          ElementUtil.getAnnotation(adapterMethodExecutable, SwiftName.class);
+      if (existingSwiftName != null) {
+        adapterMethodExecutable.removeAnnotationMirror(existingSwiftName);
+      }
+      String effectiveSwiftName = getOrComputeSwiftName();
+      if (effectiveSwiftName == null || effectiveSwiftName.isEmpty()) {
+        return;
+      }
+      TypeElement swiftNameElement = typeUtil.resolveJavaType(SwiftName.class.getName());
+      DeclaredType swiftNameType = (DeclaredType) swiftNameElement.asType();
+      GeneratedAnnotationMirror annotationMirror = new GeneratedAnnotationMirror(swiftNameType);
+      ExecutableElement valueElement =
+          GeneratedExecutableElement.newMethodWithSelector(
+              "value", typeUtil.getJavaString().asType(), swiftNameElement);
+      adapterMethodExecutable.addAnnotationMirror(annotationMirror);
+      annotationMirror.addElementValue(
+          valueElement, new GeneratedAnnotationValue(effectiveSwiftName));
+    }
+
+    private void generateInterfaceMethodDeclaration(TypeMirror adapterReturnType) {
+      ParameterMapping mapping = processParameters();
+      GeneratedExecutableElement adapterMethodExecutable =
+          GeneratedExecutableElement.newAdapterMethod(
+              selector, adapterReturnType, mapping.adapterParameters(), originalMethodExecutable);
+      attachSwiftNameAnnotation(adapterMethodExecutable);
+
+      // 1. Declare the adapted KMP method on the @protocol.
+      // Example: - (void)setItems:(NSArray<NSString *> *)items;
+      // (The unadapted method declaration was already marked @optional in visit()).
+      typeNode.addBodyDeclaration(
+          createAdapterMethodDeclaration(
+              adapterMethodExecutable,
+              /* adapterBodyBlock= */ null,
+              mapping.adapterParameters(),
+              /* isInterface= */ true));
+
+      // 2. Generate the static C dispatch helper function that checks respondsToSelector:
+      // at runtime to dispatch to either the JVM selector or the adapted Objective-C selector.
+      typeNode.addBodyDeclaration(
+          generateInterfaceDispatchHelper(adapterMethodExecutable, mapping.adaptingArguments()));
+    }
+
+    private void generateAbstractInstanceMethodDeclaration(TypeMirror adapterReturnType) {
+      ParameterMapping mapping = processParameters();
+      List<Expression> adaptingArguments = mapping.adaptingArguments();
+      List<VariableElement> adapterParameters = mapping.adapterParameters();
+
+      GeneratedExecutableElement adapterMethodExecutable =
+          GeneratedExecutableElement.newAdapterMethod(
+              selector, adapterReturnType, adapterParameters, originalMethodExecutable);
+      attachSwiftNameAnnotation(adapterMethodExecutable);
+
+      Block adapterBodyBlock = new Block();
+      String bodyCode =
+          "// can't call an abstract method\n" + "[self doesNotRecognizeSelector:_cmd];";
+      if (!TypeUtil.isVoid(adapterReturnType)) {
+        bodyCode += "\nreturn 0;";
+      }
+      adapterBodyBlock.addStatement(new NativeStatement(bodyCode));
+
+      MethodDeclaration adapterMethodDeclaration =
+          createAdapterMethodDeclaration(
+              adapterMethodExecutable, adapterBodyBlock, adapterParameters, false);
+
+      typeNode.addBodyDeclaration(adapterMethodDeclaration);
+
+      // Now modify original method to call adapter
+      Block bodyBlock =
+          createAdaptedInvocationBlock(
+              adapterMethodExecutable, /* receiver= */ null, adaptingArguments);
+
+      // Find the method declaration in typeNode and update it, or synthesize a bridge declaration
+      // if the abstract class inherited the method without redeclaring it.
+      MethodDeclaration md = findMethodDeclaration(typeNode, originalMethodExecutable);
+      if (md != null) {
+        md.setBody(bodyBlock);
+        md.removeModifiers(ABSTRACT);
+        return;
+      }
+      // Remove any abstract return-type-narrowing stub added earlier by AbstractMethodRewriter.
+      typeNode
+          .getBodyDeclarations()
+          .removeIf(decl ->
+              decl instanceof MethodDeclaration methodDecl
+                  && methodDecl.getExecutableElement() instanceof GeneratedExecutableElement gee
+                  && ElementUtil.isAbstract(gee)
+                  && originalMethodExecutable.equals(gee.getOriginalElement()));
+      typeNode.addBodyDeclaration(createBridgeMethodDeclaration(bodyBlock));
+    }
+
+    private Block createAdaptedInvocationBlock(
+        GeneratedExecutableElement targetMethod,
+        @Nullable Expression receiver,
+        List<Expression> arguments) {
+      MethodInvocation invocation =
+          new MethodInvocation(new ExecutablePair(targetMethod), receiver);
+      arguments.forEach(invocation::addArgument);
+      return new Block()
+          .addStatement(
+              typeConverter.createReturnStatement(
+                  adapter,
+                  MappingStrategy.JAVA_TO_NATIVE,
+                  originalMethodExecutable,
+                  originalMethodReturnType,
+                  invocation,
+                  originalMethodReturnType));
+    }
+
+    private FunctionDeclaration createDispatchFunctionSkeleton(
+        ExecutableElement executableElement) {
+      TypeElement ownerType = typeNode.getTypeElement();
+      VariableElement selfParam =
+          GeneratedVariableElement.newParameter(
+              NameTable.SELF_NAME, ownerType.asType(), executableElement);
+      FunctionDeclaration functionDecl =
+          new FunctionDeclaration(
+              getDispatchFunctionName(ownerType, originalMethodExecutable),
+              originalMethodReturnType,
+              executableElement);
+      functionDecl.addParameter(new SingleVariableDeclaration(selfParam));
+      for (VariableElement param : originalMethodParameters) {
+        functionDecl.addParameter(new SingleVariableDeclaration(param));
+      }
+      return functionDecl;
+    }
+
+    /**
+     * Generates a C dispatch helper function for an overridable concrete class method annotated
+     * with {@code @ObjectiveCKmpMethod}, adapting Java arguments and invoking the adapted selector
+     * on {@code self}.
+     */
+    private FunctionDeclaration generateConcreteDispatchHelper(
+        GeneratedExecutableElement adapterMethodExecutable, List<Expression> adaptingArguments) {
+      String dispatchFunctionName =
+          getDispatchFunctionName(typeNode.getTypeElement(), originalMethodExecutable);
+      GeneratedExecutableElement dispatchExecutable =
+          GeneratedExecutableElement.newMethodWithSelector(
+              dispatchFunctionName, originalMethodReturnType, /* enclosingElement= */ null);
+      dispatchExecutable.addAnnotationMirrors(originalMethodExecutable.getAnnotationMirrors());
+      FunctionDeclaration functionDecl = createDispatchFunctionSkeleton(dispatchExecutable);
+      VariableElement selfParam = functionDecl.getParameter(0).getVariableElement();
+      functionDecl.setBody(
+          createAdaptedInvocationBlock(
+              adapterMethodExecutable, new SimpleName(selfParam), adaptingArguments));
+      return functionDecl;
+    }
+
+    /**
+     * Generates a static C dispatch helper function for an interface method annotated with
+     * {@code @ObjectiveCKmpMethod}.
+     *
+     * <p>Java call sites targeting interface methods are rewritten to invoke this function instead
+     * of dispatching Objective-C messages directly. At runtime, the receiver instance may either
+     * be:
+     *
+     * <ul>
+     *   <li>A transpiled Java class implementing the interface, which implements the unadapted JVM
+     *       selector.
+     *   <li>A native Objective-C or Swift class conforming to the transpiled {@code @protocol},
+     *       which only implements the adapted Objective-C selector.
+     * </ul>
+     *
+     * <p>The helper checks {@code [self respondsToSelector:]} on the unadapted selector first. If
+     * implemented, it dispatches directly; otherwise, it adapts arguments and invokes the adapted
+     * selector.
+     *
+     * <p>When {@code originalMethodExecutable} is a {@code default} method, a 3-way fallback is
+     * generated: if the receiver implements neither the unadapted nor the adapted selector (e.g. a
+     * native Objective-C class that inherits the protocol default method without overriding it),
+     * the helper falls back to invoking the interface's default method implementation function.
+     */
+    private FunctionDeclaration generateInterfaceDispatchHelper(
+        GeneratedExecutableElement adapterMethodExecutable, List<Expression> adaptingArguments) {
+      // 1. Build the static C function declaration with `self` as the first parameter.
+      // Example:
+      //   void MyInterface_setItemsWith..._dispatch(id<MyInterface> self,
+      // ComGoogleCommonCollectImmutableList *items)
+      FunctionDeclaration functionDecl = createDispatchFunctionSkeleton(originalMethodExecutable);
+      VariableElement selfParam = functionDecl.getParameter(0).getVariableElement();
+
+      // 2. Direct invocation on `self` using the unadapted JVM selector.
+      // Fast path for Java classes implementing the interface.
+      // Example: [self setItemsWithComGoogleCommonCollectImmutableList:items];
+      String selfName = nameTable.getVariableShortName(selfParam);
+      MethodInvocation directInvocation =
+          new MethodInvocation(
+              new ExecutablePair(originalMethodExecutable), new SimpleName(selfParam));
+      for (VariableElement param : originalMethodParameters) {
+        directInvocation.addArgument(new SimpleName(param));
+      }
+
+      // 3. Adapted invocation on `self` using the KMP adapted selector with converted arguments.
+      // Fallback for native Objective-C/Swift classes conforming to the @protocol.
+      // Example: [self setItems:(NSArray *) [ImmutableListAdapter fromImmutableListWith...:items]];
+      Block adaptedBlock =
+          createAdaptedInvocationBlock(
+              adapterMethodExecutable, new SimpleName(selfParam), adaptingArguments);
+
+      // 4. Runtime check routing between direct invocation and fallback:
+      //   if ([self
+      // respondsToSelector:@selector(setItemsWithComGoogleCommonCollectImmutableList:)]) {
+      //     [self setItemsWithComGoogleCommonCollectImmutableList:items];
+      //   } else if (isDefaultMethod && ![self respondsToSelector:@selector(setItems:)]) {
+      //     Interface_setItems(self, items); // default method implementation
+      //   } else {
+      //     [self setItems:(NSArray *) [ImmutableListAdapter fromImmutableListWith...:items]];
+      //   }
+      Statement elseStatement =
+          ElementUtil.isDefault(originalMethodExecutable)
+              ? createDefaultMethodFallback(selfName, selfParam, adaptedBlock)
+              : adaptedBlock;
+      String originalSelector = nameTable.getMethodSelector(originalMethodExecutable);
+      IfStatement ifStatement =
+          new IfStatement()
+              .setExpression(
+                  new NativeExpression(
+                      "[" + selfName + " respondsToSelector:@selector(" + originalSelector + ")]",
+                      typeUtil.getBoolean()))
+              .setThenStatement(createReturnOrExpressionBlock(directInvocation))
+              .setElseStatement(elseStatement);
+      functionDecl.setBody(new Block().addStatement(ifStatement));
+      return functionDecl;
+    }
+
+    private Statement createDefaultMethodFallback(
+        String selfName, VariableElement selfParam, Block adaptedBlock) {
+      FunctionInvocation defaultInvocation =
+          createForwardingFunctionInvocation(
+              createDefaultMethodFunctionElement(originalMethodExecutable),
+              originalMethodReturnType,
+              new SimpleName(selfParam),
+              originalMethodParameters);
+      return new IfStatement()
+          .setExpression(
+              new NativeExpression(
+                  "[" + selfName + " respondsToSelector:@selector(" + selector + ")]",
+                  typeUtil.getBoolean()))
+          .setThenStatement(adaptedBlock)
+          .setElseStatement(createReturnOrExpressionBlock(defaultInvocation));
+    }
+
+    private FunctionInvocation createForwardingFunctionInvocation(
+        FunctionElement targetFunction,
+        TypeMirror returnType,
+        Expression receiver,
+        List<? extends VariableElement> parameters) {
+      FunctionInvocation invocation = new FunctionInvocation(targetFunction, returnType);
+      invocation.addArgument(receiver);
+      for (VariableElement param : parameters) {
+        invocation.addArgument(new SimpleName(param));
+      }
+      return invocation;
+    }
+
+    /** Wraps {@code expression} in a return statement, or an expression statement if void. */
+    private Block createReturnOrExpressionBlock(Expression expression) {
+      return new Block()
+          .addStatement(
+              TypeUtil.isVoid(originalMethodReturnType)
+                  ? new ExpressionStatement(expression)
+                  : new ReturnStatement(expression));
+    }
+
+    /**
+     * Synthesizes a concrete unadapted bridge method (for abstract-class or {@code [super ...]}
+     * delegation) with {@code bodyBlock}.
+     */
+    private MethodDeclaration createBridgeMethodDeclaration(Block bodyBlock) {
+      String originalSelector = nameTable.getMethodSelector(originalMethodExecutable);
+      GeneratedExecutableElement bridgeExecutable =
+          GeneratedExecutableElement.newMethodWithSelector(
+                  originalSelector, originalMethodReturnType, typeNode.getTypeElement())
+              .addModifiers(originalMethodExecutable.getModifiers())
+              .removeModifiers(Modifier.ABSTRACT, Modifier.DEFAULT)
+              .setOriginalElement(originalMethodExecutable);
+      bridgeExecutable
+          .addAnnotationMirrors(originalMethodExecutable.getAnnotationMirrors())
+          .removeAnnotationMirror(
+              ElementUtil.getAnnotation(bridgeExecutable, ObjectiveCKmpMethod.class))
+          .removeAnnotationMirror(ElementUtil.getAnnotation(bridgeExecutable, SwiftName.class));
+
+      MethodDeclaration bridgeDeclaration =
+          new MethodDeclaration(bridgeExecutable).setBody(bodyBlock);
+      for (VariableElement param : originalMethodParameters) {
+        bridgeExecutable.addParameter(param);
+        bridgeDeclaration.addParameter(new SingleVariableDeclaration(param));
+      }
+      return bridgeDeclaration;
+    }
+
+    private FunctionInvocation createConstructorInvocation(TypeElement declaringClass) {
+      String functionName = nameTable.getFullFunctionName(originalMethodExecutable);
+      FunctionElement funcElement =
+          new FunctionElement(functionName, typeUtil.getVoid(), declaringClass);
+      funcElement.addParameters(declaringClass.asType()); // self
+      funcElement.addParameters(ElementUtil.asTypes(originalMethodExecutable.getParameters()));
+      return new FunctionInvocation(funcElement, typeUtil.getVoid());
+    }
+
+    private void generateConstructorFunctionDeclaration() {
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(originalMethodExecutable);
+
+      ParameterMapping mapping = processParameters();
+      List<Expression> adaptingArguments = mapping.adaptingArguments();
+      List<VariableElement> adapterParameters = mapping.adapterParameters();
+
+      FunctionInvocation functionInvocation = createConstructorInvocation(declaringClass);
+
+      Block functionBodyBlock = new Block();
+
+      // Generate C-style function
+      String selectorName = selector.replaceAll(":", "_");
+      String cFunctionName = nameTable.getFullName(declaringClass) + "_" + selectorName;
+      FunctionDeclaration functionDecl =
+          new FunctionDeclaration(cFunctionName, typeUtil.getVoid(), originalMethodExecutable);
+
+      VariableElement selfParam =
+          GeneratedVariableElement.newParameter(
+              "self", declaringClass.asType(), originalMethodExecutable);
+      functionDecl.getParameters().add(new SingleVariableDeclaration(selfParam));
+
+      for (VariableElement adapterParam : adapterParameters) {
+        functionDecl.getParameters().add(new SingleVariableDeclaration(adapterParam));
+      }
+
+      List<Expression> functionArgs = functionInvocation.getArguments();
+      functionArgs.add(new SimpleName(selfParam));
+      for (Expression arg : adaptingArguments) {
+        functionArgs.add((Expression) arg.copy());
+      }
+
+      functionBodyBlock.addStatement(new ExpressionStatement(functionInvocation));
+      functionDecl.setBody(functionBodyBlock);
+
+      typeNode.addBodyDeclaration(functionDecl);
+
+      generateConstructorHelperFunction(
+          "new_", declaringClass, adapterParameters, adaptingArguments);
+      generateConstructorHelperFunction(
+          "create_", declaringClass, adapterParameters, adaptingArguments);
+    }
+
+    private void generateConstructorHelperFunction(
+        String prefix,
+        TypeElement declaringClass,
+        List<VariableElement> adapterParameters,
+        List<Expression> adaptingArguments) {
+
+      String originalFunctionName = nameTable.getFullFunctionName(originalMethodExecutable);
+      String delegatedFunctionName = prefix + originalFunctionName;
+
+      String selectorName = selector.replaceAll(":", "_");
+      String functionName = prefix + nameTable.getFullName(declaringClass) + "_" + selectorName;
+
+      FunctionDeclaration functionDecl =
+          new FunctionDeclaration(functionName, declaringClass.asType(), originalMethodExecutable);
+
+      functionDecl
+          .getParameters()
+          .addAll(
+              adapterParameters.stream()
+                  .map(SingleVariableDeclaration::new)
+                  .collect(toImmutableList()));
+
+      FunctionElement delegatedFuncElement =
+          new FunctionElement(delegatedFunctionName, declaringClass.asType(), declaringClass);
+
+      FunctionInvocation invocation =
+          new FunctionInvocation(delegatedFuncElement, declaringClass.asType());
+      for (Expression arg : adaptingArguments) {
+        invocation.addArgument((Expression) arg.copy());
+      }
+
+      Block bodyBlock = new Block();
+      bodyBlock.addStatement(new ReturnStatement(invocation));
+      functionDecl.setBody(bodyBlock);
+
+      typeNode.addBodyDeclaration(functionDecl);
+    }
+
+    private void generateConstructorMethodDeclaration(TypeMirror adapterReturnType) {
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(originalMethodExecutable);
+
+      ParameterMapping mapping = processParameters();
+      List<Expression> adaptingArguments = mapping.adaptingArguments();
+      List<VariableElement> adapterParameters = mapping.adapterParameters();
+
+      FunctionInvocation functionInvocation = createConstructorInvocation(declaringClass);
+
+      GeneratedExecutableElement adapterMethodExecutable =
+          GeneratedExecutableElement.newAdapterMethod(
+              selector, adapterReturnType, adapterParameters, originalMethodExecutable);
+      attachSwiftNameAnnotation(adapterMethodExecutable);
+
+      List<Expression> args = functionInvocation.getArguments();
+      args.add(new ThisExpression(declaringClass.asType()));
+
+      args.addAll(adaptingArguments);
+
+      Block adapterBodyBlock = new Block();
+      adapterBodyBlock.addStatement(new ExpressionStatement(functionInvocation));
+      adapterBodyBlock.addStatement(
+          new ReturnStatement(new ThisExpression(declaringClass.asType())));
+
+      MethodDeclaration adapterMethodDeclaration =
+          createAdapterMethodDeclaration(
+              adapterMethodExecutable, adapterBodyBlock, adapterParameters, isInterface);
+
+      typeNode.addBodyDeclaration(adapterMethodDeclaration);
+    }
+
+    private void addMethodDeclaration(
+        GeneratedExecutableElement adapterMethodExecutable,
+        Expression adaptingMethodInvocation,
+        TypeMirror adapterReturnType,
+        List<VariableElement> adapterParameters) {
+      Block adapterBodyBlock = new Block();
+      // Create the return statement for the adapter method body. This might involve
+      // converting the result from the original method call back to a native type.
+      adapterBodyBlock.addStatement(
+          createReturnStatement(adaptingMethodInvocation, adapterReturnType));
+
+      MethodDeclaration adapterMethodDeclaration =
+          createAdapterMethodDeclaration(
+              adapterMethodExecutable, adapterBodyBlock, adapterParameters, isInterface);
+      // Add the new adapter method to the class declaration.
+      typeNode.addBodyDeclaration(adapterMethodDeclaration);
+    }
+
+    private ParameterMapping processParameters() {
+      return processParameters(strategy);
+    }
+
+    private ParameterMapping processParameters(MappingStrategy mappingStrategy) {
+      return typeConverter.processParameters(
+          adapter, mappingStrategy, originalMethodExecutable, originalMethodParameters);
+    }
+
+    private Statement createReturnStatement(
+        Expression adaptingMethodInvocation, TypeMirror adapterReturnType) {
+      return typeConverter.createReturnStatement(
+          adapter,
+          strategy,
+          originalMethodExecutable,
+          originalMethodReturnType,
+          adaptingMethodInvocation,
+          adapterReturnType);
+    }
+
+    private MethodDeclaration createAdapterMethodDeclaration(
+        GeneratedExecutableElement adapterMethodExecutable,
+        Block adapterBodyBlock,
+        List<VariableElement> adapterParameters,
+        boolean isInterface) {
+      MethodDeclaration adapterMethodDeclaration =
+          new MethodDeclaration(adapterMethodExecutable)
+              .setExecutableElement(adapterMethodExecutable);
+      adapterMethodDeclaration.getParameters().clear();
+      if (!isInterface) {
+        adapterMethodDeclaration.setBody(adapterBodyBlock);
+      } else {
+        adapterMethodDeclaration.removeModifiers(STATIC);
+        adapterMethodDeclaration.addModifiers(ABSTRACT);
+      }
+      for (VariableElement adapterParam : adapterParameters) {
+        adapterMethodDeclaration.addParameter(new SingleVariableDeclaration(adapterParam));
+      }
+      return adapterMethodDeclaration;
+    }
+  }
+}
