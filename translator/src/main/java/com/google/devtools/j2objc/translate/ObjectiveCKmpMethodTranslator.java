@@ -276,10 +276,10 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
         ExecutablePair method = allMethods.get(signature);
 
         boolean shouldGenerate;
-        MappingStrategy strategy = MappingStrategy.CONCRETE;
+        MappingStrategy strategy = MappingStrategy.NATIVE_TO_JAVA;
 
         if (isInterface) {
-          strategy = MappingStrategy.ABSTRACT;
+          strategy = MappingStrategy.JAVA_TO_NATIVE;
           MethodDeclaration unadaptedDecl = findMethodDeclaration(typeNode, method.element());
           if (unadaptedDecl != null) {
             unadaptedDecl.setOptional(true);
@@ -295,7 +295,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
         } else {
           AdapterGenerator superGen = getSupertypeAdapterGenerator(signature);
           if (ElementUtil.isAbstract(method.element())) {
-            strategy = MappingStrategy.ABSTRACT;
+            strategy = MappingStrategy.JAVA_TO_NATIVE;
             // Generate if declared on this class, or if inherited by an abstract class from an
             // interface rather than an abstract superclass that already generated them.
             shouldGenerate =
@@ -334,7 +334,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
                       /* originalMethod= */ entry.getValue(),
                       /* annotation= */ superGen.annotatedSignatures.get(signature),
                       /* isInterface= */ false,
-                      MappingStrategy.CONCRETE);
+                      MappingStrategy.NATIVE_TO_JAVA);
               adapterContext.processMethod();
             }
           }
@@ -671,7 +671,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
         }
       } else if (isInterface) {
         generateInterfaceMethodDeclaration(adapterReturnType);
-      } else if (strategy == MappingStrategy.ABSTRACT) {
+      } else if (strategy == MappingStrategy.JAVA_TO_NATIVE) {
         generateAbstractInstanceMethodDeclaration(adapterReturnType);
       } else {
         generateInstanceMethodDeclaration(adapterReturnType);
@@ -1545,8 +1545,10 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     }
   }
 
+  /** Direction in which a generated wrapper delegates calls across the language boundary. */
   private enum MappingStrategy {
-    CONCRETE {
+    /** Delegates from a native Objective-C entry point to a Java implementation. */
+    NATIVE_TO_JAVA {
       @Override
       AdapterLookup.ConverterMatch findReturnConverter(
           AdapterLookup lookup, TypeElement adapterClass, TypeMirror type) {
@@ -1570,7 +1572,8 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
         return adapterReturnType;
       }
     },
-    ABSTRACT {
+    /** Delegates from a Java entry point or dispatch helper to a native Objective-C selector. */
+    JAVA_TO_NATIVE {
       @Override
       AdapterLookup.ConverterMatch findReturnConverter(
           AdapterLookup lookup, TypeElement adapterClass, TypeMirror type) {
