@@ -193,6 +193,12 @@ class CGPCodedInputStream {
   // be passed unchanged to the corresponding call to PopLimit().
   Limit PushLimit(int byte_limit);
 
+  // Places a limit on the number of bytes that the stream may read,
+  // starting from the current position. Fails and leaves the stream limit
+  // unchanged if |byte_limit| is negative, overflows INT_MAX, or exceeds the
+  // currently active stream limit.
+  bool TryPushLimit(int byte_limit, Limit* old_limit);
+
   // Pops the last limit pushed by PushLimit().  The input must be the value
   // returned by that call to PushLimit().
   void PopLimit(Limit limit);
@@ -203,6 +209,9 @@ class CGPCodedInputStream {
 
   // Returns current position relative to the beginning of the input stream.
   int CurrentPosition() const;
+
+  // Returns the number of unread bytes currently in memory, clamped to any active limit.
+  int BufferSize() const;
 
   // J2ObjC additions ------------------------------------------------
   bool ReadRetainedNSString(NSString **value);
@@ -276,9 +285,6 @@ class CGPCodedInputStream {
 #ifdef __cplusplus
   bool ReadStringFallback(string* buffer, int size);
 #endif
-
-  // Return the size of the buffer.
-  int BufferSize() const;
 };
 
 // inline methods ====================================================

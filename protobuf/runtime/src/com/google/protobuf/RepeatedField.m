@@ -30,6 +30,8 @@
 
 #import "com/google/protobuf/RepeatedField.h"
 #import <Foundation/Foundation.h>
+#import <limits.h>
+#import <stdint.h>
 
 #import "J2ObjC_source.h"
 #import "com/google/protobuf/ByteString.h"
@@ -37,18 +39,42 @@
 #import "com/google/protobuf/ProtocolStringList.h"
 #import "java/lang/IndexOutOfBoundsException.h"
 #import "java/lang/Integer.h"
+#import "java/lang/OutOfMemoryError.h"
 #import "java/util/AbstractList.h"
 #import "java/util/ArrayList.h"
 
+// Initial element capacity when an empty repeated field first allocates storage.
 #define MIN_REPEATED_FIELD_SIZE 4
 
-static CGPRepeatedFieldData *NewData() {
-  CGPRepeatedFieldData *data = calloc(sizeof(CGPRepeatedFieldData), 1);
-  __c11_atomic_store(&data->ref_count, 1, __ATOMIC_RELAXED);
+// J2ObjC_common.h has no JreThrowOutOfMemoryError() helper; use the generated create_*_init()
+// factory so class initialization and ARC/MRC autorelease conventions match translated code.
+static __attribute__((noreturn)) void ThrowOutOfMemoryError(void) {
+  @throw create_JavaLangOutOfMemoryError_init();
+}
+
+// Allocates a zeroed repeated-field header with ref_count = 1, or returns NULL on OOM.
+static CGPRepeatedFieldData *NewDataOrNull(void) {
+  CGPRepeatedFieldData *data = calloc(1, sizeof(CGPRepeatedFieldData));
+  if (data != NULL) {
+    __c11_atomic_store(&data->ref_count, 1, __ATOMIC_RELAXED);
+  }
+  return data;
+}
+
+static CGPRepeatedFieldData *NewData(void) {
+  CGPRepeatedFieldData *data = NewDataOrNull();
+  if (data == NULL) {
+    ThrowOutOfMemoryError();
+  }
   return data;
 }
 
 void CGPRepeatedFieldReserve(CGPRepeatedField *field, uint32_t new_size, size_t elemSize) {
+  // Repeated fields back Java Lists whose size is a signed 32-bit jint.
+  if (new_size > (uint32_t)INT_MAX) {
+    ThrowOutOfMemoryError();
+  }
+
   CGPRepeatedFieldData *data = field->data;
   if (data == NULL) {
     data = field->data = NewData();
@@ -58,11 +84,25 @@ void CGPRepeatedFieldReserve(CGPRepeatedField *field, uint32_t new_size, size_t 
     return;
   }
 
-  uint32_t newTotalSize = MAX(MIN_REPEATED_FIELD_SIZE, MAX(data->total_size * 2, new_size));
+  // Clamp capacity doubling at INT_MAX and check byte-count multiplication for size_t overflow.
+  uint32_t doubledSize =
+      data->total_size > (uint32_t)INT_MAX / 2 ? (uint32_t)INT_MAX : data->total_size * 2;
+  uint32_t newTotalSize = MAX(MIN_REPEATED_FIELD_SIZE, MAX(doubledSize, new_size));
   uint32_t oldTotalSize = data->total_size;
+  if (elemSize != 0 && (size_t)newTotalSize > SIZE_MAX / elemSize) {
+    ThrowOutOfMemoryError();
+  }
+  size_t allocationBytes = (size_t)newTotalSize * elemSize;
+  // Allocate into a temporary pointer before updating data so existing elements stay valid on OOM.
+  void *newBuffer = realloc(data->buffer, allocationBytes);
+  if (newBuffer == NULL && allocationBytes > 0) {
+    ThrowOutOfMemoryError();
+  }
+  if (allocationBytes > 0) {
+    bzero((uint8_t *)newBuffer + elemSize * oldTotalSize, elemSize * (newTotalSize - oldTotalSize));
+  }
+  data->buffer = newBuffer;
   data->total_size = newTotalSize;
-  data->buffer = realloc(data->buffer, newTotalSize * elemSize);
-  bzero(data->buffer + elemSize * oldTotalSize, elemSize * (newTotalSize - oldTotalSize));
 }
 
 void CGPRepeatedFieldCopyData(CGPRepeatedField *field, CGPFieldJavaType type) {
@@ -72,15 +112,32 @@ void CGPRepeatedFieldCopyData(CGPRepeatedField *field, CGPFieldJavaType type) {
   }
 
   size_t elemSize = CGPGetTypeSize(type);
-  CGPRepeatedFieldData *newData = NewData();
+  // Check byte-size multiplication for overflow, and finish allocations before replacing
+  // field->data.
+  if (elemSize != 0 && (size_t)oldData->size > SIZE_MAX / elemSize) {
+    ThrowOutOfMemoryError();
+  }
+  size_t bufferBytes = (size_t)oldData->size * elemSize;
+  void *copiedBuffer = NULL;
+  if (bufferBytes > 0) {
+    copiedBuffer = malloc(bufferBytes);
+    if (copiedBuffer == NULL) {
+      ThrowOutOfMemoryError();
+    }
+    memcpy(copiedBuffer, oldData->buffer, bufferBytes);
+  }
+  CGPRepeatedFieldData *newData = NewDataOrNull();
+  if (newData == NULL) {
+    free(copiedBuffer);
+    ThrowOutOfMemoryError();
+  }
   newData->size = newData->total_size = oldData->size;
+  newData->buffer = copiedBuffer;
   field->data = newData;
-  newData->buffer = malloc(newData->size * elemSize);
-  memcpy(newData->buffer, oldData->buffer, newData->size * elemSize);
 
   if (CGPIsRetainedType(type)) {
-    for (uint32_t i = 0; i < newData->size; i++) {
-      RETAIN_(((id *)newData->buffer)[i]);
+    for (uint32_t index = 0; index < newData->size; index++) {
+      RETAIN_(((id *)newData->buffer)[index]);
     }
   }
 }
@@ -91,16 +148,15 @@ void CGPRepeatedFieldAppendOther(CGPRepeatedField *field, CGPRepeatedField *othe
   if (otherSize == 0) {
     return;
   }
-  uint32_t fieldSize = CGPRepeatedFieldSize(field);
   size_t elemSize = CGPGetTypeSize(type);
-  CGPRepeatedFieldReserve(field, fieldSize + otherSize, elemSize);
+  CGPRepeatedFieldReserveAdditionalCapacity(field, otherSize, elemSize);
   CGPRepeatedFieldData *data = field->data;
   uint8_t *newBuffer = (uint8_t *)data->buffer + data->size * elemSize;
   memcpy(newBuffer, other->data->buffer, otherSize * elemSize);
   data->size += otherSize;
   if (CGPIsRetainedType(type)) {
-    for (uint32_t i = 0; i < otherSize; i++) {
-      RETAIN_(((id *)newBuffer)[i]);
+    for (uint32_t index = 0; index < otherSize; index++) {
+      RETAIN_(((id *)newBuffer)[index]);
     }
   }
 }
@@ -179,10 +235,7 @@ static void CGPRepeatedFieldAddUnsafe(CGPRepeatedFieldData *data, id value, CGPF
 }
 
 void CGPRepeatedFieldAdd(CGPRepeatedField *field, id value, CGPFieldJavaType type) {
-  uint32_t total_size = CGPRepeatedFieldTotalSize(field);
-  if (CGPRepeatedFieldSize(field) == total_size) {
-    CGPRepeatedFieldReserve(field, total_size + 1, CGPGetTypeSize(type));
-  }
+  CGPRepeatedFieldReserveAdditionalCapacity(field, 1, CGPGetTypeSize(type));
   CGPRepeatedFieldAddUnsafe(field->data, value, type);
 }
 
@@ -190,9 +243,12 @@ void CGPRepeatedFieldAssignFromList(CGPRepeatedField *field, id<JavaUtilList> li
                                     CGPFieldJavaType type) {
   CGPRepeatedFieldClear(field, type);
 
-  CGPRepeatedFieldReserve(field, [list size], CGPGetTypeSize(type));
-  for (id elem in list) {
-    CGPRepeatedFieldAddUnsafe(field->data, elem, type);
+  jint listSize = [list size];
+  if (listSize > 0) {
+    CGPRepeatedFieldReserve(field, (uint32_t)listSize, CGPGetTypeSize(type));
+    for (id elem in list) {
+      CGPRepeatedFieldAddUnsafe(field->data, elem, type);
+    }
   }
 }
 

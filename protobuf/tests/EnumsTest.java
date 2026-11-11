@@ -13,6 +13,7 @@
  */
 
 import com.google.protobuf.ExtensionRegistry;
+import com.google.protobuf.InvalidProtocolBufferException;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,6 +112,74 @@ public class EnumsTest extends ProtobufTest {
 
     Foo foo = Foo.parseFrom(new byte[] {0x08, 0x7f}, ExtensionRegistry.getEmptyRegistry());
     assertEquals(SomeEnum.UNKNOWN, foo.getE());
+  }
+
+  public void testParsePackedEnumsWithInvalidLengthThrowsException() throws Exception {
+    byte[][] invalidPayloads = {
+      // Packed enum_p (tag 0xCA, 0x02) with 0x80000000 length and trailing byte.
+      asBytes(new int[] {0xCA, 0x02, 0x80, 0x80, 0x80, 0x80, 0x08, 0x01}),
+      // Packed enum_p (tag 0xCA, 0x02) with 0xFFFFFFFF length and trailing byte.
+      asBytes(new int[] {0xCA, 0x02, 0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0x01}),
+      // Packed enum_p (tag 0xCA, 0x02) with 10-byte varint -1 and trailing byte.
+      asBytes(
+          new int[] {0xCA, 0x02, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x01}),
+      // Packed enum_p (tag 0xCA, 0x02) with 0x40000000 length and truncated varint.
+      asBytes(new int[] {0xCA, 0x02, 0x80, 0x80, 0x80, 0x80, 0x04, 0x80}),
+    };
+
+    for (byte[] payload : invalidPayloads) {
+      assertInvalidEnumMsgThrows(payload, ExtensionRegistry.getEmptyRegistry());
+    }
+  }
+
+  public void testParsePackedEnumsWithOverflowOrExtensionLengthThrowsException() throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.newInstance();
+    EnumFields.registerAllExtensions(registry);
+
+    byte[][] invalidPayloads = {
+      // Packed enum_p (tag 0xCA, 0x02) with INT_MAX (0x7FFFFFFF) overflowing relative limit.
+      asBytes(new int[] {0xCA, 0x02, 0xFF, 0xFF, 0xFF, 0xFF, 0x07, 0x01}),
+      // Packed enum_p (tag 0xCA, 0x02) with truncated positive length (claims 5, only 1 present).
+      asBytes(new int[] {0xCA, 0x02, 0x05, 0x01}),
+      // Packed extension enum_pe (tag 0x8A, 0x41) with 0x80000000 length.
+      asBytes(new int[] {0x8A, 0x41, 0x80, 0x80, 0x80, 0x80, 0x08, 0x01}),
+      // Packed extension enum_pe (tag 0x8A, 0x41) with 0xFFFFFFFF length.
+      asBytes(new int[] {0x8A, 0x41, 0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0x01}),
+      // Packed extension enum_pe (tag 0x8A, 0x41) with INT_MAX (0x7FFFFFFF) length.
+      asBytes(new int[] {0x8A, 0x41, 0xFF, 0xFF, 0xFF, 0xFF, 0x07, 0x01}),
+      // Packed extension enum_pe (tag 0x8A, 0x41) with truncated positive length.
+      asBytes(new int[] {0x8A, 0x41, 0x05, 0x01}),
+    };
+
+    for (byte[] payload : invalidPayloads) {
+      assertInvalidEnumMsgThrows(payload, registry);
+    }
+  }
+
+  private static void assertInvalidEnumMsgThrows(byte[] wireBytes, ExtensionRegistry registry)
+      throws Exception {
+    try {
+      EnumMsg.parseFrom(wireBytes, registry);
+      fail("Expected InvalidProtocolBufferException");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected for invalid or truncated packed enum field lengths.
+    }
+
+    try {
+      EnumMsg.parseFrom(new ByteArrayInputStream(wireBytes), registry);
+      fail("Expected InvalidProtocolBufferException");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected for invalid or truncated packed enum field lengths.
+    }
+
+    try {
+      @SuppressWarnings("unused")
+      EnumMsg unusedMessage =
+          EnumMsg.newBuilder().mergeFrom(new ByteArrayInputStream(wireBytes), registry).build();
+      fail("Expected InvalidProtocolBufferException");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected for invalid or truncated packed enum field lengths.
+    }
   }
 
   private void checkFields(EnumMsgOrBuilder msg) {
