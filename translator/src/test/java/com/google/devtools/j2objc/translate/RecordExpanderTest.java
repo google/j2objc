@@ -315,4 +315,134 @@ public class RecordExpanderTest extends GenerationTest {
          && JavaUtilObjects_equalsWithId_withId_(other->l_, l_);
         """);
   }
+
+  public void testRecordComponentPropertiesPreserveObjectiveCGenerics() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    options.setNullability(true);
+    addSourceFile("public class Box<T> {}", "Box.java");
+    addSourceFile("public class Item {}", "Item.java");
+    String translation =
+        translateSourceFile(
+            """
+            import org.jspecify.annotations.NullMarked;
+            import org.jspecify.annotations.Nullable;
+            @NullMarked
+            public record Container(Box<Item> requiredBox, @Nullable Box<Item> optionalBox) {}
+            """,
+            "Container",
+            "Container.h");
+    assertTranslatedLines(
+        translation,
+        """
+        @class Box<T>;
+        @class Item;
+        @class JavaLangBoolean;
+        @class JavaLangInteger;
+        @class NSString;
+
+        @interface Container : JavaLangRecord
+        @property (readonly, nonatomic, strong) Box<Item *> *requiredBox;
+        @property (readonly, nonatomic, nullable, strong) Box<Item *> *optionalBox;
+
+        #pragma mark Public
+
+        - (instancetype _Nonnull)initWithBox:(Box<Item *> *)requiredBox
+                                     withBox:(Box<Item *> * _Nullable)optionalBox;
+
+        - (Box<Item *> * _Nullable)optionalBox;
+
+        - (Box<Item *> *)requiredBox;
+
+        // Disallowed inherited constructors, do not use.
+
+        - (instancetype _Nonnull)init NS_UNAVAILABLE;
+
+        @end
+        """);
+  }
+
+  public void testRecordWithGenerateObjectiveCGenericsAnnotation() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.GenerateObjectiveCGenerics;
+        @GenerateObjectiveCGenerics
+        public class Box<T> {}
+        """,
+        "Box.java");
+    addSourceFile("public class Item {}", "Item.java");
+    String translation =
+        translateSourceFile(
+            """
+            import com.google.j2objc.annotations.GenerateObjectiveCGenerics;
+            @GenerateObjectiveCGenerics
+            public record Container(Box<Item> itemBox, Item[] items) {}
+            """,
+            "Container",
+            "Container.h");
+    assertTranslatedLines(
+        translation,
+        """
+        @class Box<T>;
+        @class IOSObjectArray;
+        @class Item;
+        @class JavaLangBoolean;
+        @class JavaLangInteger;
+        @class NSString;
+
+        @interface Container : JavaLangRecord
+        @property (readonly, nonatomic, strong) Box<Item *> *itemBox;
+        @property (readonly, nonatomic, strong) IOSObjectArray<Item *> *items;
+
+        #pragma mark Public
+
+        - (instancetype)initWithBox:(Box<Item *> *)itemBox
+                      withItemArray:(IOSObjectArray<Item *> *)items;
+
+        - (Box<Item *> *)itemBox;
+
+        - (IOSObjectArray<Item *> *)items;
+
+        // Disallowed inherited constructors, do not use.
+
+        - (instancetype)init NS_UNAVAILABLE;
+
+        @end
+        """);
+  }
+
+  public void testRecordComponentPropertiesEraseGenericsWhenDisabled() throws IOException {
+    addSourceFile("public class Box<T> {}", "Box.java");
+    addSourceFile("public class Item {}", "Item.java");
+    String translation =
+        translateSourceFile(
+            """
+            public record Container(Box<Item> itemBox) {}
+            """,
+            "Container",
+            "Container.h");
+    assertTranslatedLines(
+        translation,
+        """
+        @class Box;
+        @class JavaLangBoolean;
+        @class JavaLangInteger;
+        @class NSString;
+
+        @interface Container : JavaLangRecord
+        @property (readonly, nonatomic, strong) Box *itemBox;
+
+        #pragma mark Public
+
+        - (instancetype)initWithBox:(Box *)itemBox;
+
+        - (Box *)itemBox;
+
+        // Disallowed inherited constructors, do not use.
+
+        - (instancetype)init NS_UNAVAILABLE;
+
+        @end
+        """);
+    assertNotInTranslation(translation, "@class Item;");
+  }
 }

@@ -449,28 +449,26 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     ExecutableElement element = m.getExecutableElement();
     boolean allowGenerics =
         !typeUtil.isProtoClass(element.getReturnType()) && generatorAllowsGenerics;
+    boolean enclosingHasGenerics = generateObjectiveCGenerics(typeElement.asType());
     return nameTable.getObjCTypeDeclaration(
         element.getReturnType(),
         allowGenerics
-            && (generateObjectiveCGenerics(element.getReturnType())
-                || generateObjectiveCGenerics(typeElement.asType())),
-        typeElement);
+            && (generateObjectiveCGenerics(element.getReturnType()) || enclosingHasGenerics),
+        enclosingHasGenerics ? typeElement : null);
   }
 
   /**
-   * Returns the Objective-C type of a static field exposed as a companion property. Like the
-   * companion method signatures, it preserves Objective-C generics, so that the companion API
-   * matches the one exported by Kotlin/Native.
+   * Returns the Objective-C type of a field exposed as an instance or companion property,
+   * preserving Objective-C generics when enabled.
    */
-  protected String getCompanionPropertyType(VariableElement var) {
+  protected String getPropertyType(VariableElement var) {
     TypeMirror type = var.asType();
     boolean allowGenerics = !typeUtil.isProtoClass(type);
+    boolean enclosingHasGenerics = generateObjectiveCGenerics(typeElement.asType());
     return nameTable.getObjCTypeDeclaration(
         type,
-        allowGenerics
-            && (generateObjectiveCGenerics(type)
-                || generateObjectiveCGenerics(typeElement.asType())),
-        typeElement);
+        allowGenerics && (generateObjectiveCGenerics(type) || enclosingHasGenerics),
+        enclosingHasGenerics ? typeElement : null);
   }
 
   /** Create an Objective-C method signature string. */
@@ -533,13 +531,12 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
         }
         VariableElement var = params.get(i).getVariableElement();
         boolean allowGenerics = !typeUtil.isProtoClass(var.asType()) && generatorAllowsGenerics;
+        boolean enclosingHasGenerics = generateObjectiveCGenerics(typeElement.asType());
         String typeName =
             nameTable.getObjCTypeDeclaration(
                 var.asType(),
-                allowGenerics
-                    && (generateObjectiveCGenerics(var.asType())
-                        || generateObjectiveCGenerics(typeElement.asType())),
-                typeElement);
+                allowGenerics && (generateObjectiveCGenerics(var.asType()) || enclosingHasGenerics),
+                enclosingHasGenerics ? typeElement : null);
         String varNullability = nullability(var);
         sb.append(
             UnicodeUtils.format(
