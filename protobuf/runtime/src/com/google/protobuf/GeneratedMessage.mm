@@ -90,11 +90,11 @@ static void WriteMessage(id msg, CGPDescriptor *descriptor, CGPCodedOutputStream
 static void MessageToString(id msg, CGPDescriptor *descriptor, NSMutableString *builder,
                             int indent);
 
+// Generates typed CGPRepeatedFieldAdd<NAME> helpers that grow storage on demand before appending.
 #define REPEATED_FIELD_ADDER_IMP(NAME)                                                           \
   CGP_ALWAYS_INLINE void CGPRepeatedFieldAdd##NAME(CGPRepeatedField *field, TYPE_##NAME value) { \
-    uint32_t total_size = CGPRepeatedFieldTotalSize(field);                                      \
-    if (CGPRepeatedFieldSize(field) == total_size) {                                             \
-      CGPRepeatedFieldReserve(field, total_size + 1, sizeof(TYPE_##NAME));                       \
+    if (CGPRepeatedFieldSize(field) == CGPRepeatedFieldTotalSize(field)) {                       \
+      CGPRepeatedFieldReserveAdditionalCapacity(field, 1, sizeof(TYPE_##NAME));                  \
     }                                                                                            \
     TYPE_##NAME *ptr = &((TYPE_##NAME *)field->data->buffer)[field->data->size++];               \
     TYPE_ASSIGN_##NAME(ptr, value);                                                              \
@@ -2214,6 +2214,20 @@ static BOOL ParseUnknownField(CGPCodedInputStream *stream, CGPDescriptor *descri
   return CGPWireFormatSkipField(stream, tag);
 }
 
+// Upper-bounds how many packed elements can fit in |bufferedBytes| already in memory.
+// Fixed-width wire types use their exact byte width (1, 4, or 8); varints and enums take at
+// least 1 wire byte per element.
+static inline uint32_t MaxPackedElementsInBuffer(CGPFieldType fieldType, int bufferedBytes) {
+  if (bufferedBytes <= 0) {
+    return 0;
+  }
+  size_t fixedWireSize = CGPTypeFixedSize(fieldType);
+  size_t minWireBytesPerElement = fixedWireSize > 0 ? fixedWireSize : 1;
+  return (uint32_t)((size_t)bufferedBytes / minWireBytesPerElement);
+}
+
+// Decodes a single wire field (singular, unpacked repeated, or packed repeated) into |msg|'s ivar
+// storage.
 static BOOL MergeFieldFromStream(id msg, CGPFieldDescriptor *field, CGPCodedInputStream *stream,
                                  CGPExtensionRegistryLite *registry) {
   Class msgCls = object_getClass(msg);
@@ -2226,31 +2240,40 @@ static BOOL MergeFieldFromStream(id msg, CGPFieldDescriptor *field, CGPCodedInpu
     hasLoc = GetHasLocator(msgCls, field);
     alreadyCleared = ClearPreviousOneof(msg, hasLoc, fieldPtr);
   }
-  switch (CGPFieldGetType(field)) {
-#define MERGE_FIELD_CASE(NAME, ENUM_NAME, JAVA_NAME)                         \
-  case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_##ENUM_NAME:   \
-    if (repeated) {                                                          \
-      CGPRepeatedField *repeatedField = (CGPRepeatedField *)fieldPtr;        \
-      TYPE_##JAVA_NAME value;                                                \
-      if (CGPFieldIsPacked(field)) {                                         \
-        int length;                                                          \
-        if (!CGPReadInt32(stream, &length)) return NO;                       \
-        CGPRepeatedFieldReserveAdditionalCapacity(repeatedField, length,     \
-                                                  sizeof(TYPE_##JAVA_NAME)); \
-        CGPCodedInputStream::Limit limit = stream->PushLimit(length);        \
-        while (stream->BytesUntilLimit() > 0) {                              \
-          if (!CGPRead##NAME(stream, &value)) return NO;                     \
-          CGPRepeatedFieldAdd##JAVA_NAME(repeatedField, value);              \
-        }                                                                    \
-        stream->PopLimit(limit);                                             \
-      } else {                                                               \
-        if (!CGPRead##NAME(stream, &value)) return NO;                       \
-        CGPRepeatedFieldAdd##JAVA_NAME(repeatedField, value);                \
-      }                                                                      \
-    } else {                                                                 \
-      if (!CGPRead##NAME(stream, (TYPE_##JAVA_NAME *)fieldPtr)) return NO;   \
-      SetHas(msg, hasLoc);                                                   \
-    }                                                                        \
+  CGPFieldType fieldType = CGPFieldGetType(field);
+  switch (fieldType) {
+// NAME selects CGPRead<NAME> (e.g. Int32 decodes both int32 and uint32 varints), ENUM_NAME
+// matches FieldDescriptor.Type, and JAVA_NAME selects storage TYPE_<JAVA_NAME> /
+// CGPRepeatedFieldAdd<JAVA_NAME>.
+#define MERGE_FIELD_CASE(NAME, ENUM_NAME, JAVA_NAME)                                               \
+  case ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_##ENUM_NAME:                         \
+    if (repeated) {                                                                                \
+      CGPRepeatedField *repeatedField = (CGPRepeatedField *)fieldPtr;                              \
+      TYPE_##JAVA_NAME value;                                                                      \
+      if (CGPFieldIsPacked(field)) {                                                               \
+        int byteLength;                                                                            \
+        if (!CGPReadInt32(stream, &byteLength) || byteLength < 0) return NO;                       \
+        /* Push the field limit first so BufferSize() reflects at most this field's buffered */    \
+        /* bytes, capping pre-allocation to data already in memory. */                             \
+        CGPCodedInputStream::Limit limit = stream->PushLimit(byteLength);                          \
+        uint32_t maxBufferedElements = MaxPackedElementsInBuffer(fieldType, stream->BufferSize()); \
+        if (maxBufferedElements > 0) {                                                             \
+          CGPRepeatedFieldReserveAdditionalCapacity(repeatedField, maxBufferedElements,            \
+                                                    sizeof(TYPE_##JAVA_NAME));                     \
+        }                                                                                          \
+        while (stream->BytesUntilLimit() > 0) {                                                    \
+          if (!CGPRead##NAME(stream, &value)) return NO;                                           \
+          CGPRepeatedFieldAdd##JAVA_NAME(repeatedField, value);                                    \
+        }                                                                                          \
+        stream->PopLimit(limit);                                                                   \
+      } else {                                                                                     \
+        if (!CGPRead##NAME(stream, &value)) return NO;                                             \
+        CGPRepeatedFieldAdd##JAVA_NAME(repeatedField, value);                                      \
+      }                                                                                            \
+    } else {                                                                                       \
+      if (!CGPRead##NAME(stream, (TYPE_##JAVA_NAME *)fieldPtr)) return NO;                         \
+      SetHas(msg, hasLoc);                                                                         \
+    }                                                                                              \
     return YES;
     MERGE_FIELD_CASE(Int32, INT32, Int)
     MERGE_FIELD_CASE(Int32, UINT32, Int)
@@ -2271,10 +2294,16 @@ static BOOL MergeFieldFromStream(id msg, CGPFieldDescriptor *field, CGPCodedInpu
       if (repeated) {
         CGPRepeatedField *repeatedField = (CGPRepeatedField *)fieldPtr;
         if (CGPFieldIsPacked(field)) {
-          int length;
-          if (!CGPReadInt32(stream, &length)) return NO;
-          CGPRepeatedFieldReserveAdditionalCapacity(repeatedField, length, sizeof(id));
-          CGPCodedInputStream::Limit limit = stream->PushLimit(length);
+          int byteLength;
+          if (!CGPReadInt32(stream, &byteLength) || byteLength < 0) return NO;
+          // Push the field limit first so BufferSize() reflects at most this field's buffered
+          // bytes, capping pre-allocation to data already in memory.
+          CGPCodedInputStream::Limit limit = stream->PushLimit(byteLength);
+          uint32_t maxBufferedElements = MaxPackedElementsInBuffer(fieldType, stream->BufferSize());
+          if (maxBufferedElements > 0) {
+            CGPRepeatedFieldReserveAdditionalCapacity(repeatedField, maxBufferedElements,
+                                                      sizeof(id));
+          }
           while (stream->BytesUntilLimit() > 0) {
             if (!ReadEnumValueDescriptor(stream, enumType, &value)) return NO;
             if (value != nil) {

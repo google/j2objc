@@ -204,6 +204,9 @@ class CGPCodedInputStream {
   // Returns current position relative to the beginning of the input stream.
   int CurrentPosition() const;
 
+  // Returns the number of unread bytes currently in memory, clamped to any active limit.
+  int BufferSize() const;
+
   // J2ObjC additions ------------------------------------------------
   bool ReadRetainedNSString(NSString **value);
   bool ReadRetainedByteString(ComGoogleProtobufByteString **value);
@@ -276,9 +279,6 @@ class CGPCodedInputStream {
 #ifdef __cplusplus
   bool ReadStringFallback(string* buffer, int size);
 #endif
-
-  // Return the size of the buffer.
-  int BufferSize() const;
 };
 
 // inline methods ====================================================
