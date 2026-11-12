@@ -106,28 +106,37 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_Builder)
     ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder <ComGoogleProtobufMessageOrBuilder,
                                                                   JavaObject>
 
-- (bool)hasExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension;
-- (bool)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
+- (bool)hasExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension
+    NS_SWIFT_NAME(hasExtension(with:));
+- (bool)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension
+    NS_SWIFT_NAME(hasExtension(with:));
 - (bool)hasExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
-    (CGPGeneratedExtension *)extension;
-
-- (id)getExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension;
-- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
-- (id)getExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
-    (CGPGeneratedExtension *)extension;
+    (CGPGeneratedExtension *)extension NS_SWIFT_NAME(hasExtension(with:));
 
 - (id)getExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension
-                                             withInt:(jint)index;
-- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(jint)index;
+    NS_SWIFT_NAME(getExtension(with:));
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension
+    NS_SWIFT_NAME(getExtension(with:));
+- (id)getExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension NS_SWIFT_NAME(getExtension(with:));
+
+- (id)getExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension
+                                             withInt:(jint)index
+    NS_SWIFT_NAME(getExtension(with:with:));
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension
+                                         withInt:(jint)index
+    NS_SWIFT_NAME(getExtension(with:with:));
 - (id)getExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
           (CGPGeneratedExtension *)extension
-                                                                   withInt:(jint)index;
+                                                                   withInt:(jint)index
+    NS_SWIFT_NAME(getExtension(with:with:));
 
 - (jint)getExtensionCountWithComGoogleProtobufExtensionLite:
-    (ComGoogleProtobufExtensionLite *)extension;
-- (jint)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension;
+    (ComGoogleProtobufExtensionLite *)extension NS_SWIFT_NAME(getExtensionCount(with:));
+- (jint)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension
+    NS_SWIFT_NAME(getExtensionCount(with:));
 - (jint)getExtensionCountWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
-    (CGPGeneratedExtension *)extension;
+    (CGPGeneratedExtension *)extension NS_SWIFT_NAME(getExtensionCount(with:));
 
 @end
 
@@ -148,34 +157,53 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_ExtendableMessage)
     : ComGoogleProtobufGeneratedMessage_Builder <
           ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder>
 
-- (id)setExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension
-                                              withId:(id)value;
-- (id)setExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension
-                                             withInt:(jint)index
-                                              withId:(id)value;
-- (id)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value;
-- (id)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension
-                                         withInt:(jint)index
-                                          withId:(id)value;
-- (id)setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
-          (CGPGeneratedExtension *)extension
-                                                                    withId:(id)value;
-- (id)setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
-          (CGPGeneratedExtension *)extension
-                                                                   withInt:(jint)index
-                                                                    withId:(id)value;
+- (nonnull instancetype)setExtensionWithComGoogleProtobufExtensionLite:
+                            (ComGoogleProtobufExtensionLite *)extension
+                                                                withId:(id)value
+    NS_SWIFT_NAME(setExtensionWith(_:withId:));
+- (nonnull instancetype)setExtensionWithComGoogleProtobufExtensionLite:
+                            (ComGoogleProtobufExtensionLite *)extension
+                                                               withInt:(jint)index
+                                                                withId:(id)value
+    NS_SWIFT_NAME(setExtensionWith(_:with:withId:));
+- (nonnull instancetype)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension
+                                                            withId:(id)value
+    NS_SWIFT_NAME(setExtensionWith(_:withId:));
+- (nonnull instancetype)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension
+                                                           withInt:(jint)index
+                                                            withId:(id)value
+    NS_SWIFT_NAME(setExtensionWith(_:with:withId:));
+- (nonnull instancetype)
+    setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+        (CGPGeneratedExtension *)extension
+                                                                  withId:(id)value
+    NS_SWIFT_NAME(setExtensionWith(_:withId:));
+- (nonnull instancetype)
+    setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+        (CGPGeneratedExtension *)extension
+                                                                 withInt:(jint)index
+                                                                  withId:(id)value
+    NS_SWIFT_NAME(setExtensionWith(_:with:withId:));
 
-- (id)addExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension
-                                              withId:(id)value;
-- (id)addExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value;
-- (id)addExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
-          (CGPGeneratedExtension *)extension
-                                                                    withId:(id)value;
+- (nonnull instancetype)addExtensionWithComGoogleProtobufExtensionLite:
+                            (ComGoogleProtobufExtensionLite *)extension
+                                                                withId:(id)value
+    NS_SWIFT_NAME(addExtension(with:withId:));
+- (nonnull instancetype)addExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension
+                                                            withId:(id)value
+    NS_SWIFT_NAME(addExtension(with:withId:));
+- (nonnull instancetype)
+    addExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+        (CGPGeneratedExtension *)extension
+                                                                  withId:(id)value
+    NS_SWIFT_NAME(addExtension(with:withId:));
 
-- (id)clearExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension;
-- (id)clearExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
-- (id)clearExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
-    (CGPGeneratedExtension *)extension;
+- (nonnull instancetype)clearExtensionWithComGoogleProtobufExtensionLite:
+    (ComGoogleProtobufExtensionLite *)extension NS_SWIFT_NAME(clearExtension(with:));
+- (nonnull instancetype)clearExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension
+    NS_SWIFT_NAME(clearExtension(with:));
+- (nonnull instancetype)clearExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+    (CGPGeneratedExtension *)extension NS_SWIFT_NAME(clearExtension(with:));
 
 @end
 

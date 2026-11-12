@@ -4432,66 +4432,72 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMes
   return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
 }
 
-- (id)setExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension
-                                              withId:(id)value {
+- (instancetype)setExtensionWithComGoogleProtobufExtensionLite:
+                    (ComGoogleProtobufExtensionLite *)extension
+                                                        withId:(id)value {
   (void)nil_chk(value);
   CGPFieldDescriptor *field = extension->fieldDescriptor_;
   extensionMap_[field].set(ToReflectionType(field, value));
   return self;
 }
-- (id)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value {
+- (instancetype)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension
+                                                    withId:(id)value {
   return [self setExtensionWithComGoogleProtobufExtensionLite:extension withId:value];
 }
-- (id)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension
-                                         withInt:(jint)index
-                                          withId:(id)value {
+- (instancetype)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension
+                                                   withInt:(jint)index
+                                                    withId:(id)value {
   return [self setExtensionWithComGoogleProtobufExtensionLite:extension withInt:index withId:value];
 }
-- (id)setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
-          (CGPGeneratedExtension *)extension
-                                                                    withId:(id)value {
+- (instancetype)setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+                    (CGPGeneratedExtension *)extension
+                                                                              withId:(id)value {
   return [self setExtensionWithComGoogleProtobufExtensionLite:extension withId:value];
 }
-- (id)setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
-          (CGPGeneratedExtension *)extension
-                                                                   withInt:(jint)index
-                                                                    withId:(id)value {
+- (instancetype)setExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+                    (CGPGeneratedExtension *)extension
+                                                                             withInt:(jint)index
+                                                                              withId:(id)value {
   return [self setExtensionWithComGoogleProtobufExtensionLite:extension withInt:index withId:value];
 }
 
-- (id)setExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension
-                                             withInt:(jint)index
-                                              withId:(id)value {
+- (instancetype)setExtensionWithComGoogleProtobufExtensionLite:
+                    (ComGoogleProtobufExtensionLite *)extension
+                                                       withInt:(jint)index
+                                                        withId:(id)value {
   (void)nil_chk(value);
   SetRepeatedExtension(&extensionMap_, extension, index, value);
   return self;
 }
 
-- (id)addExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension
-                                              withId:(id)value {
+- (instancetype)addExtensionWithComGoogleProtobufExtensionLite:
+                    (ComGoogleProtobufExtensionLite *)extension
+                                                        withId:(id)value {
   (void)nil_chk(value);
   CGPFieldDescriptor *field = extension->fieldDescriptor_;
   AddExtensionWithReflectionType(&extensionMap_, field,
                                  ToReflectionTypeSingular(CGPFieldGetJavaType(field), value));
   return self;
 }
-- (id)addExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value {
+- (instancetype)addExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension
+                                                    withId:(id)value {
   return [self addExtensionWithComGoogleProtobufExtensionLite:extension withId:value];
 }
-- (id)addExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
-          (CGPGeneratedExtension *)extension
-                                                                    withId:(id)value {
+- (instancetype)addExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+                    (CGPGeneratedExtension *)extension
+                                                                              withId:(id)value {
   return [self addExtensionWithComGoogleProtobufExtensionLite:extension withId:value];
 }
 
-- (id)clearExtensionWithComGoogleProtobufExtensionLite:(ComGoogleProtobufExtensionLite *)extension {
+- (instancetype)clearExtensionWithComGoogleProtobufExtensionLite:
+    (ComGoogleProtobufExtensionLite *)extension {
   extensionMap_.erase(extension->fieldDescriptor_);
   return self;
 }
-- (id)clearExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
+- (instancetype)clearExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
   return [self clearExtensionWithComGoogleProtobufExtensionLite:extension];
 }
-- (id)clearExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
+- (instancetype)clearExtensionWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
     (CGPGeneratedExtension *)extension {
   return [self clearExtensionWithComGoogleProtobufExtensionLite:extension];
 }
