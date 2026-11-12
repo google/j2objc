@@ -63,6 +63,7 @@ import com.google.devtools.j2objc.translate.InnerClassExtractorTest;
 import com.google.devtools.j2objc.translate.InstanceOfPatternRewriterTest;
 import com.google.devtools.j2objc.translate.JavaCloneWriterTest;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslatorTest;
+import com.google.devtools.j2objc.translate.KmpMethodHierarchyTest;
 import com.google.devtools.j2objc.translate.KmpTypeConverterTest;
 import com.google.devtools.j2objc.translate.LambdaTypeElementAdderTest;
 import com.google.devtools.j2objc.translate.LogSiteInjectorTest;
@@ -155,6 +156,7 @@ public class SmallTests {
         JavacTreeConverterTest.class,
         JavadocGeneratorTest.class,
         JavaToIOSMethodTranslatorTest.class,
+        KmpMethodHierarchyTest.class,
         KmpTypeConverterTest.class,
         LambdaExpressionTest.class,
         LambdaTypeElementAdderTest.class,

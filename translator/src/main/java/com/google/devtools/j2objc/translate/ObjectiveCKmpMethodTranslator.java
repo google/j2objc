@@ -19,7 +19,6 @@ import static java.lang.reflect.Modifier.ABSTRACT;
 import static java.lang.reflect.Modifier.STATIC;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -44,6 +43,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
+import com.google.devtools.j2objc.translate.KmpMethodHierarchy.TypeMethods;
 import com.google.devtools.j2objc.translate.KmpTypeConverter.MappingStrategy;
 import com.google.devtools.j2objc.translate.KmpTypeConverter.ParameterMapping;
 import com.google.devtools.j2objc.types.ExecutablePair;
@@ -55,11 +55,9 @@ import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.j2objc.annotations.ObjectiveCKmpMethod;
 import com.google.j2objc.annotations.SwiftName;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -123,10 +121,12 @@ import org.jspecify.annotations.Nullable;
 public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
 
   private final KmpTypeConverter typeConverter;
+  private final KmpMethodHierarchy methodHierarchy;
 
   public ObjectiveCKmpMethodTranslator(CompilationUnit unit) {
     super(unit);
     this.typeConverter = new KmpTypeConverter(typeUtil, nameTable, options);
+    this.methodHierarchy = new KmpMethodHierarchy(typeUtil);
   }
 
   // Re-run lambda lowering passes because ObjectiveCKmpMethodTranslator synthesizes new
@@ -171,217 +171,66 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     new PrivateDeclarationResolver(unit).run();
   }
 
-  private String getOverrideSignature(ExecutablePair method) {
-    return getOverrideSignature(method, typeUtil);
-  }
+  private void processType(AbstractTypeDeclaration typeNode) {
+    TypeElement typeElem = typeNode.getTypeElement();
+    TypeMethods resolved = methodHierarchy.getTypeMethods(typeElem);
+    boolean isInterface = typeElem.getKind().isInterface();
 
-  private static String getOverrideSignature(ExecutablePair method, TypeUtil typeUtil) {
-    StringBuilder sb = new StringBuilder(ElementUtil.getName(method.element()));
-    sb.append('(');
-    for (TypeMirror pType : method.type().getParameterTypes()) {
-      sb.append(typeUtil.getSignatureName(pType));
-    }
-    sb.append(')');
-    return sb.toString();
-  }
+    for (Map.Entry<String, AnnotationMirror> entry : resolved.annotatedSignatures().entrySet()) {
+      String signature = entry.getKey();
+      AnnotationMirror annotation = entry.getValue();
+      ExecutablePair method = resolved.allMethods().get(signature);
 
-  private class AdapterGenerator {
-    private final @Nullable AbstractTypeDeclaration typeNode;
-    private final TypeElement typeElem;
-    private final ImmutableMap<String, ExecutablePair> allMethods;
-    private final ImmutableMap<String, AnnotationMirror> annotatedSignatures;
+      boolean shouldGenerate;
+      MappingStrategy strategy = MappingStrategy.NATIVE_TO_JAVA;
 
-    private AdapterGenerator(AbstractTypeDeclaration node) {
-      this(node, node.getTypeElement(), (DeclaredType) node.getTypeElement().asType());
-    }
-
-    private AdapterGenerator(TypeElement typeElem, DeclaredType declaredType) {
-      this(null, typeElem, declaredType);
-    }
-
-    private AdapterGenerator(
-        @Nullable AbstractTypeDeclaration typeNode,
-        TypeElement typeElem,
-        DeclaredType declaredType) {
-      this.typeNode = typeNode;
-      this.typeElem = typeElem;
-      Map<String, ExecutablePair> methods = new LinkedHashMap<>();
-      Map<String, AnnotationMirror> annotations = new LinkedHashMap<>();
-      collectMethods(declaredType, methods, annotations);
-      this.allMethods = ImmutableMap.copyOf(methods);
-      this.annotatedSignatures = ImmutableMap.copyOf(annotations);
-    }
-
-    private @Nullable AdapterGenerator getSupertypeAdapterGenerator(String signature) {
-      for (TypeMirror supertype : typeUtil.directSupertypes(typeElem.asType())) {
-        TypeElement superElement = TypeUtil.asTypeElement(supertype);
-        if (superElement == null) {
-          continue;
+      if (isInterface) {
+        strategy = MappingStrategy.JAVA_TO_NATIVE;
+        MethodDeclaration unadaptedDecl = findMethodDeclaration(typeNode, method.element());
+        if (unadaptedDecl != null) {
+          unadaptedDecl.setOptional(true);
         }
-        AdapterGenerator superGen = new AdapterGenerator(superElement, (DeclaredType) supertype);
-        if (superGen.annotatedSignatures.containsKey(signature)) {
-          return superGen;
-        }
-      }
-      return null;
-    }
-
-    private void visit() {
-      boolean isInterface = typeElem.getKind().isInterface();
-
-      for (Map.Entry<String, AnnotationMirror> entry : annotatedSignatures.entrySet()) {
-        String signature = entry.getKey();
-        AnnotationMirror annotation = entry.getValue();
-        ExecutablePair method = allMethods.get(signature);
-
-        boolean shouldGenerate;
-        MappingStrategy strategy = MappingStrategy.NATIVE_TO_JAVA;
-
-        if (isInterface) {
+        // Only generate the adapted protocol method and _dispatch helper when the method is
+        // declared and directly annotated on this interface (skipping inherited methods and
+        // unannotated subinterface overrides).
+        boolean isDeclaredOnCurrentInterface =
+            ElementUtil.getDeclaringClass(method.element()).equals(typeElem);
+        boolean hasDirectAnnotation =
+            ElementUtil.getAnnotation(method.element(), ObjectiveCKmpMethod.class) != null;
+        shouldGenerate = isDeclaredOnCurrentInterface && hasDirectAnnotation;
+      } else {
+        TypeMethods superHierarchy = methodHierarchy.getSupertypeHierarchy(typeElem, signature);
+        if (ElementUtil.isAbstract(method.element())) {
           strategy = MappingStrategy.JAVA_TO_NATIVE;
-          MethodDeclaration unadaptedDecl = findMethodDeclaration(typeNode, method.element());
-          if (unadaptedDecl != null) {
-            unadaptedDecl.setOptional(true);
-          }
-          // Only generate the adapted protocol method and _dispatch helper when the method is
-          // declared and directly annotated on this interface (skipping inherited methods and
-          // unannotated subinterface overrides).
-          boolean isDeclaredOnCurrentInterface =
-              ElementUtil.getDeclaringClass(method.element()).equals(typeElem);
-          boolean hasDirectAnnotation =
-              ElementUtil.getAnnotation(method.element(), ObjectiveCKmpMethod.class) != null;
-          shouldGenerate = isDeclaredOnCurrentInterface && hasDirectAnnotation;
+          // Generate if declared on this class, or if inherited by an abstract class from an
+          // interface rather than an abstract superclass that already generated them.
+          shouldGenerate =
+              ElementUtil.getDeclaringClass(method.element()).equals(typeElem)
+                  || (ElementUtil.isAbstract(typeElem)
+                      && (superHierarchy == null
+                          || superHierarchy.typeElement().getKind().isInterface()));
         } else {
-          AdapterGenerator superGen = getSupertypeAdapterGenerator(signature);
-          if (ElementUtil.isAbstract(method.element())) {
-            strategy = MappingStrategy.JAVA_TO_NATIVE;
-            // Generate if declared on this class, or if inherited by an abstract class from an
-            // interface rather than an abstract superclass that already generated them.
-            shouldGenerate =
-                ElementUtil.getDeclaringClass(method.element()).equals(typeElem)
-                    || (ElementUtil.isAbstract(typeElem)
-                        && (superGen == null || superGen.typeElem.getKind().isInterface()));
-          } else {
-            shouldGenerate =
-                superGen == null
-                    || ElementUtil.isAbstract(superGen.allMethods.get(signature).element())
-                    || ElementUtil.isDefault(superGen.allMethods.get(signature).element());
-          }
-        }
-
-        if (shouldGenerate) {
-          new AdapterContext(typeNode, method, annotation, isInterface, strategy).processMethod();
+          shouldGenerate =
+              superHierarchy == null
+                  || ElementUtil.isAbstract(superHierarchy.allMethods().get(signature).element())
+                  || ElementUtil.isDefault(superHierarchy.allMethods().get(signature).element());
         }
       }
-    }
 
-    /**
-     * Traverses {@code type} and its supertypes to populate {@code allMethods} and {@code
-     * annotatedSignatures}.
-     */
-    private void collectMethods(
-        DeclaredType type,
-        Map<String, ExecutablePair> allMethods,
-        Map<String, AnnotationMirror> annotatedSignatures) {
-      visitTypeHierarchy(
-          type,
-          typeUtil,
-          new HashSet<>(),
-          declaredType -> collectMethodsFromType(declaredType, allMethods, annotatedSignatures));
-    }
-
-    /**
-     * Records methods declared on {@code type}, keeping the most specific implementation per
-     * override signature and the first {@link ObjectiveCKmpMethod} annotation encountered.
-     */
-    private boolean collectMethodsFromType(
-        DeclaredType type,
-        Map<String, ExecutablePair> allMethods,
-        Map<String, AnnotationMirror> annotatedSignatures) {
-      TypeElement element = TypeUtil.asTypeElement(type);
-      for (ExecutableElement methodElem : ElementUtil.getExecutables(element)) {
-        ExecutablePair method =
-            new ExecutablePair(methodElem, typeUtil.asMemberOf(type, methodElem));
-        String signature = getOverrideSignature(method);
-
-        if (!allMethods.containsKey(signature)) {
-          allMethods.put(signature, method);
-        } else {
-          ExecutablePair existing = allMethods.get(signature);
-          if (takesPrecedence(method, existing)) {
-            allMethods.put(signature, method);
-          }
-        }
-
-        AnnotationMirror annotation =
-            ElementUtil.getAnnotation(methodElem, ObjectiveCKmpMethod.class);
-        if (annotation != null && !annotatedSignatures.containsKey(signature)) {
-          annotatedSignatures.put(signature, annotation);
-        }
+      if (shouldGenerate) {
+        new AdapterContext(typeNode, method, annotation, isInterface, strategy).processMethod();
       }
-      return true;
-    }
-
-    private static boolean takesPrecedence(ExecutablePair a, ExecutablePair b) {
-      if (b == null) {
-        return true;
-      }
-      // Since we traverse from subclass to superclass/interfaces (bottom-up), 'b' (already seen)
-      // is generally more specific than 'a' (currently visiting).
-      // The only case 'a' should replace 'b' is when 'a' is a concrete class implementation
-      // and 'b' is an interface declaration, ensuring we use the class's method element.
-      boolean aIsClass = ElementUtil.getDeclaringClass(a.element()).getKind().isClass();
-      boolean bIsClass = ElementUtil.getDeclaringClass(b.element()).getKind().isClass();
-      return aIsClass && !bIsClass;
-    }
-
-    /** A visitor for types in a type hierarchy. */
-    @FunctionalInterface
-    private interface TypeHierarchyVisitor {
-      /**
-       * Visits a type in a type hierarchy.
-       *
-       * @param declaredType the parameterized {@link DeclaredType} as referenced in the hierarchy
-       *     (preserving type arguments for {@link TypeUtil#asMemberOf})
-       * @return {@code true} to continue visiting supertypes, or {@code false} to stop traversal
-       *     early
-       */
-      boolean visit(DeclaredType declaredType);
-    }
-
-    @CanIgnoreReturnValue
-    private static boolean visitTypeHierarchy(
-        DeclaredType type,
-        TypeUtil typeUtil,
-        Set<TypeElement> visited,
-        TypeHierarchyVisitor visitor) {
-      if (TypeUtil.isNone(type)) {
-        return true;
-      }
-      TypeElement element = TypeUtil.asTypeElement(type);
-      if (element == null || !visited.add(element)) {
-        return true;
-      }
-      if (!visitor.visit(type)) {
-        return false;
-      }
-      for (TypeMirror supertype : typeUtil.directSupertypes(type)) {
-        if (!visitTypeHierarchy((DeclaredType) supertype, typeUtil, visited, visitor)) {
-          return false;
-        }
-      }
-      return true;
     }
   }
 
   @Override
   public void endVisit(EnumDeclaration node) {
-    new AdapterGenerator(node).visit();
+    processType(node);
   }
 
   @Override
   public void endVisit(RecordDeclaration node) {
-    new AdapterGenerator(node).visit();
+    processType(node);
   }
 
   @Override
@@ -390,14 +239,14 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     if (typeElem != null && typeElem.getSimpleName().contentEquals("package-info")) {
       return;
     }
-    new AdapterGenerator(node).visit();
+    processType(node);
   }
 
   @Override
   public void endVisit(MethodInvocation node) {
     // Check if the called method is (or overrides) an @ObjectiveCKmpMethod interface method.
     ExecutableElement targetMethod =
-        findInterfaceMethodRequiringDispatch(node.getExecutableElement());
+        methodHierarchy.findInterfaceMethodRequiringDispatch(node.getExecutableElement());
     if (targetMethod == null) {
       return;
     }
@@ -464,66 +313,6 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     return new FunctionElement(functionName, method.getReturnType(), ownerType)
         .addParameters(ownerType.asType())
         .addParameters(ElementUtil.asTypes(method.getParameters()));
-  }
-
-  /** Returns {@code method} or its superinterface declaration if it requires static dispatch. */
-  private @Nullable ExecutableElement findInterfaceMethodRequiringDispatch(
-      @Nullable ExecutableElement method) {
-    if (method == null || ElementUtil.isStatic(method) || ElementUtil.isConstructor(method)) {
-      return null;
-    }
-    TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
-    if (declaringClass == null || !declaringClass.getKind().isInterface()) {
-      return null;
-    }
-    if (ElementUtil.getAnnotation(method, ObjectiveCKmpMethod.class) != null) {
-      return method;
-    }
-    return findSuperInterfaceRequiringDispatch(
-        (DeclaredType) declaringClass.asType(),
-        getOverrideSignature(new ExecutablePair(method)),
-        new HashSet<>());
-  }
-
-  /**
-   * Searches superinterfaces of {@code type} for an annotated method matching {@code signature}.
-   */
-  private @Nullable ExecutableElement findSuperInterfaceRequiringDispatch(
-      DeclaredType type, String signature, Set<TypeElement> visited) {
-    AnnotatedSuperMethodFinder finder = new AnnotatedSuperMethodFinder(typeUtil, signature);
-    AdapterGenerator.visitTypeHierarchy(type, typeUtil, visited, finder);
-    return finder.result;
-  }
-
-  /**
-   * Visitor that searches a type hierarchy for the first {@link ObjectiveCKmpMethod}-annotated
-   * method matching a target override signature.
-   */
-  private static class AnnotatedSuperMethodFinder implements AdapterGenerator.TypeHierarchyVisitor {
-    private final TypeUtil typeUtil;
-    private final String signature;
-    private @Nullable ExecutableElement result;
-
-    private AnnotatedSuperMethodFinder(TypeUtil typeUtil, String signature) {
-      this.typeUtil = typeUtil;
-      this.signature = signature;
-    }
-
-    @Override
-    public boolean visit(DeclaredType declaredType) {
-      for (ExecutableElement methodElem :
-          ElementUtil.getExecutables(TypeUtil.asTypeElement(declaredType))) {
-        if (ElementUtil.getAnnotation(methodElem, ObjectiveCKmpMethod.class) != null) {
-          ExecutablePair pair =
-              new ExecutablePair(methodElem, typeUtil.asMemberOf(declaredType, methodElem));
-          if (getOverrideSignature(pair, typeUtil).equals(signature)) {
-            result = methodElem;
-            return false;
-          }
-        }
-      }
-      return true;
-    }
   }
 
   /** Context for processing a single method and generating its Objective-C adapter. */
