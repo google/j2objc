@@ -314,32 +314,6 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
           new AdapterContext(typeNode, method, annotation, isInterface, strategy).processMethod();
         }
       }
-
-      // Now handle overrides of abstract or default KMP methods
-      if (!isInterface) {
-        for (Map.Entry<String, ExecutablePair> entry : allMethods.entrySet()) {
-          String signature = entry.getKey();
-
-          // If this method overrides an abstract or default KMP method, we need to generate the
-          // concrete
-          // adapter
-          if (!annotatedSignatures.containsKey(signature)) {
-            AdapterGenerator superGen = getSupertypeAdapterGenerator(signature);
-            if (superGen != null
-                && (ElementUtil.isAbstract(superGen.allMethods.get(signature).element())
-                    || ElementUtil.isDefault(superGen.allMethods.get(signature).element()))) {
-              AdapterContext adapterContext =
-                  new AdapterContext(
-                      typeNode,
-                      /* originalMethod= */ entry.getValue(),
-                      /* annotation= */ superGen.annotatedSignatures.get(signature),
-                      /* isInterface= */ false,
-                      MappingStrategy.NATIVE_TO_JAVA);
-              adapterContext.processMethod();
-            }
-          }
-        }
-      }
     }
 
     /**
