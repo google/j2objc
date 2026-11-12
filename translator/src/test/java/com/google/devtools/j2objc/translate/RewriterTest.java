@@ -41,12 +41,13 @@ public class RewriterTest extends GenerationTest {
         + "int n = i + j; "
         + "if (n == 5) continue outer; "
         + "else break outer; } } } }", "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "int32_t i = 0;",
-        "for (; i < 10; i++) {",
+        "for (; i < 10; JrePostIncInt(&i)) {",
         "{",
-        "for (int32_t j = 0; j < 10; j++) {",
-        "int32_t n = i + j;",
+        "for (int32_t j = 0; j < 10; JrePostIncInt(&j)) {",
+        "int32_t n = JreIntPlus(i, j);",
         "if (n == 5) goto continue_outer;",
         "else goto break_outer;",
         "}",
@@ -265,7 +266,6 @@ public class RewriterTest extends GenerationTest {
         "IOSObjectArray *c5;");
   }
 
-  // Objective-C requires that && tests be surrounded by parens when mixed with || tests.
   public void testLogicalPrecedence() throws IOException {
     String translation = translateSourceFile(
         "class Test { "
@@ -276,23 +276,27 @@ public class RewriterTest extends GenerationTest {
         + "boolean test3(boolean e, boolean f, boolean g, boolean h, boolean i) { "
         + "  return e && f || g && h || i; }"
         + "boolean test4(boolean j, boolean k, boolean l, boolean m, boolean n) {"
-        + "  return j || k || l && m && n; }}",
+        + "  return j || k || l && m && n; }"
+        + "boolean test5(boolean a, boolean b, boolean c, boolean d) {"
+        + "  return (a || b) && (c || d); }}",
         "Test", "Test.m");
     assertInTranslation(translation, "return a && b;");
     assertInTranslation(translation, "return c || d;");
     assertTranslatedLines(translation, "return (e && f) || (g && h) || i;");
     assertTranslatedLines(translation, "return j || k || (l && m && n);");
+    assertTranslatedLines(translation, "return (a || b) && (c || d);");
 
     translation = translateSourceFile(
         "class Test { int i; @Override public boolean equals(Object object) { "
         + "return (object == this) || (object instanceof Test) && (i == ((Test) object).i); } }",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "(JreObjectEqualsEquals(object, self)) || "
-        + "(([object isKindOfClass:[Test class]]) && (i_ == ((Test *) nil_chk(((Test *) "
-        + "cast_chk(object, [Test class]))))->i_));");
+    assertTranslatedLines(
+        translation,
+        "return JreObjectEqualsEquals(object, self) || "
+            + "([object isKindOfClass:[Test class]] && (i_ == "
+            + "((Test *) cast_chk(object, [Test class]))->i_));");
   }
 
-  // Objective-C requires that bit-wise and tests be surrounded by parens when mixed with or tests.
   public void testBitPrecedence() throws IOException {
     String translation = translateSourceFile(
         "class Test { "
@@ -307,7 +311,9 @@ public class RewriterTest extends GenerationTest {
         + "int test5(int j, int k, int l, int m, int n) {"
         + "  return j | k | l & m & n; }"
         + "int test6(int j, int k, int l, int m, int n) {"
-            + "  return j ^ k ^ l & m & n; }}",
+        + "  return j ^ k ^ l & m & n; }"
+        + "int test7(int a, int b, int c, int d, int e) {"
+        + "  return (a | b) ^ (c | d) & e; }}",
         "Test", "Test.m");
     assertInTranslation(translation, "return a & b;");
     assertInTranslation(translation, "return c | d;");
@@ -315,10 +321,9 @@ public class RewriterTest extends GenerationTest {
     assertTranslatedLines(translation, "return (e & f) ^ (g & h) ^ i;");
     assertTranslatedLines(translation, "return j | k | (l & m & n);");
     assertTranslatedLines(translation, "return j ^ k ^ (l & m & n);");
+    assertTranslatedLines(translation, "return (a | b) ^ ((c | d) & e);");
   }
 
-  // C compiler requires that tests using & or | as boolean test have parentheses around
-  // infix operands.
   public void testLowerPrecedence() throws IOException {
     String translation = translateSourceFile(
         "class Test { "
@@ -326,10 +331,13 @@ public class RewriterTest extends GenerationTest {
         + "  return o < 0 | (o == 0 & p > q); } "
         + "boolean test2(int r) {"
         + "  return r < 0 & !isPowerOfTwo(r); } "
+        + "boolean test3(int a, int b, int c, int d) {"
+        + "  return (a & b) == (c | d); } "
         + "boolean isPowerOfTwo(int i) { return false; }}",
         "Test", "Test.m");
     assertTranslatedLines(translation, "return (o < 0) | ((o == 0) & (p > q));");
-    assertTranslatedLines(translation, "return (r < 0) & ![self isPowerOfTwoWithInt:r];");
+    assertTranslatedLines(translation, "return (r < 0) & (![self isPowerOfTwoWithInt:r]);");
+    assertTranslatedLines(translation, "return (a & b) == (c | d);");
   }
 
   public void testInitializeRenamed() throws IOException {
@@ -475,7 +483,7 @@ public class RewriterTest extends GenerationTest {
         " }",
         "}",
         "@catch (JavaIoIOException *e) {",
-        " [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) printlnWithId:e];",
+        " [((JavaIoPrintStream *) nil_chk((JreLoadStatic(JavaLangSystem, out)))) printlnWithId:e];",
         " @throw e;",
         "}");
   }

@@ -96,6 +96,7 @@ void CGPExtensionRegistryAdd(CGPExtensionRegistryLite *registry, CGPExtensionLit
 
 void ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(
     ComGoogleProtobufExtensionRegistryLite *self, bool empty) {
+  ComGoogleProtobufExtensionRegistryLite_initialize();
   NSObject_init(self);
 }
 

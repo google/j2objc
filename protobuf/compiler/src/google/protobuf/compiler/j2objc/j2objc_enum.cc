@@ -35,6 +35,7 @@
 #include <google/protobuf/compiler/j2objc/j2objc_enum.h>
 #include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
 
+#include <set>
 #include <string>
 
 #include "google/protobuf/compiler/j2objc/common.h"
@@ -62,8 +63,7 @@ EnumGenerator::EnumGenerator(const EnumDescriptor* descriptor)
     }
 }
 
-EnumGenerator::~EnumGenerator() {
-}
+EnumGenerator::~EnumGenerator() = default;
 
 void EnumGenerator::CollectSourceImports(std::set<std::string>* imports) const {
   imports->insert("java/lang/IllegalArgumentException.h");
@@ -83,24 +83,42 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
   printer->Indent();
 
   for (int i = 0; i < canonical_values_.size(); i++) {
-      printer->Print("$ordinalname$ = $ordinal$,\n", "ordinalname",
-                     EnumOrdinalName(canonical_values_[i]), "ordinal",
-                     SimpleItoa(i));
+    printer->Print("$ordinalname$ NS_SWIFT_NAME($swiftname$) = $ordinal$,\n",
+                   "ordinalname", EnumOrdinalName(canonical_values_[i]),
+                   "swiftname", PropertyName(canonical_values_[i]), "ordinal",
+                   SimpleItoa(i));
   }
   if (!descriptor_->is_closed()) {
-      printer->Print("$ordinalname$_UNRECOGNIZED = $count$,\n", "ordinalname",
-                     COrdinalEnumName(descriptor_), "count",
-                     SimpleItoa(canonical_values_.size()));
+    printer->Print(
+        "$ordinalname$_UNRECOGNIZED NS_SWIFT_NAME(unrecognized) = $count$,\n",
+        "ordinalname", COrdinalEnumName(descriptor_), "count",
+        SimpleItoa(canonical_values_.size()));
   }
 
   printer->Outdent();
-  printer->Print("};\n\n");
+  printer->Print("} NS_SWIFT_NAME($classname$Enum);\n\n", "classname",
+                 ClassName(descriptor_));
+
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print("typedef $ordinalenumname$ KNP$ordinalenumname$;\n",
+                   "ordinalenumname", COrdinalEnumName(descriptor_));
+    for (int i = 0; i < canonical_values_.size(); i++) {
+      printer->Print("#define KNP$ordinalname$ $ordinalname$\n", "ordinalname",
+                     EnumOrdinalName(canonical_values_[i]));
+    }
+    if (!descriptor_->is_closed()) {
+      printer->Print(
+          "#define KNP$ordinalname$_UNRECOGNIZED $ordinalname$_UNRECOGNIZED\n",
+          "ordinalname", COrdinalEnumName(descriptor_));
+    }
+  }
 
   printer->Print(
       "\n// Java enum ordinal preprocessor name that allows for stricter enum "
       "types\n"
       "// outside transpiled code.\n"
-      "#if J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION\n"
+      "#if defined(J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION) && "
+      "J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION\n"
       "#define $ordinalpreprocessorname$ jint\n"
       "#else\n"
       "#define $ordinalpreprocessorname$ $ordinalenumname$\n"
@@ -132,7 +150,8 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
       "\n// Java enum value preprocessor name that allows for stricter enum "
       "types\n"
       "// outside transpiled code.\n"
-      "#if J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION\n"
+      "#if defined(J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION) && "
+      "J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION\n"
       "#define $valuepreprocessorname$ jint\n"
       "#else\n"
       "#define $valuepreprocessorname$ $valueenumname$\n"
@@ -159,6 +178,19 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
           CValuePreprocessorName(descriptor_));
   }
 
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+        "\n"
+        "@class $classname$;\n"
+        "@class $classname$Companion;\n"
+        "\n"
+        "@interface $classname$Companion : NSObject\n"
+        "- (nullable $classname$ *)forNumberWithInt:(int32_t)value "
+        "NS_SWIFT_NAME(forNumber(value:));\n"
+        "@end\n",
+        "classname", ClassName(descriptor_));
+  }
+
   printer->Print(
       "\n"
       "@interface $classname$ :"
@@ -177,9 +209,13 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
       CValuePreprocessorName(descriptor_));
 
   if (IsGenerateProperties(descriptor_->file())) {
-    printer->Print("- ($valuepreprocessorname$)number;\n",
-                   "valuepreprocessorname",
-                   CValuePreprocessorName(descriptor_));
+    printer->Print(
+        "@property (nonnull, readonly, class) $classname$Companion "
+        "*companion;\n"
+        "@property(readonly) int number;\n"
+        "@property(readonly) $ordinalpreprocessorname$ nsEnum;\n",
+        "classname", ClassName(descriptor_), "ordinalpreprocessorname",
+        COrdinalPreprocessorName(descriptor_));
   }
 
   // We add an explicit Swift name to prevent weird implicit conversions
@@ -254,7 +290,7 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "$classname$ *$classname$_values_[$count$];\n"
       "\n"
-      "ComGoogleProtobufDescriptors_EnumDescriptor"
+      "static ComGoogleProtobufDescriptors_EnumDescriptor"
       " *$classname$_descriptor_ = nil;\n"
       "\n"
       "@implementation $classname$\n"
@@ -349,11 +385,25 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
 
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
-        "- ($valuepreprocessorname$)number {\n"
-        "  return [self getNumber];\n"
+        "+ (nonnull $classname$Companion *)companion {\n"
+        "  static $classname$Companion *instance;\n"
+        "  static dispatch_once_t onceToken;\n"
+        "  dispatch_once(&onceToken, ^{\n"
+        "    instance = [[$classname$Companion alloc] init];\n"
+        "  });\n"
+        "  return instance;\n"
         "}\n",
-        "classname", ClassName(descriptor_), "valuepreprocessorname",
-        CValuePreprocessorName(descriptor_));
+        "classname", ClassName(descriptor_));
+    printer->Print(
+        "- (int)number {\n"
+        "  return (int) [self getNumber];\n"
+        "}\n");
+    printer->Print(
+        "- ($ordinalpreprocessorname$)nsEnum {\n"
+        "  return [self ordinal];\n"
+        "}\n",
+        "classname", ClassName(descriptor_), "ordinalpreprocessorname",
+        COrdinalPreprocessorName(descriptor_));
   }
 
   printer->Print(
@@ -408,20 +458,14 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "$classname$ *$classname$_valueOfWithNSString_(NSString *name) {\n"
       "  $classname$_initialize();\n"
-      "  for (jint i = 0; i < $count$; i++) {\n"
-      "    $classname$ *e = $classname$_values_[i];\n"
-      "    if ([name isEqual:[e name]]) {\n"
-      "      return e;\n"
-      "    }\n"
-      "  }\n"
-      "  @throw create_JavaLangIllegalArgumentException_initWithNSString_("
-      "name);\n",
+      "  return CGPValueOfEnumOrOneOfWithNSString(name, $classname$_values_,"
+      " $count$);\n"
+      "}\n"
+      "\n",
       "classname", ClassName(descriptor_), "count",
       SimpleItoa(enum_count));  // Include UNRECOGNIZED constant.
 
   printer->Print(
-      "}\n"
-      "\n"
       "$classname$ *$classname$_valueOfWithInt_($valuepreprocessorname$ value) "
       "{\n"
       "  return $classname$_forNumberWithInt_(value);\n"
@@ -430,13 +474,8 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "$classname$ *$classname$_forNumberWithInt_($valuepreprocessorname$ "
       "value) {\n"
       "  $classname$_initialize();\n"
-      "  for (jint i = 0; i < $count$; i++) {\n"
-      "    $classname$ *e = $classname$_values_[i];\n"
-      "    if (value == [e getNumber]) {\n"
-      "      return e;\n"
-      "    }\n"
-      "  }\n"
-      "  return nil;\n"
+      "  return CGPValueOfEnumOrOneOfWithInt(value, $classname$_values_,\n"
+      " $count$);\n"
       "}\n"
       "\n",
       "classname", ClassName(descriptor_), "count", SimpleItoa(canonical_count),
@@ -470,6 +509,21 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
         "  return $classname$_values_[$classname$_Enum_$name$];\n"
         "}\n",
         "classname", ClassName(descriptor_), "name", "UNRECOGNIZED");
+  }
+
+  if (IsGenerateProperties(descriptor_->file())) {
+    printer->Print(
+        "\n"
+        "@implementation $classname$Companion\n"
+        "\n"
+        "- (nullable $classname$ *)forNumberWithInt:(int32_t)value {\n"
+        "  return "
+        "$classname$_forNumberWithInt_(($valuepreprocessorname$)value);\n"
+        "}\n"
+        "\n"
+        "@end\n",
+        "classname", ClassName(descriptor_), "valuepreprocessorname",
+        CValuePreprocessorName(descriptor_));
   }
 }
 

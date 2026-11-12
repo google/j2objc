@@ -16,10 +16,22 @@
 #import <Foundation/Foundation.h>
 
 @protocol JavaUtilList;
+@protocol JavaUtilSet;
+@protocol JavaUtilMap;
 
 //
 // Returns an NSArray implementation whose content is the same as the input list.
 //
 extern NSArray* _Nullable JREAdaptedArrayFromJavaList(id<JavaUtilList> _Nullable list);
+
+//
+// Returns an NSSet implementation whose content is the same as the input set.
+//
+extern NSSet* _Nullable JREAdaptedSetFromJavaSet(id<JavaUtilSet> _Nullable set);
+
+//
+// Returns an NSDictionary implementation whose content is the same as the input map.
+//
+extern NSDictionary* _Nullable JREAdaptedDictionaryFromJavaMap(id<JavaUtilMap> _Nullable map);
 
 #endif  // _JreCollectionAdapters_H_

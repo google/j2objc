@@ -38,6 +38,9 @@
 // Test-only method to fake a low-memory condition.
 + (void)handleMemoryWarning:(NSNotification *)notification;
 
+// Test-only method to check tagged pointer detection.
++ (BOOL)isTaggedPointer:(id)pointer;
+
 @end
 
 #endif // _IOSREFERENCE_H_

@@ -46,7 +46,7 @@ FileGenerator::FileGenerator(const FileDescriptor* file)
   output_dir_ = JavaPackageToDir(java::FileJavaPackage(file));
 }
 
-FileGenerator::~FileGenerator() {}
+FileGenerator::~FileGenerator() = default;
 
 bool FileGenerator::Validate(std::string* error) {
   // Check that no class name matches the file's class name.  This is a common

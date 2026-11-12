@@ -59,7 +59,7 @@ build_test(
 filegroup(
     name = "hello_assets",
     srcs = glob([
-        "Hello/Assets.xcassets/*.*",
+        "Hello/Assets.xcassets/**",
     ]),
 )
 

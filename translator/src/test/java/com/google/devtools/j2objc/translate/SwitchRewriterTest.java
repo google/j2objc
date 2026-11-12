@@ -67,7 +67,7 @@ public class SwitchRewriterTest extends GenerationTest {
     assertTrue(translation.indexOf("int32_t l;") < translation.indexOf("case 1:"));
     assertTrue(translation.indexOf("int32_t j;") < translation.indexOf("int32_t k;"));
     assertTrue(translation.indexOf("int32_t k;") < translation.indexOf("int32_t l;"));
-    assertInTranslation(translation, "j = i * 2;");
+    assertInTranslation(translation, "j = JreIntTimes(i, 2);");
     assertInTranslation(translation, "k = i;");
     assertInTranslation(translation, "l = 42;");
     assertTrue(translation.indexOf("k = i") < translation.indexOf("l = 42"));
@@ -157,8 +157,57 @@ public class SwitchRewriterTest extends GenerationTest {
             """,
             "A",
             "A.m");
-    assertInTranslation(translation, "switch ([e ordinal]) {");
+    assertInTranslation(translation, "A_EnumType *tmp = nil_chk(e);");
+    assertInTranslation(translation, "switch ([tmp ordinal]) {");
     assertInTranslation(translation, "case A_EnumType_Enum_ONE:");
+  }
+
+  public void testEnumSwitchWithNull() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            public class A {
+              enum Foo { A, B }
+              public Foo testOnlyNull(Foo someFoo) {
+                switch (someFoo) {
+                  case null -> { return null; }
+                  default -> { return someFoo; }
+                }
+              }
+              public Foo testNullAndConstant(Foo someFoo) {
+                switch (someFoo) {
+                  case null -> { return null; }
+                  case A -> { return Foo.B; }
+                  default -> { return someFoo; }
+                }
+              }
+              public Foo testMethodCallWithNull() {
+                switch (getFoo()) {
+                  case null -> { return null; }
+                  default -> { return getFoo(); }
+                }
+              }
+              public int testSwitchExpressionWithNull(Foo someFoo) {
+                return switch (someFoo) {
+                  case null -> 0;
+                  case A -> 1;
+                  default -> 2;
+                };
+              }
+              public int testSwitchExpressionMethodCallWithNull() {
+                return switch (getFoo()) {
+                  case null -> 0;
+                  default -> 1;
+                };
+              }
+              private Foo getFoo() { return Foo.A; }
+            }
+            """,
+            "A",
+            "A.m");
+    assertInTranslation(translation, "switch ((someFoo == nil) ? -1 : [someFoo ordinal]) {");
+    assertInTranslation(translation, "case -1:");
+    assertInTranslation(translation, "switch ((tmp == nil) ? -1 : [tmp ordinal]) {");
   }
 
   public void testPrimitiveConstantInSwitchCase() throws IOException {
@@ -214,22 +263,25 @@ public class SwitchRewriterTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslatedLines(translation,
-        "switch (JreIndexOfStr(s, (id[]){ @\"foo\", "
-            + "@\"bar\", Test_constant, Foo_TEST, Bar_TEST }, 5)) {",
-        "  case 0:",
-        "  return 42;",
-        "  case 1:",
-        "  return 666;",
-        "  case 2:",
-        "  return -1;",
-        "  case 3:",
-        "  return -2;",
-        "  case 4:",
-        "  return -3;",
-        "  default:",
-        "  return -1;",
-        "}");
+    assertTranslatedLines(
+        translation,
+        """
+        NSString *tmp = nil_chk(s);
+        switch (JreIndexOfStr(tmp, (id[]){ @"foo", @"bar", Test_constant, Foo_TEST, Bar_TEST }, 5)) {
+          case 0:
+          return 42;
+          case 1:
+          return 666;
+          case 2:
+          return -1;
+          case 3:
+          return -2;
+          case 4:
+          return -3;
+          default:
+          return -1;
+        }
+        """);
   }
 
   /**
@@ -279,15 +331,18 @@ public class SwitchRewriterTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertTranslatedLines(translation,
-        "switch (i) {",
-        "  case 1:",
-        "  return 'a';",
-        "  case 2:",
-        "  return 'b';",
-        "  default:",
-        "  return 'z';",
-        "}");
+    assertTranslatedLines(
+        translation,
+        """
+        switch (i) {
+          case 1:
+          return 'a';
+          case 2:
+          return 'b';
+          default:
+          return 'z';
+        }
+        """);
   }
 
   public void testEmptySwitchStatement() throws IOException {
@@ -329,17 +384,17 @@ public class SwitchRewriterTest extends GenerationTest {
         switch (k) {
           case 1:
           {
-            [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"one"];
+            [(JreLoadStatic(JavaLangSystem, out)) printlnWithNSString:@"one"];
             break;
           }
           case 2:
           {
-            [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"two"];
+            [(JreLoadStatic(JavaLangSystem, out)) printlnWithNSString:@"two"];
             break;
           }
           default:
           {
-            [JreLoadStatic(JavaLangSystem, out) printlnWithNSString:@"many"];
+            [(JreLoadStatic(JavaLangSystem, out)) printlnWithNSString:@"many"];
             break;
           }
         }
@@ -376,7 +431,7 @@ public class SwitchRewriterTest extends GenerationTest {
             case 1:
             return second_;
             default:
-            return IOSObjectArray_Get(rest_, index - 2);
+            return IOSObjectArray_Get(rest_, JreIntMinus(index, 2));
           }
         }();
         """);
@@ -433,7 +488,7 @@ public class SwitchRewriterTest extends GenerationTest {
               case 0x2007:
               return false;
               default:
-              return c >= 0x2000 && c <= 0x200a;
+              return (c >= 0x2000) && (c <= 0x200a);
             }
           }();
         }
@@ -486,18 +541,21 @@ public class SwitchRewriterTest extends GenerationTest {
         translation,
         """
         - (bool)hasNext {
-          switch ([state_ ordinal]) {
-            case Test_State_Enum_DONE:
-            {
-              return false;
-            }
-            case Test_State_Enum_READY:
-            {
-              return true;
-            }
-            default:
-            {
-              break;
+          {
+            Test_State *tmp = nil_chk(state_);
+            switch ([tmp ordinal]) {
+              case Test_State_Enum_DONE:
+              {
+                return false;
+              }
+              case Test_State_Enum_READY:
+              {
+                return true;
+              }
+              default:
+              {
+                break;
+              }
             }
           }
           return Test_tryToComputeNext(self);
@@ -529,20 +587,22 @@ public class SwitchRewriterTest extends GenerationTest {
         translation,
         """
         return ^ int64_t (){
-          switch ((int32_t) b) {
-            case 2:
-            {
-              Test_checkNoOverflowWithBoolean_withNSString_withLong_withLong_(k < JavaLangLong_SIZE - 1, @"checkedPow", b, k);
-              return JreLShift64(1LL, k);
+          {
+            int32_t tmp = (int32_t) b;
+            switch (tmp) {
+              case 2:
+              {
+                Test_checkNoOverflowWithBoolean_withNSString_withLong_withLong_(k < JreIntMinus(JavaLangLong_SIZE, 1), @"checkedPow", b, k);
+                return JreLShift64(1LL, k);
+              }
+              default:
+              @throw create_JavaLangAssertionError_init();
             }
-            default:
-            @throw create_JavaLangAssertionError_init();
           }
         }();
         """);
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testEnumConstAsSwitchExpression() throws IOException {
     // Snippet from Guava's com.google.common.math.ToDoubleRounder.
     String translation =
@@ -567,15 +627,17 @@ public class SwitchRewriterTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(
         translation,
-        "switch ([mode ordinal]) {",
-        "  case JavaMathRoundingMode_Enum_DOWN:",
-        "    return JavaLangDouble_MAX_VALUE;",
-        "  default:",
-        "    return [x doubleValue];",
-        "}");
+        """
+        JavaMathRoundingMode *tmp = nil_chk(mode);
+        switch ([tmp ordinal]) {
+          case JavaMathRoundingMode_Enum_DOWN:
+            return JavaLangDouble_MAX_VALUE;
+          default:
+            return [x doubleValue];
+        }
+        """);
   }
 
-  @SuppressWarnings("StringConcatToTextBlock")
   public void testSwitchExpressionReturnForAllEnumPaths() throws IOException {
     // Snippet from Guava's com.google.common.base.Stopwatch.
     // Verifies that a switch using an enum can have all paths handled without a default case.
@@ -603,23 +665,26 @@ public class SwitchRewriterTest extends GenerationTest {
         translation,
         """
         return ^ NSString * (){
-          switch ([unit ordinal]) {
-            case JavaUtilConcurrentTimeUnit_Enum_NANOSECONDS:
-            return @"ns";
-            case JavaUtilConcurrentTimeUnit_Enum_MICROSECONDS:
-            return @"\\u03bcs";
-            case JavaUtilConcurrentTimeUnit_Enum_MILLISECONDS:
-            return @"ms";
-            case JavaUtilConcurrentTimeUnit_Enum_SECONDS:
-            return @"s";
-            case JavaUtilConcurrentTimeUnit_Enum_MINUTES:
-            return @"min";
-            case JavaUtilConcurrentTimeUnit_Enum_HOURS:
-            return @"h";
-            case JavaUtilConcurrentTimeUnit_Enum_DAYS:
-            return @"d";
-            default:
-            __builtin_unreachable();
+          {
+            JavaUtilConcurrentTimeUnit *tmp = nil_chk(unit);
+            switch ([tmp ordinal]) {
+              case JavaUtilConcurrentTimeUnit_Enum_NANOSECONDS:
+              return @"ns";
+              case JavaUtilConcurrentTimeUnit_Enum_MICROSECONDS:
+              return @"\\u03bcs";
+              case JavaUtilConcurrentTimeUnit_Enum_MILLISECONDS:
+              return @"ms";
+              case JavaUtilConcurrentTimeUnit_Enum_SECONDS:
+              return @"s";
+              case JavaUtilConcurrentTimeUnit_Enum_MINUTES:
+              return @"min";
+              case JavaUtilConcurrentTimeUnit_Enum_HOURS:
+              return @"h";
+              case JavaUtilConcurrentTimeUnit_Enum_DAYS:
+              return @"d";
+              default:
+              __builtin_unreachable();
+            }
           }
         }();
         """);
@@ -693,7 +758,8 @@ public class SwitchRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        switch (JreIndexOfStr(component, (id[]){ @".", @".." }, 2)) {
+        NSString *tmp = nil_chk(component);
+        switch (JreIndexOfStr(tmp, (id[]){ @".", @".." }, 2)) {
           case 0:
           {
             continue;
@@ -710,7 +776,41 @@ public class SwitchRewriterTest extends GenerationTest {
             break;
           }
         }
+        """);
+  }
 
+  public void testSwitchExpressionCaseConstantExpression() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              static final int PLACES = 1 << 1;
+              public Object get(int index) {
+                return switch (index) {
+                  case 2 + 1 -> null;
+                  case 10 >> PLACES -> null;
+                  default -> null;
+                };
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        - (id)getWithInt:(int32_t)index {
+          return ^ id (){
+            switch (index) {
+              case 3:
+              return nil;
+              case 2:
+              return nil;
+              default:
+              return nil;
+            }
+          }();
+        }
         """);
   }
 }

@@ -26,6 +26,15 @@ public interface SwitchConstruct {
 
   List<Statement> getStatements();
 
+  default boolean hasNullCase() {
+    return getStatements().stream()
+        .anyMatch(
+            stmt ->
+                stmt instanceof SwitchCase switchCase
+                    && switchCase.getExpressions().stream()
+                        .anyMatch(expr -> expr instanceof NullLiteral));
+  }
+
   @CanIgnoreReturnValue
   SwitchConstruct addStatement(Statement stmt);
 }

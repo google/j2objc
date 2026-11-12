@@ -30,7 +30,7 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NumberLiteral;
-import com.google.devtools.j2objc.ast.ParenthesizedExpression;
+import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.ReturnStatement;
@@ -67,6 +67,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Rewrites certain operators, such as object assignment, into appropriate
@@ -204,7 +205,8 @@ public class OperatorRewriter extends UnitTreeVisitor {
     boolean isRetainableReturnType = expr != null && TypeUtil.isReferenceType(expr.getTypeMirror());
     if (options.useRetainAutoreleaseReturns() && isRetainableReturnType) {
       rewriteRetainedAutoreleaseReturnValue(expr);
-    } else if ((maybeRetainMethodReturn || !retainedLocalCandidateStack.isEmpty())
+    } else if (options.useReferenceCounting()
+        && (maybeRetainMethodReturn || !retainedLocalCandidateStack.isEmpty())
         && isRetainableReturnType) {
       rewriteRetainedLocal(expr);
     }
@@ -286,22 +288,43 @@ public class OperatorRewriter extends UnitTreeVisitor {
     }
   }
 
+  @Override
+  public void endVisit(PrefixExpression expr) {
+    PrefixExpression.Operator op = expr.getOperator();
+    if (op == PrefixExpression.Operator.INCREMENT) {
+      rewritePostPrefixExpr(expr, expr.getOperand(), "PreInc");
+    } else if (op == PrefixExpression.Operator.DECREMENT) {
+      rewritePostPrefixExpr(expr, expr.getOperand(), "PreDec");
+    }
+  }
+
+  @Override
+  public void endVisit(PostfixExpression expr) {
+    PostfixExpression.Operator op = expr.getOperator();
+    if (op == PostfixExpression.Operator.INCREMENT) {
+      rewritePostPrefixExpr(expr, expr.getOperand(), "PostInc");
+    } else if (op == PostfixExpression.Operator.DECREMENT) {
+      rewritePostPrefixExpr(expr, expr.getOperand(), "PostDec");
+    }
+  }
+
   private boolean isRetainedLocal(VariableElement var) {
     if (ElementUtil.isLocalVariable(var)
         && ElementUtil.hasAnnotation(var, RetainedLocalRef.class)) {
       return true;
     }
-    for (Set<VariableElement> candidates : retainedLocalCandidateStack) {
-      if (candidates.contains(var)) {
-        return true;
+    if (options.useReferenceCounting()) {
+      for (Set<VariableElement> candidates : retainedLocalCandidateStack) {
+        if (candidates.contains(var)) {
+          return true;
+        }
       }
     }
     return false;
   }
 
   private void rewriteRetainedLocal(Expression expr) {
-    if (options.useARC()  // ARC generates an equivalent function call.
-        || expr.getKind() == TreeNode.Kind.STRING_LITERAL
+    if (expr.getKind() == TreeNode.Kind.STRING_LITERAL
         || expr.getKind() == TreeNode.Kind.FUNCTION_INVOCATION) {
       return;
     }
@@ -386,7 +409,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     }
   }
 
-  private String getAssignmentFunctionName(
+  private @Nullable String getAssignmentFunctionName(
       Assignment node, VariableElement var, boolean isRetainedWith) {
     if (!ElementUtil.isField(var)) {
       return null;
@@ -450,8 +473,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     CommaExpression commaExpr =
         new CommaExpression(
             new CastExpression(
-                typeUtil.getVoid(),
-                new ParenthesizedExpression(new Assignment(new SimpleName(targetVar), target))));
+                typeUtil.getVoid(), new Assignment(new SimpleName(targetVar), target)));
     node.replaceWith(commaExpr);
     commaExpr.addExpression(node);
     return new SimpleName(targetVar);
@@ -496,7 +518,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     }
   }
 
-  private String getInfixFunction(InfixExpression node) {
+  private @Nullable String getInfixFunction(InfixExpression node) {
     InfixExpression.Operator op = node.getOperator();
     TypeMirror nodeType = node.getTypeMirror();
     if (op == InfixExpression.Operator.EQUALS || op == InfixExpression.Operator.NOT_EQUALS) {
@@ -516,6 +538,24 @@ public class OperatorRewriter extends UnitTreeVisitor {
       }
      }
     switch (op) {
+      case PLUS:
+        switch (nodeType.getKind()) {
+          case INT: return "JreIntPlus";
+          case LONG: return "JreLongPlus";
+          default: return null;
+        }
+      case MINUS:
+        switch (nodeType.getKind()) {
+          case INT: return "JreIntMinus";
+          case LONG: return "JreLongMinus";
+          default: return null;
+        }
+      case TIMES:
+        switch (nodeType.getKind()) {
+          case INT: return "JreIntTimes";
+          case LONG: return "JreLongTimes";
+          default: return null;
+        }
       case DIVIDE:
         switch (nodeType.getKind()) {
           case INT: return "JreIntDiv";
@@ -563,9 +603,17 @@ public class OperatorRewriter extends UnitTreeVisitor {
       case PLUS_ASSIGN:
       case MINUS_ASSIGN:
       case TIMES_ASSIGN:
+        return isVolatile(lhs)
+            || TypeUtil.isFloatingPoint(lhsType)
+            || TypeUtil.isFloatingPoint(rhsType)
+            || lhsType.getKind() == TypeKind.LONG
+            || rhsType.getKind() == TypeKind.LONG
+            || lhsType.getKind() == TypeKind.INT
+            || rhsType.getKind() == TypeKind.INT;
       case DIVIDE_ASSIGN:
       case REMAINDER_ASSIGN:
-        return isVolatile(lhs) || TypeUtil.isFloatingPoint(lhsType)
+        return isVolatile(lhs)
+            || TypeUtil.isFloatingPoint(lhsType)
             || TypeUtil.isFloatingPoint(rhsType);
       default:
         return isVolatile(lhs);
@@ -615,8 +663,12 @@ public class OperatorRewriter extends UnitTreeVisitor {
     Expression rhs = node.getRightHandSide();
     TypeMirror lhsType = lhs.getTypeMirror();
     TypeMirror lhsPointerType = new PointerType(lhsType);
-    String funcName = "Jre" + node.getOperator().getName() + (isVolatile(lhs) ? "Volatile" : "")
-        + NameTable.capitalize(lhsType.toString()) + getPromotionSuffix(node);
+    String funcName =
+        "Jre"
+            + node.getOperator().getName()
+            + (isVolatile(lhs) ? "Volatile" : "")
+            + NameTable.capitalize(TypeUtil.getName(lhsType))
+            + getPromotionSuffix(node);
     FunctionElement element = new FunctionElement(funcName, lhsType, null)
         .addParameters(lhsPointerType, rhs.getTypeMirror());
     FunctionInvocation invocation = new FunctionInvocation(element, lhsType);
@@ -625,6 +677,33 @@ public class OperatorRewriter extends UnitTreeVisitor {
         lhsPointerType, PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(lhs)));
     args.add(TreeUtil.remove(rhs));
     node.replaceWith(invocation);
+  }
+
+  private void rewritePostPrefixExpr(Expression expr, Expression operand, String expressionName) {
+    TypeMirror operandType = operand.getTypeMirror();
+    TypeKind operandKind = operandType.getKind();
+    TypeMirror operandPointerType = new PointerType(operandType);
+
+    if (operandKind != TypeKind.INT
+        && operandKind != TypeKind.LONG
+        && operandKind != TypeKind.CHAR
+        && operandKind != TypeKind.BYTE
+        && operandKind != TypeKind.SHORT) {
+      return;
+    }
+    String funcName =
+        "Jre"
+            + expressionName
+            + (isVolatile(operand) ? "Volatile" : "")
+            + NameTable.capitalize(TypeUtil.getName(operandType));
+    FunctionElement element =
+        new FunctionElement(funcName, operandType, null).addParameters(operandPointerType);
+    FunctionInvocation invocation = new FunctionInvocation(element, operandType);
+    List<Expression> args = invocation.getArguments();
+    args.add(
+        new PrefixExpression(
+            operandPointerType, PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(operand)));
+    expr.replaceWith(invocation);
   }
 
   private CStringLiteral getStrcatTypesCString(List<Expression> operands) {
@@ -719,7 +798,7 @@ public class OperatorRewriter extends UnitTreeVisitor {
     }
   }
 
-  private static String getLiteralStringValue(Expression expr) {
+  private static @Nullable String getLiteralStringValue(Expression expr) {
     switch (expr.getKind()) {
       case STRING_LITERAL:
         String literalValue = ((StringLiteral) expr).getLiteralValue();

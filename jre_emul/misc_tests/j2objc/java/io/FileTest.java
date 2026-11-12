@@ -49,6 +49,20 @@ public class FileTest extends TestCase {
     deleteTestDirectory(testDir);
   }
 
+  public void testCheckAccess() throws IOException {
+    File f = File.createTempFile("test_access", "txt", tmpDirectory);
+    assertTrue(f.exists());
+    assertTrue(f.canRead());
+    assertTrue(f.canWrite());
+    assertFalse(f.canExecute()); // Verifies ACCESS_EXECUTE mode on a non-executable file
+
+    File nonExistent = new File(tmpDirectory, "does_not_exist.txt");
+    assertFalse(nonExistent.exists());
+    assertFalse(nonExistent.canRead());
+    assertFalse(nonExistent.canWrite());
+    assertFalse(nonExistent.canExecute());
+  }
+
   private File createTestDirectory(File currentDir, String path) throws IOException {
     File newDir = new File(currentDir, path);
     assertTrue(newDir.mkdir());

@@ -23,8 +23,8 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -70,12 +70,12 @@ public class PropertyAnnotation extends Annotation {
       ImmutableSet.of("weak", "copy", "assign", "retain", "unsafe_unretained", "strong");
 
   public PropertyAnnotation() {
-    this.attributes = Sets.newHashSet();
+    this.attributes = new LinkedHashSet<>();
   }
 
   public PropertyAnnotation(PropertyAnnotation other) {
     super(other);
-    this.attributes = new HashSet<String>(other.attributes);
+    this.attributes = new LinkedHashSet<>(other.attributes);
   }
 
   @Override
@@ -102,6 +102,11 @@ public class PropertyAnnotation extends Annotation {
 
   public static boolean hasMemoryManagementAttribute(Set<String> attributes) {
     return !Sets.intersection(attributes, MEMORY_MANAGEMENT_ATTRIBUTES).isEmpty();
+  }
+
+  /** Returns the memory management attributes present in {@code attributes}. */
+  public static ImmutableSet<String> getMemoryManagementAttributes(Set<String> attributes) {
+    return Sets.intersection(attributes, MEMORY_MANAGEMENT_ATTRIBUTES).immutableCopy();
   }
 
   public void removeAttribute(String attribute) {
@@ -133,7 +138,7 @@ public class PropertyAnnotation extends Annotation {
   }
 
   public Set<String> getPropertyAttributes() {
-    return Sets.newHashSet(attributes);
+    return new LinkedHashSet<>(attributes);
   }
 
   /**

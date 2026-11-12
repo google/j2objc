@@ -102,32 +102,32 @@ public class MaxFloatingPointTest extends TestCase {
   public void testCompoundOperators() {
     int i = Integer.MAX_VALUE;
     i += 1.0;
-    assertEquals(Integer.MAX_VALUE, i);
+    assertEquals("overflow Integer add failed", Integer.MAX_VALUE, i);
     i *= 1.5;
-    assertEquals(Integer.MAX_VALUE, i);
+    assertEquals("overflow Integer multiply failed", Integer.MAX_VALUE, i);
     i -= -1.0;
-    assertEquals(Integer.MAX_VALUE, i);
+    assertEquals("overflow Integer subtract failed", Integer.MAX_VALUE, i);
     i /= 0.5;
-    assertEquals(Integer.MAX_VALUE, i);
+    assertEquals("overflow Integer divide failed", Integer.MAX_VALUE, i);
     long l = Long.MAX_VALUE;
     l += 1.0;
-    assertEquals(Long.MAX_VALUE, l);
+    assertEquals("overflow Long add failed", Long.MAX_VALUE, l);
     l *= 1.5;
-    assertEquals(Long.MAX_VALUE, l);
+    assertEquals("overflow Long multiply failed", Long.MAX_VALUE, l);
     l -= -1.0;
-    assertEquals(Long.MAX_VALUE, l);
+    assertEquals("overflow Long subtract failed", Long.MAX_VALUE, l);
     l /= 0.5;
-    assertEquals(Long.MAX_VALUE, l);
+    assertEquals("overflow Long divide failed", Long.MAX_VALUE, l);
   }
 
   public void testNaNConversions() {
     double d = Double.NaN;
     float f = Float.NaN;
-    assertEquals(0L, (long) d);
-    assertEquals(0, (int) d);
-    assertEquals('\0', (char) d);
-    assertEquals(0L, (long) f);
-    assertEquals(0, (int) f);
-    assertEquals('\0', (char) f);
+    assertEquals("double NaN as long failed", 0L, (long) d);
+    assertEquals("double NaN as int failed", 0, (int) d);
+    assertEquals("double NaN as char failed", '\0', (char) d);
+    assertEquals("float NaN as long failed", 0L, (long) f);
+    assertEquals("float NaN as int failed", 0, (int) f);
+    assertEquals("float NaN as char failed", '\0', (char) f);
   }
 }

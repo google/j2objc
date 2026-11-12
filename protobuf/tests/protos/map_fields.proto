@@ -38,7 +38,71 @@ message MapMsg {
 }
 
 message MapValue {
-  string foo = 1 [
-    features.field_presence = LEGACY_REQUIRED
-  ];
+  string foo = 1 [features.field_presence = LEGACY_REQUIRED];
+}
+
+// Verifying conversion from RepeatedFields to Maps for string, string.
+message FakeStringStringMapFieldEntry {
+  string key = 1;
+  string value = 2;
+}
+
+message FakeStringStringMap {
+  repeated FakeStringStringMapFieldEntry map_field = 1;
+}
+
+message RealStringStringMap {
+  map<string, string> map_field = 1;
+}
+
+// Verifying conversion from RepeatedFields to Maps for scalar, bytes.
+message FakeScalarBytesMapFieldEntry {
+  int32 key = 1;
+  bytes value = 2;
+}
+
+message FakeScalarBytesMap {
+  repeated FakeScalarBytesMapFieldEntry map_field = 1;
+}
+
+message RealScalarBytesMap {
+  map<int32, bytes> map_field = 1;
+}
+
+// Verifying conversion from RepeatedFields to Maps for scalar, msg.
+message RandomMessage {
+  string foo = 1;
+}
+
+message FakeScalarMsgMapFieldEntry {
+  int32 key = 1;
+  RandomMessage value = 2;
+}
+
+message FakeScalarMsgMap {
+  repeated FakeScalarMsgMapFieldEntry map_field = 1;
+}
+
+message RealScalarMsgMap {
+  map<int32, RandomMessage> map_field = 1;
+}
+
+// Verifying conversion from RepeatedFields to Maps for scalar, enum.
+// Specifically making sure the default value is used when the value is
+// missing.
+message FakeScalarEnumMapFieldEntry {
+  int32 key = 1;
+  MapMsg.Color value = 2;
+}
+
+message FakeScalarEnumMap {
+  repeated FakeScalarEnumMapFieldEntry map_field = 1;
+}
+
+message RealScalarEnumMap {
+  map<int32, MapMsg.Color> map_field = 1;
+}
+
+message RealStringBytesMap {
+  map<string, bytes> map_field = 1;
 }

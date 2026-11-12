@@ -126,11 +126,6 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
       }
     }
 
-    static inline volatile_id *GetPtrUnchecked(
-        JavaUtilConcurrentAtomicAtomicReferenceArray *self, jint i) {
-      return (volatile_id *)&self->array_->buffer_[i];
-    }
-
     static inline volatile_id *GetPtrChecked(
         JavaUtilConcurrentAtomicAtomicReferenceArray *self, jint i) {
       CheckIdx(self, i);
@@ -147,10 +142,6 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
      */
     public final native E get(int i) /*-[
       return JreLoadVolatileId(GetPtrChecked(self, i));
-    ]-*/;
-
-    private final native E getUnchecked(int i) /*-[
-      return JreLoadVolatileId(GetPtrUnchecked(self, i));
     ]-*/;
 
     /**

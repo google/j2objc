@@ -52,6 +52,7 @@ import com.google.devtools.j2objc.translate.MetadataWriter;
 import com.google.devtools.j2objc.translate.NilCheckResolver;
 import com.google.devtools.j2objc.translate.NumberMethodRewriter;
 import com.google.devtools.j2objc.translate.ObjectiveCAdapterMethodAnnotation;
+import com.google.devtools.j2objc.translate.ObjectiveCKmpMethodTranslator;
 import com.google.devtools.j2objc.translate.ObjectiveCNativeProtocolAnnotation;
 import com.google.devtools.j2objc.translate.OcniExtractor;
 import com.google.devtools.j2objc.translate.OperatorRewriter;
@@ -219,7 +220,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("LambdaRewriter");
 
     // Before: InstanceOfPatternRewriter - to handle instanceof patterns from the switch rewrite.
-    new SwitchConstructRewriter(unit).run();
+    SwitchConstructRewriter.run(unit);
     ticker.tick("SwitchConstructRewriter");
 
     // Before: VariableRenamer - VariableRenamer renames variables in a scope-aware manner.
@@ -325,6 +326,10 @@ public class TranslationProcessor extends FileProcessor {
     new SuperMethodInvocationRewriter(unit).run();
     ticker.tick("SuperMethodInvocationRewriter");
 
+    // Before OperatorRewriter - Needs to see the case expressions before they are rewritten.
+    new SwitchRewriter(unit).run();
+    ticker.tick("SwitchRewriter");
+
     new OperatorRewriter(unit).run();
     ticker.tick("OperatorRewriter");
 
@@ -337,9 +342,6 @@ public class TranslationProcessor extends FileProcessor {
     //   hasRetainedResult on ArrayCreation nodes.
     new ArrayRewriter(unit).run();
     ticker.tick("ArrayRewriter");
-
-    new SwitchRewriter(unit).run();
-    ticker.tick("SwitchRewriter");
 
     // Breaks up deeply nested expressions such as chained method calls.
     // Should be one of the last translations because other mutations will
@@ -367,6 +369,9 @@ public class TranslationProcessor extends FileProcessor {
     // do not need other processing above.
     new ObjectiveCAdapterMethodAnnotation(unit).run();
     ticker.tick("ObjectiveCAdapterMethodAnnotation");
+
+    new ObjectiveCKmpMethodTranslator(unit).run();
+    ticker.tick("ObjectiveCKmpMethodTranslator");
 
     if (deadCodeMap != null) {
       deadCodeEliminator.removeDeadClasses();

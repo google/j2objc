@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EmbeddedStatementExpression;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.InfixExpression.Operator;
@@ -43,198 +44,313 @@ import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.YieldStatement;
+import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.util.TypeUtil;
 import java.util.List;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Rewrites switch constructs flattening expressions into multiple cases and rescopes statements.
  *
  * @author Roberto Lublinerman
  */
-public class SwitchConstructRewriter extends UnitTreeVisitor {
-  public SwitchConstructRewriter(CompilationUnit unit) {
-    super(unit);
+public class SwitchConstructRewriter {
+
+  public static void run(CompilationUnit unit) {
+    // Rewrite switch expressions into switch statements.
+    new RewriteSwitchExpressionToSwitchStatement(unit).run();
+
+    // Extract complex selector switch expression to prevent double evaluation.
+    new ExtractSwitchExpression(unit).run();
+
+    // Desugar switch patterns and guards.
+    new DesugarSwitchPatterns(unit).run();
   }
 
-  @Override
-  public void endVisit(SwitchStatement node) {
-    if (hasPatternsOrGuards(node.getStatements())) {
-      // The switch expression with patterns or guards will be replaced by a nest of if statements
-      // followed by a switch statement on an integer.
-      Block replacement = new Block();
-      generateSelectorLogic(node, replacement);
-      node.replaceWith(replacement);
+  /** Rewrites switch expressions into switch statements. */
+  public static class RewriteSwitchExpressionToSwitchStatement extends UnitTreeVisitor {
+    public RewriteSwitchExpressionToSwitchStatement(CompilationUnit unit) {
+      super(unit);
     }
-  }
 
-  @Override
-  public void endVisit(SwitchExpression node) {
-    if (hasPatternsOrGuards(node.getStatements())) {
-      // The switch expression with patterns or guards will be replaced by a nest of if statements
-      // followed by a switch statement on an integer.
-      Block implementationBlock = new Block();
-      generateSelectorLogic(node, implementationBlock);
-
+    @Override
+    public void endVisit(SwitchExpression node) {
+      // Simple switch expressions are just converted into a switch statement inside an block
+      // expression evaluated immediately.
+      //
+      //  ^{
+      //      switch(...) {
+      //        ...
+      //      }
+      //   }()
       node.replaceWith(
           new EmbeddedStatementExpression()
-              .setStatement(implementationBlock)
+              .setStatement(new SwitchStatement(node))
               .setTypeMirror(node.getTypeMirror()));
-      return;
     }
 
-    // Simple switch expressions are just converted into a switch statement inside an block
-    // expression evaluated immediately.
-    //
-    //  ^{
-    //      switch(...) {
-    //        ...
-    //      }
-    //   }()
-    node.replaceWith(
-        new EmbeddedStatementExpression()
-            .setStatement(new SwitchStatement(node))
-            .setTypeMirror(node.getTypeMirror()));
-  }
-
-  @Override
-  public void endVisit(YieldStatement node) {
-    // Yield statements become returns from the block expression.
-    node.replaceWith(new ReturnStatement(node.getExpression().copy()));
-  }
-
-  private boolean hasPatternsOrGuards(List<Statement> stmts) {
-    for (Statement stmt : stmts) {
-      if (stmt instanceof SwitchCase switchCase) {
-        if (switchCase.getPattern() != null || switchCase.getGuard() != null) {
-          return true;
-        }
-      }
+    @Override
+    public void endVisit(YieldStatement node) {
+      // Yield statements become returns from the block expression.
+      node.replaceWith(new ReturnStatement(node.getExpression().copy()));
     }
-    return false;
   }
 
   /**
-   * Transforms a switch with patterns or guards into an if/else nest that decides which case to
-   * enter, and a switch on int that has the switch logic preserving the meaning of the unlabeled
-   * breaks etc.
+   * Extracts the selector expression from a switch construct unless it is a simple name and does
+   * not require a null check.
    */
-  private void generateSelectorLogic(SwitchConstruct node, Block implementationBlock) {
-    Expression expression = node.getExpression();
-    if (!(expression instanceof SimpleName)) {
+  public static class ExtractSwitchExpression extends UnitTreeVisitor {
+    private static final FunctionElement NIL_CHK_ELEM =
+        new FunctionElement("nil_chk", TypeUtil.ID_TYPE, null)
+            .addParameters(TypeUtil.ID_TYPE)
+            .setIsMacro(true);
+
+    public ExtractSwitchExpression(CompilationUnit unit) {
+      super(unit);
+    }
+
+    @Override
+    public void endVisit(SwitchStatement node) {
+      boolean needsNilCheck =
+          !node.hasNullCase() && TypeUtil.isReferenceType(node.getExpression().getTypeMirror());
+      if (needsNilCheck || !(node.getExpression() instanceof SimpleName)) {
+        Block replacement = new Block();
+        extractSelectorExpression(node, replacement, needsNilCheck);
+        node.replaceWith(replacement);
+        replacement.addStatement(node);
+      }
+    }
+
+    /**
+     * Extracts the selector expression of {@code node} into a temporary variable declared in {@code
+     * block} so that passes that rewrite switch statements don't have to worry about double
+     * evaluation, or to enforce null checking for reference types when there is no null case.
+     */
+    private void extractSelectorExpression(
+        SwitchConstruct node, Block block, boolean wrapWithNilCheck) {
+      Expression expression = node.getExpression();
       // Generate a temporary variable to preserve evaluation semantics since we can't guarantee
-      // that the expression doesn't have side effects and can be evaluated multiple times.
+      // that the expression doesn't have side effects and can be evaluated multiple times, or to
+      // enforce null checking if the selector is a reference type and there is no null case.
       VariableElement tempVariable =
           GeneratedVariableElement.newLocalVar(
               "tmp", expression.getTypeMirror(), TreeUtil.getEnclosingElement((TreeNode) node));
-      // Type tmp = expr
-      implementationBlock.addStatement(
-          new VariableDeclarationStatement(tempVariable, expression.copy()));
-      expression = new SimpleName(tempVariable);
+      Expression initializer = TreeUtil.remove(expression);
+      if (wrapWithNilCheck) {
+        initializer = nilCheck(initializer);
+      }
+      // Type tmp = [nil_chk](expr)
+      block.addStatement(new VariableDeclarationStatement(tempVariable, initializer));
+      node.setExpression(new SimpleName(tempVariable));
     }
 
-    // Generate an integer variable that will be the expression of the transformed switch.
-    VariableElement selectorVariable =
-        GeneratedVariableElement.newLocalVar(
-            "selector", typeUtil.getInt(), TreeUtil.getEnclosingElement((TreeNode) node));
-    // int selector = 0;
-    // If the selector remains as 0, it means that no case matched and the default case is
-    // executed.
-    implementationBlock.addStatement(
-        new VariableDeclarationStatement(selectorVariable, new NumberLiteral(0, typeUtil)));
-
-    IfStatement lastIfStatement = null;
-    int caseNumber = 1; // Start case numbers at 1 since 0 will be the default case.
-    for (Statement statement : node.getStatements()) {
-      if (!(statement instanceof SwitchCase switchCase)) {
-        // Skip the statements, the if/else logic only needs to worry about the case expressions.
-        continue;
-      }
-      if (switchCase.isDefault()) {
-        // No need to handle the default case, the selector variable will be already 0 in that case.
-        continue;
-      }
-
-      Expression condition = buildCondition(expression, switchCase);
-
-      // if (condition) {
-      //   selector = caseNumber;
-      // } else ....
-      IfStatement newCase =
-          new IfStatement()
-              .setExpression(condition)
-              .setThenStatement(
-                  new ExpressionStatement()
-                      .setExpression(
-                          new Assignment(
-                              new SimpleName(selectorVariable),
-                              new NumberLiteral(caseNumber, typeUtil))));
-
-      if (lastIfStatement == null) {
-        // This the first case, so we need to add it to the implementation block.
-        implementationBlock.addStatement(newCase);
-      } else {
-        // Otherwise, we need to add it as the else statement of the previous case.
-        lastIfStatement.setElseStatement(newCase);
-      }
-
-      lastIfStatement = newCase;
-
-      // Replace the case expression with the caseNumber.
-      switchCase.getExpressions().clear();
-      switchCase.addExpression(new NumberLiteral(caseNumber, typeUtil));
-      switchCase.setGuard(null);
-      switchCase.setPattern(null);
-
-      caseNumber++;
+    private static Expression nilCheck(Expression expression) {
+      FunctionInvocation nilChkInvocation =
+          new FunctionInvocation(NIL_CHK_ELEM, expression.getTypeMirror());
+      nilChkInvocation.addArgument(expression);
+      return nilChkInvocation;
     }
-    // Last, replace switch with one that uses the selector variable as the expression and with the
-    // rewritten cases.
-    implementationBlock.addStatement(
-        new SwitchStatement()
-            .setExpression(new SimpleName(selectorVariable))
-            .copyStatements(node.getStatements()));
   }
 
-  private Expression buildCondition(Expression switchExpression, SwitchCase switchCase) {
-    Expression condition = null;
-    if (switchCase.getExpressions().size() == 1) {
-      // This is case null.
-      Expression expression = switchCase.getExpressions().getFirst();
-      checkState(switchCase.getPattern() == null);
-      checkState(expression instanceof NullLiteral);
-      condition =
-          andCondition(
-              condition,
-              new InfixExpression()
-                  .setTypeMirror(typeUtil.getBoolean())
-                  .setOperator(Operator.EQUALS)
-                  .addOperand(switchExpression.copy())
-                  .addOperand(expression.copy()));
-    } else {
-      checkState(switchCase.getExpressions().isEmpty());
-      Pattern pattern = switchCase.getPattern();
-      if (pattern != null) {
+  /** Desugars switch patterns and guards into a combination of if statements and a switch. */
+  public static class DesugarSwitchPatterns extends UnitTreeVisitor {
+    public DesugarSwitchPatterns(CompilationUnit unit) {
+      super(unit);
+    }
+
+    @Override
+    public void endVisit(SwitchStatement node) {
+      if (hasPatternsOrGuards(node.getStatements())
+          // A switch on a selector whose type is not valid in a non-enhanced switch, e.g.
+          // `Object`, is an enhanced switch and needs to be rewritten even if all its case labels
+          // are constants, e.g. qualified enum constants.
+          || requiresEnhancedSwitch(node.getExpression().getTypeMirror())
+          // Boxed primitive switches with a null case cannot be unboxed directly.
+          || (node.hasNullCase() && typeUtil.isBoxedType(node.getExpression().getTypeMirror()))) {
+        // The switch construct will be replaced by a nest of if statements followed by a switch
+        // statement on an integer.
+        Block replacement = new Block();
+        generateSelectorLogic(node, replacement);
+        node.replaceWith(replacement);
+      }
+    }
+
+    private boolean hasPatternsOrGuards(List<Statement> stmts) {
+      for (Statement stmt : stmts) {
+        if (stmt instanceof SwitchCase switchCase) {
+          if (switchCase.getPattern() != null || switchCase.getGuard() != null) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Returns true if a switch on {@code type} is an enhanced switch regardless of its cases, i.e.
+     * the type is not char, byte, short, int, Character, Byte, Short, Integer, String or an enum
+     * type (JLS 14.11.2).
+     */
+    private boolean requiresEnhancedSwitch(TypeMirror type) {
+      if (typeUtil.isString(type) || TypeUtil.isEnum(type)) {
+        return false;
+      }
+      TypeMirror primitiveType = type.getKind().isPrimitive() ? type : typeUtil.unboxedType(type);
+      if (primitiveType == null) {
+        return true;
+      }
+      return switch (primitiveType.getKind()) {
+        case CHAR, BYTE, SHORT, INT -> false;
+        default -> true;
+      };
+    }
+
+    /**
+     * Transforms a switch with patterns or guards into an if/else nest that decides which case to
+     * enter, and a switch on int that has the switch logic preserving the meaning of the unlabeled
+     * breaks etc.
+     */
+    private void generateSelectorLogic(SwitchConstruct node, Block implementationBlock) {
+      Expression expression = node.getExpression();
+
+      // Generate an integer variable that will be the expression of the transformed switch.
+      VariableElement selectorVariable =
+          GeneratedVariableElement.newLocalVar(
+              "selector", typeUtil.getInt(), TreeUtil.getEnclosingElement((TreeNode) node));
+      // int selector = 0;
+      // If the selector remains as 0, it means that no case matched and the default case is
+      // executed.
+      implementationBlock.addStatement(
+          new VariableDeclarationStatement(selectorVariable, new NumberLiteral(0, typeUtil)));
+
+      boolean hasNullCase = node.hasNullCase();
+      IfStatement lastIfStatement = null;
+      int caseNumber = 1; // Start case numbers at 1 since 0 will be the default case.
+      for (Statement statement : node.getStatements()) {
+        if (!(statement instanceof SwitchCase switchCase)) {
+          // Skip the statements, the if/else logic only needs to worry about the case expressions.
+          continue;
+        }
+        if (switchCase.isDefault()) {
+          // No need to handle the default case, the selector variable will be already 0 in that
+          // case.
+          continue;
+        }
+
+        Expression condition = buildCondition(expression, switchCase, hasNullCase);
+
+        // if (condition) {
+        //   selector = caseNumber;
+        // } else ....
+        IfStatement newCase =
+            new IfStatement()
+                .setExpression(condition)
+                .setThenStatement(
+                    new ExpressionStatement()
+                        .setExpression(
+                            new Assignment(
+                                new SimpleName(selectorVariable),
+                                new NumberLiteral(caseNumber, typeUtil))));
+
+        if (lastIfStatement == null) {
+          // This the first case, so we need to add it to the implementation block.
+          implementationBlock.addStatement(newCase);
+        } else {
+          // Otherwise, we need to add it as the else statement of the previous case.
+          lastIfStatement.setElseStatement(newCase);
+        }
+
+        lastIfStatement = newCase;
+
+        // Replace the case expression with the caseNumber.
+        switchCase.getExpressions().clear();
+        switchCase.addExpression(new NumberLiteral(caseNumber, typeUtil));
+        switchCase.setGuard(null);
+        switchCase.setPattern(null);
+
+        caseNumber++;
+      }
+      // Last, replace switch with one that uses the selector variable as the expression and with
+      // the rewritten cases.
+      implementationBlock.addStatement(
+          new SwitchStatement()
+              .setExpression(new SimpleName(selectorVariable))
+              .copyStatements(node.getStatements()));
+    }
+
+    private Expression buildCondition(
+        Expression switchExpression, SwitchCase switchCase, boolean hasNullCase) {
+      Expression condition = null;
+      if (!switchCase.getExpressions().isEmpty()) {
+        checkState(switchCase.getPattern() == null);
+        boolean requiresUnboxing = false;
+        for (Expression expression : switchCase.getExpressions()) {
+          requiresUnboxing |=
+              !switchExpression.getTypeMirror().getKind().isPrimitive()
+                  && expression.getTypeMirror().getKind().isPrimitive();
+          // caseExpression == expr1 || caseExpression == expr2 || ...
+          condition =
+              orCondition(condition, equalsExpression(copy(switchExpression), copy(expression)));
+        }
+        // The comparison requires unboxing and the switch has `case null`, check for non-null
+        // before unboxing.
+        if (hasNullCase && requiresUnboxing) {
+          // caseExpression != null && (caseExpression == expr1 || caseExpression == expr2 || ...)
+          condition = andCondition(notNullExpression(copy(switchExpression)), condition);
+        }
+      } else {
+        checkState(switchCase.getExpressions().isEmpty());
         condition =
             andCondition(
                 condition,
-                new InstanceofExpression()
-                    .setTypeMirror(typeUtil.getBoolean())
-                    .setLeftOperand(switchExpression.copy())
-                    .setRightOperand(Type.newType(checkNotNull(pattern.getTypeMirror())))
-                    .setPattern(pattern.copy()));
+                instanceofPattern(copy(switchExpression), copy(switchCase.getPattern())));
       }
+      return andCondition(condition, copy(switchCase.getGuard()));
     }
-    if (switchCase.getGuard() != null) {
-      condition = andCondition(condition, switchCase.getGuard().copy());
+
+    private Expression andCondition(Expression lhs, Expression rhs) {
+      if (lhs == null) {
+        return rhs;
+      } else if (rhs == null) {
+        return lhs;
+      }
+      return new InfixExpression(typeUtil.getBoolean(), Operator.CONDITIONAL_AND, lhs, rhs);
     }
-    return condition;
+
+    private Expression orCondition(Expression lhs, Expression rhs) {
+      if (lhs == null) {
+        return rhs;
+      } else if (rhs == null) {
+        return lhs;
+      }
+      return new InfixExpression(typeUtil.getBoolean(), Operator.CONDITIONAL_OR, lhs, rhs);
+    }
+
+    private Expression equalsExpression(Expression lhs, Expression rhs) {
+      return new InfixExpression(typeUtil.getBoolean(), Operator.EQUALS, lhs, rhs);
+    }
+
+    private Expression notNullExpression(Expression lhs) {
+      return new InfixExpression(
+          typeUtil.getBoolean(), Operator.NOT_EQUALS, lhs, new NullLiteral(typeUtil.getNull()));
+    }
+
+    private Expression instanceofPattern(Expression expression, Pattern pattern) {
+      return new InstanceofExpression()
+          .setTypeMirror(typeUtil.getBoolean())
+          .setLeftOperand(expression)
+          .setRightOperand(Type.newType(checkNotNull(pattern.getTypeMirror())))
+          .setPattern(pattern);
+    }
   }
 
-  private Expression andCondition(Expression lhs, Expression rhs) {
-    if (lhs == null) {
-      return rhs;
-    }
-    return new InfixExpression(typeUtil.getBoolean(), Operator.CONDITIONAL_AND, lhs, rhs);
+  @SuppressWarnings("unchecked")
+  private static <T extends TreeNode> T copy(T node) {
+    return node == null ? null : (T) node.copy();
   }
+
+  private SwitchConstructRewriter() {}
 }

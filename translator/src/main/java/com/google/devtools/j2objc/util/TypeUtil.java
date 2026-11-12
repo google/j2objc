@@ -397,6 +397,14 @@ public final class TypeUtil {
     return javacTypes.directSupertypes(t);
   }
 
+  public WildcardType getWildcardType(TypeMirror extendsBound, TypeMirror superBound) {
+    return javacTypes.getWildcardType(extendsBound, superBound);
+  }
+
+  public DeclaredType getDeclaredType(TypeElement typeElem, TypeMirror... typeArgs) {
+    return javacTypes.getDeclaredType(typeElem, typeArgs);
+  }
+
   public TypeMirror erasure(TypeMirror t) {
     return javacTypes.erasure(t);
   }

@@ -92,7 +92,7 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("int32_t test = ((int32_t) [@\"foo\" hash]);", result);
+    assertEquals("int32_t test = (int32_t) [@\"foo\" hash];", result);
   }
 
   public void testClassGetSuperclass() throws IOException {

@@ -34,7 +34,10 @@ public class RecordExpanderTest extends GenerationTest {
     assertInTranslation(
         translation, "void Point_initWithInt_withInt_(Point *self, int32_t x, int32_t y);");
 
-    // Verify accessors declared for record's members.
+    // Verify properties declared for record's members and
+    assertInTranslation(translation, "@property (readonly, nonatomic) int32_t x;");
+    assertInTranslation(translation, "@property (readonly, nonatomic) int32_t y;");
+    // also as accessor methods
     assertInTranslation(translation, "- (int32_t)x;");
     assertInTranslation(translation, "- (int32_t)y;");
 
@@ -56,9 +59,9 @@ public class RecordExpanderTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        if (!([o isKindOfClass:[Point class]])) return false;
+        if (![o isKindOfClass:[Point class]]) return false;
         Point *other = (Point *) cast_chk(o, [Point class]);
-        return ((Point *) nil_chk(other))->x_ == x_ && other->y_ == y_;
+        return (((Point *) nil_chk(other))->x_ == x_) && (other->y_ == y_);
         """);
     assertInTranslation(
         translation,
@@ -70,6 +73,88 @@ public class RecordExpanderTest extends GenerationTest {
         """
         - (NSString *)description {
           return JreStrcat(\"$I$IC\", @\"Point[x=\", x_, @\", y=\", y_, ']');
+        """);
+  }
+
+  public void testComponentProperties() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            import com.google.j2objc.annotations.Property;
+            public record Person(int key, @Property("nonnull") String name, String nickname) {
+              public String nickname() {
+                return nickname;
+              }
+            }
+            """,
+            "Person",
+            "Person.h");
+    assertTranslatedLines(
+        translation,
+        """
+        @interface Person : JavaLangRecord
+        @property (readonly, nonatomic) int32_t key;
+        @property (readonly, copy, nonatomic, nonnull) NSString *name;
+        @property (readonly, copy, nonatomic) NSString *nickname;
+
+        #pragma mark Public
+
+        - (instancetype)initWithInt:(int32_t)key
+                       withNSString:(NSString *)name
+                       withNSString:(NSString *)nickname;
+
+        - (int32_t)key;
+
+        - (NSString *)name;
+
+        - (NSString *)nickname;
+
+        // Disallowed inherited constructors, do not use.
+
+        - (instancetype)init NS_UNAVAILABLE;
+
+        @end
+        """);
+
+    translation = getTranslatedFile("Person.m");
+    assertNotInTranslation(translation, "@synthesize");
+    assertTranslatedLines(
+        translation,
+        """
+        @implementation Person
+
+        - (instancetype)initWithInt:(int32_t)key
+                       withNSString:(NSString *)name
+                       withNSString:(NSString *)nickname {
+          Person_initWithInt_withNSString_withNSString_(self, key, name, nickname);
+          return self;
+        }
+
+        - (NSString *)nickname {
+          return nickname_;
+        }
+
+        - (int32_t)key {
+          return key_;
+        }
+
+        - (NSString *)name {
+          return name_;
+        }
+
+        - (bool)isEqual:(id)o {
+          if (![o isKindOfClass:[Person class]]) return false;
+          Person *other = (Person *) cast_chk(o, [Person class]);
+          return (((Person *) nil_chk(other))->key_ == key_) && JavaUtilObjects_equalsWithId_withId_(other->name_, name_) && JavaUtilObjects_equalsWithId_withId_(other->nickname_, nickname_);
+        }
+
+        - (NSUInteger)hash {
+          return JavaUtilObjects_hash__WithNSObjectArray_([IOSObjectArray arrayWithObjects:(id[]){ JavaLangInteger_valueOfWithInt_(key_), name_, nickname_ } count:3 type:NSObject_class_()]);
+        }
+
+        - (NSString *)description {
+          return JreStrcat("$I$$$$C", @"Person[key=", key_, @", name=", name_, @", nickname=", nickname_, ']');
+        }
         """);
   }
 
@@ -105,6 +190,8 @@ public class RecordExpanderTest extends GenerationTest {
             "Point",
             "Point.h");
     assertInTranslation(translation, "@interface Point : JavaLangRecord");
+    assertInTranslation(translation, "@property (readonly, nonatomic) int32_t x;");
+    assertInTranslation(translation, "@property (readonly, nonatomic) int32_t y;");
     assertInTranslation(translation, "- (int32_t)x;");
     assertInTranslation(translation, "- (int32_t)y;");
     assertInTranslation(translation, "- (bool)isEqual:(id)o;");
@@ -138,9 +225,9 @@ public class RecordExpanderTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        if (!([o isKindOfClass:[Point class]])) return false;
+        if (![o isKindOfClass:[Point class]]) return false;
         Point *other = (Point *) cast_chk(o, [Point class]);
-        return ((Point *) nil_chk(other))->x_ == x_ && other->y_ == y_;
+        return (((Point *) nil_chk(other))->x_ == x_) && (other->y_ == y_);
         """);
     assertInTranslation(
         translation,
@@ -192,9 +279,9 @@ public class RecordExpanderTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        if (!([o isKindOfClass:[Point class]])) return false;
+        if (![o isKindOfClass:[Point class]]) return false;
         Point *other = (Point *) cast_chk(o, [Point class]);
-        return ((Point *) nil_chk(other))->x_ == x_ && other->y_ == y_;
+        return (((Point *) nil_chk(other))->x_ == x_) && (other->y_ == y_);
         """);
     assertInTranslation(
         translation,
@@ -221,11 +308,141 @@ public class RecordExpanderTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        if (!([o isKindOfClass:[Point class]])) return false;
+        if (![o isKindOfClass:[Point class]]) return false;
         Point *other = (Point *) cast_chk(o, [Point class]);
         return JavaUtilObjects_equalsWithId_withId_(((Point *) nil_chk(other))->s_, s_)\
-         && other->i_ == i_\
+         && (other->i_ == i_)\
          && JavaUtilObjects_equalsWithId_withId_(other->l_, l_);
         """);
+  }
+
+  public void testRecordComponentPropertiesPreserveObjectiveCGenerics() throws IOException {
+    options.setAsObjCGenericDecl(true);
+    options.setNullability(true);
+    addSourceFile("public class Box<T> {}", "Box.java");
+    addSourceFile("public class Item {}", "Item.java");
+    String translation =
+        translateSourceFile(
+            """
+            import org.jspecify.annotations.NullMarked;
+            import org.jspecify.annotations.Nullable;
+            @NullMarked
+            public record Container(Box<Item> requiredBox, @Nullable Box<Item> optionalBox) {}
+            """,
+            "Container",
+            "Container.h");
+    assertTranslatedLines(
+        translation,
+        """
+        @class Box<T>;
+        @class Item;
+        @class JavaLangBoolean;
+        @class JavaLangInteger;
+        @class NSString;
+
+        @interface Container : JavaLangRecord
+        @property (readonly, nonatomic, strong) Box<Item *> *requiredBox;
+        @property (readonly, nonatomic, nullable, strong) Box<Item *> *optionalBox;
+
+        #pragma mark Public
+
+        - (instancetype _Nonnull)initWithBox:(Box<Item *> *)requiredBox
+                                     withBox:(Box<Item *> * _Nullable)optionalBox;
+
+        - (Box<Item *> * _Nullable)optionalBox;
+
+        - (Box<Item *> *)requiredBox;
+
+        // Disallowed inherited constructors, do not use.
+
+        - (instancetype _Nonnull)init NS_UNAVAILABLE;
+
+        @end
+        """);
+  }
+
+  public void testRecordWithGenerateObjectiveCGenericsAnnotation() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.GenerateObjectiveCGenerics;
+        @GenerateObjectiveCGenerics
+        public class Box<T> {}
+        """,
+        "Box.java");
+    addSourceFile("public class Item {}", "Item.java");
+    String translation =
+        translateSourceFile(
+            """
+            import com.google.j2objc.annotations.GenerateObjectiveCGenerics;
+            @GenerateObjectiveCGenerics
+            public record Container(Box<Item> itemBox, Item[] items) {}
+            """,
+            "Container",
+            "Container.h");
+    assertTranslatedLines(
+        translation,
+        """
+        @class Box<T>;
+        @class IOSObjectArray;
+        @class Item;
+        @class JavaLangBoolean;
+        @class JavaLangInteger;
+        @class NSString;
+
+        @interface Container : JavaLangRecord
+        @property (readonly, nonatomic, strong) Box<Item *> *itemBox;
+        @property (readonly, nonatomic, strong) IOSObjectArray<Item *> *items;
+
+        #pragma mark Public
+
+        - (instancetype)initWithBox:(Box<Item *> *)itemBox
+                      withItemArray:(IOSObjectArray<Item *> *)items;
+
+        - (Box<Item *> *)itemBox;
+
+        - (IOSObjectArray<Item *> *)items;
+
+        // Disallowed inherited constructors, do not use.
+
+        - (instancetype)init NS_UNAVAILABLE;
+
+        @end
+        """);
+  }
+
+  public void testRecordComponentPropertiesEraseGenericsWhenDisabled() throws IOException {
+    addSourceFile("public class Box<T> {}", "Box.java");
+    addSourceFile("public class Item {}", "Item.java");
+    String translation =
+        translateSourceFile(
+            """
+            public record Container(Box<Item> itemBox) {}
+            """,
+            "Container",
+            "Container.h");
+    assertTranslatedLines(
+        translation,
+        """
+        @class Box;
+        @class JavaLangBoolean;
+        @class JavaLangInteger;
+        @class NSString;
+
+        @interface Container : JavaLangRecord
+        @property (readonly, nonatomic, strong) Box *itemBox;
+
+        #pragma mark Public
+
+        - (instancetype)initWithBox:(Box *)itemBox;
+
+        - (Box *)itemBox;
+
+        // Disallowed inherited constructors, do not use.
+
+        - (instancetype)init NS_UNAVAILABLE;
+
+        @end
+        """);
+    assertNotInTranslation(translation, "@class Item;");
   }
 }

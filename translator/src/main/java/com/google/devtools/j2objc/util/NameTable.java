@@ -23,6 +23,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
@@ -94,6 +95,7 @@ public class NameTable {
   // actually want the first parameter to be self. This is an internal name,
   // converted to self during generation.
   public static final String SELF_NAME = "$$self$$";
+  public static final String OUTER_NAME = "outer$";
   public static final String ID_TYPE = "id";
 
   private static final Logger logger = Logger.getLogger(NameTable.class.getName());
@@ -438,39 +440,23 @@ public class NameTable {
     return sb.toString();
   }
 
-  private static String nameWithoutFirstParam(String name, String firstParam) {
-
-    // Change methods from `builderWithExpectedSizeWithInt` into `builderWithInt`
-    if (Ascii.toLowerCase(name).contains(Ascii.toLowerCase(firstParam))
-        && !name.startsWith(firstParam)) {
-      return name.replaceFirst(capitalize(firstParam), "").replaceFirst("With", "");
-    }
-
-    if (name.contains("With")) {
-      return name.substring(0, name.indexOf("With"));
-    }
-
-    return name;
-  }
-
   private String addSwiftParamNames(
       List<SingleVariableDeclaration> parameters, String name, char delim) {
+    int paramCount = parameters.size();
+    if (paramCount > 0
+        && parameters.get(paramCount - 1).getVariableElement().asType()
+            instanceof NativeType nativeType
+        && nativeType.getName().equals("NSError **")) {
+      parameters = parameters.subList(0, paramCount - 1);
+    }
     if (parameters.isEmpty()) {
       return name + "()";
     }
-    // get the name out of the map and
-    SingleVariableDeclaration firstParam = parameters.get(0);
-    String firstParamName = getVarBaseName(firstParam.getVariableElement(), true);
-
-    StringBuilder sb = new StringBuilder(nameWithoutFirstParam(name, firstParamName)).append("(");
+    StringBuilder sb = new StringBuilder(name).append("(");
     for (SingleVariableDeclaration param : parameters) {
       String paramName = getVarBaseName(param.getVariableElement(), true);
       // Sometimes they don't have real arguments names so we'll use underscore
-      if (paramName.contains("arg")
-          || paramName.equals("value")
-          || paramName.isEmpty()
-          || paramName.equals(name)
-          || paramName.equals(SELF_NAME)) {
+      if (paramName.isEmpty() || paramName.equals(SELF_NAME) || paramName.equals(OUTER_NAME)) {
         sb.append("_").append(delim);
       } else {
         sb.append(paramName).append(delim);
@@ -582,23 +568,29 @@ public class NameTable {
   }
 
   public @Nullable String getSwiftMethodNameFromAnnotation(MethodDeclaration method) {
+    ExecutableElement element = method.getExecutableElement();
     // Check if the method has the annotation
-    String annotationName = swiftNameFromAnnotation(method.getExecutableElement());
+    String annotationName = swiftNameFromAnnotation(element);
     if (annotationName != null) {
       return annotationName;
     }
 
-    if (method.getParameters().isEmpty()) {
-      return null;
-    }
-
+    TypeElement clazz = ElementUtil.getDeclaringClass(element);
     // Check if the class or package has the annotation
-    TypeElement clazz = ElementUtil.getDeclaringClass(method.getExecutableElement());
     if (!packageHasSwiftNameAnnotation(clazz) && !elementHasSwiftNameAnnotation(clazz)) {
       return null;
     }
 
-    ExecutableElement element = method.getExecutableElement();
+    String selector = getMethodSelector(element);
+    if (ElementUtil.isConstructor(element)) {
+      if (hasSuperConstructorWithSameSelector(selector, clazz)) {
+        return null;
+      }
+    } else {
+      if (hasSuperMethodWithSameSelector(selector, clazz)) {
+        return null;
+      }
+    }
 
     // If the annotation is still null after checking the names then it doesn't exist
     String methodName = element.getSimpleName().toString();
@@ -613,32 +605,106 @@ public class NameTable {
     return addSwiftParamNames(method.getParameters(), methodName, ':');
   }
 
-  public @Nullable String getSwiftClassNameFromAnnotation(TypeElement clazz, boolean getParents) {
+  private boolean hasSuperConstructorWithSameSelector(String selector, TypeElement clazz) {
+    TypeElement superClass = ElementUtil.getSuperclass(clazz);
+    if (superClass == null) {
+      return false;
+    }
+    if (Iterables.any(
+        ElementUtil.getConstructors(superClass), c -> getMethodSelector(c).equals(selector))) {
+      return true;
+    }
+    return hasSuperConstructorWithSameSelector(selector, superClass);
+  }
+
+  private boolean hasSuperMethodWithSameSelector(String selector, TypeElement clazz) {
+    TypeElement superClass = ElementUtil.getSuperclass(clazz);
+    if (superClass != null) {
+      if (hasMethodWithSelector(superClass, selector)
+          || hasSuperMethodWithSameSelector(selector, superClass)) {
+        return true;
+      }
+    }
+    for (TypeMirror interfaceMirror : clazz.getInterfaces()) {
+      TypeElement interfaceElement = TypeUtil.asTypeElement(interfaceMirror);
+      if (interfaceElement != null) {
+        if (hasMethodWithSelector(interfaceElement, selector)
+            || hasSuperMethodWithSameSelector(selector, interfaceElement)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  private boolean hasMethodWithSelector(TypeElement clazz, String selector) {
+    return Iterables.any(ElementUtil.getMethods(clazz), m -> getMethodSelector(m).equals(selector));
+  }
+
+  public @Nullable String getSwiftClassNameFromAnnotation(TypeElement clazz) {
     String annotationName = swiftNameFromAnnotation(clazz);
     if (annotationName != null) {
       return annotationName;
+    }
+
+    NestingKind nesting = clazz.getNestingKind();
+    if (nesting == NestingKind.MEMBER) {
+      Element parent = clazz.getEnclosingElement();
+      if (parent instanceof TypeElement parentElement) {
+        // Protocols are named by concatenating the interface name and names of the parent type
+        // hierarchy. Any types declared within an interface are also named by concatenating the
+        // inner type name to the parent interface name. E.g. FooBar rather than Foo.Bar.
+        if (clazz.getKind().isInterface() || parentElement.getKind().isInterface()) {
+          return getFlatSwiftClassName(clazz);
+        }
+        String parentName = getSwiftClassNameFromAnnotation(parentElement);
+        if (parentName != null) {
+          // TODO(b/555734134) - Remove nested class workaround once Xcode 26.4 is the minimum
+          // version.
+          String className = clazz.getSimpleName().toString().replace("$", "");
+          if (parentName.contains(".")) {
+            // NS_SWIFT_NAME may exhibit errors with nested parent classes prior to Xcode 26.4, but
+            // it does support referencing the parent type by its ObjC name.
+            String objcType = getObjCType(parentElement.asType());
+            return getNameOfObjCType(objcType) + "." + className;
+          } else {
+            return parentName + "." + className;
+          }
+        }
+      }
     }
 
     if (!packageHasSwiftNameAnnotation(clazz) && !elementHasSwiftNameAnnotation(clazz)) {
       return null;
     }
 
-    if (getParents) {
-    NestingKind nesting = clazz.getNestingKind();
-    if (nesting == NestingKind.MEMBER) {
-      Element parent = clazz.getEnclosingElement();
-        if (parent instanceof TypeElement && !parent.getKind().isInterface()) {
-          String parentName = getSwiftClassNameFromAnnotation((TypeElement) parent, false);
-        if (parentName != null) {
-            return (parentName + "." + clazz.getSimpleName()).replaceAll("$", "");
-        }
+    String className = clazz.getSimpleName().toString();
+    return className.replace("$", "");
+  }
+
+  private @Nullable String getFlatSwiftClassName(TypeElement clazz) {
+    List<String> hierarchy = new ArrayList<>();
+    Element current = clazz;
+    boolean hasSwiftName = packageHasSwiftNameAnnotation(clazz);
+    while (current instanceof TypeElement typeElement) {
+      String annotationName = swiftNameFromAnnotation(typeElement);
+      if (annotationName != null && !annotationName.isEmpty()) {
+        hierarchy.add(annotationName);
+        hasSwiftName = true;
+        break;
       }
-    }
+      hierarchy.add(typeElement.getSimpleName().toString().replace("$", ""));
+      if (elementHasSwiftNameAnnotation(typeElement)) {
+        hasSwiftName = true;
+      }
+      current = typeElement.getEnclosingElement();
     }
 
-    String className = clazz.getSimpleName().toString();
-    className = className.replaceAll("$", "");
-    return className;
+    if (!hasSwiftName) {
+      return null;
+    }
+
+    return String.join("", hierarchy.reversed());
   }
 
   public @Nullable String getSwiftFunctionNameFromAnnotation(FunctionDeclaration function) {
@@ -666,14 +732,12 @@ public class NameTable {
       return null;
     }
 
-    String className = getSwiftClassNameFromAnnotation(owner, false);
-    if (className == null) {
-      // There isn't nice naming so fallback to the normal ObjC class name
-      className = getObjCType(owner.asType()).replace(" *", "");
-    }
-
-    if (owner.getKind() == ElementKind.ENUM) {
-      className = className + "Class";
+    String className = getSwiftClassNameFromAnnotation(owner);
+    if (className == null || className.contains(".")) {
+      // TODO(b/555734134) - Remove nested class workaround once Xcode 26.4 is the minimum version.
+      // NS_SWIFT_NAME may exhibit errors with nested parent classes prior to Xcode 26.4, but it
+      // does support referencing the parent type by its ObjC name.
+      className = getNameOfObjCType(getObjCType(owner.asType()));
     }
 
     StringBuilder sb = new StringBuilder();
@@ -842,6 +906,11 @@ public class NameTable {
       TypeElement genericUsageTypeElement) {
     return getObjcTypeInner(
         type, null, false, enableGenerics, genericUsageTypeElement);
+  }
+
+  /** Returns the name of the Objective-C type with the pointer and protocol syntax removed. */
+  private static String getNameOfObjCType(String objcType) {
+    return objcType.replace(" *", "").replace("id<", "").replace(">", "");
   }
 
   /**

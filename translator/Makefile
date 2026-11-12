@@ -126,7 +126,6 @@ JAVA_SOURCES = \
 	ast/NumberLiteral.java \
 	ast/PackageDeclaration.java \
 	ast/ParameterizedType.java \
-	ast/ParenthesizedExpression.java \
 	ast/PostfixExpression.java \
 	ast/PrefixExpression.java \
 	ast/PrimitiveType.java \

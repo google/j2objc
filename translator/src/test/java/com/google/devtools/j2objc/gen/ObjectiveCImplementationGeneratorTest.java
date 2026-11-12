@@ -184,7 +184,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "    final int myFoo = foo++; }}",
         "Example", "Example.m");
     assertInTranslation(translation, "int32_t Example_Inner_foo = 1");
-    assertInTranslation(translation, "myFoo_ = Example_Inner_foo++");
+    assertInTranslation(translation, "myFoo_ = JrePostIncInt(&Example_Inner_foo)");
   }
 
   public void testStaticVariableWithGenericTypeCast() throws IOException {
@@ -202,7 +202,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "void test() { Bar.FOO=2; } } class Bar { public static int FOO=1; }",
        "Example", "Example.m");
     assertInTranslation(translation, "int32_t Bar_FOO = 1;");
-    assertInTranslation(translation, "*JreLoadStaticRef(Bar, FOO) = 2;");
+    assertInTranslation(translation, "*(JreLoadStaticRef(Bar, FOO)) = 2;");
   }
 
   public void testNSObjectMessageRename() throws IOException {
@@ -259,7 +259,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       "Color", "Color.m");
     assertInTranslation(translation, "Color *Color_values_[3];");
     assertInTranslation(translation, "@implementation Color");
-    assertInTranslation(translation, "for (int32_t i = 0; i < 3; i++) {");
+    assertInTranslation(translation, "for (int32_t i = 0; i < 3; JrePostIncInt(&i)) {");
     assertInTranslation(translation, "Color *e = Color_values_[i];");
     assertInTranslation(
         translation,
@@ -281,13 +281,13 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertInTranslation(translation, "@implementation Color");
     assertInTranslation(
         translation,
-        "Color_initWithInt_withNSString_withInt_(e, (int32_t) 0xff0000, @\"RED\", 0);");
+        "Color_initWithInt_withNSString_withInt_(e, ((int32_t) 0xff0000), @\"RED\", 0);");
     assertInTranslation(
         translation,
-        "Color_initWithInt_withNSString_withInt_(e, (int32_t) 0xffffff, @\"WHITE\", 1);");
+        "Color_initWithInt_withNSString_withInt_(e, ((int32_t) 0xffffff), @\"WHITE\", 1);");
     assertInTranslation(
         translation,
-        "Color_initWithInt_withNSString_withInt_(e, (int32_t) 0x0000ff, @\"BLUE\", 2);");
+        "Color_initWithInt_withNSString_withInt_(e, ((int32_t) 0x0000ff), @\"BLUE\", 2);");
     assertInTranslation(translation, "- (int32_t)getRgb {");
     assertInTranslation(translation, "return rgb_;");
     assertInTranslation(translation, "int32_t newValue_;");
@@ -348,8 +348,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "package foo; public interface Compatible {}",
         "Compatible", "foo/Compatible.m");
-    assertInTranslation(translation, "@interface FooCompatible : NSObject");
-    assertInTranslation(translation, "@implementation FooCompatible");
+    assertInTranslation(translation, "@interface FooCompatibleCompanion : NSObject");
+    assertInTranslation(translation, "@implementation FooCompatibleCompanion");
     assertInTranslation(translation, "+ (const J2ObjcClassInfo *)__metadata");
   }
 

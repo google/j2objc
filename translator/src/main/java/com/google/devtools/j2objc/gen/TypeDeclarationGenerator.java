@@ -42,6 +42,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
@@ -105,7 +106,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   @Override
   protected boolean shouldPrintDeclaration(BodyDeclaration decl) {
-    if (decl instanceof MethodDeclaration && !((MethodDeclaration) decl).hasDeclaration()) {
+    if (decl instanceof MethodDeclaration methodDeclaration
+        && !methodDeclaration.hasDeclaration()) {
       return false;
     }
     return decl.hasPrivateDeclaration() == printPrivateDeclarations();
@@ -129,6 +131,32 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printTypeDocumentation();
     printNonnullAuditedRegion(AuditedRegion.BEGIN);
 
+    if (needsKotlinCompanionClass()) {
+      // Companion methods might refer to the class type and the companion property will
+      // refer to the companion type, so we need one forward declaration in any case.
+      if (typeElement.getKind().isInterface()) {
+        printf("\n@protocol %s;\n", typeName);
+      } else {
+        // Declare the class's type parameters too, so that companion members can refer to
+        // parameterized instances of the class itself (e.g. a static Foo<String> in Foo<T>).
+        printf("\n@class %s", typeName);
+        printInterfaceGenerics();
+        print(";\n");
+      }
+
+      printf("\n@protocol %sCompanionProtocol\n", typeName);
+      for (BodyDeclaration declaration : getInnerDeclarations()) {
+        if (declaration.getKind().equals(TreeNode.Kind.METHOD_DECLARATION)) {
+          printMethodDeclaration((MethodDeclaration) declaration, false, true);
+        }
+      }
+      for (VariableDeclarationFragment fragment : getStaticFields()) {
+        PropertyGenerator.generate(this, fragment, /* staticToInstance= */ true)
+            .ifPresent(this::println);
+      }
+      println("\n@end\n");
+    }
+
     printInterfaceType();
     printImplementedProtocols();
     if (!typeElement.getKind().isInterface()) {
@@ -139,6 +167,15 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (!typeElement.getKind().isInterface()) {
       printProperties();
       printStaticAccessors();
+      if (needsKotlinCompanionClass()) {
+        printf("\n#pragma clang diagnostic push\n");
+        printf("#pragma clang diagnostic ignored \"-Wincompatible-property-type\"\n");
+        printf("@property (readonly, class) id<%sCompanionProtocol> companion;\n", typeName);
+        if (needsKotlinSharedProperty()) {
+          printf("@property (readonly, class) id<%sCompanionProtocol> shared;\n", typeName);
+        }
+        printf("#pragma clang diagnostic pop\n");
+      }
     }
     printInnerDeclarations();
     println("\n@end");
@@ -164,11 +201,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private void printNativeEnum() {
-    if (!(typeNode instanceof EnumDeclaration)) {
+    if (!(typeNode instanceof EnumDeclaration enumDeclaration)) {
       return;
     }
 
-    List<EnumConstantDeclaration> constants = ((EnumDeclaration) typeNode).getEnumConstants();
+    List<EnumConstantDeclaration> constants = enumDeclaration.getEnumConstants();
     String nativeName = nameTable.getNativeEnumName(typeElement);
     String ordinalName = NameTable.getNativeOrdinalPreprocessorName(typeName);
 
@@ -196,9 +233,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       print("}");
 
       if (!printPrivateDeclarations()) {
-        String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement, true);
+        String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement);
         if (swiftName != null) {
-          printf(" NS_SWIFT_NAME(%s)", swiftName);
+          printf(" NS_SWIFT_NAME(%sEnum)", swiftName);
         }
       }
       print(";\n");
@@ -218,7 +255,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       // Use different types for transpiled Java ordinals (which expects ordinals to be int32_t) and
       // native code using the enum (where stricter ordinal types help clang warnings).
       printf(
-          "#if J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION\n"
+          "#if defined(J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION) &&"
+              + " J2OBJC_IMPORTED_BY_JAVA_IMPLEMENTATION\n"
               + "#define %s int32_t\n"
               + "#else\n"
               + "#define %s %s\n"
@@ -306,12 +344,14 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       return;
     }
 
-    String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement, true);
+    String swiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement);
+    // We need to force NS_SWIFT_NAME in this case; otherwise swift confuses this with some kind
+    // of legacy name that was not migrated and errors.
+    if (swiftName == null && typeElement.getKind().isInterface() && needsCompanionClass()) {
+      swiftName = typeName;
+    }
 
     if (swiftName != null) {
-      if ((typeNode instanceof EnumDeclaration)) {
-        swiftName = swiftName + "Class";
-      }
       printf(" NS_SWIFT_NAME(%s)\n", swiftName);
     }
   }
@@ -319,7 +359,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   protected void printStaticInterfaceMethods() {
     for (BodyDeclaration declaration : getInnerDeclarations()) {
       if (declaration.getKind().equals(TreeNode.Kind.METHOD_DECLARATION)) {
-        printMethodDeclaration((MethodDeclaration) declaration, true);
+        printMethodDeclaration((MethodDeclaration) declaration, true, false);
       }
     }
   }
@@ -345,8 +385,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           printf("\n+ (void)set%s:(%s)value;\n", NameTable.capitalize(accessorName), objcType);
         }
       }
-      if (typeNode instanceof EnumDeclaration) {
-        for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
+      if (typeNode instanceof EnumDeclaration enumDeclaration) {
+        for (EnumConstantDeclaration constant : enumDeclaration.getEnumConstants()) {
           String accessorName = nameTable.getStaticAccessorName(constant.getVariableElement());
           String nullabilitySpecifier = "";
           TypeElement element = typeNode.getTypeElement();
@@ -418,14 +458,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   protected void printProperties() {
-    Iterable<VariableDeclarationFragment> fields = getAllFields();
-    for (VariableDeclarationFragment fragment : fields) {
-      PropertyGenerator.generate(fragment, options, nameTable, typeUtil, parametersNonnullByDefault)
-          .ifPresent(this::println);
+    for (VariableDeclarationFragment fragment : getAllFields()) {
+      PropertyGenerator.generate(this, fragment).ifPresent(this::println);
     }
 
-    if (options.classProperties() && typeNode instanceof EnumDeclaration) {
-      for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
+    if (options.classProperties() && typeNode instanceof EnumDeclaration enumDeclaration) {
+      for (EnumConstantDeclaration constant : enumDeclaration.getEnumConstants()) {
         String accessorName = nameTable.getStaticAccessorName(constant.getVariableElement());
         print("\n@property (readonly, class");
         if (options.nullability()) {
@@ -441,33 +479,57 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   protected void printCompanionClassDeclaration() {
-    if (!typeElement.getKind().isInterface()
-        || !needsCompanionClass()
-        || printPrivateDeclarations() == needsPublicCompanionClass()) {
+    if (!typeElement.getKind().isInterface()) {
+      // TODO: b/571946602 - Remove once all FooCompanion.shared users have been migrated to
+      // Foo.shared.
+      if (needsKotlinSharedProperty() && !printPrivateDeclarations()) {
+        printf("\n@compatibility_alias %sCompanion %s;\n", typeName, typeName);
+      }
       return;
     }
-    printf("\n@interface %s : NSObject", typeName);
-    if (ElementUtil.isGeneratedAnnotation(typeElement)) {
-      // Print annotation implementation interface.
+    if (!needsCompanionClass() || printPrivateDeclarations() == needsPublicCompanionClass()) {
+      return;
+    }
+    if (hasCompanionSuffix()) {
+      String baseSwiftName = nameTable.getSwiftClassNameFromAnnotation(typeElement);
+      String companionSwiftName = baseSwiftName != null ? baseSwiftName : typeName;
+      printf("\nNS_SWIFT_NAME(%sCompanion)", companionSwiftName);
+      printf("\n@interface %sCompanion : NSObject", typeName);
+    } else {
+      printf("\n@interface %s : NSObject", typeName);
       printf(" < %s >", typeName);
     }
     printInstanceVariables();
     printProperties();
     printStaticInterfaceMethods();
     printStaticAccessors();
+    if (needsKotlinCompanionClass()) {
+      printf("\n#pragma clang diagnostic push\n");
+      printf("#pragma clang diagnostic ignored \"-Wincompatible-property-type\"\n");
+      printf("@property (readonly, class) id<%sCompanionProtocol> shared;\n", typeName);
+      printf("#pragma clang diagnostic pop\n");
+    }
     println("\n@end");
+    if (hasCompanionSuffix()) {
+      println("__attribute__((swift_private))");
+      printf("typedef %sCompanion %s;\n", typeName, typeName);
+    }
   }
 
   private void printStaticInitFunction() {
     if (hasInitializeMethod()) {
-      printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
+      if (hasCompanionSuffix()) {
+        printf("\nJ2OBJC_STATIC_INIT_COMPANION(%s, %sCompanion)\n", typeName, typeName);
+      } else {
+        printf("\nJ2OBJC_STATIC_INIT(%s)\n", typeName);
+      }
     } else {
       printf("\nJ2OBJC_EMPTY_STATIC_INIT(%s)\n", typeName);
     }
   }
 
   private void printEnumConstants() {
-    if (typeNode instanceof EnumDeclaration) {
+    if (typeNode instanceof EnumDeclaration enumDeclaration) {
       newline();
       println("/*! INTERNAL ONLY - Use enum accessors declared below. */");
 
@@ -478,7 +540,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       String arrayTypeNamePrefix = nullMarked ? "_Nonnull " : "";
       String arrayTypeName = arrayTypeNamePrefix + typeName;
       printf("FOUNDATION_EXPORT %s *%s_values_[];\n", typeName, arrayTypeName);
-      for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
+      for (EnumConstantDeclaration constant : enumDeclaration.getEnumConstants()) {
         String varName = nameTable.getVariableBaseName(constant.getVariableElement());
         newline();
         JavadocGenerator.printDocComment(getBuilder(), constant.getJavadoc());
@@ -673,49 +735,19 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       return false;
     }
 
-    ExecutableElement methodElement = m.getExecutableElement();
-    String methodName = nameTable.getMethodSelector(methodElement);
-    String propertyName = NameTable.lowercaseFirst(methodName.replaceFirst("get", ""));
-
-    TypeElement declaringClass = ElementUtil.getDeclaringClass(methodElement);
+    String propertyName = PropertyGenerator.getPseudoPropertyName(nameTable, m);
     if (NameTable.isReservedName(propertyName)) {
       return false;
     }
     // Check if there is a existing property with the same name
-    if (ElementUtil.findField(declaringClass, propertyName) != null) {
-      return false;
-    }
-
-    return true;
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(m.getExecutableElement());
+    return ElementUtil.findField(declaringClass, propertyName) == null;
   }
 
-  private void printPseudoProperty(MethodDeclaration m) {
-    ExecutableElement methodElement = m.getExecutableElement();
-    String methodName = nameTable.getMethodSelector(methodElement);
-    String propertyName = NameTable.lowercaseFirst(methodName.replaceFirst("get", ""));
-
-    TypeElement declaringClass = ElementUtil.getDeclaringClass(methodElement);
-    if (NameTable.isReservedName(propertyName)) {
-      return;
-    }
-    // Check if there is a existing property with the same name
-    if (ElementUtil.findField(declaringClass, propertyName) != null) {
-      return;
-    }
-
-    TypeMirror returnType = m.getReturnTypeMirror();
-    ExecutableElement setter =
-        ElementUtil.findSetterMethod(propertyName, returnType, declaringClass, false);
-
+  private void printPseudoProperty(MethodDeclaration m, boolean isKotlinCompanion) {
     newline();
-    printf(
-        "@property (%snonatomic, %s, %s%s) %s %s;",
-        ElementUtil.isStatic(methodElement) ? "class, " : "",
-        "getter=" + methodName,
-        setter != null ? "setter=" + nameTable.getMethodSelector(setter) : "readonly",
-        shouldAddNullableAnnotation(methodElement) ? ", nullable" : "",
-        getReturnType(m, true), // Generics allowed in headers.
-        propertyName);
+    PropertyGenerator.generate(this, m, /* staticToInstance= */ isKotlinCompanion)
+        .ifPresent(this::print);
     newline();
   }
 
@@ -725,12 +757,17 @@ public class TypeDeclarationGenerator extends TypeGenerator {
    * @param m The method.
    * @param isCompanionClass If true, emit only if m is a static interface method.
    */
-  private void printMethodDeclaration(MethodDeclaration m, boolean isCompanionClass) {
+  private void printMethodDeclaration(
+      MethodDeclaration m, boolean isCompanionClass, boolean isKotlinCompanion) {
     ExecutableElement methodElement = m.getExecutableElement();
     TypeElement typeElement = ElementUtil.getDeclaringClass(methodElement);
     boolean allowGenerics = !typeUtil.isProtoClass(typeElement.asType());
 
-    if (typeElement.getKind().isInterface()) {
+    if (isKotlinCompanion) {
+      if (!ElementUtil.isStatic(methodElement)) {
+        return;
+      }
+    } else if (typeElement.getKind().isInterface()) {
       // isCompanion and isStatic must be both false (i.e. this prints a non-static method decl
       // in @protocol) or must both be true (i.e. this prints a static method decl in the
       // companion class' @interface).
@@ -743,12 +780,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     JavadocGenerator.printDocComment(getBuilder(), m.getJavadoc());
 
     if (canPrintPseudoProperty(m)) {
-      printPseudoProperty(m);
+      printPseudoProperty(m, isKotlinCompanion);
       return;
     }
 
     // Method declarations allow generics.
-    String methodSignature = getMethodSignature(m, allowGenerics);
+    String methodSignature = getMethodSignature(m, allowGenerics, isKotlinCompanion);
 
     // In order to properly map the method name from the entire signature, we must isolate it from
     // associated type and parameter declarations.  The method name is guaranteed to be between the
@@ -778,10 +815,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
 
     if (!printPrivateDeclarations()) {
-      String swiftName = nameTable.getSwiftMethodNameFromAnnotation(m);
-      if (swiftName != null) {
-        print(" NS_SWIFT_NAME(" + swiftName + ")");
-      }
+      printSwiftMethodAttribute(m);
     }
     if (needsDeprecatedAttribute(m.getAnnotations())) {
       print(" " + DEPRECATED_ATTRIBUTE);
@@ -797,7 +831,20 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   @Override
   protected void printMethodDeclaration(MethodDeclaration m) {
-    printMethodDeclaration(m, false);
+    printMethodDeclaration(m, false, false);
+  }
+
+  private void printSwiftMethodAttribute(MethodDeclaration m) {
+    if (!isInterfaceType()
+        && ElementUtil.hasQualifiedNamedAnnotation(
+            m.getExecutableElement(), "com.google.j2kt.annotations.Throws")) {
+      print(" NS_SWIFT_UNAVAILABLE(\"Use throwing method instead\")");
+      return;
+    }
+    String swiftName = nameTable.getSwiftMethodNameFromAnnotation(m);
+    if (swiftName != null) {
+      print(" NS_SWIFT_NAME(" + swiftName + ")");
+    }
   }
 
   private boolean needsDeprecatedAttribute(List<Annotation> annotations) {
@@ -836,6 +883,30 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       print(" J2OBJC_TEXT_SEGMENT");
     }
     println(";");
+
+    String swiftName = nameTable.getSwiftFunctionNameFromAnnotation(function);
+    if (swiftName != null && !swiftName.isEmpty()) {
+      printSwiftNameInlineWrapper(function, swiftName);
+    }
+  }
+
+  private void printSwiftNameInlineWrapper(FunctionDeclaration function, String swiftName) {
+    String signature = getFunctionSignature(function, true, false);
+    String funcName = function.getName();
+    String inlineSignature = signature.replace(funcName + "(", funcName + "_swiftName(");
+
+    String args =
+        function.getParameters().stream()
+            .map(param -> nameTable.getVariableShortName(param.getVariableElement()))
+            .collect(Collectors.joining(", "));
+
+    boolean isVoid = TypeUtil.isVoid(function.getReturnType().getTypeMirror());
+    String returnPrefix = isVoid ? "" : "return ";
+    String returnsRetainedAttr = function.returnsRetained() ? " NS_RETURNS_RETAINED" : "";
+
+    printf(
+        "\nNS_INLINE %s%s%s {\n  %s%s(%s);\n}\n",
+        inlineSignature, returnsRetainedAttr, swiftName, returnPrefix, funcName, args);
   }
 
   protected void printNonnullAuditedRegion(AuditedRegion state) {
@@ -862,7 +933,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
 
     private static DeclarationCategory categorize(BodyDeclaration decl) {
-      if (decl instanceof MethodDeclaration && ((MethodDeclaration) decl).isUnavailable()) {
+      if (decl instanceof MethodDeclaration methodDeclaration
+          && methodDeclaration.isUnavailable()) {
         return UNAVAILABLE;
       }
       int mods = decl.getModifiers();
@@ -881,7 +953,27 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   @Override
   protected void printInnerDeclarations() {
     // Everything is public in interfaces.
-    if (isInterfaceType() || typeNode.hasPrivateDeclaration()) {
+    if (isInterfaceType()) {
+      List<BodyDeclaration> requiredDecls = Lists.newArrayList();
+      List<BodyDeclaration> optionalDecls = Lists.newArrayList();
+      for (BodyDeclaration decl : getInnerDeclarations()) {
+        if (decl instanceof MethodDeclaration methodDecl && methodDecl.isOptional()) {
+          optionalDecls.add(decl);
+        } else {
+          requiredDecls.add(decl);
+        }
+      }
+      printDeclarations(requiredDecls);
+      if (!optionalDecls.isEmpty()) {
+        newline();
+        println("#if !defined(__swift__)");
+        println("@optional");
+        println("#endif");
+        printDeclarations(optionalDecls);
+      }
+      return;
+    }
+    if (typeNode.hasPrivateDeclaration()) {
       super.printInnerDeclarations();
       return;
     }
@@ -901,8 +993,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       List<MethodDeclaration> methods = Lists.newArrayList();
       for (Iterator<BodyDeclaration> iter = declarations.iterator(); iter.hasNext(); ) {
         BodyDeclaration decl = iter.next();
-        if (decl instanceof MethodDeclaration) {
-          methods.add((MethodDeclaration) decl);
+        if (decl instanceof MethodDeclaration methodDeclaration) {
+          methods.add(methodDeclaration);
           iter.remove();
         }
       }

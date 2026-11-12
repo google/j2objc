@@ -33,7 +33,6 @@ import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
-import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.ReturnStatement;
@@ -286,12 +285,7 @@ public class Autoboxer extends UnitTreeVisitor {
     }
     Expression newExpr = node.getExpression();
     if (newExpr != expr) {
-      TreeNode parent = node.getParent();
-      if (parent instanceof ParenthesizedExpression) {
-        parent.replaceWith(TreeUtil.remove(newExpr));
-      } else {
-        node.replaceWith(TreeUtil.remove(newExpr));
-      }
+      node.replaceWith(TreeUtil.remove(newExpr));
     }
   }
 

@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.gen;
 import static com.google.common.truth.Truth.assertThat;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.util.HeaderMap;
 import java.io.File;
 import java.io.IOException;
@@ -598,10 +599,10 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertInTranslation(
         translation,
         "Color_initWithInt_withBoolean_withNSString_withInt_("
-            + "e, (int32_t) 0xffffff, false, @\"WHITE\", 1);");
+            + "e, ((int32_t) 0xffffff), false, @\"WHITE\", 1);");
     assertInTranslation(
         translation,
-        "Color_initWithInt_withNSString_withInt_(e, (int32_t) 0x0000ff, @\"BLUE\", 2);");
+        "Color_initWithInt_withNSString_withInt_(e, ((int32_t) 0x0000ff), @\"BLUE\", 2);");
   }
 
   public void testEnumInitialization() throws IOException {
@@ -757,18 +758,30 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testPropertiesOfGetTypes() throws IOException {
     String sourceContent =
-        "  import com.google.j2objc.annotations.Property;"
-            + "public class FooBar {"
-            + "  private String fieldFoo = \"test\";"
-            + "  "
-            + "  @Property"
-            + "  public String getFooField() {"
-            + "     return fieldFoo;"
-            + "  }"
-            + "}";
+        """
+        import com.google.j2objc.annotations.Property;
+        public class FooBar {
+          private String fieldFoo = "test";
+          @Property
+          public String getFooField() {
+            return fieldFoo;
+          }
+          @Property
+          public int budget() {
+            return 0;
+          }
+          @Property
+          public String getaway() {
+            return "";
+          }
+        }
+        """;
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
-    assertTranslatedLines(
-        translation, "@property (nonatomic, getter=getFooField, readonly) NSString * fooField;");
+    assertInTranslation(
+        translation,
+        "@property (readonly, copy, nonatomic, getter=getFooField) NSString *fooField;");
+    assertInTranslation(translation, "@property (readonly, nonatomic) int32_t budget;");
+    assertInTranslation(translation, "@property (readonly, copy, nonatomic) NSString *getaway;");
   }
 
   public void testPropertiesOfGetTypesWithSetters() throws IOException {
@@ -789,8 +802,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (nonatomic, getter=getFooField, setter=setFooFieldWithNSString:) NSString *"
-            + " fooField;");
+        "@property (copy, nonatomic, getter=getFooField, setter=setFooFieldWithNSString:) NSString"
+            + " *fooField;");
   }
 
   public void testPropertyAnnotationSuppression() throws IOException {
@@ -814,8 +827,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "  "
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
-    assertNotInTranslation(
-        translation, "@property (nonatomic, getter=getBar, readonly) NSString * bar;");
+    assertInTranslation(translation, "fieldFoo;");
+    assertNotInTranslation(translation, "getter=getBar");
   }
 
   public void testPropertiesStaticMethods() throws IOException {
@@ -831,7 +844,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (class, nonatomic, getter=getFieldFoo, readonly) NSString * fieldFoo;");
+        "@property (readonly, copy, nonatomic, getter=getFieldFoo, class) NSString *fieldFoo;");
   }
 
   public void testPropertiesOfGetTypesDuplicateNames() throws IOException {
@@ -885,8 +898,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "foo.bar.FooBar", "foo/bar/FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (nonatomic, getter=getFooField, setter=setFooFieldWithNSString:, nullable)"
-            + " NSString * fooField;");
+        "@property (copy, nonatomic, getter=getFooField, setter=setFooFieldWithNSString:, nullable)"
+            + " NSString *fooField;");
   }
 
   public void testPropertyAnnotationIgnoresVoidMethod() throws IOException {
@@ -919,8 +932,144 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
     assertTranslatedLines(
         translation,
-        "@property (nonatomic, getter=getFooField, setter=setFooFieldWithNSString:)"
-            + " NSString * fooField;");
+        "@property (copy, nonatomic, getter=getFooField, setter=setFooFieldWithNSString:)"
+            + " NSString *fooField;");
+  }
+
+  public void testPseudoPropertyExplicitAttributes() throws IOException {
+    String sourceContent =
+        """
+        import com.google.j2objc.annotations.Property;
+        public class FooBar {
+          @Property("atomic") public String getAtomicString() { return ""; }
+          @Property("retain") public String getRetainedString() { return ""; }
+          @Property("weak") public Object getWeakObject() { return null; }
+          @Property public Object getStrongObject() { return null; }
+          @Property public synchronized Object getSynchronizedObject() { return null; }
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertInTranslation(
+        translation,
+        "@property (readonly, copy, getter=getAtomicString) NSString *atomicString;");
+    assertInTranslation(
+        translation,
+        "@property (readonly, nonatomic, getter=getRetainedString, retain) NSString"
+            + " *retainedString;");
+    assertInTranslation(
+        translation, "@property (weak, readonly, nonatomic, getter=getWeakObject) id weakObject;");
+    assertInTranslation(
+        translation,
+        "@property (readonly, nonatomic, getter=getStrongObject, strong) id strongObject;");
+    assertInTranslation(
+        translation,
+        "@property (readonly, getter=getSynchronizedObject, strong) id synchronizedObject;");
+  }
+
+  public void testPseudoPropertyExplicitAttributesWithArc() throws IOException {
+    options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
+    String sourceContent =
+        """
+        import com.google.j2objc.annotations.Property;
+        public class FooBar {
+          @Property("strong") public Object getStrongObject() { return null; }
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertInTranslation(
+        translation, "@property (readonly, nonatomic, getter=getStrongObject) id strongObject;");
+  }
+
+  public void testPseudoPropertyTypeLevelAttributes() throws IOException {
+    String sourceContent =
+        """
+        import com.google.j2objc.annotations.Property;
+        @Property("weak")
+        public class FooBar {
+          public Object getWeakObject() { return null; }
+          public int getCount() { return 0; }
+          @Property public Object getStrongObject() { return null; }
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertInTranslation(
+        translation, "@property (weak, readonly, nonatomic, getter=getWeakObject) id weakObject;");
+    // Type level memory management attributes are not applied to primitive getters.
+    assertInTranslation(
+        translation, "@property (readonly, nonatomic, getter=getCount) int32_t count;");
+    // Method level annotations take precedence over the type level annotation.
+    assertInTranslation(
+        translation,
+        "@property (readonly, nonatomic, getter=getStrongObject, strong) id strongObject;");
+  }
+
+  public void testPseudoPropertyConflictingMemoryManagementAttributes() throws IOException {
+    String sourceContent =
+        """
+        import com.google.j2objc.annotations.Property;
+        public class FooBar {
+          @Property("weak, copy") public String getFoo() { return ""; }
+        }
+        """;
+    translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertErrorRegex(".*Conflicting memory management Property attributes: weak, copy");
+  }
+
+  public void testNullabilityAttributesIgnoredForPrimitives() throws IOException {
+    String sourceContent =
+        """
+        import com.google.j2objc.annotations.Property;
+        public class FooBar {
+          @Property("nonnull") int primitiveField;
+          @Property("nonnull") Object objectField;
+          @Property("readonly, nonnull") public int getCount() { return 0; }
+          @Property("readonly, nonnull") public Object getObject() { return null; }
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.h");
+    assertInTranslation(translation, "@property int32_t primitiveField;");
+    assertInTranslation(translation, "@property (nonnull, strong) id objectField;");
+    assertInTranslation(
+        translation, "@property (readonly, nonatomic, getter=getCount) int32_t count;");
+    assertInTranslation(
+        translation,
+        "@property (readonly, nonatomic, getter=getObject, nonnull, strong) id object;");
+  }
+
+  public void testConflictingNullabilityAttributes() throws IOException {
+    options.setNullMarked(true);
+    options.setNullability(true);
+    addSourceFile(
+        """
+        @NullMarked package foo.bar;
+        import org.jspecify.annotations.NullMarked;
+        """,
+        "foo/bar/package-info.java");
+    String sourceContent =
+        """
+        package foo.bar;
+        import com.google.j2objc.annotations.Property;
+        import org.jspecify.annotations.NonNull;
+        import org.jspecify.annotations.Nullable;
+        public class FooBar {
+          @Property("readonly, nonnull") public @Nullable Object getAnnotatedNullable() {
+            return null;
+          }
+          @Property("readonly, nullable") public @NonNull Object getAnnotatedNonnull() {
+            return new Object();
+          }
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "foo.bar.FooBar", "foo/bar/FooBar.h");
+    // Java nullness annotations take precedence over the explicit attributes.
+    assertInTranslation(
+        translation,
+        "@property (readonly, nonatomic, getter=getAnnotatedNullable, nullable, strong)"
+            + " id annotatedNullable;");
+    assertInTranslation(
+        translation,
+        "@property (readonly, nonatomic, getter=getAnnotatedNonnull, nonnull, strong)"
+            + " id annotatedNonnull;");
   }
 
   public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()
@@ -1076,30 +1225,418 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "com/foo/bar/package-info.java");
 
     String sourceContent =
-        "  package com.foo.bar;"
-            + ""
-            + "public abstract class FooBar {"
-            + ""
-            + "  public void setFooField(String fooField) {"
-            + " "
-            + "  }"
-            + "}";
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.Property;
+
+        public abstract class FooBar {
+          @Property public String fooProperty;
+          public void setFooField(String fooField) {}
+        }
+        """;
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar)");
-    assertInTranslation(translation, "NS_SWIFT_NAME(set(fooField:))");
+    assertInTranslation(translation, "NS_SWIFT_NAME(setFooField(fooField:))");
+    assertInTranslation(translation, "NS_SWIFT_NAME(fooProperty)");
   }
 
   public void testSwiftNameClassAnnotation() throws IOException {
     String sourceContent =
-        "  package com.foo.bar;"
-            + "import com.google.j2objc.annotations.SwiftName;"
-            + ""
-            + "@SwiftName "
-            + "public abstract class FooBar {"
-            + "  public void setFooField(String fooField) {}"
-            + "}";
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.Property;
+        import com.google.j2objc.annotations.SwiftName;
+
+        @SwiftName
+        public abstract class FooBar {
+          @Property public String fooProperty;
+          public void setFooField(String fooField) {}
+        }
+        """;
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(setFooField(fooField:))");
+    assertInTranslation(translation, "NS_SWIFT_NAME(fooProperty)");
+  }
+
+  /** Tests that classes containing $ have $ stripped in generated NS_SWIFT_NAME annotations. */
+  public void testSwiftNameDollarClass() throws IOException {
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class $AutoValue_FooBar {
+          public void doSomething() {}
+        }
+        """;
+    String translation =
+        translateSourceFile(sourceContent, "$AutoValue_FooBar", "com/foo/bar/$AutoValue_FooBar.h");
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(AutoValue_FooBar)",
+        "@interface ComFooBar_AutoValue_FooBar : NSObject",
+        "",
+        "#pragma mark Public",
+        "",
+        "- (instancetype)init;",
+        "",
+        "- (void)doSomething NS_SWIFT_NAME(doSomething());",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNamePackagePrivateConstructor() throws IOException {
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class FooBar {
+          FooBar(int x) {}
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
+    // Package-private constructors should still generate NS_SWIFT_NAME annotations.
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(FooBar)",
+        "@interface ComFooBarFooBar : NSObject",
+        "",
+        "#pragma mark Package-Private",
+        "",
+        "- (instancetype)initWithInt:(int32_t)x NS_SWIFT_NAME(init(x:));",
+        "",
+        "// Disallowed inherited constructors, do not use.",
+        "",
+        "- (instancetype)init NS_UNAVAILABLE;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNameConstructorSuperConflictGrandparent() throws IOException {
+    addSourceFile(
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class GrandSuper {
+          public GrandSuper() {}
+          public GrandSuper(int x) {}
+        }
+        """,
+        "com/foo/bar/GrandSuper.java");
+    addSourceFile(
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class Super extends GrandSuper {
+        }
+        """,
+        "com/foo/bar/Super.java");
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class Sub extends Super {
+          public Sub(int y) {
+            super();
+          }
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "Sub", "com/foo/bar/Sub.h");
+    // Constructors should not generate NS_SWIFT_NAME annotations if there is a name conflict with a
+    // grandparent.
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(Sub)",
+        "@interface ComFooBarSub : ComFooBarSuper",
+        "",
+        "#pragma mark Public",
+        "",
+        "- (instancetype)initWithInt:(int32_t)y;",
+        "",
+        "// Disallowed inherited constructors, do not use.",
+        "",
+        "- (instancetype)init NS_UNAVAILABLE;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNameConstructorSuperConflict() throws IOException {
+    addSourceFile(
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class Super {
+          public Super(int x) {}
+        }
+        """,
+        "com/foo/bar/Super.java");
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class Sub extends Super {
+          public Sub(int y) {
+            super(y);
+          }
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "Sub", "com/foo/bar/Sub.h");
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(Sub)",
+        "@interface ComFooBarSub : ComFooBarSuper",
+        "",
+        "#pragma mark Public",
+        "",
+        "- (instancetype)initWithInt:(int32_t)y;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNameMethodSuperConflict() throws IOException {
+    addSourceFile(
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class GrandSuper {
+          public void foo(int x) {}
+        }
+        """,
+        "com/foo/bar/GrandSuper.java");
+    addSourceFile(
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class Super extends GrandSuper {
+        }
+        """,
+        "com/foo/bar/Super.java");
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class Sub extends Super {
+          @Override
+          public void foo(int y) {}
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "Sub", "com/foo/bar/Sub.h");
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(Sub)",
+        "@interface ComFooBarSub : ComFooBarSuper",
+        "",
+        "#pragma mark Public",
+        "",
+        "- (instancetype)init;",
+        "",
+        "- (void)fooWithInt:(int32_t)y;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNameSuperClassNotAnnotated() throws IOException {
+    addSourceFile(
+        """
+        package com.foo.bar;
+        public class Super {
+          public void foo(int x) {}
+        }
+        """,
+        "com/foo/bar/Super.java");
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class Sub extends Super {
+          @Override
+          public void foo(int y) {}
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "Sub", "com/foo/bar/Sub.h");
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(Sub)",
+        "@interface ComFooBarSub : ComFooBarSuper",
+        "",
+        "#pragma mark Public",
+        "",
+        "- (instancetype)init;",
+        "",
+        "- (void)fooWithInt:(int32_t)y;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNameClassImplementingInterface() throws IOException {
+    String interfaceSource =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public interface MyInterface {
+          void foo();
+        }
+        """;
+    addSourceFile(interfaceSource, "com/foo/bar/MyInterface.java");
+
+    String classSource =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class MyClass implements MyInterface {
+          public void foo() {}
+        }
+        """;
+
+    // Translate and assert interface header
+    String interfaceTranslation =
+        translateSourceFile(interfaceSource, "MyInterface", "com/foo/bar/MyInterface.h");
+    assertTranslatedLines(
+        interfaceTranslation,
+        "NS_SWIFT_NAME(MyInterface)",
+        "@protocol ComFooBarMyInterface < JavaObject >",
+        "",
+        "- (void)foo NS_SWIFT_NAME(foo());",
+        "",
+        "@end");
+
+    // Translate and assert class header
+    String classTranslation = translateSourceFile(classSource, "MyClass", "com/foo/bar/MyClass.h");
+    assertInTranslation(classTranslation, "#include \"com/foo/bar/MyInterface.h\"");
+    // Verify that ComFooBarMyClass has NS_SWIFT_NAME, but its foo method
+    // does not have NS_SWIFT_NAME because it overrides MyInterface.foo().
+    assertTranslatedLines(
+        classTranslation,
+        "NS_SWIFT_NAME(MyClass)",
+        "@interface ComFooBarMyClass : NSObject < ComFooBarMyInterface >",
+        "",
+        "#pragma mark Public",
+        "",
+        "- (instancetype)init;",
+        "",
+        "- (void)foo;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNamePackagePrivateClassConstructor() throws IOException {
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        class FooBar {
+          FooBar(int x) {}
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(FooBar)",
+        "@interface ComFooBarFooBar : NSObject",
+        "",
+        "#pragma mark Package-Private",
+        "",
+        "- (instancetype)initPackagePrivateWithInt:(int32_t)x NS_SWIFT_NAME(init(x:));",
+        "",
+        "// Disallowed inherited constructors, do not use.",
+        "",
+        "- (instancetype)init NS_UNAVAILABLE;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNamePackagePrivateConstructorZeroParams() throws IOException {
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class FooBar {
+          FooBar() {}
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
+    // Constructors package private constructors on public classes should not generate
+    // NS_SWIFT_NAME annotations, if it did it would conflict with the parent class.
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(FooBar)",
+        "@interface ComFooBarFooBar : NSObject",
+        "",
+        "#pragma mark Package-Private",
+        "",
+        "- (instancetype)init;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNamePackagePrivateClassConstructorZeroParams() throws IOException {
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        class FooBar {
+          FooBar() {}
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
+    // Constructors package private constructors on package-private classes should generate
+    // NS_SWIFT_NAME annotations, it doesn't conflict with the parent class because the parent class
+    // has a different constructor name (init).
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(FooBar)",
+        "@interface ComFooBarFooBar : NSObject",
+        "",
+        "#pragma mark Package-Private",
+        "",
+        "- (instancetype)initPackagePrivate NS_SWIFT_NAME(init());",
+        "",
+        "// Disallowed inherited constructors, do not use.",
+        "",
+        "- (instancetype)init NS_UNAVAILABLE;",
+        "",
+        "@end");
+  }
+
+  public void testSwiftNameZeroParamMethod() throws IOException {
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName
+        public class FooBar {
+          public void foo() {}
+        }
+        """;
+    String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
+    assertTranslatedLines(
+        translation,
+        "NS_SWIFT_NAME(FooBar)",
+        "@interface ComFooBarFooBar : NSObject",
+        "",
+        "#pragma mark Public",
+        "",
+        "- (instancetype)init;",
+        "",
+        "- (void)foo NS_SWIFT_NAME(foo());",
+        "",
+        "@end");
   }
 
   public void testSwiftNameClassAnnotationOverride() throws IOException {
@@ -1186,11 +1723,13 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
     assertInTranslation(
-        translation, "- (void)objcSetFooField:(NSString *)fooField NS_SWIFT_NAME(set(fooField:));");
+        translation,
+        "- (void)objcSetFooField:(NSString *)fooField NS_SWIFT_NAME(setFooField(fooField:));");
     assertInTranslation(
         translation,
-        "+ (void)objcBuilderWithSize:(int32_t)expectedSize NS_SWIFT_NAME(builder(expectedSize:));");
-    assertInTranslation(translation, "- (void)objcDoAction;");
+        "+ (void)objcBuilderWithSize:(int32_t)expectedSize"
+            + " NS_SWIFT_NAME(builderWithExpectedSize(expectedSize:));");
+    assertInTranslation(translation, "- (void)objcDoAction NS_SWIFT_NAME(doAction());");
   }
 
   public void testSwiftNameAnnotationWithNestedTypes() throws IOException {
@@ -1234,7 +1773,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "  }"
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
-    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.MyEnumClass)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.MyEnumEnum)");
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.MyEnum)");
   }
 
@@ -1269,13 +1808,10 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
     String fooHeader = translateCombinedFiles("com/Foo", ".h", "foo/FooBar.java");
     String barHeader = translateCombinedFiles("com/Bar", ".h", "bar/BarFoo.java");
-    assertTranslatedLines(
-        barHeader,
-        "- (NSString *)getElementByIndexWithInt:(int32_t)index"
-            + " NS_SWIFT_NAME(getElementByInt(index:));");
+    assertTranslatedLines(barHeader, "- (NSString *)getElementByIndexWithInt:(int32_t)index;");
     assertTranslatedLines(
         fooHeader,
-        "- (id)getElementByIndexWithInt:(int32_t)index NS_SWIFT_NAME(getElementBy(index:));");
+        "- (id)getElementByIndexWithInt:(int32_t)index NS_SWIFT_NAME(getElementByIndex(index:));");
   }
 
   public void testSwiftNameAbnormalArgumentNames() throws IOException {
@@ -1296,14 +1832,15 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String fooHeader = translateCombinedFiles("com/Foo", ".h", "foo/FooBar.java");
     assertTranslatedLines(
         fooHeader,
-        "- (NSString *)fooBarWithNSString:(NSString *)fooBar NS_SWIFT_NAME(fooBar(_:));");
+        "- (NSString *)fooBarWithNSString:(NSString *)fooBar NS_SWIFT_NAME(fooBar(fooBar:));");
     assertTranslatedLines(
         fooHeader,
-        "- (NSString *)setSomeValueWithNSString:(NSString *)value NS_SWIFT_NAME(setSome(_:));");
+        "- (NSString *)setSomeValueWithNSString:(NSString *)value"
+            + " NS_SWIFT_NAME(setSomeValue(value:));");
     assertTranslatedLines(
         fooHeader,
         "- (NSString *)setSomeArgumentWithNSString:(NSString *)arg0"
-            + " NS_SWIFT_NAME(setSomeArgument(_:));");
+            + " NS_SWIFT_NAME(setSomeArgument(arg0:));");
   }
 
   public void testSwiftNameAnnotationWithStaticFunctions() throws IOException {
@@ -1327,12 +1864,52 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "  }"
             + "  public static String builderWithExpectedSize(int expectedSize){ return \"\"; }"
             + "  public static String builderWithName(String name){ return \"\"; }"
+            + "  public static void doReset() {}"
+            + "  public static FooBar newFooBar() { return null; }"
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
     assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.init())");
-    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.builder(expectedSize:))");
-    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar.builder(name:))");
+
+    assertInTranslation(
+        translation,
+        "FOUNDATION_EXPORT NSString *ComFooBarFooBar_builderWithExpectedSizeWithInt_(int32_t"
+            + " expectedSize);");
+    assertInTranslation(
+        translation,
+        "NS_INLINE NSString *ComFooBarFooBar_builderWithExpectedSizeWithInt__swiftName(int32_t"
+            + " expectedSize) NS_SWIFT_NAME(FooBar.builderWithExpectedSize(expectedSize:)) {\n"
+            + "  return ComFooBarFooBar_builderWithExpectedSizeWithInt_(expectedSize);\n"
+            + "}");
+
+    assertInTranslation(
+        translation,
+        "FOUNDATION_EXPORT NSString *ComFooBarFooBar_builderWithNameWithNSString_(NSString"
+            + " *name);");
+    assertInTranslation(
+        translation,
+        "NS_INLINE NSString *ComFooBarFooBar_builderWithNameWithNSString__swiftName(NSString *name)"
+            + " NS_SWIFT_NAME(FooBar.builderWithName(name:)) {\n"
+            + "  return ComFooBarFooBar_builderWithNameWithNSString_(name);\n"
+            + "}");
+
+    assertInTranslation(translation, "FOUNDATION_EXPORT void ComFooBarFooBar_doReset(void);");
+    assertInTranslation(
+        translation,
+        "NS_INLINE void ComFooBarFooBar_doReset_swiftName(void)"
+            + " NS_SWIFT_NAME(FooBar.doReset()) {\n"
+            + "  ComFooBarFooBar_doReset();\n"
+            + "}");
+
+    assertInTranslation(
+        translation, "FOUNDATION_EXPORT ComFooBarFooBar *ComFooBarFooBar_newFooBar(void);");
+    assertInTranslation(
+        translation,
+        "NS_INLINE ComFooBarFooBar *ComFooBarFooBar_newFooBar_swiftName(void)"
+            + " NS_SWIFT_NAME(FooBar.newFooBar()) {\n"
+            + "  return ComFooBarFooBar_newFooBar();\n"
+            + "}");
   }
+
 
   public void testSwiftNameAnnotationWithStaticFunctionsWithWapperMethods() throws IOException {
     options.setEmitWrapperMethods(true);
@@ -1356,7 +1933,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "   public static void builderWithExpectedSize(int expectedSize){}"
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
-    assertInTranslation(translation, "NS_SWIFT_NAME(builder(expectedSize:))");
+    assertInTranslation(translation, "NS_SWIFT_NAME(builderWithExpectedSize(expectedSize:))");
   }
 
   public void testSwiftNameAnnotationOverrideConstructor() throws IOException {
@@ -1401,7 +1978,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "public enum Color { RED, WHITE, BLUE }";
     String translation = translateSourceFile(sourceContent, "Color", "com/foo/bar/Color.h");
     assertInTranslation(translation, "NS_SWIFT_NAME(Color)");
-    assertInTranslation(translation, "NS_SWIFT_NAME(ColorClass)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(ColorEnum)");
   }
 
   public void testSwiftNameInterfaceSubtype() throws IOException {
@@ -1421,9 +1998,128 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "  public final class NestedBar {}"
             + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "com/foo/bar/FooBar.h");
-    assertInTranslation(translation, "NS_SWIFT_NAME(MyEnumClass)");
-    assertInTranslation(translation, "NS_SWIFT_NAME(MyEnum)");
-    assertInTranslation(translation, "NS_SWIFT_NAME(NestedBar)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBarMyEnumEnum)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBarMyEnum)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBarNestedBar)");
+  }
+
+  public void testSwiftNameDeepNestingInInterface() throws IOException {
+    addSourceFile(
+        "@SwiftName "
+            + "package com.foo.bar;"
+            + ""
+            + "import com.google.j2objc.annotations.SwiftName;",
+        "com/foo/bar/package-info.java");
+
+    String sourceContent =
+        """
+        package com.foo.bar;
+        public interface OuterInterface {
+          public class InnerClass {
+            public enum InnerEnum { A, B }
+          }
+        }
+        """;
+    String translation =
+        translateSourceFile(sourceContent, "OuterInterface", "com/foo/bar/OuterInterface.h");
+    assertInTranslation(translation, "NS_SWIFT_NAME(OuterInterfaceInnerClass)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(OuterInterfaceInnerClass.InnerEnum)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(OuterInterfaceInnerClass.InnerEnumEnum)");
+  }
+
+  public void testSwiftNameExplicitAnnotationOnNestedType() throws IOException {
+    addSourceFile(
+        "@SwiftName "
+            + "package com.foo.bar;"
+            + ""
+            + "import com.google.j2objc.annotations.SwiftName;",
+        "com/foo/bar/package-info.java");
+
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        public interface OuterInterface {
+          @SwiftName("CustomName")
+          public class InnerClass {
+            public enum InnerEnum { A, B }
+          }
+        }
+        """;
+    String translation =
+        translateSourceFile(sourceContent, "OuterInterface", "com/foo/bar/OuterInterface.h");
+    assertInTranslation(translation, "NS_SWIFT_NAME(CustomName)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(CustomName.InnerEnum)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(CustomName.InnerEnumEnum)");
+  }
+
+  public void testSwiftNameExplicitAnnotationOnInterface() throws IOException {
+    String sourceContent =
+        """
+        package com.foo.bar;
+        import com.google.j2objc.annotations.SwiftName;
+        @SwiftName("CustomInterface")
+        public interface OuterInterface {
+          public enum InnerEnum { A, B }
+        }
+        """;
+    String translation =
+        translateSourceFile(sourceContent, "OuterInterface", "com/foo/bar/OuterInterface.h");
+    assertInTranslation(translation, "NS_SWIFT_NAME(CustomInterfaceInnerEnum)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(CustomInterfaceInnerEnumEnum)");
+  }
+
+  public void testSwiftNameInterfaceInsideClass() throws IOException {
+    addSourceFile(
+        "@SwiftName "
+            + "package com.foo.bar;"
+            + ""
+            + "import com.google.j2objc.annotations.SwiftName;",
+        "com/foo/bar/package-info.java");
+
+    String sourceContent =
+        """
+        package com.foo.bar;
+        public class Foo {
+          public interface Bar {
+            public enum Baz { A, B }
+          }
+          public class Biz {}
+        }
+        """;
+    String translation =
+        translateSourceFile(sourceContent, "Foo", "com/foo/bar/Foo.h");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBar)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBarBaz)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(FooBarBazEnum)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(Foo.Biz)");
+  }
+
+  public void testSwiftNameInterfaceInsideNestedClass() throws IOException {
+    addSourceFile(
+        "@SwiftName "
+            + "package com.foo.bar;"
+            + ""
+            + "import com.google.j2objc.annotations.SwiftName;",
+        "com/foo/bar/package-info.java");
+
+    String sourceContent =
+        """
+        package com.foo.bar;
+        public class Outer {
+          public class Middle {
+            public interface Inner {
+              public enum Baz { A, B }
+            }
+          }
+        }
+        """;
+    String translation =
+        translateSourceFile(sourceContent, "Outer", "com/foo/bar/Outer.h");
+    assertInTranslation(translation, "NS_SWIFT_NAME(Outer.Middle)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(OuterMiddleInner)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(OuterMiddleInnerBaz)");
+    assertInTranslation(translation, "NS_SWIFT_NAME(OuterMiddleInnerBazEnum)");
   }
 
   public void testMethodSorting() throws IOException {
@@ -1509,7 +2205,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String impl =  getTranslatedFile("Test.m");
 
     assertInTranslation(header, "@protocol Foo < JavaObject >");
-    assertTranslatedSegments(header, "@interface Foo : NSObject", "+ (void)f;", "@end");
+    assertTranslatedSegments(header, "@interface FooCompanion : NSObject", "+ (void)f;", "@end");
     // Should only have one occurrence from the companion class.
     assertOccurrences(header, "+ (void)f;", 1);
 
@@ -1661,5 +2357,25 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         enumHeader, "@interface FooObjectiveCAdapterMethod_Adaptation : JavaLangEnum");
     String implFile = getTranslatedFile("foo/ObjectiveCAdapterMethod.m");
     assertInTranslation(implFile, "ObjectiveCAdapterMethod_Adaptation_Enum");
+  }
+
+  public void testSwiftNameInnerClassConstructor() throws IOException {
+    options.setSwiftNaming(true);
+    addSourceFile(
+        """
+        package com.foo.bar;
+        public class Outer {
+          public class Inner {
+            public Inner() {}
+          }
+        }
+        """,
+        "com/foo/bar/Outer.java");
+    String translation = translateSourceFile("com.foo.bar.Outer", "com/foo/bar/Outer.h");
+    // The implicit outer parameter "outer$" should be mapped to "_" (positional) in Swift name.
+    assertInTranslation(
+        translation,
+        "- (instancetype)initWithComFooBarOuter:(ComFooBarOuter *)outer$"
+            + " NS_SWIFT_NAME(init(_:));");
   }
 }

@@ -25,14 +25,16 @@ public class InfixExpressionTest extends GenerationTest {
 
   public void testVeryDeeplyNextedExpression() throws IOException {
     StringBuilder sb = new StringBuilder("return i == -1");
+    StringBuilder expectedSb = new StringBuilder("return (i == -1)");
     // Create a 2000 node deep infix expression.
     for (int i = 0; i < 2000; i++) {
       sb.append(" || i == " + i);
+      expectedSb.append(" || (i == " + i + ")");
     }
     sb.append(";");
-    String exprStr = sb.toString();
+    expectedSb.append(";");
     String translation = translateSourceFile(UnicodeUtils.format(
-        "class Test { boolean test(int i) { %s } }", exprStr), "Test", "Test.m");
-    assertInTranslation(translation, exprStr);
+        "class Test { boolean test(int i) { %s } }", sb.toString()), "Test", "Test.m");
+    assertInTranslation(translation, expectedSb.toString());
   }
 }

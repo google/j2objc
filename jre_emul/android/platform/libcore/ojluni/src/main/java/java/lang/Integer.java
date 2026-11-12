@@ -1721,5 +1721,13 @@ public final class Integer extends Number
     - (void)getValue:(void *)buffer {
       *((int *) buffer) = value_;
     }
+
+    - (id)copyWithZone:(NSZone *)zone {
+#if __has_feature(objc_arc)
+      return self;
+#else
+      return [self retain];
+#endif
+    }
     ]-*/
 }

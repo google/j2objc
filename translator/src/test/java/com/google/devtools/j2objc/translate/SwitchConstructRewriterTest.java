@@ -41,24 +41,28 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         translation,
         """
         return ^ NSString * (){
-        {
-          int32_t selector = 0;
-          NSString *s = nil;
-          JavaLangInteger *i = nil;
-          if ([obj isKindOfClass:[NSString class]] && (s = (NSString *) obj, true))\
-            selector = 1;
-          else if ([obj isKindOfClass:[JavaLangInteger class]]\
-              && (i = (JavaLangInteger *) obj, true))\
-            selector = 2;
-          switch (selector) {
-            case 1:
-            return JreStrcat("$$", @"It's a String: ", s);
-            case 2:
-            return JreStrcat("$@", @"It's an Integer: ", i);
-            default:
-            return @"It's something else.";
+          {
+            id tmp = nil_chk(obj);
+            {
+              int32_t selector = 0;
+              NSString *s = nil;
+              JavaLangInteger *i = nil;
+              if ([tmp isKindOfClass:[NSString class]] && (s = (NSString *) tmp, true))\
+                selector = 1;
+              else if ([tmp isKindOfClass:[JavaLangInteger class]]\
+                  && (i = (JavaLangInteger *) tmp, true))\
+                selector = 2;
+              switch (selector) {
+                case 1:
+                return JreStrcat("$$", @"It's a String: ", s);
+                case 2:
+                return JreStrcat("$@", @"It's an Integer: ", i);
+                default:
+                return @"It's something else.";
+              }
+            }
           }
-        }
+        }();
         """);
   }
 
@@ -87,46 +91,50 @@ public class SwitchConstructRewriterTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         """
-        NSString *s = nil;
-        NSString *s_1 = nil;
-        NSString *s_2 = nil;
-        JavaLangInteger *i = nil;
-        if ([obj isKindOfClass:[NSString class]] && (s = (NSString *) obj, true)\
-            && [((NSString *) nil_chk(s)) java_length] > 25)\
-          selector = 1;
-        else if ([obj isKindOfClass:[NSString class]] && (s_1 = (NSString *) obj, true)\
-            && [((NSString *) nil_chk(s_1)) java_length] > 5)\
-          selector = 2;
-        else if ([obj isKindOfClass:[NSString class]] && (s_2 = (NSString *) obj, true))\
-          selector = 3;
-        else if ([obj isKindOfClass:[JavaLangInteger class]]\
-            && (i = (JavaLangInteger *) obj, true))\
-          selector = 4;
-        switch (selector) {
-          case 1:
-          {
-            Test_logWithNSString_(@"Long string");
-            break;
-          }
-          case 2:
-          {
-            Test_logWithNSString_(@"Medium string");
-            break;
-          }
-          case 3:
-          {
-            Test_logWithNSString_(@"Short string");
-            break;
-          }
-          case 4:
-          {
-            Test_logWithNSString_(JreStrcat("$@", @"An integer: ", i));
-            break;
-          }
-          default:
-          {
-            Test_logWithNSString_(@"Something else");
-            break;
+        id tmp = nil_chk(obj);
+        {
+          int32_t selector = 0;
+          NSString *s = nil;
+          NSString *s_1 = nil;
+          NSString *s_2 = nil;
+          JavaLangInteger *i = nil;
+          if ([tmp isKindOfClass:[NSString class]] && (s = (NSString *) tmp, true)\
+              && ([((NSString *) nil_chk(s)) java_length] > 25))\
+            selector = 1;
+          else if ([tmp isKindOfClass:[NSString class]] && (s_1 = (NSString *) tmp, true)\
+              && ([((NSString *) nil_chk(s_1)) java_length] > 5))\
+            selector = 2;
+          else if ([tmp isKindOfClass:[NSString class]] && (s_2 = (NSString *) tmp, true))\
+            selector = 3;
+          else if ([tmp isKindOfClass:[JavaLangInteger class]]\
+              && (i = (JavaLangInteger *) tmp, true))\
+            selector = 4;
+          switch (selector) {
+            case 1:
+            {
+              Test_logWithNSString_(@"Long string");
+              break;
+            }
+            case 2:
+            {
+              Test_logWithNSString_(@"Medium string");
+              break;
+            }
+            case 3:
+            {
+              Test_logWithNSString_(@"Short string");
+              break;
+            }
+            case 4:
+            {
+              Test_logWithNSString_(JreStrcat("$@", @"An integer: ", i));
+              break;
+            }
+            default:
+            {
+              Test_logWithNSString_(@"Something else");
+              break;
+            }
           }
         }
         """);
@@ -153,35 +161,396 @@ public class SwitchConstructRewriterTest extends GenerationTest {
         """
         return ^ NSString * (){
           {
-            int32_t selector = 0;
-            JavaLangInteger *i = nil;
-            NSString *s = nil;
-            JavaLangInteger *i_1 = nil;
-            id x = nil;
-            if ([o isKindOfClass:[JavaLangInteger class]] && (i = (JavaLangInteger *) o, true)\
-                && [((JavaLangInteger *) nil_chk(i)) intValue] == 0 && [i intValue] < 1\
-                && [o2 isKindOfClass:[NSString class]] && (s = (NSString *) o2, true))\
-              selector = 1;
-            else if ([o isKindOfClass:[JavaLangInteger class]]\
-                && (i_1 = (JavaLangInteger *) o, true)\
-                && [((JavaLangInteger *) nil_chk(i_1)) intValue] == 0 || [i_1 intValue] > 1)\
-              selector = 2;
-            else if ([o isKindOfClass:[NSObject class]] && (x = o, true))\
-              selector = 3;
-            switch (selector) {
-              case 1:
-              o = JreStrcat("$$", s, NSString_java_valueOf_(i));
-              return @"true";
-              case 2:
-              o = NSString_java_valueOf_(i_1);
-              return @"second";
-              case 3:
-              return @"any";
-              default:
-              __builtin_unreachable();
+            id tmp = nil_chk(o);
+            {
+              int32_t selector = 0;
+              JavaLangInteger *i = nil;
+              NSString *s = nil;
+              JavaLangInteger *i_1 = nil;
+              id x = nil;
+              if ([tmp isKindOfClass:[JavaLangInteger class]] && (i = (JavaLangInteger *) tmp, true)\
+                  && (([((JavaLangInteger *) nil_chk(i)) intValue] == 0) && ([i intValue] < 1)\
+                  && ([o2 isKindOfClass:[NSString class]] && (s = (NSString *) o2, true))))\
+                selector = 1;
+              else if ([tmp isKindOfClass:[JavaLangInteger class]]\
+                  && (i_1 = (JavaLangInteger *) tmp, true)\
+                  && (([((JavaLangInteger *) nil_chk(i_1)) intValue] == 0) || ([i_1 intValue] > 1)))\
+                selector = 2;
+              else if ([tmp isKindOfClass:[NSObject class]] && (x = tmp, true))\
+                selector = 3;
+              switch (selector) {
+                case 1:
+                o = JreStrcat("$$", s, NSString_java_valueOf_(i));
+                return @"true";
+                case 2:
+                o = NSString_java_valueOf_(i_1);
+                return @"second";
+                case 3:
+                return @"any";
+                default:
+                __builtin_unreachable();
+              }
             }
           }
         }();
+        """);
+  }
+
+  public void testExtractSelectorExpression() throws IOException {
+    String source =
+        """
+        class Test {
+          static int getInt() { return 1; }
+          static void testStmt() {
+            switch (getInt()) {
+              case 1:
+                break;
+            }
+          }
+          static int testExpr() {
+            return switch (getInt()) {
+              case 1 -> 10;
+              default -> 20;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        {
+          int32_t tmp = Test_getInt();
+          switch (tmp) {
+            case 1:
+            break;
+          }
+        }
+        """);
+    assertTranslatedLines(
+        translation,
+        """
+        return ^ int32_t (){
+          {
+            int32_t tmp = Test_getInt();
+            switch (tmp) {
+              case 1:
+              return 10;
+              default:
+              return 20;
+            }
+          }
+        }();
+        """);
+  }
+
+  public void testExtractSelectorExpressionWithNilCheck() throws IOException {
+    String source =
+        """
+        class Test {
+          enum Foo { A, B }
+          static int testWithoutNullCase(Foo foo) {
+            return switch (foo) {
+              case A -> 1;
+              default -> 2;
+            };
+          }
+          static int testWithNullCase(Foo foo) {
+            return switch (foo) {
+              case null -> 0;
+              case A -> 1;
+              default -> 2;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        Test_Foo *tmp = nil_chk(foo);
+        switch ([tmp ordinal]) {
+        """);
+    assertTranslatedLines(
+        translation,
+        """
+        switch ((foo == nil) ? -1 : [foo ordinal]) {
+        """);
+  }
+
+  public void testSwitchCaseWithMultipleExpressions() throws IOException {
+    String source =
+        """
+        class Test {
+          enum Foo { A, B, C }
+          static int test(Foo someFoo) {
+            return switch (someFoo) {
+              case A, B -> 1;
+              case Foo f when f.toString().length() > 1 -> 2;
+              case null -> 3;
+              default -> 4;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t selector = 0;
+        Test_Foo *f = nil;
+        if ((someFoo == (JreLoadEnum(Test_Foo, A))) || (someFoo == (JreLoadEnum(Test_Foo, B)))) selector = 1;
+        else if ([someFoo isKindOfClass:[Test_Foo class]] && (f = someFoo, true) && ([((NSString *) nil_chk(([((Test_Foo *) nil_chk(f)) description]))) java_length] > 1)) selector = 2;
+        else if (someFoo == nil) selector = 3;
+        switch (selector) {
+          case 1:
+          return 1;
+          case 2:
+          return 2;
+          case 3:
+          return 3;
+          default:
+          return 4;
+          }
+        """);
+  }
+
+  public void testSwitchCaseWithMultipleExpressionsColonSyntax() throws IOException {
+    String source =
+        """
+        class Test {
+          enum Foo { A, B, C }
+          static int test(Foo someFoo) {
+            switch (someFoo) {
+              case A, B:
+                return 1;
+              case Foo f when f.toString().length() > 1:
+                return 2;
+              case null, default:
+                return 3;
+            }
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t selector = 0;
+        Test_Foo *f = nil;
+        if ((someFoo == (JreLoadEnum(Test_Foo, A))) || (someFoo == (JreLoadEnum(Test_Foo, B)))) selector = 1;
+        else if ([someFoo isKindOfClass:[Test_Foo class]] && (f = someFoo, true)\
+            && ([((NSString *) nil_chk(([((Test_Foo *) nil_chk(f)) description]))) java_length] > 1))\
+          selector = 2;
+        switch (selector) {
+          case 1:
+          return 1;
+          case 2:
+          return 2;
+          default:
+          return 3;
+        }
+        """);
+  }
+
+  public void testBoxedIntSwitchWithNullAndConstant() throws IOException {
+    String source =
+        """
+        class Test {
+          static int test(Integer i) {
+            return switch (i) {
+              case 42 -> 1;
+              case Integer j when j > 0 -> 2;
+              case null -> 3;
+              default -> 4;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t selector = 0;
+        JavaLangInteger *j = nil;
+        if ((i != nil) && ([i intValue] == 42)) selector = 1;
+        else if ([i isKindOfClass:[JavaLangInteger class]] && (j = i, true)\
+            && ([((JavaLangInteger *) nil_chk(j)) intValue] > 0)) selector = 2;
+        else if (i == nil) selector = 3;
+        switch (selector) {
+          case 1:
+          return 1;
+          case 2:
+          return 2;
+          case 3:
+          return 3;
+          default:
+          return 4;
+        }
+        """);
+  }
+
+  public void testEnumSwitchWithPatternAndConstant() throws IOException {
+    String source =
+        """
+        class Test {
+          enum Foo { A, B }
+          static int test(Foo someFoo) {
+            return switch (someFoo) {
+              case null -> 0;
+              case A -> 1;
+              case Foo f when f.toString().length() > 1 -> 2;
+              default -> 3;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t selector = 0;
+        Test_Foo *f = nil;
+        if (someFoo == nil) selector = 1;
+        else if (someFoo == (JreLoadEnum(Test_Foo, A))) selector = 2;
+        else if ([someFoo isKindOfClass:[Test_Foo class]] && (f = someFoo, true)\
+            && ([((NSString *) nil_chk(([((Test_Foo *) nil_chk(f)) description]))) java_length] > 1))\
+          selector = 3;
+        switch (selector) {
+          case 1:
+          return 0;
+          case 2:
+          return 1;
+          case 3:
+          return 2;
+          default:
+          return 3;
+        }
+        """);
+  }
+
+  public void testBoxedSwitchWithNullCase() throws IOException {
+    String source =
+        """
+        class Test {
+          static int test(Byte b) {
+            return switch (b) {
+              case 0, 1 -> 1;
+              case null -> 2;
+              default -> 3;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t selector = 0;
+        if ((b != nil) && (([b charValue] == 0) || ([b charValue] == 1))) selector = 1;
+        else if (b == nil) selector = 2;
+        switch (selector) {
+          case 1:
+          return 1;
+          case 2:
+          return 2;
+          default:
+          return 3;
+        }
+        """);
+  }
+
+  public void testBoxedSwitchWithNullDefaultCase() throws IOException {
+    String source =
+        """
+        class Test {
+          static int test(Integer i) {
+            return switch (i) {
+              case 0, 1 -> 1;
+              case null, default -> 2;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t selector = 0;
+        if ((i != nil) && (([i intValue] == 0) || ([i intValue] == 1))) selector = 1;
+        switch (selector) {
+          case 1:
+          return 1;
+          default:
+          return 2;
+        }
+        """);
+  }
+
+  public void testObjectSwitchWithOnlyEnumConstants() throws IOException {
+    String source =
+        """
+        class Test {
+          enum Foo { A, B }
+          static int test(Object o) {
+            return switch (o) {
+              case Foo.A -> 1;
+              case Foo.B -> 2;
+              default -> 3;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        id tmp = nil_chk(o);
+        {
+          int32_t selector = 0;
+          if (tmp == (JreLoadEnum(Test_Foo, A))) selector = 1;
+          else if (tmp == (JreLoadEnum(Test_Foo, B))) selector = 2;
+          switch (selector) {
+            case 1:
+            return 1;
+            case 2:
+            return 2;
+            default:
+            return 3;
+          }
+        }
+        """);
+  }
+
+  public void testObjectSwitchWithOnlyEnumConstantsAndNullCase() throws IOException {
+    String source =
+        """
+        class Test {
+          enum Foo { A, B }
+          static int test(Object o) {
+            return switch (o) {
+              case Foo.A -> 1;
+              case null -> 2;
+              default -> 3;
+            };
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        int32_t selector = 0;
+        if (o == (JreLoadEnum(Test_Foo, A))) selector = 1;
+        else if (o == nil) selector = 2;
+        switch (selector) {
+          case 1:
+          return 1;
+          case 2:
+          return 2;
+          default:
+          return 3;
+        }
         """);
   }
 }

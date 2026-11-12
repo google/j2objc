@@ -116,7 +116,8 @@ public class ArrayCreationTest extends GenerationTest {
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
     assertEquals(
-        "IOSCharArray *foo = [IOSCharArray arrayWithChars:(unichar[]){ 'A', 'z' } count:2];", result);
+        "IOSCharArray *foo = [IOSCharArray arrayWithChars:(unichar[]){ 'A', 'z' } count:2];",
+        result);
   }
 
   public void testDoubleArrayCreationNoDimension() {
@@ -149,7 +150,8 @@ public class ArrayCreationTest extends GenerationTest {
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
     assertEquals(
-        "IOSLongArray *foo = [IOSLongArray arrayWithLongs:(int64_t[]){ 123 * 456, 456789 } count:2];",
+        "IOSLongArray *foo = [IOSLongArray arrayWithLongs:(int64_t[]){ JreIntTimes(123, 456), 456789"
+            + " } count:2];",
         result);
   }
 
@@ -220,7 +222,8 @@ public class ArrayCreationTest extends GenerationTest {
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
     assertEquals(
-        "IOSLongArray *foo = [IOSLongArray arrayWithLongs:(int64_t[]){ 123 * 456, 456789 } count:2];",
+        "IOSLongArray *foo = [IOSLongArray arrayWithLongs:(int64_t[]){ JreIntTimes(123, 456), 456789"
+            + " } count:2];",
         result);
   }
 

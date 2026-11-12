@@ -47,7 +47,7 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
         + "  }}", "A", "A.m");
     assertTranslatedLines(translation,
         "#line 3", "void A_test() {", "A_initialize();", "", "#line 4",
-        "[((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
+        "[((JavaIoPrintStream *) nil_chk((JreLoadStatic(JavaLangSystem, out)))) "
           + "printlnWithId:A_class_()];");
   }
 
@@ -213,14 +213,46 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation, "+ (TestEnum *)TWO");
   }
 
-  // Verify that specified properties are synthesized.
+  // Verify that specified properties are synthesized only when accessors need to be generated.
   public void testSynthesizeProperties() throws IOException {
-    String source = "import com.google.j2objc.annotations.Property; class Test { "
-        + "@Property(\"getter=getFoo\") private final Integer foo = 42;"
-        + "private final Integer bar = 84; }";
+    String source =
+        """
+        import com.google.j2objc.annotations.Property;
+        class Test {
+          @Property("getter=getFoo") private final Integer foo = 42;
+          private final Integer bar = 84;
+          @Property private final Integer finalWithGetter = 1;
+          public Integer getFinalWithGetter() { return finalWithGetter; }
+          @Property("readonly") private Integer readonlyWithGetter = 2;
+          public Integer getReadonlyWithGetter() { return readonlyWithGetter; }
+          @Property private Integer readwriteWithOnlyGetter = 3;
+          public Integer getReadwriteWithOnlyGetter() { return readwriteWithOnlyGetter; }
+          @Property private Integer readwriteWithBoth = 4;
+          public Integer getReadwriteWithBoth() { return readwriteWithBoth; }
+          public void setReadwriteWithBoth(Integer v) { readwriteWithBoth = v; }
+        }
+        """;
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertInTranslation(translation, "@synthesize foo = foo_;");
     assertNotInTranslation(translation, "@synthesize bar");
+    assertNotInTranslation(translation, "@synthesize finalWithGetter");
+    assertNotInTranslation(translation, "@synthesize readonlyWithGetter");
+    assertInTranslation(translation, "@synthesize readwriteWithOnlyGetter = readwriteWithOnlyGetter_;");
+    assertNotInTranslation(translation, "@synthesize readwriteWithBoth");
+  }
+
+  public void testSynthesizeProperties_explicitGetterMatchesStaticMethod() throws IOException {
+    String source =
+        """
+        import com.google.j2objc.annotations.Property;
+        class Test {
+          @Property("getter=customFoo") private final Integer foo = 1;
+          public static Integer customFoo() { return 0; }
+        }
+        """;
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertNotInTranslation(translation, "- (JavaLangInteger *)customFoo");
+    assertInTranslation(translation, "@synthesize foo = foo_;");
   }
 
   public void testPrivateClassesPackageSwiftName() throws IOException {
@@ -254,6 +286,28 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     assertError("Test.java:1: Swift name annotation on private type");
   }
 
+  public void testPrivateClassesWithSwiftNamingOption() throws IOException {
+    options.setSwiftNaming(true);
+    String source =
+        "public class Test { "
+            + "  private class Inner { "
+            + "       public void foo() { }"
+            + "   }"
+            + "  private Inner bar; "
+            + "}";
+
+    // Should compile without error
+    translateSourceFile(source, "Test", "Test.m");
+  }
+
+  public void testPackageInfoWithSwiftNamingOption() throws IOException {
+    options.setSwiftNaming(true);
+    // Use deprecated annotation to force package-info class generation
+    addSourceFile("@Deprecated package foo;", "foo/package-info.java");
+    // Should compile without error
+    String unused = translateSourceFile("foo.package-info", "foo/package-info.m");
+  }
+
   public void testLinkProtocolsFunctions() throws IOException {
     options.setLinkProtocols(true);
     String source =
@@ -263,5 +317,21 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     assertInTranslation(translation, "+ (void)__linkProtocols {");
     assertInTranslation(translation, "JavaIoSerializable_class_();");
     assertInTranslation(translation, "JavaLangRunnable_class_();");
+  }
+
+  public void testEnumExterns() throws IOException {
+    String source = "enum Test { ONE, TWO }";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertInTranslation(translation, "extern Test *Test_get_ONE(void);");
+    assertInTranslation(translation, "extern Test *Test_get_TWO(void);");
+  }
+
+  public void testStaticFieldExterns() throws IOException {
+    String source = "class Test { static String foo; final static int bar = 2; }";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertInTranslation(translation, "extern NSString *Test_get_foo(void);");
+    assertInTranslation(translation, "extern NSString *Test_set_foo(NSString *value);");
+    assertInTranslation(translation, "extern int32_t Test_get_bar(void);");
+    assertNotInTranslation(translation, "extern void Test_set_bar(int32_t value);");
   }
 }

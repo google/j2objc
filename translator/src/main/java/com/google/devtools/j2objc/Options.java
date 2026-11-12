@@ -617,6 +617,8 @@ public class Options {
         NameTable.addReservedNames(getArgValue(args, arg));
       } else if (arg.equals("--objc-generics")) {
         asObjCGenericDecl = true;
+      } else if (arg.equals("--no-objc-generics")) {
+        asObjCGenericDecl = false;
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {

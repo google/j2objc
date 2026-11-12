@@ -36,7 +36,6 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
-import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.RecordDeclaration;
@@ -135,31 +134,6 @@ public class Rewriter extends UnitTreeVisitor {
     InfixExpression.Operator op = node.getOperator();
     if (typeUtil.isString(node.getTypeMirror()) && op == InfixExpression.Operator.PLUS) {
       rewriteStringConcat(node);
-    } else if (op == InfixExpression.Operator.CONDITIONAL_AND) {
-      // Avoid logical-op-parentheses compiler warnings.
-      if (node.getParent() instanceof InfixExpression) {
-        InfixExpression parent = (InfixExpression) node.getParent();
-        if (parent.getOperator() == InfixExpression.Operator.CONDITIONAL_OR) {
-          ParenthesizedExpression.parenthesizeAndReplace(node);
-        }
-      }
-    } else if (op == InfixExpression.Operator.AND) {
-      // Avoid bitwise-op-parentheses compiler warnings.
-      if (node.getParent() instanceof InfixExpression) {
-        InfixExpression.Operator otherOp = ((InfixExpression) node.getParent()).getOperator();
-        if (otherOp == InfixExpression.Operator.OR || otherOp == InfixExpression.Operator.XOR) {
-          ParenthesizedExpression.parenthesizeAndReplace(node);
-        }
-      }
-    }
-
-    // Avoid lower precedence compiler warnings.
-    if (op == InfixExpression.Operator.AND || op == InfixExpression.Operator.OR) {
-      for (Expression operand : node.getOperands()) {
-        if (operand instanceof InfixExpression) {
-          ParenthesizedExpression.parenthesizeAndReplace(operand);
-        }
-      }
     }
   }
 

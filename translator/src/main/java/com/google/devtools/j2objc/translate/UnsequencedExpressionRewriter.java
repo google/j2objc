@@ -36,7 +36,6 @@ import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.ReturnStatement;
@@ -322,9 +321,7 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
         Expression ifExpr = new Assignment(
             new SimpleName(conditionalVar), conditionalFromSubBranches(subBranches, op));
         if (op == InfixExpression.Operator.CONDITIONAL_OR) {
-          ifExpr = new PrefixExpression(
-              boolType, PrefixExpression.Operator.NOT,
-              ParenthesizedExpression.parenthesize(ifExpr));
+          ifExpr = new PrefixExpression(boolType, PrefixExpression.Operator.NOT, ifExpr);
         }
         newIf.setExpression(ifExpr);
         stmtList.add(newIf);
@@ -577,9 +574,9 @@ public class UnsequencedExpressionRewriter extends UnitTreeVisitor {
 
   private IfStatement createLoopTermination(Expression loopCondition) {
     IfStatement newIf = new IfStatement();
-    newIf.setExpression(new PrefixExpression(
-        typeUtil.getBoolean(), PrefixExpression.Operator.NOT,
-        ParenthesizedExpression.parenthesize(loopCondition.copy())));
+    newIf.setExpression(
+        new PrefixExpression(
+            typeUtil.getBoolean(), PrefixExpression.Operator.NOT, loopCondition.copy()));
     newIf.setThenStatement(new BreakStatement());
     return newIf;
   }

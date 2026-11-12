@@ -38,8 +38,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -456,7 +456,7 @@ public final class ElementUtil {
   public static Set<String> parsePropertyAttribute(AnnotationMirror annotation) {
     assert getName(annotation.getAnnotationType().asElement()).equals("Property");
     String attributesStr = (String) getAnnotationValue(annotation, "value");
-    Set<String> attributes = new HashSet<>();
+    Set<String> attributes = new LinkedHashSet<>();
     if (attributesStr != null) {
       attributes.addAll(Arrays.asList(attributesStr.split(",\\s*")));
       attributes.remove(""); // Clear any empty strings.

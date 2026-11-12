@@ -215,9 +215,8 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "private class Iterator { public void remove() { elementCount--; } } }",
         "Test", "Test.m");
     assertTranslatedLines(translation, "elementCount_ = 0;");
-    assertTranslatedLines(translation,
-        "- (void)remove {",
-        "this$0_->elementCount_--;");
+    assertTranslatedLines(
+        translation, "- (void)remove {", "JrePostDecInt(&this$0_->elementCount_);");
   }
 
   public void testOuterInterfaceMethodReference() throws IOException {
@@ -369,7 +368,8 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "    public int foo() { return i + j; } } }",
         "Test", "Test.m");
     assertInTranslation(translation, "Test *this$1"); // Inner2's outer reference.
-    assertInTranslation(translation, "[((JavaLangInteger *) nil_chk(this$1_->i_)) intValue] + j_");
+    assertInTranslation(
+        translation, "JreIntPlus([((JavaLangInteger *) nil_chk(this$1_->i_)) intValue], j_)");
   }
 
   public void testInnerClassInstantiatesAnotherInner() throws IOException {

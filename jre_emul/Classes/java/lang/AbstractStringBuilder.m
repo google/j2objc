@@ -57,7 +57,7 @@ static inline void NewBuffer(JreStringBuilder *sb, jint size) {
 static JavaLangStringIndexOutOfBoundsException *IndexAndLength(JreStringBuilder *sb, jint index) {
   id exc = [[JavaLangStringIndexOutOfBoundsException alloc] initWithNSString:
       [NSString stringWithFormat:@"this.length=%d; index=%d", sb->count_, index]];
-  @throw AUTORELEASE(exc);
+  return AUTORELEASE(exc);
 }
 
 static JavaLangStringIndexOutOfBoundsException *StartEndAndLength(
@@ -65,7 +65,7 @@ static JavaLangStringIndexOutOfBoundsException *StartEndAndLength(
   id exc = [[JavaLangStringIndexOutOfBoundsException alloc] initWithNSString:
       [NSString stringWithFormat:@"this.length=%d; start=%d; length=%d", sb->count_, start,
       end - start]];
-  @throw AUTORELEASE(exc);
+  return AUTORELEASE(exc);
 }
 
 @implementation JavaLangAbstractStringBuilder

@@ -331,8 +331,14 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * }
      *}</pre>
      */
-    transient Set<K>        keySet;
-    transient Collection<V> values;
+
+    /**
+     * J2ObjC: Despite the discussion above, no field race is safe in J2ObjC because
+     * field access is not atomic in J2ObjC, so mark these volatile so the abstract
+     * implementation is always safe.
+     */
+    transient volatile Set<K>        keySet;
+    transient volatile Collection<V> values;
 
     /**
      * {@inheritDoc}

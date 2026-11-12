@@ -26,7 +26,6 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
-import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.Statement;
@@ -155,16 +154,6 @@ public class ConstantBranchPruner extends UnitTreeVisitor {
     }
   }
 
-  /**
-   * Remove parentheses around constant booleans.
-   */
-  @Override
-  public void endVisit(ParenthesizedExpression node) {
-    if (getReplaceableValue(node.getExpression()) != null) {
-      node.replaceWith(node.getExpression().copy());
-    }
-  }
-
   @Override
   public void endVisit(WhileStatement node) {
     Expression expr = node.getExpression();
@@ -214,8 +203,6 @@ public class ConstantBranchPruner extends UnitTreeVisitor {
           }
           return null;
         }
-      case PARENTHESIZED_EXPRESSION:
-        return getKnownValue(((ParenthesizedExpression) expr).getExpression());
       default:
         return null;
     }
@@ -251,15 +238,6 @@ public class ConstantBranchPruner extends UnitTreeVisitor {
             return operands.remove(0);
           }
           return TreeUtil.remove(expr);
-        }
-      case PARENTHESIZED_EXPRESSION:
-        {
-          Expression sideEffects = extractSideEffects(
-              ((ParenthesizedExpression) expr).getExpression());
-          if (sideEffects != null) {
-            return ParenthesizedExpression.parenthesize(sideEffects);
-          }
-          return null;
         }
       default:
         return null;

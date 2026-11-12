@@ -34,8 +34,9 @@
 
 #include "google/protobuf/compiler/j2objc/j2objc_message.h"
 
-#include <algorithm>
-#include <memory>
+#include <set>
+#include <string>
+#include <vector>
 
 #include "google/protobuf/compiler/j2objc/j2objc_enum.h"
 #include "google/protobuf/compiler/j2objc/j2objc_extension.h"
@@ -210,15 +211,26 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
         "\n"
-        "@class $classname$;"
+        "@class $classname$;\n"
+        "@class IOSByteArray;\n"
         "\n"
         "@protocol $classname$CompanionProtocol\n"
         "- (nonnull $classname$_Builder *)newBuilder OBJC_METHOD_FAMILY_NONE;\n"
         "- (nonnull $classname$ *)getDefaultInstance;\n"
+        "- (nonnull $classname$ *)parseFromWithByteArray:"
+        "(nonnull IOSByteArray *)data"
+        " withComGoogleProtobufExtensionRegistryLite:(nullable"
+        " ComGoogleProtobufExtensionRegistryLite *)registry;\n"
         "- (nonnull $classname$ *)parseFromWithComGoogleProtobufByteString:"
         "(nonnull ComGoogleProtobufByteString *)data"
         " withComGoogleProtobufExtensionRegistryLite:(nullable"
-        " ComGoogleProtobufExtensionRegistryLite *)registry;\n"
+        " ComGoogleProtobufExtensionRegistryLite *)registry;\n",
+        "classname", ClassName(descriptor_));
+    for (int i = 0; i < descriptor_->extension_count(); i++) {
+      ExtensionGenerator(descriptor_->extension(i))
+          .GenerateCompanionHeader(printer);
+    }
+    printer->Print(
         "@end\n\n"
         "\n"
         "// in j2objc_message.cc \n"
@@ -267,7 +279,7 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
       "FOUNDATION_EXPORT $classname$ *$classname$_parseFromWithByteArray_with"
       "ComGoogleProtobufExtensionRegistryLite_(IOSByteArray *bytes, "
       "ComGoogleProtobufExtensionRegistryLite *registry);\n"
-      "CGP_ALWAYS_INLINE inline $classname$ *$classname$_"
+      "CGP_ALWAYS_INLINE $classname$ *$classname$_"
       "parseFromWithByteArray_(IOSByteArray *bytes) {\n"
       "  return $classname$_parseFromWithByteArray_withComGoogleProtobuf"
       "ExtensionRegistryLite_(bytes, nil);\n"
@@ -276,7 +288,7 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
       "InputStream_withComGoogleProtobufExtensionRegistryLite_("
       "JavaIoInputStream *input, "
       "ComGoogleProtobufExtensionRegistryLite *registry);\n"
-      "CGP_ALWAYS_INLINE inline $classname$ *$classname$_parseFromWith"
+      "CGP_ALWAYS_INLINE $classname$ *$classname$_parseFromWith"
       "JavaIoInputStream_(JavaIoInputStream *input) {\n"
       "  return $classname$_parseFromWithJavaIoInputStream_withComGoogle"
       "ProtobufExtensionRegistryLite_(input, nil);\n"
@@ -285,7 +297,7 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
       "parseFromWithComGoogleProtobufByteString_with"
       "ComGoogleProtobufExtensionRegistryLite_(ComGoogleProtobufByteString "
       "*byteString, ComGoogleProtobufExtensionRegistryLite *registry);\n"
-      "CGP_ALWAYS_INLINE inline $classname$ *$classname$_"
+      "CGP_ALWAYS_INLINE $classname$ *$classname$_"
       "parseFromWithComGoogleProtobufByteString_(ComGoogleProtobufByteString "
       "*byteString) {\n"
       "  return $classname$_parseFromWithComGoogleProtobufByteString_"
@@ -295,7 +307,7 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
       "InputStream_withComGoogleProtobufExtensionRegistryLite_("
       "JavaIoInputStream *input, "
       "ComGoogleProtobufExtensionRegistryLite *registry);\n"
-      "CGP_ALWAYS_INLINE inline $classname$ *$classname$_parseDelimitedFromWith"
+      "CGP_ALWAYS_INLINE $classname$ *$classname$_parseDelimitedFromWith"
       "JavaIoInputStream_(JavaIoInputStream *input) {\n"
       "  return $classname$_parseDelimitedFromWithJavaIoInputStream_"
       "withComGoogleProtobufExtensionRegistryLite_(input, nil);\n"
@@ -303,10 +315,7 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
       "\n"
       "J2OBJC_STATIC_INIT($classname$)\n"
       "\n"
-      "J2OBJC_TYPE_LITERAL_HEADER($classname$)\n"
-      "\n"
-      "FOUNDATION_EXPORT ComGoogleProtobufDescriptors_Descriptor "
-      "* _Nonnull $classname$_descriptor_;\n",
+      "J2OBJC_TYPE_LITERAL_HEADER($classname$)\n",
       "classname", ClassName(descriptor_));
 
   for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
@@ -357,7 +366,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "J2OBJC_INITIALIZED_DEFN($classname$);\n"
       "\n"
-      "ComGoogleProtobufDescriptors_Descriptor * _Nonnull "
+      "static ComGoogleProtobufDescriptors_Descriptor * _Nonnull "
       "$classname$_descriptor_;\n",
       "classname", ClassName(descriptor_));
 
@@ -422,6 +431,10 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
         "  return (id<$classname$CompanionProtocol>) [self class];\n"
         "}\n",
         "classname", ClassName(descriptor_));
+    for (int i = 0; i < descriptor_->extension_count(); i++) {
+      ExtensionGenerator(descriptor_->extension(i))
+          .GenerateCompanionSource(printer);
+    }
     for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
       printer->Print(
           "@dynamic $camelcase_name$Case;\n", "camelcase_name",
@@ -458,7 +471,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       "classname", ClassName(descriptor_), "flags",
       GetMessageFlags(descriptor_));
   if (field_generators_.numMapFields() > 0) {
-    printer->Print("static CGPFieldData mapEntryFields[] = {\n");
+    printer->Print("static const CGPFieldData mapEntryFields[] = {\n");
     printer->Indent();
     for (int i = 0; i < descriptor_->field_count(); i++) {
       field_generators_.get(descriptor_->field(i))
@@ -467,7 +480,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
     printer->Outdent();
     printer->Print("};\n");
   }
-  printer->Print("static CGPFieldData fields[] = {\n");
+  printer->Print("static const CGPFieldData fields[] = {\n");
   printer->Indent();
   for (int i = 0; i < descriptor_->field_count(); i++) {
     field_generators_.get(descriptor_->field(i)).GenerateFieldData(printer);
@@ -475,7 +488,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   printer->Outdent();
   printer->Print("};\n");
   if (descriptor_->real_oneof_decl_count() > 0) {
-    printer->Print("static CGPOneofData oneofs[] = {\n");
+    printer->Print("static const CGPOneofData oneofs[] = {\n");
     printer->Indent();
     for (int i = 0; i < descriptor_->real_oneof_decl_count(); i++) {
       OneofGenerator(descriptor_->oneof_decl(i)).GenerateOneofData(printer);
@@ -492,7 +505,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
       descriptor_->real_oneof_decl_count() > 0 ? "oneofs" : "NULL");
 
   if (descriptor_->extension_count() > 0) {
-    printer->Print("static CGPFieldData extensionFields[] = {\n");
+    printer->Print("static const CGPFieldData extensionFields[] = {\n");
     printer->Indent();
     for (int i = 0; i < descriptor_->extension_count(); i++) {
       ExtensionGenerator(descriptor_->extension(i)).GenerateFieldData(printer);

@@ -59,7 +59,7 @@ public class DefaultMethodsTest extends GenerationTest {
         + "}", "Test", "Test.m");
 
     assertInTranslation(translation, "int32_t i = Foo_fWithInt_(self, x);");
-    assertInTranslation(translation, "return Foo_fWithInt_(self, y) + 1;");
+    assertInTranslation(translation, "return JreIntPlus(Foo_fWithInt_(self, y), 1);");
   }
 
   public void testSuperMethodReferenceToDefaultMethod() throws IOException {
@@ -402,7 +402,7 @@ public class DefaultMethodsTest extends GenerationTest {
         + "interface OfInt extends OfPrimitive<Integer, OfInt> {}"
         + "static class OfIntImpl implements OfInt {}}", "Node", "Node.m");
     assertTranslatedLines(translation,
-        "return ((id<Node_OfInt>) Node_OfPrimitive_getChildWithInt_(self, arg0));");
+        "return (id<Node_OfInt>) Node_OfPrimitive_getChildWithInt_(self, arg0);");
   }
 
   // Regression test simplified from java.util.stream.ReduceOps, where @interface for
@@ -411,7 +411,7 @@ public class DefaultMethodsTest extends GenerationTest {
     addSourceFile("interface Sink<T> { default void test(long size) {}}", "Sink.java");
     String translation = translateSourceFile("class Test {"
         + "private interface AccumulatingSink<T> extends Sink<T> {}}", "Test", "Test.m");
-    assertTranslatedLines(translation, "@interface Test_AccumulatingSink : NSObject");
+    assertTranslatedLines(translation, "@interface Test_AccumulatingSinkCompanion : NSObject");
   }
 
   public void testExtraSelectorsFromMultipleOverrides() throws IOException {

@@ -56,17 +56,17 @@ typedef struct CGPRepeatedField {
 
 CF_EXTERN_C_BEGIN
 
-CGP_ALWAYS_INLINE inline uint32_t CGPRepeatedFieldSize(CGPRepeatedField *field) {
+CGP_ALWAYS_INLINE uint32_t CGPRepeatedFieldSize(CGPRepeatedField *field) {
   return field->data != NULL ? field->data->size : 0;
 }
 
-CGP_ALWAYS_INLINE inline uint32_t CGPRepeatedFieldTotalSize(CGPRepeatedField *field) {
+CGP_ALWAYS_INLINE uint32_t CGPRepeatedFieldTotalSize(CGPRepeatedField *field) {
   return field->data != NULL ? field->data->total_size : 0;
 }
 
 void CGPRepeatedFieldReserve(CGPRepeatedField *field, uint32_t new_size, size_t elemSize);
 
-CGP_ALWAYS_INLINE inline void CGPRepeatedFieldReserveAdditionalCapacity(
+CGP_ALWAYS_INLINE void CGPRepeatedFieldReserveAdditionalCapacity(
     CGPRepeatedField *field, uint32_t size_to_add, size_t elemSize) {
   uint32_t new_size = CGPRepeatedFieldSize(field) + size_to_add;
   if (new_size > CGPRepeatedFieldTotalSize(field)) {
@@ -83,22 +83,16 @@ void CGPRepeatedFieldClear(CGPRepeatedField *field, CGPFieldJavaType type);
 
 void CGPRepeatedFieldOutOfBounds(jint idx, uint32_t size);
 
-CGP_ALWAYS_INLINE inline void CGPRepeatedFieldCheckBounds(CGPRepeatedField *field, jint idx) {
+CGP_ALWAYS_INLINE void CGPRepeatedFieldCheckBounds(CGPRepeatedField *field, jint idx) {
   uint32_t size = CGPRepeatedFieldSize(field);
   if (idx < 0 || size <= (uint32_t)idx) {
     CGPRepeatedFieldOutOfBounds(idx, size);
   }
 }
 
-CGP_ALWAYS_INLINE inline void CGPRepeatedFieldAddRetainedId(CGPRepeatedField *field, id value) {
-  uint32_t total_size = CGPRepeatedFieldTotalSize(field);
-  if (CGPRepeatedFieldSize(field) == total_size) {
-    CGPRepeatedFieldReserve(field, total_size + 1, sizeof(id));
-  }
-  ((void **)field->data->buffer)[field->data->size++] =  (ARCBRIDGE void *)(value);
-}
-
 id<JavaUtilList> CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaType type);
+
+id<JavaUtilList> CGPNewRepeatedEnumValueFieldList(CGPRepeatedField *field);
 
 NSArray *CGPNewRepeatedFieldArray(CGPRepeatedField *field, CGPFieldJavaType type);
 

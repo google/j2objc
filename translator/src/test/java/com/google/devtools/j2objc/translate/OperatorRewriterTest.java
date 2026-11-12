@@ -150,7 +150,7 @@ public class OperatorRewriterTest extends GenerationTest {
     String translation =
         translateSourceFile(
             "class Test { String s; void test(String s2) { (s) = s2; } }", "Test", "Test.m");
-    assertInTranslation(translation, "JreStrongAssign(&(s_), s2);");
+    assertInTranslation(translation, "JreStrongAssign(&s_, s2);");
   }
 
   public void testParenthesizedLeftHandSideStrictField() throws IOException {
@@ -159,7 +159,7 @@ public class OperatorRewriterTest extends GenerationTest {
     String translation =
         translateSourceFile(
             "class Test { String s; void test(String s2) { (s) = s2; } }", "Test", "Test.m");
-    assertInTranslation(translation, "JreStrictFieldStrongAssign(&(s_), s2);");
+    assertInTranslation(translation, "JreStrictFieldStrongAssign(&s_, s2);");
   }
 
   public void testVolatileLoadAndAssign() throws IOException {
@@ -228,7 +228,7 @@ public class OperatorRewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test(int x, int y) { "
         + "String str = \"foo\"; str += x + y; } }", "Test", "Test.m");
-    assertInTranslation(translation, "JreStrAppend(&str, \"I\", x + y);");
+    assertInTranslation(translation, "JreStrAppend(&str, \"I\", JreIntPlus(x, y));");
     translation = translateSourceFile(
         "class Test { void test(int x) { "
         + "String str = \"foo\"; str += \"bar\" + x; } }", "Test", "Test.m");
@@ -249,7 +249,7 @@ public class OperatorRewriterTest extends GenerationTest {
         // The getTest() call must be extracted so that it can be passed as the parent ref without
         // duplicating the expression.
         "t *__rw$0;",
-        "((void) (__rw$0 = nil_chk([self getTest])), "
+        "((void) (__rw$0 = nil_chk(([self getTest]))), "
           + "JreRetainedWithAssign(__rw$0, &__rw$0->rwo_, create_NSObject_init()));");
     // Test the dealloc calls too.
     assertInTranslation(translation, "JreRetainedWithRelease(self, rwo_);");
@@ -276,7 +276,7 @@ public class OperatorRewriterTest extends GenerationTest {
         // The getTest() call must be extracted so that it can be passed as the parent ref without
         // duplicating the expression.
         "t *__rw$0;",
-        "((void) (__rw$0 = nil_chk([self getTest])), "
+        "((void) (__rw$0 = nil_chk(([self getTest]))), "
             + "JreRetainedWithAssign(__rw$0, &__rw$0->rwo_, create_NSObject_init()));");
     // Test the dealloc calls too.
     assertInTranslation(translation, "JreStrictFieldRetainedWithRelease(self, &rwo_);");
@@ -307,8 +307,41 @@ public class OperatorRewriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "Test_Thing *thing = JreRetainedLocalValue(t);",
         "thing = JreRetainedLocalValue(t2);",
-        "return [((id<JavaUtilComparator>) nil_chk(((Test_Thing *) nil_chk(thing))->comp_)) "
+        "return [((id<JavaUtilComparator>) nil_chk((((Test_Thing *) nil_chk(thing))->comp_))) "
           + "compareWithId:s1 withId:s2] == 0;");
+  }
+
+  public void testRetainedLocalRefARC() throws IOException {
+    options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    String translation =
+        translateSourceFile(
+            "class Test { "
+                + "  boolean test1(String s1, String s2) {"
+                + "    @com.google.j2objc.annotations.RetainedLocalRef"
+                + "    java.util.Comparator<String> c = String.CASE_INSENSITIVE_ORDER;"
+                + "    return c.compare(s1, s2) == 0;"
+                + "    }   "
+                + "  boolean test2(Thing t, Thing t2, String s1, String s2) {"
+                + "    @com.google.j2objc.annotations.RetainedLocalRef"
+                + "    Thing thing = t;"
+                + "    thing = t2;"
+                + "    return thing.comp.compare(s1, s2) == 0;"
+                + "  }"
+                + "  private static class Thing { public java.util.Comparator<String> comp; }}",
+            "Test",
+            "Test.m");
+    assertNotInTranslation(translation, "RetainedLocalRef");
+    assertTranslatedLines(
+        translation,
+        "id<JavaUtilComparator> c = JreRetainedLocalValue(JreLoadStatic("
+            + "NSString, CASE_INSENSITIVE_ORDER));",
+        "return [((id<JavaUtilComparator>) nil_chk(c)) compareWithId:s1 withId:s2] == 0;");
+    assertTranslatedLines(
+        translation,
+        "Test_Thing *thing = JreRetainedLocalValue(t);",
+        "thing = JreRetainedLocalValue(t2);",
+        "return [((id<JavaUtilComparator>) nil_chk((((Test_Thing *) nil_chk(thing))->comp_))) "
+            + "compareWithId:s1 withId:s2] == 0;");
   }
 
   public void testRetainedLocalRefStrictField() throws IOException {
@@ -636,7 +669,7 @@ public class OperatorRewriterTest extends GenerationTest {
             + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
     assertInTranslation(
         translation,
-        "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2) =="
+        "return JavaLangBoolean_valueOfWithBoolean_((!JreObjectEqualsEquals(b1, b2)) =="
             + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
     assertInTranslation(
         translation,
@@ -646,7 +679,7 @@ public class OperatorRewriterTest extends GenerationTest {
         translation, "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2));");
     assertInTranslation(
         translation,
-        "return JavaLangBoolean_valueOfWithBoolean_(!JreObjectEqualsEquals(b1, b2) !="
+        "return JavaLangBoolean_valueOfWithBoolean_((!JreObjectEqualsEquals(b1, b2)) !="
             + " [((JavaLangBoolean *) nil_chk(b3)) booleanValue]);");
   }
 
@@ -677,5 +710,137 @@ public class OperatorRewriterTest extends GenerationTest {
         "if (!JreLoadVolatileBoolean(&isClosed_)) {",
         "JreAssignVolatileBoolean(&isClosed_, true);",
         "}");
+  }
+
+  public void testIntegerAdd32() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { int add(int a, int b) { return a + b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int32_t)addWithInt:(int32_t)a",
+        "withInt:(int32_t)b {",
+        "return JreIntPlus(a, b);");
+  }
+
+  public void testIntegerAdd64() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long add(long a, long b) { return a + b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)addWithLong:(int64_t)a",
+        "withLong:(int64_t)b {",
+        "return JreLongPlus(a, b);");
+  }
+
+  public void testIntegerAdd32_64() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long add(int a, long b) { return a + b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)addWithInt:(int32_t)a",
+        "withLong:(int64_t)b {",
+        "return JreLongPlus(a, b);");
+  }
+
+  public void testIntegerAdd64_32() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long add(long a, int b) { return a + b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)addWithLong:(int64_t)a",
+        "withInt:(int32_t)b {",
+        "return JreLongPlus(a, b);");
+  }
+
+  public void testIntegerMinus32() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { int sub(int a, int b) { return a - b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int32_t)subWithInt:(int32_t)a",
+        "withInt:(int32_t)b {",
+        "return JreIntMinus(a, b);");
+  }
+
+  public void testIntegerMinus64() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long sub(long a, long b) { return a - b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)subWithLong:(int64_t)a",
+        "withLong:(int64_t)b {",
+        "return JreLongMinus(a, b);");
+  }
+
+  public void testIntegerMinus32_64() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long sub(int a, long b) { return a - b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)subWithInt:(int32_t)a",
+        "withLong:(int64_t)b {",
+        "return JreLongMinus(a, b);");
+  }
+
+  public void testIntegerMinus64_32() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long sub(long a, int b) { return a - b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)subWithLong:(int64_t)a",
+        "withInt:(int32_t)b {",
+        "return JreLongMinus(a, b);");
+  }
+
+  public void testIntegerTimes32() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { int mul(int a, int b) { return a * b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int32_t)mulWithInt:(int32_t)a",
+        "withInt:(int32_t)b {",
+        "return JreIntTimes(a, b);");
+  }
+
+  public void testIntegerTimes64() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long mul(long a, long b) { return a * b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)mulWithLong:(int64_t)a",
+        "withLong:(int64_t)b {",
+        "return JreLongTimes(a, b);");
+  }
+
+  public void testIntegerTimes32_64() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long mul(int a, long b) { return a * b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)mulWithInt:(int32_t)a",
+        "withLong:(int64_t)b {",
+        "return JreLongTimes(a, b);");
+  }
+
+  public void testIntegerTimes64_32() throws IOException {
+    String translation =
+        translateSourceFile(
+            "public class A { long mul(long a, int b) { return a * b; } }", "A", "A.m");
+    assertTranslatedLines(
+        translation,
+        "- (int64_t)mulWithLong:(int64_t)a",
+        "withInt:(int32_t)b {",
+        "return JreLongTimes(a, b);");
   }
 }

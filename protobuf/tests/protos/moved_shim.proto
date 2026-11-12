@@ -1,0 +1,9 @@
+edition = "2023";
+
+// A compatibility shim: declares nothing itself and only re-exports the file
+// the types moved to.
+package protos;
+
+import public "moved.proto";
+
+option java_package = "com.google.j2objctest.shim";

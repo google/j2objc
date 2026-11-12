@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.MethodReferenceTest;
 import com.google.devtools.j2objc.gen.ArrayAccessTest;
 import com.google.devtools.j2objc.gen.ArrayCreationTest;
 import com.google.devtools.j2objc.gen.ArrayGenericsTest;
+import com.google.devtools.j2objc.gen.GenerateObjCCompanionTest;
 import com.google.devtools.j2objc.gen.GenerateObjectiveCGenericsTest;
 import com.google.devtools.j2objc.gen.JavadocGeneratorTest;
 import com.google.devtools.j2objc.gen.LineDirectivesTest;
@@ -68,6 +69,7 @@ import com.google.devtools.j2objc.translate.MetadataWriterTest;
 import com.google.devtools.j2objc.translate.NilCheckResolverTest;
 import com.google.devtools.j2objc.translate.NumberMethodRewriterTest;
 import com.google.devtools.j2objc.translate.ObjectiveCAdapterMethodAnnotationTest;
+import com.google.devtools.j2objc.translate.ObjectiveCKmpMethodTranslatorTest;
 import com.google.devtools.j2objc.translate.ObjectiveCNativeEnumNameTest;
 import com.google.devtools.j2objc.translate.ObjectiveCNativeProtocolAnnotationTest;
 import com.google.devtools.j2objc.translate.OcniExtractorTest;
@@ -136,6 +138,7 @@ public class SmallTests {
         ExternalAnnotationInjectorTest.class,
         FileUtilTest.class,
         FunctionizerTest.class,
+        GenerateObjCCompanionTest.class,
         GenerateObjectiveCGenericsTest.class,
         GwtConverterTest.class,
         HeaderImportCollectorTest.class,
@@ -165,6 +168,7 @@ public class SmallTests {
         ObjectiveCHeaderGeneratorTest.class,
         ObjectiveCImplementationGeneratorTest.class,
         ObjectiveCNativeEnumNameTest.class,
+        ObjectiveCKmpMethodTranslatorTest.class,
         ObjectiveCNativeProtocolAnnotationTest.class,
         ObjectiveCSegmentedHeaderGeneratorTest.class,
         ObjectiveCSourceFileGeneratorTest.class,

@@ -35,6 +35,7 @@
 #ifndef GOOGLE_PROTOBUF_COMPILER_J2OBJC_ENUM_H__
 #define GOOGLE_PROTOBUF_COMPILER_J2OBJC_ENUM_H__
 
+#include <set>
 #include <string>
 #include <vector>
 

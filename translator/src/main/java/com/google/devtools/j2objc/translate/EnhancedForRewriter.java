@@ -128,7 +128,7 @@ public class EnhancedForRewriter extends UnitTreeVisitor {
       // Using RETAIN_AND_AUTORELEASE macro instead of JreRetainedLocalValue() because ARC handles
       // this automatically without the extra retain/autorelease.
       FunctionElement autoReleaseloopVariableElement =
-          new FunctionElement("RETAIN_AND_AUTORELEASE", componentType, null);
+          new FunctionElement("RETAIN_AND_AUTORELEASE", componentType, null).setIsMacro(true);
       FunctionInvocation autoReleaseloopVariableInvocation =
           new FunctionInvocation(autoReleaseloopVariableElement, componentType);
       autoReleaseloopVariableInvocation.addArgument(loopVariableValue);

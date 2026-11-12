@@ -1247,5 +1247,13 @@ public final class Double extends Number
     - (void)getValue:(void *)buffer {
       *((double *) buffer) = value_;
     }
+
+    - (id)copyWithZone:(NSZone *)zone {
+#if __has_feature(objc_arc)
+      return self;
+#else
+      return [self retain];
+#endif
+    }
     ]-*/
 }

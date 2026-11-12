@@ -102,12 +102,14 @@ ComGoogleProtobufExtensionRegistry *ComGoogleProtobufExtensionRegistry_getEmptyR
 
 void ComGoogleProtobufExtensionRegistry_initWithBoolean_(ComGoogleProtobufExtensionRegistry *self,
                                                          bool empty) {
+  ComGoogleProtobufExtensionRegistry_initialize();
   ComGoogleProtobufExtensionRegistryLite_initWithBoolean_(self, empty);
 }
 
 ComGoogleProtobufExtensionRegistry_ExtensionInfo *
 ComGoogleProtobufExtensionRegistry_newExtensionInfoWithComGoogleProtobufExtension_(
     ComGoogleProtobufExtension *extension) {
+  ComGoogleProtobufExtensionRegistry_initialize();
   return [[ComGoogleProtobufExtensionRegistry_ExtensionInfo alloc]
       initWithField:[extension getDescriptor]];
 }
@@ -120,7 +122,7 @@ ComGoogleProtobufExtensionRegistry_newExtensionInfoWithComGoogleProtobufExtensio
     descriptor_ = field;
     if (CGPFieldTypeIsMessage(field)) {
       // No need to retain. Default message values are eternal.
-      defaultInstance_ = CGPFieldGetDefaultValue(field);
+      defaultInstance_ = CGPFieldGetDefaultValueObject(field);
     }
   }
   return self;

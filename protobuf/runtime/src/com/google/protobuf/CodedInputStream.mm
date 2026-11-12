@@ -198,8 +198,8 @@ bool CGPCodedInputStream::ReadLittleEndian64Fallback(uint64* value) {
 
 namespace {
 
-inline const uint8* ReadVarint32FromArray(
-    const uint8* buffer, uint32* value) CGP_ALWAYS_INLINE;
+CGP_ALWAYS_INLINE const uint8* ReadVarint32FromArray(
+    const uint8* buffer, uint32* value);
 inline const uint8* ReadVarint32FromArray(const uint8* buffer, uint32* value) {
   // Fast path:  We have enough bytes left in the buffer to guarantee that
   // this read won't cross the end, so we can skip the checks.

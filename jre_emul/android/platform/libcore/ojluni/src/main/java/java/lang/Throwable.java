@@ -1143,7 +1143,8 @@ public class Throwable extends NSException implements Serializable {
 
     // Android-changed: Lazily initialize EMPTY_THROWABLE_ARRAY.
     // private static final Throwable[] EMPTY_THROWABLE_ARRAY = new Throwable[0];
-    private static Throwable[] EMPTY_THROWABLE_ARRAY;
+    // J2ObjC-changed: Mark volatile to avoid race condition during lazy initialization.
+    private static volatile Throwable[] EMPTY_THROWABLE_ARRAY;
 
     /**
      * Returns an array containing all of the exceptions that were

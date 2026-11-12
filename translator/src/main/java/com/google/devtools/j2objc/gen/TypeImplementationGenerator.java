@@ -32,7 +32,6 @@ import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
-import com.google.j2objc.annotations.Property;
 import java.lang.reflect.Modifier;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -107,14 +106,25 @@ public class TypeImplementationGenerator extends TypeGenerator {
     syncFilename(getSourceFilePath());
 
     printInitFlagDefinition();
+    printEnumExterns();
+    printStaticFieldExterns();
     printStaticVars();
     printEnumValuesArray();
 
     if (!typeElement.getKind().isInterface() || needsCompanionClass()) {
       newline();
       syncLineNumbers(typeNode.getName()); // avoid doc-comment
-      printf("@implementation %s\n", typeName);
+      printf("@implementation %s%s\n", typeName, hasCompanionSuffix() ? "Companion" : "");
       printProperties();
+      if (needsKotlinCompanionClass()) {
+        printCompanionPropertyImplementation(
+            typeElement.getKind().isInterface() ? "shared" : "companion");
+        if (needsKotlinSharedProperty()) {
+          // Does not clash with the statement above because needsKotlinSharedProperty() is false
+          // for interfaces.
+          printCompanionPropertyImplementation("shared");
+        }
+      }
       printStaticAccessors();
       printInnerDeclarations();
       printInitializeMethod();
@@ -133,29 +143,21 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
   }
 
-  private static final Predicate<VariableDeclarationFragment> PROPERTIES =
-      new Predicate<VariableDeclarationFragment>() {
-    @Override
-    public boolean apply(VariableDeclarationFragment fragment) {
-      VariableElement varElement = fragment.getVariableElement();
-      return ElementUtil.hasAnnotation(varElement, Property.class)
-          && !ElementUtil.isStatic(varElement);
-    }
-  };
+  private void printCompanionPropertyImplementation(String propertyName) {
+    printf("\n+ (id<%sCompanionProtocol>)%s {", typeName, propertyName);
+    printf("\n  return (id<%sCompanionProtocol>)self;\n}\n", typeName);
+  }
 
   private void printProperties() {
-    Iterable<VariableDeclarationFragment> fields =
-        Iterables.filter(getInstanceFields(), PROPERTIES);
-    if (Iterables.isEmpty(fields)) {
+    List<String> statements = new ArrayList<>();
+    for (VariableDeclarationFragment fragment : getInstanceFields()) {
+      PropertyGenerator.generateSynthesizeStatement(this, fragment).ifPresent(statements::add);
+    }
+    if (statements.isEmpty()) {
       return;
     }
     newline();
-    for (VariableDeclarationFragment fragment : fields) {
-      VariableElement varElement = fragment.getVariableElement();
-      String propertyName = nameTable.getVariableBaseName(varElement);
-      String varName = nameTable.getVariableShortName(varElement);
-      println("@synthesize " + propertyName + " = " + varName + ";");
-    }
+    statements.forEach(this::println);
   }
 
   private static final Predicate<VariableDeclarationFragment> NEEDS_DEFINITION =
@@ -261,6 +263,50 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
   }
 
+  /**
+   * Prints extern declarations for enum constant accessors.
+   *
+   * <p>Enum accessors are declared as {@code inline} in the header. If the compiler decides not to
+   * inline a call, it will expect an external definition. These extern declarations ensure that the
+   * compiler emits a non-inline version of the function in the implementation file.
+   */
+  private void printEnumExterns() {
+    if (typeNode instanceof EnumDeclaration enumDeclaration) {
+      newline();
+      for (EnumConstantDeclaration constant : enumDeclaration.getEnumConstants()) {
+        String varName = nameTable.getVariableBaseName(constant.getVariableElement());
+        printf("extern %s *%s_get_%s(void);\n", typeName, typeName, varName);
+      }
+    }
+  }
+
+  /**
+   * Prints extern declarations for static field accessors.
+   *
+   * <p>Static field accessors are declared as {@code inline} in the header. If the compiler decides
+   * not to inline a call, it will expect an external definition. These extern declarations ensure
+   * that the compiler emits a non-inline version of the function in the implementation file.
+   */
+  private void printStaticFieldExterns() {
+    if (typeNode.isDeadClass()) {
+      return;
+    }
+    for (VariableDeclarationFragment fragment : getStaticFields()) {
+      VariableElement var = fragment.getVariableElement();
+      String objcTypePadded = paddedType(nameTable.getObjCTypeDeclaration(var.asType()), var);
+      String name = nameTable.getVariableShortName(var);
+      newline();
+      printf("extern %s%s_get_%s(void);\n", objcTypePadded, typeName, name);
+      if (!ElementUtil.isFinal(var)) {
+        printf("extern %s%s_set_%s(%svalue);\n", objcTypePadded, typeName, name, objcTypePadded);
+        if (var.asType().getKind().isPrimitive() && !ElementUtil.isVolatile(var)) {
+          String objcType = nameTable.getObjCTypeDeclaration(var.asType());
+          printf("extern %s *%s_getRef_%s(void);\n", objcType, typeName, name);
+        }
+      }
+    }
+  }
+
   private void printTypeLiteralImplementation() {
     if (needsTypeLiteral()) {
       newline();
@@ -321,7 +367,9 @@ public class TypeImplementationGenerator extends TypeGenerator {
     syncLineNumbers(m);  // avoid doc-comment
     // Implementations should not contain generics as this allows us to avoid type errors
     // when translating to ObjC's more limited system of generics.
-    print(getMethodSignature(m, false) + " ");
+    print(
+        getMethodSignature(m, /* generatorAllowsGenerics= */ false, /* staticToInstance= */ false)
+            + " ");
     print(reindent(generateStatement(m.getBody())) + "\n");
     if (isDesignatedInitializer) {
       println("J2OBJC_IGNORE_DESIGNATED_END");
@@ -410,7 +458,8 @@ public class TypeImplementationGenerator extends TypeGenerator {
       return;
     }
     StringBuilder sb = new StringBuilder();
-    sb.append("{\nif (self == [" + typeName + " class]) {\n");
+    String implTypeName = typeName + (hasCompanionSuffix() ? "Companion" : "");
+    sb.append("{\nif (self == [" + implTypeName + " class]) {\n");
     for (Statement statement : initStatements) {
       sb.append(generateStatement(statement));
     }

@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.types;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -106,14 +107,22 @@ public abstract class GeneratedElement implements Element {
     return annotationMirrors;
   }
 
+  @CanIgnoreReturnValue
   public GeneratedElement addAnnotationMirrors(
       Collection<? extends AnnotationMirror> newAnnotations) {
     annotationMirrors.addAll(newAnnotations);
     return this;
   }
 
+  @CanIgnoreReturnValue
   public GeneratedElement addAnnotationMirror(AnnotationMirror newAnnotation) {
     annotationMirrors.add(newAnnotation);
+    return this;
+  }
+
+  @CanIgnoreReturnValue
+  public GeneratedElement removeAnnotationMirror(AnnotationMirror annotation) {
+    annotationMirrors.remove(annotation);
     return this;
   }
 

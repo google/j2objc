@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.translate;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -36,6 +37,7 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.FunctionElement;
+import com.google.devtools.j2objc.types.GeneratedAnnotationMirror;
 import com.google.devtools.j2objc.types.GeneratedExecutableElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
@@ -51,20 +53,27 @@ import com.google.j2objc.annotations.ObjectiveCAdapterMethod.Adaptation;
 import com.google.j2objc.annotations.ObjectiveCAdapterProtocol;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import org.jspecify.annotations.Nullable;
 
 /** Implements the ObjectiveCAdapterMethod annotation. */
 public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
-  
-  private final List<String> adapterMethodSelectors = new ArrayList<>();
+
+  private final Map<TypeElement, Set<String>> adapterMethodSelectorsByType = new HashMap<>();
 
   public ObjectiveCAdapterMethodAnnotation(CompilationUnit unit) {
     super(unit);
@@ -90,6 +99,14 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
       this.adaptedMethodArguments = adaptedMethodArguments;
       this.adaptedMethodInvocation = adaptedMethodInvocation;
       this.returnValueExpression = returnValueExpression;
+    }
+
+    boolean hasObjectReturnType() {
+      return TypeUtil.isDeclaredType(adapterMethodReturnType)
+          || TypeUtil.isInterface(adapterMethodReturnType)
+          || TypeUtil.isEnum(adapterMethodReturnType)
+          || TypeUtil.isTypeVariable(adapterMethodReturnType)
+          || adapterMethodReturnType instanceof NativeCollectionType;
     }
   }
 
@@ -120,6 +137,7 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
     AnnotationMirror annotation =
         ElementUtil.getAnnotation(methodExecutable, ObjectiveCAdapterMethod.class);
     if (annotation != null) {
+      // Safe cast: 'adaptations' annotation attribute returns an array of enum values.
       @SuppressWarnings("unchecked")
       List<? extends AnnotationValue> annotationValues =
           (List<? extends AnnotationValue>)
@@ -217,14 +235,14 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
     Statement catchReturnStatement = null;
     boolean wasVoidReturn = false;
     if (TypeUtil.isVoid(adapterConfig.adapterMethodReturnType)) {
-      adapterConfig.adapterMethodReturnType = TypeUtil.BOOL_TYPE;
+      // Using new NativeType("BOOL") instead of TypeUtil.BOOL_TYPE so that clang-swift-interop
+      // can resolve it to Swift's native Bool.
+      adapterConfig.adapterMethodReturnType = new NativeType("BOOL");
       wasVoidReturn = true;
       catchReturnStatement = new NativeStatement("return NO;");
     } else if (TypeUtil.isPrimitiveOrVoid(adapterConfig.adapterMethodReturnType)) {
       catchReturnStatement = new NativeStatement("return 0;");
-    } else if (TypeUtil.isDeclaredType(adapterConfig.adapterMethodReturnType)
-        || TypeUtil.isInterface(adapterConfig.adapterMethodReturnType)
-        || TypeUtil.isEnum(adapterConfig.adapterMethodReturnType)) {
+    } else if (adapterConfig.hasObjectReturnType()) {
       catchReturnStatement = new NativeStatement("return nil;");
     } else if (TypeUtil.isNativeType(adapterConfig.adapterMethodReturnType)) {
       Expression nativeDefaultExpression =
@@ -242,9 +260,9 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
       return;
     }
 
-    // Preceed any conversion body.
+    // Precede any conversion body.
     adapterConfig.adapterMethodBody.addStatement(0, new NativeStatement("@try {"));
-    // Everthing else is after updated body.
+    // Everything else is after updated body.
     if (wasVoidReturn) {
       adapterConfig.adapterMethodBody.addStatement(
           new ExpressionStatement(adapterConfig.returnValueExpression));
@@ -491,7 +509,7 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
     boolean adaptedAtLeastOneType = false;
     for (TypeMirror typeArg : typeArguments) {
       TypeMirror adaptedTypeArg = adaptedProtocolReturnType(typeArg);
-      if (adaptedTypeArg != typeArg) {
+      if (!typeUtil.isSameType(adaptedTypeArg, typeArg)) {
         adaptedAtLeastOneType = true;
       }
       adaptedTypeArgs.add(adaptedTypeArg);
@@ -530,13 +548,15 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
     if (!isMethodAnnotatedForAdapter(methodExecutable)) {
       return;
     }
-    
-    // Check if the adapter method has already been added.
+
+    // Check if the adapter method has already been added to this type.
     String adapterSelector = adapterSelectorForMethod(methodExecutable);
-    if (adapterMethodSelectors.contains(adapterSelector)) {
+    Set<String> selectors =
+        adapterMethodSelectorsByType.computeIfAbsent(
+            typeDeclaration.getTypeElement(), k -> new HashSet<>());
+    if (!selectors.add(adapterSelector)) {
       return;
     }
-    adapterMethodSelectors.add(adapterSelector);
 
     List<VariableElement> configParameters = new ArrayList<>();
     List<Expression> configArguments = new ArrayList<>();
@@ -552,15 +572,15 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
       configParameters.add(errorParam);
     }
 
-    MethodInvocation orginalMethodInvocation =
+    MethodInvocation originalMethodInvocation =
         new MethodInvocation(new ExecutablePair(methodExecutable), null);
     AdapterConfig adapterConfig =
         new AdapterConfig(
             methodExecutable.getReturnType(),
             configParameters,
             configArguments,
-            orginalMethodInvocation,
-            orginalMethodInvocation);
+            originalMethodInvocation,
+            originalMethodInvocation);
 
     if (methodAdaptsBooleanReturns(methodExecutable)) {
       adaptBooleanReturns(adapterConfig);
@@ -615,13 +635,24 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
     for (VariableElement adapterParam : adapterConfig.adapterMethodParameters) {
       adapterMethodDeclaration.addParameter(new SingleVariableDeclaration(adapterParam));
     }
+    // Object-returning exception adapter methods return nil when an NSException is caught,
+    // so their return type is inherently nullable (and Clang requires _Nullable inside
+    // NS_ASSUME_NONNULL_BEGIN to import NSError ** methods as `throws` in Swift).
+    if (methodAdaptsExceptionsAsError(methodExecutable)
+        && adapterConfig.hasObjectReturnType()
+        && !ElementUtil.hasNullableAnnotation(adapterMethodExecutable)) {
+      TypeElement nullableElement =
+          GeneratedTypeElement.newEmulatedInterface(Nullable.class.getName());
+      adapterMethodExecutable.addAnnotationMirror(
+          new GeneratedAnnotationMirror((DeclaredType) nullableElement.asType()));
+    }
 
     typeDeclaration.addBodyDeclaration(adapterMethodDeclaration);
   }
 
   /**
-   * Returns a unique name based on a suggested name and a list of existing parameters.
-   * If the suggested name is already in the parameters list, add a "_" suffix and check again.
+   * Returns a unique name based on a suggested name and a list of existing parameters. If the
+   * suggested name is already in the parameters list, add a "_" suffix and check again.
    */
   private String getUniqueName(String suggestedName, List<VariableElement> parameters) {
     String uniqueName = suggestedName;
@@ -648,16 +679,24 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
     if (typeDeclaration.isInterface()) {
       return;
     }
-    for (TypeMirror supertype :
-        typeUtil.directSupertypes(typeDeclaration.getTypeElement().asType())) {
-      TypeElement superTypeElement = TypeUtil.asTypeElement(supertype);
-      if (superTypeElement.getKind().isInterface()) {
+    TypeElement typeElement = typeDeclaration.getTypeElement();
+    Set<TypeElement> newlyImplementedTypes =
+        Sets.difference(
+            getInheritedTypeElements(typeElement.asType()),
+            getInheritedTypeElements(typeElement.getSuperclass()));
+    for (TypeElement type : newlyImplementedTypes) {
+      if (type.getKind().isInterface()) {
         for (ExecutableElement superMethodExecutable :
-            Iterables.filter(
-                ElementUtil.getMethods(superTypeElement), ElementUtil::isInstanceMethod)) {
+            Iterables.filter(ElementUtil.getMethods(type), ElementUtil::isInstanceMethod)) {
           addAdapterMethod(typeDeclaration, superMethodExecutable);
         }
       }
     }
+  }
+
+  private Set<TypeElement> getInheritedTypeElements(TypeMirror type) {
+    return typeUtil.getObjcOrderedInheritedTypes(type).stream()
+        .map(TypeUtil::asTypeElement)
+        .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 }

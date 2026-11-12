@@ -307,7 +307,7 @@ __attribute__((always_inline)) inline uint16_t *IOSCharArray_GetRef(
 
 // Returns the bytes of the array encapsulated in an NSData *. Copies the
 // underlying data.
-- (NSData *)toNSData;
+- (nonnull NSData *)toNSData;
 
 @end
 

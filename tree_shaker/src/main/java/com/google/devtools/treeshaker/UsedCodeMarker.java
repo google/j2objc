@@ -43,6 +43,7 @@ import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SimpleType;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
@@ -329,6 +330,17 @@ final class UsedCodeMarker extends UnitTreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
+    endType();
+  }
+
+  @Override
+  public boolean visit(RecordDeclaration node) {
+    startType(node.getTypeElement());
+    return true;
+  }
+
+  @Override
+  public void endVisit(RecordDeclaration node) {
     endType();
   }
 

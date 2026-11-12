@@ -232,7 +232,7 @@ public class DestructorGeneratorTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(translation,
         "- (void)java_finalize {",
-        "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
+        "  [((JavaIoPrintStream *) nil_chk((JreLoadStatic(JavaLangSystem, out)))) "
           + "printlnWithId:self];",
         "}");
     assertTranslatedLines(translation,
@@ -282,7 +282,7 @@ public class DestructorGeneratorTest extends GenerationTest {
             "Test.m");
     assertTranslatedLines(translation,
         "- (void)java_finalize {",
-        "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
+        "  [((JavaIoPrintStream *) nil_chk((JreLoadStatic(JavaLangSystem, out)))) "
           + "printlnWithId:self];",
         "}");
     assertTranslatedLines(translation,

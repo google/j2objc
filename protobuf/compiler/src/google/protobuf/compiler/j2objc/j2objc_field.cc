@@ -178,10 +178,6 @@ void CollectForwardDeclarationsForFieldType(std::set<std::string>* declarations,
     declarations->insert("@class ComGoogleProtobufDescriptors_EnumDescriptor");
     declarations->insert("J2OBJC_CLASS_DECLARATION(" +
                          ClassName(descriptor->enum_type()) + ")");
-    declarations->insert(
-        "FOUNDATION_EXPORT "
-        "ComGoogleProtobufDescriptors_EnumDescriptor * _Nonnull " +
-        ClassName(descriptor->enum_type()) + "_descriptor_");
   } else if (type == JAVATYPE_MESSAGE) {
     std::string classname = ClassName(descriptor->message_type());
     declarations->insert("@class " + classname);
@@ -232,8 +228,7 @@ FieldGenerator::FieldGenerator(const FieldDescriptor *descriptor)
   SetCommonFieldVariables(descriptor, &variables_);
 }
 
-FieldGenerator::~FieldGenerator() {
-}
+FieldGenerator::~FieldGenerator() = default;
 
 void FieldGenerator::CollectForwardDeclarations(
     std::set<std::string>* declarations) const {
@@ -279,7 +274,6 @@ void FieldGenerator::GenerateFieldData(io::Printer *printer) const {
   );
   GenerateFieldDataOffset(printer);
   GenerateClassNameOrMapData(printer);
-  GenerateStaticRefs(printer);
   printer->Print(variables_,
       "  .containingType = NULL,\n"  // Used by extensions.
       "  .optionsData = $options_data$,\n"
@@ -293,21 +287,6 @@ void FieldGenerator::GenerateFieldDataOffset(io::Printer *printer) const {
 
 void FieldGenerator::GenerateClassNameOrMapData(io::Printer *printer) const {
   GenerateObjcClassRef(printer, descriptor_);
-}
-
-void FieldGenerator::GenerateStaticRefs(io::Printer *printer) const {
-  JavaType type = GetJavaType(descriptor_);
-  std::string staticref;
-  if (type == JAVATYPE_MESSAGE) {
-    staticref = "&" +
-        GetParameterType(descriptor_) + "_descriptor_";
-  } else if (type == JAVATYPE_ENUM) {
-    staticref = "&" +
-        GetParameterType(descriptor_) + "_descriptor_";
-  } else {
-    staticref = "NULL";
-  }
-  printer->Print("  .descriptorRef = $staticref$,\n", "staticref", staticref);
 }
 
 SingleFieldGenerator::SingleFieldGenerator(
@@ -332,8 +311,13 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
       "    ($nonnull_type$)value;\n"
       "- (nonnull $classname$_Builder *)clear$capitalized_name$;\n");
 
+  if (GetJavaType(descriptor_) == JAVATYPE_ENUM) {
+    printer->Print(variables_,
+        "- (nonnull $classname$_Builder *)set$capitalized_name$ValueWithInt:(jint)value;\n");
+  }
+
   if (IsGenerateProperties(descriptor_->file())) {
-    printer->Print(GetStorageType(descriptor_) == GetNonNullType(descriptor_) 
+    printer->Print(GetStorageType(descriptor_) == GetNonNullType(descriptor_)
                    ? "@property (" : "@property (nonnull, retain, ");
     printer->Print(
         variables_,
@@ -376,6 +360,9 @@ void SingleFieldGenerator::GenerateMessageOrBuilderProtocol(io::Printer* printer
   }
 
   printer->Print(variables_, "- ($nonnull_type$)get$capitalized_name$;\n");
+  if (GetJavaType(descriptor_) == JAVATYPE_ENUM) {
+    printer->Print(variables_, "- (jint)get$capitalized_name$Value;\n");
+  }
 }
 
 void SingleFieldGenerator::GenerateDeclaration(io::Printer* printer) const {
@@ -415,6 +402,15 @@ void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
       "    (id<JavaLangIterable>)values;\n"
       "- (nonnull $classname$_Builder *)clear$capitalized_name$;\n"
   );
+  if (GetJavaType(descriptor_) == JAVATYPE_ENUM) {
+    printer->Print(variables_,
+        "- (nonnull $classname$_Builder *)set$capitalized_name$ValueWithInt:(int)index\n"
+        "    withInt:(jint)value;\n"
+        "- (nonnull $classname$_Builder *)add$capitalized_name$ValueWithInt:(jint)value;\n"
+        "- (nonnull $classname$_Builder *)addAll$capitalized_name$ValueWithJavaLangIterable:\n"
+        "    (id<JavaLangIterable>)values;\n"
+    );
+  }
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
         variables_,
@@ -444,12 +440,19 @@ void RepeatedFieldGenerator::GenerateMessageOrBuilderProtocol(
       "- (id<$list_type$>)get$capitalized_name$List;\n"
       "- ($nonnull_type$)get$capitalized_name$WithInt:(int)index;\n");
 
+  if (GetJavaType(descriptor_) == JAVATYPE_ENUM) {
+    printer->Print(
+        variables_,
+        "- (nonnull id<JavaUtilList>)get$capitalized_name$ValueList;\n"
+        "- (jint)get$capitalized_name$ValueWithInt:(int)index;\n");
+  }
+
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
         variables_,
         "@property (readonly, getter=_get$capitalized_name$Count)"
         " jint $camelcase_name$Count;\n"
-        "@property (readonly, getter=_get$capitalized_name$Array)"
+        "@property (nonnull, readonly, getter=_get$capitalized_name$Array)"
         " NSArray<$generic_type$> *$property_name$;\n"
         "- ($nonnull_type$)get$capitalized_name$Index:(int)index"
         " NS_SWIFT_NAME(get$capitalized_name$(_:));\n");
@@ -529,6 +532,14 @@ void MapFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer) const {
                  "($key_storage_type$)key with$value_parameter_type$:"
                  "($value_nonnull_type$)value;\n");
 
+  if (GetJavaType(value_field_) == JAVATYPE_ENUM) {
+    printer->Print(
+        variables_,
+        "- (nonnull $classname$_Builder "
+        "*)put$capitalized_name$ValueWith$key_parameter_type$:"
+        "($key_storage_type$)key withInt:(jint)value;\n");
+  }
+
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
         variables_,
@@ -571,10 +582,20 @@ void MapFieldGenerator::GenerateMessageOrBuilderProtocol(
       "- ($value_nonnull_type$)get$capitalized_name$OrThrowWith"
       "$key_parameter_type$:($key_storage_type$)key;\n");
 
+  if (GetJavaType(value_field_) == JAVATYPE_ENUM) {
+    printer->Print(
+        variables_,
+        "- (jint)get$capitalized_name$ValueOrDefaultWith"
+        "$key_parameter_type$:($key_storage_type$)key "
+        "withInt:(jint)defaultValue;\n"
+        "- (jint)get$capitalized_name$ValueOrThrowWith"
+        "$key_parameter_type$:($key_storage_type$)key;\n");
+  }
+
   if (IsGenerateProperties(descriptor_->file())) {
     printer->Print(
         variables_,
-        "@property (readonly, getter=_get$capitalized_name$Dict)"
+        "@property (nonnull, readonly, getter=_get$capitalized_name$Dict)"
         " NSDictionary<$key_generic_type$, $value_generic_type$>"
         " *$camelcase_name$;\n");
   }
@@ -600,10 +621,6 @@ void MapEntryFieldGenerator::GenerateFieldDataOffset(io::Printer *printer)
   printer->Print(variables_, "  .offset = 0,\n");
 }
 
-void MapFieldGenerator::GenerateStaticRefs(io::Printer *printer) const {
-  printer->Print(variables_, "  .descriptorRef = NULL,\n");
-}
-
 void MapEntryFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
     const {
 }
@@ -613,10 +630,6 @@ void MapEntryFieldGenerator::GenerateMessageOrBuilderProtocol(
 }
 
 void MapEntryFieldGenerator::GenerateDeclaration(io::Printer* printer) const {
-}
-
-void MapEntryFieldGenerator::GenerateStaticRefs(io::Printer *printer) const {
-  printer->Print(variables_, "  .descriptorRef = NULL,\n");
 }
 
 FieldGeneratorMap::FieldGeneratorMap(const Descriptor* descriptor)
@@ -644,8 +657,7 @@ FieldGenerator* FieldGeneratorMap::MakeGenerator(
   }
 }
 
-FieldGeneratorMap::~FieldGeneratorMap() {
-}
+FieldGeneratorMap::~FieldGeneratorMap() = default;
 
 const FieldGenerator& FieldGeneratorMap::get(
   const FieldDescriptor* field) const {

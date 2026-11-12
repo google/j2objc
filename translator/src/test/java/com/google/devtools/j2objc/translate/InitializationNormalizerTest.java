@@ -179,7 +179,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         + (void)initialize {
           if (self == [Test class]) {
             {
-              [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) printlnWithNSString:@"foo"];
+              [((JavaIoPrintStream *) nil_chk((JreLoadStatic(JavaLangSystem, out)))) printlnWithNSString:@"foo"];
             }
             J2OBJC_SET_INITIALIZED(Test)
           }
@@ -221,7 +221,7 @@ public class InitializationNormalizerTest extends GenerationTest {
           {
             JreStrongAssignAndConsume(&self->date_, new_JavaUtilDate_init());
           }
-          [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) printlnWithInt:i];
+          [((JavaIoPrintStream *) nil_chk((JreLoadStatic(JavaLangSystem, out)))) printlnWithInt:i];
         }
         """);
   }
@@ -498,6 +498,74 @@ public class InitializationNormalizerTest extends GenerationTest {
               void Test_init(Test *self) {
                 self->x_ = 1;
                 NSObject_init(self);
+              }
+              """);
+        });
+  }
+
+  public void testInstanceofPatternInThisConstructorCall() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              int f = 1;
+              Test(Object o) {
+                this(o instanceof String s ? s.length() : 0);
+              }
+              Test(int i) {}
+            }
+            """,
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        void Test_initWithId_(Test *self, id o) {
+          NSString *s = nil;
+          Test_initWithInt_(self, ([o isKindOfClass:[NSString class]] && (s = (NSString *) o, true)) ? [((NSString *) nil_chk(s)) java_length] : 0);
+        }
+        """);
+    assertTranslatedLines(
+        translation,
+        """
+        void Test_initWithInt_(Test *self, int32_t i) {
+          NSObject_init(self);
+          self->f_ = 1;
+        }
+        """);
+  }
+
+  public void testFlexibleConstructorBodiesWithThisCall() throws IOException {
+    testOnJava25OrAbove(
+        () -> {
+          String translation =
+              translateSourceFile(
+                  """
+                  class Test {
+                    int f = 1;
+                    Test() {
+                      int a = 1;
+                      this(a);
+                    }
+                    Test(int i) {}
+                  }
+                  """,
+                  "Test",
+                  "Test.m");
+          assertTranslatedLines(
+              translation,
+              """
+              void Test_init(Test *self) {
+                int32_t a = 1;
+                Test_initWithInt_(self, a);
+              }
+              """);
+          assertTranslatedLines(
+              translation,
+              """
+              void Test_initWithInt_(Test *self, int32_t i) {
+                NSObject_init(self);
+                self->f_ = 1;
               }
               """);
         });

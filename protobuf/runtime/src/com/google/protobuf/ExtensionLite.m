@@ -36,13 +36,17 @@
 
 @implementation ComGoogleProtobufExtensionLite
 
-- (instancetype)initWithFieldData:(struct CGPFieldData *)data {
+- (instancetype)initWithFieldData:(const struct CGPFieldData *)data {
   ComGoogleProtobufExtensionLite_initWithFieldData_(self, data);
   return self;
 }
 
 - (CGPFieldDescriptor *)getDescriptor {
   return fieldDescriptor_;
+}
+
+- (jint)getNumber {
+  return [fieldDescriptor_ getNumber];
 }
 
 - (id<ComGoogleProtobufMessage>)getMessageDefaultInstance {
@@ -57,7 +61,7 @@ J2OBJC_ETERNAL_SINGLETON
 @end
 
 void ComGoogleProtobufExtensionLite_initWithFieldData_(CGPExtensionLite *self,
-                                                       struct CGPFieldData *data) {
+                                                       const struct CGPFieldData *data) {
   NSObject_init(self);
   self->fieldDescriptor_ = [[CGPFieldDescriptor alloc] initWithData:data];
 }

@@ -321,11 +321,12 @@ static jint ComputeCapacity(const char *types, va_list va, NSString **objDescrip
         va_arg(va, jlong);
         break;
       case 'Z':
-        capacity += (bool)va_arg(va, jint) ? 4 : 5;
+        capacity += (bool)va_arg(va, jint) ? 4 : 5;  // "true" or "false"
         break;
       case '$':
         {
           NSString *str = va_arg(va, NSString *);
+          // In the nil case account for adding "null", see JreStringBuilder_appendNull().
           capacity += str ? CFStringGetLength((CFStringRef)str) : 4;
         }
         break;
@@ -337,7 +338,7 @@ static jint ComputeCapacity(const char *types, va_list va, NSString **objDescrip
             capacity += CFStringGetLength((CFStringRef)description);
           } else {
             *(objDescriptions++) = nil;
-            capacity += 4;
+            capacity += 4;  // Account for adding "null", see JreStringBuilder_appendNull().
           }
         }
         break;
@@ -384,43 +385,50 @@ static void AppendArgs(
 }
 
 NSString *JreStrcat(const char *types, ...) {
-  NSString *objDescriptions[CountObjectArgs(types)];
-  va_list va;
-  va_start(va, types);
-  jint capacity = ComputeCapacity(types, va, objDescriptions);
-  va_end(va);
+  NSString *result = nil;
+  @autoreleasepool {
+    NSString *objDescriptions[CountObjectArgs(types)];
+    va_list va;
+    va_start(va, types);
+    jint capacity = ComputeCapacity(types, va, objDescriptions);
+    va_end(va);
 
-  // Create a string builder and fill it.
-  JreStringBuilder sb;
-  JreStringBuilder_initWithCapacity(&sb, capacity);
-  va_start(va, types);
-  AppendArgs(types, va, objDescriptions, &sb);
-  va_end(va);
-  return JreStringBuilder_toStringAndDealloc(&sb);
+    // Create a string builder and fill it.
+    JreStringBuilder sb;
+    JreStringBuilder_initWithCapacity(&sb, capacity);
+    va_start(va, types);
+    AppendArgs(types, va, objDescriptions, &sb);
+    va_end(va);
+    result = RETAIN_(JreStringBuilder_toStringAndDealloc(&sb));
+  }
+  return AUTORELEASE(result);
 }
 
 id JreStrAppendInner(id lhs, const char *types, va_list va) {
-  va_list va_capacity;
-  va_copy(va_capacity, va);
-  NSString *objDescriptions[CountObjectArgs(types)];
+  NSString *result = nil;
+  @autoreleasepool {
+    va_list va_capacity;
+    va_copy(va_capacity, va);
+    NSString *objDescriptions[CountObjectArgs(types)];
 
-  jint capacity = ComputeCapacity(types, va_capacity, objDescriptions);
-  va_end(va_capacity);
+    jint capacity = ComputeCapacity(types, va_capacity, objDescriptions);
+    va_end(va_capacity);
 
-  NSString *lhsDescription = nil;
-  if (lhs) {
-    lhsDescription = [lhs description];
-    capacity += CFStringGetLength((CFStringRef)lhsDescription);
-  } else {
-    capacity += 4;
+    NSString *lhsDescription = nil;
+    if (lhs) {
+      lhsDescription = [lhs description];
+      capacity += CFStringGetLength((CFStringRef)lhsDescription);
+    } else {
+      capacity += 4;
+    }
+
+    JreStringBuilder sb;
+    JreStringBuilder_initWithCapacity(&sb, capacity);
+    JreStringBuilder_appendString(&sb, lhsDescription);
+    AppendArgs(types, va, objDescriptions, &sb);
+    result = RETAIN_(JreStringBuilder_toStringAndDealloc(&sb));
   }
-
-  JreStringBuilder sb;
-  JreStringBuilder_initWithCapacity(&sb, capacity);
-  JreStringBuilder_appendString(&sb, lhsDescription);
-  AppendArgs(types, va, objDescriptions, &sb);
-
-  return JreStringBuilder_toStringAndDealloc(&sb);
+  return AUTORELEASE(result);
 }
 
 id JreStrAppend(__unsafe_unretained id *lhs, const char *types, ...) {

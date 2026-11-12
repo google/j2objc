@@ -55,7 +55,7 @@ public class ArrayAccessTest extends GenerationTest {
         "int[] arr = { 1, 2 }; arr[0] = 2 * 5; arr[1] = 6 / 3;");
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("*IOSIntArray_GetRef(arr, 0) = 2 * 5;", result);
+    assertEquals("*IOSIntArray_GetRef(arr, 0) = JreIntTimes(2, 5);", result);
     result = generateStatement(stmts.get(2));
     assertEquals("*IOSIntArray_GetRef(arr, 1) = JreIntDiv(6, 3);", result);
   }
@@ -64,17 +64,17 @@ public class ArrayAccessTest extends GenerationTest {
     List<Statement> stmts = translateStatements("int[] arr = { 1, 2 }; ++arr[0]; --arr[1];");
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("++(*IOSIntArray_GetRef(arr, 0));", result);
+    assertEquals("JrePreIncInt(IOSIntArray_GetRef(arr, 0));", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("--(*IOSIntArray_GetRef(arr, 1));", result);
+    assertEquals("JrePreDecInt(IOSIntArray_GetRef(arr, 1));", result);
   }
 
   public void testPostfixOperator() {
     List<Statement> stmts = translateStatements("int[] arr = { 1, 2 }; arr[0]++; arr[1]--;");
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("(*IOSIntArray_GetRef(arr, 0))++;", result);
+    assertEquals("JrePostIncInt(IOSIntArray_GetRef(arr, 0));", result);
     result = generateStatement(stmts.get(2));
-    assertEquals("(*IOSIntArray_GetRef(arr, 1))--;", result);
+    assertEquals("JrePostDecInt(IOSIntArray_GetRef(arr, 1));", result);
   }
 }

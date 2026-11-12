@@ -15,14 +15,13 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
-/**
- * Common supertype for functional expressions (lambdas and method references).
- */
+/** Common supertype for functional expressions (lambdas and method references). */
 public abstract class FunctionalExpression extends Expression {
 
   private TypeMirror typeMirror = null;
@@ -32,8 +31,7 @@ public abstract class FunctionalExpression extends Expression {
   protected ChildLink<Expression> lambdaOuterArg = ChildLink.create(Expression.class, this);
   protected ChildList<Expression> lambdaCaptureArgs = ChildList.create(Expression.class, this);
 
-  public FunctionalExpression() {
-  }
+  public FunctionalExpression() {}
 
   public FunctionalExpression(FunctionalExpression other) {
     super(other);
@@ -50,6 +48,7 @@ public abstract class FunctionalExpression extends Expression {
     return typeMirror;
   }
 
+  @CanIgnoreReturnValue
   public FunctionalExpression setTypeMirror(TypeMirror t) {
     typeMirror = t;
     return this;
@@ -59,6 +58,7 @@ public abstract class FunctionalExpression extends Expression {
     return typeElement;
   }
 
+  @CanIgnoreReturnValue
   public FunctionalExpression setTypeElement(TypeElement e) {
     typeElement = e;
     return this;
@@ -68,6 +68,7 @@ public abstract class FunctionalExpression extends Expression {
     return targetTypes;
   }
 
+  @CanIgnoreReturnValue
   public FunctionalExpression addTargetType(TypeMirror t) {
     targetTypes.add(t);
     return this;
@@ -77,6 +78,7 @@ public abstract class FunctionalExpression extends Expression {
     return descriptor;
   }
 
+  @CanIgnoreReturnValue
   public FunctionalExpression setDescriptor(ExecutablePair e) {
     descriptor = e;
     return this;
@@ -86,6 +88,7 @@ public abstract class FunctionalExpression extends Expression {
     return lambdaOuterArg.get();
   }
 
+  @CanIgnoreReturnValue
   public FunctionalExpression setLambdaOuterArg(Expression newOuterArg) {
     lambdaOuterArg.set(newOuterArg);
     return this;

@@ -74,14 +74,15 @@ public class EnumRewriterTest extends GenerationTest {
   public void testSimpleEnumAllocationCode() throws Exception {
     String translation = translateSourceFile(
         "enum Test { A, B, C, D, E }", "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "size_t objSize = class_getInstanceSize(self);",
         "size_t allocSize = 5 * objSize;",
         "uintptr_t ptr = (uintptr_t)calloc(allocSize, 1);",
         "id e;",
-        "for (int32_t i = 0; i < 5; i++) {",
+        "for (int32_t i = 0; i < 5; JrePostIncInt(&i)) {",
         "((void)(Test_values_[i] = e = "
-          + "objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
+            + "objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
         "Test_initWithNSString_withInt_(e, JreEnumConstantName(Test_class_(), i), i);",
         "}");
   }
@@ -120,7 +121,8 @@ public class EnumRewriterTest extends GenerationTest {
     options.setStripReflection(true);
     String translation = translateSourceFile(
         "enum Test { A, B, C, D, E }", "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "size_t objSize = class_getInstanceSize(self);",
         "size_t allocSize = 5 * objSize;",
         "uintptr_t ptr = (uintptr_t)calloc(allocSize, 1);",
@@ -128,9 +130,9 @@ public class EnumRewriterTest extends GenerationTest {
         "id names[] = {",
         "@\"A\", @\"B\", @\"C\", @\"D\", @\"E\",",
         "};",
-        "for (int32_t i = 0; i < 5; i++) {",
+        "for (int32_t i = 0; i < 5; JrePostIncInt(&i)) {",
         "((void)(Test_values_[i] = e = "
-          + "objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
+            + "objc_constructInstance(self, (void *)ptr)), ptr += objSize);",
         "Test_initWithNSString_withInt_(e, names[i], i);",
         "}");
   }
@@ -167,7 +169,8 @@ public class EnumRewriterTest extends GenerationTest {
 
   public void testValueOfMethod() throws IOException {
     String translation = translateSourceFile("enum Test { A, B, C }", "Test", "Test.m");
-    assertTranslatedLines(translation,
+    assertTranslatedLines(
+        translation,
         "Test *Test_valueOfWithNSString_(NSString *name) {",
         "Test_initialize();",
         "for (int i = 0; i < 3; i++) {",

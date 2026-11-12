@@ -1,0 +1,1615 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.devtools.j2objc.translate;
+
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static java.lang.reflect.Modifier.ABSTRACT;
+import static java.lang.reflect.Modifier.STATIC;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.CastExpression;
+import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.FunctionDeclaration;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
+import com.google.devtools.j2objc.ast.IfStatement;
+import com.google.devtools.j2objc.ast.LambdaExpression;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.NativeExpression;
+import com.google.devtools.j2objc.ast.NativeStatement;
+import com.google.devtools.j2objc.ast.RecordDeclaration;
+import com.google.devtools.j2objc.ast.ReturnStatement;
+import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.ThisExpression;
+import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.ast.UnitTreeVisitor;
+import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.FunctionElement;
+import com.google.devtools.j2objc.types.GeneratedAnnotationMirror;
+import com.google.devtools.j2objc.types.GeneratedAnnotationValue;
+import com.google.devtools.j2objc.types.GeneratedExecutableElement;
+import com.google.devtools.j2objc.types.GeneratedVariableElement;
+import com.google.devtools.j2objc.types.NativeType;
+import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TypeUtil;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+import com.google.j2objc.annotations.SwiftName;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.SimpleTypeVisitor9;
+import org.jspecify.annotations.Nullable;
+
+/**
+ * Implements the @ObjectiveCKmpMethod translator.
+ *
+ * <p>This translator detects methods annotated with {@link ObjectiveCKmpMethod} and generates an
+ * "adapter" method in Objective-C. This adapter method uses native Objective-C types (like NSArray,
+ * NSDictionary, NSSet) instead of their Java counterparts (List, Map, Set), which is useful for
+ * better interoperability in Kotlin Multiplatform (KMP) environments.
+ *
+ * <p>The generated adapter method calls the original Java method after converting the native
+ * Objective-C types back to Java types using a provided adapter class.
+ *
+ * <h2>How the Adapter Works</h2>
+ *
+ * <p>The adapter class (specified in the annotation) should contain methods that convert between
+ * Java collection types and native Objective-C collection types. The translator looks for methods
+ * in the adapter class based on name prefixes and type matching.
+ *
+ * <h3>Method Selection Rules</h3>
+ *
+ * <p>The translator selects adapter methods based on the direction of conversion:
+ *
+ * <ul>
+ *   <li><b>Native to Java (Method Parameters)</b>: The translator looks for methods whose name
+ *       starts with "to" and whose <b>return type</b> matches the target Java type. It assumes the
+ *       single parameter of this method is the native Objective-C type.
+ *   <li><b>Java to Native (Method Return Value)</b>: The translator looks for methods whose name
+ *       starts with "from" and whose <b>parameter type</b> matches the source Java type. It assumes
+ *       the return type of this method is the native Objective-C type.
+ * </ul>
+ *
+ * <h3>Type Matching (Selection)</h3>
+ *
+ * <p>The translator finds all applicable methods in the adapter class that start with the required
+ * prefix ("to" or "from"). It then scores how well their signatures match the target type.
+ *
+ * <p>The translator prioritizes matching candidate methods by:
+ *
+ * <ol>
+ *   <li><b>Exact Match</b> over <b>Wildcard Match</b>.
+ *   <li>Deeper type arguments (higher nesting level).
+ *   <li>Lower score for matching type arguments (fewer wildcards used).
+ * </ol>
+ *
+ * <p>Wildcard matches are disallowed for mapped types (like {@code List}, {@code Map}, {@code Set}
+ * , {@code Boolean}) to ensure strict typing at the conversion boundaries.
+ */
+public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
+
+  private static final ImmutableMap<String, String> JAVA_TO_NATIVE_TYPE_MAP =
+      ImmutableMap.<String, String>builder()
+          .put("com.google.common.collect.ImmutableList", "NSArray")
+          .put("com.google.common.collect.ImmutableMap", "NSDictionary")
+          .put("com.google.common.collect.ImmutableSet", "NSSet")
+          .put("java.util.List", "NSArray")
+          .put("java.util.Map", "NSDictionary")
+          .put("java.util.Set", "NSSet")
+          .put("java.lang.String", "NSString")
+          .put("java.lang.Integer", "NSNumber")
+          .put("java.lang.Long", "NSNumber")
+          .put("java.lang.Double", "NSNumber")
+          .put("java.lang.Float", "NSNumber")
+          .put("java.lang.Boolean", "NSNumber")
+          .put("java.lang.Byte", "NSNumber")
+          .put("java.lang.Short", "NSNumber")
+          .buildOrThrow();
+
+  private static final ImmutableSet<String> COLLECTION_TYPES =
+      ImmutableSet.of(
+          "com.google.common.collect.ImmutableList",
+          "com.google.common.collect.ImmutableMap",
+          "com.google.common.collect.ImmutableSet",
+          "java.util.List",
+          "java.util.Map",
+          "java.util.Set");
+
+  private static final ImmutableSet<String> TYPES_THAT_OMIT_NULLABILITY_MARKER =
+      ImmutableSet.of("java.lang.Void");
+
+  private final ImmutableSet<String> supportedConversionTypes = JAVA_TO_NATIVE_TYPE_MAP.keySet();
+  private final AdapterLookup adapterLookup;
+
+  private boolean isCollectionType(TypeMirror type) {
+    return COLLECTION_TYPES.contains(TypeUtil.getQualifiedName(typeUtil.erasure(type)));
+  }
+
+  public ObjectiveCKmpMethodTranslator(CompilationUnit unit) {
+    super(unit);
+    this.adapterLookup = new AdapterLookup(typeUtil);
+  }
+
+  // Re-run lambda lowering passes because ObjectiveCKmpMethodTranslator synthesizes new
+  // LambdaExpression AST arguments for composable collection converters after LambdaRewriter
+  // originally executed in the translator pipeline.
+  @Override
+  public void run() {
+    Set<AbstractTypeDeclaration> existingTypes = new HashSet<>(unit.getTypes());
+    super.run();
+    new LambdaTypeElementAdder(unit, "$KmpLambda$").run();
+    new LambdaRewriter(unit).run();
+    new InnerClassExtractor(unit).run();
+
+    Functionizer functionizer = new Functionizer(unit);
+    var unused = functionizer.visit(unit);
+    InitializationNormalizer initNormalizer = new InitializationNormalizer(unit);
+    OperatorRewriter operatorRewriter = new OperatorRewriter(unit);
+
+    // Pass 1: Run InitializationNormalizer, Functionizer, and OperatorRewriter exclusively over
+    // newly introduced lambda type declarations created during this translation pass.
+    for (AbstractTypeDeclaration type : unit.getTypes()) {
+      if (!existingTypes.contains(type)) {
+        type.accept(initNormalizer);
+        type.accept(functionizer);
+        for (Statement stmt : type.getClassInitStatements()) {
+          stmt.accept(operatorRewriter);
+        }
+      }
+    }
+
+    // Pass 2: Run Functionizer specifically on ClassInstanceCreation nodes across the unit.
+    // This updates newly generated lambda instantiations (e.g., inside generated adapter methods).
+    unit.accept(
+        new TreeVisitor() {
+          @Override
+          public void endVisit(ClassInstanceCreation node) {
+            functionizer.endVisit(node);
+          }
+        });
+
+    new StaticVarRewriter(unit).run();
+    new PrivateDeclarationResolver(unit).run();
+  }
+
+  private String getOverrideSignature(ExecutablePair method) {
+    return getOverrideSignature(method, typeUtil);
+  }
+
+  private static String getOverrideSignature(ExecutablePair method, TypeUtil typeUtil) {
+    StringBuilder sb = new StringBuilder(ElementUtil.getName(method.element()));
+    sb.append('(');
+    for (TypeMirror pType : method.type().getParameterTypes()) {
+      sb.append(typeUtil.getSignatureName(pType));
+    }
+    sb.append(')');
+    return sb.toString();
+  }
+
+  private class AdapterGenerator {
+    private final @Nullable AbstractTypeDeclaration typeNode;
+    private final TypeElement typeElem;
+    private final ImmutableMap<String, ExecutablePair> allMethods;
+    private final ImmutableMap<String, AnnotationMirror> annotatedSignatures;
+
+    private AdapterGenerator(AbstractTypeDeclaration node) {
+      this(node, node.getTypeElement(), (DeclaredType) node.getTypeElement().asType());
+    }
+
+    private AdapterGenerator(TypeElement typeElem, DeclaredType declaredType) {
+      this(null, typeElem, declaredType);
+    }
+
+    private AdapterGenerator(
+        @Nullable AbstractTypeDeclaration typeNode,
+        TypeElement typeElem,
+        DeclaredType declaredType) {
+      this.typeNode = typeNode;
+      this.typeElem = typeElem;
+      Map<String, ExecutablePair> methods = new LinkedHashMap<>();
+      Map<String, AnnotationMirror> annotations = new LinkedHashMap<>();
+      collectMethods(declaredType, methods, annotations);
+      this.allMethods = ImmutableMap.copyOf(methods);
+      this.annotatedSignatures = ImmutableMap.copyOf(annotations);
+    }
+
+    private @Nullable AdapterGenerator getSupertypeAdapterGenerator(String signature) {
+      for (TypeMirror supertype : typeUtil.directSupertypes(typeElem.asType())) {
+        TypeElement superElement = TypeUtil.asTypeElement(supertype);
+        if (superElement == null) {
+          continue;
+        }
+        AdapterGenerator superGen = new AdapterGenerator(superElement, (DeclaredType) supertype);
+        if (superGen.annotatedSignatures.containsKey(signature)) {
+          return superGen;
+        }
+      }
+      return null;
+    }
+
+    private void visit() {
+      boolean isInterface = typeElem.getKind().isInterface();
+
+      for (Map.Entry<String, AnnotationMirror> entry : annotatedSignatures.entrySet()) {
+        String signature = entry.getKey();
+        AnnotationMirror annotation = entry.getValue();
+        ExecutablePair method = allMethods.get(signature);
+
+        boolean shouldGenerate;
+        MappingStrategy strategy = MappingStrategy.NATIVE_TO_JAVA;
+
+        if (isInterface) {
+          strategy = MappingStrategy.JAVA_TO_NATIVE;
+          MethodDeclaration unadaptedDecl = findMethodDeclaration(typeNode, method.element());
+          if (unadaptedDecl != null) {
+            unadaptedDecl.setOptional(true);
+          }
+          // Only generate the adapted protocol method and _dispatch helper when the method is
+          // declared and directly annotated on this interface (skipping inherited methods and
+          // unannotated subinterface overrides).
+          boolean isDeclaredOnCurrentInterface =
+              ElementUtil.getDeclaringClass(method.element()).equals(typeElem);
+          boolean hasDirectAnnotation =
+              ElementUtil.getAnnotation(method.element(), ObjectiveCKmpMethod.class) != null;
+          shouldGenerate = isDeclaredOnCurrentInterface && hasDirectAnnotation;
+        } else {
+          AdapterGenerator superGen = getSupertypeAdapterGenerator(signature);
+          if (ElementUtil.isAbstract(method.element())) {
+            strategy = MappingStrategy.JAVA_TO_NATIVE;
+            // Generate if declared on this class, or if inherited by an abstract class from an
+            // interface rather than an abstract superclass that already generated them.
+            shouldGenerate =
+                ElementUtil.getDeclaringClass(method.element()).equals(typeElem)
+                    || (ElementUtil.isAbstract(typeElem)
+                        && (superGen == null || superGen.typeElem.getKind().isInterface()));
+          } else {
+            shouldGenerate =
+                superGen == null
+                    || ElementUtil.isAbstract(superGen.allMethods.get(signature).element())
+                    || ElementUtil.isDefault(superGen.allMethods.get(signature).element());
+          }
+        }
+
+        if (shouldGenerate) {
+          new AdapterContext(typeNode, method, annotation, isInterface, strategy).processMethod();
+        }
+      }
+    }
+
+    /**
+     * Traverses {@code type} and its supertypes to populate {@code allMethods} and {@code
+     * annotatedSignatures}.
+     */
+    private void collectMethods(
+        DeclaredType type,
+        Map<String, ExecutablePair> allMethods,
+        Map<String, AnnotationMirror> annotatedSignatures) {
+      visitTypeHierarchy(
+          type,
+          typeUtil,
+          new HashSet<>(),
+          declaredType -> collectMethodsFromType(declaredType, allMethods, annotatedSignatures));
+    }
+
+    /**
+     * Records methods declared on {@code type}, keeping the most specific implementation per
+     * override signature and the first {@link ObjectiveCKmpMethod} annotation encountered.
+     */
+    private boolean collectMethodsFromType(
+        DeclaredType type,
+        Map<String, ExecutablePair> allMethods,
+        Map<String, AnnotationMirror> annotatedSignatures) {
+      TypeElement element = TypeUtil.asTypeElement(type);
+      for (ExecutableElement methodElem : ElementUtil.getExecutables(element)) {
+        ExecutablePair method =
+            new ExecutablePair(methodElem, typeUtil.asMemberOf(type, methodElem));
+        String signature = getOverrideSignature(method);
+
+        if (!allMethods.containsKey(signature)) {
+          allMethods.put(signature, method);
+        } else {
+          ExecutablePair existing = allMethods.get(signature);
+          if (takesPrecedence(method, existing)) {
+            allMethods.put(signature, method);
+          }
+        }
+
+        AnnotationMirror annotation =
+            ElementUtil.getAnnotation(methodElem, ObjectiveCKmpMethod.class);
+        if (annotation != null && !annotatedSignatures.containsKey(signature)) {
+          annotatedSignatures.put(signature, annotation);
+        }
+      }
+      return true;
+    }
+
+    private static boolean takesPrecedence(ExecutablePair a, ExecutablePair b) {
+      if (b == null) {
+        return true;
+      }
+      // Since we traverse from subclass to superclass/interfaces (bottom-up), 'b' (already seen)
+      // is generally more specific than 'a' (currently visiting).
+      // The only case 'a' should replace 'b' is when 'a' is a concrete class implementation
+      // and 'b' is an interface declaration, ensuring we use the class's method element.
+      boolean aIsClass = ElementUtil.getDeclaringClass(a.element()).getKind().isClass();
+      boolean bIsClass = ElementUtil.getDeclaringClass(b.element()).getKind().isClass();
+      return aIsClass && !bIsClass;
+    }
+
+    /** A visitor for types in a type hierarchy. */
+    @FunctionalInterface
+    private interface TypeHierarchyVisitor {
+      /**
+       * Visits a type in a type hierarchy.
+       *
+       * @param declaredType the parameterized {@link DeclaredType} as referenced in the hierarchy
+       *     (preserving type arguments for {@link TypeUtil#asMemberOf})
+       * @return {@code true} to continue visiting supertypes, or {@code false} to stop traversal
+       *     early
+       */
+      boolean visit(DeclaredType declaredType);
+    }
+
+    @CanIgnoreReturnValue
+    private static boolean visitTypeHierarchy(
+        DeclaredType type,
+        TypeUtil typeUtil,
+        Set<TypeElement> visited,
+        TypeHierarchyVisitor visitor) {
+      if (TypeUtil.isNone(type)) {
+        return true;
+      }
+      TypeElement element = TypeUtil.asTypeElement(type);
+      if (element == null || !visited.add(element)) {
+        return true;
+      }
+      if (!visitor.visit(type)) {
+        return false;
+      }
+      for (TypeMirror supertype : typeUtil.directSupertypes(type)) {
+        if (!visitTypeHierarchy((DeclaredType) supertype, typeUtil, visited, visitor)) {
+          return false;
+        }
+      }
+      return true;
+    }
+  }
+
+  @Override
+  public void endVisit(EnumDeclaration node) {
+    new AdapterGenerator(node).visit();
+  }
+
+  @Override
+  public void endVisit(RecordDeclaration node) {
+    new AdapterGenerator(node).visit();
+  }
+
+  @Override
+  public void endVisit(TypeDeclaration node) {
+    TypeElement typeElem = node.getTypeElement();
+    if (typeElem != null && typeElem.getSimpleName().contentEquals("package-info")) {
+      return;
+    }
+    new AdapterGenerator(node).visit();
+  }
+
+  @Override
+  public void endVisit(MethodInvocation node) {
+    // Check if the called method is (or overrides) an @ObjectiveCKmpMethod interface method.
+    ExecutableElement targetMethod =
+        findInterfaceMethodRequiringDispatch(node.getExecutableElement());
+    if (targetMethod == null) {
+      return;
+    }
+
+    // Rewrite `receiver.foo(args...)` to `Interface_foo_dispatch(receiver, args...)`.
+    FunctionElement funcElement =
+        createDispatchElement(ElementUtil.getDeclaringClass(targetMethod), targetMethod);
+    FunctionInvocation functionInvocation =
+        new FunctionInvocation(funcElement, node.getTypeMirror());
+    List<Expression> funcArgs = functionInvocation.getArguments();
+
+    // Pass the receiver as the first argument (`self`), synthesizing `this` for implicit calls.
+    Expression receiver = node.getExpression();
+    if (receiver == null) {
+      receiver = new ThisExpression(TreeUtil.getEnclosingTypeElement(node).asType());
+    } else {
+      receiver = TreeUtil.remove(receiver);
+    }
+    funcArgs.add(receiver);
+
+    // Move the remaining method arguments and replace the method call with the C function call.
+    TreeUtil.moveList(node.getArguments(), funcArgs);
+    node.replaceWith(functionInvocation);
+  }
+
+  private static @Nullable MethodDeclaration findMethodDeclaration(
+      @Nullable AbstractTypeDeclaration typeNode, ExecutableElement element) {
+    if (typeNode == null) {
+      return null;
+    }
+    for (MethodDeclaration methodDecl : TreeUtil.getMethodDeclarations(typeNode)) {
+      if (methodDecl.getExecutableElement().equals(element)) {
+        return methodDecl;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Returns the function name for the C dispatch helper of an interface or concrete method owned by
+   * {@code ownerType}.
+   *
+   * <p>Appends {@code "_dispatch"} to avoid colliding with functions generated by J2ObjC (such as
+   * default method implementation bodies).
+   */
+  private String getDispatchFunctionName(TypeElement ownerType, ExecutableElement method) {
+    return nameTable.getFullName(ownerType) + "_" + nameTable.getFunctionName(method) + "_dispatch";
+  }
+
+  /** Creates the function element for the C dispatch helper. */
+  private FunctionElement createDispatchElement(TypeElement ownerType, ExecutableElement method) {
+    return createInstanceFunctionElement(
+        getDispatchFunctionName(ownerType, method), ownerType, method);
+  }
+
+  private FunctionElement createDefaultMethodFunctionElement(ExecutableElement method) {
+    TypeElement declaringInterface = ElementUtil.getDeclaringClass(method);
+    return createInstanceFunctionElement(
+        nameTable.getFullFunctionName(method), declaringInterface, method);
+  }
+
+  private FunctionElement createInstanceFunctionElement(
+      String functionName, TypeElement ownerType, ExecutableElement method) {
+    return new FunctionElement(functionName, method.getReturnType(), ownerType)
+        .addParameters(ownerType.asType())
+        .addParameters(ElementUtil.asTypes(method.getParameters()));
+  }
+
+  /** Returns {@code method} or its superinterface declaration if it requires static dispatch. */
+  private @Nullable ExecutableElement findInterfaceMethodRequiringDispatch(
+      @Nullable ExecutableElement method) {
+    if (method == null || ElementUtil.isStatic(method) || ElementUtil.isConstructor(method)) {
+      return null;
+    }
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
+    if (declaringClass == null || !declaringClass.getKind().isInterface()) {
+      return null;
+    }
+    if (ElementUtil.getAnnotation(method, ObjectiveCKmpMethod.class) != null) {
+      return method;
+    }
+    return findSuperInterfaceRequiringDispatch(
+        (DeclaredType) declaringClass.asType(),
+        getOverrideSignature(new ExecutablePair(method)),
+        new HashSet<>());
+  }
+
+  /**
+   * Searches superinterfaces of {@code type} for an annotated method matching {@code signature}.
+   */
+  private @Nullable ExecutableElement findSuperInterfaceRequiringDispatch(
+      DeclaredType type, String signature, Set<TypeElement> visited) {
+    AnnotatedSuperMethodFinder finder = new AnnotatedSuperMethodFinder(typeUtil, signature);
+    AdapterGenerator.visitTypeHierarchy(type, typeUtil, visited, finder);
+    return finder.result;
+  }
+
+  /**
+   * Visitor that searches a type hierarchy for the first {@link ObjectiveCKmpMethod}-annotated
+   * method matching a target override signature.
+   */
+  private static class AnnotatedSuperMethodFinder implements AdapterGenerator.TypeHierarchyVisitor {
+    private final TypeUtil typeUtil;
+    private final String signature;
+    private @Nullable ExecutableElement result;
+
+    private AnnotatedSuperMethodFinder(TypeUtil typeUtil, String signature) {
+      this.typeUtil = typeUtil;
+      this.signature = signature;
+    }
+
+    @Override
+    public boolean visit(DeclaredType declaredType) {
+      for (ExecutableElement methodElem :
+          ElementUtil.getExecutables(TypeUtil.asTypeElement(declaredType))) {
+        if (ElementUtil.getAnnotation(methodElem, ObjectiveCKmpMethod.class) != null) {
+          ExecutablePair pair =
+              new ExecutablePair(methodElem, typeUtil.asMemberOf(declaredType, methodElem));
+          if (getOverrideSignature(pair, typeUtil).equals(signature)) {
+            result = methodElem;
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+  }
+
+  /** Context for processing a single method and generating its Objective-C adapter. */
+  private class AdapterContext {
+    private final String selector;
+    private final String swiftName;
+    private final AbstractTypeDeclaration typeNode;
+    private final ExecutableElement originalMethodExecutable;
+    private final TypeMirror originalMethodReturnType;
+    private final ImmutableList<VariableElement> originalMethodParameters;
+    private final TypeMirror adapter;
+    private final boolean isInterface;
+    private final MappingStrategy strategy;
+
+    private record ParameterMapping(
+        List<Expression> adaptingArguments, List<VariableElement> adapterParameters) {}
+
+    private AdapterContext(
+        AbstractTypeDeclaration typeNode,
+        ExecutablePair originalMethod,
+        AnnotationMirror annotation,
+        boolean isInterface,
+        MappingStrategy strategy) {
+      this.typeNode = typeNode;
+      this.originalMethodExecutable = originalMethod.element();
+      this.originalMethodReturnType = originalMethod.type().getReturnType();
+      this.originalMethodParameters = resolveMethodParameters(originalMethod);
+      this.selector = (String) ElementUtil.getAnnotationValue(annotation, "selector");
+      this.swiftName = (String) ElementUtil.getAnnotationValue(annotation, "swiftName");
+      this.adapter = (TypeMirror) ElementUtil.getAnnotationValue(annotation, "adapter");
+      this.isInterface = isInterface;
+      this.strategy = strategy;
+    }
+
+    /** Substitutes generic parameter types when the method is inherited from a supertype. */
+    private ImmutableList<VariableElement> resolveMethodParameters(ExecutablePair originalMethod) {
+      List<? extends VariableElement> params = originalMethod.element().getParameters();
+      List<? extends TypeMirror> resolvedTypes = originalMethod.type().getParameterTypes();
+      ImmutableList.Builder<VariableElement> resolvedParams = ImmutableList.builder();
+      for (int i = 0; i < params.size(); i++) {
+        VariableElement param = params.get(i);
+        TypeMirror resolvedType = resolvedTypes.get(i);
+        resolvedParams.add(
+            typeUtil.isSameType(param.asType(), resolvedType)
+                ? param
+                : GeneratedVariableElement.newParameter(
+                        ElementUtil.getName(param), resolvedType, param.getEnclosingElement())
+                    .addAnnotationMirrors(param.getAnnotationMirrors()));
+      }
+      return resolvedParams.build();
+    }
+
+    /** Orchestrates the parameter conversion and adapter method creation. */
+    private void processMethod() {
+      // Calculate the return type of the adapter method. If the original method returns void,
+      // the adapter method also returns void. Otherwise, calculate the native Objective-C type.
+      TypeMirror adapterReturnType =
+          TypeUtil.isVoid(originalMethodReturnType)
+              ? originalMethodReturnType
+              : calculateNativeType(originalMethodReturnType, originalMethodExecutable);
+
+      // For static methods and constructors, we always generate calls to the C-style function
+      // generated by J2ObjC for the static method, rather than an Objective-C class method. This is
+      // because some clients have no-wrapper-methods enabled, in which case the class methods might
+      // not be generated. We also generate an Objective-C class method or initializer if wrapper
+      // methods are. enabled.
+      if (ElementUtil.isConstructor(originalMethodExecutable)) {
+        generateConstructorFunctionDeclaration();
+        if (options.emitWrapperMethods()) {
+          generateConstructorMethodDeclaration(adapterReturnType);
+        }
+      } else if (ElementUtil.isStatic(originalMethodExecutable)) {
+        // Create an FunctionInvocation to call the original static Java method.
+        FunctionElement functionElement =
+            new FunctionElement(
+                nameTable.getFullFunctionName(originalMethodExecutable),
+                originalMethodExecutable.getReturnType(),
+                typeNode.getTypeElement());
+        generateStaticFunctionDeclaration(adapterReturnType, functionElement);
+        if (options.emitWrapperMethods()) {
+          generateStaticMethodDeclaration(adapterReturnType, functionElement);
+        }
+      } else if (isInterface) {
+        generateInterfaceMethodDeclaration(adapterReturnType);
+      } else if (strategy == MappingStrategy.JAVA_TO_NATIVE) {
+        generateAbstractInstanceMethodDeclaration(adapterReturnType);
+      } else {
+        generateInstanceMethodDeclaration(adapterReturnType);
+      }
+    }
+
+    private void generateStaticFunctionDeclaration(
+        TypeMirror adapterReturnType, FunctionElement functionElement) {
+      ParameterMapping mapping = processParameters();
+      List<Expression> adaptingArguments = mapping.adaptingArguments();
+      List<VariableElement> adapterParameters = mapping.adapterParameters();
+
+      FunctionInvocation functionInvocation =
+          createFunctionInvocation(functionElement, adaptingArguments);
+
+      Block functionBodyBlock = new Block();
+      // Create the return statement for the adapter method body.
+      functionBodyBlock.addStatement(createReturnStatement(functionInvocation, adapterReturnType));
+
+      // Add the new function declaration to the type node.
+      String selectorName = selector.replaceAll(":", "_");
+      String functionName = nameTable.getFullName(typeNode.getTypeElement()) + "_" + selectorName;
+      FunctionDeclaration functionDecl =
+          new FunctionDeclaration(functionName, adapterReturnType, originalMethodExecutable);
+      functionDecl.setBody(functionBodyBlock);
+      for (VariableElement adapterParam : adapterParameters) {
+        functionDecl.getParameters().add(new SingleVariableDeclaration(adapterParam));
+      }
+      typeNode.addBodyDeclaration(functionDecl);
+    }
+
+    private FunctionInvocation createFunctionInvocation(
+        FunctionElement functionElement, List<Expression> adaptingArguments) {
+      // Create a FunctionInvocation to call the original static Java method.
+      FunctionInvocation invocation =
+          new FunctionInvocation(functionElement, originalMethodExecutable.getReturnType());
+      adaptingArguments.forEach(invocation::addArgument);
+      return invocation;
+    }
+
+    private void generateStaticMethodDeclaration(
+        TypeMirror adapterReturnType, FunctionElement functionElement) {
+      ParameterMapping mapping = processParameters();
+      List<Expression> adaptingArguments = mapping.adaptingArguments();
+      List<VariableElement> adapterParameters = mapping.adapterParameters();
+
+      GeneratedExecutableElement adapterMethodExecutable =
+          GeneratedExecutableElement.newAdapterMethod(
+              selector, adapterReturnType, adapterParameters, originalMethodExecutable);
+      attachSwiftNameAnnotation(adapterMethodExecutable);
+
+      FunctionInvocation methodFunctionInvocation =
+          createFunctionInvocation(functionElement, adaptingArguments);
+
+      addMethodDeclaration(
+          adapterMethodExecutable, methodFunctionInvocation, adapterReturnType, adapterParameters);
+    }
+
+    private void generateInstanceMethodDeclaration(TypeMirror adapterReturnType) {
+      ParameterMapping mapping = processParameters();
+      List<Expression> adaptingArguments = mapping.adaptingArguments();
+      List<VariableElement> adapterParameters = mapping.adapterParameters();
+
+      GeneratedExecutableElement adapterMethodExecutable =
+          GeneratedExecutableElement.newAdapterMethod(
+              selector, adapterReturnType, adapterParameters, originalMethodExecutable);
+      attachSwiftNameAnnotation(adapterMethodExecutable);
+
+      // Create a MethodInvocation to call the original instance Java method.
+      MethodInvocation adaptingMethodInvocation =
+          new MethodInvocation(new ExecutablePair(originalMethodExecutable), null);
+      // Add the (potentially converted) arguments to the MethodInvocation.
+      adaptingArguments.forEach(adaptingMethodInvocation::addArgument);
+
+      addMethodDeclaration(
+          adapterMethodExecutable, adaptingMethodInvocation, adapterReturnType, adapterParameters);
+    }
+
+    private boolean isInSwiftNameContext() {
+      if (options.swiftNaming()) {
+        return true;
+      }
+      Element current = typeNode.getTypeElement();
+      while (current != null) {
+        if (ElementUtil.getAnnotation(current, SwiftName.class) != null) {
+          return true;
+        }
+        current = current.getEnclosingElement();
+      }
+      PackageElement pkg = ElementUtil.getPackage(typeNode.getTypeElement());
+      return pkg != null && ElementUtil.getAnnotation(pkg, SwiftName.class) != null;
+    }
+
+    private @Nullable String getOrComputeSwiftName() {
+      if (swiftName != null && !swiftName.isEmpty()) {
+        return swiftName;
+      }
+      if (!isInSwiftNameContext()) {
+        return null;
+      }
+      String baseName = selector;
+      int firstColon = selector.indexOf(':');
+      if (firstColon != -1) {
+        baseName = selector.substring(0, firstColon);
+      }
+      if (originalMethodParameters.isEmpty()) {
+        return baseName + "()";
+      }
+      StringBuilder sb = new StringBuilder(baseName).append("(");
+      for (VariableElement param : originalMethodParameters) {
+        String paramName = param.getSimpleName().toString();
+        if (paramName.isEmpty()) {
+          sb.append("_:");
+        } else {
+          sb.append(paramName).append(":");
+        }
+      }
+      sb.append(")");
+      return sb.toString();
+    }
+
+    private void attachSwiftNameAnnotation(GeneratedExecutableElement adapterMethodExecutable) {
+      AnnotationMirror existingSwiftName =
+          ElementUtil.getAnnotation(adapterMethodExecutable, SwiftName.class);
+      if (existingSwiftName != null) {
+        adapterMethodExecutable.removeAnnotationMirror(existingSwiftName);
+      }
+      String effectiveSwiftName = getOrComputeSwiftName();
+      if (effectiveSwiftName == null || effectiveSwiftName.isEmpty()) {
+        return;
+      }
+      TypeElement swiftNameElement = typeUtil.resolveJavaType(SwiftName.class.getName());
+      DeclaredType swiftNameType = (DeclaredType) swiftNameElement.asType();
+      GeneratedAnnotationMirror annotationMirror = new GeneratedAnnotationMirror(swiftNameType);
+      ExecutableElement valueElement =
+          GeneratedExecutableElement.newMethodWithSelector(
+              "value", typeUtil.getJavaString().asType(), swiftNameElement);
+      adapterMethodExecutable.addAnnotationMirror(annotationMirror);
+      annotationMirror.addElementValue(
+          valueElement, new GeneratedAnnotationValue(effectiveSwiftName));
+    }
+
+    private void generateInterfaceMethodDeclaration(TypeMirror adapterReturnType) {
+      ParameterMapping mapping = processParameters();
+      GeneratedExecutableElement adapterMethodExecutable =
+          GeneratedExecutableElement.newAdapterMethod(
+              selector, adapterReturnType, mapping.adapterParameters(), originalMethodExecutable);
+      attachSwiftNameAnnotation(adapterMethodExecutable);
+
+      // 1. Declare the adapted KMP method on the @protocol.
+      // Example: - (void)setItems:(NSArray<NSString *> *)items;
+      // (The unadapted method declaration was already marked @optional in visit()).
+      typeNode.addBodyDeclaration(
+          createAdapterMethodDeclaration(
+              adapterMethodExecutable,
+              /* adapterBodyBlock= */ null,
+              mapping.adapterParameters(),
+              /* isInterface= */ true));
+
+      // 2. Generate the static C dispatch helper function that checks respondsToSelector:
+      // at runtime to dispatch to either the JVM selector or the adapted Objective-C selector.
+      typeNode.addBodyDeclaration(
+          generateInterfaceDispatchHelper(adapterMethodExecutable, mapping.adaptingArguments()));
+    }
+
+    private void generateAbstractInstanceMethodDeclaration(TypeMirror adapterReturnType) {
+      ParameterMapping mapping = processParameters();
+      List<Expression> adaptingArguments = mapping.adaptingArguments();
+      List<VariableElement> adapterParameters = mapping.adapterParameters();
+
+      GeneratedExecutableElement adapterMethodExecutable =
+          GeneratedExecutableElement.newAdapterMethod(
+              selector, adapterReturnType, adapterParameters, originalMethodExecutable);
+      attachSwiftNameAnnotation(adapterMethodExecutable);
+
+      Block adapterBodyBlock = new Block();
+      String bodyCode =
+          "// can't call an abstract method\n" + "[self doesNotRecognizeSelector:_cmd];";
+      if (!TypeUtil.isVoid(adapterReturnType)) {
+        bodyCode += "\nreturn 0;";
+      }
+      adapterBodyBlock.addStatement(new NativeStatement(bodyCode));
+
+      MethodDeclaration adapterMethodDeclaration =
+          createAdapterMethodDeclaration(
+              adapterMethodExecutable, adapterBodyBlock, adapterParameters, false);
+
+      typeNode.addBodyDeclaration(adapterMethodDeclaration);
+
+      // Now modify original method to call adapter
+      Block bodyBlock =
+          createAdaptedInvocationBlock(
+              adapterMethodExecutable, /* receiver= */ null, adaptingArguments);
+
+      // Find the method declaration in typeNode and update it, or synthesize a bridge declaration
+      // if the abstract class inherited the method without redeclaring it.
+      MethodDeclaration md = findMethodDeclaration(typeNode, originalMethodExecutable);
+      if (md != null) {
+        md.setBody(bodyBlock);
+        md.removeModifiers(ABSTRACT);
+        return;
+      }
+      // Remove any abstract return-type-narrowing stub added earlier by AbstractMethodRewriter.
+      typeNode
+          .getBodyDeclarations()
+          .removeIf(
+              decl ->
+                  decl instanceof MethodDeclaration methodDecl
+                      && methodDecl.getExecutableElement() instanceof GeneratedExecutableElement gee
+                      && ElementUtil.isAbstract(gee)
+                      && originalMethodExecutable.equals(gee.getOriginalElement()));
+      typeNode.addBodyDeclaration(createBridgeMethodDeclaration(bodyBlock));
+    }
+
+    private Block createAdaptedInvocationBlock(
+        GeneratedExecutableElement targetMethod,
+        @Nullable Expression receiver,
+        List<Expression> arguments) {
+      MethodInvocation invocation =
+          new MethodInvocation(new ExecutablePair(targetMethod), receiver);
+      arguments.forEach(invocation::addArgument);
+      return new Block().addStatement(createReturnStatement(invocation, originalMethodReturnType));
+    }
+
+    private FunctionDeclaration createDispatchFunctionSkeleton() {
+      TypeElement ownerType = typeNode.getTypeElement();
+      VariableElement selfParam =
+          GeneratedVariableElement.newParameter(
+              NameTable.SELF_NAME, ownerType.asType(), originalMethodExecutable);
+      FunctionDeclaration functionDecl =
+          new FunctionDeclaration(
+              getDispatchFunctionName(ownerType, originalMethodExecutable),
+              originalMethodReturnType,
+              originalMethodExecutable);
+      functionDecl.addParameter(new SingleVariableDeclaration(selfParam));
+      for (VariableElement param : originalMethodParameters) {
+        functionDecl.addParameter(new SingleVariableDeclaration(param));
+      }
+      return functionDecl;
+    }
+
+    /**
+     * Generates a static C dispatch helper function for an interface method annotated with
+     * {@code @ObjectiveCKmpMethod}.
+     *
+     * <p>Java call sites targeting interface methods are rewritten to invoke this function instead
+     * of dispatching Objective-C messages directly. At runtime, the receiver instance may either
+     * be:
+     *
+     * <ul>
+     *   <li>A transpiled Java class implementing the interface, which implements the unadapted JVM
+     *       selector.
+     *   <li>A native Objective-C or Swift class conforming to the transpiled {@code @protocol},
+     *       which only implements the adapted Objective-C selector.
+     * </ul>
+     *
+     * <p>The helper checks {@code [self respondsToSelector:]} on the unadapted selector first. If
+     * implemented, it dispatches directly; otherwise, it adapts arguments and invokes the adapted
+     * selector.
+     *
+     * <p>When {@code originalMethodExecutable} is a {@code default} method, a 3-way fallback is
+     * generated: if the receiver implements neither the unadapted nor the adapted selector (e.g. a
+     * native Objective-C class that inherits the protocol default method without overriding it),
+     * the helper falls back to invoking the interface's default method implementation function.
+     */
+    private FunctionDeclaration generateInterfaceDispatchHelper(
+        GeneratedExecutableElement adapterMethodExecutable,
+        List<Expression> adaptingArguments) {
+      // 1. Build the static C function declaration with `self` as the first parameter.
+      // Example:
+      //   void MyInterface_setItemsWith..._dispatch(id<MyInterface> self,
+      // ComGoogleCommonCollectImmutableList *items)
+      FunctionDeclaration functionDecl = createDispatchFunctionSkeleton();
+      VariableElement selfParam = functionDecl.getParameter(0).getVariableElement();
+
+      // 2. Direct invocation on `self` using the unadapted JVM selector.
+      // Fast path for Java classes implementing the interface.
+      // Example: [self setItemsWithComGoogleCommonCollectImmutableList:items];
+      String selfName = nameTable.getVariableShortName(selfParam);
+      MethodInvocation directInvocation =
+          new MethodInvocation(
+              new ExecutablePair(originalMethodExecutable), new SimpleName(selfParam));
+      for (VariableElement param : originalMethodParameters) {
+        directInvocation.addArgument(new SimpleName(param));
+      }
+
+      // 3. Adapted invocation on `self` using the KMP adapted selector with converted arguments.
+      // Fallback for native Objective-C/Swift classes conforming to the @protocol.
+      // Example: [self setItems:(NSArray *) [ImmutableListAdapter fromImmutableListWith...:items]];
+      Block adaptedBlock =
+          createAdaptedInvocationBlock(
+              adapterMethodExecutable, new SimpleName(selfParam), adaptingArguments);
+
+      // 4. Runtime check routing between direct invocation and fallback:
+      //   if ([self
+      // respondsToSelector:@selector(setItemsWithComGoogleCommonCollectImmutableList:)]) {
+      //     [self setItemsWithComGoogleCommonCollectImmutableList:items];
+      //   } else if (isDefaultMethod && ![self respondsToSelector:@selector(setItems:)]) {
+      //     Interface_setItems(self, items); // default method implementation
+      //   } else {
+      //     [self setItems:(NSArray *) [ImmutableListAdapter fromImmutableListWith...:items]];
+      //   }
+      Statement elseStatement =
+          ElementUtil.isDefault(originalMethodExecutable)
+              ? createDefaultMethodFallback(selfName, selfParam, adaptedBlock)
+              : adaptedBlock;
+      String originalSelector = nameTable.getMethodSelector(originalMethodExecutable);
+      IfStatement ifStatement =
+          new IfStatement()
+              .setExpression(
+                  new NativeExpression(
+                      "[" + selfName + " respondsToSelector:@selector(" + originalSelector + ")]",
+                      typeUtil.getBoolean()))
+              .setThenStatement(createReturnOrExpressionBlock(directInvocation))
+              .setElseStatement(elseStatement);
+      functionDecl.setBody(new Block().addStatement(ifStatement));
+      return functionDecl;
+    }
+
+    private Statement createDefaultMethodFallback(
+        String selfName, VariableElement selfParam, Block adaptedBlock) {
+      FunctionInvocation defaultInvocation =
+          createForwardingFunctionInvocation(
+              createDefaultMethodFunctionElement(originalMethodExecutable),
+              new SimpleName(selfParam),
+              originalMethodParameters);
+      return new IfStatement()
+          .setExpression(
+              new NativeExpression(
+                  "[" + selfName + " respondsToSelector:@selector(" + selector + ")]",
+                  typeUtil.getBoolean()))
+          .setThenStatement(adaptedBlock)
+          .setElseStatement(createReturnOrExpressionBlock(defaultInvocation));
+    }
+
+    private FunctionInvocation createForwardingFunctionInvocation(
+        FunctionElement targetFunction,
+        Expression receiver,
+        List<? extends VariableElement> parameters) {
+      FunctionInvocation invocation =
+          new FunctionInvocation(targetFunction, originalMethodReturnType);
+      invocation.addArgument(receiver);
+      for (VariableElement param : parameters) {
+        invocation.addArgument(new SimpleName(param));
+      }
+      return invocation;
+    }
+
+    /** Wraps {@code expression} in a return statement, or an expression statement if void. */
+    private Block createReturnOrExpressionBlock(Expression expression) {
+      return new Block()
+          .addStatement(
+              TypeUtil.isVoid(originalMethodReturnType)
+                  ? new ExpressionStatement(expression)
+                  : new ReturnStatement(expression));
+    }
+
+    /** Creates a concrete Java bridge method that delegates to the abstract KMP adapter stub. */
+    private MethodDeclaration createBridgeMethodDeclaration(Block bodyBlock) {
+      String originalSelector = nameTable.getMethodSelector(originalMethodExecutable);
+      GeneratedExecutableElement bridgeExecutable =
+          GeneratedExecutableElement.newMethodWithSelector(
+                  originalSelector, originalMethodReturnType, typeNode.getTypeElement())
+              .addModifiers(originalMethodExecutable.getModifiers())
+              .removeModifiers(Modifier.ABSTRACT, Modifier.DEFAULT)
+              .setOriginalElement(originalMethodExecutable);
+      bridgeExecutable
+          .addAnnotationMirrors(originalMethodExecutable.getAnnotationMirrors())
+          .removeAnnotationMirror(
+              ElementUtil.getAnnotation(bridgeExecutable, ObjectiveCKmpMethod.class))
+          .removeAnnotationMirror(ElementUtil.getAnnotation(bridgeExecutable, SwiftName.class));
+
+      MethodDeclaration bridgeDeclaration =
+          new MethodDeclaration(bridgeExecutable).setBody(bodyBlock);
+      for (VariableElement param : originalMethodParameters) {
+        bridgeExecutable.addParameter(param);
+        bridgeDeclaration.addParameter(new SingleVariableDeclaration(param));
+      }
+      return bridgeDeclaration;
+    }
+
+    private FunctionInvocation createConstructorInvocation(TypeElement declaringClass) {
+      String functionName = nameTable.getFullFunctionName(originalMethodExecutable);
+      FunctionElement funcElement =
+          new FunctionElement(functionName, typeUtil.getVoid(), declaringClass);
+      funcElement.addParameters(declaringClass.asType()); // self
+      funcElement.addParameters(ElementUtil.asTypes(originalMethodExecutable.getParameters()));
+      return new FunctionInvocation(funcElement, typeUtil.getVoid());
+    }
+
+    private void generateConstructorFunctionDeclaration() {
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(originalMethodExecutable);
+
+      ParameterMapping mapping = processParameters();
+      List<Expression> adaptingArguments = mapping.adaptingArguments();
+      List<VariableElement> adapterParameters = mapping.adapterParameters();
+
+      FunctionInvocation functionInvocation = createConstructorInvocation(declaringClass);
+
+      Block functionBodyBlock = new Block();
+
+      // Generate C-style function
+      String selectorName = selector.replaceAll(":", "_");
+      String cFunctionName = nameTable.getFullName(declaringClass) + "_" + selectorName;
+      FunctionDeclaration functionDecl =
+          new FunctionDeclaration(cFunctionName, typeUtil.getVoid(), originalMethodExecutable);
+
+      VariableElement selfParam =
+          GeneratedVariableElement.newParameter(
+              "self", declaringClass.asType(), originalMethodExecutable);
+      functionDecl.getParameters().add(new SingleVariableDeclaration(selfParam));
+
+      for (VariableElement adapterParam : adapterParameters) {
+        functionDecl.getParameters().add(new SingleVariableDeclaration(adapterParam));
+      }
+
+      List<Expression> functionArgs = functionInvocation.getArguments();
+      functionArgs.add(new SimpleName(selfParam));
+      for (Expression arg : adaptingArguments) {
+        functionArgs.add((Expression) arg.copy());
+      }
+
+      functionBodyBlock.addStatement(new ExpressionStatement(functionInvocation));
+      functionDecl.setBody(functionBodyBlock);
+
+      typeNode.addBodyDeclaration(functionDecl);
+
+      generateConstructorHelperFunction(
+          "new_", declaringClass, adapterParameters, adaptingArguments);
+      generateConstructorHelperFunction(
+          "create_", declaringClass, adapterParameters, adaptingArguments);
+    }
+
+    private void generateConstructorHelperFunction(
+        String prefix,
+        TypeElement declaringClass,
+        List<VariableElement> adapterParameters,
+        List<Expression> adaptingArguments) {
+
+      String originalFunctionName = nameTable.getFullFunctionName(originalMethodExecutable);
+      String delegatedFunctionName = prefix + originalFunctionName;
+
+      String selectorName = selector.replaceAll(":", "_");
+      String functionName = prefix + nameTable.getFullName(declaringClass) + "_" + selectorName;
+
+      FunctionDeclaration functionDecl =
+          new FunctionDeclaration(functionName, declaringClass.asType(), originalMethodExecutable);
+
+      functionDecl
+          .getParameters()
+          .addAll(
+              adapterParameters.stream()
+                  .map(SingleVariableDeclaration::new)
+                  .collect(toImmutableList()));
+
+      FunctionElement delegatedFuncElement =
+          new FunctionElement(delegatedFunctionName, declaringClass.asType(), declaringClass);
+
+      FunctionInvocation invocation =
+          new FunctionInvocation(delegatedFuncElement, declaringClass.asType());
+      for (Expression arg : adaptingArguments) {
+        invocation.addArgument((Expression) arg.copy());
+      }
+
+      Block bodyBlock = new Block();
+      bodyBlock.addStatement(new ReturnStatement(invocation));
+      functionDecl.setBody(bodyBlock);
+
+      typeNode.addBodyDeclaration(functionDecl);
+    }
+
+    private void generateConstructorMethodDeclaration(TypeMirror adapterReturnType) {
+      TypeElement declaringClass = ElementUtil.getDeclaringClass(originalMethodExecutable);
+
+      ParameterMapping mapping = processParameters();
+      List<Expression> adaptingArguments = mapping.adaptingArguments();
+      List<VariableElement> adapterParameters = mapping.adapterParameters();
+
+      FunctionInvocation functionInvocation = createConstructorInvocation(declaringClass);
+
+      GeneratedExecutableElement adapterMethodExecutable =
+          GeneratedExecutableElement.newAdapterMethod(
+              selector, adapterReturnType, adapterParameters, originalMethodExecutable);
+      attachSwiftNameAnnotation(adapterMethodExecutable);
+
+      List<Expression> args = functionInvocation.getArguments();
+      args.add(new ThisExpression(declaringClass.asType()));
+
+      args.addAll(adaptingArguments);
+
+      Block adapterBodyBlock = new Block();
+      adapterBodyBlock.addStatement(new ExpressionStatement(functionInvocation));
+      adapterBodyBlock.addStatement(
+          new ReturnStatement(new ThisExpression(declaringClass.asType())));
+
+      MethodDeclaration adapterMethodDeclaration =
+          createAdapterMethodDeclaration(
+              adapterMethodExecutable, adapterBodyBlock, adapterParameters, isInterface);
+
+      typeNode.addBodyDeclaration(adapterMethodDeclaration);
+    }
+
+    private void addMethodDeclaration(
+        GeneratedExecutableElement adapterMethodExecutable,
+        Expression adaptingMethodInvocation,
+        TypeMirror adapterReturnType,
+        List<VariableElement> adapterParameters) {
+      Block adapterBodyBlock = new Block();
+      // Create the return statement for the adapter method body. This might involve
+      // converting the result from the original method call back to a native type.
+      adapterBodyBlock.addStatement(
+          createReturnStatement(adaptingMethodInvocation, adapterReturnType));
+
+      MethodDeclaration adapterMethodDeclaration =
+          createAdapterMethodDeclaration(
+              adapterMethodExecutable, adapterBodyBlock, adapterParameters, isInterface);
+      // Add the new adapter method to the class declaration.
+      typeNode.addBodyDeclaration(adapterMethodDeclaration);
+    }
+
+    /**
+     * Processes the parameters of the original method.
+     *
+     * <p>If a parameter type is a supported collection (List, Map, Set), it prepares a call to a
+     * converter method defined in the adapter class. Otherwise, it passes the parameter as is.
+     */
+    private ParameterMapping processParameters() {
+      // Process the parameters of the original method, preparing arguments for the call
+      // to the original method and populating the parameters for the adapter method.
+      List<Expression> adaptingArguments = new ArrayList<>();
+      List<VariableElement> adapterParameters = new ArrayList<>();
+      for (VariableElement parameter : originalMethodParameters) {
+        TypeMirror parameterType = parameter.asType();
+        // If the type is not supported (a.k.a mapped to a native type), but is an interface or
+        // nullable, we still go through the computation of the type as we will be adding more
+        // information than just the type name (id brackets and nullability marker).
+        if (!isTypeSupported(parameterType)
+            && !isNullable(parameterType)
+            && !TypeUtil.isInterface(parameterType)
+            && !hasConverter(parameterType, /* isParam= */ true)) {
+          adaptingArguments.add(new SimpleName(parameter));
+          adapterParameters.add(parameter);
+          continue;
+        }
+        NativeType nativeType = calculateNativeType(parameterType, originalMethodExecutable);
+        adapterParameters.add(
+            GeneratedVariableElement.newParameter(
+                parameter.toString(), nativeType, parameter.getEnclosingElement()));
+
+        Expression converterMethodInvocation =
+            createConverterMethodInvocation(
+                /* isParam= */ true,
+                parameterType,
+                strategy.getParamCastType(parameterType, nativeType),
+                new SimpleName(parameter));
+        adaptingArguments.add(converterMethodInvocation);
+      }
+      return new ParameterMapping(adaptingArguments, adapterParameters);
+    }
+
+    private boolean hasConverter(TypeMirror type, boolean isParam) {
+      TypeElement adapterElement = TypeUtil.asTypeElement(adapter);
+      if (adapterElement == null) {
+        return false;
+      }
+      var match = strategy.findConverter(adapterLookup, adapterElement, type, isParam);
+      return match.converter() != null
+          || match.matchType() == AdapterLookup.MatchType.NONE_EXACT_REQUIRED;
+    }
+
+    private Statement createReturnStatement(
+        Expression adaptingMethodInvocation, TypeMirror adapterReturnType) {
+      if (TypeUtil.isVoid(originalMethodReturnType)) {
+        return new ExpressionStatement(adaptingMethodInvocation);
+      }
+      Expression converterMethodInvocation =
+          createConverterMethodInvocation(
+              /* isParam= */ false,
+              originalMethodReturnType,
+              strategy.getReturnCastType(originalMethodReturnType, adapterReturnType),
+              adaptingMethodInvocation);
+      return new ReturnStatement(maybeCast(adapterReturnType, converterMethodInvocation));
+    }
+
+    private Expression createConverterMethodInvocation(
+        boolean isParam, TypeMirror originalType, TypeMirror castType, Expression argument) {
+      TypeElement adapterElement = TypeUtil.asTypeElement(adapter);
+      if (adapterElement == null) {
+        throw new IllegalArgumentException(
+            String.format("No cannot find adapter %s", adapter.toString()));
+      }
+      var match = strategy.findConverter(adapterLookup, adapterElement, originalType, isParam);
+
+      if (match.matchType() == AdapterLookup.MatchType.NONE_EXACT_REQUIRED) {
+        throw new IllegalStateException(
+            String.format(
+                "Exact converter required for mapped type %s in adapter %s for %s",
+                originalType,
+                adapterElement.getQualifiedName(),
+                originalMethodExecutable.getSimpleName()));
+      }
+
+      ExecutableElement foundMethod = match.converter();
+
+      if (foundMethod == null) {
+        if (!isCollectionType(originalType)) {
+          // Fallback to the original argument if it's not a collection type.
+          return argument;
+        }
+        throw new IllegalArgumentException(
+            String.format("No converter method found in %s for type %s.", adapter, originalType));
+      }
+
+      Expression converterInvocation =
+          createAdapterInvocation(
+              foundMethod,
+              adapterElement,
+              argument,
+              isParam,
+              originalType,
+              match.matchType().isComposing());
+
+      return maybeCast(castType, converterInvocation);
+    }
+
+    // Adapter invocation are always with wrapped methods, which means that the package it is in
+    // must enable wrapper methods.
+    private Expression createAdapterInvocation(
+        ExecutableElement foundMethod,
+        TypeElement adapterElement,
+        Expression argument,
+        boolean isParam,
+        TypeMirror originalType,
+        boolean isComposing) {
+      MethodInvocation methodInvocation =
+          new MethodInvocation(new ExecutablePair(foundMethod), new SimpleName(adapterElement));
+      TypeMirror paramType = foundMethod.getParameters().get(0).asType();
+      methodInvocation.addArgument(maybeCast(paramType, argument));
+      if (isComposing && originalType instanceof DeclaredType declaredType) {
+        populateComposingArguments(methodInvocation, foundMethod, declaredType, isParam);
+      }
+      return methodInvocation;
+    }
+
+    private void populateComposingArguments(
+        MethodInvocation methodInvocation,
+        ExecutableElement foundMethod,
+        DeclaredType declaredType,
+        boolean isParam) {
+      for (int i = 1; i < foundMethod.getParameters().size(); i++) {
+        if (i - 1 >= declaredType.getTypeArguments().size()) {
+          break;
+        }
+        var elemType = declaredType.getTypeArguments().get(i - 1);
+        var convParam = foundMethod.getParameters().get(i);
+        var convType = convParam.asType();
+
+        // Synthesize an anonymous adaptation lambda for each composing parameter:
+        //   elem -> Adapter.toJavaUtilList(elem, nestedLambda)
+        // or pass-through:
+        //   elem -> elem
+        var functionInterface = TypeUtil.asTypeElement(convType);
+        ExecutableElement samMethod = null;
+        TypeMirror samParamType = elemType;
+        if (functionInterface != null) {
+          samMethod = findSamMethod(functionInterface);
+          if (samMethod != null && !samMethod.getParameters().isEmpty()) {
+            samParamType = samMethod.getParameters().get(0).asType();
+          }
+        }
+        var paramElem = GeneratedVariableElement.newParameter("elem", samParamType, null);
+        var paramDecl = new SingleVariableDeclaration().setVariableElement(paramElem);
+
+        var lambda = new LambdaExpression().setTypeMirror(convType);
+        lambda.addTargetType(convType);
+        lambda.getParameters().add(paramDecl);
+
+        if (samMethod != null) {
+          lambda.setDescriptor(new ExecutablePair(samMethod));
+        }
+
+        var nativeType =
+            calculateNativeType(elemType, originalMethodExecutable, /* isTypeArgument= */ true);
+        var elemCastType = strategy.getCastType(elemType, nativeType, isParam);
+        Expression bodyExpr =
+            createConverterMethodInvocation(
+                isParam, elemType, elemCastType, new SimpleName(paramElem));
+        lambda.setBody(bodyExpr);
+        methodInvocation.addArgument(lambda);
+      }
+    }
+
+    private ExecutableElement findSamMethod(TypeElement interfaceElement) {
+      for (ExecutableElement method : ElementUtil.getMethods(interfaceElement)) {
+        if (method.getModifiers().contains(Modifier.ABSTRACT)) {
+          return method;
+        }
+      }
+      throw new AssertionError("Cannot find abstract SAM method in " + interfaceElement);
+    }
+
+    private Expression maybeCast(TypeMirror targetType, Expression expression) {
+      // If the target type is Object (id), we don't need to cast the expression.
+      if (TypeUtil.isDeclaredType(targetType)
+          && TypeUtil.getQualifiedName(targetType).equals("java.lang.Object")) {
+        return expression;
+      }
+      if (!typeUtil.isSameType(expression.getTypeMirror(), targetType)
+          && !typeUtil.isSubtype(expression.getTypeMirror(), targetType)) {
+        return new CastExpression(targetType, expression);
+      }
+      return expression;
+    }
+
+    private MethodDeclaration createAdapterMethodDeclaration(
+        GeneratedExecutableElement adapterMethodExecutable,
+        Block adapterBodyBlock,
+        List<VariableElement> adapterParameters,
+        boolean isInterface) {
+      MethodDeclaration adapterMethodDeclaration =
+          new MethodDeclaration(adapterMethodExecutable)
+              .setExecutableElement(adapterMethodExecutable);
+      adapterMethodDeclaration.getParameters().clear();
+      if (!isInterface) {
+        adapterMethodDeclaration.setBody(adapterBodyBlock);
+      } else {
+        adapterMethodDeclaration.removeModifiers(STATIC);
+        adapterMethodDeclaration.addModifiers(ABSTRACT);
+      }
+      for (VariableElement adapterParam : adapterParameters) {
+        adapterMethodDeclaration.addParameter(new SingleVariableDeclaration(adapterParam));
+      }
+      return adapterMethodDeclaration;
+    }
+  }
+
+  /**
+   * Calculates the native Objective-C type for a given Java type.
+   *
+   * <p>For example, for List&lt;String&gt;, it returns "NSArray&lt;NSString *&gt; *".
+   */
+  private NativeType calculateNativeType(
+      TypeMirror parameterType, ExecutableElement methodExecutable) {
+    return calculateNativeType(parameterType, methodExecutable, /* isTypeArgument= */ false);
+  }
+
+  private NativeType calculateNativeType(
+      TypeMirror parameterType, ExecutableElement methodExecutable, boolean isTypeArgument) {
+    StringBuilder builder = new StringBuilder();
+    List<TypeMirror> referencedTypes = new ArrayList<>();
+    parameterType.accept(
+        new NativeTypeVisitor(methodExecutable, referencedTypes, isTypeArgument), builder);
+    return new NativeType(builder.toString(), null, null, referencedTypes);
+  }
+
+  private PrintableNativeType toNativeType(
+      TypeMirror typeMirror,
+      ExecutableElement methodExecutable,
+      List<TypeMirror> referencedTypes,
+      boolean isTypeArgument) {
+    String fullyQualifiedNameJavaName = TypeUtil.getQualifiedName(typeMirror);
+    boolean isNullable = isNullable(typeMirror);
+    String nativeType = JAVA_TO_NATIVE_TYPE_MAP.get(fullyQualifiedNameJavaName);
+    if (nativeType != null) {
+      return new PrintableNativeType(nativeType, false, !isTypeArgument && isNullable);
+    }
+    TypeElement typeElement = TypeUtil.asTypeElement(typeMirror);
+    if (typeElement != null) {
+      referencedTypes.add(typeMirror);
+      return new PrintableNativeType(
+          nameTable.getFullName(typeElement), TypeUtil.isInterface(typeMirror), isNullable);
+    }
+    throw new IllegalArgumentException(
+        "Unsupported type: " + fullyQualifiedNameJavaName + " in method: " + methodExecutable);
+  }
+
+  private boolean isTypeSupported(TypeMirror typeMirror) {
+    return supportedConversionTypes.contains(
+        TypeUtil.getQualifiedName(typeUtil.erasure(typeMirror)));
+  }
+
+  private boolean isNullable(TypeMirror typeMirror) {
+    return !TYPES_THAT_OMIT_NULLABILITY_MARKER.contains(TypeUtil.getQualifiedName(typeMirror))
+        && typeMirror.getAnnotationMirrors().stream()
+            .anyMatch(
+                annotation ->
+                    annotation
+                        .getAnnotationType()
+                        .asElement()
+                        .getSimpleName()
+                        .toString()
+                        .contains("Nullable"));
+  }
+
+  /**
+   * Recursively visits parameterized types to build a string representation.
+   *
+   * <p>This is used for both generating converter method names and native Objective-C types by
+   * configuring prefixes, separators, and suffixes.
+   *
+   * <p>Examples:
+   *
+   * <ul>
+   *   <li>{@code List<String>} becomes {@code NSArray<NSString *> *}
+   *   <li>{@code Map<Integer, String>} becomes {@code NSDictionary<NSNumber *, NSString *> *}
+   *   <li>{@code Set<List<String>>} becomes {@code NSSet<NSArray<NSString *> *> *}
+   *   <li>{@code JavaInterface} becomes {@code id<JavaInterface>}
+   *   <li>{@code List<JavaInterface>} becomes {@code NSArray<id<JavaInterface>> *}
+   * </ul>
+   */
+  private class NativeTypeVisitor extends SimpleTypeVisitor9<Void, StringBuilder> {
+
+    private final ExecutableElement methodExecutable;
+    private final List<TypeMirror> referencedTypes;
+    private final boolean isTypeArgument;
+
+    private NativeTypeVisitor(
+        ExecutableElement methodExecutable,
+        List<TypeMirror> referencedTypes,
+        boolean isTypeArgument) {
+      this.methodExecutable = methodExecutable;
+      this.referencedTypes = referencedTypes;
+      this.isTypeArgument = isTypeArgument;
+    }
+
+    @Override
+    public Void visitDeclared(DeclaredType type, StringBuilder builder) {
+      PrintableNativeType nativeType =
+          toNativeType(type, methodExecutable, referencedTypes, isTypeArgument);
+      if (nativeType.isUntranslatedInterface) {
+        builder.append("id<");
+      }
+      builder.append(nativeType.nativeTypeName);
+      List<? extends TypeMirror> typeArguments = type.getTypeArguments();
+      if (options.asObjCGenericDecl()
+          && !typeArguments.isEmpty()
+          && !nativeType.isUntranslatedInterface) {
+        String typeArgsString = buildTypeArgumentString(typeArguments);
+        builder.append("<").append(typeArgsString).append(">");
+      }
+      if (nativeType.isUntranslatedInterface) {
+        builder.append(">");
+      } else {
+        builder.append(" *");
+      }
+      if (nativeType.nullable) {
+        builder.append(" _Nullable");
+      }
+      return null;
+    }
+
+    @Override
+    public Void visitPrimitive(PrimitiveType type, StringBuilder builder) {
+      switch (type.getKind()) {
+        case BOOLEAN -> builder.append("BOOL");
+        case INT -> builder.append("int32_t");
+        case LONG -> builder.append("int64_t");
+        case FLOAT -> builder.append("float");
+        case DOUBLE -> builder.append("double");
+        case CHAR -> builder.append("unichar");
+        case BYTE -> builder.append("char");
+        case SHORT -> builder.append("int16_t");
+        default -> builder.append(type.toString());
+      }
+      return null;
+    }
+
+    private String buildTypeArgumentString(List<? extends TypeMirror> typeArguments) {
+      List<String> typeArgumentStrings = new ArrayList<>();
+      NativeTypeVisitor argVisitor =
+          new NativeTypeVisitor(methodExecutable, referencedTypes, /* isTypeArgument= */ true);
+      for (TypeMirror typeArgument : typeArguments) {
+        if (TypeUtil.isDeclaredType(typeArgument)) {
+          StringBuilder sb = new StringBuilder();
+          typeArgument.accept(argVisitor, sb);
+          typeArgumentStrings.add(sb.toString());
+        } else {
+          typeArgumentStrings.add("id");
+        }
+      }
+      return Joiner.on(", ").join(typeArgumentStrings);
+    }
+  }
+
+  /** Direction in which a generated wrapper delegates calls across the language boundary. */
+  private enum MappingStrategy {
+    /** Delegates from a native Objective-C entry point to a Java implementation. */
+    NATIVE_TO_JAVA {
+      @Override
+      AdapterLookup.ConverterMatch findReturnConverter(
+          AdapterLookup lookup, TypeElement adapterClass, TypeMirror type) {
+        return lookup.findConverterByReturnType(adapterClass, type);
+      }
+
+      @Override
+      AdapterLookup.ConverterMatch findParamConverter(
+          AdapterLookup lookup, TypeElement adapterClass, TypeMirror type) {
+        return lookup.findConverterByParamType(adapterClass, type);
+      }
+
+      @Override
+      TypeMirror getParamCastType(TypeMirror parameterType, TypeMirror nativeType) {
+        return parameterType;
+      }
+
+      @Override
+      TypeMirror getReturnCastType(
+          TypeMirror originalMethodReturnType, TypeMirror adapterReturnType) {
+        return adapterReturnType;
+      }
+    },
+    /** Delegates from a Java entry point or dispatch helper to a native Objective-C selector. */
+    JAVA_TO_NATIVE {
+      @Override
+      AdapterLookup.ConverterMatch findReturnConverter(
+          AdapterLookup lookup, TypeElement adapterClass, TypeMirror type) {
+        return lookup.findConverterByParamType(adapterClass, type);
+      }
+
+      @Override
+      AdapterLookup.ConverterMatch findParamConverter(
+          AdapterLookup lookup, TypeElement adapterClass, TypeMirror type) {
+        return lookup.findConverterByReturnType(adapterClass, type);
+      }
+
+      @Override
+      TypeMirror getParamCastType(TypeMirror parameterType, TypeMirror nativeType) {
+        return nativeType;
+      }
+
+      @Override
+      TypeMirror getReturnCastType(
+          TypeMirror originalMethodReturnType, TypeMirror adapterReturnType) {
+        return originalMethodReturnType;
+      }
+    };
+
+    abstract AdapterLookup.ConverterMatch findReturnConverter(
+        AdapterLookup lookup, TypeElement adapterClass, TypeMirror type);
+
+    abstract AdapterLookup.ConverterMatch findParamConverter(
+        AdapterLookup lookup, TypeElement adapterClass, TypeMirror type);
+
+    abstract TypeMirror getParamCastType(TypeMirror parameterType, TypeMirror nativeType);
+
+    abstract TypeMirror getReturnCastType(
+        TypeMirror originalMethodReturnType, TypeMirror adapterReturnType);
+
+    AdapterLookup.ConverterMatch findConverter(
+        AdapterLookup lookup, TypeElement adapterClass, TypeMirror type, boolean isParam) {
+      return isParam
+          ? findParamConverter(lookup, adapterClass, type)
+          : findReturnConverter(lookup, adapterClass, type);
+    }
+
+    TypeMirror getCastType(TypeMirror type, TypeMirror nativeType, boolean isParam) {
+      return isParam ? getParamCastType(type, nativeType) : getReturnCastType(type, nativeType);
+    }
+  }
+
+  private record PrintableNativeType(
+      String nativeTypeName, boolean isUntranslatedInterface, boolean nullable) {}
+}

@@ -30,6 +30,7 @@ public class MethodDeclaration extends BodyDeclaration {
   private boolean isConstructor = false;
   private boolean hasDeclaration = true;
   private boolean isUnavailable = false;
+  private boolean isOptional = false;
   private ChildList<SingleVariableDeclaration> parameters =
       ChildList.create(SingleVariableDeclaration.class, this);
   private ChildLink<Block> body = ChildLink.create(Block.class, this);
@@ -45,6 +46,7 @@ public class MethodDeclaration extends BodyDeclaration {
     isConstructor = other.isConstructor();
     hasDeclaration = other.hasDeclaration();
     isUnavailable = other.isUnavailable();
+    isOptional = other.isOptional();
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
   }
@@ -105,6 +107,14 @@ public class MethodDeclaration extends BodyDeclaration {
   public MethodDeclaration setUnavailable(boolean value) {
     isUnavailable = value;
     return this;
+  }
+
+  public boolean isOptional() {
+    return isOptional;
+  }
+
+  public void setOptional(boolean value) {
+    isOptional = value;
   }
 
   public TypeMirror getReturnTypeMirror() {

@@ -18,18 +18,18 @@
 //
 // Exceptions converted to errors appear in this error domain and codes.
 //
-extern NSErrorDomain _Nonnull JREExceptionErrorDomain;
+FOUNDATION_EXPORT NSErrorDomain _Nonnull JREExceptionErrorDomain;
 
 typedef NS_ERROR_ENUM(JREExceptionErrorDomain, JREExceptionError){
     JREExceptionErrorUnknownException = 0,
 };
 
 // Key the original exception appears under in the generated error.
-extern NSErrorUserInfoKey _Nonnull JREUnderlyingExceptionKey;
+FOUNDATION_EXPORT NSErrorUserInfoKey _Nonnull JREUnderlyingExceptionKey;
 
 //
 // Return an NSError that represents a caught NSException (most likely a JavaLangThrowable).
 //
-extern NSError* _Nonnull JREErrorFromException(NSException* _Nonnull exception);
+FOUNDATION_EXPORT NSError* _Nonnull JREErrorFromException(NSException* _Nonnull exception);
 
 #endif  // _JreExceptionAdapters_H_

@@ -38,8 +38,8 @@
 #include "com/google/protobuf/MessageLite.h"
 #include "com/google/protobuf/MessageLiteOrBuilder.h"
 
-@interface ComGoogleProtobufAbstractMessageLite :
-    NSObject<ComGoogleProtobufMessageLite, ComGoogleProtobufMessageLiteOrBuilder>
+@interface ComGoogleProtobufAbstractMessageLite
+    : NSObject <NSCopying, ComGoogleProtobufMessageLite, ComGoogleProtobufMessageLiteOrBuilder>
 @end
 
 void ComGoogleProtobufAbstractMessageLite_init(ComGoogleProtobufAbstractMessageLite *self);

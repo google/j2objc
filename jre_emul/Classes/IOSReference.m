@@ -188,20 +188,52 @@ static Class GetReferentSubclass(id obj) {
   return cls;
 }
 
+// object_setClass() is not known to be safe on tagged pointers,
+// the behavior is undoc. Unfortunately, there is no public API
+// to know if a ptr is tagged. We can guess based on the class name but
+// that would be slower.
+//
+// Over time the exact structure of tagging has changed and can change
+// again in the future without warning and without recompilation of
+// J2ObjC apps. We need to be robust to that at compile time.
+// For all historical versions of the runtime the tagging has been indicated
+// by either the MSB or LSB, and we don't care about the rest of the
+// tag structure. MSB should always be safe and LSB is safe for aligned
+// pointers, so we'll test both regardless of current compilation target
+// unlike the actual runtime which uses more nuanced checks.
+#if __OBJC2__ && __LP64__
+#define TAG_MASK ((1ULL<<63) | 1ULL)
+#else  // No tagged pointer support
+#define TAG_MASK 0
+#endif  // __OBJC2__ && __LP64__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-objc-pointer-introspection"
+static inline bool IsTaggedPointer(id obj) {
+  return ((uintptr_t)obj & TAG_MASK) != 0;
+}
+#pragma clang diagnostic pop
+#undef TAG_MASK
+
++ (BOOL)isTaggedPointer:(id)pointer {
+  return IsTaggedPointer(pointer);
+}
 
 // Returns true if an object is constant. The retain and release methods
-// don't modify retain counts when they are INT_MAX (or UINT_MAX on some
-// architectures), so the retainCount test in ReferentSubclassRelease
+// don't modify retain counts when they are NSUIntegerMax (or NSIntegerMax
+// on some architectures), so the retainCount test in ReferentSubclassRelease
 // won't work. The only constants in translated code are string constants
 // and classes; since constants as reference referents do nothing in Java
 // (since they are never GC'd), with this test they will do nothing in
 // iOS as well.
-static bool IsConstantObject(id obj) {
+//
+// Note that we expect tagged pointers to also be "constant" in this test,
+// but have an addition check above.
+static inline bool IsConstantObject(id obj) {
   if ([obj isKindOfClass:[IOSClass class]]) {
     return true;
   }
   NSUInteger retainCount = [obj retainCount];
-  return retainCount == UINT_MAX || retainCount == INT_MAX;
+  return retainCount == NSUIntegerMax || retainCount == NSIntegerMax;
 }
 
 // Create a custom subclass for specified referent class.
@@ -224,9 +256,10 @@ static Class CreateReferentSubclass(Class cls) {
 
 // Checks whether a referent subclass exists, and creates one if
 // it doesn't. The exception is for constants, which are never
-// dealloced. Caller must hold the mutex.
+// dealloced and tagged pointers, which should not have their isa
+// swapped. Caller must hold the mutex.
 static void EnsureReferentSubclass(id referent) {
-  if (!GetReferentSubclass(referent) && !IsConstantObject(referent)) {
+  if (!GetReferentSubclass(referent) && !IsTaggedPointer(referent) && !IsConstantObject(referent)) {
     Class cls = object_getClass(referent);
     Class subclass = (Class)CFDictionaryGetValue(referent_subclass_map, cls);
     if (!subclass) {

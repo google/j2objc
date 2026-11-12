@@ -96,6 +96,11 @@ public class FunctionElement {
     return isMacro;
   }
 
+  /**
+   * Marks the function as a C preprocessor macro, whose arguments StatementGenerator parenthesizes
+   * unless they are simple, e.g. a name. A macro is printed like a function call, so its expansion
+   * must be a primary expression, e.g. "(p ?: ...)" or "[[x retain] autorelease]".
+   */
   public FunctionElement setIsMacro(boolean value) {
     isMacro = value;
     return this;

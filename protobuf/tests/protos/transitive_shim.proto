@@ -1,0 +1,9 @@
+edition = "2023";
+
+// A shim of a shim: re-exports moved_shim.proto, so the moved types are reached
+// through two levels of `import public`.
+package protos;
+
+import public "moved_shim.proto";
+
+option java_package = "com.google.j2objctest.transitive";

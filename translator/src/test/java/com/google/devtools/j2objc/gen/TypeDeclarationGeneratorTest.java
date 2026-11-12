@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -278,11 +279,13 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     // The static accessor must go in the companion class, not the @protocol.
     assertTranslatedLines(
         translation,
+        "NS_SWIFT_NAME(Test)",
         "@protocol Test < JavaObject >",
         "",
         "@end",
         "",
-        "@interface Test : NSObject",
+        "NS_SWIFT_NAME(TestCompanion)",
+        "@interface TestCompanion : NSObject",
         "",
         "+ (bool)FOO;");
   }
@@ -450,7 +453,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "import com.google.j2objc.annotations.Property; "
         + "public class Test {  "
         + "@Property(\"class\") int test; }", "Test", "Test.h");
-    assertError("Test.java:-1: Only static fields can be translated to class properties");
+    assertError("Test.java:-1: Only static members can be translated to class properties");
 
     // Verify static accessor generation must be enabled for class properties.
     ErrorUtil.reset();
@@ -510,11 +513,13 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     // The property must go in the companion class, not the @protocol.
     assertTranslatedLines(
         translation,
+        "NS_SWIFT_NAME(Test)",
         "@protocol Test < JavaObject >",
         "",
         "@end",
         "",
-        "@interface Test : NSObject",
+        "NS_SWIFT_NAME(TestCompanion)",
+        "@interface TestCompanion : NSObject",
         "@property (readonly, class) bool FOO NS_SWIFT_NAME(FOO);");
   }
 
@@ -1091,5 +1096,45 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     // Automatically generated annotation methods.
     assertTranslatedLines(translation, "- (bool)isEqual:(id)obj J2OBJC_TEXT_SEGMENT;");
     assertTranslatedLines(translation, "- (NSUInteger)hash J2OBJC_TEXT_SEGMENT;");
+  }
+
+  public void testOptionalProtocolMethodDeclaration() throws IOException {
+    CompilationUnit unit =
+        translateType(
+            "Test",
+            """
+            interface Test {
+              void requiredMethod();
+              void optionalMethod();
+            }
+            """);
+    unit.accept(
+        new TreeVisitor() {
+          @Override
+          public void endVisit(MethodDeclaration node) {
+            if (node.getName().toString().equals("optionalMethod")) {
+              node.setOptional(true);
+            }
+          }
+        });
+    AbstractTypeDeclaration typeNode = (AbstractTypeDeclaration) unit.getTypes().get(0);
+    SourceBuilder builder = new SourceBuilder(false);
+    TypeDeclarationGenerator.generate(builder, typeNode);
+    String header = builder.toString();
+    assertInTranslation(
+        header,
+        """
+        @protocol Test < JavaObject >
+
+        - (void)requiredMethod;
+
+        #if !defined(__swift__)
+        @optional
+        #endif
+
+        - (void)optionalMethod;
+
+        @end
+        """);
   }
 }
