@@ -16,14 +16,12 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.devtools.j2objc.types.ExecutablePair;
+import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.j2objc.annotations.ObjectiveCKmpMethod;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -41,7 +39,8 @@ final class KmpMethodHierarchy {
   record TypeMethods(
       TypeElement typeElement,
       ImmutableMap<String, ExecutablePair> allMethods,
-      ImmutableMap<String, AnnotationMirror> annotatedSignatures) {}
+      ImmutableMap<String, AnnotationMirror> annotatedSignatures,
+      ImmutableMap<String, ExecutableElement> annotatedMethods) {}
 
   private final TypeUtil typeUtil;
 
@@ -60,19 +59,58 @@ final class KmpMethodHierarchy {
    */
   private TypeMethods getTypeMethods(TypeElement typeElem, DeclaredType declaredType) {
     Map<String, ExecutablePair> methods = new LinkedHashMap<>();
-    Map<String, AnnotationMirror> annotations = new LinkedHashMap<>();
-    collectMethods(declaredType, methods, annotations);
+    Map<String, ExecutableElement> annotatedMethods = new LinkedHashMap<>();
+
+    for (TypeMirror supertype : typeUtil.directSupertypes(declaredType)) {
+      if (!(supertype instanceof DeclaredType superDeclared)) {
+        continue;
+      }
+      TypeElement superElem = TypeUtil.asTypeElement(superDeclared);
+      if (superElem == null) {
+        continue;
+      }
+      TypeMethods superMethods = getTypeMethods(superElem, superDeclared);
+      for (Map.Entry<String, ExecutablePair> entry : superMethods.allMethods().entrySet()) {
+        String sig = entry.getKey();
+        ExecutablePair inherited = entry.getValue();
+        if (!isInheritedBy(inherited.element(), typeElem)) {
+          continue;
+        }
+        ExecutablePair existing = methods.get(sig);
+        if (existing == null || takesPrecedence(inherited.element(), existing.element())) {
+          methods.put(sig, inherited);
+        }
+        ExecutableElement superAnnotated = superMethods.annotatedMethods().get(sig);
+        if (superAnnotated != null && takesPrecedence(superAnnotated, annotatedMethods.get(sig))) {
+          annotatedMethods.put(sig, superAnnotated);
+        }
+      }
+    }
+
+    for (ExecutableElement methodElem : ElementUtil.getExecutables(typeElem)) {
+      ExecutablePair method =
+          new ExecutablePair(methodElem, typeUtil.asMemberOf(declaredType, methodElem));
+      String sig = getOverrideSignature(method);
+      methods.put(sig, method);
+      if (ElementUtil.hasAnnotation(methodElem, ObjectiveCKmpMethod.class)) {
+        annotatedMethods.put(sig, methodElem);
+      }
+    }
+
+    ImmutableMap.Builder<String, AnnotationMirror> annotations = ImmutableMap.builder();
+    for (Map.Entry<String, ExecutableElement> entry : annotatedMethods.entrySet()) {
+      annotations.put(
+          entry.getKey(), ElementUtil.getAnnotation(entry.getValue(), ObjectiveCKmpMethod.class));
+    }
     return new TypeMethods(
-        typeElem, ImmutableMap.copyOf(methods), ImmutableMap.copyOf(annotations));
+        typeElem,
+        ImmutableMap.copyOf(methods),
+        annotations.buildOrThrow(),
+        ImmutableMap.copyOf(annotatedMethods));
   }
 
   /** Returns the JVM-style parameter-erased signature used to match method overrides. */
   private String getOverrideSignature(ExecutablePair method) {
-    return getOverrideSignature(method, typeUtil);
-  }
-
-  /** Returns the JVM-style parameter-erased signature using {@code typeUtil}. */
-  private static String getOverrideSignature(ExecutablePair method, TypeUtil typeUtil) {
     StringBuilder sb = new StringBuilder(ElementUtil.getName(method.element()));
     sb.append('(');
     for (TypeMirror pType : method.type().getParameterTypes()) {
@@ -88,11 +126,14 @@ final class KmpMethodHierarchy {
    */
   @Nullable TypeMethods getSupertypeHierarchy(TypeElement typeElem, String signature) {
     for (TypeMirror supertype : typeUtil.directSupertypes(typeElem.asType())) {
-      TypeElement superElement = TypeUtil.asTypeElement(supertype);
+      if (!(supertype instanceof DeclaredType superDeclared)) {
+        continue;
+      }
+      TypeElement superElement = TypeUtil.asTypeElement(superDeclared);
       if (superElement == null) {
         continue;
       }
-      TypeMethods superMethods = getTypeMethods(superElement, (DeclaredType) supertype);
+      TypeMethods superMethods = getTypeMethods(superElement, superDeclared);
       if (superMethods.annotatedSignatures().containsKey(signature)) {
         return superMethods;
       }
@@ -100,160 +141,48 @@ final class KmpMethodHierarchy {
     return null;
   }
 
-  /**
-   * Traverses {@code type} and its supertypes to populate {@code allMethods} and {@code
-   * annotatedSignatures}.
-   */
-  private void collectMethods(
-      DeclaredType type,
-      Map<String, ExecutablePair> allMethods,
-      Map<String, AnnotationMirror> annotatedSignatures) {
-    visitTypeHierarchy(
-        type,
-        typeUtil,
-        new HashSet<>(),
-        declaredType -> collectMethodsFromType(declaredType, allMethods, annotatedSignatures));
-  }
-
-  /**
-   * Records methods declared on {@code type}, keeping the most specific implementation per override
-   * signature and the first {@link ObjectiveCKmpMethod} annotation encountered.
-   */
-  private boolean collectMethodsFromType(
-      DeclaredType type,
-      Map<String, ExecutablePair> allMethods,
-      Map<String, AnnotationMirror> annotatedSignatures) {
-    TypeElement element = TypeUtil.asTypeElement(type);
-    for (ExecutableElement methodElem : ElementUtil.getExecutables(element)) {
-      ExecutablePair method = new ExecutablePair(methodElem, typeUtil.asMemberOf(type, methodElem));
-      String signature = getOverrideSignature(method);
-
-      if (!allMethods.containsKey(signature)) {
-        allMethods.put(signature, method);
-      } else {
-        ExecutablePair existing = allMethods.get(signature);
-        if (takesPrecedence(method, existing)) {
-          allMethods.put(signature, method);
-        }
-      }
-
-      AnnotationMirror annotation =
-          ElementUtil.getAnnotation(methodElem, ObjectiveCKmpMethod.class);
-      if (annotation != null && !annotatedSignatures.containsKey(signature)) {
-        annotatedSignatures.put(signature, annotation);
-      }
+  private static boolean isInheritedBy(ExecutableElement method, TypeElement subType) {
+    if (!ElementUtil.isInstanceMethod(method) || ElementUtil.isPrivate(method)) {
+      return false;
     }
-    return true;
+    if (subType.getKind().isInterface()) {
+      return ElementUtil.isPublic(method);
+    }
+    return !ElementUtil.getVisibilityModifiers(method).isEmpty()
+        || ElementUtil.getPackage(method).equals(ElementUtil.getPackage(subType));
   }
 
-  private static boolean takesPrecedence(ExecutablePair a, ExecutablePair b) {
+  private static boolean takesPrecedence(ExecutableElement a, @Nullable ExecutableElement b) {
     if (b == null) {
       return true;
     }
-    // Since we traverse from subclass to superclass/interfaces (bottom-up), 'b' (already seen)
-    // is generally more specific than 'a' (currently visiting).
-    // The only case 'a' should replace 'b' is when 'a' is a concrete class implementation
-    // and 'b' is an interface declaration, ensuring we use the class's method element.
-    boolean aIsClass = ElementUtil.getDeclaringClass(a.element()).getKind().isClass();
-    boolean bIsClass = ElementUtil.getDeclaringClass(b.element()).getKind().isClass();
-    return aIsClass && !bIsClass;
-  }
-
-  /** A visitor for types in a type hierarchy. */
-  @FunctionalInterface
-  private interface TypeHierarchyVisitor {
-    /**
-     * Visits a type in a type hierarchy.
-     *
-     * @param declaredType the parameterized {@link DeclaredType} as referenced in the hierarchy
-     *     (preserving type arguments for {@link TypeUtil#asMemberOf})
-     * @return {@code true} to continue visiting supertypes, or {@code false} to stop traversal
-     *     early
-     */
-    boolean visit(DeclaredType declaredType);
-  }
-
-  @CanIgnoreReturnValue
-  private static boolean visitTypeHierarchy(
-      DeclaredType type,
-      TypeUtil typeUtil,
-      Set<TypeElement> visited,
-      TypeHierarchyVisitor visitor) {
-    if (TypeUtil.isNone(type)) {
-      return true;
-    }
-    TypeElement element = TypeUtil.asTypeElement(type);
-    if (element == null || !visited.add(element)) {
-      return true;
-    }
-    if (!visitor.visit(type)) {
+    TypeElement aOwner = ElementUtil.getDeclaringClass(a);
+    TypeElement bOwner = ElementUtil.getDeclaringClass(b);
+    if (aOwner == null || bOwner == null) {
       return false;
     }
-    for (TypeMirror supertype : typeUtil.directSupertypes(type)) {
-      if (!visitTypeHierarchy((DeclaredType) supertype, typeUtil, visited, visitor)) {
-        return false;
-      }
-    }
-    return true;
+    return aOwner.getKind().isClass() && !bOwner.getKind().isClass();
   }
 
   /** Returns {@code method} or its superinterface declaration if it requires static dispatch. */
   @Nullable ExecutableElement findInterfaceMethodRequiringDispatch(
       @Nullable ExecutableElement method) {
-    if (method == null || ElementUtil.isStatic(method) || ElementUtil.isConstructor(method)) {
+    if (method == null
+        || ElementUtil.isStatic(method)
+        || ElementUtil.isConstructor(method)
+        || method instanceof GeneratedElement) {
       return null;
     }
     TypeElement declaringClass = ElementUtil.getDeclaringClass(method);
-    if (declaringClass == null || !declaringClass.getKind().isInterface()) {
+    if (declaringClass == null
+        || !declaringClass.getKind().isInterface()
+        || declaringClass instanceof GeneratedElement) {
       return null;
     }
-    if (ElementUtil.getAnnotation(method, ObjectiveCKmpMethod.class) != null) {
+    if (ElementUtil.hasAnnotation(method, ObjectiveCKmpMethod.class)) {
       return method;
     }
-    return findSuperInterfaceRequiringDispatch(
-        (DeclaredType) declaringClass.asType(),
-        getOverrideSignature(new ExecutablePair(method)),
-        new HashSet<>());
-  }
-
-  /**
-   * Searches superinterfaces of {@code type} for an annotated method matching {@code signature}.
-   */
-  private @Nullable ExecutableElement findSuperInterfaceRequiringDispatch(
-      DeclaredType type, String signature, Set<TypeElement> visited) {
-    AnnotatedSuperMethodFinder finder = new AnnotatedSuperMethodFinder(typeUtil, signature);
-    visitTypeHierarchy(type, typeUtil, visited, finder);
-    return finder.result;
-  }
-
-  /**
-   * Visitor that searches a type hierarchy for the first {@link ObjectiveCKmpMethod}-annotated
-   * method matching a target override signature.
-   */
-  private static class AnnotatedSuperMethodFinder implements TypeHierarchyVisitor {
-    private final TypeUtil typeUtil;
-    private final String signature;
-    private @Nullable ExecutableElement result;
-
-    private AnnotatedSuperMethodFinder(TypeUtil typeUtil, String signature) {
-      this.typeUtil = typeUtil;
-      this.signature = signature;
-    }
-
-    @Override
-    public boolean visit(DeclaredType declaredType) {
-      for (ExecutableElement methodElem :
-          ElementUtil.getExecutables(TypeUtil.asTypeElement(declaredType))) {
-        if (ElementUtil.getAnnotation(methodElem, ObjectiveCKmpMethod.class) != null) {
-          ExecutablePair pair =
-              new ExecutablePair(methodElem, typeUtil.asMemberOf(declaredType, methodElem));
-          if (getOverrideSignature(pair, typeUtil).equals(signature)) {
-            result = methodElem;
-            return false;
-          }
-        }
-      }
-      return true;
-    }
+    String signature = getOverrideSignature(new ExecutablePair(method));
+    return getTypeMethods(declaringClass).annotatedMethods().get(signature);
   }
 }
