@@ -258,6 +258,56 @@ public class KmpTypeConverterTest extends GenerationTest {
         .inOrder();
   }
 
+  public void testCalculateNativeType_typeVariablesAndBounds() {
+    CompilationUnit unit =
+        compileType(
+            "Sample",
+            """
+            import java.util.List;
+            import org.jspecify.annotations.Nullable;
+            public class Sample<U, B extends PlainObj, P extends MyProto> {
+              public U unbounded() { return null; }
+              public @Nullable U nullableUnbounded() { return null; }
+              public B classBounded() { return null; }
+              public @Nullable B nullableClassBounded() { return null; }
+              public P interfaceBounded() { return null; }
+              public List<U> unboundedList() { return null; }
+              public List<B> classBoundedList() { return null; }
+              public List<P> interfaceBoundedList() { return null; }
+            }
+            """);
+    KmpTypeConverter converter = createConverter(unit);
+
+    ExecutableElement unbounded = findMethod(unit, "unbounded");
+    NativeType unboundedNative =
+        converter.calculateNativeType(unbounded.getReturnType(), unbounded);
+    assertThat(unboundedNative.getName()).isEqualTo("id");
+    assertThat(unboundedNative.getReferencedTypes()).isEmpty();
+
+    assertThat(returnNativeName(unit, converter, "nullableUnbounded")).isEqualTo("id _Nullable");
+
+    ExecutableElement classBounded = findMethod(unit, "classBounded");
+    NativeType classBoundedNative =
+        converter.calculateNativeType(classBounded.getReturnType(), classBounded);
+    assertThat(classBoundedNative.getName()).isEqualTo("PlainObj *");
+    assertThat(classBoundedNative.getReferencedTypes())
+        .containsExactly(resolveType(unit, "PlainObj"));
+
+    assertThat(returnNativeName(unit, converter, "nullableClassBounded"))
+        .isEqualTo("PlainObj * _Nullable");
+    assertThat(returnNativeName(unit, converter, "interfaceBounded")).isEqualTo("id<MyProto>");
+
+    assertThat(returnNativeName(unit, converter, "unboundedList")).isEqualTo("NSArray<id> *");
+    ExecutableElement classBoundedList = findMethod(unit, "classBoundedList");
+    NativeType classBoundedListNative =
+        converter.calculateNativeType(classBoundedList.getReturnType(), classBoundedList);
+    assertThat(classBoundedListNative.getName()).isEqualTo("NSArray<PlainObj *> *");
+    assertThat(classBoundedListNative.getReferencedTypes())
+        .contains(resolveType(unit, "PlainObj"));
+    assertThat(returnNativeName(unit, converter, "interfaceBoundedList"))
+        .isEqualTo("NSArray<id<MyProto>> *");
+  }
+
   public void testCalculateNativeType_nullabilityAndVoidExemption() {
     CompilationUnit unit =
         compileType(
@@ -738,5 +788,186 @@ public class KmpTypeConverterTest extends GenerationTest {
                     take,
                     params));
     assertThat(error).hasMessageThat().contains("Cannot find abstract SAM method");
+  }
+
+  public void testCanReverseAdapt_bidirectionalAndPassThroughTypes() {
+    CompilationUnit unit =
+        compileType(
+            "Sample",
+            """
+            import java.util.List;
+            public class Sample {
+              private Adapter adapterRef;
+              public List<String> echo(List<String> items, String tag, int count, PlainObj plain) {
+                return items;
+              }
+              public void acceptVoid(String tag, int count) {}
+              public Boolean missingBoxed() { return Boolean.TRUE; }
+            }
+            """);
+    KmpTypeConverter converter = createConverter(unit);
+    TypeMirror adapter = resolveType(unit, "Adapter");
+    ExecutableElement echo = findMethod(unit, "echo");
+    ExecutableElement acceptVoid = findMethod(unit, "acceptVoid");
+    ExecutableElement missingBoxed = findMethod(unit, "missingBoxed");
+    TypeMirror intAdapter = echo.getParameters().get(2).asType();
+
+    assertThat(converter.canReverseAdapt(new ExecutablePair(echo), adapter)).isTrue();
+    assertThat(converter.canReverseAdapt(new ExecutablePair(acceptVoid), adapter)).isTrue();
+    assertThat(converter.canReverseAdapt(new ExecutablePair(missingBoxed), adapter)).isFalse();
+    assertThat(converter.canReverseAdapt(new ExecutablePair(echo), null)).isFalse();
+    assertThat(converter.canReverseAdapt(new ExecutablePair(echo), intAdapter)).isFalse();
+    assertThat(converter.canReverseAdaptReturnType(acceptVoid.getReturnType(), null)).isTrue();
+    assertThat(converter.canReverseAdaptReturnType(echo.getReturnType(), null)).isFalse();
+    assertThat(converter.canReverseAdaptReturnType(echo.getReturnType(), adapter)).isTrue();
+  }
+
+  public void testCanReverseAdapt_asymmetricCustomAndStringConvertersReturnFalse()
+      throws IOException {
+    addSourceFile(
+        """
+        public class AsymmetricAdapter {
+          public static native PlainObj toPlainObj(Object obj) /*-[ return nil; ]-*/;
+          public static native Object fromSubPlainObj(SubPlainObj obj) /*-[ return nil; ]-*/;
+          public static native Object fromString(String s) /*-[ return nil; ]-*/;
+        }
+        """,
+        "AsymmetricAdapter.java");
+    CompilationUnit unit =
+        compileType(
+            "Sample",
+            """
+            public class Sample {
+              private AsymmetricAdapter adapterRef;
+              public void takeToOnly(PlainObj p) {}
+              public PlainObj returnToOnly() { return null; }
+              public void takeFromOnly(SubPlainObj p) {}
+              public SubPlainObj returnFromOnly() { return null; }
+              public void takeOneWayString(String s) {}
+              public String returnOneWayString() { return ""; }
+            }
+            """);
+    KmpTypeConverter converter = createConverter(unit);
+    TypeMirror adapter = resolveType(unit, "AsymmetricAdapter");
+
+    assertThat(converter.canReverseAdapt(new ExecutablePair(findMethod(unit, "takeToOnly")), adapter))
+        .isFalse();
+    assertThat(
+            converter.canReverseAdapt(
+                new ExecutablePair(findMethod(unit, "returnToOnly")), adapter))
+        .isFalse();
+    assertThat(
+            converter.canReverseAdapt(
+                new ExecutablePair(findMethod(unit, "takeFromOnly")), adapter))
+        .isFalse();
+    assertThat(
+            converter.canReverseAdapt(
+                new ExecutablePair(findMethod(unit, "returnFromOnly")), adapter))
+        .isFalse();
+    assertThat(
+            converter.canReverseAdapt(
+                new ExecutablePair(findMethod(unit, "takeOneWayString")), adapter))
+        .isFalse();
+    assertThat(
+            converter.canReverseAdapt(
+                new ExecutablePair(findMethod(unit, "returnOneWayString")), adapter))
+        .isFalse();
+  }
+
+  public void testCanReverseAdapt_noneExactRequiredReturnsFalse() {
+    CompilationUnit unit =
+        compileType(
+            "Sample",
+            """
+            import java.util.List;
+            public class Sample {
+              private WildcardAdapter wildcardRef;
+              public void takeBoolList(List<Boolean> flags) {}
+              public List<Boolean> getBoolList() { return null; }
+            }
+            """);
+    KmpTypeConverter converter = createConverter(unit);
+    TypeMirror wildcardAdapter = resolveType(unit, "WildcardAdapter");
+
+    assertThat(
+            converter.canReverseAdapt(
+                new ExecutablePair(findMethod(unit, "takeBoolList")), wildcardAdapter))
+        .isFalse();
+    assertThat(
+            converter.canReverseAdapt(
+                new ExecutablePair(findMethod(unit, "getBoolList")), wildcardAdapter))
+        .isFalse();
+  }
+
+  public void testCanReverseAdapt_composingConvertersRecurseIntoTypeArguments() throws IOException {
+    addSourceFile(
+        """
+        import java.util.List;
+        import java.util.function.Function;
+        public class ComposingPartialBoolAdapter {
+          public static native <T> List<T> toJavaUtilList(
+              Object list, Function<Object, T> conv) /*-[ return nil; ]-*/;
+          public static native <T> Object fromJavaUtilList(
+              List<T> list, Function<T, Object> conv) /*-[ return nil; ]-*/;
+          public static native Object fromBoolean(Boolean b) /*-[ return nil; ]-*/;
+        }
+        """,
+        "ComposingPartialBoolAdapter.java");
+    CompilationUnit unit =
+        compileType(
+            "Sample",
+            """
+            import java.util.List;
+            public class Sample {
+              private Adapter adapterRef;
+              private ComposingPartialBoolAdapter partialBoolRef;
+              public List<List<String>> nested(List<List<String>> items) { return items; }
+              public List<Boolean> boolList(List<Boolean> flags) { return flags; }
+            }
+            """);
+    KmpTypeConverter converter = createConverter(unit);
+
+    assertThat(
+            converter.canReverseAdapt(
+                new ExecutablePair(findMethod(unit, "nested")), resolveType(unit, "Adapter")))
+        .isTrue();
+    assertThat(
+            converter.canReverseAdapt(
+                new ExecutablePair(findMethod(unit, "boolList")),
+                resolveType(unit, "ComposingPartialBoolAdapter")))
+        .isFalse();
+  }
+
+  public void testMaybeCast_narrowsSupertypeAndSkipsObjectOrAssignable() {
+    CompilationUnit unit =
+        compileType(
+            "Sample",
+            """
+            public class Sample {
+              public void inspect(PlainObj plain, SubPlainObj sub) {}
+            }
+            """);
+    KmpTypeConverter converter = createConverter(unit);
+    ExecutableElement inspect = findMethod(unit, "inspect");
+    Expression plainExpr = new SimpleName(inspect.getParameters().get(0));
+    Expression subExpr = new SimpleName(inspect.getParameters().get(1));
+    TypeMirror plainType = plainExpr.getTypeMirror();
+    TypeMirror subType = subExpr.getTypeMirror();
+    TypeMirror objectType = unit.getEnv().typeUtil().getJavaObject().asType();
+
+    Expression narrowed = converter.maybeCast(subType, plainExpr);
+    assertThat(narrowed).isInstanceOf(CastExpression.class);
+    assertThat(
+            unit.getEnv()
+                .typeUtil()
+                .isSameType(((CastExpression) narrowed).getType().getTypeMirror(), subType))
+        .isTrue();
+    assertThat(converter.maybeCast(plainType, subExpr)).isSameInstanceAs(subExpr);
+    assertThat(converter.maybeCast(objectType, subExpr)).isSameInstanceAs(subExpr);
+    assertThat(converter.maybeCast(unit.getEnv().typeUtil().getVoid(), subExpr))
+        .isSameInstanceAs(subExpr);
+    assertThat(converter.maybeCast(new NativeType("id"), subExpr)).isSameInstanceAs(subExpr);
+    assertThat(converter.maybeCast(new NativeType("id _Nullable"), subExpr))
+        .isSameInstanceAs(subExpr);
   }
 }
