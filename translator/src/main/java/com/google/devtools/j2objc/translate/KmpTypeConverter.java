@@ -33,6 +33,7 @@ import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
+import com.google.j2objc.annotations.ObjectiveCKmpMethod;
 import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
@@ -42,11 +43,12 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.SimpleTypeVisitor9;
 
 /**
  * Handles Java-to-Objective-C type mapping, nullability/generic formatting, and adapter converter
- * invocation synthesis for {@link com.google.j2objc.annotations.ObjectiveCKmpMethod}.
+ * invocation synthesis for {@link ObjectiveCKmpMethod}.
  */
 final class KmpTypeConverter {
 
@@ -358,11 +360,14 @@ final class KmpTypeConverter {
     throw new AssertionError("Cannot find abstract SAM method in " + interfaceElement);
   }
 
-  /** Inserts a cast to {@code targetType} unless {@code expression} is already assignable. */
-  private Expression maybeCast(TypeMirror targetType, Expression expression) {
-    // If the target type is Object (id), we don't need to cast the expression.
-    if (TypeUtil.isDeclaredType(targetType)
-        && TypeUtil.getQualifiedName(targetType).equals("java.lang.Object")) {
+  /** Inserts a cast to {@code targetType} unless {@code targetType} is void/id or assignable. */
+  Expression maybeCast(TypeMirror targetType, Expression expression) {
+    if (TypeUtil.isVoid(targetType)
+        || (TypeUtil.isDeclaredType(targetType)
+            && TypeUtil.getQualifiedName(targetType).equals("java.lang.Object"))
+        || (targetType instanceof NativeType nativeType
+            && (nativeType.getName().equals("id")
+                || nativeType.getName().equals("id _Nullable")))) {
       return expression;
     }
     if (!typeUtil.isSameType(expression.getTypeMirror(), targetType)
@@ -506,12 +511,28 @@ final class KmpTypeConverter {
       return null;
     }
 
+    @Override
+    public Void visitTypeVariable(TypeVariable type, StringBuilder builder) {
+      if (isTypeSupported(type)) {
+        typeUtil.erasure(type).accept(this, builder);
+      } else {
+        for (TypeElement bound : typeUtil.getObjcUpperBounds(type)) {
+          referencedTypes.add(bound.asType());
+        }
+        builder.append(nameTable.getObjCTypeDeclaration(type));
+      }
+      if (!isTypeArgument && isNullable(type) && !builder.toString().endsWith("_Nullable")) {
+        builder.append(" _Nullable");
+      }
+      return null;
+    }
+
     private String buildTypeArgumentString(List<? extends TypeMirror> typeArguments) {
       List<String> typeArgumentStrings = new ArrayList<>();
       NativeTypeVisitor argVisitor =
           new NativeTypeVisitor(methodExecutable, referencedTypes, /* isTypeArgument= */ true);
       for (TypeMirror typeArgument : typeArguments) {
-        if (TypeUtil.isDeclaredType(typeArgument)) {
+        if (TypeUtil.isDeclaredType(typeArgument) || typeArgument instanceof TypeVariable) {
           StringBuilder sb = new StringBuilder();
           typeArgument.accept(argVisitor, sb);
           typeArgumentStrings.add(sb.toString());
