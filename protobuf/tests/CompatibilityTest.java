@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import protos.ConflictingClassNameOuterClass.ConflictingClassName;
 import protos.EmptyFile;
 import protos.MsgWithDefaults;
@@ -442,6 +443,65 @@ public class CompatibilityTest extends ProtobufTest {
   public void testParseDelimitedFromEmptyStream() throws Exception {
     TypicalData output = TypicalData.parseDelimitedFrom(new ByteArrayInputStream(new byte[0]));
     assertNull(output);
+  }
+
+  public void testDelimitedNegativeLengthThrowsException() throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.getEmptyRegistry();
+    // 5-byte unsigned 32-bit varints whose high bit causes signed int truncation (< 0).
+    assertDelimitedNegativeLengthThrows(
+        asBytes(new int[] {0x80, 0x80, 0x80, 0x80, 0x08}), registry);
+    assertDelimitedNegativeLengthThrows(
+        asBytes(new int[] {0x80, 0x80, 0x80, 0x80, 0x08, 0x08, 0x06}), registry);
+    assertDelimitedNegativeLengthThrows(
+        asBytes(new int[] {0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0x08, 0x06}), registry);
+    // 10-byte varint encoding -1.
+    assertDelimitedNegativeLengthThrows(
+        asBytes(new int[] {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x08, 0x06}),
+        registry);
+  }
+
+  @SuppressWarnings("ProtoParseWithRegistry")
+  private void assertDelimitedNegativeLengthThrows(byte[] wireBytes, ExtensionRegistry registry)
+      throws Exception {
+    try {
+      TypicalData.Builder builder = TypicalData.newBuilder();
+      builder.mergeDelimitedFrom(new ByteArrayInputStream(wireBytes));
+      builder.build();
+      fail("Expected InvalidProtocolBufferException from mergeDelimitedFrom.");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected
+    }
+
+    try {
+      TypicalData.Builder builder = TypicalData.newBuilder();
+      builder.mergeDelimitedFrom(new ByteArrayInputStream(wireBytes), registry);
+      builder.build();
+      fail("Expected InvalidProtocolBufferException from mergeDelimitedFrom with registry.");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected
+    }
+
+    // Java AbstractParser passes negative sizes to LimitedInputStream (returning an empty message)
+    // instead of rejecting them; native ObjC runtime rejects lengths above INT_MAX.
+    if (Objects.equals(System.getProperty("java.vendor"), "J2ObjC")) {
+      try {
+        @SuppressWarnings("unused")
+        TypicalData unusedMessage =
+            TypicalData.parseDelimitedFrom(new ByteArrayInputStream(wireBytes));
+        fail("Expected InvalidProtocolBufferException from parseDelimitedFrom.");
+      } catch (InvalidProtocolBufferException expected) {
+        // Expected
+      }
+
+      try {
+        @SuppressWarnings("unused")
+        TypicalData unusedMessage =
+            TypicalData.parseDelimitedFrom(new ByteArrayInputStream(wireBytes), registry);
+        fail("Expected InvalidProtocolBufferException from parseDelimitedFrom with registry.");
+      } catch (InvalidProtocolBufferException expected) {
+        // Expected
+      }
+    }
   }
 
   public void testFindFieldByNumber() throws Exception {

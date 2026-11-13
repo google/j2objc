@@ -193,6 +193,12 @@ class CGPCodedInputStream {
   // be passed unchanged to the corresponding call to PopLimit().
   Limit PushLimit(int byte_limit);
 
+  // Places a limit on the number of bytes that the stream may read,
+  // starting from the current position. Fails and leaves the stream limit
+  // unchanged if |byte_limit| is negative, overflows INT_MAX, or exceeds the
+  // currently active stream limit.
+  bool TryPushLimit(int byte_limit, Limit* old_limit);
+
   // Pops the last limit pushed by PushLimit().  The input must be the value
   // returned by that call to PushLimit().
   void PopLimit(Limit limit);
@@ -203,6 +209,9 @@ class CGPCodedInputStream {
 
   // Returns current position relative to the beginning of the input stream.
   int CurrentPosition() const;
+
+  // Returns the number of unread bytes currently in memory, clamped to any active limit.
+  int BufferSize() const;
 
   // J2ObjC additions ------------------------------------------------
   bool ReadRetainedNSString(NSString **value);
@@ -276,9 +285,6 @@ class CGPCodedInputStream {
 #ifdef __cplusplus
   bool ReadStringFallback(string* buffer, int size);
 #endif
-
-  // Return the size of the buffer.
-  int BufferSize() const;
 };
 
 // inline methods ====================================================
@@ -372,22 +378,26 @@ inline CGPCodedInputStream::CGPCodedInputStream(JavaIoInputStream *input,
     legitimate_message_end_(false),
     current_limit_(INT_MAX),
     buffer_size_after_limit_(0) {
-  // Eagerly Refresh() so buffer space is immediately available.
-  Refresh();
+  // Eagerly Refresh() when non-negative so buffer space is immediately available.
+  if (input_limit >= 0) {
+    Refresh();
+  }
 }
 
-inline CGPCodedInputStream::CGPCodedInputStream(const void *buffer, int size)
-  : input_(nil),
-    input_limit_(INT_MAX),
-    bytes_(nil),
-    buffer_((uint8 *)buffer),
-    buffer_end_((uint8 *)buffer + size),
-    total_bytes_read_(size),
-    last_tag_(0),
-    legitimate_message_end_(false),
-    current_limit_(size),
-    buffer_size_after_limit_(0) {
-}
+// Clamp buffer_end_ on non-positive sizes so BufferSize() stays non-negative;
+// keeping current_limit_ negative ensures ConsumedEntireMessage() fails.
+inline CGPCodedInputStream::CGPCodedInputStream(const void* buffer, int size)
+    : input_(nil),
+      input_limit_(INT_MAX),
+      bytes_(nil),
+      buffer_(static_cast<const uint8*>(buffer)),
+      buffer_end_(size > 0 ? static_cast<const uint8*>(buffer) + size
+                           : static_cast<const uint8*>(buffer)),
+      total_bytes_read_(size > 0 ? size : 0),
+      last_tag_(0),
+      legitimate_message_end_(false),
+      current_limit_(size),
+      buffer_size_after_limit_(0) {}
 
 #endif // __cplusplus
 

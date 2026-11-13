@@ -68,7 +68,11 @@ void CGPRepeatedFieldReserve(CGPRepeatedField *field, uint32_t new_size, size_t 
 
 CGP_ALWAYS_INLINE void CGPRepeatedFieldReserveAdditionalCapacity(
     CGPRepeatedField *field, uint32_t size_to_add, size_t elemSize) {
-  uint32_t new_size = CGPRepeatedFieldSize(field) + size_to_add;
+  uint32_t current_size = CGPRepeatedFieldSize(field);
+  // Saturate to UINT32_MAX on overflow so wrapping past 2^32 cannot bypass
+  // the INT_MAX check in CGPRepeatedFieldReserve.
+  uint32_t new_size =
+      (size_to_add > UINT32_MAX - current_size) ? UINT32_MAX : current_size + size_to_add;
   if (new_size > CGPRepeatedFieldTotalSize(field)) {
     CGPRepeatedFieldReserve(field, new_size, elemSize);
   }

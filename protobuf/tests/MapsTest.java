@@ -18,6 +18,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
 import com.google.protobuf.ExtensionRegistry;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.MapEntry;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -414,6 +415,58 @@ public class MapsTest extends ProtobufTest {
       fail("Expected UninitializedMessageException");
     } catch (RuntimeException e) {
       // Expected.
+    }
+  }
+
+  public void testParseMapEntryWithInvalidLengthThrowsException() throws Exception {
+    byte[][] invalidPayloads = {
+      // Map int_int (tag 0x2A) with 0x80000000 entry length.
+      asBytes(new int[] {0x2A, 0x80, 0x80, 0x80, 0x80, 0x08, 0x08, 0x07, 0x10, 0x31}),
+      // Map int_int (tag 0x2A) with 0xFFFFFFFF entry length.
+      asBytes(new int[] {0x2A, 0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0x08, 0x07, 0x10, 0x31}),
+      // Map int_int (tag 0x2A) with 10-byte varint -1 entry length.
+      asBytes(
+          new int[] {
+            0x2A, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x08, 0x07, 0x10, 0x31
+          }),
+      // Map int_int (tag 0x2A) with INT_MAX (0x7FFFFFFF) entry length.
+      asBytes(new int[] {0x2A, 0xFF, 0xFF, 0xFF, 0xFF, 0x07, 0x08, 0x07, 0x10, 0x31}),
+      // Map int_int (tag 0x2A) with truncated positive length (claims 8 bytes, only 4 present).
+      asBytes(new int[] {0x2A, 0x08, 0x08, 0x07, 0x10, 0x31}),
+      // Map string_string (tag 0x0A) with 0x80000000 entry length.
+      asBytes(new int[] {0x0A, 0x80, 0x80, 0x80, 0x80, 0x08, 0x0A, 0x01, 0x61, 0x12, 0x01, 0x62}),
+      // Map string_string (tag 0x0A) with truncated positive entry length.
+      asBytes(new int[] {0x0A, 0x0A, 0x0A, 0x01, 0x61, 0x12, 0x01, 0x62}),
+    };
+
+    for (byte[] payload : invalidPayloads) {
+      assertInvalidMapMsgThrows(payload);
+    }
+  }
+
+  private static void assertInvalidMapMsgThrows(byte[] wireBytes) throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.getEmptyRegistry();
+    try {
+      MapMsg.parseFrom(wireBytes, registry);
+      fail("Expected InvalidProtocolBufferException");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected for negative, overflowing, or truncated map entry lengths.
+    }
+
+    try {
+      MapMsg.parseFrom(new ByteArrayInputStream(wireBytes), registry);
+      fail("Expected InvalidProtocolBufferException");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected for negative, overflowing, or truncated map entry lengths.
+    }
+
+    try {
+      @SuppressWarnings("unused")
+      MapMsg unusedMessage =
+          MapMsg.newBuilder().mergeFrom(new ByteArrayInputStream(wireBytes), registry).build();
+      fail("Expected InvalidProtocolBufferException");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected for negative, overflowing, or truncated map entry lengths.
     }
   }
 
