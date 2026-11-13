@@ -57,7 +57,7 @@ public class KmpMethodHierarchyTest extends GenerationTest {
   }
 
   private KmpMethodHierarchy createHierarchy(CompilationUnit unit) {
-    return new KmpMethodHierarchy(unit.getEnv().typeUtil());
+    return new KmpMethodHierarchy(unit.getEnv().typeUtil(), unit.getEnv().elementUtil());
   }
 
   private static TypeElement findType(CompilationUnit unit, String simpleName) {
@@ -465,5 +465,72 @@ public class KmpMethodHierarchyTest extends GenerationTest {
     assertThat(overridingResolved.annotatedSignatures()).containsKey(sig);
     assertThat(ElementUtil.getDeclaringClass(overridingResolved.allMethods().get(sig).element()))
         .isEqualTo(overridingSub);
+  }
+
+  public void testGetTypeMethods_subinterfaceAnnotationOverridesSuperinterfaceAnnotation() {
+    CompilationUnit unit =
+        compileType(
+            "ForwardDiamond",
+            """
+            import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+            import java.util.List;
+
+            interface SuperI {
+              @ObjectiveCKmpMethod(selector = "superHandle:", adapter = DummyAdapter.class)
+              default void handle(List<String> items) {}
+            }
+
+            interface SubI extends SuperI {
+              @ObjectiveCKmpMethod(selector = "subHandle:", adapter = DummyAdapter.class)
+              @Override
+              default void handle(List<String> items) {}
+            }
+
+            class UnannotatedBase {
+              public void handle(List<String> items) {}
+            }
+
+            public class ForwardDiamond extends UnannotatedBase implements SuperI, SubI {}
+
+            class ReverseDiamond extends UnannotatedBase implements SubI, SuperI {}
+            """);
+    KmpMethodHierarchy hierarchy = createHierarchy(unit);
+    String sig = "handle(Ljava/util/List;)";
+    ExecutableElement subHandle = findMethod(findType(unit, "SubI"), "handle");
+
+    for (String className : ImmutableList.of("ForwardDiamond", "ReverseDiamond")) {
+      TypeMethods resolved = hierarchy.getTypeMethods(findType(unit, className));
+      assertThat(ElementUtil.getAnnotationValue(resolved.annotatedSignatures().get(sig), "selector"))
+          .isEqualTo("subHandle:");
+      assertThat(resolved.annotatedMethods().get(sig)).isEqualTo(subHandle);
+    }
+  }
+
+  public void testGetTypeMethods_subinterfaceDefaultOverrideTakesPrecedence() {
+    CompilationUnit unit =
+        compileType(
+            "Diamond",
+            """
+            import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+            import java.util.List;
+
+            interface SuperI {
+              @ObjectiveCKmpMethod(selector = "handle:", adapter = DummyAdapter.class)
+              default void handle(List<String> items) {}
+            }
+
+            interface SubI extends SuperI {
+              @Override
+              default void handle(List<String> items) {}
+            }
+
+            public class Diamond implements SuperI, SubI {}
+            """);
+    TypeMethods resolved = createHierarchy(unit).getTypeMethods(findType(unit, "Diamond"));
+
+    String sig = "handle(Ljava/util/List;)";
+    assertThat(resolved.annotatedSignatures()).containsKey(sig);
+    assertThat(ElementUtil.getDeclaringClass(resolved.allMethods().get(sig).element()))
+        .isEqualTo(findType(unit, "SubI"));
   }
 }

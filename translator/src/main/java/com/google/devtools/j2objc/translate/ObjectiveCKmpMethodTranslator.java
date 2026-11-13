@@ -126,7 +126,7 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
   public ObjectiveCKmpMethodTranslator(CompilationUnit unit) {
     super(unit);
     this.typeConverter = new KmpTypeConverter(typeUtil, nameTable, options);
-    this.methodHierarchy = new KmpMethodHierarchy(typeUtil);
+    this.methodHierarchy = new KmpMethodHierarchy(typeUtil, elementUtil);
   }
 
   // Re-run lambda lowering passes because ObjectiveCKmpMethodTranslator synthesizes new

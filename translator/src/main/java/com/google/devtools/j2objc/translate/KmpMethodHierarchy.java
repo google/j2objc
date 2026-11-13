@@ -31,7 +31,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Resolves {@link ObjectiveCKmpMethod} method hierarchies, supertype annotations, and interface
- * dispatch targets.
+ * dispatch targets using Java overriding semantics.
  */
 final class KmpMethodHierarchy {
 
@@ -43,9 +43,11 @@ final class KmpMethodHierarchy {
       ImmutableMap<String, ExecutableElement> annotatedMethods) {}
 
   private final TypeUtil typeUtil;
+  private final ElementUtil elementUtil;
 
-  KmpMethodHierarchy(TypeUtil typeUtil) {
+  KmpMethodHierarchy(TypeUtil typeUtil, ElementUtil elementUtil) {
     this.typeUtil = typeUtil;
+    this.elementUtil = elementUtil;
   }
 
   /** Collects all reachable methods and annotated signatures for {@code typeElem}. */
@@ -152,7 +154,7 @@ final class KmpMethodHierarchy {
         || ElementUtil.getPackage(method).equals(ElementUtil.getPackage(subType));
   }
 
-  private static boolean takesPrecedence(ExecutableElement a, @Nullable ExecutableElement b) {
+  private boolean takesPrecedence(ExecutableElement a, @Nullable ExecutableElement b) {
     if (b == null) {
       return true;
     }
@@ -161,7 +163,23 @@ final class KmpMethodHierarchy {
     if (aOwner == null || bOwner == null) {
       return false;
     }
-    return aOwner.getKind().isClass() && !bOwner.getKind().isClass();
+    boolean aIsClass = aOwner.getKind().isClass();
+    boolean bIsClass = bOwner.getKind().isClass();
+    if (aIsClass != bIsClass) {
+      return aIsClass;
+    }
+    return safeOverrides(a, b);
+  }
+
+  private boolean safeOverrides(ExecutableElement overrider, ExecutableElement overridden) {
+    TypeElement owner = ElementUtil.getDeclaringClass(overrider);
+    if (owner == null
+        || overrider instanceof GeneratedElement
+        || overridden instanceof GeneratedElement
+        || owner instanceof GeneratedElement) {
+      return false;
+    }
+    return elementUtil.overrides(overrider, overridden, owner);
   }
 
   /** Returns {@code method} or its superinterface declaration if it requires static dispatch. */
