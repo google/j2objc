@@ -15,6 +15,7 @@
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedOutputStream;
 import com.google.protobuf.ExtensionRegistry;
+import com.google.protobuf.InvalidProtocolBufferException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
@@ -143,6 +144,86 @@ public class StringsTest extends ProtobufTest {
     assertEquals("ghi", msg.getExtension(StringFields.defaultStringFe));
     assertEquals("", new String(msg.getExtension(StringFields.bytesFe).toByteArray()));
     assertEquals("jkl", new String(msg.getExtension(StringFields.defaultBytesFe).toByteArray()));
+  }
+
+  public void testParseStringWithNegativeTruncatedLengthThrowsException() throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.newInstance();
+    StringFields.registerAllExtensions(registry);
+
+    byte[][] invalidPayloads = {
+      // Singular ascii_f (tag 0x12) with 0x80000000 length and empty trailing payload.
+      asBytes(new int[] {0x12, 0x80, 0x80, 0x80, 0x80, 0x08}),
+      // Singular ascii_f (tag 0x12) with 0x80000000 length and trailing bytes.
+      asBytes(new int[] {0x12, 0x80, 0x80, 0x80, 0x80, 0x08, 0x61, 0x62, 0x63, 0x64}),
+      // Singular ascii_f (tag 0x12) with 0xFFFFFFFF length and trailing bytes.
+      asBytes(new int[] {0x12, 0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0x61, 0x62, 0x63, 0x64}),
+      // Singular ascii_f (tag 0x12) with 10-byte varint -1 and trailing bytes.
+      asBytes(
+          new int[] {
+            0x12, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x61, 0x62, 0x63, 0x64
+          }),
+      // Extension ascii_fe (tag 0xD2, 0x3E) with 0x80000000 length and trailing bytes.
+      asBytes(new int[] {0xD2, 0x3E, 0x80, 0x80, 0x80, 0x80, 0x08, 0x61, 0x62, 0x63, 0x64}),
+      // Singular ascii_f (tag 0x12) with 0x7FFFFFFF length and truncated payload.
+      asBytes(new int[] {0x12, 0xFF, 0xFF, 0xFF, 0xFF, 0x07, 0x61, 0x62, 0x63, 0x64}),
+    };
+
+    for (byte[] payload : invalidPayloads) {
+      assertInvalidStringMsgThrows(payload, registry);
+    }
+  }
+
+  public void testParseBytesWithNegativeTruncatedLengthThrowsException() throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.newInstance();
+    StringFields.registerAllExtensions(registry);
+
+    byte[][] invalidPayloads = {
+      // Singular bytes_f (tag 0x22) with 0x80000000 length and empty trailing payload.
+      asBytes(new int[] {0x22, 0x80, 0x80, 0x80, 0x80, 0x08}),
+      // Singular bytes_f (tag 0x22) with 0x80000000 length and trailing bytes.
+      asBytes(new int[] {0x22, 0x80, 0x80, 0x80, 0x80, 0x08, 0x01, 0x02, 0x03, 0x04}),
+      // Singular bytes_f (tag 0x22) with 0xFFFFFFFF length and trailing bytes.
+      asBytes(new int[] {0x22, 0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0x01, 0x02, 0x03, 0x04}),
+      // Singular bytes_f (tag 0x22) with 10-byte varint -1 and trailing bytes.
+      asBytes(
+          new int[] {
+            0x22, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x01, 0x02, 0x03, 0x04
+          }),
+      // Extension bytes_fe (tag 0xE2, 0x3E) with 0x80000000 length and trailing bytes.
+      asBytes(new int[] {0xE2, 0x3E, 0x80, 0x80, 0x80, 0x80, 0x08, 0x01, 0x02, 0x03, 0x04}),
+      // Singular bytes_f (tag 0x22) with 0x7FFFFFFF length and truncated payload.
+      asBytes(new int[] {0x22, 0xFF, 0xFF, 0xFF, 0xFF, 0x07, 0x01, 0x02, 0x03, 0x04}),
+    };
+
+    for (byte[] payload : invalidPayloads) {
+      assertInvalidStringMsgThrows(payload, registry);
+    }
+  }
+
+  private static void assertInvalidStringMsgThrows(byte[] wireBytes, ExtensionRegistry registry)
+      throws Exception {
+    try {
+      StringMsg.parseFrom(wireBytes, registry);
+      fail("Expected InvalidProtocolBufferException");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected for truncated or out-of-range length prefixes.
+    }
+
+    try {
+      StringMsg.parseFrom(new ByteArrayInputStream(wireBytes), registry);
+      fail("Expected InvalidProtocolBufferException");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected for truncated or out-of-range length prefixes.
+    }
+
+    try {
+      @SuppressWarnings("unused")
+      StringMsg unusedMessage =
+          StringMsg.newBuilder().mergeFrom(new ByteArrayInputStream(wireBytes), registry).build();
+      fail("Expected InvalidProtocolBufferException");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected for truncated or out-of-range length prefixes.
+    }
   }
 
   private void checkFields(StringMsgOrBuilder msg) {
