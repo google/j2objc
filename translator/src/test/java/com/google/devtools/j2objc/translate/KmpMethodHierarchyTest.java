@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.translate.KmpMethodHierarchy.ConcreteKmpOwner;
 import com.google.devtools.j2objc.translate.KmpMethodHierarchy.TypeMethods;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -29,6 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /** Unit tests for {@link KmpMethodHierarchy}. */
@@ -38,10 +42,26 @@ public class KmpMethodHierarchyTest extends GenerationTest {
   public void setUp() throws IOException {
     super.setUp();
     addSourceFile("public class DummyAdapter {}", "DummyAdapter.java");
+    addSourceFile("package adapter; public class DummyAdapter {}", "adapter/DummyAdapter.java");
+  }
+
+  private void addPkg1Base() throws IOException {
+    addSourceFile(
+        """
+        package pkg1;
+        import adapter.DummyAdapter;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+        public class Base {
+          @ObjectiveCKmpMethod(selector = "foo:", adapter = DummyAdapter.class)
+          void foo(List<String> items) {}
+        }
+        """,
+        "pkg1/Base.java");
   }
 
   private KmpMethodHierarchy createHierarchy(CompilationUnit unit) {
-    return new KmpMethodHierarchy(unit.getEnv().typeUtil());
+    return new KmpMethodHierarchy(unit.getEnv().typeUtil(), unit.getEnv().elementUtil());
   }
 
   private static TypeElement findType(CompilationUnit unit, String simpleName) {
@@ -338,5 +358,453 @@ public class KmpMethodHierarchyTest extends GenerationTest {
         .isNull();
     assertThat(hierarchy.findInterfaceMethodRequiringDispatch(findMethod(concreteImpl, "send")))
         .isNull();
+  }
+
+  public void testGetTypeMethods_crossPackagePackagePrivateNotInherited() throws IOException {
+    addPkg1Base();
+    CompilationUnit unit =
+        compileType(
+            "pkg2.RedeclaringSub",
+            """
+            package pkg2;
+            import java.util.List;
+            import pkg1.Base;
+
+            class EmptySub extends Base {}
+
+            public class RedeclaringSub extends Base {
+              void foo(List<String> items) {}
+            }
+            """);
+    KmpMethodHierarchy hierarchy = createHierarchy(unit);
+    String sig = "foo(Ljava/util/List;)";
+
+    TypeMethods emptyResolved = hierarchy.getTypeMethods(findType(unit, "EmptySub"));
+    assertThat(emptyResolved.annotatedSignatures()).isEmpty();
+    assertThat(emptyResolved.allMethods().keySet()).doesNotContain(sig);
+
+    TypeElement redeclaringSub = findType(unit, "RedeclaringSub");
+    TypeMethods redeclaringResolved = hierarchy.getTypeMethods(redeclaringSub);
+    assertThat(redeclaringResolved.annotatedSignatures()).isEmpty();
+    assertThat(ElementUtil.getDeclaringClass(redeclaringResolved.allMethods().get(sig).element()))
+        .isEqualTo(redeclaringSub);
+  }
+
+  public void testGetTypeMethods_packagePrivateBrokenByForeignMidNotInherited() throws IOException {
+    addPkg1Base();
+    addSourceFile(
+        """
+        package pkg2;
+        import pkg1.Base;
+        public class Mid extends Base {}
+        """,
+        "pkg2/Mid.java");
+    CompilationUnit unit =
+        compileType(
+            "pkg1.RedeclaringSub",
+            """
+            package pkg1;
+            import java.util.List;
+            import pkg2.Mid;
+
+            class EmptySub extends Mid {}
+
+            public class RedeclaringSub extends Mid {
+              void foo(List<String> items) {}
+            }
+            """);
+    KmpMethodHierarchy hierarchy = createHierarchy(unit);
+    String sig = "foo(Ljava/util/List;)";
+
+    TypeMethods emptyResolved = hierarchy.getTypeMethods(findType(unit, "EmptySub"));
+    assertThat(emptyResolved.annotatedSignatures()).isEmpty();
+    assertThat(emptyResolved.allMethods().keySet()).doesNotContain(sig);
+
+    TypeElement redeclaringSub = findType(unit, "RedeclaringSub");
+    assertThat(hierarchy.getTypeMethods(redeclaringSub).annotatedSignatures()).isEmpty();
+    assertThat(hierarchy.getSupertypeHierarchy(redeclaringSub, sig)).isNull();
+  }
+
+  public void testGetTypeMethods_packagePrivateWidenedAcrossSamePackageMidIsInherited()
+      throws IOException {
+    addPkg1Base();
+    addSourceFile(
+        """
+        package pkg1;
+        import java.util.List;
+        public class WideningMid extends Base {
+          @Override
+          protected void foo(List<String> items) {}
+        }
+        """,
+        "pkg1/WideningMid.java");
+    CompilationUnit unit =
+        compileType(
+            "pkg2.OverridingSub",
+            """
+            package pkg2;
+            import java.util.List;
+            import pkg1.WideningMid;
+
+            class InheritingSub extends WideningMid {}
+
+            public class OverridingSub extends WideningMid {
+              @Override
+              public void foo(List<String> items) {}
+            }
+            """);
+    KmpMethodHierarchy hierarchy = createHierarchy(unit);
+    String sig = "foo(Ljava/util/List;)";
+
+    TypeMethods inheritingResolved = hierarchy.getTypeMethods(findType(unit, "InheritingSub"));
+    assertThat(inheritingResolved.annotatedSignatures()).containsKey(sig);
+    assertThat(
+            ElementUtil.getDeclaringClass(inheritingResolved.allMethods().get(sig).element())
+                .getQualifiedName()
+                .toString())
+        .isEqualTo("pkg1.WideningMid");
+
+    TypeElement overridingSub = findType(unit, "OverridingSub");
+    TypeMethods overridingResolved = hierarchy.getTypeMethods(overridingSub);
+    assertThat(overridingResolved.annotatedSignatures()).containsKey(sig);
+    assertThat(ElementUtil.getDeclaringClass(overridingResolved.allMethods().get(sig).element()))
+        .isEqualTo(overridingSub);
+  }
+
+  public void testGetTypeMethods_subinterfaceAnnotationOverridesSuperinterfaceAnnotation() {
+    CompilationUnit unit =
+        compileType(
+            "ForwardDiamond",
+            """
+            import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+            import java.util.List;
+
+            interface SuperI {
+              @ObjectiveCKmpMethod(selector = "superHandle:", adapter = DummyAdapter.class)
+              default void handle(List<String> items) {}
+            }
+
+            interface SubI extends SuperI {
+              @ObjectiveCKmpMethod(selector = "subHandle:", adapter = DummyAdapter.class)
+              @Override
+              default void handle(List<String> items) {}
+            }
+
+            class UnannotatedBase {
+              public void handle(List<String> items) {}
+            }
+
+            public class ForwardDiamond extends UnannotatedBase implements SuperI, SubI {}
+
+            class ReverseDiamond extends UnannotatedBase implements SubI, SuperI {}
+            """);
+    KmpMethodHierarchy hierarchy = createHierarchy(unit);
+    String sig = "handle(Ljava/util/List;)";
+    ExecutableElement subHandle = findMethod(findType(unit, "SubI"), "handle");
+
+    for (String className : ImmutableList.of("ForwardDiamond", "ReverseDiamond")) {
+      TypeMethods resolved = hierarchy.getTypeMethods(findType(unit, className));
+      assertThat(ElementUtil.getAnnotationValue(resolved.annotatedSignatures().get(sig), "selector"))
+          .isEqualTo("subHandle:");
+      assertThat(resolved.annotatedMethods().get(sig)).isEqualTo(subHandle);
+    }
+  }
+
+  public void testGetTypeMethods_subinterfaceDefaultOverrideTakesPrecedence() {
+    CompilationUnit unit =
+        compileType(
+            "Diamond",
+            """
+            import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+            import java.util.List;
+
+            interface SuperI {
+              @ObjectiveCKmpMethod(selector = "handle:", adapter = DummyAdapter.class)
+              default void handle(List<String> items) {}
+            }
+
+            interface SubI extends SuperI {
+              @Override
+              default void handle(List<String> items) {}
+            }
+
+            public class Diamond implements SuperI, SubI {}
+            """);
+    TypeMethods resolved = createHierarchy(unit).getTypeMethods(findType(unit, "Diamond"));
+
+    String sig = "handle(Ljava/util/List;)";
+    assertThat(resolved.annotatedSignatures()).containsKey(sig);
+    assertThat(ElementUtil.getDeclaringClass(resolved.allMethods().get(sig).element()))
+        .isEqualTo(findType(unit, "SubI"));
+  }
+
+  public void testGetTypeMethods_cachesPerTypeAndIsolatesGenericInstantiations() {
+    CompilationUnit unit =
+        compileType(
+            "GenericSample",
+            """
+            import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+            interface GenericBox<T> {
+              @ObjectiveCKmpMethod(selector = "unwrap", adapter = DummyAdapter.class)
+              T unwrap();
+            }
+
+            abstract class StringBox implements GenericBox<String> {}
+            abstract class IntBox implements GenericBox<Integer> {}
+            public class GenericSample {}
+            """);
+    KmpMethodHierarchy hierarchy = createHierarchy(unit);
+    TypeUtil typeUtil = unit.getEnv().typeUtil();
+    TypeElement stringBox = findType(unit, "StringBox");
+    TypeElement intBox = findType(unit, "IntBox");
+    TypeElement genericBox = findType(unit, "GenericBox");
+
+    // Repeated calls on the same TypeElement return the cached instance.
+    assertThat(hierarchy.getTypeMethods(stringBox))
+        .isSameInstanceAs(hierarchy.getTypeMethods(stringBox));
+
+    // Separate parameterized supertypes must not overwrite each other's cache entries.
+    TypeMethods stringIfaceMethods = hierarchy.getSupertypeHierarchy(stringBox, "unwrap()");
+    TypeMethods intIfaceMethods = hierarchy.getSupertypeHierarchy(intBox, "unwrap()");
+
+    assertThat(stringIfaceMethods).isNotNull();
+    assertThat(intIfaceMethods).isNotNull();
+    assertThat(hierarchy.getSupertypeHierarchy(stringBox, "unwrap()"))
+        .isSameInstanceAs(stringIfaceMethods);
+    assertThat(stringIfaceMethods.typeElement()).isEqualTo(genericBox);
+    assertThat(intIfaceMethods.typeElement()).isEqualTo(genericBox);
+    assertThat(
+            typeUtil.isSameType(
+                stringIfaceMethods.allMethods().get("unwrap()").type().getReturnType(),
+                typeUtil.getJavaString().asType()))
+        .isTrue();
+    assertThat(
+            typeUtil.isSameType(
+                intIfaceMethods.allMethods().get("unwrap()").type().getReturnType(),
+                typeUtil.resolveJavaType("java.lang.Integer").asType()))
+        .isTrue();
+  }
+
+  public void testFindConcreteKmpOwner_classChainAndAbstractAncestors() {
+    CompilationUnit unit =
+        compileType(
+            "OverridingSub",
+            """
+            import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+            abstract class AbstractBase {
+              @ObjectiveCKmpMethod(selector = "work", adapter = DummyAdapter.class)
+              public abstract void work();
+            }
+
+            class ConcreteBase extends AbstractBase {
+              @Override
+              public void work() {}
+            }
+
+            class SilentMid extends ConcreteBase {}
+
+            public class OverridingSub extends SilentMid {
+              @Override
+              public void work() {}
+            }
+            """);
+    KmpMethodHierarchy hierarchy = createHierarchy(unit);
+    TypeElement abstractBase = findType(unit, "AbstractBase");
+    TypeElement concreteBase = findType(unit, "ConcreteBase");
+    TypeElement silentMid = findType(unit, "SilentMid");
+    TypeElement overridingSub = findType(unit, "OverridingSub");
+
+    assertThat(hierarchy.findConcreteKmpOwner(abstractBase, "work()")).isNull();
+
+    ConcreteKmpOwner baseOwner = hierarchy.findConcreteKmpOwner(concreteBase, "work()");
+    assertThat(baseOwner).isNotNull();
+    assertThat(baseOwner.ownerType()).isEqualTo(concreteBase);
+
+    ConcreteKmpOwner midOwner = hierarchy.findConcreteKmpOwner(silentMid, "work()");
+    assertThat(midOwner).isNotNull();
+    assertThat(midOwner.ownerType()).isEqualTo(concreteBase);
+
+    ConcreteKmpOwner subOwner = hierarchy.findConcreteKmpOwner(overridingSub, "work()");
+    assertThat(subOwner).isNotNull();
+    assertThat(subOwner.ownerType()).isEqualTo(concreteBase);
+    assertThat(subOwner.method().element()).isEqualTo(findMethod(concreteBase, "work"));
+  }
+
+  public void testFindConcreteKmpOwner_reannotationsAndNonInstanceMethods() throws IOException {
+    addSourceFile("public class OtherAdapter {}", "OtherAdapter.java");
+    CompilationUnit unit =
+        compileType(
+            "ChildOfNewAdapter",
+            """
+            import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+            import java.util.List;
+
+            class OpenBase {
+              @ObjectiveCKmpMethod(selector = "initWithItems:", adapter = DummyAdapter.class)
+              public OpenBase(List<String> items) {}
+
+              @ObjectiveCKmpMethod(selector = "make:", adapter = DummyAdapter.class)
+              public static void make(List<String> items) {}
+
+              @ObjectiveCKmpMethod(selector = "work", adapter = DummyAdapter.class)
+              public void work() {}
+            }
+
+            class SameConfigSub extends OpenBase {
+              @ObjectiveCKmpMethod(selector = "initWithItems:", adapter = DummyAdapter.class)
+              public SameConfigSub(List<String> items) {
+                super(items);
+              }
+
+              @ObjectiveCKmpMethod(selector = "make:", adapter = DummyAdapter.class)
+              public static void make(List<String> items) {}
+
+              @Override
+              @ObjectiveCKmpMethod(selector = "work", adapter = DummyAdapter.class)
+              public void work() {}
+            }
+
+            class NewSelectorSub extends OpenBase {
+              public NewSelectorSub(List<String> items) {
+                super(items);
+              }
+
+              @Override
+              @ObjectiveCKmpMethod(selector = "subWork", adapter = DummyAdapter.class)
+              public void work() {}
+            }
+
+            class NewAdapterSub extends OpenBase {
+              public NewAdapterSub(List<String> items) {
+                super(items);
+              }
+
+              @Override
+              @ObjectiveCKmpMethod(selector = "work", adapter = OtherAdapter.class)
+              public void work() {}
+            }
+
+            public class ChildOfNewAdapter extends NewAdapterSub {
+              public ChildOfNewAdapter(List<String> items) {
+                super(items);
+              }
+
+              @Override
+              public void work() {}
+            }
+            """);
+    KmpMethodHierarchy hierarchy = createHierarchy(unit);
+    TypeElement openBase = findType(unit, "OpenBase");
+    TypeElement sameConfigSub = findType(unit, "SameConfigSub");
+    TypeElement newSelectorSub = findType(unit, "NewSelectorSub");
+    TypeElement newAdapterSub = findType(unit, "NewAdapterSub");
+    TypeElement childOfNewAdapter = findType(unit, "ChildOfNewAdapter");
+
+    ConcreteKmpOwner sameConfigOwner = hierarchy.findConcreteKmpOwner(sameConfigSub, "work()");
+    assertThat(sameConfigOwner).isNotNull();
+    assertThat(sameConfigOwner.ownerType()).isEqualTo(openBase);
+    assertThat(hierarchy.findConcreteKmpOwner(sameConfigSub, "<init>(Ljava/util/List;)")).isNull();
+    assertThat(hierarchy.findConcreteKmpOwner(sameConfigSub, "make(Ljava/util/List;)")).isNull();
+    assertThat(hierarchy.findConcreteKmpOwner(sameConfigSub, "missing()")).isNull();
+
+    assertThat(hierarchy.findConcreteKmpOwner(newSelectorSub, "work()").ownerType())
+        .isEqualTo(newSelectorSub);
+    assertThat(hierarchy.findConcreteKmpOwner(newAdapterSub, "work()").ownerType())
+        .isEqualTo(newAdapterSub);
+
+    ConcreteKmpOwner owner = hierarchy.findConcreteKmpOwner(childOfNewAdapter, "work()");
+    assertThat(owner).isNotNull();
+    assertThat(owner.ownerType()).isEqualTo(newAdapterSub);
+    assertThat(
+            unit.getEnv()
+                .typeUtil()
+                .isSameType(
+                    (TypeMirror) ElementUtil.getAnnotationValue(owner.annotation(), "adapter"),
+                    unit.getEnv().typeUtil().resolveJavaType("OtherAdapter").asType()))
+        .isTrue();
+  }
+
+  public void testFindConcreteKmpOwner_genericBaseReturnsRawOwnerSignature() {
+    CompilationUnit unit =
+        compileType(
+            "StringSub",
+            """
+            import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+            import java.util.List;
+
+            class GenericBase<T> {
+              @ObjectiveCKmpMethod(selector = "getItems", adapter = DummyAdapter.class)
+              public List<T> getItems() {
+                return null;
+              }
+            }
+
+            public class StringSub extends GenericBase<String> {
+              @Override
+              public List<String> getItems() {
+                return null;
+              }
+            }
+            """);
+    KmpMethodHierarchy hierarchy = createHierarchy(unit);
+    TypeElement genericBase = findType(unit, "GenericBase");
+    TypeElement stringSub = findType(unit, "StringSub");
+
+    ConcreteKmpOwner owner = hierarchy.findConcreteKmpOwner(stringSub, "getItems()");
+    assertThat(owner).isNotNull();
+    assertThat(owner.ownerType()).isEqualTo(genericBase);
+    assertThat(owner.method().element()).isEqualTo(findMethod(genericBase, "getItems"));
+    DeclaredType rawReturn = (DeclaredType) owner.method().type().getReturnType();
+    assertThat(rawReturn.getTypeArguments()).hasSize(1);
+    assertThat(rawReturn.getTypeArguments().get(0).getKind()).isEqualTo(TypeKind.TYPEVAR);
+    assertThat(ElementUtil.getAnnotationValue(owner.annotation(), "selector"))
+        .isEqualTo("getItems");
+  }
+
+  public void testFindConcreteKmpOwner_lambdaImplementingGenericDefaultKmpInterface() {
+    CompilationUnit unit =
+        compileType(
+            "LambdaHolder",
+            """
+            import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+            import java.util.List;
+
+            interface Callback<T> {
+              @ObjectiveCKmpMethod(selector = "onAction:", adapter = DummyAdapter.class)
+              void onAction(List<T> items);
+
+              @ObjectiveCKmpMethod(selector = "onRender:", adapter = DummyAdapter.class)
+              default T onRender(List<T> items) {
+                return null;
+              }
+            }
+
+            public class LambdaHolder {
+              public Callback<String> create() {
+                return items -> {};
+              }
+            }
+            """);
+    new LambdaTypeElementAdder(unit).run();
+    new LambdaRewriter(unit).run();
+    new InnerClassExtractor(unit).run();
+
+    KmpMethodHierarchy hierarchy = createHierarchy(unit);
+    TypeUtil typeUtil = unit.getEnv().typeUtil();
+    TypeElement callbackType = findType(unit, "Callback");
+    TypeElement lambdaType = findType(unit, "$Lambda$1");
+    TypeMirror stringType = typeUtil.resolveJavaType("java.lang.String").asType();
+    ExecutableElement onRender = findMethod(callbackType, "onRender");
+
+    ConcreteKmpOwner owner = hierarchy.findConcreteKmpOwner(lambdaType, "onRender(Ljava/util/List;)");
+    assertThat(owner).isNotNull();
+    assertThat(owner.ownerType()).isEqualTo(lambdaType);
+    assertThat(owner.method().element()).isEqualTo(onRender);
+    assertThat(typeUtil.isSameType(owner.method().type().getReturnType(), stringType)).isTrue();
+
+    ExecutableType memberType = typeUtil.asMemberOf((DeclaredType) lambdaType.asType(), onRender);
+    assertThat(typeUtil.isSameType(memberType.getReturnType(), stringType)).isTrue();
   }
 }
