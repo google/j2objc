@@ -2755,6 +2755,39 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         translation, "- (void)setCountWithJavaLangInteger:(JavaLangInteger *)arg0");
     assertNotInTranslation(translation, "[self doesNotRecognizeSelector:_cmd]");
   }
+
+  public void testLambdaImplementingInterface_withDefaultKmpMethod_emitsDefaultAdapter()
+      throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public interface ActionCallback {
+          @ObjectiveCKmpMethod(selector = "onActionWithArray:", adapter = ImmutableListAdapter.class)
+          void onAction(ImmutableList<String> actions);
+
+          @ObjectiveCKmpMethod(selector = "onRenderWithArray:", adapter = ImmutableListAdapter.class)
+          default void onRender(ImmutableList<String> actions) {}
+        }
+        """,
+        "ActionCallback.java");
+    addSourceFile(
+        """
+        public class CallbackFactory {
+          public static ActionCallback create() {
+            return actions -> {};
+          }
+        }
+        """,
+        "CallbackFactory.java");
+
+    String impl = translateSourceFile("CallbackFactory", "CallbackFactory.m");
+    assertInTranslation(impl, "@implementation CallbackFactory_$Lambda$1");
+    assertInTranslation(impl, "- (void)onRenderWithArray:(NSArray<NSString *> *)actions");
+  }
+
   public void testComposableConverter_withPreexistingLambdasInClass() throws IOException {
     addSourceFile(
         """
@@ -3078,5 +3111,57 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
           return InterfaceWithDefault_getItems_dispatch((id<InterfaceWithDefault>) nil_chk(instance));
         }
         """);
+  }
+
+  public void testTranslate_reannotatedConcreteSubclassEmitsAdapterOnlyWhenConfigDiffers()
+      throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public class BaseService {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "BaseService.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public final class SameConfigService extends BaseService {
+          @Override
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "SameConfigService.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public final class RenamedConfigService extends BaseService {
+          @Override
+          @ObjectiveCKmpMethod(selector = "getRenamedItems", adapter = ImmutableListAdapter.class)
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "RenamedConfigService.java");
+
+    String sameImpl = translateSourceFile("SameConfigService", "SameConfigService.m");
+    assertNotInTranslation(sameImpl, "- (NSArray<NSString *> *)getItemsAsNsArray");
+
+    String renamedHeader = translateSourceFile("RenamedConfigService", "RenamedConfigService.h");
+    assertInTranslation(renamedHeader, "- (NSArray<NSString *> *)getRenamedItems;");
   }
 }
