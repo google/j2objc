@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.devtools.j2objc.types.AbstractTypeMirror;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedArrayType;
+import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.types.GeneratedTypeElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.types.PointerType;
@@ -32,6 +33,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.PackageElement;
@@ -281,11 +283,55 @@ public final class TypeUtil {
   }
 
   public ExecutableType asMemberOf(DeclaredType containing, ExecutableElement method) {
-    return (ExecutableType) javacTypes.asMemberOf(containing, method);
+    if (method instanceof GeneratedElement || isGeneratedType(method.asType())) {
+      return (ExecutableType) method.asType();
+    }
+    DeclaredType javacContaining = resolveJavacContainingType(containing, method);
+    return javacContaining != null
+        ? (ExecutableType) javacTypes.asMemberOf(javacContaining, method)
+        : (ExecutableType) method.asType();
   }
 
   public TypeMirror asMemberOf(DeclaredType containing, VariableElement var) {
-    return javacTypes.asMemberOf(containing, var);
+    if (var instanceof GeneratedElement || isGeneratedType(var.asType())) {
+      return var.asType();
+    }
+    DeclaredType javacContaining = resolveJavacContainingType(containing, var);
+    return javacContaining != null ? javacTypes.asMemberOf(javacContaining, var) : var.asType();
+  }
+
+  /**
+   * Resolves a javac-backed supertype of {@code containing} that declares or inherits {@code
+   * member}.
+   */
+  private DeclaredType resolveJavacContainingType(DeclaredType containing, Element member) {
+    if (!isGeneratedType(containing)) {
+      return containing;
+    }
+    TypeElement declaringClass = ElementUtil.getDeclaringClass(member);
+    if (declaringClass == null
+        || declaringClass instanceof GeneratedElement
+        || isGeneratedType(declaringClass.asType())) {
+      return null;
+    }
+    return findJavacSupertype(containing, javacTypes.erasure(declaringClass.asType()));
+  }
+
+  private DeclaredType findJavacSupertype(TypeMirror type, TypeMirror declaringErasure) {
+    for (TypeMirror supertype : directSupertypes(type)) {
+      if (!isDeclaredType(supertype)) {
+        continue;
+      }
+      if (isGeneratedType(supertype)) {
+        DeclaredType found = findJavacSupertype(supertype, declaringErasure);
+        if (found != null) {
+          return found;
+        }
+      } else if (javacTypes.isSubtype(javacTypes.erasure(supertype), declaringErasure)) {
+        return (DeclaredType) supertype;
+      }
+    }
+    return null;
   }
 
   public boolean isAssignable(TypeMirror t1, TypeMirror t2) {

@@ -1327,17 +1327,24 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
           return (NSArray<NSString *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:[self getItems]];
         }
         """);
-    // Original methods should be generated normally
+    // Original methods should include the override check for non-final concrete classes
     assertInTranslation(
         concreteImpl,
         """
         - (void)setItemsWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)items {
+          if (ConcreteClass_isOverride(self, @selector(setItems:))) {
+            ConcreteClass_setItemsWithComGoogleCommonCollectImmutableList__dispatch(self, items);
+            return;
+          }
         }
         """);
     assertInTranslation(
         concreteImpl,
         """
         - (ComGoogleCommonCollectImmutableList *)getItems {
+          if (ConcreteClass_isOverride(self, @selector(getItemsAsNSArray))) {
+            return ConcreteClass_getItems_dispatch(self);
+          }
           return ComGoogleCommonCollectImmutableList_of();
         }
         """);
@@ -1466,17 +1473,24 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
           return (NSArray<MyPkgCustomClass *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *) [self getItems]];
         }
         """);
-    // Original methods should be generated normally
+    // Original methods should include the override check for non-final concrete classes
     assertInTranslation(
         concreteImpl,
         """
         - (void)setItemsWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)items {
+          if (ConcreteClass_isOverride(self, @selector(setItems:))) {
+            ConcreteClass_setItemsWithComGoogleCommonCollectImmutableList__dispatch(self, items);
+            return;
+          }
         }
         """);
     assertInTranslation(
         concreteImpl,
         """
         - (ComGoogleCommonCollectImmutableList *)getItems {
+          if (ConcreteClass_isOverride(self, @selector(getItemsAsNSArray))) {
+            return ConcreteClass_getItems_dispatch(self);
+          }
           return ComGoogleCommonCollectImmutableList_of();
         }
         """);
@@ -2484,9 +2498,16 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         concreteImpl,
         """
         - (void)setCountWithJavaLangInteger:(JavaLangInteger *)count {
+          if (ConcreteCountService_isOverride(self, @selector(updateCount:))) {
+            ConcreteCountService_setCountWithJavaLangInteger__dispatch(self, count);
+            return;
+          }
         }
 
         - (JavaLangInteger *)getCount {
+          if (ConcreteCountService_isOverride(self, @selector(fetchCount))) {
+            return ConcreteCountService_getCount_dispatch(self);
+          }
           return JavaLangInteger_valueOfWithInt_(0);
         }
         """);
@@ -2755,6 +2776,47 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         translation, "- (void)setCountWithJavaLangInteger:(JavaLangInteger *)arg0");
     assertNotInTranslation(translation, "[self doesNotRecognizeSelector:_cmd]");
   }
+
+  public void testLambdaImplementingInterface_withDefaultKmpMethod_emitsDefaultAdapter()
+      throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public interface ActionCallback {
+          @ObjectiveCKmpMethod(selector = "onActionWithArray:", adapter = ImmutableListAdapter.class)
+          void onAction(ImmutableList<String> actions);
+
+          @ObjectiveCKmpMethod(selector = "onRenderWithArray:", adapter = ImmutableListAdapter.class)
+          default void onRender(ImmutableList<String> actions) {}
+        }
+        """,
+        "ActionCallback.java");
+    addSourceFile(
+        """
+        public class CallbackFactory {
+          public static ActionCallback create() {
+            return actions -> {};
+          }
+        }
+        """,
+        "CallbackFactory.java");
+
+    String impl = translateSourceFile("CallbackFactory", "CallbackFactory.m");
+    assertInTranslation(impl, "@implementation CallbackFactory_$Lambda$1");
+    assertInTranslation(
+        impl,
+        """
+        - (void)onRenderWithArray:(NSArray<NSString *> *)actions {
+          [self onRenderWithComGoogleCommonCollectImmutableList:[ImmutableListAdapter toImmutableListWithId:actions]];
+        }
+        """);
+    assertNotInTranslation(impl, "CallbackFactory_$Lambda$1_isOverride");
+    assertNotInTranslation(impl, "_dispatch");
+  }
+
   public void testComposableConverter_withPreexistingLambdasInClass() throws IOException {
     addSourceFile(
         """
@@ -3076,6 +3138,1327 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         ComGoogleCommonCollectImmutableList *DefaultCaller_callGetItemsWithInterfaceWithDefault_(id<InterfaceWithDefault> instance) {
           DefaultCaller_initialize();
           return InterfaceWithDefault_getItems_dispatch((id<InterfaceWithDefault>) nil_chk(instance));
+        }
+        """);
+  }
+  public void testTranslate_reannotatedConcreteSubclassEmitsAdapterOnlyWhenConfigDiffers()
+      throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public class BaseService {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "BaseService.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public final class SameConfigService extends BaseService {
+          @Override
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "SameConfigService.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public final class RenamedConfigService extends BaseService {
+          @Override
+          @ObjectiveCKmpMethod(selector = "getRenamedItems", adapter = ImmutableListAdapter.class)
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "RenamedConfigService.java");
+
+    String sameImpl = translateSourceFile("SameConfigService", "SameConfigService.m");
+    assertNotInTranslation(sameImpl, "- (NSArray<NSString *> *)getItemsAsNsArray");
+
+    String renamedHeader = translateSourceFile("RenamedConfigService", "RenamedConfigService.h");
+    assertInTranslation(renamedHeader, "- (NSArray<NSString *> *)getRenamedItems;");
+  }
+
+  private void addOpenService() throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public class OpenService {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+
+          @ObjectiveCKmpMethod(selector = "setItems:", adapter = ImmutableListAdapter.class)
+          public void setItems(ImmutableList<String> items) {}
+        }
+        """,
+        "OpenService.java");
+  }
+
+  private void addOpenBase() throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public class OpenBase {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "OpenBase.java");
+  }
+
+  private void addInterfaceWithDefault() throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public interface InterfaceWithDefault {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          default ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "InterfaceWithDefault.java");
+  }
+
+  private void addCovariantAdapter() throws IOException {
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import java.util.List;
+
+        public class CovariantAdapter {
+          public static native Object fromJavaUtilList(List<String> list) /*-[ return nil; ]-*/;
+          public static native List<String> toJavaUtilList(Object list) /*-[ return nil; ]-*/;
+          public static native Object fromImmutableList(ImmutableList<String> list) /*-[ return nil; ]-*/;
+          public static native ImmutableList<String> toImmutableList(Object list) /*-[ return nil; ]-*/;
+          public static native Object fromBoolean(Boolean b) /*-[ return nil; ]-*/;
+          public static native Boolean toBoolean(Object b) /*-[ return nil; ]-*/;
+        }
+        """,
+        "CovariantAdapter.java");
+  }
+
+  public void testConcreteClassNativeOverride_generatesCheckAndHelpers() throws IOException {
+    addOpenService();
+
+    String openHeader = translateSourceFile("OpenService", "OpenService.h");
+    assertOccurrences(
+        openHeader,
+        "FOUNDATION_EXPORT bool OpenService_isOverride(OpenService *self, SEL selector);",
+        1);
+    assertInTranslation(
+        openHeader,
+        """
+        FOUNDATION_EXPORT ComGoogleCommonCollectImmutableList *OpenService_getItems_dispatch(OpenService *self);\
+        """);
+    assertInTranslation(
+        openHeader,
+        """
+        FOUNDATION_EXPORT void OpenService_setItemsWithComGoogleCommonCollectImmutableList__dispatch(OpenService *self, ComGoogleCommonCollectImmutableList *items);\
+        """);
+
+    String openImpl = translateSourceFile("OpenService", "OpenService.m");
+    assertOccurrences(
+        openImpl,
+        """
+        bool OpenService_isOverride(OpenService *self, SEL selector) {
+          return self != nil && [self methodForSelector:selector] != [OpenService instanceMethodForSelector:selector];
+        }
+        """,
+        1);
+    assertInTranslation(
+        openImpl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)getItems {
+          if (OpenService_isOverride(self, @selector(getItemsAsNsArray))) {
+            return OpenService_getItems_dispatch(self);
+          }
+          return ComGoogleCommonCollectImmutableList_of();
+        }
+        """);
+    assertInTranslation(
+        openImpl,
+        """
+        ComGoogleCommonCollectImmutableList *OpenService_getItems_dispatch(OpenService *self) {
+          return [ImmutableListAdapter toImmutableListWithId:[self getItemsAsNsArray]];
+        }
+        """);
+    assertInTranslation(
+        openImpl,
+        """
+        - (void)setItemsWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)items {
+          if (OpenService_isOverride(self, @selector(setItems:))) {
+            OpenService_setItemsWithComGoogleCommonCollectImmutableList__dispatch(self, items);
+            return;
+          }
+        }
+        """);
+    assertInTranslation(
+        openImpl,
+        """
+        void OpenService_setItemsWithComGoogleCommonCollectImmutableList__dispatch(OpenService *self, ComGoogleCommonCollectImmutableList *items) {
+          [self setItems:(NSArray<NSString *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:items]];
+        }
+        """);
+  }
+
+  public void testConcreteClassNativeOverride_finalMethodSkipsCheckAndHelpers() throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public class ServiceWithFinalMethod {
+          @ObjectiveCKmpMethod(selector = "getFinalItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          public final ImmutableList<String> getFinalItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "ServiceWithFinalMethod.java");
+
+    String header = translateSourceFile("ServiceWithFinalMethod", "ServiceWithFinalMethod.h");
+    assertInTranslation(header, "- (NSArray<NSString *> *)getFinalItemsAsNsArray;");
+    assertNotInTranslation(header, "ServiceWithFinalMethod_isOverride");
+    assertNotInTranslation(header, "ServiceWithFinalMethod_getFinalItems_dispatch");
+
+    String impl = translateSourceFile("ServiceWithFinalMethod", "ServiceWithFinalMethod.m");
+    assertInTranslation(
+        impl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)getFinalItems {
+          return ComGoogleCommonCollectImmutableList_of();
+        }
+        """);
+    assertNotInTranslation(impl, "ServiceWithFinalMethod_isOverride");
+    assertNotInTranslation(impl, "ServiceWithFinalMethod_getFinalItems_dispatch");
+  }
+
+  public void testConcreteClassNativeOverride_finalClassSkipsCheckAndHelpers() throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public final class FinalService {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "FinalService.java");
+
+    String header = translateSourceFile("FinalService", "FinalService.h");
+    assertInTranslation(header, "- (NSArray<NSString *> *)getItemsAsNsArray;");
+    assertNotInTranslation(header, "FinalService_isOverride");
+    assertNotInTranslation(header, "FinalService_getItems_dispatch");
+
+    String impl = translateSourceFile("FinalService", "FinalService.m");
+    assertInTranslation(
+        impl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)getItems {
+          return ComGoogleCommonCollectImmutableList_of();
+        }
+        """);
+    assertNotInTranslation(impl, "FinalService_isOverride");
+    assertNotInTranslation(impl, "FinalService_getItems_dispatch");
+  }
+
+  public void testConcreteClassNativeOverride_multiLevelJavaSubclassDelegatesToBase()
+      throws IOException {
+    addOpenService();
+    addSourceFile(
+        """
+        public class SilentMidService extends OpenService {}
+        """,
+        "SilentMidService.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class JavaSubService extends SilentMidService {
+          @Override
+          public ImmutableList<String> getItems() {
+            return super.getItems();
+          }
+
+          @Override
+          public void setItems(ImmutableList<String> items) {
+            super.setItems(items);
+          }
+        }
+        """,
+        "JavaSubService.java");
+
+    String midImpl = translateSourceFile("SilentMidService", "SilentMidService.m");
+    assertNotInTranslation(midImpl, "getItemsAsNsArray");
+    assertNotInTranslation(midImpl, "setItems:");
+    assertNotInTranslation(midImpl, "SilentMidService_isOverride");
+    assertNotInTranslation(midImpl, "_dispatch");
+
+    String subImpl = translateSourceFile("JavaSubService", "JavaSubService.m");
+    assertInTranslation(
+        subImpl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)getItems {
+          if (OpenService_isOverride(self, @selector(getItemsAsNsArray))) {
+            return OpenService_getItems_dispatch(self);
+          }
+          return [super getItems];
+        }
+        """);
+    assertInTranslation(
+        subImpl,
+        """
+        - (void)setItemsWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)items {
+          if (OpenService_isOverride(self, @selector(setItems:))) {
+            OpenService_setItemsWithComGoogleCommonCollectImmutableList__dispatch(self, items);
+            return;
+          }
+          [super setItemsWithComGoogleCommonCollectImmutableList:items];
+        }
+        """);
+    assertNotInTranslation(subImpl, "- (NSArray<NSString *> *)getItemsAsNsArray");
+    assertNotInTranslation(subImpl, "- (void)setItems:");
+    assertNotInTranslation(subImpl, "JavaSubService_isOverride");
+    assertNotInTranslation(subImpl, "JavaSubService_getItems_dispatch");
+    assertNotInTranslation(
+        subImpl, "JavaSubService_setItemsWithComGoogleCommonCollectImmutableList__dispatch");
+  }
+
+  public void testConcreteClassNativeOverride_oneWayReturnAdapterSkipsCheckOnBaseAndSubclass()
+      throws IOException {
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class OneWayReturnAdapter {
+          public static native Object fromImmutableList(ImmutableList<String> list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "OneWayReturnAdapter.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public class OpenService {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = OneWayReturnAdapter.class)
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "OpenService.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class JavaSubService extends OpenService {
+          @Override
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "JavaSubService.java");
+
+    String openHeader = translateSourceFile("OpenService", "OpenService.h");
+    assertNotInTranslation(openHeader, "OpenService_isOverride");
+    assertNotInTranslation(openHeader, "OpenService_getItems_dispatch");
+
+    String openImpl = translateSourceFile("OpenService", "OpenService.m");
+    assertInTranslation(openImpl, "- (NSArray<NSString *> *)getItemsAsNsArray");
+    assertNotInTranslation(openImpl, "OpenService_isOverride");
+    assertNotInTranslation(openImpl, "OpenService_getItems_dispatch");
+
+    String subImpl = translateSourceFile("JavaSubService", "JavaSubService.m");
+    assertNotInTranslation(subImpl, "OpenService_isOverride");
+    assertNotInTranslation(subImpl, "OpenService_getItems_dispatch");
+  }
+
+  public void testConcreteClassNativeOverride_unannotatedSuperclassImplementingKmpInterface()
+      throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class UnannotatedBase {
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+
+          public void setItems(ImmutableList<String> items) {}
+        }
+        """,
+        "UnannotatedBase.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public interface KmpInterface {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          ImmutableList<String> getItems();
+
+          @ObjectiveCKmpMethod(selector = "setItems:", adapter = ImmutableListAdapter.class)
+          void setItems(ImmutableList<String> items);
+        }
+        """,
+        "KmpInterface.java");
+    addSourceFile(
+        """
+        public class MidService extends UnannotatedBase implements KmpInterface {}
+        """,
+        "MidService.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class SubService extends MidService {
+          @Override
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+
+          @Override
+          public void setItems(ImmutableList<String> items) {}
+        }
+        """,
+        "SubService.java");
+
+    String midHeader = translateSourceFile("MidService", "MidService.h");
+    assertInTranslation(
+        midHeader, "FOUNDATION_EXPORT bool MidService_isOverride(MidService *self, SEL selector);");
+    assertInTranslation(
+        midHeader,
+        """
+        FOUNDATION_EXPORT ComGoogleCommonCollectImmutableList *MidService_getItems_dispatch(MidService *self);\
+        """);
+    assertInTranslation(
+        midHeader,
+        """
+        FOUNDATION_EXPORT void MidService_setItemsWithComGoogleCommonCollectImmutableList__dispatch(MidService *self, ComGoogleCommonCollectImmutableList *items);\
+        """);
+    assertNotInTranslation(midHeader, "- (ComGoogleCommonCollectImmutableList *)getItems;");
+    assertNotInTranslation(
+        midHeader,
+        """
+        - (void)setItemsWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)items;\
+        """);
+
+    String midImpl = translateSourceFile("MidService", "MidService.m");
+    assertInTranslation(midImpl, "- (NSArray<NSString *> *)getItemsAsNsArray");
+    assertInTranslation(midImpl, "- (void)setItems:(NSArray<NSString *> *)items");
+    assertInTranslation(midImpl, "bool MidService_isOverride(MidService *self, SEL selector)");
+    assertInTranslation(
+        midImpl,
+        "ComGoogleCommonCollectImmutableList *MidService_getItems_dispatch(MidService *self)");
+    assertInTranslation(
+        midImpl,
+        """
+        void MidService_setItemsWithComGoogleCommonCollectImmutableList__dispatch(MidService *self, ComGoogleCommonCollectImmutableList *items)\
+        """);
+    assertInTranslation(
+        midImpl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)getItems {
+          if (MidService_isOverride(self, @selector(getItemsAsNsArray))) {
+            return MidService_getItems_dispatch(self);
+          }
+          return [super getItems];
+        }
+        """);
+    assertInTranslation(
+        midImpl,
+        """
+        - (void)setItemsWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)items {
+          if (MidService_isOverride(self, @selector(setItems:))) {
+            MidService_setItemsWithComGoogleCommonCollectImmutableList__dispatch(self, items);
+            return;
+          }
+          [super setItemsWithComGoogleCommonCollectImmutableList:items];
+        }
+        """);
+
+    String subImpl = translateSourceFile("SubService", "SubService.m");
+    assertInTranslation(
+        subImpl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)getItems {
+          if (MidService_isOverride(self, @selector(getItemsAsNsArray))) {
+            return MidService_getItems_dispatch(self);
+          }
+          return ComGoogleCommonCollectImmutableList_of();
+        }
+        """);
+    assertInTranslation(
+        subImpl,
+        """
+        - (void)setItemsWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)items {
+          if (MidService_isOverride(self, @selector(setItems:))) {
+            MidService_setItemsWithComGoogleCommonCollectImmutableList__dispatch(self, items);
+            return;
+          }
+        }
+        """);
+    assertNotInTranslation(subImpl, "UnannotatedBase_isOverride");
+    assertNotInTranslation(subImpl, "UnannotatedBase_getItems_dispatch");
+    assertNotInTranslation(subImpl, "- (NSArray<NSString *> *)getItemsAsNsArray");
+  }
+
+  public void testConcreteClassNativeOverride_genericUnannotatedSuperclassBridgeCastsReturn()
+      throws IOException {
+    addImmutableListAdapter();
+    addSourceFile("public class SubFoo extends Foo {}", "SubFoo.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class UnannotatedBase<T extends Foo> {
+          public T getItem(ImmutableList<String> items) {
+            return null;
+          }
+        }
+        """,
+        "UnannotatedBase.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public interface KmpSubFooInterface {
+          @ObjectiveCKmpMethod(selector = "getItem:", adapter = ImmutableListAdapter.class)
+          SubFoo getItem(ImmutableList<String> items);
+        }
+        """,
+        "KmpSubFooInterface.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public interface KmpFooInterface {
+          @ObjectiveCKmpMethod(selector = "getItem:", adapter = ImmutableListAdapter.class)
+          Foo getItem(ImmutableList<String> items);
+        }
+        """,
+        "KmpFooInterface.java");
+    addSourceFile(
+        """
+        public class MidService extends UnannotatedBase<SubFoo> implements KmpSubFooInterface {}
+        """,
+        "MidService.java");
+    addSourceFile(
+        """
+        public class MidFooService extends UnannotatedBase<SubFoo> implements KmpFooInterface {}
+        """,
+        "MidFooService.java");
+
+    String midHeader = translateSourceFile("MidService", "MidService.h");
+    assertNotInTranslation(
+        midHeader, "- (SubFoo *)getItemWithComGoogleCommonCollectImmutableList:");
+    assertInTranslation(
+        midHeader, "FOUNDATION_EXPORT bool MidService_isOverride(MidService *self, SEL selector);");
+
+    String midImpl = translateSourceFile("MidService", "MidService.m");
+    assertInTranslation(
+        midImpl,
+        """
+        - (SubFoo *)getItemWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)items {
+          if (MidService_isOverride(self, @selector(getItem:))) {
+            return MidService_getItemWithComGoogleCommonCollectImmutableList__dispatch(self, items);
+          }
+          return (SubFoo *) [super getItemWithComGoogleCommonCollectImmutableList:items];
+        }
+        """);
+
+    String midFooHeader = translateSourceFile("MidFooService", "MidFooService.h");
+    assertOccurrences(
+        midFooHeader,
+        """
+        - (SubFoo *)getItemWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList<NSString *> *)items;\
+        """,
+        1);
+
+    String midFooImpl = translateSourceFile("MidFooService", "MidFooService.m");
+    assertInTranslation(
+        midFooImpl,
+        """
+        - (SubFoo *)getItemWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)items {
+          if (MidFooService_isOverride(self, @selector(getItem:))) {
+            return MidFooService_getItemWithComGoogleCommonCollectImmutableList__dispatch(self, items);
+          }
+          return (SubFoo *) [super getItemWithComGoogleCommonCollectImmutableList:items];
+        }
+        """);
+  }
+
+  public void testConcreteClassNativeOverride_privateSuperclassKmpMethodNotInherited()
+      throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public class BaseWithPrivate {
+          @ObjectiveCKmpMethod(selector = "getSecretAsNsArray", adapter = ImmutableListAdapter.class)
+          private ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "BaseWithPrivate.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class SubWithPublic extends BaseWithPrivate {
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "SubWithPublic.java");
+
+    String baseImpl = translateSourceFile("BaseWithPrivate", "BaseWithPrivate.m");
+    assertInTranslation(baseImpl, "- (NSArray<NSString *> *)getSecretAsNsArray");
+    assertNotInTranslation(baseImpl, "BaseWithPrivate_isOverride");
+    assertNotInTranslation(baseImpl, "BaseWithPrivate_getItems_dispatch");
+
+    String subImpl = translateSourceFile("SubWithPublic", "SubWithPublic.m");
+    assertInTranslation(subImpl, "- (ComGoogleCommonCollectImmutableList *)getItems");
+    assertNotInTranslation(subImpl, "BaseWithPrivate_isOverride");
+    assertNotInTranslation(subImpl, "BaseWithPrivate_getItems_dispatch");
+    assertNotInTranslation(subImpl, "SubWithPublic_isOverride");
+    assertNotInTranslation(subImpl, "SubWithPublic_getItems_dispatch");
+    assertNotInTranslation(subImpl, "getSecretAsNsArray");
+  }
+
+  public void testConcreteClassNativeOverride_inheritedInterfaceDefaultMethodAndSubclass()
+      throws IOException {
+    addInterfaceWithDefault();
+    addSourceFile(
+        """
+        public class ConcreteInherits implements InterfaceWithDefault {}
+        """,
+        "ConcreteInherits.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class SubOverrides extends ConcreteInherits {
+          @Override
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "SubOverrides.java");
+
+    String inheritsImpl = translateSourceFile("ConcreteInherits", "ConcreteInherits.m");
+    assertInTranslation(
+        inheritsImpl,
+        "bool ConcreteInherits_isOverride(ConcreteInherits *self, SEL selector)");
+    assertInTranslation(
+        inheritsImpl,
+        """
+        ComGoogleCommonCollectImmutableList *ConcreteInherits_getItems_dispatch(ConcreteInherits *self)\
+        """);
+    assertInTranslation(
+        inheritsImpl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)getItems {
+          if (ConcreteInherits_isOverride(self, @selector(getItemsAsNsArray))) {
+            return ConcreteInherits_getItems_dispatch(self);
+          }
+          return InterfaceWithDefault_getItems(self);
+        }
+        """);
+
+    String subImpl = translateSourceFile("SubOverrides", "SubOverrides.m");
+    assertInTranslation(
+        subImpl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)getItems {
+          if (ConcreteInherits_isOverride(self, @selector(getItemsAsNsArray))) {
+            return ConcreteInherits_getItems_dispatch(self);
+          }
+          return ComGoogleCommonCollectImmutableList_of();
+        }
+        """);
+    assertNotInTranslation(subImpl, "- (NSArray<NSString *> *)getItemsAsNsArray");
+    assertNotInTranslation(subImpl, "SubOverrides_isOverride");
+    assertNotInTranslation(subImpl, "SubOverrides_getItems_dispatch");
+  }
+
+  public void testConcreteClassNativeOverride_inheritedParameterizedInterfaceDefaultMethod()
+      throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public interface InterfaceWithDefaultSetter {
+          @ObjectiveCKmpMethod(selector = "setItems:", adapter = ImmutableListAdapter.class)
+          default void setItems(ImmutableList<String> items) {}
+        }
+        """,
+        "InterfaceWithDefaultSetter.java");
+    addSourceFile(
+        """
+        public class ConcreteInheritsSetter implements InterfaceWithDefaultSetter {}
+        """,
+        "ConcreteInheritsSetter.java");
+
+    String inheritsImpl =
+        translateSourceFile("ConcreteInheritsSetter", "ConcreteInheritsSetter.m");
+    assertInTranslation(
+        inheritsImpl,
+        """
+        - (void)setItemsWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)arg0 {
+          if (ConcreteInheritsSetter_isOverride(self, @selector(setItems:))) {
+            ConcreteInheritsSetter_setItemsWithComGoogleCommonCollectImmutableList__dispatch(self, arg0);
+            return;
+          }
+          InterfaceWithDefaultSetter_setItemsWithComGoogleCommonCollectImmutableList_(self, arg0);
+        }
+        """);
+  }
+
+  public void testConcreteClassNativeOverride_reannotatedSubclassSameSelectorDelegatesToBase()
+      throws IOException {
+    addOpenBase();
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public class ReannotatedSub extends OpenBase {
+          @Override
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "ReannotatedSub.java");
+
+    String subImpl = translateSourceFile("ReannotatedSub", "ReannotatedSub.m");
+    assertInTranslation(
+        subImpl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)getItems {
+          if (OpenBase_isOverride(self, @selector(getItemsAsNsArray))) {
+            return OpenBase_getItems_dispatch(self);
+          }
+          return ComGoogleCommonCollectImmutableList_of();
+        }
+        """);
+    assertNotInTranslation(subImpl, "- (NSArray<NSString *> *)getItemsAsNsArray");
+    assertNotInTranslation(subImpl, "ReannotatedSub_isOverride");
+  }
+
+  public void testConcreteClassNativeOverride_reannotatedSubclassNewSelectorGeneratesNewAdapter()
+      throws IOException {
+    addOpenBase();
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public class RenamedSub extends OpenBase {
+          @Override
+          @ObjectiveCKmpMethod(selector = "getSubItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "RenamedSub.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class GrandSub extends RenamedSub {
+          @Override
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "GrandSub.java");
+
+    String renamedImpl = translateSourceFile("RenamedSub", "RenamedSub.m");
+    assertInTranslation(renamedImpl, "- (NSArray<NSString *> *)getSubItemsAsNsArray");
+    assertInTranslation(renamedImpl, "bool RenamedSub_isOverride(RenamedSub *self, SEL selector)");
+    assertInTranslation(
+        renamedImpl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)getItems {
+          if (RenamedSub_isOverride(self, @selector(getSubItemsAsNsArray))) {
+            return RenamedSub_getItems_dispatch(self);
+          }
+          return ComGoogleCommonCollectImmutableList_of();
+        }
+        """);
+
+    String grandImpl = translateSourceFile("GrandSub", "GrandSub.m");
+    assertInTranslation(
+        grandImpl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)getItems {
+          if (RenamedSub_isOverride(self, @selector(getSubItemsAsNsArray))) {
+            return RenamedSub_getItems_dispatch(self);
+          }
+          return ComGoogleCommonCollectImmutableList_of();
+        }
+        """);
+    assertNotInTranslation(grandImpl, "- (NSArray<NSString *> *)getSubItemsAsNsArray");
+  }
+
+  public void testConcreteClassNativeOverride_noWrapperMethodsWithSwiftNameOmitsHelperSwiftWrappers()
+      throws IOException {
+    options.load(new String[] {"--no-wrapper-methods"});
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.j2objc.annotations.SwiftName;
+        import com.google.common.collect.ImmutableList;
+
+        @SwiftName("SwiftOpenService")
+        public class OpenService {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "OpenService.java");
+
+    String header = translateSourceFile("OpenService", "OpenService.h");
+    assertInTranslation(
+        header, "FOUNDATION_EXPORT bool OpenService_isOverride(OpenService *self, SEL selector);");
+    assertInTranslation(
+        header,
+        """
+        FOUNDATION_EXPORT ComGoogleCommonCollectImmutableList *OpenService_getItems_dispatch(OpenService *self);\
+        """);
+    assertNotInTranslation(header, "OpenService_isOverride_swiftName");
+    assertNotInTranslation(header, "OpenService_getItems_dispatch_swiftName");
+  }
+
+  public void
+      testConcreteClassNativeOverride_nullMarkedNullableReturnPreservesNullabilityOnDispatch()
+          throws IOException {
+    options.load(new String[] {"--nullability", "--no-wrapper-methods"});
+    options.setNullMarked(true);
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.j2objc.annotations.SwiftName;
+        import org.jspecify.annotations.NullMarked;
+        import org.jspecify.annotations.Nullable;
+
+        @NullMarked
+        @SwiftName("SwiftOpenService")
+        public class OpenService {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          public @Nullable ImmutableList<String> getItems() {
+            return null;
+          }
+        }
+        """,
+        "OpenService.java");
+
+    String header = translateSourceFile("OpenService", "OpenService.h");
+    assertInTranslation(
+        header,
+        """
+        FOUNDATION_EXPORT ComGoogleCommonCollectImmutableList *_Nullable OpenService_getItems_dispatch(OpenService *self);\
+        """);
+    assertNotInTranslation(header, "OpenService_getItems_dispatch_swiftName");
+  }
+
+  public void testConcreteClassNativeOverride_covariantReturnTypeUsesNarrowedConverter()
+      throws IOException {
+    addCovariantAdapter();
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+        import com.google.common.collect.ImmutableList;
+
+        public class ListBase {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = CovariantAdapter.class)
+          public List<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "ListBase.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ImmutableSub extends ListBase {
+          @Override
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "ImmutableSub.java");
+
+    String subImpl = translateSourceFile("ImmutableSub", "ImmutableSub.m");
+    assertInTranslation(
+        subImpl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)getItems {
+          if (ListBase_isOverride(self, @selector(getItemsAsNsArray))) {
+            return [CovariantAdapter toImmutableListWithId:[self getItemsAsNsArray]];
+          }
+          return ComGoogleCommonCollectImmutableList_of();
+        }
+        """);
+    assertNotInTranslation(subImpl, "ListBase_getItems_dispatch");
+  }
+
+  public void testConcreteClassNativeOverride_genericBaseWithStringOnlyReturnConverterSkipsCheck()
+      throws IOException {
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class PartialGenericAdapter {
+          public static native <T> Object fromImmutableList(ImmutableList<T> list) /*-[ return nil; ]-*/;
+          public static native ImmutableList<String> toImmutableList(Object list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "PartialGenericAdapter.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public class GenericBase<T> {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = PartialGenericAdapter.class)
+          public ImmutableList<T> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "GenericBase.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class StringSub extends GenericBase<String> {
+          @Override
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "StringSub.java");
+
+    String baseImpl = translateSourceFile("GenericBase", "GenericBase.m");
+    assertInTranslation(baseImpl, "- (NSArray<id> *)getItemsAsNsArray");
+    assertNotInTranslation(baseImpl, "GenericBase_isOverride");
+    assertNotInTranslation(baseImpl, "GenericBase_getItems_dispatch");
+
+    String subImpl = translateSourceFile("StringSub", "StringSub.m");
+    assertInTranslation(subImpl, "- (ComGoogleCommonCollectImmutableList *)getItems");
+    assertNotInTranslation(subImpl, "_isOverride");
+    assertNotInTranslation(subImpl, "_dispatch");
+  }
+
+  public void testConcreteClassNativeOverride_genericBaseBidirectionalDelegatesToBase()
+      throws IOException {
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class BidirectionalGenericAdapter {
+          public static native <T> Object fromImmutableList(ImmutableList<T> list) /*-[ return nil; ]-*/;
+          public static native <T> ImmutableList<T> toImmutableList(Object list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "BidirectionalGenericAdapter.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public class GenericBase<T> {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = BidirectionalGenericAdapter.class)
+          public ImmutableList<T> getItems() {
+            return ImmutableList.of();
+          }
+
+          @ObjectiveCKmpMethod(selector = "setItems:", adapter = BidirectionalGenericAdapter.class)
+          public void setItems(ImmutableList<T> items) {}
+        }
+        """,
+        "GenericBase.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class StringSub extends GenericBase<String> {
+          @Override
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+
+          @Override
+          public void setItems(ImmutableList<String> items) {}
+        }
+        """,
+        "StringSub.java");
+
+    String baseImpl = translateSourceFile("GenericBase", "GenericBase.m");
+    assertInTranslation(baseImpl, "bool GenericBase_isOverride(GenericBase *self, SEL selector)");
+    assertInTranslation(
+        baseImpl,
+        "ComGoogleCommonCollectImmutableList *GenericBase_getItems_dispatch(GenericBase *self)");
+
+    String subImpl = translateSourceFile("StringSub", "StringSub.m");
+    assertInTranslation(
+        subImpl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)getItems {
+          if (GenericBase_isOverride(self, @selector(getItemsAsNsArray))) {
+            return GenericBase_getItems_dispatch(self);
+          }
+          return ComGoogleCommonCollectImmutableList_of();
+        }
+        """);
+    assertInTranslation(
+        subImpl,
+        """
+        - (void)setItemsWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)items {
+          if (GenericBase_isOverride(self, @selector(setItems:))) {
+            GenericBase_setItemsWithComGoogleCommonCollectImmutableList__dispatch(self, items);
+            return;
+          }
+        }
+        """);
+  }
+
+  public void testConcreteClassNativeOverride_subinterfaceDefaultMethodOverrideIncludesBaseCheck()
+      throws IOException {
+    addInterfaceWithDefault();
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public interface SubInterfaceWithDefault extends InterfaceWithDefault {
+          @Override
+          default ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "SubInterfaceWithDefault.java");
+    addSourceFile(
+        """
+        public class ConcreteBase implements InterfaceWithDefault {}
+        """,
+        "ConcreteBase.java");
+    addSourceFile(
+        """
+        public class SubConcrete extends ConcreteBase implements SubInterfaceWithDefault {}
+        """,
+        "SubConcrete.java");
+
+    String subImpl = translateSourceFile("SubConcrete", "SubConcrete.m");
+    assertInTranslation(
+        subImpl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)getItems {
+          if (ConcreteBase_isOverride(self, @selector(getItemsAsNsArray))) {
+            return ConcreteBase_getItems_dispatch(self);
+          }
+          return SubInterfaceWithDefault_getItems(self);
+        }
+        """);
+    assertNotInTranslation(subImpl, "SubConcrete_isOverride");
+    assertNotInTranslation(subImpl, "SubConcrete_getItems_dispatch");
+  }
+
+  public void
+      testConcreteClassNativeOverride_genericBaseSpecializedParamWithCovariantReturnUsesBaseContract()
+          throws IOException {
+    addCovariantAdapter();
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        public class GenericBase<T> {
+          @ObjectiveCKmpMethod(selector = "process:items:", adapter = CovariantAdapter.class)
+          public List<String> process(T tag, List<String> items) {
+            return items;
+          }
+        }
+        """,
+        "GenericBase.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import java.util.List;
+
+        public class BooleanSub extends GenericBase<Boolean> {
+          @Override
+          public ImmutableList<String> process(Boolean id, List<String> inputItems) {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "BooleanSub.java");
+
+    String subImpl = translateSourceFile("BooleanSub", "BooleanSub.m");
+    assertInTranslation(
+        subImpl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)processWithId:(JavaLangBoolean *)id_
+                                              withJavaUtilList:(id<JavaUtilList>)inputItems {
+          if (GenericBase_isOverride(self, @selector(process:items:))) {
+            return [CovariantAdapter toImmutableListWithId:[self process:id_ items:(NSArray<NSString *> *) [CovariantAdapter fromJavaUtilListWithJavaUtilList:inputItems]]];
+          }
+          return ComGoogleCommonCollectImmutableList_of();
+        }
+        """);
+    assertNotInTranslation(subImpl, "fromBoolean");
+  }
+
+  public void testConcreteClassNativeOverride_finalSubclassFinalOverrideAndEnumSkipChecks()
+      throws IOException {
+    addOpenService();
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public final class FinalSub extends OpenService {
+          @Override
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "FinalSub.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class NonFinalSub extends OpenService {
+          @Override
+          public final ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "NonFinalSub.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public enum ServiceEnum {
+          INSTANCE;
+
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "ServiceEnum.java");
+
+    String finalSubImpl = translateSourceFile("FinalSub", "FinalSub.m");
+    assertInTranslation(finalSubImpl, "- (ComGoogleCommonCollectImmutableList *)getItems");
+    assertNotInTranslation(finalSubImpl, "_isOverride");
+    assertNotInTranslation(finalSubImpl, "_dispatch");
+
+    String nonFinalSubImpl = translateSourceFile("NonFinalSub", "NonFinalSub.m");
+    assertInTranslation(nonFinalSubImpl, "- (ComGoogleCommonCollectImmutableList *)getItems");
+    assertNotInTranslation(nonFinalSubImpl, "_isOverride");
+    assertNotInTranslation(nonFinalSubImpl, "_dispatch");
+
+    String enumImpl = translateSourceFile("ServiceEnum", "ServiceEnum.m");
+    assertInTranslation(enumImpl, "- (NSArray<NSString *> *)getItemsAsNsArray");
+    assertNotInTranslation(enumImpl, "_isOverride");
+    assertNotInTranslation(enumImpl, "_dispatch");
+  }
+
+  public void testConcreteClassNativeOverride_reannotatedSubclassDifferentAdapterGeneratesNewAdapter()
+      throws IOException {
+    addOpenBase();
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class AltImmutableListAdapter {
+          public static native Object fromImmutableList(ImmutableList<String> list) /*-[ return nil; ]-*/;
+          public static native ImmutableList<String> toImmutableList(Object list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "AltImmutableListAdapter.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public class AltSub extends OpenBase {
+          @Override
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = AltImmutableListAdapter.class)
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "AltSub.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class GrandAltSub extends AltSub {
+          @Override
+          public ImmutableList<String> getItems() {
+            return ImmutableList.of();
+          }
+        }
+        """,
+        "GrandAltSub.java");
+
+    String altImpl = translateSourceFile("AltSub", "AltSub.m");
+    assertInTranslation(
+        altImpl,
+        """
+        - (NSArray<NSString *> *)getItemsAsNsArray {
+          return (NSArray<NSString *> *) [AltImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:[self getItems]];
+        }
+        """);
+    assertInTranslation(altImpl, "bool AltSub_isOverride(AltSub *self, SEL selector)");
+    assertInTranslation(
+        altImpl,
+        """
+        ComGoogleCommonCollectImmutableList *AltSub_getItems_dispatch(AltSub *self) {
+          return [AltImmutableListAdapter toImmutableListWithId:[self getItemsAsNsArray]];
+        }
+        """);
+
+    String grandImpl = translateSourceFile("GrandAltSub", "GrandAltSub.m");
+    assertInTranslation(
+        grandImpl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)getItems {
+          if (AltSub_isOverride(self, @selector(getItemsAsNsArray))) {
+            return AltSub_getItems_dispatch(self);
+          }
+          return ComGoogleCommonCollectImmutableList_of();
+        }
+        """);
+    assertNotInTranslation(grandImpl, "- (NSArray<NSString *> *)getItemsAsNsArray");
+    assertNotInTranslation(grandImpl, "OpenBase_isOverride");
+  }
+
+  public void testConcreteClassNativeOverride_abstractClassWithConcreteMethodAndGenericReturnCast()
+      throws IOException {
+    addImmutableListAdapter();
+    addSourceFile("public class SubFoo extends Foo {}", "SubFoo.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.common.collect.ImmutableList;
+
+        public abstract class AbstractGenericBase<T extends Foo> {
+          @ObjectiveCKmpMethod(selector = "getItem:", adapter = ImmutableListAdapter.class)
+          public T getItem(ImmutableList<String> items) {
+            return null;
+          }
+        }
+        """,
+        "AbstractGenericBase.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ConcreteSubFoo extends AbstractGenericBase<SubFoo> {
+          @Override
+          public SubFoo getItem(ImmutableList<String> items) {
+            return null;
+          }
+        }
+        """,
+        "ConcreteSubFoo.java");
+
+    String baseHeader = translateSourceFile("AbstractGenericBase", "AbstractGenericBase.h");
+    assertInTranslation(baseHeader, "- (Foo *)getItem:(NSArray<NSString *> *)items;");
+
+    String baseImpl = translateSourceFile("AbstractGenericBase", "AbstractGenericBase.m");
+    assertInTranslation(
+        baseImpl,
+        """
+        - (Foo *)getItem:(NSArray<NSString *> *)items {
+          return (Foo *) [self getItemWithComGoogleCommonCollectImmutableList:[ImmutableListAdapter toImmutableListWithId:items]];
+        }
+        """);
+    assertInTranslation(
+        baseImpl, "bool AbstractGenericBase_isOverride(AbstractGenericBase *self, SEL selector)");
+    assertInTranslation(
+        baseImpl,
+        """
+        Foo *AbstractGenericBase_getItemWithComGoogleCommonCollectImmutableList__dispatch(AbstractGenericBase *self, ComGoogleCommonCollectImmutableList *items)\
+        """);
+
+    String subImpl = translateSourceFile("ConcreteSubFoo", "ConcreteSubFoo.m");
+    assertInTranslation(
+        subImpl,
+        """
+        - (SubFoo *)getItemWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)items {
+          if (AbstractGenericBase_isOverride(self, @selector(getItem:))) {
+            return (SubFoo *) AbstractGenericBase_getItemWithComGoogleCommonCollectImmutableList__dispatch(self, items);
+          }
+          return nil;
         }
         """);
   }
