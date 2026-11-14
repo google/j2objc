@@ -533,4 +533,52 @@ public class KmpMethodHierarchyTest extends GenerationTest {
     assertThat(ElementUtil.getDeclaringClass(resolved.allMethods().get(sig).element()))
         .isEqualTo(findType(unit, "SubI"));
   }
+
+  public void testGetTypeMethods_cachesPerTypeAndIsolatesGenericInstantiations() {
+    CompilationUnit unit =
+        compileType(
+            "GenericSample",
+            """
+            import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+            interface GenericBox<T> {
+              @ObjectiveCKmpMethod(selector = "unwrap", adapter = DummyAdapter.class)
+              T unwrap();
+            }
+
+            abstract class StringBox implements GenericBox<String> {}
+            abstract class IntBox implements GenericBox<Integer> {}
+            public class GenericSample {}
+            """);
+    KmpMethodHierarchy hierarchy = createHierarchy(unit);
+    TypeUtil typeUtil = unit.getEnv().typeUtil();
+    TypeElement stringBox = findType(unit, "StringBox");
+    TypeElement intBox = findType(unit, "IntBox");
+    TypeElement genericBox = findType(unit, "GenericBox");
+
+    // Repeated calls on the same TypeElement return the cached instance.
+    assertThat(hierarchy.getTypeMethods(stringBox))
+        .isSameInstanceAs(hierarchy.getTypeMethods(stringBox));
+
+    // Separate parameterized supertypes must not overwrite each other's cache entries.
+    TypeMethods stringIfaceMethods = hierarchy.getSupertypeHierarchy(stringBox, "unwrap()");
+    TypeMethods intIfaceMethods = hierarchy.getSupertypeHierarchy(intBox, "unwrap()");
+
+    assertThat(stringIfaceMethods).isNotNull();
+    assertThat(intIfaceMethods).isNotNull();
+    assertThat(hierarchy.getSupertypeHierarchy(stringBox, "unwrap()"))
+        .isSameInstanceAs(stringIfaceMethods);
+    assertThat(stringIfaceMethods.typeElement()).isEqualTo(genericBox);
+    assertThat(intIfaceMethods.typeElement()).isEqualTo(genericBox);
+    assertThat(
+            typeUtil.isSameType(
+                stringIfaceMethods.allMethods().get("unwrap()").type().getReturnType(),
+                typeUtil.getJavaString().asType()))
+        .isTrue();
+    assertThat(
+            typeUtil.isSameType(
+                intIfaceMethods.allMethods().get("unwrap()").type().getReturnType(),
+                typeUtil.resolveJavaType("java.lang.Integer").asType()))
+        .isTrue();
+  }
 }

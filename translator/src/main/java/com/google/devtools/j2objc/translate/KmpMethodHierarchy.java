@@ -20,7 +20,10 @@ import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ExecutableElement;
@@ -31,7 +34,7 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Resolves {@link ObjectiveCKmpMethod} method hierarchies, supertype annotations, and interface
- * dispatch targets using Java overriding semantics.
+ * dispatch targets using Java overriding semantics and per-type caching.
  */
 final class KmpMethodHierarchy {
 
@@ -42,8 +45,11 @@ final class KmpMethodHierarchy {
       ImmutableMap<String, AnnotationMirror> annotatedSignatures,
       ImmutableMap<String, ExecutableElement> annotatedMethods) {}
 
+  private record CachedTypeMethods(DeclaredType declaredType, TypeMethods typeMethods) {}
+
   private final TypeUtil typeUtil;
   private final ElementUtil elementUtil;
+  private final Map<TypeElement, List<CachedTypeMethods>> typeMethodsCache = new HashMap<>();
 
   KmpMethodHierarchy(TypeUtil typeUtil, ElementUtil elementUtil) {
     this.typeUtil = typeUtil;
@@ -57,9 +63,22 @@ final class KmpMethodHierarchy {
 
   /**
    * Collects all reachable methods and annotated signatures for {@code typeElem}, instantiated as
-   * {@code declaredType}.
+   * {@code declaredType}, using per-type/per-instantiation caching.
    */
   private TypeMethods getTypeMethods(TypeElement typeElem, DeclaredType declaredType) {
+    List<CachedTypeMethods> entries =
+        typeMethodsCache.computeIfAbsent(typeElem, _ -> new ArrayList<>());
+    for (CachedTypeMethods entry : entries) {
+      if (typeUtil.isSameType(entry.declaredType(), declaredType)) {
+        return entry.typeMethods();
+      }
+    }
+    TypeMethods computed = computeTypeMethods(typeElem, declaredType);
+    entries.add(new CachedTypeMethods(declaredType, computed));
+    return computed;
+  }
+
+  private TypeMethods computeTypeMethods(TypeElement typeElem, DeclaredType declaredType) {
     Map<String, ExecutablePair> methods = new LinkedHashMap<>();
     Map<String, ExecutableElement> annotatedMethods = new LinkedHashMap<>();
 
