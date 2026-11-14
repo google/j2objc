@@ -723,6 +723,91 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
     assertInTranslation(
         translation, "- (NSString * _Nullable)testWithNSString:(NSString * _Nonnull)msg");
+    assertInTranslation(translation, "- (void)testWithId:(id _Nullable)newValue;");
+  }
+
+  // Verify that nullability annotations on nested type positions (type arguments, array
+  // components, enclosing types) do not make the declared variable nullable.
+  public void testNestedNullableTypeAnnotations() throws IOException {
+    String source =
+        """
+        package foo.bar;
+        import com.google.j2objc.annotations.Property;
+        import java.util.List;
+        import org.jspecify.annotations.NullMarked;
+        import org.jspecify.annotations.Nullable;
+        @NullMarked
+        public class Outer<T extends @Nullable Object> {
+          public class Inner<U extends @Nullable Object> {}
+          public static class StaticInner<U extends @Nullable Object> {}
+
+          public static List<@Nullable String> staticListOfNullable;
+          public static @Nullable List<String> staticNullableList;
+
+          @Property public List<@Nullable String> listOfNullable;
+          @Property public @Nullable List<String> nullableList;
+          @Property public @Nullable Outer<String>.Inner<String> enclosingNullable;
+          @Property public Outer<String>.@Nullable Inner<String> nullableInner;
+          @Property public Outer<@Nullable String>.Inner<String> outerArgNullable;
+          @Property public Outer<String>.Inner<@Nullable String> innerArgNullable;
+          @Property public Outer<String>.@Nullable Inner<String>[] arrayOfNullableInner;
+          @Property public Outer<String>.Inner<String> @Nullable [] nullableArrayOfInner;
+          @Property public Outer.@Nullable StaticInner<String> nullableStaticInner;
+          @Property public Outer.StaticInner<@Nullable String> staticInnerArgNullable;
+          @Property public String castInInitializer = (@Nullable String) "";
+
+          public List<@Nullable String> returnsListOfNullable() { return List.of(); }
+          public void listOfNullableParam(List<@Nullable String> items) {}
+          public void nullableListParam(@Nullable List<String> items) {}
+          public void varargsOfNullable(@Nullable String... items) {}
+          public void nullableVarargs(String @Nullable ... items) {}
+        }
+        """;
+    options.setNullability(true);
+    options.setNullMarked(true);
+    String translation = translateSourceFile(source, "foo.bar.Outer", "foo/bar/Outer.h");
+    assertInTranslation(
+        translation, "inline id<JavaUtilList> FooBarOuter_get_staticListOfNullable(void);");
+    assertInTranslation(
+        translation, "inline id<JavaUtilList> _Nullable FooBarOuter_get_staticNullableList(void);");
+
+    assertInTranslation(translation, "id<JavaUtilList> listOfNullable_;");
+    assertInTranslation(translation, "FooBarOuter_Inner *enclosingNullable_;");
+    assertInTranslation(translation, "FooBarOuter_Inner *_Nullable nullableInner_;");
+    assertInTranslation(translation, "FooBarOuter_Inner *outerArgNullable_;");
+    assertInTranslation(translation, "FooBarOuter_Inner *innerArgNullable_;");
+    assertInTranslation(translation, "IOSObjectArray *arrayOfNullableInner_;");
+    assertInTranslation(translation, "IOSObjectArray *_Nullable nullableArrayOfInner_;");
+    assertInTranslation(translation, "FooBarOuter_StaticInner *_Nullable nullableStaticInner_;");
+    assertInTranslation(translation, "FooBarOuter_StaticInner *staticInnerArgNullable_;");
+    assertInTranslation(translation, "NSString *castInInitializer_;");
+
+    assertInTranslation(translation, "@property (strong) id<JavaUtilList> listOfNullable;");
+    assertInTranslation(translation, "@property (nullable, strong) id<JavaUtilList> nullableList;");
+    assertInTranslation(translation, "@property (strong) FooBarOuter_Inner *enclosingNullable;");
+    assertInTranslation(
+        translation, "@property (nullable, strong) FooBarOuter_Inner *nullableInner;");
+    assertInTranslation(translation, "@property (strong) FooBarOuter_Inner *outerArgNullable;");
+    assertInTranslation(translation, "@property (strong) FooBarOuter_Inner *innerArgNullable;");
+    assertInTranslation(translation, "@property (strong) IOSObjectArray *arrayOfNullableInner;");
+    assertInTranslation(
+        translation, "@property (nullable, strong) IOSObjectArray *nullableArrayOfInner;");
+    assertInTranslation(
+        translation, "@property (nullable, strong) FooBarOuter_StaticInner *nullableStaticInner;");
+    assertInTranslation(
+        translation, "@property (strong) FooBarOuter_StaticInner *staticInnerArgNullable;");
+    assertInTranslation(translation, "@property (copy) NSString *castInInitializer;");
+
+    assertInTranslation(translation, "- (id<JavaUtilList>)returnsListOfNullable;");
+    assertInTranslation(
+        translation, "- (void)listOfNullableParamWithJavaUtilList:(id<JavaUtilList>)items;");
+    assertInTranslation(
+        translation,
+        "- (void)nullableListParamWithJavaUtilList:(id<JavaUtilList> _Nullable)items;");
+    assertInTranslation(
+        translation, "- (void)varargsOfNullableWithNSStringArray:(IOSObjectArray *)items;");
+    assertInTranslation(
+        translation, "- (void)nullableVarargsWithNSStringArray:(IOSObjectArray * _Nullable)items;");
   }
 
   /*

@@ -27,12 +27,9 @@ import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.LambdaTypeElement;
 import com.google.j2objc.annotations.Property;
 import com.google.j2objc.annotations.RetainedWith;
-import com.sun.tools.javac.code.Attribute;
 import com.sun.tools.javac.code.Flags;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.code.Symbol.ClassSymbol;
-import com.sun.tools.javac.code.Symbol.VarSymbol;
-import com.sun.tools.javac.code.SymbolMetadata;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
@@ -831,23 +828,11 @@ public final class ElementUtil {
         && hasNamedAnnotation(((ExecutableElement) element).getReturnType(), pattern)) {
       return true;
     }
-    if (isVariable(element)) {
-      if (hasNamedAnnotation(elementType, pattern)) {
-        return true;
-      }
-
-      // Annotation may be saved as a type attribute in the javac symbol.
-      if (element instanceof VarSymbol) {
-        SymbolMetadata metadata = ((VarSymbol) element).getMetadata();
-        if (metadata != null) {
-          List<Attribute.TypeCompound> attrs = metadata.getTypeAttributes();
-          for (Attribute.TypeCompound attr : attrs) {
-            if (pattern.matcher(getName(attr.type.asElement())).matches()) {
-              return true;
-            }
-          }
-        }
-      }
+    // Only consider annotations on the top-level type. Type annotations on nested positions, e.g.
+    // type arguments or array components as in `List<@Nullable String>` or `@Nullable String[]`,
+    // do not affect the nullability of the variable itself.
+    if (isVariable(element) && hasNamedAnnotation(elementType, pattern)) {
+      return true;
     }
     if (TypeUtil.isTypeVariable(elementType)) {
       // Generics may be annotated as nullable and both the type variable and the bound
