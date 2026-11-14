@@ -18,29 +18,21 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
-import com.google.devtools.j2objc.ast.Expression;
-import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
-import com.google.devtools.j2objc.ast.ThisExpression;
-import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
 import com.google.devtools.j2objc.translate.KmpMethodHierarchy.TypeMethods;
 import com.google.devtools.j2objc.translate.KmpTypeConverter.MappingStrategy;
 import com.google.devtools.j2objc.types.ExecutablePair;
-import com.google.devtools.j2objc.types.FunctionElement;
 import com.google.devtools.j2objc.util.ElementUtil;
 import com.google.j2objc.annotations.ObjectiveCKmpMethod;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
 /**
@@ -107,6 +99,9 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
   @Override
   public void run() {
     Set<AbstractTypeDeclaration> existingTypes = new HashSet<>(unit.getTypes());
+    // Rewrite call sites before emitting adapter methods/dispatch helpers so generated invocations
+    // inside synthetic adapter and _dispatch bodies are never rewritten into self-recursion.
+    new KmpMethodInvocationRewriter(unit, methodHierarchy, adapterEmitter).run();
     super.run();
     new LambdaTypeElementAdder(unit, "$KmpLambda$").run();
     new LambdaRewriter(unit).run();
@@ -213,36 +208,5 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
       return;
     }
     processType(node);
-  }
-
-  @Override
-  public void endVisit(MethodInvocation node) {
-    // Check if the called method is (or overrides) an @ObjectiveCKmpMethod interface method.
-    ExecutableElement targetMethod =
-        methodHierarchy.findInterfaceMethodRequiringDispatch(node.getExecutableElement());
-    if (targetMethod == null) {
-      return;
-    }
-
-    // Rewrite `receiver.foo(args...)` to `Interface_foo_dispatch(receiver, args...)`.
-    FunctionElement funcElement =
-        adapterEmitter.createDispatchElement(
-            ElementUtil.getDeclaringClass(targetMethod), targetMethod);
-    FunctionInvocation functionInvocation =
-        new FunctionInvocation(funcElement, node.getTypeMirror());
-    List<Expression> funcArgs = functionInvocation.getArguments();
-
-    // Pass the receiver as the first argument (`self`), synthesizing `this` for implicit calls.
-    Expression receiver = node.getExpression();
-    if (receiver == null) {
-      receiver = new ThisExpression(TreeUtil.getEnclosingTypeElement(node).asType());
-    } else {
-      receiver = TreeUtil.remove(receiver);
-    }
-    funcArgs.add(receiver);
-
-    // Move the remaining method arguments and replace the method call with the C function call.
-    TreeUtil.moveList(node.getArguments(), funcArgs);
-    node.replaceWith(functionInvocation);
   }
 }
