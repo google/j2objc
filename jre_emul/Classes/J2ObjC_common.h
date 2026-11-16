@@ -176,6 +176,14 @@ CF_EXTERN_C_END
  */
 #define nil_chk(p) (p ?: JreThrowNullPointerException())
 
+#ifdef J2OBJC_EXCEPTION_PREPROCESSING
+#define J2OBJC_LOCK_THROWABLE(...) [(__VA_ARGS__) lockingForThrow]
+#define J2OBJC_UNLOCK_THROWABLE(p) [p unlockAfterThrow]
+#else
+#define J2OBJC_LOCK_THROWABLE(...) (__VA_ARGS__)
+#define J2OBJC_UNLOCK_THROWABLE(p) (void)0
+#endif
+
 #if !__has_feature(objc_arc)
 __attribute__((always_inline)) inline id JreAutoreleasedAssign(
     id *pIvar, NS_RELEASES_ARGUMENT id value) {

@@ -260,6 +260,7 @@ public class NilCheckResolverTest extends GenerationTest {
         "  i = ((Test_Foo *) nil_chk(f))->i_;",
         "}",
         "@catch (JavaLangThrowable *t) {",
+        "  J2OBJC_UNLOCK_THROWABLE(t);",
         "  i = ((Test_Foo *) nil_chk(f))->i_;",
         "}",
         "@finally {",
@@ -383,8 +384,8 @@ public class NilCheckResolverTest extends GenerationTest {
         + "void test1() { throw null; }"
         + "void test2(RuntimeException e) { throw e; }"
         + "void test3() { throw new RuntimeException(); }}", "Test", "Test.m");
-    assertInTranslation(translation, "@throw nil_chk(nil);");
-    assertInTranslation(translation, "@throw nil_chk(e);");
+    assertInTranslation(translation, "@throw J2OBJC_LOCK_THROWABLE(nil_chk(nil));");
+    assertInTranslation(translation, "@throw J2OBJC_LOCK_THROWABLE(nil_chk(e));");
     assertInTranslation(translation, "@throw create_JavaLangRuntimeException_init();");
   }
 }

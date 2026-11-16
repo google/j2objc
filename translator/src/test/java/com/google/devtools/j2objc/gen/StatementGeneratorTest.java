@@ -195,7 +195,8 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("@try {\n;\n}\n@catch (JavaLangException *e) {\n}", result);
+    assertEquals(
+        "@try {\n;\n}\n@catch (JavaLangException *e) {\n  J2OBJC_UNLOCK_THROWABLE(e);\n}", result);
   }
 
   public void testInstanceOfTranslation() throws IOException {
@@ -2739,9 +2740,30 @@ public class StatementGeneratorTest extends GenerationTest {
             """,
             "Test",
             "Test.m");
-    assertInTranslation(translation, "@catch (Test_FirstException *e) {\n    @throw e;\n  }");
-    assertInTranslation(translation, "@catch (Test_SecondException *e) {\n    @throw e;\n  }");
-    assertNotInTranslation(translation, "@catch (JavaLangException *e) {\n    @throw e;\n  }");
+    assertInTranslation(
+        translation,
+        """
+        @catch (Test_FirstException *e) {
+            J2OBJC_UNLOCK_THROWABLE(e);
+            @throw J2OBJC_LOCK_THROWABLE(e);
+          }\
+        """);
+    assertInTranslation(
+        translation,
+        """
+        @catch (Test_SecondException *e) {
+            J2OBJC_UNLOCK_THROWABLE(e);
+            @throw J2OBJC_LOCK_THROWABLE(e);
+          }\
+        """);
+    assertNotInTranslation(
+        translation,
+        """
+        @catch (JavaLangException *e) {
+            J2OBJC_UNLOCK_THROWABLE(e);
+            @throw J2OBJC_LOCK_THROWABLE(e);
+          }\
+        """);
   }
 
   public void testLambdaCapturesMultiCatchExceptionParameter() throws IOException {
@@ -3763,6 +3785,70 @@ public class StatementGeneratorTest extends GenerationTest {
         bool r3 = ((a == b) || c) && d;
         bool r4 = (a == b) && c && d;
         bool r5 = c && ((a == b) && d);
+        """);
+  }
+
+  public void testThrowAndCatchLockingTranslation() throws IOException {
+    String translation =
+        translateSourceFile(
+            """
+            class Test {
+              RuntimeException createException() {
+                return new RuntimeException("from helper");
+              }
+              void throwNewAllocation() {
+                throw new RuntimeException("fresh");
+              }
+              void throwExistingVariable(RuntimeException e) {
+                throw e;
+              }
+              void throwFromMethodCall() {
+                throw createException();
+              }
+              void catchAndRethrow() {
+                try {
+                  throwNewAllocation();
+                } catch (RuntimeException e) {
+                  throw e;
+                }
+              }
+            }
+            """,
+            "Test",
+            "Test.m");
+    assertTranslatedLines(
+        translation,
+        """
+        - (void)throwNewAllocation {
+          @throw create_JavaLangRuntimeException_initWithNSString_(@"fresh");
+        }
+        """);
+    assertTranslatedLines(
+        translation,
+        """
+        - (void)throwExistingVariableWithJavaLangRuntimeException:(JavaLangRuntimeException *)e {
+          @throw J2OBJC_LOCK_THROWABLE(nil_chk(e));
+        }
+        """);
+    assertTranslatedLines(
+        translation,
+        """
+        - (void)throwFromMethodCall {
+          @throw J2OBJC_LOCK_THROWABLE(nil_chk(([self createException])));
+        }
+        """);
+    assertTranslatedLines(
+        translation,
+        """
+        - (void)catchAndRethrow {
+          @try {
+            [self throwNewAllocation];
+          }
+          @catch (JavaLangRuntimeException *e) {
+            J2OBJC_UNLOCK_THROWABLE(e);
+            @throw J2OBJC_LOCK_THROWABLE(e);
+          }
+        }
         """);
   }
 }

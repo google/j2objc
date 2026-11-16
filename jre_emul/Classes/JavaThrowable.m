@@ -24,6 +24,7 @@
 #import "IOSObjectArray.h"
 #import "J2ObjC_source.h"
 #import "java/lang/StackTraceElement.h"
+#import "java/lang/Throwable.h"
 #import "jni.h"
 
 #import <execinfo.h>
@@ -146,14 +147,16 @@ jarray Java_java_lang_Throwable_nativeGetStackTrace(
 // dangerously, these Java "error" exceptions may be thrown for the first time later from other
 // threads or even concurrently.
 //
-// There is no direct public API to allow access to CoreFoundation's preprocessor directly, but
-// we can install our own preprocessor and use that to get access to the whole preprocessor
-// chain.
+// There is no direct public API to allow access to CoreFoundation's preprocessor directly, and
+// invoking the preprocessor chain at allocation time triggers Crashpad's exception sinkhole
+// detector when allocating unthrown exceptions on dispatch queues. Instead, we install our own
+// preprocessor and serialize calls to the rest of the preprocessor chain using a per-exception lock
+// when an exception is thrown.
 //
-// If that fails we will use NSExceptionOmitCallstacks as a fallback. Note that omitting stacks,
-// causes our exceptions to violate some nonnull declared NSException properties. However, this
-// appears to be true even of the base class, and so must be something exception handlers and
-// other preprocessors must already deal with in practice.
+// If installing our preprocessor fails we will use NSExceptionOmitCallstacks as a fallback. Note
+// that omitting stacks causes our exceptions to violate some nonnull declared NSException
+// properties. However, this appears to be true even of the base class, and so must be something
+// exception handlers and other preprocessors must already deal with in practice.
 //
 // NSLog(@"%@", [[[NSException alloc] initWithName:@"foo" reason:nil userInfo:nil]
 //                  callStackReturnAddresses]);
@@ -164,9 +167,23 @@ static objc_exception_preprocessor gNextExceptionPreprocessor = nullptr;
 
 // Static but named to make it clearer in stacktraces.
 static id J2ObjCThrowableExceptionPreprocessor(id exception) {
-  // Pure passthrough. gNextExceptionPreprocessor safe because it is guarded by the dispatch_once
-  // below.
+  // Serialize preprocessing per Throwable via its recursive lock so concurrent throws of the
+  // same exception cannot race inside CoreFoundation's __exceptionPreprocess(), then unlock
+  // all recursive acquisitions once gNextExceptionPreprocessor() (and thus __exceptionPreprocess()
+  // at the root of the chain) has completed, before stack unwinding begins. Note that in most
+  // cases where an exception could be shared across threads, we expect the Throwable to already be
+  // locked before the throw via J2OBJC_LOCK_THROWABLE (with J2OBJC_UNLOCK_THROWABLE in @catch as a
+  // fallback if a preprocessor ahead of us does not chain). This additional lock/unlock around
+  // gNextExceptionPreprocessor() covers unguarded native/OCNI throws and other corner cases.
+  // gNextExceptionPreprocessor is safe because it is guarded by the dispatch_once below.
   if (gNextExceptionPreprocessor) {
+    if ([exception isKindOfClass:[JavaLangThrowable class]]) {
+      JavaLangThrowable *throwable = (JavaLangThrowable *)exception;
+      [throwable lockingForThrow];
+      id result = gNextExceptionPreprocessor(exception);
+      [throwable unlockAfterThrow];
+      return result;
+    }
     return gNextExceptionPreprocessor(exception);
   } else {
     return exception;
@@ -174,14 +191,6 @@ static id J2ObjCThrowableExceptionPreprocessor(id exception) {
 }
 
 static BOOL InstallPreprocessor(void) {
-  // Install our preprocessor as late as possible (first Java exception). This gives us the best
-  // chance of being the top of the exception preprocessing chain, which increases our chances
-  // of executing all preprocessing at allocation time (like Java) as well as ensuring as much
-  // thread safety as we can with the limited tools we have.
-  //
-  // Preprocessors will run a second time if the exception is thrown, the hope is that they
-  // have the same basic thread safety as CoreFoundation __exceptionPreprocess() and don't mutate
-  // the object a second time.
   dispatch_once(&gExceptionPreprocessorOnce, ^{
     // "Tickle" CoreFoundation in order to try to be sure that it has already installed
     // its preprocessor. The conditions for this are not documented, but it seems reasonable
@@ -214,10 +223,15 @@ static BOOL InstallPreprocessor(void) {
   return gNextExceptionPreprocessor != nullptr;
 }
 
-static void PrePreprocessException(id exception) {
-  if (InstallPreprocessor() && gNextExceptionPreprocessor) {
-    gNextExceptionPreprocessor(exception);
+void JavaThrowable_InstallExceptionPreprocessor(void) {
+  (void)InstallPreprocessor();
+}
+
+id _Nullable JavaThrowable_CreatePreprocessLock(void) {
+  if (InstallPreprocessor()) {
+    return AUTORELEASE([[NSRecursiveLock alloc] init]);
   }
+  return nil;
 }
 
 #endif  // J2OBJC_EXCEPTION_PREPROCESSING
@@ -229,12 +243,10 @@ void NSException_initWithNSString_(NSException *self, NSString *message) {
   NSString *clsName = [[self java_getClass] getName];
   NSString *reason = message ? [NSString stringWithFormat:@"%@: %@", clsName, message] : clsName;
   NSDictionary *userInfo = nil;
-  BOOL preprocessingAvailable = NO;
 
 #ifdef J2OBJC_EXCEPTION_PREPROCESSING
-  preprocessingAvailable = InstallPreprocessor();
-  if (!preprocessingAvailable) {
-    // If no preprocessors ran then the safest thing we can do is omit callstacks.
+  if (!InstallPreprocessor()) {
+    // If no preprocessors are installed then the safest thing we can do is omit callstacks.
     userInfo = @{
       @"NSExceptionOmitCallstacks" : @YES,
     };
@@ -246,10 +258,4 @@ void NSException_initWithNSString_(NSException *self, NSString *message) {
   // class clusters and other scenarios. In practice, however, it seems that
   // NSException doesn't do that.
   [self initWithName:[[self class] description] reason:reason userInfo:userInfo];
-
-#ifdef J2OBJC_EXCEPTION_PREPROCESSING
-  if (preprocessingAvailable) {
-    PrePreprocessException(self);
-  }
-#endif  // J2OBJC_EXCEPTION_PREPROCESSING
 }

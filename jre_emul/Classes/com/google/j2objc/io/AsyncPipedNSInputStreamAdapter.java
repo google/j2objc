@@ -247,6 +247,9 @@ public final class AsyncPipedNSInputStreamAdapter {
           CFRunLoopRun();
         }
         @catch (NSException *e) {
+          if ([e isKindOfClass:[JavaLangThrowable class]]) {
+            J2OBJC_UNLOCK_THROWABLE((JavaLangThrowable *)e);
+          }
           NSLog(@"unexpected exception: %@", e);
         }
       }
@@ -279,6 +282,9 @@ public final class AsyncPipedNSInputStreamAdapter {
               [delegate_ offerDataWithJavaIoOutputStream:self];
             }
             @catch (NSException *e) {
+              if ([e isKindOfClass:[JavaLangThrowable class]]) {
+                J2OBJC_UNLOCK_THROWABLE((JavaLangThrowable *)e);
+              }
               // Ignore error. There's nothing we can do here.
               [aStream close];
             }

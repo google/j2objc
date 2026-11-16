@@ -959,12 +959,30 @@ public class StatementGenerator extends UnitTreeVisitor {
     return false;
   }
 
+  private static boolean isNewAllocation(Expression expr) {
+    if (expr instanceof ClassInstanceCreation) {
+      return true;
+    }
+    if (expr instanceof FunctionInvocation functionInvocation) {
+      return functionInvocation.getFunctionElement().getRetainedResultName() != null;
+    }
+    return false;
+  }
+
   @Override
   public boolean visit(ThrowStatement node) {
-    buffer.append("@throw ");
-    // A full expression terminated by ';'.
-    node.getExpression().accept(this);
-    buffer.append(";\n");
+    Expression expr = node.getExpression();
+    if (isNewAllocation(expr)) {
+      buffer.append("@throw ");
+      // A full expression terminated by ';'.
+      expr.accept(this);
+      buffer.append(";\n");
+    } else {
+      buffer.append("@throw J2OBJC_LOCK_THROWABLE(");
+      // A full expression terminated by ';'.
+      expr.accept(this);
+      buffer.append(");\n");
+    }
     return false;
   }
 
@@ -982,6 +1000,12 @@ public class StatementGenerator extends UnitTreeVisitor {
         buffer.append("@catch (");
         cc.getException().accept(this);
         buffer.append(") {\n");
+        buffer.indent();
+        buffer.printIndent();
+        buffer.append("J2OBJC_UNLOCK_THROWABLE(");
+        buffer.append(nameTable.getVariableQualifiedName(cc.getException().getVariableElement()));
+        buffer.append(");\n");
+        buffer.unindent();
         printStatements(cc.getBody().getStatements());
         buffer.append("}\n");
       }
@@ -1001,8 +1025,15 @@ public class StatementGenerator extends UnitTreeVisitor {
       buffer.append("@catch (");
       exceptionType.accept(this);
       buffer.append(" *");
-      buffer.append(nameTable.getVariableQualifiedName(exception.getVariableElement()));
+      String varName = nameTable.getVariableQualifiedName(exception.getVariableElement());
+      buffer.append(varName);
       buffer.append(") {\n");
+      buffer.indent();
+      buffer.printIndent();
+      buffer.append("J2OBJC_UNLOCK_THROWABLE(");
+      buffer.append(varName);
+      buffer.append(");\n");
+      buffer.unindent();
       printStatements(node.getBody().getStatements());
       buffer.append("}\n");
     }

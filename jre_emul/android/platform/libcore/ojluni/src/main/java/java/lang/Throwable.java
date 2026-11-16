@@ -135,6 +135,18 @@ public class Throwable extends NSException implements Serializable {
      */
     private transient volatile Object backtrace;
 
+    private transient Object preprocessLock = initPreprocessLock();
+
+    private transient int preprocessLockCount;
+
+    private static native Object initPreprocessLock() /*-[
+      #ifdef J2OBJC_EXCEPTION_PREPROCESSING
+      return JavaThrowable_CreatePreprocessLock();
+      #else
+      return nil;
+      #endif
+    ]-*/;
+
     /**
      * Specific details about the Throwable.  For example, for
      * {@code FileNotFoundException}, this contains the name of
@@ -1176,6 +1188,13 @@ public class Throwable extends NSException implements Serializable {
             return suppressedExceptions.toArray(EMPTY_THROWABLE_ARRAY);
     }
 
+    /*-HEADER[
+    #ifdef J2OBJC_EXCEPTION_PREPROCESSING
+    - (instancetype _Nonnull)lockingForThrow;
+    - (void)unlockAfterThrow;
+    #endif
+    ]-*/
+
     // J2ObjC added: Override NSException isEqual and hash behavior. Use a OCNI block so that the
     // methods don't show up in reflection.
     /*-[
@@ -1186,5 +1205,32 @@ public class Throwable extends NSException implements Serializable {
     - (NSUInteger)hash {
       return (NSUInteger)self;
     }
+
+    #ifdef J2OBJC_EXCEPTION_PREPROCESSING
+    + (void)load {
+      JavaThrowable_InstallExceptionPreprocessor();
+    }
+
+    - (instancetype _Nonnull)lockingForThrow {
+      NSRecursiveLock *lock = (NSRecursiveLock *)preprocessLock_;
+      if (lock) {
+        [lock lock];
+        preprocessLockCount_++;
+      }
+      return self;
+    }
+
+    - (void)unlockAfterThrow {
+      NSRecursiveLock *lock = (NSRecursiveLock *)preprocessLock_;
+      if (lock) {
+        [lock lock];
+        while (preprocessLockCount_ > 0) {
+          preprocessLockCount_--;
+          [lock unlock];
+        }
+        [lock unlock];
+      }
+    }
+    #endif
     ]-*/
 }

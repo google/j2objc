@@ -64,6 +64,7 @@ static JavaNetURL *CreateResourceURL(NSString *name, IOSByteArray *data) {
     return (JavaNetURL *)[m invokeWithId:nil withNSObjectArray:args];
   }
   @catch (JavaLangException *e) {
+    J2OBJC_UNLOCK_THROWABLE(e);
     @throw create_ComGoogleJ2objcLibraryNotLinkedError_initWithNSString_withNSString_withNSString_(
          @"java.net", @"jre_net ", @"JavaLangSystemClassLoader");
   }

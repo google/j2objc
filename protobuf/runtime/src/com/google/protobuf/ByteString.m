@@ -321,6 +321,12 @@ ComGoogleProtobufByteString
       nextChunk = &chunkData->next;
     } while (!finished);
   } @catch (id e) {
+    if ([e isKindOfClass:[JavaLangThrowable class]]) {
+      JavaLangThrowable *throwable = (JavaLangThrowable *)e;
+      J2OBJC_UNLOCK_THROWABLE(throwable);
+      ReleaseChunks(firstChunk);
+      @throw J2OBJC_LOCK_THROWABLE(throwable);
+    }
     ReleaseChunks(firstChunk);
     @throw e;
   }
@@ -413,6 +419,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufByteString)
   @try {
     return [byteString_ byteAtWithInt:position_++];
   } @catch (JavaLangIndexOutOfBoundsException *e) {
+    J2OBJC_UNLOCK_THROWABLE(e);
     @throw create_JavaUtilNoSuchElementException_initWithNSString_([e getMessage]);
   }
 }

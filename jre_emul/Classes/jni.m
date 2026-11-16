@@ -462,7 +462,7 @@ SET_ARRAY_REGION_IMPL(Double, jdouble)
 static jint Throw(JNIEnv *env, jthrowable obj) {
   (void)nil_chk(obj);
   JNISetCurrentThreadException(env, obj);
-  @throw obj;
+  @throw J2OBJC_LOCK_THROWABLE(obj);
   return 0;
 }
 
@@ -609,6 +609,7 @@ static void CallMethodA(JNIEnv *env, jobject obj, jmethodID methodID, const jval
     [(JavaLangReflectMethod *)methodID
         jniInvokeWithId:obj args:(const J2ObjcRawValue *)args result:(J2ObjcRawValue *)result];
   } @catch (JavaLangThrowable *e) {
+    J2OBJC_UNLOCK_THROWABLE(e);
     // Throw() saves the exception to the current thread's exception table.
     Throw(env, e);
   }

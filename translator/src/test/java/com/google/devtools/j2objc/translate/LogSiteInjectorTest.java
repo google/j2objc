@@ -242,11 +242,13 @@ public class LogSiteInjectorTest extends GenerationTest {
     assertTranslatedLines(
         translation,
         "@catch (JavaLangArithmeticException *e) {",
+        "  J2OBJC_UNLOCK_THROWABLE(e);",
         "[((JavaUtilLoggingLogger *) nil_chk(TestHello6_logger))"
             + " logWithJavaUtilLoggingLevel:JreLoadStatic(JavaUtilLoggingLevel, WARNING)"
             + " withNSString:@\"exception thrown\" withJavaLangThrowable:e];",
         "}",
         "@catch (JavaLangNumberFormatException *e) {",
+        "  J2OBJC_UNLOCK_THROWABLE(e);",
         "[((JavaUtilLoggingLogger *) nil_chk(TestHello6_logger))"
             + " logWithJavaUtilLoggingLevel:JreLoadStatic(JavaUtilLoggingLevel, WARNING)"
             + " withNSString:@\"exception thrown\" withJavaLangThrowable:e];",
