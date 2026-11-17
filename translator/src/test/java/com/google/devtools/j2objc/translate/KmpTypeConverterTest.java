@@ -795,6 +795,132 @@ public class KmpTypeConverterTest extends GenerationTest {
     assertThat(error).hasMessageThat().contains("Cannot find abstract SAM method");
   }
 
+  private static boolean canReverseAdapt(
+      CompilationUnit unit, KmpTypeConverter converter, String methodName, TypeMirror adapter) {
+    return converter.canReverseAdapt(new ExecutablePair(findMethod(unit, methodName)), adapter);
+  }
+
+  public void testCanReverseAdapt_bidirectionalAndPassThroughTypes() {
+    CompilationUnit unit =
+        compileType(
+            "Sample",
+            """
+            import java.util.List;
+            public class Sample {
+              private Adapter adapterRef;
+              public List<String> echo(List<String> items, String tag, int count, PlainObj plain) {
+                return items;
+              }
+              public void acceptVoid(String tag, int count) {}
+              public Boolean missingBoxed() { return Boolean.TRUE; }
+            }
+            """);
+    KmpTypeConverter converter = createConverter(unit);
+    TypeMirror adapter = resolveType(unit, "Adapter");
+    ExecutableElement echo = findMethod(unit, "echo");
+    ExecutableElement acceptVoid = findMethod(unit, "acceptVoid");
+    TypeMirror intAdapter = echo.getParameters().get(2).asType();
+
+    assertThat(canReverseAdapt(unit, converter, "echo", adapter)).isTrue();
+    assertThat(canReverseAdapt(unit, converter, "acceptVoid", adapter)).isTrue();
+    assertThat(canReverseAdapt(unit, converter, "missingBoxed", adapter)).isFalse();
+    assertThat(canReverseAdapt(unit, converter, "echo", null)).isFalse();
+    assertThat(canReverseAdapt(unit, converter, "echo", intAdapter)).isFalse();
+    assertThat(converter.canReverseAdaptReturnType(acceptVoid.getReturnType(), null)).isTrue();
+    assertThat(converter.canReverseAdaptReturnType(echo.getReturnType(), null)).isFalse();
+    assertThat(converter.canReverseAdaptReturnType(echo.getReturnType(), adapter)).isTrue();
+  }
+
+  public void testCanReverseAdapt_asymmetricCustomAndStringConvertersReturnFalse()
+      throws IOException {
+    addSourceFile(
+        """
+        public class AsymmetricAdapter {
+          public static native PlainObj toPlainObj(Object obj) /*-[ return nil; ]-*/;
+          public static native Object fromSubPlainObj(SubPlainObj obj) /*-[ return nil; ]-*/;
+          public static native Object fromString(String s) /*-[ return nil; ]-*/;
+        }
+        """,
+        "AsymmetricAdapter.java");
+    CompilationUnit unit =
+        compileType(
+            "Sample",
+            """
+            public class Sample {
+              private AsymmetricAdapter adapterRef;
+              public void takeToOnly(PlainObj p) {}
+              public PlainObj returnToOnly() { return null; }
+              public void takeFromOnly(SubPlainObj p) {}
+              public SubPlainObj returnFromOnly() { return null; }
+              public void takeOneWayString(String s) {}
+              public String returnOneWayString() { return ""; }
+            }
+            """);
+    KmpTypeConverter converter = createConverter(unit);
+    TypeMirror adapter = resolveType(unit, "AsymmetricAdapter");
+
+    assertThat(canReverseAdapt(unit, converter, "takeToOnly", adapter)).isFalse();
+    assertThat(canReverseAdapt(unit, converter, "returnToOnly", adapter)).isFalse();
+    assertThat(canReverseAdapt(unit, converter, "takeFromOnly", adapter)).isFalse();
+    assertThat(canReverseAdapt(unit, converter, "returnFromOnly", adapter)).isFalse();
+    assertThat(canReverseAdapt(unit, converter, "takeOneWayString", adapter)).isFalse();
+    assertThat(canReverseAdapt(unit, converter, "returnOneWayString", adapter)).isFalse();
+  }
+
+  public void testCanReverseAdapt_noneExactRequiredReturnsFalse() {
+    CompilationUnit unit =
+        compileType(
+            "Sample",
+            """
+            import java.util.List;
+            public class Sample {
+              private WildcardAdapter wildcardRef;
+              public void takeBoolList(List<Boolean> flags) {}
+              public List<Boolean> getBoolList() { return null; }
+            }
+            """);
+    KmpTypeConverter converter = createConverter(unit);
+    TypeMirror wildcardAdapter = resolveType(unit, "WildcardAdapter");
+
+    assertThat(canReverseAdapt(unit, converter, "takeBoolList", wildcardAdapter)).isFalse();
+    assertThat(canReverseAdapt(unit, converter, "getBoolList", wildcardAdapter)).isFalse();
+  }
+
+  public void testCanReverseAdapt_composingConvertersRecurseIntoTypeArguments() throws IOException {
+    addSourceFile(
+        """
+        import java.util.List;
+        import java.util.function.Function;
+        public class ComposingPartialBoolAdapter {
+          public static native <T> List<T> toJavaUtilList(
+              Object list, Function<Object, T> conv) /*-[ return nil; ]-*/;
+          public static native <T> Object fromJavaUtilList(
+              List<T> list, Function<T, Object> conv) /*-[ return nil; ]-*/;
+          public static native Object fromBoolean(Boolean b) /*-[ return nil; ]-*/;
+        }
+        """,
+        "ComposingPartialBoolAdapter.java");
+    CompilationUnit unit =
+        compileType(
+            "Sample",
+            """
+            import java.util.List;
+            public class Sample {
+              private Adapter adapterRef;
+              private ComposingPartialBoolAdapter partialBoolRef;
+              public List<List<String>> nested(List<List<String>> items) { return items; }
+              public List<Boolean> boolList(List<Boolean> flags) { return flags; }
+            }
+            """);
+    KmpTypeConverter converter = createConverter(unit);
+
+    assertThat(canReverseAdapt(unit, converter, "nested", resolveType(unit, "Adapter"))).isTrue();
+    assertThat(
+            canReverseAdapt(
+                unit, converter, "boolList", resolveType(unit, "ComposingPartialBoolAdapter")))
+        .isFalse();
+  }
+
   public void testMaybeCast_narrowsSupertypeAndSkipsObjectOrAssignable() {
     CompilationUnit unit =
         compileType(

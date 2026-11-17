@@ -45,6 +45,7 @@ import javax.lang.model.type.PrimitiveType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.SimpleTypeVisitor9;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Handles Java-to-Objective-C type mapping, nullability/generic formatting, and adapter converter
@@ -98,6 +99,57 @@ final class KmpTypeConverter {
   /** Returns true if {@code type} is a Java or Guava collection supported for KMP conversion. */
   private boolean isCollectionType(TypeMirror type) {
     return COLLECTION_TYPES.contains(TypeUtil.getQualifiedName(typeUtil.erasure(type)));
+  }
+
+  /**
+   * Returns whether {@code method} can be adapted symmetrically in both directions ({@link
+   * MappingStrategy#NATIVE_TO_JAVA} and {@link MappingStrategy#JAVA_TO_NATIVE}) using {@code
+   * adapter}.
+   */
+  boolean canReverseAdapt(ExecutablePair method, @Nullable TypeMirror adapter) {
+    TypeElement adapterElement = adapter != null ? TypeUtil.asTypeElement(adapter) : null;
+    return adapterElement != null
+        && method.type().getParameterTypes().stream()
+            .allMatch(t -> canReverseConvertType(adapterElement, t, /* isParam= */ true))
+        && canReverseAdaptReturnType(method.type().getReturnType(), adapter);
+  }
+
+  /**
+   * Returns whether {@code returnType} is {@code void} or can be adapted symmetrically in both
+   * directions using {@code adapter}.
+   */
+  boolean canReverseAdaptReturnType(TypeMirror returnType, @Nullable TypeMirror adapter) {
+    if (TypeUtil.isVoid(returnType)) {
+      return true;
+    }
+    TypeElement adapterElement = adapter != null ? TypeUtil.asTypeElement(adapter) : null;
+    return adapterElement != null
+        && canReverseConvertType(adapterElement, returnType, /* isParam= */ false);
+  }
+
+  private boolean canReverseConvertType(
+      TypeElement adapterElement, TypeMirror type, boolean isParam) {
+    var reverse =
+        MappingStrategy.JAVA_TO_NATIVE.findConverter(adapterLookup, adapterElement, type, isParam);
+    var forward =
+        MappingStrategy.NATIVE_TO_JAVA.findConverter(adapterLookup, adapterElement, type, isParam);
+    // Reject missing exact-match converters or one-way converters.
+    if (reverse.matchType() == AdapterLookup.MatchType.NONE_EXACT_REQUIRED
+        || forward.matchType() == AdapterLookup.MatchType.NONE_EXACT_REQUIRED
+        || (reverse.converter() == null) != (forward.converter() == null)) {
+      return false;
+    }
+    // Without converters, only unmapped types and String (NSString) pass through safely.
+    if (reverse.converter() == null) {
+      return !isTypeSupported(type) || typeUtil.isString(typeUtil.erasure(type));
+    }
+    // Composing converters synthesize element lambdas, so each type argument must also be
+    // reversibly convertible.
+    if (reverse.matchType().isComposing() || forward.matchType().isComposing()) {
+      return TypeUtil.getTypeArguments(type).stream()
+          .allMatch(arg -> canReverseConvertType(adapterElement, arg, isParam));
+    }
+    return true;
   }
 
   /** Adapted parameter declarations and their converted argument expressions. */
