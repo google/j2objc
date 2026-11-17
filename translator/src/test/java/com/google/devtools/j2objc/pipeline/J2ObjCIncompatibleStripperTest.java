@@ -26,11 +26,15 @@ public class J2ObjCIncompatibleStripperTest extends GenerationTest {
 
   public void testMembersAreStripped() throws IOException {
     addSourceFile(
-        "import com.google.j2objc.annotations.J2ObjCIncompatible; "
-        + "import non.existent.pkg.Garbage;"
-        + "class Test {"
-        + " @J2ObjCIncompatible Garbage g;"
-        + " @J2ObjCIncompatible void strippedMethod() {} }", "Test.java");
+        """
+        import com.google.j2objc.annotations.J2ObjCIncompatible;
+        import non.existent.pkg.Garbage;
+        class Test {
+          @J2ObjCIncompatible Garbage g;
+          @J2ObjCIncompatible void strippedMethod() {}
+        }
+        """,
+        "Test.java");
     runPipeline("Test.java");
     String translation = getTranslatedFile("Test.h");
     assertInTranslation(translation, "@interface Test");
@@ -40,11 +44,15 @@ public class J2ObjCIncompatibleStripperTest extends GenerationTest {
 
   public void testTypeNameCollision() throws IOException {
     addSourceFile(
-        "import com.google.j2objc.annotations.J2ObjCIncompatible; "
-        + "import java.garbage.List; "
-        + "class Test {"
-        + " @J2ObjCIncompatible List l1;"
-        + " java.util.List l2; }", "Test.java");
+        """
+        import com.google.j2objc.annotations.J2ObjCIncompatible;
+        import java.garbage.List;
+        class Test {
+          @J2ObjCIncompatible List l1;
+          java.util.List l2;
+        }
+        """,
+        "Test.java");
     runPipeline("Test.java");
     String translation = getTranslatedFile("Test.h");
     assertNotInTranslation(translation, "garbage");
@@ -52,12 +60,21 @@ public class J2ObjCIncompatibleStripperTest extends GenerationTest {
 
   public void testStaticImports() throws IOException {
     addSourceFile(
-        "import com.google.j2objc.annotations.J2ObjCIncompatible; "
-        + "import static java.Garbage.foo; "
-        + "import static java.util.Arrays.asList; "
-        + "class Test {"
-        + " @J2ObjCIncompatible void test1() { foo(); }"
-        + " java.util.List<Object> test2(Object[] objs) { return asList(objs); } }", "Test.java");
+        """
+        import static java.Garbage.foo;
+        import static java.util.Arrays.asList;
+        import com.google.j2objc.annotations.J2ObjCIncompatible;
+        class Test {
+          @J2ObjCIncompatible
+          void test1() {
+            foo();
+          }
+          java.util.List<Object> test2(Object[] objs) {
+            return asList(objs);
+          }
+        }
+        """,
+        "Test.java");
     runPipeline("Test.java");
     String translation = getTranslatedFile("Test.h");
     assertNotInTranslation(translation, "Garbage");
@@ -68,10 +85,14 @@ public class J2ObjCIncompatibleStripperTest extends GenerationTest {
 
   public void testAnnotationImportIsPreserved() throws IOException {
     addSourceFile(
-        "import com.google.j2objc.annotations.J2ObjCIncompatible; "
-        + "import java.lang.annotation.Retention; "
-        + "import java.lang.annotation.RetentionPolicy; "
-        + "@Retention(RetentionPolicy.SOURCE) @interface Test {}", "Test.java");
+        """
+        import com.google.j2objc.annotations.J2ObjCIncompatible;
+        import java.lang.annotation.Retention;
+        import java.lang.annotation.RetentionPolicy;
+        @Retention(RetentionPolicy.SOURCE)
+        @interface Test {}
+        """,
+        "Test.java");
     runPipeline("Test.java");
     String translation = getTranslatedFile("Test.h");
     // Mainly testing that the source compiles after stripping.
@@ -81,11 +102,13 @@ public class J2ObjCIncompatibleStripperTest extends GenerationTest {
   // b/243018798: verify that enum constant is stripped when marked as incompatible.
   public void testEnumConstantStripped() throws Exception {
     addSourceFile(
-        "enum Test { "
-            + "  @com.google.j2objc.annotations.J2ObjCIncompatible"
-            + "  A,"
-            + "  B;"
-            + "}",
+        """
+        enum Test {
+          @com.google.j2objc.annotations.J2ObjCIncompatible
+          A,
+          B;
+        }
+        """,
         "Test.java");
     runPipeline("Test.java");
     String translation = getTranslatedFile("Test.h");

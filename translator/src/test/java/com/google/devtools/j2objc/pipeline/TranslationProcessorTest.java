@@ -52,9 +52,27 @@ public class TranslationProcessorTest extends GenerationTest {
     options.fileUtil().insertSourcePath(0, getTempDir() + "/src/main/java");
     options.fileUtil().appendSourcePath(getTempDir());
 
-    addSourceFile("class Test { Foo f; }", "Test.java");
-    addSourceFile("class Foo { void foo1() {} }", "Foo.java");
-    addSourceFile("class Foo { void foo2() {} }", "src/main/java/Foo.java");
+    addSourceFile(
+        """
+        class Test {
+          Foo f;
+        }
+        """,
+        "Test.java");
+    addSourceFile(
+        """
+        class Foo {
+          void foo1() {}
+        }
+        """,
+        "Foo.java");
+    addSourceFile(
+        """
+        class Foo {
+          void foo2() {}
+        }
+        """,
+        "src/main/java/Foo.java");
 
     GenerationBatch batch = new GenerationBatch(options);
     batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
@@ -68,7 +86,15 @@ public class TranslationProcessorTest extends GenerationTest {
   }
 
   public void testEntryClasses() throws IOException {
-    addSourceFile("class A { B test() { return new B(); }}", "A.java");
+    addSourceFile(
+        """
+        class A {
+          B test() {
+            return new B();
+          }
+        }
+        """,
+        "A.java");
     addSourceFile("class B extends C {}", "B.java");
     addSourceFile("class C {}", "C.java");
 
@@ -107,8 +133,20 @@ public class TranslationProcessorTest extends GenerationTest {
   }
 
   private void doProcessIncludeCycle() throws IOException {
-    String fileA = addSourceFile("interface A {} class BI implements B {}", "A.java");
-    String fileB = addSourceFile("interface B {} class AI implements A {}", "B.java");
+    String fileA =
+        addSourceFile(
+            """
+            interface A {}
+            class BI implements B {}
+            """,
+            "A.java");
+    String fileB =
+        addSourceFile(
+            """
+            interface B {}
+            class AI implements A {}
+            """,
+            "B.java");
 
     GenerationBatch batch = new GenerationBatch(options);
     batch.addSource(new RegularInputFile(fileA, "A.java"));
