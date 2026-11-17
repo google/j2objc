@@ -802,6 +802,11 @@ public final class ElementUtil {
     return hasNullabilityAnnotation(element, NULLABLE_PATTERN);
   }
 
+  /** Returns whether {@code type} carries a top-level or type-parameter nullable annotation. */
+  public static boolean hasNullableAnnotation(TypeMirror type) {
+    return hasNullabilityAnnotation(type, NULLABLE_PATTERN);
+  }
+
   /**
    * Return true if a binding has a named "Nonnull" annotation. Package names aren't
    * checked because different nonnull annotations are defined in several Java
@@ -814,39 +819,45 @@ public final class ElementUtil {
   private static boolean hasNullabilityAnnotation(Element element, Pattern pattern) {
     // Ignore nullability annotation on primitive or void return types.
     if (isMethod(element)) {
-      TypeKind kind = ((ExecutableElement) element).getReturnType().getKind();
-      if (kind.isPrimitive() || kind == TypeKind.VOID) {
+      TypeMirror returnType = ((ExecutableElement) element).getReturnType();
+      if (returnType.getKind().isPrimitive() || returnType.getKind() == TypeKind.VOID) {
         return false;
+      }
+      if (hasNamedAnnotation(returnType, pattern)) {
+        return true;
       }
     }
     TypeMirror elementType = element.asType();
     if (isVariable(element) && elementType.getKind().isPrimitive()) {
       return false;
     }
-    // The if statements cover type annotations.
-    if (isMethod(element)
-        && hasNamedAnnotation(((ExecutableElement) element).getReturnType(), pattern)) {
-      return true;
-    }
     // Only consider annotations on the top-level type. Type annotations on nested positions, e.g.
     // type arguments or array components as in `List<@Nullable String>` or `@Nullable String[]`,
     // do not affect the nullability of the variable itself.
-    if (isVariable(element) && hasNamedAnnotation(elementType, pattern)) {
+    if ((isVariable(element) || TypeUtil.isTypeVariable(elementType))
+        && hasNullabilityAnnotation(elementType, pattern)) {
       return true;
-    }
-    if (TypeUtil.isTypeVariable(elementType)) {
-      // Generics may be annotated as nullable and both the type variable and the bound
-      // may be annotated.
-      if (hasNamedAnnotation(((TypeVariable) elementType).asElement(), pattern)) {
-        return true;
-      }
-      if (hasNamedAnnotation(((TypeVariable) elementType).getUpperBound(), pattern)) {
-        return true;
-      }
     }
 
     // This covers declaration annotations.
     return hasNamedAnnotation(element, pattern);
+  }
+
+  private static boolean hasNullabilityAnnotation(TypeMirror type, Pattern pattern) {
+    if (type.getKind().isPrimitive() || type.getKind() == TypeKind.VOID) {
+      return false;
+    }
+    if (hasNamedAnnotation(type, pattern)) {
+      return true;
+    }
+    if (TypeUtil.isTypeVariable(type)) {
+      // Generics may be annotated as nullable and both the type variable and the bound
+      // may be annotated.
+      TypeVariable typeVar = (TypeVariable) type;
+      return hasNamedAnnotation(typeVar.asElement(), pattern)
+          || hasNamedAnnotation(typeVar.getUpperBound(), pattern);
+    }
+    return false;
   }
 
   public static Object getAnnotationValue(AnnotationMirror annotation, String name) {

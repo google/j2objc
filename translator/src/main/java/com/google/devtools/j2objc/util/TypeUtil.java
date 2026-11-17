@@ -61,7 +61,8 @@ import javax.lang.model.util.Types;
 public final class TypeUtil {
 
   public static final TypeMirror BOOL_TYPE = new NativeType("bool");
-  public static final TypeMirror ID_TYPE = new NativeType("id");
+  public static final NativeType ID_TYPE = new NativeType("id");
+  public static final NativeType NULLABLE_ID_TYPE = new NativeType("id _Nullable");
   public static final TypeMirror ID_PTR_TYPE = new PointerType(ID_TYPE);
   public static final TypeElement NS_OBJECT =
       GeneratedTypeElement.newIosClass("NSObject", null, "");
@@ -632,6 +633,10 @@ public final class TypeUtil {
     return isNativeType(t) && ((NativeType) t).getName().equals("id");
   }
 
+  public static boolean isNullableId(TypeMirror t) {
+    return NULLABLE_ID_TYPE.equals(t);
+  }
+
   public PrimitiveType getPrimitiveType(TypeKind kind) {
     return javacTypes.getPrimitiveType(kind);
   }
@@ -713,6 +718,11 @@ public final class TypeUtil {
 
   public boolean isDeclaredAsId(TypeMirror t) {
     return isReferenceType(t) && getObjcUpperBounds(t).isEmpty();
+  }
+
+  /** Returns whether {@code t} is emitted as {@code id _Nullable} in Objective-C. */
+  public boolean isDeclaredAsNullableId(TypeMirror t) {
+    return isNullableId(t) || (isDeclaredAsId(t) && ElementUtil.hasNullableAnnotation(t));
   }
 
   @SuppressWarnings("TypeEquals")

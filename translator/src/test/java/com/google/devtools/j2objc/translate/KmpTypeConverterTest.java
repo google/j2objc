@@ -36,6 +36,7 @@ import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedVariableElement;
 import com.google.devtools.j2objc.types.NativeType;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -256,6 +257,60 @@ public class KmpTypeConverterTest extends GenerationTest {
         .containsExactly(
             "BOOL", "int32_t", "int64_t", "float", "double", "unichar", "char", "int16_t")
         .inOrder();
+  }
+
+  public void testCalculateNativeType_typeVariablesAndBounds() {
+    CompilationUnit unit =
+        compileType(
+            "Sample",
+            """
+            import java.util.List;
+            import org.jspecify.annotations.Nullable;
+            public class Sample<
+                U, B extends PlainObj, P extends MyProto, S extends @Nullable String> {
+              public U unbounded() { return null; }
+              public @Nullable U nullableUnbounded() { return null; }
+              public B classBounded() { return null; }
+              public @Nullable B nullableClassBounded() { return null; }
+              public @Nullable S nullableSupportedBounded() { return null; }
+              public P interfaceBounded() { return null; }
+              public List<U> unboundedList() { return null; }
+              public List<B> classBoundedList() { return null; }
+              public List<P> interfaceBoundedList() { return null; }
+            }
+            """);
+    KmpTypeConverter converter = createConverter(unit);
+
+    ExecutableElement unbounded = findMethod(unit, "unbounded");
+    NativeType unboundedNative =
+        converter.calculateNativeType(unbounded.getReturnType(), unbounded);
+    assertThat(unboundedNative.getName()).isEqualTo("id");
+    assertThat(unboundedNative.getReferencedTypes()).isEmpty();
+
+    assertThat(returnNativeName(unit, converter, "nullableUnbounded")).isEqualTo("id _Nullable");
+
+    ExecutableElement classBounded = findMethod(unit, "classBounded");
+    NativeType classBoundedNative =
+        converter.calculateNativeType(classBounded.getReturnType(), classBounded);
+    assertThat(classBoundedNative.getName()).isEqualTo("PlainObj *");
+    assertThat(classBoundedNative.getReferencedTypes())
+        .containsExactly(resolveType(unit, "PlainObj"));
+
+    assertThat(returnNativeName(unit, converter, "nullableClassBounded"))
+        .isEqualTo("PlainObj * _Nullable");
+    assertThat(returnNativeName(unit, converter, "nullableSupportedBounded"))
+        .isEqualTo("NSString * _Nullable");
+    assertThat(returnNativeName(unit, converter, "interfaceBounded")).isEqualTo("id<MyProto>");
+
+    assertThat(returnNativeName(unit, converter, "unboundedList")).isEqualTo("NSArray<id> *");
+    ExecutableElement classBoundedList = findMethod(unit, "classBoundedList");
+    NativeType classBoundedListNative =
+        converter.calculateNativeType(classBoundedList.getReturnType(), classBoundedList);
+    assertThat(classBoundedListNative.getName()).isEqualTo("NSArray<PlainObj *> *");
+    assertThat(classBoundedListNative.getReferencedTypes())
+        .contains(resolveType(unit, "PlainObj"));
+    assertThat(returnNativeName(unit, converter, "interfaceBoundedList"))
+        .isEqualTo("NSArray<id<MyProto>> *");
   }
 
   public void testCalculateNativeType_nullabilityAndVoidExemption() {
@@ -738,5 +793,71 @@ public class KmpTypeConverterTest extends GenerationTest {
                     take,
                     params));
     assertThat(error).hasMessageThat().contains("Cannot find abstract SAM method");
+  }
+
+  public void testMaybeCast_narrowsSupertypeAndSkipsObjectOrAssignable() {
+    CompilationUnit unit =
+        compileType(
+            "Sample",
+            """
+            public class Sample {
+              public void inspect(PlainObj plain, SubPlainObj sub) {}
+            }
+            """);
+    KmpTypeConverter converter = createConverter(unit);
+    ExecutableElement inspect = findMethod(unit, "inspect");
+    Expression plainExpr = new SimpleName(inspect.getParameters().get(0));
+    Expression subExpr = new SimpleName(inspect.getParameters().get(1));
+    TypeMirror plainType = plainExpr.getTypeMirror();
+    TypeMirror subType = subExpr.getTypeMirror();
+    TypeMirror objectType = unit.getEnv().typeUtil().getJavaObject().asType();
+
+    Expression narrowed = converter.maybeCast(subType, plainExpr);
+    assertThat(narrowed).isInstanceOf(CastExpression.class);
+    assertThat(
+            unit.getEnv()
+                .typeUtil()
+                .isSameType(((CastExpression) narrowed).getType().getTypeMirror(), subType))
+        .isTrue();
+    assertThat(converter.maybeCast(plainType, subExpr)).isSameInstanceAs(subExpr);
+    assertThat(converter.maybeCast(objectType, subExpr)).isSameInstanceAs(subExpr);
+    assertThat(converter.maybeCast(unit.getEnv().typeUtil().getVoid(), subExpr))
+        .isSameInstanceAs(subExpr);
+    assertThat(converter.maybeCast(TypeUtil.ID_TYPE, subExpr)).isSameInstanceAs(subExpr);
+    assertThat(converter.maybeCast(TypeUtil.NULLABLE_ID_TYPE, subExpr)).isSameInstanceAs(subExpr);
+  }
+
+  public void testIsDeclaredAsNullableId() {
+    CompilationUnit unit =
+        compileType(
+            "Sample",
+            """
+            import org.jspecify.annotations.Nullable;
+            public class Sample<U, B extends PlainObj> {
+              public Object nonNullObject() { return null; }
+              public @Nullable Object nullableObject() { return null; }
+              public U nonNullTypeVar() { return null; }
+              public @Nullable U nullableTypeVar() { return null; }
+              public @Nullable B nullableBoundedTypeVar() { return null; }
+            }
+            """);
+    TypeUtil typeUtil = unit.getEnv().typeUtil();
+
+    assertThat(typeUtil.isDeclaredAsNullableId(TypeUtil.NULLABLE_ID_TYPE)).isTrue();
+    assertThat(typeUtil.isDeclaredAsNullableId(TypeUtil.ID_TYPE)).isFalse();
+    assertThat(typeUtil.isDeclaredAsId(TypeUtil.NULLABLE_ID_TYPE)).isFalse();
+
+    assertThat(typeUtil.isDeclaredAsNullableId(findMethod(unit, "nullableObject").getReturnType()))
+        .isTrue();
+    assertThat(typeUtil.isDeclaredAsNullableId(findMethod(unit, "nonNullObject").getReturnType()))
+        .isFalse();
+    assertThat(typeUtil.isDeclaredAsNullableId(findMethod(unit, "nullableTypeVar").getReturnType()))
+        .isTrue();
+    assertThat(typeUtil.isDeclaredAsNullableId(findMethod(unit, "nonNullTypeVar").getReturnType()))
+        .isFalse();
+    assertThat(
+            typeUtil.isDeclaredAsNullableId(
+                findMethod(unit, "nullableBoundedTypeVar").getReturnType()))
+        .isFalse();
   }
 }
