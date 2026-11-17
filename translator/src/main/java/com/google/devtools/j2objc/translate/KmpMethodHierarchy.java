@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -44,6 +45,10 @@ final class KmpMethodHierarchy {
       ImmutableMap<String, ExecutablePair> allMethods,
       ImmutableMap<String, AnnotationMirror> annotatedSignatures,
       ImmutableMap<String, ExecutableElement> annotatedMethods) {}
+
+  /** Concrete class in a type's hierarchy that owns the KMP adapter and helpers for a method. */
+  record ConcreteKmpOwner(
+      TypeElement ownerType, ExecutablePair method, AnnotationMirror annotation) {}
 
   private record CachedTypeMethods(DeclaredType declaredType, TypeMethods typeMethods) {}
 
@@ -160,6 +165,69 @@ final class KmpMethodHierarchy {
       }
     }
     return null;
+  }
+
+  /**
+   * Finds the class in {@code typeElem}'s superclass hierarchy (inclusive of {@code typeElem})
+   * that owns the concrete Objective-C KMP adapter and helpers for instance method {@code
+   * signature}, or {@code null} if {@code signature} is not a concrete instance KMP method.
+   */
+  @Nullable ConcreteKmpOwner findConcreteKmpOwner(TypeElement typeElem, String signature) {
+    DeclaredType currentType = (DeclaredType) typeElem.asType();
+    TypeMethods currentMethods = getTypeMethods(typeElem, currentType);
+    if (!hasConcreteKmpMethod(currentMethods, signature)) {
+      return null;
+    }
+    // Walk up while the superclass already owns a concrete KMP adapter with the same config.
+    DeclaredType superType = typeUtil.getSuperclass(currentType);
+    while (superType != null) {
+      TypeMethods superMethods = getTypeMethods(TypeUtil.asTypeElement(superType), superType);
+      // Stop if the superclass method is absent, abstract, unannotated, or re-configured.
+      if (!hasConcreteKmpMethod(superMethods, signature)
+          || !sameKmpConfig(currentMethods, superMethods, signature)) {
+        break;
+      }
+      currentType = superType;
+      currentMethods = superMethods;
+      superType = typeUtil.getSuperclass(currentType);
+    }
+
+    // Return the method as declared on the owner class (e.g. Base<T>) rather than with subclass
+    // type arguments (e.g. Base<String>).
+    TypeElement ownerElem = currentMethods.typeElement();
+    DeclaredType ownerType = (DeclaredType) ownerElem.asType();
+    ExecutablePair pair = currentMethods.allMethods().get(signature);
+    ExecutablePair ownerMethod =
+        typeUtil.isSameType(currentType, ownerType)
+            ? pair
+            : new ExecutablePair(pair.element(), typeUtil.asMemberOf(ownerType, pair.element()));
+    return new ConcreteKmpOwner(
+        ownerElem, ownerMethod, currentMethods.annotatedSignatures().get(signature));
+  }
+
+  private static boolean hasConcreteKmpMethod(TypeMethods methods, String signature) {
+    if (!methods.annotatedSignatures().containsKey(signature)) {
+      return false;
+    }
+    ExecutablePair pair = methods.allMethods().get(signature);
+    return pair != null
+        && !ElementUtil.isAbstract(pair.element())
+        && ElementUtil.isInstanceMethod(pair.element());
+  }
+
+  private boolean sameKmpConfig(TypeMethods sub, TypeMethods sup, String signature) {
+    if (Objects.equals(
+        sub.annotatedMethods().get(signature), sup.annotatedMethods().get(signature))) {
+      return true;
+    }
+    AnnotationMirror a = sub.annotatedSignatures().get(signature);
+    AnnotationMirror b = sup.annotatedSignatures().get(signature);
+    return Objects.equals(
+            ElementUtil.getAnnotationValue(a, "selector"),
+            ElementUtil.getAnnotationValue(b, "selector"))
+        && typeUtil.isSameType(
+            (TypeMirror) ElementUtil.getAnnotationValue(a, "adapter"),
+            (TypeMirror) ElementUtil.getAnnotationValue(b, "adapter"));
   }
 
   private static boolean isInheritedBy(ExecutableElement method, TypeElement subType) {

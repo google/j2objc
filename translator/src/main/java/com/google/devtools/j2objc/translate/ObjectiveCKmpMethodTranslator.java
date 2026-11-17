@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
+import com.google.devtools.j2objc.translate.KmpMethodHierarchy.ConcreteKmpOwner;
 import com.google.devtools.j2objc.translate.KmpMethodHierarchy.TypeMethods;
 import com.google.devtools.j2objc.translate.KmpTypeConverter.MappingStrategy;
 import com.google.devtools.j2objc.types.ExecutablePair;
@@ -166,23 +167,23 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
         boolean hasDirectAnnotation =
             ElementUtil.getAnnotation(method.element(), ObjectiveCKmpMethod.class) != null;
         shouldGenerate = isDeclaredOnCurrentInterface && hasDirectAnnotation;
-      } else {
+      } else if (ElementUtil.isAbstract(method.element())) {
         TypeMethods superHierarchy = methodHierarchy.getSupertypeHierarchy(typeElem, signature);
-        if (ElementUtil.isAbstract(method.element())) {
-          strategy = MappingStrategy.JAVA_TO_NATIVE;
-          // Generate if declared on this class, or if inherited by an abstract class from an
-          // interface rather than an abstract superclass that already generated them.
-          shouldGenerate =
-              ElementUtil.getDeclaringClass(method.element()).equals(typeElem)
-                  || (ElementUtil.isAbstract(typeElem)
-                      && (superHierarchy == null
-                          || superHierarchy.typeElement().getKind().isInterface()));
-        } else {
-          shouldGenerate =
-              superHierarchy == null
-                  || ElementUtil.isAbstract(superHierarchy.allMethods().get(signature).element())
-                  || ElementUtil.isDefault(superHierarchy.allMethods().get(signature).element());
-        }
+        strategy = MappingStrategy.JAVA_TO_NATIVE;
+        // Generate if declared on this class, or if inherited by an abstract class from an
+        // interface rather than an abstract superclass that already generated them.
+        shouldGenerate =
+            ElementUtil.getDeclaringClass(method.element()).equals(typeElem)
+                || (ElementUtil.isAbstract(typeElem)
+                    && (superHierarchy == null
+                        || superHierarchy.typeElement().getKind().isInterface()));
+      } else if (!ElementUtil.isInstanceMethod(method.element())) {
+        shouldGenerate = true;
+      } else {
+        // Only generate if this class owns the KMP config; when a superclass already owns it,
+        // subclasses inherit its Objective-C adapter (which dynamically dispatches via `self`).
+        ConcreteKmpOwner owner = methodHierarchy.findConcreteKmpOwner(typeElem, signature);
+        shouldGenerate = owner != null && owner.ownerType().equals(typeElem);
       }
 
       if (shouldGenerate) {
