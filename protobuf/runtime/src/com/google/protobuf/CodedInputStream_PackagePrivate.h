@@ -378,22 +378,26 @@ inline CGPCodedInputStream::CGPCodedInputStream(JavaIoInputStream *input,
     legitimate_message_end_(false),
     current_limit_(INT_MAX),
     buffer_size_after_limit_(0) {
-  // Eagerly Refresh() so buffer space is immediately available.
-  Refresh();
+  // Eagerly Refresh() when non-negative so buffer space is immediately available.
+  if (input_limit >= 0) {
+    Refresh();
+  }
 }
 
-inline CGPCodedInputStream::CGPCodedInputStream(const void *buffer, int size)
-  : input_(nil),
-    input_limit_(INT_MAX),
-    bytes_(nil),
-    buffer_((uint8 *)buffer),
-    buffer_end_((uint8 *)buffer + size),
-    total_bytes_read_(size),
-    last_tag_(0),
-    legitimate_message_end_(false),
-    current_limit_(size),
-    buffer_size_after_limit_(0) {
-}
+// Clamp buffer_end_ on non-positive sizes so BufferSize() stays non-negative;
+// keeping current_limit_ negative ensures ConsumedEntireMessage() fails.
+inline CGPCodedInputStream::CGPCodedInputStream(const void* buffer, int size)
+    : input_(nil),
+      input_limit_(INT_MAX),
+      bytes_(nil),
+      buffer_(static_cast<const uint8*>(buffer)),
+      buffer_end_(size > 0 ? static_cast<const uint8*>(buffer) + size
+                           : static_cast<const uint8*>(buffer)),
+      total_bytes_read_(size > 0 ? size : 0),
+      last_tag_(0),
+      legitimate_message_end_(false),
+      current_limit_(size),
+      buffer_size_after_limit_(0) {}
 
 #endif // __cplusplus
 

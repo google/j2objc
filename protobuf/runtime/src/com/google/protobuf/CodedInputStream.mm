@@ -297,9 +297,10 @@ uint32_t CGPCodedInputStream::ReadTagSlow() {
   if (buffer_ == buffer_end_) {
     // Call refresh.
     if (!Refresh()) {
-      // EOF is only a valid message end when no submessage limit is active
-      // or the stream reached current_limit_ exactly.
-      legitimate_message_end_ = (current_limit_ == INT_MAX || CurrentPosition() == current_limit_);
+      // EOF is only a valid message end when input_limit_ is non-negative and
+      // either no submessage limit is active or the stream reached current_limit_ exactly.
+      legitimate_message_end_ =
+          (input_limit_ >= 0 && (current_limit_ == INT_MAX || CurrentPosition() == current_limit_));
       return 0;
     }
   }
@@ -405,8 +406,7 @@ bool CGPCodedInputStream::ReadVarint64Fallback(uint64* value) {
 bool CGPCodedInputStream::Refresh() {
   NSCAssert(BufferSize() == 0, @"Expected end of buffer.");
 
-  if (buffer_size_after_limit_ > 0 ||
-      total_bytes_read_ == current_limit_) {
+  if (input_limit_ < 0 || buffer_size_after_limit_ > 0 || total_bytes_read_ == current_limit_) {
     // We've hit a limit.  Stop.
     return false;
   }
@@ -519,28 +519,31 @@ bool CGPCodedInputStream::ReadRetainedByteString(CGPByteString **value) {
 // is yet and we can't read past the end of the message.
 bool CGPCodedInputStream::ReadVarint32(
     int firstByte, JavaIoInputStream *input, uint32_t *value) {
-  *value = firstByte & (int) 0x7f;
-  if ((firstByte & (int) 0x80) == 0) {
+  // Varints store 7 payload bits per byte (0x7f) with bit 7 (0x80) set while more bytes follow.
+  *value = static_cast<uint32_t>(firstByte & 0x7f);
+  if ((firstByte & 0x80) == 0) {
     return true;
   }
   int offset = 7;
+  // Cast to uint32_t before shifting so bit 31 at offset 28 does not shift a signed int.
   for (; offset < 32; offset += 7) {
-    int b = [input read];
-    if (b == -1) {
+    int next_byte = [input read];
+    if (next_byte == -1) {
       return false;
     }
-    *value |= (b & (int) 0x7f) << offset;
-    if ((b & (int) 0x80) == 0) {
+    *value |= static_cast<uint32_t>(next_byte & 0x7f) << offset;
+    if ((next_byte & 0x80) == 0) {
       return true;
     }
   }
-  // Keep reading up to 64 bits.
+  // Negative int32 values are sign-extended to 10-byte (64-bit) varints; consume and discard upper
+  // bits.
   for (; offset < 64; offset += 7) {
-    int b = [input read];
-    if (b == -1) {
+    int next_byte = [input read];
+    if (next_byte == -1) {
       return false;
     }
-    if ((b & (int) 0x80) == 0) {
+    if ((next_byte & 0x80) == 0) {
       return true;
     }
   }

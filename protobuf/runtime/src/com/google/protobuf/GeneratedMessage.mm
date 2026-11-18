@@ -2447,7 +2447,11 @@ static void InvalidPB() {
 }
 
 void CGPMergeFromRawData(id msg, CGPDescriptor *descriptor, const char *data, uint32_t length) {
-  CGPCodedInputStream codedStream(data, length);
+  // Reject lengths above INT_MAX before casting to CGPCodedInputStream's signed int limit.
+  if (length > static_cast<uint32_t>(INT_MAX) || (length > 0 && data == NULL)) {
+    InvalidPB();
+  }
+  CGPCodedInputStream codedStream(data, static_cast<int>(length));
   BOOL success = MergeFromStream(msg, descriptor, &codedStream, nil, nil) &&
                  codedStream.ConsumedEntireMessage();
   if (!success) {
@@ -2489,6 +2493,8 @@ ComGoogleProtobufGeneratedMessage *CGPParseFromByteString(CGPDescriptor *descrip
   return CGPParseFromByteArray(descriptor, [byteString toByteArray], registry);
 }
 
+// Reads a varint length prefix followed by a message body; returns nil on clean EOF before the
+// first byte.
 ComGoogleProtobufGeneratedMessage *CGPParseDelimitedFromInputStream(
     CGPDescriptor *descriptor, JavaIoInputStream *input, CGPExtensionRegistryLite *registry) {
   int firstByte = [input read];
@@ -2496,9 +2502,13 @@ ComGoogleProtobufGeneratedMessage *CGPParseDelimitedFromInputStream(
     return nil;
   }
   uint32_t length;
-  if (!CGPCodedInputStream::ReadVarint32(firstByte, input, &length)) InvalidPB();
+  // Reject lengths above INT_MAX before casting to CGPCodedInputStream's signed int limit.
+  if (!CGPCodedInputStream::ReadVarint32(firstByte, input, &length) ||
+      length > static_cast<uint32_t>(INT_MAX)) {
+    InvalidPB();
+  }
   ComGoogleProtobufGeneratedMessage *msg = AUTORELEASE(CGPNewMessage(descriptor));
-  CGPCodedInputStream codedStream(input, length);
+  CGPCodedInputStream codedStream(input, static_cast<int>(length));
   BOOL success = MergeFromStream(msg, descriptor, &codedStream, registry,
                                  MessageExtensionMap(msg, descriptor)) &&
                  codedStream.ConsumedEntireMessage();
@@ -3767,9 +3777,14 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 }
 
 + (instancetype)parseFromNSData:(NSData *)data registry:(CGPExtensionRegistryLite *)registry {
+  NSUInteger byteLength = [data length];
+  // Reject lengths above INT_MAX before casting to CGPCodedInputStream's signed int limit.
+  if (byteLength > static_cast<NSUInteger>(INT_MAX)) {
+    InvalidPB();
+  }
   CGPDescriptor *descriptor = [self getDescriptor];
   ComGoogleProtobufGeneratedMessage *msg = AUTORELEASE(CGPNewMessage(descriptor));
-  CGPCodedInputStream codedStream([data bytes], (int)[data length]);
+  CGPCodedInputStream codedStream([data bytes], static_cast<int>(byteLength));
   BOOL success = MergeFromStream(msg, descriptor, &codedStream, registry,
                                  MessageExtensionMap(msg, descriptor)) &&
                  codedStream.ConsumedEntireMessage();
@@ -4165,9 +4180,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
     return false;
   }
   uint32_t length;
-  if (!CGPCodedInputStream::ReadVarint32(firstByte, input, &length)) InvalidPB();
+  // Reject lengths above INT_MAX before casting to CGPCodedInputStream's signed int limit.
+  if (!CGPCodedInputStream::ReadVarint32(firstByte, input, &length) ||
+      length > static_cast<uint32_t>(INT_MAX)) {
+    InvalidPB();
+  }
   CGPDescriptor *descriptor = [object_getClass(self) getDescriptor];
-  CGPCodedInputStream codedStream(input, length);
+  CGPCodedInputStream codedStream(input, static_cast<int>(length));
   if (!MergeFromStream(self, descriptor, &codedStream, extensionRegistry,
                        BuilderExtensionMap(self, descriptor)) ||
       !codedStream.ConsumedEntireMessage()) {
