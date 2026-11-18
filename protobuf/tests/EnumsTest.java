@@ -17,6 +17,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import protos.Color;
 import protos.EnumFields;
 import protos.EnumMsg;
@@ -132,15 +133,69 @@ public class EnumsTest extends ProtobufTest {
     }
   }
 
+  public void testParsePackedEnumsWithOverflowOrExtensionLengthThrowsException() throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.newInstance();
+    EnumFields.registerAllExtensions(registry);
+
+    byte[][] invalidPayloads = {
+      // Packed enum_p (tag 0xCA, 0x02) with INT_MAX (0x7FFFFFFF) overflowing relative limit.
+      asBytes(new int[] {0xCA, 0x02, 0xFF, 0xFF, 0xFF, 0xFF, 0x07, 0x01}),
+      // Packed enum_p (tag 0xCA, 0x02) with truncated positive length (claims 5, only 1 present).
+      asBytes(new int[] {0xCA, 0x02, 0x05, 0x01}),
+      // Packed extension enum_pe (tag 0x8A, 0x41) with 0x80000000 length.
+      asBytes(new int[] {0x8A, 0x41, 0x80, 0x80, 0x80, 0x80, 0x08, 0x01}),
+      // Packed extension enum_pe (tag 0x8A, 0x41) with 0xFFFFFFFF length.
+      asBytes(new int[] {0x8A, 0x41, 0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0x01}),
+      // Packed extension enum_pe (tag 0x8A, 0x41) with INT_MAX (0x7FFFFFFF) length.
+      asBytes(new int[] {0x8A, 0x41, 0xFF, 0xFF, 0xFF, 0xFF, 0x07, 0x01}),
+      // Packed extension enum_pe (tag 0x8A, 0x41) with truncated positive length.
+      asBytes(new int[] {0x8A, 0x41, 0x05, 0x01}),
+    };
+
+    for (byte[] payload : invalidPayloads) {
+      assertInvalidEnumMsgThrows(payload, registry);
+    }
+  }
+
+  public void testParsePackedEnumsReachingIntMaxThrowsException() throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.newInstance();
+    EnumFields.registerAllExtensions(registry);
+
+    byte[][] invalidPayloads = {
+      // Packed enum_p (tag 0xCA, 0x02) reaching INT_MAX (7 + 0x7FFFFFF8 == INT_MAX).
+      asBytes(new int[] {0xCA, 0x02, 0xF8, 0xFF, 0xFF, 0xFF, 0x07, 0x08, 0x01}),
+      // Packed extension enum_pe (tag 0x8A, 0x41) reaching INT_MAX (7 + 0x7FFFFFF8 == INT_MAX).
+      asBytes(new int[] {0x8A, 0x41, 0xF8, 0xFF, 0xFF, 0xFF, 0x07, 0x08, 0x01}),
+    };
+
+    for (byte[] payload : invalidPayloads) {
+      assertInvalidEnumMsgFromByteArrayThrows(payload, registry);
+      // Upstream Java StreamDecoder exits while (getBytesUntilLimit() > 0) when
+      // currentLimit == Integer.MAX_VALUE (-1) on packed fields instead of throwing.
+      if (Objects.equals(System.getProperty("java.vendor"), "J2ObjC")) {
+        assertInvalidEnumMsgFromInputStreamThrows(payload, registry);
+      }
+    }
+  }
+
   private static void assertInvalidEnumMsgThrows(byte[] wireBytes, ExtensionRegistry registry)
       throws Exception {
+    assertInvalidEnumMsgFromByteArrayThrows(wireBytes, registry);
+    assertInvalidEnumMsgFromInputStreamThrows(wireBytes, registry);
+  }
+
+  private static void assertInvalidEnumMsgFromByteArrayThrows(
+      byte[] wireBytes, ExtensionRegistry registry) throws Exception {
     try {
       EnumMsg.parseFrom(wireBytes, registry);
       fail("Expected InvalidProtocolBufferException");
     } catch (InvalidProtocolBufferException expected) {
       // Expected for invalid or truncated packed enum field lengths.
     }
+  }
 
+  private static void assertInvalidEnumMsgFromInputStreamThrows(
+      byte[] wireBytes, ExtensionRegistry registry) throws Exception {
     try {
       EnumMsg.parseFrom(new ByteArrayInputStream(wireBytes), registry);
       fail("Expected InvalidProtocolBufferException");

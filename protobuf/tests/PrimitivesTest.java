@@ -16,6 +16,7 @@ import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.InvalidProtocolBufferException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Objects;
 import protos.PrimitiveFields;
 import protos.PrimitiveFieldsOrBuilder;
 import protos.Primitives;
@@ -470,7 +471,61 @@ public class PrimitivesTest extends ProtobufTest {
     }
   }
 
+  public void testParsePackedPrimitivesWithOverflowOrExtensionLengthThrowsException()
+      throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.newInstance();
+    Primitives.registerAllExtensions(registry);
+
+    byte[][] invalidPayloads = {
+      // Packed int32_p (tag 0xCA, 0x02) with INT_MAX (0x7FFFFFFF) overflowing relative limit.
+      asBytes(new int[] {0xCA, 0x02, 0xFF, 0xFF, 0xFF, 0xFF, 0x07, 0x01}),
+      // Packed int32_p (tag 0xCA, 0x02) with truncated positive length (claims 5, only 1 present).
+      asBytes(new int[] {0xCA, 0x02, 0x05, 0x01}),
+      // Packed extension int32_pe (tag 0x8A, 0x41) with 0x80000000 length.
+      asBytes(new int[] {0x8A, 0x41, 0x80, 0x80, 0x80, 0x80, 0x08, 0x01}),
+      // Packed extension int32_pe (tag 0x8A, 0x41) with 0xFFFFFFFF length.
+      asBytes(new int[] {0x8A, 0x41, 0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0x01}),
+      // Packed extension int32_pe (tag 0x8A, 0x41) with INT_MAX (0x7FFFFFFF) length.
+      asBytes(new int[] {0x8A, 0x41, 0xFF, 0xFF, 0xFF, 0xFF, 0x07, 0x01}),
+      // Packed extension int32_pe (tag 0x8A, 0x41) with truncated positive length.
+      asBytes(new int[] {0x8A, 0x41, 0x05, 0x01}),
+      // Packed extension double_pe (tag 0xEA, 0x41) with 0x80000000 length.
+      asBytes(new int[] {0xEA, 0x41, 0x80, 0x80, 0x80, 0x80, 0x08, 0x01}),
+    };
+
+    for (byte[] payload : invalidPayloads) {
+      assertInvalidPrimitiveFieldsThrows(payload, registry);
+    }
+  }
+
+  public void testParsePackedPrimitivesReachingIntMaxThrowsException() throws Exception {
+    ExtensionRegistry registry = ExtensionRegistry.newInstance();
+    Primitives.registerAllExtensions(registry);
+
+    byte[][] invalidPayloads = {
+      // Packed int32_p (tag 0xCA, 0x02) reaching INT_MAX (7 + 0x7FFFFFF8 == INT_MAX).
+      asBytes(new int[] {0xCA, 0x02, 0xF8, 0xFF, 0xFF, 0xFF, 0x07, 0x08, 0x01}),
+      // Packed extension int32_pe (tag 0x8A, 0x41) reaching INT_MAX (7 + 0x7FFFFFF8 == INT_MAX).
+      asBytes(new int[] {0x8A, 0x41, 0xF8, 0xFF, 0xFF, 0xFF, 0x07, 0x08, 0x01}),
+    };
+
+    for (byte[] payload : invalidPayloads) {
+      assertInvalidPrimitiveFieldsFromByteArrayThrows(payload, registry);
+      // Upstream Java StreamDecoder exits while (getBytesUntilLimit() > 0) when
+      // currentLimit == Integer.MAX_VALUE (-1) on packed fields instead of throwing.
+      if (Objects.equals(System.getProperty("java.vendor"), "J2ObjC")) {
+        assertInvalidPrimitiveFieldsFromInputStreamThrows(payload, registry);
+      }
+    }
+  }
+
   private static void assertInvalidPrimitiveFieldsThrows(
+      byte[] wireBytes, ExtensionRegistry registry) throws Exception {
+    assertInvalidPrimitiveFieldsFromByteArrayThrows(wireBytes, registry);
+    assertInvalidPrimitiveFieldsFromInputStreamThrows(wireBytes, registry);
+  }
+
+  private static void assertInvalidPrimitiveFieldsFromByteArrayThrows(
       byte[] wireBytes, ExtensionRegistry registry) throws Exception {
     try {
       PrimitiveFields.parseFrom(wireBytes, registry);
@@ -478,7 +533,10 @@ public class PrimitivesTest extends ProtobufTest {
     } catch (InvalidProtocolBufferException expected) {
       // Expected for invalid or truncated packed field lengths.
     }
+  }
 
+  private static void assertInvalidPrimitiveFieldsFromInputStreamThrows(
+      byte[] wireBytes, ExtensionRegistry registry) throws Exception {
     try {
       PrimitiveFields.parseFrom(new ByteArrayInputStream(wireBytes), registry);
       fail("Expected InvalidProtocolBufferException");

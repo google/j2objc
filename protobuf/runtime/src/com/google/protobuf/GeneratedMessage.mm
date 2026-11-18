@@ -1857,12 +1857,15 @@ static inline BOOL MergeGroupFieldFromStream(id msg, CGPFieldDescriptor *field,
   return YES;
 }
 
+// Merges a length-delimited submessage within a bounded stream limit and verifies it ended cleanly
+// at that limit.
 static inline BOOL MergeMessageFieldFromStream(id msg, CGPFieldDescriptor *field,
                                                CGPCodedInputStream *input,
                                                CGPExtensionRegistryLite *registry) {
   int length;
   if (!CGPReadInt32(input, &length)) return NO;
-  CGPCodedInputStream::Limit limit = input->PushLimit(length);
+  CGPCodedInputStream::Limit limit;
+  if (!input->TryPushLimit(length, &limit)) return NO;
   CGPDescriptor *type = field->valueType_;
   if (!MergeFromStream(msg, type, input, registry, MessageExtensionMap(msg, type))) return NO;
   if (!input->ConsumedEntireMessage()) return NO;
@@ -1933,11 +1936,14 @@ static BOOL ReadMapEntryField(CGPCodedInputStream *stream, CGPFieldDescriptor *f
   __builtin_unreachable();
 }
 
+// Decodes a single length-delimited map entry (field 1 = key, field 2 = value) within a bounded
+// stream limit.
 static BOOL MergeMapEntryFromStream(CGPMapField *field, CGPCodedInputStream *stream,
                                     CGPDescriptor *entry, CGPExtensionRegistryLite *registry) {
   int length;
   if (!CGPReadInt32(stream, &length)) return NO;
-  CGPCodedInputStream::Limit limit = stream->PushLimit(length);
+  CGPCodedInputStream::Limit limit;
+  if (!stream->TryPushLimit(length, &limit)) return NO;
   CGPFieldDescriptor *keyField = entry->fields_->buffer_[0];
   CGPFieldJavaType keyType = CGPFieldGetJavaType(keyField);
   CGPFieldDescriptor *valueField = entry->fields_->buffer_[1];
@@ -2095,10 +2101,13 @@ static BOOL MergeExtensionFromStream(CGPCodedInputStream *stream, CGPFieldDescri
   id value;
   BOOL isRetained;
   if (CGPFieldIsRepeated(field)) {
+    // Bound the stream to the packed payload byte length and decode elements until reaching that
+    // limit.
     if (CGPFieldIsPacked(field)) {
       int length;
       if (!CGPReadInt32(stream, &length)) return NO;
-      CGPCodedInputStream::Limit limit = stream->PushLimit(length);
+      CGPCodedInputStream::Limit limit;
+      if (!stream->TryPushLimit(length, &limit)) return NO;
       while (stream->BytesUntilLimit() > 0) {
         if (!MergeExtensionValueFromStream(stream, field, nil, registry, &value, &isRetained))
           return NO;
@@ -2253,12 +2262,10 @@ static BOOL MergeFieldFromStream(id msg, CGPFieldDescriptor *field, CGPCodedInpu
       if (CGPFieldIsPacked(field)) {                                                               \
         int byteLength;                                                                            \
         if (!CGPReadInt32(stream, &byteLength)) return NO;                                         \
-        /* CGPReadInt32 reinterprets raw 32-bit wire varint bits as signed jint, so malformed */   \
-        /* varints with bit 31 set (>= 0x80000000) produce negative lengths. */                    \
-        if (byteLength < 0) return NO;                                                             \
         /* Push the field limit first so BufferSize() reflects at most this field's buffered */    \
         /* bytes, capping pre-allocation to data already in memory. */                             \
-        CGPCodedInputStream::Limit limit = stream->PushLimit(byteLength);                          \
+        CGPCodedInputStream::Limit limit;                                                          \
+        if (!stream->TryPushLimit(byteLength, &limit)) return NO;                                  \
         uint32_t maxBufferedElements = MaxPackedElementsInBuffer(fieldType, stream->BufferSize()); \
         if (maxBufferedElements > 0) {                                                             \
           CGPRepeatedFieldReserveAdditionalCapacity(repeatedField, maxBufferedElements,            \
@@ -2299,12 +2306,10 @@ static BOOL MergeFieldFromStream(id msg, CGPFieldDescriptor *field, CGPCodedInpu
         if (CGPFieldIsPacked(field)) {
           int byteLength;
           if (!CGPReadInt32(stream, &byteLength)) return NO;
-          // CGPReadInt32 reinterprets raw 32-bit wire varint bits as signed jint, so malformed
-          // varints with bit 31 set (>= 0x80000000) produce negative lengths.
-          if (byteLength < 0) return NO;
           // Push the field limit first so BufferSize() reflects at most this field's buffered
           // bytes, capping pre-allocation to data already in memory.
-          CGPCodedInputStream::Limit limit = stream->PushLimit(byteLength);
+          CGPCodedInputStream::Limit limit;
+          if (!stream->TryPushLimit(byteLength, &limit)) return NO;
           uint32_t maxBufferedElements = MaxPackedElementsInBuffer(fieldType, stream->BufferSize());
           if (maxBufferedElements > 0) {
             CGPRepeatedFieldReserveAdditionalCapacity(repeatedField, maxBufferedElements,

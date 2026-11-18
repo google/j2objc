@@ -193,6 +193,12 @@ class CGPCodedInputStream {
   // be passed unchanged to the corresponding call to PopLimit().
   Limit PushLimit(int byte_limit);
 
+  // Places a limit on the number of bytes that the stream may read,
+  // starting from the current position. Fails and leaves the stream limit
+  // unchanged if |byte_limit| is negative, reaches or overflows INT_MAX, or
+  // exceeds the currently active stream limit.
+  bool TryPushLimit(int byte_limit, Limit* old_limit);
+
   // Pops the last limit pushed by PushLimit().  The input must be the value
   // returned by that call to PushLimit().
   void PopLimit(Limit limit);

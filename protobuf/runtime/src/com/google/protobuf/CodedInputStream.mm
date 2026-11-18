@@ -84,6 +84,21 @@ CGPCodedInputStream::Limit CGPCodedInputStream::PushLimit(int byte_limit) {
   return old_limit;
 }
 
+bool CGPCodedInputStream::TryPushLimit(int byte_limit, Limit* old_limit) {
+  // Reject negative lengths, lengths exceeding the enclosing current_limit_, and lengths
+  // reaching INT_MAX (which CGPCodedInputStream reserves as the "no active limit" sentinel).
+  int current_position = CurrentPosition();
+  if (byte_limit < 0 || current_position < 0 || current_limit_ < current_position ||
+      byte_limit > current_limit_ - current_position || byte_limit >= INT_MAX - current_position) {
+    return false;
+  }
+
+  *old_limit = current_limit_;
+  current_limit_ = current_position + byte_limit;
+  RecomputeBufferLimits();
+  return true;
+}
+
 void CGPCodedInputStream::PopLimit(Limit limit) {
   // The limit passed in is actually the *old* limit, which we returned from
   // PushLimit().
@@ -282,7 +297,9 @@ uint32_t CGPCodedInputStream::ReadTagSlow() {
   if (buffer_ == buffer_end_) {
     // Call refresh.
     if (!Refresh()) {
-      legitimate_message_end_ = true;
+      // EOF is only a valid message end when no submessage limit is active
+      // or the stream reached current_limit_ exactly.
+      legitimate_message_end_ = (current_limit_ == INT_MAX || CurrentPosition() == current_limit_);
       return 0;
     }
   }
