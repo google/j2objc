@@ -1910,6 +1910,35 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "}");
   }
 
+  public void testSwiftNameAnnotationWithInstanceAndDefaultMethodsNoWrapperMethods()
+      throws IOException {
+    options.setEmitWrapperMethods(false);
+    addSourceFile(
+        """
+        @SwiftName
+        package com.foo.bar;
+
+        import com.google.j2objc.annotations.SwiftName;
+        """,
+        "com/foo/bar/package-info.java");
+
+    String sourceContent =
+        """
+        package com.foo.bar;
+
+        public interface DefaultProto {
+          default void doDefault() {}
+        }
+        """;
+    String translation =
+        translateSourceFile(sourceContent, "DefaultProto", "com/foo/bar/DefaultProto.h");
+    assertInTranslation(translation, "- (void)doDefault NS_SWIFT_NAME(doDefault());");
+    assertInTranslation(
+        translation,
+        "FOUNDATION_EXPORT void ComFooBarDefaultProto_doDefault(id<ComFooBarDefaultProto> self);");
+    assertNotInTranslation(translation, "_swiftName");
+  }
+
 
   public void testSwiftNameAnnotationWithStaticFunctionsWithWapperMethods() throws IOException {
     options.setEmitWrapperMethods(true);

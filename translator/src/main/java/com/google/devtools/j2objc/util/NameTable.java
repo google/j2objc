@@ -717,7 +717,7 @@ public class NameTable {
     String functionName = function.getName();
 
     ExecutableElement method = function.getExecutableElement();
-    if (method == null) {
+    if (method == null || ElementUtil.isInstanceMethod(method)) {
       return null;
     }
 

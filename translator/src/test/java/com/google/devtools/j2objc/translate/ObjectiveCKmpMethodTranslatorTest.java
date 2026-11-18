@@ -3127,6 +3127,39 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """);
   }
 
+  public void testInterface_noWrapperMethodsWithSwiftNameOmitsDispatchSwiftWrapper()
+      throws IOException {
+    options.load(new String[] {"--nullability", "--no-wrapper-methods"});
+    options.setNullMarked(true);
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import com.google.j2objc.annotations.SwiftName;
+        import org.jspecify.annotations.NullMarked;
+        import org.jspecify.annotations.Nullable;
+
+        @NullMarked
+        @SwiftName("SwiftProto")
+        public interface MyProto {
+          @ObjectiveCKmpMethod(selector = "getItemsAsNsArray", adapter = ImmutableListAdapter.class)
+          @Nullable ImmutableList<String> getItems();
+        }
+        """,
+        "MyProto.java");
+
+    String header = translateSourceFile("MyProto", "MyProto.h");
+    assertInTranslation(
+        header,
+        "- (NSArray<NSString *> * _Nullable)getItemsAsNsArray NS_SWIFT_NAME(getItemsAsNsArray());");
+    assertInTranslation(
+        header,
+        "FOUNDATION_EXPORT ComGoogleCommonCollectImmutableList *_Nullable"
+            + " MyProto_getItems_dispatch(id<MyProto> self);");
+    assertNotInTranslation(header, "MyProto_getItems_dispatch_swiftName");
+  }
+
   public void testTranslate_reannotatedConcreteSubclassEmitsAdapterOnlyWhenConfigDiffers()
       throws IOException {
     addImmutableListAdapter();
