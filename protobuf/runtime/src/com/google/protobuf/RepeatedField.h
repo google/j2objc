@@ -64,11 +64,19 @@ CGP_ALWAYS_INLINE uint32_t CGPRepeatedFieldTotalSize(CGPRepeatedField *field) {
   return field->data != NULL ? field->data->total_size : 0;
 }
 
+// Ensures |field| can hold at least |new_size| elements of |elemSize| bytes, or throws
+// JavaLangOutOfMemoryError if |new_size| exceeds INT_MAX, byte size overflows, or realloc fails.
 void CGPRepeatedFieldReserve(CGPRepeatedField *field, uint32_t new_size, size_t elemSize);
 
+// Ensures |field| has capacity for |size_to_add| additional elements of |elemSize| bytes, or
+// immediately throws JavaLangOutOfMemoryError (via CGPRepeatedFieldReserve) on overflow or OOM.
 CGP_ALWAYS_INLINE void CGPRepeatedFieldReserveAdditionalCapacity(
     CGPRepeatedField *field, uint32_t size_to_add, size_t elemSize) {
-  uint32_t new_size = CGPRepeatedFieldSize(field) + size_to_add;
+  uint32_t current_size = CGPRepeatedFieldSize(field);
+  // Saturating to UINT32_MAX on overflow guarantees new_size > total_size (since total_size <=
+  // INT_MAX), entering CGPRepeatedFieldReserve to throw JavaLangOutOfMemoryError immediately.
+  uint32_t new_size =
+      (size_to_add > UINT32_MAX - current_size) ? UINT32_MAX : current_size + size_to_add;
   if (new_size > CGPRepeatedFieldTotalSize(field)) {
     CGPRepeatedFieldReserve(field, new_size, elemSize);
   }

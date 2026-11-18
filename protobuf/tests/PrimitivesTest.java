@@ -13,13 +13,12 @@
  */
 
 import com.google.protobuf.ExtensionRegistry;
-
+import com.google.protobuf.InvalidProtocolBufferException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import protos.PrimitiveFields;
 import protos.PrimitiveFieldsOrBuilder;
 import protos.Primitives;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 
 /**
  * Tests for correct serialization and deserialization of all primitive field
@@ -433,5 +432,69 @@ public class PrimitivesTest extends ProtobufTest {
     assertEquals(value, parsedMsg.getSint64F());
     assertEquals(value, parsedMsg.getFixed64F());
     assertEquals(value, parsedMsg.getSfixed64F());
+  }
+
+  public void testParsePackedPrimitivesWithInvalidLengthThrowsException() throws Exception {
+    byte[][] invalidPayloads = {
+      // Packed int32_p (tag 0xCA, 0x02) with 0x80000000 length and trailing byte.
+      asBytes(new int[] {0xCA, 0x02, 0x80, 0x80, 0x80, 0x80, 0x08, 0x01}),
+      // Packed int64_p (tag 0xF2, 0x02) with 0x80000000 length and trailing byte.
+      asBytes(new int[] {0xF2, 0x02, 0x80, 0x80, 0x80, 0x80, 0x08, 0x01}),
+      // Packed double_p (tag 0xAA, 0x03) with 0x80000000 length and truncated 8-byte payload.
+      asBytes(new int[] {0xAA, 0x03, 0x80, 0x80, 0x80, 0x80, 0x08, 0x01, 0x02, 0x03, 0x04}),
+      // Packed int64_p (tag 0xF2, 0x02) with 0xFFFFFFFF length and trailing byte.
+      asBytes(new int[] {0xF2, 0x02, 0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0x01}),
+      // Packed double_p (tag 0xAA, 0x03) with 10-byte varint -1 and truncated payload.
+      asBytes(
+          new int[] {
+            0xAA, 0x03, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x01, 0x02
+          }),
+      // Packed int32_p with 0x40000000 (1 GiB positive int32) length and truncated varint.
+      asBytes(new int[] {0xCA, 0x02, 0x80, 0x80, 0x80, 0x80, 0x04, 0x80}),
+      // Packed int64_p with 0x40000000 length and truncated varint.
+      asBytes(new int[] {0xF2, 0x02, 0x80, 0x80, 0x80, 0x80, 0x04, 0x80}),
+      // Packed double_p with 0x40000000 length and truncated fixed64 bytes.
+      asBytes(new int[] {0xAA, 0x03, 0x80, 0x80, 0x80, 0x80, 0x04, 0x01, 0x02, 0x03, 0x04}),
+      // Valid packed int32_p elements followed by a second tag with 0xFFFFFFFF length.
+      asBytes(
+          new int[] {
+            0xCA, 0x02, 0x02, 0x01, 0x02, 0xCA, 0x02, 0xFF, 0xFF, 0xFF, 0xFF, 0x0F, 0x03, 0x04
+          }),
+      // Valid packed int64_p elements followed by a second tag with 0x80000000 length.
+      asBytes(
+          new int[] {0xF2, 0x02, 0x02, 0x01, 0x02, 0xF2, 0x02, 0x80, 0x80, 0x80, 0x80, 0x08, 0x03}),
+    };
+
+    for (byte[] payload : invalidPayloads) {
+      assertInvalidPrimitiveFieldsThrows(payload, ExtensionRegistry.getEmptyRegistry());
+    }
+  }
+
+  private static void assertInvalidPrimitiveFieldsThrows(
+      byte[] wireBytes, ExtensionRegistry registry) throws Exception {
+    try {
+      PrimitiveFields.parseFrom(wireBytes, registry);
+      fail("Expected InvalidProtocolBufferException");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected for invalid or truncated packed field lengths.
+    }
+
+    try {
+      PrimitiveFields.parseFrom(new ByteArrayInputStream(wireBytes), registry);
+      fail("Expected InvalidProtocolBufferException");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected for invalid or truncated packed field lengths.
+    }
+
+    try {
+      @SuppressWarnings("unused")
+      PrimitiveFields unusedMessage =
+          PrimitiveFields.newBuilder()
+              .mergeFrom(new ByteArrayInputStream(wireBytes), registry)
+              .build();
+      fail("Expected InvalidProtocolBufferException");
+    } catch (InvalidProtocolBufferException expected) {
+      // Expected for invalid or truncated packed field lengths.
+    }
   }
 }
