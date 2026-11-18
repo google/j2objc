@@ -24,7 +24,6 @@
 #include <pthread.h>
 #include <stdatomic.h>
 #include <AssertMacros.h>
-#include <libkern/OSAtomic.h>
 
 #include "JreEmulation.h"
 #include "java/lang/Thread.h"
@@ -73,7 +72,7 @@ done:
 typedef struct SyncData {
     struct SyncData* nextData;
     id               object;
-    int              threadCount;  // number of THREADS using this block
+    atomic_int       threadCount;  // number of THREADS using this block
     pthread_mutex_t  mutex;
     pthread_cond_t   conditionVariable;
 } SyncData;
@@ -161,7 +160,6 @@ static SyncCache *fetch_cache(BOOL create)
 }
 
 
-__attribute__((disable_sanitizer_instrumentation))
 static SyncCacheItem* id2SyncCacheItem(id object, enum usage why)
 {
     J2OBJC_FAST_LOCK_TYPE *lockp = &LOCK_FOR_OBJ(object);
@@ -180,8 +178,9 @@ static SyncCacheItem* id2SyncCacheItem(id object, enum usage why)
 
             // Found a match.
             result = item->data;
-            __Require_Action_String(result->threadCount > 0, cache_done,
-                                  item = NULL, "id2data cache is buggy");
+            __Require_Action_String(
+                atomic_load_explicit(&result->threadCount, memory_order_relaxed) > 0, cache_done,
+                item = NULL, "id2data cache is buggy");
             __Require_Action_String(item->lockCount > 0, cache_done,
                                   item = NULL, "id2data cache is buggy");
 
@@ -194,8 +193,9 @@ static SyncCacheItem* id2SyncCacheItem(id object, enum usage why)
                 if (item->lockCount == 0) {
                     // remove from per-thread cache
                     cache->list[i] = cache->list[--cache->used];
-                    // atomic because may collide with concurrent ACQUIRE
-                    OSAtomicDecrement32Barrier(&result->threadCount);
+                    // acq_rel synchronizes prior SyncData::object reads and critical section
+                    // with reuse when threadCount reaches 0
+                    atomic_fetch_sub_explicit(&result->threadCount, 1, memory_order_acq_rel);
                 }
                 break;
             case CHECK:
@@ -226,11 +226,12 @@ static SyncCacheItem* id2SyncCacheItem(id object, enum usage why)
     for (p = *listp; p != NULL; p = p->nextData) {
         if ( p->object == object ) {
             result = p;
-            // atomic because may collide with concurrent RELEASE
-            OSAtomicIncrement32Barrier(&result->threadCount);
+            // atomic because may collide with unlocked SyncCache hit/release
+            atomic_fetch_add_explicit(&result->threadCount, 1, memory_order_relaxed);
             goto done;
         }
-        if ( (firstUnused == NULL) && (p->threadCount == 0) )
+        if ( (firstUnused == NULL) &&
+             (atomic_load_explicit(&p->threadCount, memory_order_acquire) == 0) )
             firstUnused = p;
     }
 
@@ -242,7 +243,7 @@ static SyncCacheItem* id2SyncCacheItem(id object, enum usage why)
     if ( firstUnused != NULL ) {
         result = firstUnused;
         result->object = object;
-        result->threadCount = 1;
+        atomic_store_explicit(&result->threadCount, 1, memory_order_relaxed);
         goto done;
     }
 
@@ -252,7 +253,7 @@ static SyncCacheItem* id2SyncCacheItem(id object, enum usage why)
     // But since we never free these guys we won't be stuck in malloc very often.
     result = (SyncData*)malloc(sizeof(SyncData));
     result->object = object;
-    result->threadCount = 1;
+    atomic_store_explicit(&result->threadCount, 1, memory_order_relaxed);
     err = pthread_mutex_init(&result->mutex, recursiveAttributes());
     __Require_noErr_String(err, done, "pthread_mutex_init failed");
     err = pthread_cond_init(&result->conditionVariable, NULL);
