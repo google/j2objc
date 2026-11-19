@@ -26,6 +26,10 @@
 CF_EXTERN_C_BEGIN
 
 void NSException_initWithNSString_(NSException *self, NSString *message);
+#ifdef J2OBJC_EXCEPTION_PREPROCESSING
+void JavaThrowable_InstallExceptionPreprocessor(void);
+id _Nullable JavaThrowable_CreatePreprocessLock(void);
+#endif  // J2OBJC_EXCEPTION_PREPROCESSING
 
 CF_EXTERN_C_END
 

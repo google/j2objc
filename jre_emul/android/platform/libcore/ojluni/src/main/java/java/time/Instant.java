@@ -1401,6 +1401,7 @@ JavaUtilDate *JavaUtilDate_fromWithJavaTimeInstant_(JavaTimeInstant *instant) {
     return create_JavaUtilDate_initWithLong_([((JavaTimeInstant *) nil_chk(instant)) toEpochMilli]);
   }
   @catch (JavaLangArithmeticException *ex) {
+    J2OBJC_UNLOCK_THROWABLE(ex);
     @throw create_JavaLangIllegalArgumentException_initWithJavaLangThrowable_(ex);
   }
 }

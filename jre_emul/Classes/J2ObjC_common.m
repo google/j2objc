@@ -65,6 +65,7 @@ void JreFinalize(id self) {
   @try {
     [self java_finalize];
   } @catch (JavaLangThrowable *e) {
+    J2OBJC_UNLOCK_THROWABLE(e);
     [JavaUtilLoggingLogger_getLoggerWithNSString_([[self java_getClass] getName])
         logWithJavaUtilLoggingLevel:JavaUtilLoggingLevel_get_WARNING()
                        withNSString:@"Uncaught exception in finalizer"

@@ -96,6 +96,7 @@ int main( int argc, const char *argv[] ) {
       clazz = [IOSClass forName:[NSString stringWithUTF8String:className]];
     }
     @catch (JavaLangClassNotFoundException *e) {
+      J2OBJC_UNLOCK_THROWABLE(e);
       fprintf(stderr, "Error: could not find or load main class %s\n", className);
       return 1;
     }
@@ -125,6 +126,7 @@ int main( int argc, const char *argv[] ) {
       }
     }
     @catch (JavaLangThrowable *e) {
+      J2OBJC_UNLOCK_THROWABLE(e);
       handleUncaughtException(e);
     }
   }

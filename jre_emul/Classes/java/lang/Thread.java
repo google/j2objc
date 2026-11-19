@@ -367,6 +367,7 @@ public class Thread implements Runnable {
       @try {
         [thread run];
       } @catch (JavaLangThrowable *t) {
+        J2OBJC_UNLOCK_THROWABLE(t);
         JavaLangThread_rethrowWithJavaLangThrowable_(thread, t);
       } @catch (id error) {
         JavaLangThread_rethrowWithJavaLangThrowable_(
