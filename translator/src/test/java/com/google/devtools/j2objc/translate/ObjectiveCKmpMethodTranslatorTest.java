@@ -3431,4 +3431,63 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         @end
         """);
   }
+
+  public void testMultiSelectorDefaultMethodRenamingShim_doesNotRewriteSelfCallToDispatch()
+      throws IOException {
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public class ImmutableListAdapter {
+          public static native Object fromImmutableList(ImmutableList<String> list) /*-[ return nil; ]-*/;
+          public static native ImmutableList<String> toImmutableList(Object list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "ImmutableListAdapter.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public interface GenericDefaultProto<T> {
+          @ObjectiveCKmpMethod(selector = "workWith:items:", adapter = ImmutableListAdapter.class)
+          default void work(T tag, ImmutableList<String> items) {}
+        }
+        """,
+        "GenericDefaultProto.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public interface StringDefaultProto {
+          void work(String tag, ImmutableList<String> items);
+        }
+        """,
+        "StringDefaultProto.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public interface SubDefaultProto extends GenericDefaultProto<String>, StringDefaultProto {
+          @Override
+          default void work(String tag, ImmutableList<String> items) {}
+        }
+        """,
+        "SubDefaultProto.java");
+    addSourceFile(
+        "public class MultiSelectorDefaultImpl implements SubDefaultProto {}",
+        "MultiSelectorDefaultImpl.java");
+
+    String impl = translateSourceFile("MultiSelectorDefaultImpl", "MultiSelectorDefaultImpl.m");
+    assertInTranslation(
+        impl,
+        """
+        - (void)workWithNSString:(NSString *)arg0
+        withComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)arg1 {
+          [self workWithId:arg0 withComGoogleCommonCollectImmutableList:arg1];
+        }
+        """);
+    assertNotInTranslation(
+        impl, "SubDefaultProto_workWithNSString_withComGoogleCommonCollectImmutableList__dispatch");
+  }
 }

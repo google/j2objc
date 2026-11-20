@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
+import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
@@ -103,6 +104,32 @@ final class KmpAdapterEmitter {
       }
     }
     return null;
+  }
+
+  static boolean isConcreteGeneratedShim(MethodDeclaration decl) {
+    return decl.getBody() != null
+        && decl.getExecutableElement() instanceof GeneratedExecutableElement gee
+        && !ElementUtil.isAbstract(gee)
+        && gee.getOriginalElement() != null;
+  }
+
+  /**
+   * Returns true if {@code decl} is a concrete renaming shim emitted by {@link
+   * DefaultMethodShimGenerator} that delegates to {@code self} under another selector.
+   */
+  static boolean isDefaultRenamingShim(MethodDeclaration decl) {
+    if (!isConcreteGeneratedShim(decl) || decl.getBody().getStatements().size() != 1) {
+      return false;
+    }
+    Statement stmt = decl.getBody().getStatements().get(0);
+    Expression expr =
+        stmt instanceof ReturnStatement ret
+            ? ret.getExpression()
+            : stmt instanceof ExpressionStatement exprStmt ? exprStmt.getExpression() : null;
+    while (expr instanceof CastExpression cast) {
+      expr = cast.getExpression();
+    }
+    return expr instanceof MethodInvocation call && call.getExpression() == null;
   }
 
   /**

@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
@@ -46,6 +47,12 @@ final class KmpMethodInvocationRewriter extends UnitTreeVisitor {
 
   @Override
   public void endVisit(MethodInvocation node) {
+    // Skip DefaultMethodShimGenerator renaming shims, which delegate to the class's own primary
+    // Objective-C selector on `self`; rewriting them into *_dispatch(self, ...) would recurse back
+    // into the renaming shim.
+    if (isDefaultRenamingShimCall(node)) {
+      return;
+    }
     // Check if the called method is (or overrides) an @ObjectiveCKmpMethod interface method.
     ExecutableElement targetMethod =
         methodHierarchy.findInterfaceMethodRequiringDispatch(node.getExecutableElement());
@@ -73,5 +80,13 @@ final class KmpMethodInvocationRewriter extends UnitTreeVisitor {
     // Move the remaining method arguments and replace the method call with the C function call.
     TreeUtil.moveList(node.getArguments(), funcArgs);
     node.replaceWith(functionInvocation);
+  }
+
+  private static boolean isDefaultRenamingShimCall(MethodInvocation node) {
+    if (node.getExpression() != null) {
+      return false;
+    }
+    MethodDeclaration enclosingMethod = TreeUtil.getEnclosingMethod(node);
+    return enclosingMethod != null && KmpAdapterEmitter.isDefaultRenamingShim(enclosingMethod);
   }
 }
