@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
@@ -102,6 +103,35 @@ final class KmpAdapterEmitter {
       }
     }
     return null;
+  }
+
+  /**
+   * Returns true if {@code decl} is an abstract return-type-narrowing stub added by {@link
+   * AbstractMethodRewriter} for {@code targetSelector}.
+   */
+  private static boolean isAbstractNarrowingStubFor(BodyDeclaration decl, String targetSelector) {
+    return decl instanceof MethodDeclaration methodDecl
+        && methodDecl.getExecutableElement() instanceof GeneratedExecutableElement gee
+        && ElementUtil.isAbstract(gee)
+        && gee.getOriginalElement() != null
+        && targetSelector.equals(gee.getSelector());
+  }
+
+  /**
+   * Marks unadapted protocol declarations (including return-type-narrowing stubs) {@code @optional}
+   * so native conformers only implement the adapted selector.
+   */
+  void markUnadaptedProtocolDeclarationsOptional(
+      AbstractTypeDeclaration typeNode,
+      ExecutableElement element,
+      ExecutableElement annotatedElement) {
+    String targetSelector = nameTable.getMethodSelector(annotatedElement);
+    for (MethodDeclaration methodDecl : TreeUtil.getMethodDeclarations(typeNode)) {
+      if (methodDecl.getExecutableElement().equals(element)
+          || isAbstractNarrowingStubFor(methodDecl, targetSelector)) {
+        methodDecl.setOptional(true);
+      }
+    }
   }
 
   /**
@@ -423,13 +453,10 @@ final class KmpAdapterEmitter {
         return;
       }
       // Remove any abstract return-type-narrowing stub added earlier by AbstractMethodRewriter.
+      String originalSelector = nameTable.getMethodSelector(originalMethodExecutable);
       typeNode
           .getBodyDeclarations()
-          .removeIf(decl ->
-              decl instanceof MethodDeclaration methodDecl
-                  && methodDecl.getExecutableElement() instanceof GeneratedExecutableElement gee
-                  && ElementUtil.isAbstract(gee)
-                  && originalMethodExecutable.equals(gee.getOriginalElement()));
+          .removeIf(decl -> isAbstractNarrowingStubFor(decl, originalSelector));
       typeNode.addBodyDeclaration(createBridgeMethodDeclaration(bodyBlock));
     }
 

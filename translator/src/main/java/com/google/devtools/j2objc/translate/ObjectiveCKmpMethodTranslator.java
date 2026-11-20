@@ -18,7 +18,6 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
-import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -154,10 +153,9 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
 
       if (isInterface) {
         strategy = MappingStrategy.JAVA_TO_NATIVE;
-        MethodDeclaration unadaptedDecl =
-            KmpAdapterEmitter.findMethodDeclaration(typeNode, method.element());
-        if (unadaptedDecl != null) {
-          unadaptedDecl.setOptional(true);
+        if (ElementUtil.isInstanceMethod(method.element())) {
+          adapterEmitter.markUnadaptedProtocolDeclarationsOptional(
+              typeNode, method.element(), resolved.annotatedMethods().get(signature));
         }
         // Only generate the adapted protocol method and _dispatch helper when the method is
         // declared and directly annotated on this interface (skipping inherited methods and

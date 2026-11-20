@@ -3211,4 +3211,224 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
     String renamedHeader = translateSourceFile("RenamedConfigService", "RenamedConfigService.h");
     assertInTranslation(renamedHeader, "- (NSArray<NSString *> *)getRenamedItems;");
   }
+
+  public void testAbstractClassImplementingGenericInterface_skipsAbstractNarrowingStub()
+      throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public interface GenericItemsProto<T> {
+          @ObjectiveCKmpMethod(selector = "fetchItems:", adapter = ImmutableListAdapter.class)
+          T fetch(ImmutableList<String> items);
+        }
+        """,
+        "GenericItemsProto.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public abstract class AbstractStringItemsImpl
+            implements GenericItemsProto<ImmutableList<String>> {}
+        """,
+        "AbstractStringItemsImpl.java");
+
+    String header = translateSourceFile("AbstractStringItemsImpl", "AbstractStringItemsImpl.h");
+    assertOccurrences(
+        header,
+        """
+        - (ComGoogleCommonCollectImmutableList<NSString *> *)fetchWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList<NSString *> *)items;\
+        """,
+        1);
+
+    String impl = translateSourceFile("AbstractStringItemsImpl", "AbstractStringItemsImpl.m");
+    assertInTranslation(
+        impl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)fetchWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)items {
+          return [ImmutableListAdapter toImmutableListWithId:[self fetchItems:(NSArray<NSString *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:items]]];
+        }
+        """);
+  }
+
+  public void testSubinterfaceNarrowingGenericReturn_marksNarrowedStubOptional()
+      throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public interface GenericItemsProto<T> {
+          @ObjectiveCKmpMethod(selector = "fetchItems:", adapter = ImmutableListAdapter.class)
+          T fetch(ImmutableList<String> items);
+
+          T getPlain();
+        }
+        """,
+        "GenericItemsProto.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public interface StringItemsProto
+            extends GenericItemsProto<ImmutableList<String>> {}
+        """,
+        "StringItemsProto.java");
+
+    String header = translateSourceFile("StringItemsProto", "StringItemsProto.h");
+    assertInTranslation(
+        header,
+        """
+        @protocol StringItemsProto < GenericItemsProto, JavaObject >
+
+        - (ComGoogleCommonCollectImmutableList<NSString *> *)getPlain;
+
+        #if !defined(__swift__)
+        @optional
+        #endif
+
+        - (ComGoogleCommonCollectImmutableList<NSString *> *)fetchWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList<NSString *> *)items;
+
+        @end
+        """);
+  }
+
+  public void testMultiSupertypeGenericReturnNarrowing_matchesStubBySelector() throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public interface GenericItemsProto<T> {
+          @ObjectiveCKmpMethod(selector = "fetchItems:", adapter = ImmutableListAdapter.class)
+          T fetch(ImmutableList<String> items);
+        }
+        """,
+        "GenericItemsProto.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public interface MidItemsProto<U> extends GenericItemsProto<U> {
+          @Override
+          U fetch(ImmutableList<String> items);
+        }
+        """,
+        "MidItemsProto.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public interface LeafItemsProto
+            extends GenericItemsProto<ImmutableList<String>>,
+                MidItemsProto<ImmutableList<String>> {}
+        """,
+        "LeafItemsProto.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public abstract class AbstractGenericBase<U> {
+          public abstract U fetch(ImmutableList<String> items);
+        }
+        """,
+        "AbstractGenericBase.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public abstract class AbstractSubItemsImpl
+            extends AbstractGenericBase<ImmutableList<String>>
+            implements GenericItemsProto<ImmutableList<String>> {}
+        """,
+        "AbstractSubItemsImpl.java");
+
+    String leafHeader = translateSourceFile("LeafItemsProto", "LeafItemsProto.h");
+    assertInTranslation(
+        leafHeader,
+        """
+        @protocol LeafItemsProto < GenericItemsProto, MidItemsProto, JavaObject >
+
+        #if !defined(__swift__)
+        @optional
+        #endif
+
+        - (ComGoogleCommonCollectImmutableList<NSString *> *)fetchWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList<NSString *> *)items;
+
+        @end
+        """);
+
+    String subHeader = translateSourceFile("AbstractSubItemsImpl", "AbstractSubItemsImpl.h");
+    assertOccurrences(
+        subHeader,
+        """
+        - (ComGoogleCommonCollectImmutableList<NSString *> *)fetchWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList<NSString *> *)items;\
+        """,
+        1);
+    String subImpl = translateSourceFile("AbstractSubItemsImpl", "AbstractSubItemsImpl.m");
+    assertInTranslation(
+        subImpl,
+        """
+        - (ComGoogleCommonCollectImmutableList *)fetchWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)items {
+          return [ImmutableListAdapter toImmutableListWithId:[self fetchItems:(NSArray<NSString *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:items]]];
+        }
+        """);
+  }
+
+  public void testSubinterfaceWithRenamedUnannotatedSuperinterfaceFirst_marksKmpStubOptional()
+      throws IOException {
+    addImmutableListAdapter();
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCName;
+
+        public interface UnannotatedRenamedProto<T> {
+          @ObjectiveCName("legacyFetch:")
+          T fetch(ImmutableList<String> items);
+        }
+        """,
+        "UnannotatedRenamedProto.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+        public interface GenericItemsProto<T> {
+          @ObjectiveCKmpMethod(selector = "fetchItems:", adapter = ImmutableListAdapter.class)
+          T fetch(ImmutableList<String> items);
+        }
+        """,
+        "GenericItemsProto.java");
+    addSourceFile(
+        """
+        import com.google.common.collect.ImmutableList;
+
+        public interface CombinedItemsProto
+            extends UnannotatedRenamedProto<ImmutableList<String>>,
+                GenericItemsProto<ImmutableList<String>> {}
+        """,
+        "CombinedItemsProto.java");
+
+    String header = translateSourceFile("CombinedItemsProto", "CombinedItemsProto.h");
+    assertInTranslation(
+        header,
+        """
+        @protocol CombinedItemsProto < UnannotatedRenamedProto, GenericItemsProto, JavaObject >
+
+        - (ComGoogleCommonCollectImmutableList<NSString *> *)legacyFetch:(ComGoogleCommonCollectImmutableList<NSString *> *)items;
+
+        #if !defined(__swift__)
+        @optional
+        #endif
+
+        - (ComGoogleCommonCollectImmutableList<NSString *> *)fetchWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList<NSString *> *)items;
+
+        @end
+        """);
+  }
 }
