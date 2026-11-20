@@ -346,4 +346,105 @@ public class DestructorGeneratorTest extends GenerationTest {
         "  JreCheckFinalize(self, [Test class]);",
         "}");
   }
+
+  private static final String RECORD_SOURCE =
+      """
+      import com.google.j2objc.annotations.RetainedWith;
+      import com.google.j2objc.annotations.Weak;
+      public record Test<T>(int i, T t, @Weak Object w, @RetainedWith Runnable r) {
+        static Object s = new Object();
+        public Test {
+          if (i < 0) {
+            throw new IllegalArgumentException();
+          }
+        }
+      }
+      """;
+
+  public void testRecordFieldReleaseReferenceCounting() throws IOException {
+    options.setMemoryManagementOption(Options.MemoryManagementOption.REFERENCE_COUNTING);
+    assertTranslatedLines(
+        translateSourceFile(RECORD_SOURCE, "Test", "Test.m"),
+        "- (void)dealloc {",
+        "  RELEASE_(t_);",
+        "  JreRetainedWithRelease(self, r_);",
+        "  [super dealloc];",
+        "}");
+    // Primitive-only record with static field should not generate -dealloc.
+    assertNotInTranslation(
+        translateSourceFile(
+            "public record Empty(int x) { static Object s = new Object(); }", "Empty", "Empty.m"),
+        "dealloc");
+  }
+
+  public void testRecordFieldReleaseARC() throws IOException {
+    options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
+    assertNotInTranslation(translateSourceFile(RECORD_SOURCE, "Test", "Test.m"), "dealloc");
+  }
+
+  public void testRecordFieldReleaseStrictField() throws IOException {
+    options.setStrictFieldAssign(true);
+    options.setStrictFieldLoad(true);
+    options.setMemoryManagementOption(Options.MemoryManagementOption.REFERENCE_COUNTING);
+    assertTranslatedLines(
+        translateSourceFile(RECORD_SOURCE, "Test", "Test.m"),
+        "- (void)dealloc {",
+        "  JreStrictFieldStrongRelease(&t_);",
+        "  JreStrictFieldRetainedWithRelease(self, &r_);",
+        "  [super dealloc];",
+        "}");
+    options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
+    assertTranslatedLines(
+        translateSourceFile(RECORD_SOURCE, "Test", "Test.m"),
+        "- (void)dealloc {",
+        "  JreStrictFieldStrongRelease(&t_);",
+        "  JreStrictFieldStrongRelease(&r_);",
+        "}");
+  }
+
+  public void testRecordOnDeallocAndFinalize() throws IOException {
+    String source =
+        """
+        import com.google.j2objc.annotations.OnDealloc;
+        public record Test(Object o) {
+          @OnDealloc private void close() {}
+          protected void finalize() {}
+        }
+        """;
+    options.setMemoryManagementOption(Options.MemoryManagementOption.REFERENCE_COUNTING);
+    assertTranslatedLines(
+        translateSourceFile(source, "Test", "Test.m"),
+        "- (void)dealloc {",
+        "  Test_close(self);",
+        "  JreCheckFinalize(self, [Test class]);",
+        "  RELEASE_(o_);",
+        "  [super dealloc];",
+        "}");
+    options.setMemoryManagementOption(Options.MemoryManagementOption.ARC);
+    assertTranslatedLines(
+        translateSourceFile(source, "Test", "Test.m"),
+        "- (void)dealloc {",
+        "  Test_close(self);",
+        "  JreCheckFinalize(self, [Test class]);",
+        "}");
+  }
+
+  public void testNestedAndLocalRecordFieldRelease() throws IOException {
+    options.setMemoryManagementOption(Options.MemoryManagementOption.REFERENCE_COUNTING);
+    String source =
+        """
+        public class Outer {
+          private record Entry(String key) {}
+          Object create(String s) {
+            record Local(String s) {}
+            return new Entry(new Local(s).s());
+          }
+        }
+        """;
+    String translation = translateSourceFile(source, "Outer", "Outer.m");
+    assertTranslatedLines(
+        translation, "- (void)dealloc {", "  RELEASE_(key_);", "  [super dealloc];", "}");
+    assertTranslatedLines(
+        translation, "- (void)dealloc {", "  RELEASE_(s_);", "  [super dealloc];", "}");
+  }
 }
