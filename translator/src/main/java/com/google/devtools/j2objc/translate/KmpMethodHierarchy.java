@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.types.GeneratedElement;
 import com.google.devtools.j2objc.util.ElementUtil;
@@ -23,9 +24,11 @@ import com.google.j2objc.annotations.ObjectiveCKmpMethod;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -44,7 +47,8 @@ final class KmpMethodHierarchy {
       TypeElement typeElement,
       ImmutableMap<String, ExecutablePair> allMethods,
       ImmutableMap<String, AnnotationMirror> annotatedSignatures,
-      ImmutableMap<String, ExecutableElement> annotatedMethods) {}
+      ImmutableMap<String, ExecutableElement> annotatedMethods,
+      ImmutableSet<String> conflictedSignatures) {}
 
   /** Concrete class in a type's hierarchy that owns the KMP adapter and helpers for a method. */
   record ConcreteKmpOwner(
@@ -72,7 +76,7 @@ final class KmpMethodHierarchy {
    */
   private TypeMethods getTypeMethods(TypeElement typeElem, DeclaredType declaredType) {
     List<CachedTypeMethods> entries =
-        typeMethodsCache.computeIfAbsent(typeElem, _ -> new ArrayList<>());
+        typeMethodsCache.computeIfAbsent(typeElem, k -> new ArrayList<>());
     for (CachedTypeMethods entry : entries) {
       if (typeUtil.isSameType(entry.declaredType(), declaredType)) {
         return entry.typeMethods();
@@ -86,6 +90,7 @@ final class KmpMethodHierarchy {
   private TypeMethods computeTypeMethods(TypeElement typeElem, DeclaredType declaredType) {
     Map<String, ExecutablePair> methods = new LinkedHashMap<>();
     Map<String, ExecutableElement> annotatedMethods = new LinkedHashMap<>();
+    Set<String> conflictedSignatures = new LinkedHashSet<>();
 
     for (TypeMirror supertype : typeUtil.directSupertypes(declaredType)) {
       if (!(supertype instanceof DeclaredType superDeclared)) {
@@ -102,23 +107,39 @@ final class KmpMethodHierarchy {
         if (!isInheritedBy(inherited.element(), typeElem)) {
           continue;
         }
+        if (superMethods.conflictedSignatures().contains(sig)) {
+          conflictedSignatures.add(sig);
+        }
         ExecutablePair existing = methods.get(sig);
         if (existing == null || takesPrecedence(inherited.element(), existing.element())) {
           methods.put(sig, inherited);
         }
         ExecutableElement superAnnotated = superMethods.annotatedMethods().get(sig);
-        if (superAnnotated != null && takesPrecedence(superAnnotated, annotatedMethods.get(sig))) {
-          annotatedMethods.put(sig, superAnnotated);
+        if (superAnnotated != null) {
+          ExecutableElement existingAnnotated = annotatedMethods.get(sig);
+          if (conflictsWith(superAnnotated, existingAnnotated)) {
+            conflictedSignatures.add(sig);
+          }
+          if (takesPrecedence(superAnnotated, existingAnnotated)) {
+            annotatedMethods.put(sig, superAnnotated);
+          }
         }
       }
     }
 
     for (ExecutableElement methodElem : ElementUtil.getExecutables(typeElem)) {
+      if (methodElem instanceof GeneratedElement) {
+        continue;
+      }
       ExecutablePair method =
           new ExecutablePair(methodElem, typeUtil.asMemberOf(declaredType, methodElem));
       String sig = getOverrideSignature(method);
       methods.put(sig, method);
       if (ElementUtil.hasAnnotation(methodElem, ObjectiveCKmpMethod.class)) {
+        if (ElementUtil.isInstanceMethod(methodElem)
+            && conflictsWith(methodElem, annotatedMethods.get(sig))) {
+          conflictedSignatures.add(sig);
+        }
         annotatedMethods.put(sig, methodElem);
       }
     }
@@ -132,7 +153,8 @@ final class KmpMethodHierarchy {
         typeElem,
         ImmutableMap.copyOf(methods),
         annotations.buildOrThrow(),
-        ImmutableMap.copyOf(annotatedMethods));
+        ImmutableMap.copyOf(annotatedMethods),
+        ImmutableSet.copyOf(conflictedSignatures));
   }
 
   /** Returns the JVM-style parameter-erased signature used to match method overrides. */
@@ -175,16 +197,20 @@ final class KmpMethodHierarchy {
   @Nullable ConcreteKmpOwner findConcreteKmpOwner(TypeElement typeElem, String signature) {
     DeclaredType currentType = (DeclaredType) typeElem.asType();
     TypeMethods currentMethods = getTypeMethods(typeElem, currentType);
-    if (!hasConcreteKmpMethod(currentMethods, signature)) {
+    if (!hasConcreteKmpMethod(currentMethods, signature)
+        || currentMethods.conflictedSignatures().contains(signature)) {
       return null;
     }
-    // Walk up while the superclass already owns a concrete KMP adapter with the same config.
+    // Walk up while the superclass already owns a concrete KMP adapter.
     DeclaredType superType = typeUtil.getSuperclass(currentType);
     while (superType != null) {
       TypeMethods superMethods = getTypeMethods(TypeUtil.asTypeElement(superType), superType);
-      // Stop if the superclass method is absent, abstract, unannotated, or re-configured.
-      if (!hasConcreteKmpMethod(superMethods, signature)
-          || !sameKmpConfig(currentMethods, superMethods, signature)) {
+      boolean inheritsSuperAdapter =
+          hasConcreteKmpMethod(superMethods, signature)
+              && isInheritedBy(
+                  superMethods.allMethods().get(signature).element(),
+                  currentMethods.typeElement());
+      if (!inheritsSuperAdapter) {
         break;
       }
       currentType = superType;
@@ -215,19 +241,18 @@ final class KmpMethodHierarchy {
         && ElementUtil.isInstanceMethod(pair.element());
   }
 
-  private boolean sameKmpConfig(TypeMethods sub, TypeMethods sup, String signature) {
-    if (Objects.equals(
-        sub.annotatedMethods().get(signature), sup.annotatedMethods().get(signature))) {
-      return true;
+  private boolean conflictsWith(ExecutableElement a, @Nullable ExecutableElement b) {
+    if (b == null || a.equals(b)) {
+      return false;
     }
-    AnnotationMirror a = sub.annotatedSignatures().get(signature);
-    AnnotationMirror b = sup.annotatedSignatures().get(signature);
-    return Objects.equals(
-            ElementUtil.getAnnotationValue(a, "selector"),
-            ElementUtil.getAnnotationValue(b, "selector"))
-        && typeUtil.isSameType(
-            (TypeMirror) ElementUtil.getAnnotationValue(a, "adapter"),
-            (TypeMirror) ElementUtil.getAnnotationValue(b, "adapter"));
+    AnnotationMirror annA = ElementUtil.getAnnotation(a, ObjectiveCKmpMethod.class);
+    AnnotationMirror annB = ElementUtil.getAnnotation(b, ObjectiveCKmpMethod.class);
+    return !Objects.equals(
+            ElementUtil.getAnnotationValue(annA, "selector"),
+            ElementUtil.getAnnotationValue(annB, "selector"))
+        || !typeUtil.isSameType(
+            (TypeMirror) ElementUtil.getAnnotationValue(annA, "adapter"),
+            (TypeMirror) ElementUtil.getAnnotationValue(annB, "adapter"));
   }
 
   private static boolean isInheritedBy(ExecutableElement method, TypeElement subType) {

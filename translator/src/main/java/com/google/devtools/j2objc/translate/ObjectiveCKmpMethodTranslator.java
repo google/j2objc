@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.RecordDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.UnitTreeVisitor;
@@ -28,11 +29,13 @@ import com.google.devtools.j2objc.translate.KmpMethodHierarchy.TypeMethods;
 import com.google.devtools.j2objc.translate.KmpTypeConverter.MappingStrategy;
 import com.google.devtools.j2objc.types.ExecutablePair;
 import com.google.devtools.j2objc.util.ElementUtil;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.j2objc.annotations.ObjectiveCKmpMethod;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 
 /**
@@ -138,6 +141,16 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
     new PrivateDeclarationResolver(unit).run();
   }
 
+  private static void reportOverrideConflict(
+      AbstractTypeDeclaration typeNode, ExecutableElement method) {
+    TreeNode target = KmpAdapterEmitter.findMethodDeclaration(typeNode, method);
+    ErrorUtil.error(
+        target != null ? target : typeNode,
+        "Overriding an @ObjectiveCKmpMethod method with a different selector or adapter is"
+            + " not supported: "
+            + ElementUtil.getName(method));
+  }
+
   private void processType(AbstractTypeDeclaration typeNode) {
     TypeElement typeElem = typeNode.getTypeElement();
     TypeMethods resolved = methodHierarchy.getTypeMethods(typeElem);
@@ -145,8 +158,12 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
 
     for (Map.Entry<String, AnnotationMirror> entry : resolved.annotatedSignatures().entrySet()) {
       String signature = entry.getKey();
-      AnnotationMirror annotation = entry.getValue();
       ExecutablePair method = resolved.allMethods().get(signature);
+      if (resolved.conflictedSignatures().contains(signature)) {
+        reportOverrideConflict(typeNode, method.element());
+        continue;
+      }
+      AnnotationMirror annotation = entry.getValue();
 
       boolean shouldGenerate;
       MappingStrategy strategy = MappingStrategy.NATIVE_TO_JAVA;
