@@ -214,7 +214,8 @@ final class KmpAdapterEmitter {
       this.originalMethod = originalMethod;
       this.originalMethodExecutable = originalMethod.element();
       this.originalMethodReturnType = originalMethod.type().getReturnType();
-      this.originalMethodParameters = resolveMethodParameters(originalMethod);
+      this.originalMethodParameters =
+          resolveParameters(originalMethod, originalMethod.element().getParameters());
       this.selector = (String) ElementUtil.getAnnotationValue(annotation, "selector");
       this.swiftName = (String) ElementUtil.getAnnotationValue(annotation, "swiftName");
       this.adapter = (TypeMirror) ElementUtil.getAnnotationValue(annotation, "adapter");
@@ -222,22 +223,34 @@ final class KmpAdapterEmitter {
       this.strategy = strategy;
     }
 
-    /** Substitutes generic parameter types when the method is inherited from a supertype. */
-    private ImmutableList<VariableElement> resolveMethodParameters(ExecutablePair originalMethod) {
-      List<? extends VariableElement> params = originalMethod.element().getParameters();
-      List<? extends TypeMirror> resolvedTypes = originalMethod.type().getParameterTypes();
-      ImmutableList.Builder<VariableElement> resolvedParams = ImmutableList.builder();
-      for (int i = 0; i < params.size(); i++) {
-        VariableElement param = params.get(i);
-        TypeMirror resolvedType = resolvedTypes.get(i);
-        resolvedParams.add(
-            typeUtil.isSameType(param.asType(), resolvedType)
-                ? param
-                : GeneratedVariableElement.newParameter(
-                        ElementUtil.getName(param), resolvedType, param.getEnclosingElement())
-                    .addAnnotationMirrors(param.getAnnotationMirrors()));
+    /**
+     * Pairs {@code contractMethod}'s resolved parameter types and annotations with {@code
+     * nameSources}' variable names and enclosing elements.
+     */
+    private ImmutableList<VariableElement> resolveParameters(
+        ExecutablePair contractMethod, List<? extends VariableElement> nameSources) {
+      List<? extends VariableElement> contractParams = contractMethod.element().getParameters();
+      List<? extends TypeMirror> contractTypes = contractMethod.type().getParameterTypes();
+      ImmutableList.Builder<VariableElement> resolved = ImmutableList.builder();
+      for (int i = 0; i < contractParams.size(); i++) {
+        VariableElement contractParam = contractParams.get(i);
+        TypeMirror contractType = contractTypes.get(i);
+        VariableElement nameSource = nameSources.get(i);
+        if (nameSource.equals(contractParam)
+            && typeUtil.isSameType(contractParam.asType(), contractType)) {
+          resolved.add(contractParam);
+        } else {
+          String paramName =
+              nameSource.equals(contractParam)
+                  ? ElementUtil.getName(contractParam)
+                  : nameTable.getVariableShortName(nameSource);
+          resolved.add(
+              GeneratedVariableElement.newParameter(
+                      paramName, contractType, nameSource.getEnclosingElement())
+                  .addAnnotationMirrors(contractParam.getAnnotationMirrors()));
+        }
       }
-      return resolvedParams.build();
+      return resolved.build();
     }
 
     private TypeMirror getAdapterReturnType(ExecutablePair method) {
@@ -317,6 +330,15 @@ final class KmpAdapterEmitter {
       return invocation;
     }
 
+    private GeneratedExecutableElement createAdapterExecutable(
+        TypeMirror adapterReturnType, List<VariableElement> adapterParameters) {
+      GeneratedExecutableElement adapterMethodExecutable =
+          GeneratedExecutableElement.newAdapterMethod(
+              selector, adapterReturnType, adapterParameters, originalMethodExecutable);
+      attachSwiftNameAnnotation(adapterMethodExecutable);
+      return adapterMethodExecutable;
+    }
+
     private void generateStaticMethodDeclaration(
         TypeMirror adapterReturnType, FunctionElement functionElement) {
       ParameterMapping mapping = processParameters();
@@ -324,9 +346,7 @@ final class KmpAdapterEmitter {
       List<VariableElement> adapterParameters = mapping.adapterParameters();
 
       GeneratedExecutableElement adapterMethodExecutable =
-          GeneratedExecutableElement.newAdapterMethod(
-              selector, adapterReturnType, adapterParameters, originalMethodExecutable);
-      attachSwiftNameAnnotation(adapterMethodExecutable);
+          createAdapterExecutable(adapterReturnType, adapterParameters);
 
       FunctionInvocation methodFunctionInvocation =
           createFunctionInvocation(functionElement, adaptingArguments);
@@ -341,9 +361,7 @@ final class KmpAdapterEmitter {
       List<VariableElement> adapterParameters = mapping.adapterParameters();
 
       GeneratedExecutableElement adapterMethodExecutable =
-          GeneratedExecutableElement.newAdapterMethod(
-              selector, adapterReturnType, adapterParameters, originalMethodExecutable);
-      attachSwiftNameAnnotation(adapterMethodExecutable);
+          createAdapterExecutable(adapterReturnType, adapterParameters);
 
       // Create a MethodInvocation to call the original instance Java method.
       MethodInvocation adaptingMethodInvocation =
@@ -422,9 +440,7 @@ final class KmpAdapterEmitter {
     private void generateInterfaceMethodDeclaration(TypeMirror adapterReturnType) {
       ParameterMapping mapping = processParameters();
       GeneratedExecutableElement adapterMethodExecutable =
-          GeneratedExecutableElement.newAdapterMethod(
-              selector, adapterReturnType, mapping.adapterParameters(), originalMethodExecutable);
-      attachSwiftNameAnnotation(adapterMethodExecutable);
+          createAdapterExecutable(adapterReturnType, mapping.adapterParameters());
 
       // 1. Declare the adapted KMP method on the @protocol.
       // Example: - (void)setItems:(NSArray<NSString *> *)items;
@@ -448,9 +464,7 @@ final class KmpAdapterEmitter {
       List<VariableElement> adapterParameters = mapping.adapterParameters();
 
       GeneratedExecutableElement adapterMethodExecutable =
-          GeneratedExecutableElement.newAdapterMethod(
-              selector, adapterReturnType, adapterParameters, originalMethodExecutable);
-      attachSwiftNameAnnotation(adapterMethodExecutable);
+          createAdapterExecutable(adapterReturnType, adapterParameters);
 
       Block adapterBodyBlock = new Block();
       String bodyCode =
@@ -757,9 +771,7 @@ final class KmpAdapterEmitter {
       FunctionInvocation functionInvocation = createConstructorInvocation(declaringClass);
 
       GeneratedExecutableElement adapterMethodExecutable =
-          GeneratedExecutableElement.newAdapterMethod(
-              selector, adapterReturnType, adapterParameters, originalMethodExecutable);
-      attachSwiftNameAnnotation(adapterMethodExecutable);
+          createAdapterExecutable(adapterReturnType, adapterParameters);
 
       List<Expression> args = functionInvocation.getArguments();
       args.add(new ThisExpression(declaringClass.asType()));
@@ -797,12 +809,8 @@ final class KmpAdapterEmitter {
     }
 
     private ParameterMapping processParameters() {
-      return processParameters(strategy);
-    }
-
-    private ParameterMapping processParameters(MappingStrategy mappingStrategy) {
       return typeConverter.processParameters(
-          adapter, mappingStrategy, originalMethodExecutable, originalMethodParameters);
+          adapter, strategy, originalMethodExecutable, originalMethodParameters);
     }
 
     private Statement createReturnStatement(
