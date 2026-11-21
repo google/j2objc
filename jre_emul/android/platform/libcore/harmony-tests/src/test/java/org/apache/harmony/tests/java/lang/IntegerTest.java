@@ -17,7 +17,6 @@
 package org.apache.harmony.tests.java.lang;
 
 import java.util.Properties;
-
 import junit.framework.TestCase;
 
 public class IntegerTest extends TestCase {
@@ -283,8 +282,8 @@ public class IntegerTest extends TestCase {
 
         Integer i1 = new Integer(1000);
         Integer i2 = new Integer(-1000);
-        assertTrue("Returned incorrect hashcode", i1.hashCode() == 1000
-                && (i2.hashCode() == -1000));
+    assertTrue(
+        "Returned incorrect hashcode", i1.hashCode() == 145972072 && (i2.hashCode() == 145972072));
     }
 
     /**
@@ -442,12 +441,16 @@ public class IntegerTest extends TestCase {
      * java.lang.Integer#toBinaryString(int)
      */
     public void test_toBinaryStringI() {
-        // Test for method java.lang.String
-        // java.lang.Integer.toBinaryString(int)
-        assertEquals("Incorrect string returned", "1111111111111111111111111111111", Integer.toBinaryString(
-                Integer.MAX_VALUE));
-        assertEquals("Incorrect string returned", "10000000000000000000000000000000", Integer.toBinaryString(
-                Integer.MIN_VALUE));
+    // Test for method java.lang.String
+    // java.lang.Integer.toBinaryString(int)
+    assertEquals(
+        "Incorrect string returned",
+        "1111111111111111111111111111111",
+        Integer.toBinaryString(Integer.MAX_VALUE));
+    assertEquals(
+        "Incorrect string returned",
+        "10000000000000000000000000000000",
+        Integer.toBinaryString(Integer.MIN_VALUE));
     }
 
     /**
@@ -516,7 +519,7 @@ public class IntegerTest extends TestCase {
         assertEquals("Returned incorrect octal String", "0", Integer.toString(0));
         assertEquals("Returned incorrect octal String", "708", Integer.toString(708));
         assertEquals("Returned incorrect octal String", "-100", Integer.toString(-100));
-        assertEquals("Returned incorrect octal String", "-1000000008", Integer.toString(-1000000008));
+    assertEquals("Returned incorrect octal String", "-1000000008", Integer.toString(-1000000008));
         assertEquals("Returned incorrect octal String", "2000000008", Integer.toString(2000000008));
     }
 
@@ -530,8 +533,10 @@ public class IntegerTest extends TestCase {
         assertTrue("Returned incorrect hex string--wanted 7fffffff but got: "
                 + Integer.toString(2147483647, 16), Integer.toString(
                 2147483647, 16).equals("7fffffff"));
-        assertEquals("Incorrect string returned", "1111111111111111111111111111111", Integer.toString(2147483647, 2)
-        );
+    assertEquals(
+        "Incorrect string returned",
+        "1111111111111111111111111111111",
+        Integer.toString(2147483647, 2));
         assertEquals("Incorrect string returned", "2147483647", Integer
                 .toString(2147483647, 10));
 
@@ -688,10 +693,10 @@ public class IntegerTest extends TestCase {
      * java.lang.Integer#hashCode()
      */
     public void test_hashCode() {
-        assertEquals(1, new Integer(1).hashCode());
-        assertEquals(2, new Integer(2).hashCode());
+    assertEquals(-1640531535, new Integer(1).hashCode());
+    assertEquals(1013871474, new Integer(2).hashCode());
         assertEquals(0, new Integer(0).hashCode());
-        assertEquals(-1, new Integer(-1).hashCode());
+    assertEquals(-1640531535, new Integer(-1).hashCode());
     }
 
     /**
