@@ -85,6 +85,7 @@ const std::set<absl::string_view> kKeywords = {
     "accessibilityLabel",
     "and",
     "auto",
+    "bool",
     "break",
     "case",
     "class",
