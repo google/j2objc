@@ -283,8 +283,8 @@ public class IntegerTest extends TestCase {
 
         Integer i1 = new Integer(1000);
         Integer i2 = new Integer(-1000);
-        assertTrue("Returned incorrect hashcode", i1.hashCode() == 1000
-                && (i2.hashCode() == -1000));
+        assertTrue("Returned incorrect hashcode", i1.hashCode() == 145972072
+                && (i2.hashCode() == 145972072));
     }
 
     /**
@@ -688,10 +688,10 @@ public class IntegerTest extends TestCase {
      * java.lang.Integer#hashCode()
      */
     public void test_hashCode() {
-        assertEquals(1, new Integer(1).hashCode());
-        assertEquals(2, new Integer(2).hashCode());
+        assertEquals(-1640531535, new Integer(1).hashCode());
+        assertEquals(1013904226, new Integer(2).hashCode());
         assertEquals(0, new Integer(0).hashCode());
-        assertEquals(-1, new Integer(-1).hashCode());
+        assertEquals(-1640531535, new Integer(-1).hashCode());
     }
 
     /**
