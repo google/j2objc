@@ -299,6 +299,7 @@ TEST_SOURCES := \
     com/google/j2objc/ReflectionTest.java \
     com/google/j2objc/RetainedWithTest.java \
     com/google/j2objc/StringTest.java \
+    com/google/j2objc/SynchronizedTest.java \
     com/google/j2objc/ThreadTest.java \
     com/google/j2objc/ThrowableTest.java \
     com/google/j2objc/io/AsyncPipedNSInputStreamAdapterTest.java \
