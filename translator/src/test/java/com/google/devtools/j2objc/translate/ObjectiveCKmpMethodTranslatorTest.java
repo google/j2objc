@@ -3160,7 +3160,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
     assertNotInTranslation(header, "MyProto_getItems_dispatch_swiftName");
   }
 
-  public void testTranslate_reannotatedConcreteSubclassEmitsAdapterOnlyWhenConfigDiffers()
+  public void testTranslate_reannotatedConcreteSubclassWithSameConfigInheritsAdapter()
       throws IOException {
     addImmutableListAdapter();
     addSourceFile(
@@ -3190,26 +3190,10 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         }
         """,
         "SameConfigService.java");
-    addSourceFile(
-        """
-        import com.google.common.collect.ImmutableList;
-        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
-
-        public final class RenamedConfigService extends BaseService {
-          @Override
-          @ObjectiveCKmpMethod(selector = "getRenamedItems", adapter = ImmutableListAdapter.class)
-          public ImmutableList<String> getItems() {
-            return ImmutableList.of();
-          }
-        }
-        """,
-        "RenamedConfigService.java");
 
     String sameImpl = translateSourceFile("SameConfigService", "SameConfigService.m");
+    assertNoErrors();
     assertNotInTranslation(sameImpl, "- (NSArray<NSString *> *)getItemsAsNsArray");
-
-    String renamedHeader = translateSourceFile("RenamedConfigService", "RenamedConfigService.h");
-    assertInTranslation(renamedHeader, "- (NSArray<NSString *> *)getRenamedItems;");
   }
 
   public void testAbstractClassImplementingGenericInterface_skipsAbstractNarrowingStub()
@@ -3489,5 +3473,402 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """);
     assertNotInTranslation(
         impl, "SubDefaultProto_workWithNSString_withComGoogleCommonCollectImmutableList__dispatch");
+  }
+
+  private void assertTranslatesCleanly(String typeName, String source) throws IOException {
+    @SuppressWarnings("unused")
+    String unused = translateSourceFile(source, typeName, typeName.replace('.', '/') + ".h");
+    assertNoErrors();
+  }
+
+  private void assertKmpOverrideError(
+      String typeName, int line, String methodName, String source) throws IOException {
+    @SuppressWarnings("unused")
+    String unused = translateSourceFile(source, typeName, typeName.replace('.', '/') + ".h");
+    assertError(
+        typeNameToSource(typeName)
+            + ":"
+            + line
+            + ": Overriding an @ObjectiveCKmpMethod method with a different selector or adapter is"
+            + " not supported: "
+            + methodName);
+  }
+
+  private void addPkgBaseSources() throws IOException {
+    addSourceFile(
+        """
+        package p1;
+        import java.util.List;
+
+        public class PkgAdapter {
+          public static native List<?> toJavaUtilList(Object list) /*-[ return nil; ]-*/;
+          public static native Object fromJavaUtilList(List<?> list) /*-[ return nil; ]-*/;
+        }
+        """,
+        "p1/PkgAdapter.java");
+    addSourceFile(
+        """
+        package p1;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        public class PkgBase {
+          @ObjectiveCKmpMethod(selector = "getItems", adapter = PkgAdapter.class)
+          List<String> getItems() {
+            return null;
+          }
+        }
+        """,
+        "p1/PkgBase.java");
+  }
+
+  private void addConflictingSiblingProtos() throws IOException {
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        public interface LeftProto {
+          @ObjectiveCKmpMethod(selector = "leftItems", adapter = Adapter.class)
+          List<String> getItems();
+        }
+        """,
+        "LeftProto.java");
+    addSourceFile(
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        public interface RightProto {
+          @ObjectiveCKmpMethod(selector = "rightItems", adapter = Adapter.class)
+          List<String> getItems();
+        }
+        """,
+        "RightProto.java");
+  }
+
+  public void testOverrideWithDifferentSelectorOnClass_reportsError() throws IOException {
+    assertKmpOverrideError(
+        "SubService",
+        12,
+        "getItems",
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        class BaseService {
+          @ObjectiveCKmpMethod(selector = "getItems", adapter = Adapter.class)
+          public List<String> getItems() {
+            return null;
+          }
+        }
+
+        public class SubService extends BaseService {
+          @Override
+          @ObjectiveCKmpMethod(selector = "fetchItems", adapter = Adapter.class)
+          public List<String> getItems() {
+            return null;
+          }
+        }
+        """);
+  }
+
+  public void testOverrideWithDifferentAdapterOnClassImplementingInterface_reportsError()
+      throws IOException {
+    assertKmpOverrideError(
+        "ServiceImpl",
+        15,
+        "getItems",
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        class OtherAdapter {
+          public static native List<?> toJavaUtilList(Object list) /*-[ return nil; ]-*/;
+          public static native Object fromJavaUtilList(List<?> list) /*-[ return nil; ]-*/;
+        }
+
+        interface ServiceProto {
+          @ObjectiveCKmpMethod(selector = "getItems", adapter = Adapter.class)
+          List<String> getItems();
+        }
+
+        public class ServiceImpl implements ServiceProto {
+          @Override
+          @ObjectiveCKmpMethod(selector = "getItems", adapter = OtherAdapter.class)
+          public List<String> getItems() {
+            return null;
+          }
+        }
+        """);
+  }
+
+  public void testOverrideWithDifferentSelectorOnSubinterface_reportsError() throws IOException {
+    assertKmpOverrideError(
+        "SubProto",
+        10,
+        "getItems",
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        interface BaseProto {
+          @ObjectiveCKmpMethod(selector = "getItems", adapter = Adapter.class)
+          List<String> getItems();
+        }
+
+        public interface SubProto extends BaseProto {
+          @Override
+          @ObjectiveCKmpMethod(selector = "fetchItems", adapter = Adapter.class)
+          List<String> getItems();
+        }
+        """);
+  }
+
+  public void testOverrideWithMatchingSelectorAndAdapter_succeedsWithoutError() throws IOException {
+    assertTranslatesCleanly(
+        "MatchingImpl",
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        interface MatchingProto {
+          @ObjectiveCKmpMethod(selector = "getItems", adapter = Adapter.class)
+          List<String> getItems();
+        }
+
+        public class MatchingImpl implements MatchingProto {
+          @Override
+          @ObjectiveCKmpMethod(selector = "getItems", adapter = Adapter.class)
+          public List<String> getItems() {
+            return null;
+          }
+        }
+        """);
+  }
+
+  public void testOverrideWithDifferentSelectorMultiHop_reportsError() throws IOException {
+    assertKmpOverrideError(
+        "LeafService",
+        19,
+        "getItems",
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        class RootService {
+          @ObjectiveCKmpMethod(selector = "getItems", adapter = Adapter.class)
+          public List<String> getItems() {
+            return null;
+          }
+        }
+
+        class MidService extends RootService {
+          @Override
+          public List<String> getItems() {
+            return null;
+          }
+        }
+
+        public class LeafService extends MidService {
+          @Override
+          @ObjectiveCKmpMethod(selector = "fetchItems", adapter = Adapter.class)
+          public List<String> getItems() {
+            return null;
+          }
+        }
+        """);
+  }
+
+  public void testOverrideWithDifferentSelectorParameterizedSupertype_reportsError()
+      throws IOException {
+    assertKmpOverrideError(
+        "StringProtoImpl",
+        10,
+        "accept",
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        interface GenericProto<T> {
+          @ObjectiveCKmpMethod(selector = "acceptWith:items:", adapter = Adapter.class)
+          void accept(T value, List<String> items);
+        }
+
+        public class StringProtoImpl implements GenericProto<String> {
+          @Override
+          @ObjectiveCKmpMethod(selector = "handleWith:items:", adapter = Adapter.class)
+          public void accept(String value, List<String> items) {}
+        }
+        """);
+  }
+
+  public void testCrossPackagePackagePrivateSameSignature_succeedsWithoutError()
+      throws IOException {
+    addPkgBaseSources();
+    assertTranslatesCleanly(
+        "p2.PkgSub",
+        """
+        package p2;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+        import p1.PkgAdapter;
+        import p1.PkgBase;
+
+        public class PkgSub extends PkgBase {
+          @ObjectiveCKmpMethod(selector = "fetchItems", adapter = PkgAdapter.class)
+          List<String> getItems() {
+            return null;
+          }
+        }
+        """);
+  }
+
+  public void testStaticMethodSameNameInSubclass_succeedsWithoutError() throws IOException {
+    assertTranslatesCleanly(
+        "StaticSub",
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        class StaticBase {
+          @ObjectiveCKmpMethod(selector = "makeItems", adapter = Adapter.class)
+          public static List<String> make() {
+            return null;
+          }
+        }
+
+        public class StaticSub extends StaticBase {
+          @ObjectiveCKmpMethod(selector = "buildItems", adapter = Adapter.class)
+          public static List<String> make() {
+            return null;
+          }
+        }
+        """);
+  }
+
+  public void testKmpMethodCombinedWithThrowsOnClassAndInterface_succeedsWithoutError()
+      throws IOException {
+    assertTranslatesCleanly(
+        "ThrowingKmpImpl",
+        """
+        import com.google.j2kt.annotations.Throws;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        interface ThrowingKmpProto {
+          @Throws
+          @ObjectiveCKmpMethod(selector = "loadItems", adapter = Adapter.class)
+          List<String> load();
+        }
+
+        public class ThrowingKmpImpl implements ThrowingKmpProto {
+          @Override
+          public List<String> load() {
+            return null;
+          }
+
+          @Throws
+          @ObjectiveCKmpMethod(selector = "saveItems:", adapter = Adapter.class)
+          public void save(List<String> items) {}
+        }
+        """);
+  }
+
+  public void
+      testWidenedPackagePrivateMethodOverriddenInForeignPackageWithDifferentSelector_reportsError()
+          throws IOException {
+    addPkgBaseSources();
+    addSourceFile(
+        """
+        package p1;
+        import java.util.List;
+
+        public class WideningMid extends PkgBase {
+          @Override
+          protected List<String> getItems() {
+            return null;
+          }
+        }
+        """,
+        "p1/WideningMid.java");
+    assertKmpOverrideError(
+        "p2.ForeignSub",
+        8,
+        "getItems",
+        """
+        package p2;
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+        import p1.PkgAdapter;
+        import p1.WideningMid;
+
+        public class ForeignSub extends WideningMid {
+          @Override
+          @ObjectiveCKmpMethod(selector = "fetchItems", adapter = PkgAdapter.class)
+          public List<String> getItems() {
+            return null;
+          }
+        }
+        """);
+  }
+
+  public void testConflictingSiblingInterfacesWithoutOverride_reportsError() throws IOException {
+    addConflictingSiblingProtos();
+    assertKmpOverrideError(
+        "CombinedProto",
+        1,
+        "getItems",
+        "public interface CombinedProto extends LeftProto, RightProto {}");
+  }
+
+  public void testAnnotatedOverrideOfConflictingMergedSubinterface_reportsError()
+      throws IOException {
+    addConflictingSiblingProtos();
+    addSourceFile(
+        "public interface CombinedProto extends LeftProto, RightProto {}",
+        "CombinedProto.java");
+    assertKmpOverrideError(
+        "LeafConflictImpl",
+        5,
+        "getItems",
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        public class LeafConflictImpl implements CombinedProto {
+          @Override
+          @ObjectiveCKmpMethod(selector = "leftItems", adapter = Adapter.class)
+          public List<String> getItems() {
+            return null;
+          }
+        }
+        """);
+  }
+
+  public void testOverrideChangingOnlySwiftName_succeedsWithoutError() throws IOException {
+    assertTranslatesCleanly(
+        "SwiftSub",
+        """
+        import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+        import java.util.List;
+
+        class SwiftBase {
+          @ObjectiveCKmpMethod(
+              selector = "getItems", adapter = Adapter.class, swiftName = "baseItems()")
+          public List<String> getItems() {
+            return null;
+          }
+        }
+
+        public class SwiftSub extends SwiftBase {
+          @Override
+          @ObjectiveCKmpMethod(
+              selector = "getItems", adapter = Adapter.class, swiftName = "subItems()")
+          public List<String> getItems() {
+            return null;
+          }
+        }
+        """);
   }
 }

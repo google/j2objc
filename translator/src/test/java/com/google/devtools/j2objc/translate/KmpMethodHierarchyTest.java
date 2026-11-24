@@ -284,7 +284,10 @@ public class KmpMethodHierarchyTest extends GenerationTest {
             import java.util.List;
 
             interface BaseIface {
-              @ObjectiveCKmpMethod(selector = "baseSend:", adapter = DummyAdapter.class)
+              @ObjectiveCKmpMethod(
+                  selector = "send:",
+                  adapter = DummyAdapter.class,
+                  swiftName = "baseSend(_:)")
               void send(List<String> items);
             }
 
@@ -294,7 +297,10 @@ public class KmpMethodHierarchyTest extends GenerationTest {
             }
 
             interface MidIface extends BaseIface {
-              @ObjectiveCKmpMethod(selector = "midSend:", adapter = DummyAdapter.class)
+              @ObjectiveCKmpMethod(
+                  selector = "send:",
+                  adapter = DummyAdapter.class,
+                  swiftName = "midSend(_:)")
               @Override
               void send(List<String> items);
             }
@@ -311,6 +317,8 @@ public class KmpMethodHierarchyTest extends GenerationTest {
     ExecutableElement midSend = findMethod(findType(unit, "MidIface"), "send");
     ExecutableElement leafSend = findMethod(findType(unit, "LeafIface"), "send");
 
+    assertThat(hierarchy.getTypeMethods(findType(unit, "LeafIface")).conflictedSignatures())
+        .isEmpty();
     assertThat(hierarchy.findInterfaceMethodRequiringDispatch(baseSend)).isEqualTo(baseSend);
     assertThat(hierarchy.findInterfaceMethodRequiringDispatch(unannotatedSubSend))
         .isEqualTo(baseSend);
@@ -366,10 +374,17 @@ public class KmpMethodHierarchyTest extends GenerationTest {
             "pkg2.RedeclaringSub",
             """
             package pkg2;
+            import adapter.DummyAdapter;
+            import com.google.j2objc.annotations.ObjectiveCKmpMethod;
             import java.util.List;
             import pkg1.Base;
 
             class EmptySub extends Base {}
+
+            class AnnotatedSub extends Base {
+              @ObjectiveCKmpMethod(selector = "foo:", adapter = DummyAdapter.class)
+              public void foo(List<String> items) {}
+            }
 
             public class RedeclaringSub extends Base {
               void foo(List<String> items) {}
@@ -381,6 +396,11 @@ public class KmpMethodHierarchyTest extends GenerationTest {
     TypeMethods emptyResolved = hierarchy.getTypeMethods(findType(unit, "EmptySub"));
     assertThat(emptyResolved.annotatedSignatures()).isEmpty();
     assertThat(emptyResolved.allMethods().keySet()).doesNotContain(sig);
+
+    TypeElement annotatedSub = findType(unit, "AnnotatedSub");
+    assertThat(hierarchy.getTypeMethods(annotatedSub).conflictedSignatures()).isEmpty();
+    assertThat(hierarchy.findConcreteKmpOwner(annotatedSub, sig).ownerType())
+        .isEqualTo(annotatedSub);
 
     TypeElement redeclaringSub = findType(unit, "RedeclaringSub");
     TypeMethods redeclaringResolved = hierarchy.getTypeMethods(redeclaringSub);
@@ -479,12 +499,18 @@ public class KmpMethodHierarchyTest extends GenerationTest {
             import java.util.List;
 
             interface SuperI {
-              @ObjectiveCKmpMethod(selector = "superHandle:", adapter = DummyAdapter.class)
+              @ObjectiveCKmpMethod(
+                  selector = "handle:",
+                  adapter = DummyAdapter.class,
+                  swiftName = "superHandle(_:)")
               default void handle(List<String> items) {}
             }
 
             interface SubI extends SuperI {
-              @ObjectiveCKmpMethod(selector = "subHandle:", adapter = DummyAdapter.class)
+              @ObjectiveCKmpMethod(
+                  selector = "handle:",
+                  adapter = DummyAdapter.class,
+                  swiftName = "subHandle(_:)")
               @Override
               default void handle(List<String> items) {}
             }
@@ -503,8 +529,10 @@ public class KmpMethodHierarchyTest extends GenerationTest {
 
     for (String className : ImmutableList.of("ForwardDiamond", "ReverseDiamond")) {
       TypeMethods resolved = hierarchy.getTypeMethods(findType(unit, className));
-      assertThat(ElementUtil.getAnnotationValue(resolved.annotatedSignatures().get(sig), "selector"))
-          .isEqualTo("subHandle:");
+      assertThat(resolved.conflictedSignatures()).isEmpty();
+      assertThat(
+              ElementUtil.getAnnotationValue(resolved.annotatedSignatures().get(sig), "swiftName"))
+          .isEqualTo("subHandle(_:)");
       assertThat(resolved.annotatedMethods().get(sig)).isEqualTo(subHandle);
     }
   }
@@ -704,25 +732,50 @@ public class KmpMethodHierarchyTest extends GenerationTest {
     ConcreteKmpOwner sameConfigOwner = hierarchy.findConcreteKmpOwner(sameConfigSub, "work()");
     assertThat(sameConfigOwner).isNotNull();
     assertThat(sameConfigOwner.ownerType()).isEqualTo(openBase);
+    assertThat(hierarchy.getTypeMethods(sameConfigSub).conflictedSignatures()).isEmpty();
     assertThat(hierarchy.findConcreteKmpOwner(sameConfigSub, "<init>(Ljava/util/List;)")).isNull();
     assertThat(hierarchy.findConcreteKmpOwner(sameConfigSub, "make(Ljava/util/List;)")).isNull();
     assertThat(hierarchy.findConcreteKmpOwner(sameConfigSub, "missing()")).isNull();
 
-    assertThat(hierarchy.findConcreteKmpOwner(newSelectorSub, "work()").ownerType())
-        .isEqualTo(newSelectorSub);
-    assertThat(hierarchy.findConcreteKmpOwner(newAdapterSub, "work()").ownerType())
-        .isEqualTo(newAdapterSub);
+    for (TypeElement conflicted :
+        ImmutableList.of(newSelectorSub, newAdapterSub, childOfNewAdapter)) {
+      assertThat(hierarchy.getTypeMethods(conflicted).conflictedSignatures())
+          .containsExactly("work()");
+      assertThat(hierarchy.findConcreteKmpOwner(conflicted, "work()")).isNull();
+    }
+  }
 
-    ConcreteKmpOwner owner = hierarchy.findConcreteKmpOwner(childOfNewAdapter, "work()");
-    assertThat(owner).isNotNull();
-    assertThat(owner.ownerType()).isEqualTo(newAdapterSub);
-    assertThat(
-            unit.getEnv()
-                .typeUtil()
-                .isSameType(
-                    (TypeMirror) ElementUtil.getAnnotationValue(owner.annotation(), "adapter"),
-                    unit.getEnv().typeUtil().resolveJavaType("OtherAdapter").asType()))
-        .isTrue();
+  public void testGetTypeMethods_tracksSiblingInterfaceConflicts() {
+    CompilationUnit unit =
+        compileType(
+            "LeafImpl",
+            """
+            import com.google.j2objc.annotations.ObjectiveCKmpMethod;
+
+            interface LeftIface {
+              @ObjectiveCKmpMethod(selector = "leftWork", adapter = DummyAdapter.class)
+              void work();
+            }
+
+            interface RightIface {
+              @ObjectiveCKmpMethod(selector = "rightWork", adapter = DummyAdapter.class)
+              void work();
+            }
+
+            interface CombinedIface extends LeftIface, RightIface {}
+
+            public class LeafImpl implements CombinedIface {
+              @Override
+              @ObjectiveCKmpMethod(selector = "leftWork", adapter = DummyAdapter.class)
+              public void work() {}
+            }
+            """);
+    KmpMethodHierarchy hierarchy = createHierarchy(unit);
+
+    assertThat(hierarchy.getTypeMethods(findType(unit, "CombinedIface")).conflictedSignatures())
+        .containsExactly("work()");
+    assertThat(hierarchy.getTypeMethods(findType(unit, "LeafImpl")).conflictedSignatures())
+        .containsExactly("work()");
   }
 
   public void testFindConcreteKmpOwner_genericBaseReturnsRawOwnerSignature() {
