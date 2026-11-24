@@ -31,14 +31,17 @@ import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.translate.KmpMethodHierarchy.ConcreteKmpOwner;
 import com.google.devtools.j2objc.translate.KmpTypeConverter.MappingStrategy;
 import com.google.devtools.j2objc.translate.KmpTypeConverter.ParameterMapping;
 import com.google.devtools.j2objc.types.ExecutablePair;
@@ -52,9 +55,12 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TypeUtil;
 import com.google.j2objc.annotations.ObjectiveCKmpMethod;
 import com.google.j2objc.annotations.SwiftName;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.PackageElement;
@@ -74,6 +80,7 @@ final class KmpAdapterEmitter {
   private final NameTable nameTable;
   private final Options options;
   private final KmpTypeConverter typeConverter;
+  private final Set<TypeElement> emittedOverrideCheckTypes = new HashSet<>();
 
   KmpAdapterEmitter(
       TypeUtil typeUtil, NameTable nameTable, Options options, KmpTypeConverter typeConverter) {
@@ -91,6 +98,56 @@ final class KmpAdapterEmitter {
       boolean isInterface,
       MappingStrategy strategy) {
     new AdapterContext(typeNode, originalMethod, annotation, isInterface, strategy).processMethod();
+  }
+
+  /**
+   * Prepends a native-override check to an overriding or default-shim method on a subclass so Java
+   * callers delegate to {@code baseOwner}'s adapted Objective-C selector when overridden natively.
+   */
+  void prependSubclassOverrideCheck(
+      AbstractTypeDeclaration typeNode, ExecutablePair method, ConcreteKmpOwner baseOwner) {
+    if (!canPrependSubclassOverrideCheck(typeNode, method, baseOwner, typeConverter)) {
+      return;
+    }
+    MethodDeclaration concreteDecl = findConcreteMethodDeclaration(typeNode, method.element());
+    if (concreteDecl == null) {
+      return;
+    }
+    new AdapterContext(
+            typeNode,
+            method,
+            baseOwner.annotation(),
+            /* isInterface= */ false,
+            MappingStrategy.JAVA_TO_NATIVE)
+        .prependOverrideCheck(concreteDecl, baseOwner.ownerType(), baseOwner.method());
+  }
+
+  private static boolean canPrependSubclassOverrideCheck(
+      AbstractTypeDeclaration typeNode,
+      ExecutablePair method,
+      ConcreteKmpOwner baseOwner,
+      KmpTypeConverter typeConverter) {
+    TypeMirror adapter =
+        (TypeMirror) ElementUtil.getAnnotationValue(baseOwner.annotation(), "adapter");
+    // A subclass override can dispatch to a native override only when:
+    // 1. The subclass is exposed in the ObjC header and both the subclass and base methods can be
+    //    overridden natively (non-final/non-local class, non-final/non-private method).
+    // 2. The base method's signature can be reverse-adapted between Java and native types.
+    // 3. Any covariant subclass return type can be converted back from the base native return type.
+    return !typeNode.hasPrivateDeclaration()
+        && canOverrideInNative(typeNode.getTypeElement(), method.element())
+        && canOverrideInNative(baseOwner.ownerType(), baseOwner.method().element())
+        && typeConverter.canReverseAdapt(baseOwner.method(), adapter)
+        && typeConverter.canReverseAdaptSubclassReturn(
+            baseOwner.method().type().getReturnType(), method.type().getReturnType(), adapter);
+  }
+
+  private static boolean canOverrideInNative(TypeElement type, ExecutableElement method) {
+    return type.getKind() == ElementKind.CLASS
+        && !ElementUtil.isFinal(type)
+        && !ElementUtil.isLocal(type)
+        && !ElementUtil.isFinal(method)
+        && !ElementUtil.isPrivate(method);
   }
 
   static @Nullable MethodDeclaration findMethodDeclaration(
@@ -130,6 +187,57 @@ final class KmpAdapterEmitter {
       expr = cast.getExpression();
     }
     return expr instanceof MethodInvocation call && call.getExpression() == null;
+  }
+
+  /**
+   * Finds the primary concrete declaration or {@code default}-method shim implementing {@code
+   * element} on {@code typeNode}, excluding {@code [self ...]} renaming shims.
+   */
+  private static @Nullable MethodDeclaration findConcreteMethodDeclaration(
+      AbstractTypeDeclaration typeNode, ExecutableElement element) {
+    for (MethodDeclaration methodDecl : TreeUtil.getMethodDeclarations(typeNode)) {
+      if (methodDecl.getBody() == null) {
+        continue;
+      }
+      ExecutableElement declElem = methodDecl.getExecutableElement();
+      if (declElem.equals(element)
+          || (isConcreteGeneratedShim(methodDecl)
+              && element.equals(((GeneratedExecutableElement) declElem).getOriginalElement())
+              && !isDefaultRenamingShim(methodDecl))) {
+        return methodDecl;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Emits a class-level helper {@code bool <Class>_isOverride(<Class> *self, SEL selector)} at most
+   * once per class, returning true when {@code selector}'s implementation differs from the class's.
+   *
+   * <p>Java subclasses override the unadapted method directly (prepending their own check against
+   * the owner class), so only native subclass overrides take the adapted branch. Calling {@code
+   * [super ...]} from a native override—and cross-file Java {@code super} calls on a native
+   * subclass instance—are unsupported because {@code super} dispatch preserves {@code self}.
+   */
+  private void ensureOverrideCheckHelper(AbstractTypeDeclaration typeNode) {
+    TypeElement ownerType = typeNode.getTypeElement();
+    if (!emittedOverrideCheckTypes.add(ownerType)) {
+      return;
+    }
+    String className = nameTable.getFullName(ownerType);
+    String signature =
+        String.format("bool %s(%s *self, SEL selector)", getOverrideCheckName(ownerType), className);
+    typeNode.addBodyDeclaration(
+        NativeDeclaration.newOuterDeclaration(
+            "FOUNDATION_EXPORT " + signature + ";",
+            String.format(
+                "%s {\n  return self != nil && [self methodForSelector:selector]"
+                    + " != [%s instanceMethodForSelector:selector];\n}",
+                signature, className)));
+  }
+
+  private String getOverrideCheckName(TypeElement ownerType) {
+    return nameTable.getFullName(ownerType) + "_isOverride";
   }
 
   /**
@@ -371,6 +479,97 @@ final class KmpAdapterEmitter {
 
       addMethodDeclaration(
           adapterMethodExecutable, adaptingMethodInvocation, adapterReturnType, adapterParameters);
+      emitConcreteNativeOverrideSupport();
+    }
+
+    // Enables native ObjC/Swift subclasses to override this concrete @ObjectiveCKmpMethod via its
+    // adapted selector: ensures the class-level `<Owner>_isOverride` helper is emitted and prepends
+    // an override check to the unadapted Java method body so Java callers dispatch to the native
+    // override when present.
+    private void emitConcreteNativeOverrideSupport() {
+      TypeElement ownerType = typeNode.getTypeElement();
+      if (typeNode.hasPrivateDeclaration()
+          || !canOverrideInNative(ownerType, originalMethodExecutable)
+          || !typeConverter.canReverseAdapt(originalMethod, adapter)) {
+        return;
+      }
+      MethodDeclaration concreteDecl =
+          findConcreteMethodDeclaration(typeNode, originalMethodExecutable);
+      // When this class inherits an unannotated superclass implementation that satisfies a KMP
+      // interface method, there is no local body yet; synthesize a [super ...] bridge to attach
+      // the override check to.
+      if (concreteDecl == null
+          && !ElementUtil.isDefault(originalMethodExecutable)
+          && !ElementUtil.getDeclaringClass(originalMethodExecutable).equals(ownerType)) {
+        concreteDecl = synthesizeSuperBridgeDeclaration();
+        typeNode.addBodyDeclaration(concreteDecl);
+      }
+      if (concreteDecl == null) {
+        return;
+      }
+      ensureOverrideCheckHelper(typeNode);
+      prependOverrideCheck(concreteDecl, ownerType, originalMethod);
+    }
+
+    // Synthesizes a local bridge forwarding to an unannotated superclass implementation so the
+    // override check can be prepended on this KMP owner class. Example:
+    //   - (SubFoo *)getItemWithImmutableList:(ImmutableList *)items {
+    //     // (override check prepended here)
+    //     return (SubFoo *) [super getItemWithImmutableList:items];
+    //   }
+    private MethodDeclaration synthesizeSuperBridgeDeclaration() {
+      SuperMethodInvocation superCall =
+          new SuperMethodInvocation(new ExecutablePair(originalMethodExecutable));
+      for (VariableElement param : originalMethodParameters) {
+        superCall.addArgument(new SimpleName(param));
+      }
+      Expression superExpr =
+          typeConverter.maybeCast(typeUtil.erasure(originalMethodReturnType), superCall);
+      MethodDeclaration bridgeDecl =
+          createBridgeMethodDeclaration(createReturnOrExpressionBlock(superExpr));
+      bridgeDecl.setHasDeclaration(false);
+      return bridgeDecl;
+    }
+
+    // Prepends a runtime override guard to `concreteDecl`'s body so Java callers dispatch to a
+    // native ObjC/Swift override when present. Example:
+    //   if (Owner_isOverride(self, @selector(getItemsAsNsArray))) {
+    //     return [Adapter toImmutableListWithId:[self getItemsAsNsArray]];
+    //   }
+    // (or `[self setItems:[Adapter fromImmutableList:...]]; return;` for void methods).
+    private void prependOverrideCheck(
+        MethodDeclaration concreteDecl, TypeElement ownerType, ExecutablePair contractMethod) {
+      ImmutableList<VariableElement> contractParams =
+          resolveParameters(contractMethod, getParameterElements(concreteDecl));
+      ParameterMapping reverseMapping =
+          typeConverter.processParameters(
+              adapter, MappingStrategy.JAVA_TO_NATIVE, contractMethod.element(), contractParams);
+      GeneratedExecutableElement adapterMethodExecutable =
+          GeneratedExecutableElement.newAdapterMethod(
+              selector,
+              getAdapterReturnType(contractMethod),
+              reverseMapping.adapterParameters(),
+              contractMethod.element());
+      Block thenBlock =
+          createAdaptedInvocationBlock(
+              adapterMethodExecutable, /* receiver= */ null, reverseMapping.adaptingArguments());
+      if (TypeUtil.isVoid(originalMethodReturnType)) {
+        thenBlock.addStatement(new ReturnStatement());
+      }
+      Expression checkExpression =
+          new NativeExpression(
+              String.format("%s(self, @selector(%s))", getOverrideCheckName(ownerType), selector),
+              typeUtil.getBoolean());
+      concreteDecl
+          .getBody()
+          .getStatements()
+          .add(0, new IfStatement().setExpression(checkExpression).setThenStatement(thenBlock));
+    }
+
+    private static ImmutableList<VariableElement> getParameterElements(MethodDeclaration decl) {
+      return decl.getParameters().stream()
+          .map(SingleVariableDeclaration::getVariableElement)
+          .collect(toImmutableList());
     }
 
     private boolean isInSwiftNameContext() {
@@ -647,7 +846,10 @@ final class KmpAdapterEmitter {
                   : new ReturnStatement(expression));
     }
 
-    /** Creates a concrete Java bridge method that delegates to the abstract KMP adapter stub. */
+    /**
+     * Synthesizes a concrete unadapted bridge method (for abstract-class or {@code [super ...]}
+     * delegation) with {@code bodyBlock}.
+     */
     private MethodDeclaration createBridgeMethodDeclaration(Block bodyBlock) {
       String originalSelector = nameTable.getMethodSelector(originalMethodExecutable);
       GeneratedExecutableElement bridgeExecutable =
