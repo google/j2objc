@@ -80,86 +80,15 @@ public class KmpTypeConverterTest extends GenerationTest {
       }
       """;
 
-  private static final String INTEROP_ADAPTER_SOURCE =
-      """
-      import com.google.common.collect.ImmutableList;
-      import com.google.common.collect.ImmutableMap;
-      import java.util.List;
-      import java.util.Map;
-      import java.util.function.Function;
-
-      public class InteropAdapter {
-        public static native <T> List<T> toList(Object list) /*-[ return nil; ]-*/;
-        public static native <T> Object fromList(List<T> list) /*-[ return nil; ]-*/;
-        public static native <T> List<T> toList(
-            Object list, Function<Object, T> conv) /*-[ return nil; ]-*/;
-        public static native <T> Object fromList(
-            List<T> list, Function<T, Object> conv) /*-[ return nil; ]-*/;
-        public static native <T> ImmutableList<T> toImmutableList(
-            Object list) /*-[ return nil; ]-*/;
-        public static native <T> Object fromImmutableList(
-            ImmutableList<T> list) /*-[ return nil; ]-*/;
-        public static native ImmutableList<Integer> toImmutableListInteger(
-            Object list) /*-[ return nil; ]-*/;
-        public static native Object fromImmutableListInteger(
-            ImmutableList<Integer> list) /*-[ return nil; ]-*/;
-        public static native <K, V> Map<K, V> toMap(
-            Object map, Function<Object, K> kConv, Function<Object, V> vConv) /*-[ return nil; ]-*/;
-        public static native <K, V> Object fromMap(
-            Map<K, V> map, Function<K, Object> kConv, Function<V, Object> vConv) /*-[
-          return nil;
-        ]-*/;
-        public static native <T, U> ImmutableMap<T, ImmutableList<U>>
-            toImmutableMapTImmutableList(Object map) /*-[ return nil; ]-*/;
-        public static native <T, U> Object fromImmutableMapTImmutableList(
-            ImmutableMap<T, ImmutableList<U>> map) /*-[ return nil; ]-*/;
-        public static native <T> FutureBox<T> toFuture(FutureBox<T> box) /*-[ return nil; ]-*/;
-        public static native <T> FutureBox<Object> fromFuture(
-            FutureBox<T> box) /*-[ return nil; ]-*/;
-        public static native FutureBox<Boolean> toBooleanFuture(
-            FutureBox<Number> box) /*-[ return nil; ]-*/;
-        public static native FutureBox<Number> fromBooleanFuture(
-            FutureBox<Boolean> box) /*-[ return nil; ]-*/;
-        public static native Boolean toBoolean(Object b) /*-[ return nil; ]-*/;
-        public static native Object fromBoolean(Boolean b) /*-[ return nil; ]-*/;
-        public static native Integer toInteger(Object i) /*-[ return nil; ]-*/;
-        public static native Object fromInteger(Integer i) /*-[ return nil; ]-*/;
-        public static native PlainObj toPlainObj(Object obj) /*-[ return nil; ]-*/;
-        public static native Object fromPlainObj(PlainObj obj) /*-[ return nil; ]-*/;
-        public static native SubPlainObj toSubPlainObj(Object obj) /*-[ return nil; ]-*/;
-        public static native Object fromSubPlainObj(SubPlainObj obj) /*-[ return nil; ]-*/;
-      }
-      """;
-
-  private static final String ASYMMETRIC_ADAPTER_SOURCE =
-      """
-      import java.util.List;
-      import java.util.function.Function;
-
-      public class AsymmetricAdapter {
-        public static native PlainObj toPlainObj(Object obj) /*-[ return nil; ]-*/;
-        public static native Object fromSubPlainObj(SubPlainObj obj) /*-[ return nil; ]-*/;
-        public static native Object fromString(String s) /*-[ return nil; ]-*/;
-        public static native Object fromBoolean(Boolean b) /*-[ return nil; ]-*/;
-        public static native <T> List<T> toJavaUtilList(
-            Object list, Function<Object, T> conv) /*-[ return nil; ]-*/;
-        public static native <T> Object fromJavaUtilList(
-            List<T> list, Function<T, Object> conv) /*-[ return nil; ]-*/;
-      }
-      """;
-
   @Override
   public void setUp() throws IOException {
     super.setUp();
     options.load(new String[] {"--objc-generics"});
     addSourceFile(ADAPTER_SOURCE, "Adapter.java");
     addSourceFile(WILDCARD_ADAPTER_SOURCE, "WildcardAdapter.java");
-    addSourceFile(INTEROP_ADAPTER_SOURCE, "InteropAdapter.java");
-    addSourceFile(ASYMMETRIC_ADAPTER_SOURCE, "AsymmetricAdapter.java");
     addSourceFile("public interface MyProto {}", "MyProto.java");
     addSourceFile("public class PlainObj {}", "PlainObj.java");
     addSourceFile("public class SubPlainObj extends PlainObj {}", "SubPlainObj.java");
-    addSourceFile("public class FutureBox<T> {}", "FutureBox.java");
   }
 
   private static KmpTypeConverter createConverter(CompilationUnit unit) {
@@ -902,7 +831,17 @@ public class KmpTypeConverterTest extends GenerationTest {
     assertThat(converter.canReverseAdaptReturnType(echo.getReturnType(), adapter)).isTrue();
   }
 
-  public void testCanReverseAdapt_asymmetricCustomAndStringConvertersReturnFalse() {
+  public void testCanReverseAdapt_asymmetricCustomAndStringConvertersReturnFalse()
+      throws IOException {
+    addSourceFile(
+        """
+        public class AsymmetricAdapter {
+          public static native PlainObj toPlainObj(Object obj) /*-[ return nil; ]-*/;
+          public static native Object fromSubPlainObj(SubPlainObj obj) /*-[ return nil; ]-*/;
+          public static native Object fromString(String s) /*-[ return nil; ]-*/;
+        }
+        """,
+        "AsymmetricAdapter.java");
     CompilationUnit unit =
         compileType(
             "Sample",
@@ -947,7 +886,20 @@ public class KmpTypeConverterTest extends GenerationTest {
     assertThat(canReverseAdapt(unit, converter, "getBoolList", wildcardAdapter)).isFalse();
   }
 
-  public void testCanReverseAdapt_composingConvertersRecurseIntoTypeArguments() {
+  public void testCanReverseAdapt_composingConvertersRecurseIntoTypeArguments() throws IOException {
+    addSourceFile(
+        """
+        import java.util.List;
+        import java.util.function.Function;
+        public class ComposingPartialBoolAdapter {
+          public static native <T> List<T> toJavaUtilList(
+              Object list, Function<Object, T> conv) /*-[ return nil; ]-*/;
+          public static native <T> Object fromJavaUtilList(
+              List<T> list, Function<T, Object> conv) /*-[ return nil; ]-*/;
+          public static native Object fromBoolean(Boolean b) /*-[ return nil; ]-*/;
+        }
+        """,
+        "ComposingPartialBoolAdapter.java");
     CompilationUnit unit =
         compileType(
             "Sample",
@@ -955,7 +907,7 @@ public class KmpTypeConverterTest extends GenerationTest {
             import java.util.List;
             public class Sample {
               private Adapter adapterRef;
-              private AsymmetricAdapter partialBoolRef;
+              private ComposingPartialBoolAdapter partialBoolRef;
               public List<List<String>> nested(List<List<String>> items) { return items; }
               public List<Boolean> boolList(List<Boolean> flags) { return flags; }
             }
@@ -963,202 +915,9 @@ public class KmpTypeConverterTest extends GenerationTest {
     KmpTypeConverter converter = createConverter(unit);
 
     assertThat(canReverseAdapt(unit, converter, "nested", resolveType(unit, "Adapter"))).isTrue();
-    assertThat(canReverseAdapt(unit, converter, "boolList", resolveType(unit, "AsymmetricAdapter")))
-        .isFalse();
-  }
-
-  private static boolean canReverseAdaptSubclassReturn(
-      CompilationUnit unit,
-      KmpTypeConverter converter,
-      String baseMethod,
-      String subMethod,
-      TypeMirror adapter) {
-    return converter.canReverseAdaptSubclassReturn(
-        findMethod(unit, baseMethod).getReturnType(),
-        findMethod(unit, subMethod).getReturnType(),
-        adapter);
-  }
-
-  public void testCanReverseAdaptSubclassReturn_voidPassThroughAndFoundationCollections() {
-    CompilationUnit unit =
-        compileType(
-            "Sample",
-            """
-            import com.google.common.collect.ImmutableList;
-            import java.util.List;
-            import java.util.Map;
-            public class Sample {
-              private Adapter unmappedAdapterRef;
-              private InteropAdapter adapterRef;
-              public void voidBase() {}
-              public void voidSub() {}
-              public PlainObj plainBase() { return null; }
-              public SubPlainObj subPlain() { return null; }
-              public Object objectBase() { return null; }
-              public String stringVal() { return ""; }
-              public List<String> stringList() { return null; }
-              public ImmutableList<String> immutableStringList() { return null; }
-              public Map<String, String> stringMap() { return null; }
-            }
-            """);
-    KmpTypeConverter converter = createConverter(unit);
-    TypeMirror adapter = resolveType(unit, "InteropAdapter");
-    TypeMirror unmappedAdapter = resolveType(unit, "Adapter");
-
-    assertThat(canReverseAdaptSubclassReturn(unit, converter, "voidBase", "voidSub", adapter))
-        .isTrue();
-    assertThat(canReverseAdaptSubclassReturn(unit, converter, "voidBase", "stringVal", adapter))
-        .isFalse();
-    assertThat(canReverseAdaptSubclassReturn(unit, converter, "stringVal", "voidSub", adapter))
-        .isFalse();
-    assertThat(canReverseAdaptSubclassReturn(unit, converter, "plainBase", "subPlain", null))
-        .isFalse();
     assertThat(
-            canReverseAdaptSubclassReturn(
-                unit, converter, "plainBase", "subPlain", unmappedAdapter))
-        .isTrue();
-    assertThat(
-            canReverseAdaptSubclassReturn(
-                unit, converter, "plainBase", "stringVal", unmappedAdapter))
-        .isFalse();
-    assertThat(canReverseAdaptSubclassReturn(unit, converter, "objectBase", "stringList", adapter))
-        .isFalse();
-    assertThat(
-            canReverseAdaptSubclassReturn(
-                unit, converter, "stringList", "immutableStringList", adapter))
-        .isTrue();
-    assertThat(canReverseAdaptSubclassReturn(unit, converter, "stringList", "stringMap", adapter))
-        .isFalse();
-  }
-
-  public void testCanReverseAdaptSubclassReturn_rejectsMismatchedElementConversions() {
-    CompilationUnit unit =
-        compileType(
-            "Sample",
-            """
-            import java.util.List;
-            public class Sample {
-              private InteropAdapter interopAdapterRef;
-              private Adapter specializedAdapterRef;
-              public List<?> wildcardList() { return null; }
-              public List<Object> objectList() { return null; }
-              @SuppressWarnings("rawtypes")
-              public List rawList() { return null; }
-              public List<Boolean> boolList() { return null; }
-              public List<List<String>> nestedStringList() { return null; }
-              public List<PlainObj> plainList() { return null; }
-              public List<String> stringList() { return null; }
-            }
-            """);
-    KmpTypeConverter converter = createConverter(unit);
-    TypeMirror interopAdapter = resolveType(unit, "InteropAdapter");
-    TypeMirror specializedAdapter = resolveType(unit, "Adapter");
-
-    assertThat(
-            canReverseAdaptSubclassReturn(
-                unit, converter, "wildcardList", "boolList", interopAdapter))
-        .isFalse();
-    assertThat(
-            canReverseAdaptSubclassReturn(
-                unit, converter, "objectList", "boolList", interopAdapter))
-        .isFalse();
-    assertThat(
-            canReverseAdaptSubclassReturn(unit, converter, "rawList", "boolList", interopAdapter))
-        .isFalse();
-    assertThat(
-            canReverseAdaptSubclassReturn(
-                unit, converter, "wildcardList", "nestedStringList", interopAdapter))
-        .isFalse();
-    assertThat(
-            canReverseAdaptSubclassReturn(
-                unit, converter, "wildcardList", "plainList", interopAdapter))
-        .isTrue();
-    assertThat(
-            canReverseAdaptSubclassReturn(
-                unit, converter, "wildcardList", "stringList", specializedAdapter))
-        .isFalse();
-  }
-
-  public void testCanReverseAdaptSubclassReturn_rejectsComposingOrSpecializedVsDirectMismatch() {
-    CompilationUnit unit =
-        compileType(
-            "Sample",
-            """
-            import com.google.common.collect.ImmutableList;
-            import com.google.common.collect.ImmutableMap;
-            import java.util.List;
-            import java.util.Map;
-            public class Sample {
-              private InteropAdapter adapterRef;
-              public Map<Integer, ImmutableList<Integer>> intMap() { return null; }
-              public ImmutableMap<Integer, ImmutableList<Integer>> immutableIntMap() {
-                return null;
-              }
-              public Map<String, ImmutableList<Integer>> stringToIntListMap() { return null; }
-              public ImmutableMap<String, ImmutableList<Integer>> immutableStringToIntListMap() {
-                return null;
-              }
-              public Map<String, ImmutableList<String>> stringMap() { return null; }
-              public ImmutableMap<String, ImmutableList<String>> immutableStringMap() {
-                return null;
-              }
-              public List<Integer> intList() { return null; }
-              public ImmutableList<Integer> immutableIntList() { return null; }
-            }
-            """);
-    KmpTypeConverter converter = createConverter(unit);
-    TypeMirror adapter = resolveType(unit, "InteropAdapter");
-
-    // Composing Map<Integer, ...> converts Integer keys via toInteger/fromInteger, whereas
-    // direct ImmutableMap<T, ImmutableList<U>> passes keys through unconverted.
-    assertThat(canReverseAdaptSubclassReturn(unit, converter, "intMap", "immutableIntMap", adapter))
-        .isFalse();
-    // Composing Map<String, ImmutableList<Integer>> converts inner Integer elements via
-    // toImmutableListInteger, whereas direct ImmutableMap<T, ImmutableList<U>> leaves U
-    // unconverted.
-    assertThat(
-            canReverseAdaptSubclassReturn(
-                unit, converter, "stringToIntListMap", "immutableStringToIntListMap", adapter))
-        .isFalse();
-    // Direct List<Integer> skips Integer conversion, whereas specialized ImmutableList<Integer>
-    // converts elements.
-    assertThat(
-            canReverseAdaptSubclassReturn(unit, converter, "intList", "immutableIntList", adapter))
-        .isFalse();
-    // Composing Map<String, ...> passes String through unconverted (no String converter), matching
-    // direct ImmutableMap<T, ImmutableList<U>>.
-    assertThat(
-            canReverseAdaptSubclassReturn(
-                unit, converter, "stringMap", "immutableStringMap", adapter))
-        .isTrue();
-  }
-
-  public void testCanReverseAdaptSubclassReturn_nonFoundationConvertersRequireCompatibleContract() {
-    CompilationUnit unit =
-        compileType(
-            "Sample",
-            """
-            public class Sample {
-              private InteropAdapter adapterRef;
-              public FutureBox<?> wildcardFuture() { return null; }
-              public FutureBox<Boolean> boolFuture() { return null; }
-              public FutureBox<String> stringFuture() { return null; }
-              public PlainObj plainBase() { return null; }
-              public SubPlainObj subPlain() { return null; }
-            }
-            """);
-    KmpTypeConverter converter = createConverter(unit);
-    TypeMirror adapter = resolveType(unit, "InteropAdapter");
-
-    assertThat(
-            canReverseAdaptSubclassReturn(
-                unit, converter, "wildcardFuture", "boolFuture", adapter))
-        .isFalse();
-    assertThat(
-            canReverseAdaptSubclassReturn(
-                unit, converter, "wildcardFuture", "stringFuture", adapter))
-        .isTrue();
-    assertThat(canReverseAdaptSubclassReturn(unit, converter, "plainBase", "subPlain", adapter))
+            canReverseAdapt(
+                unit, converter, "boolList", resolveType(unit, "ComposingPartialBoolAdapter")))
         .isFalse();
   }
 

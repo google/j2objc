@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.Options;
@@ -126,105 +125,6 @@ final class KmpTypeConverter {
     TypeElement adapterElement = adapter != null ? TypeUtil.asTypeElement(adapter) : null;
     return adapterElement != null
         && canReverseConvertType(adapterElement, returnType, /* isParam= */ false);
-  }
-
-  /**
-   * Returns whether {@code subReturnType} can be reverse-adapted using the same native Objective-C
-   * return contract as {@code baseReturnType}.
-   */
-  boolean canReverseAdaptSubclassReturn(
-      TypeMirror baseReturnType, TypeMirror subReturnType, @Nullable TypeMirror adapter) {
-    if (TypeUtil.isVoid(baseReturnType) || TypeUtil.isVoid(subReturnType)) {
-      return TypeUtil.isVoid(baseReturnType) && TypeUtil.isVoid(subReturnType);
-    }
-    TypeElement adapterElement = adapter != null ? TypeUtil.asTypeElement(adapter) : null;
-    if (adapterElement == null
-        || !typeUtil.isSubtype(typeUtil.erasure(subReturnType), typeUtil.erasure(baseReturnType))
-        || !canReverseConvertType(adapterElement, baseReturnType, /* isParam= */ false)
-        || !canReverseConvertType(adapterElement, subReturnType, /* isParam= */ false)) {
-      return false;
-    }
-    for (MappingStrategy strategy : MappingStrategy.values()) {
-      if (!describeConversion(strategy, adapterElement, baseReturnType, null, true)
-          .equals(describeConversion(strategy, adapterElement, subReturnType, null, true))) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-   * Native conversion applied to a Java type: {@code typeName} is the mapped native type name or the
-   * erased Java type name, {@code converter} is the adapter method for unmapped type lookups, and
-   * {@code args} describe each type argument.
-   */
-  private record Conversion(
-      @Nullable String typeName, @Nullable ExecutableElement converter, List<Conversion> args) {
-    static final Conversion NONE = new Conversion(null, null, ImmutableList.of());
-
-    /** A type in {@link #JAVA_TO_NATIVE_TYPE_MAP}, compared by native type name only. */
-    static Conversion mapped(String nativeName, List<Conversion> args) {
-      return new Conversion(nativeName, null, args);
-    }
-
-    /** An unmapped type converted by {@code converter}. */
-    static Conversion converted(
-        String typeName, ExecutableElement converter, List<Conversion> args) {
-      return new Conversion(typeName, converter, args);
-    }
-
-    /** An unmapped type whose conversion is specialized by the enclosing converter's signature. */
-    static Conversion specialized(String typeName, List<Conversion> args) {
-      return new Conversion(typeName, null, args);
-    }
-  }
-
-  /**
-   * Describes how {@code type} is converted under {@code strategy}. A declared {@code pattern} from
-   * the enclosing converter's signature specializes the conversion; otherwise a composing parent
-   * looks up a converter and a direct parent passes the type through unconverted.
-   */
-  private Conversion describeConversion(
-      MappingStrategy strategy,
-      TypeElement adapterElement,
-      TypeMirror type,
-      @Nullable TypeMirror pattern,
-      boolean parentComposing) {
-    ExecutableElement converter = null;
-    boolean composing = false;
-    if (pattern == null || !TypeUtil.isDeclaredType(pattern)) {
-      if (!parentComposing) {
-        return Conversion.NONE;
-      }
-      AdapterLookup.ConverterMatch match =
-          strategy.findReturnConverter(adapterLookup, adapterElement, type);
-      converter = match.converter();
-      if (converter == null) {
-        return Conversion.NONE;
-      }
-      composing = match.matchType().isComposing();
-      pattern =
-          strategy == MappingStrategy.JAVA_TO_NATIVE
-              ? converter.getReturnType()
-              : converter.getParameters().get(0).asType();
-    }
-    String erasedName = TypeUtil.getQualifiedName(typeUtil.erasure(type));
-    String nativeName = JAVA_TO_NATIVE_TYPE_MAP.get(erasedName);
-    List<? extends TypeMirror> typeArgs = TypeUtil.getTypeArguments(type);
-    List<? extends TypeMirror> patternArgs = TypeUtil.getTypeArguments(pattern);
-    List<Conversion> args = new ArrayList<>();
-    for (int i = 0; i < typeArgs.size(); i++) {
-      TypeMirror typeArg = typeArgs.get(i);
-      TypeMirror patternArg = i < patternArgs.size() ? patternArgs.get(i) : null;
-      args.add(describeConversion(strategy, adapterElement, typeArg, patternArg, composing));
-    }
-    if (nativeName != null) {
-      return Conversion.mapped(nativeName, args);
-    } else if (converter != null) {
-      return Conversion.converted(erasedName, converter, args);
-    } else {
-      return Conversion.specialized(erasedName, args);
-    }
   }
 
   private boolean canReverseConvertType(

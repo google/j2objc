@@ -198,9 +198,6 @@ public final class ObjectiveCKmpMethodTranslator extends UnitTreeVisitor {
         // Only generate if this class owns the KMP config; when a superclass already owns it,
         // subclasses inherit its Objective-C adapter (which dynamically dispatches via `self`).
         ConcreteKmpOwner owner = methodHierarchy.findConcreteKmpOwner(typeElem, signature);
-        if (owner != null && !owner.ownerType().equals(typeElem)) {
-          adapterEmitter.prependSubclassOverrideCheck(typeNode, method, owner);
-        }
         shouldGenerate = owner != null && owner.ownerType().equals(typeElem);
       }
 

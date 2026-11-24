@@ -1327,25 +1327,17 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
           return (NSArray<NSString *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:[self getItems]];
         }
         """);
-    // Original methods should include the override check for non-final concrete classes
+    // Original methods should be generated normally
     assertInTranslation(
         concreteImpl,
         """
         - (void)setItemsWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)items {
-          if (ConcreteClass_isOverride(self, @selector(setItems:))) {
-            [self setItems:(NSArray<NSString *> *) [ImmutableListAdapter \
-        fromImmutableListWithComGoogleCommonCollectImmutableList:items]];
-            return;
-          }
         }
         """);
     assertInTranslation(
         concreteImpl,
         """
         - (ComGoogleCommonCollectImmutableList *)getItems {
-          if (ConcreteClass_isOverride(self, @selector(getItemsAsNSArray))) {
-            return [ImmutableListAdapter toImmutableListWithId:[self getItemsAsNSArray]];
-          }
           return ComGoogleCommonCollectImmutableList_of();
         }
         """);
@@ -1474,27 +1466,17 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
           return (NSArray<MyPkgCustomClass *> *) [ImmutableListAdapter fromImmutableListWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *) [self getItems]];
         }
         """);
-    // Original methods should include the override check for non-final concrete classes
+    // Original methods should be generated normally
     assertInTranslation(
         concreteImpl,
         """
         - (void)setItemsWithComGoogleCommonCollectImmutableList:(ComGoogleCommonCollectImmutableList *)items {
-          if (ConcreteClass_isOverride(self, @selector(setItems:))) {
-            [self setItems:(NSArray<MyPkgCustomClass *> *) [ImmutableListAdapter \
-        fromImmutableListWithComGoogleCommonCollectImmutableList:\
-        (ComGoogleCommonCollectImmutableList *) items]];
-            return;
-          }
         }
         """);
     assertInTranslation(
         concreteImpl,
         """
         - (ComGoogleCommonCollectImmutableList *)getItems {
-          if (ConcreteClass_isOverride(self, @selector(getItemsAsNSArray))) {
-            return (ComGoogleCommonCollectImmutableList *) [ImmutableListAdapter \
-        toImmutableListWithId:[self getItemsAsNSArray]];
-          }
           return ComGoogleCommonCollectImmutableList_of();
         }
         """);
@@ -1887,8 +1869,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         impl,
         """
         - (void)setBooleanSet:(NSSet<NSNumber *> *)set {
-          [self setBooleanSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set \
-        withJavaUtilFunctionFunction:JreLoadStatic(TestSetOfBoolean_$KmpLambda$2, instance)]];
+          [self setBooleanSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set withJavaUtilFunctionFunction:JreLoadStatic(TestSetOfBoolean_$KmpLambda$1, instance)]];
         }
         """);
     assertInTranslation(
@@ -1955,8 +1936,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         impl,
         """
         - (void)setBooleanSet:(NSSet<NSNumber *> *)set {
-          [self setBooleanSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set \
-        withJavaUtilFunctionFunction:JreLoadStatic(TestSetLeaf_$KmpLambda$2, instance)]];
+          [self setBooleanSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set withJavaUtilFunctionFunction:JreLoadStatic(TestSetLeaf_$KmpLambda$1, instance)]];
         }
         """);
     assertInTranslation(
@@ -1987,9 +1967,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         impl,
         """
         - (void)setBooleanList:(NSArray<NSNumber *> *)list {
-          [self setBooleanListWithJavaUtilList:(id<JavaUtilList>) [Adapter \
-        toJavaUtilListWithId:list \
-        withJavaUtilFunctionFunction:JreLoadStatic(TestListParam_$KmpLambda$2, instance)]];
+          [self setBooleanListWithJavaUtilList:(id<JavaUtilList>) [Adapter toJavaUtilListWithId:list withJavaUtilFunctionFunction:JreLoadStatic(TestListParam_$KmpLambda$1, instance)]];
         }
         """);
     assertInTranslation(
@@ -2021,8 +1999,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         impl,
         """
         - (void)setListSet:(NSSet<NSArray<NSString *> *> *)set {
-          [self setListSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set \
-        withJavaUtilFunctionFunction:JreLoadStatic(TestSetOfList_$KmpLambda$2, instance)]];
+          [self setListSetWithJavaUtilSet:(id<JavaUtilSet>) [Adapter toJavaUtilSetWithId:set withJavaUtilFunctionFunction:JreLoadStatic(TestSetOfList_$KmpLambda$1, instance)]];
         }
         """);
     assertInTranslation(
@@ -2287,7 +2264,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """
         - (void)verifyList:(NSArray<NSArray<NSArray<Foo *> *> *> *)list {
           [self verifyListWithJavaUtilList:(id<JavaUtilList>) [Adapter toJavaUtilListWithId:list \
-        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$KmpLambda$2, instance)]];
+        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$KmpLambda$1, instance)]];
         }
         """);
     assertInTranslation(
@@ -2322,8 +2299,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         """
         - (Container<NSNumber *> *)getNsNumberContainer {
           return (Container<NSNumber *> *) [Adapter fromContainerWithContainer:(Container *) \
-        [self getFloatContainer] \
-        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$KmpLambda$2, instance)];
+        [self getFloatContainer] withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$KmpLambda$1, instance)];
         }
         """);
   }
@@ -2350,7 +2326,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         - (void)setNsNumberContainer:(Container<NSNumber *> *)c {
           [self setFloatContainerWithContainer:(Container *) [Adapter \
         toContainerWithContainer:(Container *) c \
-        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$KmpLambda$2, instance)]];
+        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$KmpLambda$1, instance)]];
         }
         """);
   }
@@ -2376,7 +2352,7 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         - (void)setBooleanContainer:(Container<NSNumber *> *)c {
           [self setBooleanContainerWithContainer:(Container *) [Adapter \
         toContainerWithContainer:(Container *) c \
-        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$KmpLambda$2, instance)]];
+        withJavaUtilFunctionFunction:JreLoadStatic(TestClass_$KmpLambda$1, instance)]];
         }
         """);
   }
@@ -2508,16 +2484,9 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
         concreteImpl,
         """
         - (void)setCountWithJavaLangInteger:(JavaLangInteger *)count {
-          if (ConcreteCountService_isOverride(self, @selector(updateCount:))) {
-            [self updateCount:(NSNumber *) [Adapter fromIntegerWithJavaLangInteger:count]];
-            return;
-          }
         }
 
         - (JavaLangInteger *)getCount {
-          if (ConcreteCountService_isOverride(self, @selector(fetchCount))) {
-            return [Adapter toIntegerWithId:[self fetchCount]];
-          }
           return JavaLangInteger_valueOfWithInt_(0);
         }
         """);
@@ -2831,8 +2800,6 @@ public class ObjectiveCKmpMethodTranslatorTest extends GenerationTest {
           [self onRenderWithComGoogleCommonCollectImmutableList:[ImmutableListAdapter toImmutableListWithId:actions]];
         }
         """);
-    assertNotInTranslation(impl, "CallbackFactory_$Lambda$1_isOverride");
-    assertNotInTranslation(impl, "_dispatch");
   }
 
   public void testComposableConverter_withPreexistingLambdasInClass() throws IOException {
