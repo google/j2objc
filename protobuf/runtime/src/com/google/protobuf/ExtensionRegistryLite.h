@@ -53,6 +53,9 @@ typedef ComGoogleProtobufExtensionRegistryLite CGPExtensionRegistryLite;
 
 @end
 
+@compatibility_alias KNPComGoogleProtobufExtensionRegistryLite
+    ComGoogleProtobufExtensionRegistryLite;
+
 J2OBJC_STATIC_INIT(ComGoogleProtobufExtensionRegistryLite)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufExtensionRegistryLite)

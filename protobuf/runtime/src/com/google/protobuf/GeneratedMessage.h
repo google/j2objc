@@ -40,13 +40,13 @@
 
 #include "com/google/protobuf/AbstractMessage.h"
 #include "com/google/protobuf/Extension.h"
+#include "com/google/protobuf/ExtensionRegistryLite.h"
 #include "com/google/protobuf/Message.h"
 #include "com/google/protobuf/MessageOrBuilder.h"
 #include "com/google/protobuf/common.h"
 
 @class ComGoogleProtobufByteString;
 @class ComGoogleProtobufDescriptors_FieldDescriptor;
-@class ComGoogleProtobufExtensionRegistryLite;
 @class ComGoogleProtobufGeneratedMessage_GeneratedExtension;
 struct CGPFieldData;
 
