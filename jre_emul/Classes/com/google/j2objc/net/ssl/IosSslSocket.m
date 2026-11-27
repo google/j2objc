@@ -107,7 +107,7 @@ static NSDictionary *protocolMapping;
     checkStatus(status);
   }
   if (_socket->_sslException) {
-    @throw _socket->_sslException;
+    @throw J2OBJC_LOCK_THROWABLE(_socket->_sslException);
   }
   return (jint)processed;
 }
@@ -158,7 +158,7 @@ static NSDictionary *protocolMapping;
       off += processed;
       len -= processed;
     } else if (_socket->_sslException) {
-      @throw _socket->_sslException;
+      @throw J2OBJC_LOCK_THROWABLE(_socket->_sslException);
     } else {
       checkStatus(status);
     }
@@ -355,6 +355,7 @@ static OSStatus SslReadCallback(SSLConnectionRef connection, void *data, size_t 
     @try {
       processed = [[socket plainInputStream] readWithByteArray:array];
     } @catch (JavaIoIOException *e) {
+      J2OBJC_UNLOCK_THROWABLE(e);
       JreStrongAssign(&socket->_sslException, e);
       return errSSLInternal;
     }
@@ -383,6 +384,7 @@ static OSStatus SslWriteCallback(SSLConnectionRef connection,
       [[socket plainOutputStream] writeWithByteArray:array];
       [[socket plainOutputStream] flush];
     } @catch (JavaIoIOException *e) {
+      J2OBJC_UNLOCK_THROWABLE(e);
       JreStrongAssign(&socket->_sslException, e);
       return errSSLInternal;
     }

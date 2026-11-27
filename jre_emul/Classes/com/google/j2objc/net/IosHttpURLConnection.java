@@ -566,7 +566,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
           NSString *errMsg =
               [NSString stringWithFormat:@"%@ does not support writing", self->method_];
           self->responseException_ = [[JavaNetProtocolException alloc] initWithNSString:errMsg];
-          @throw self->responseException_;
+          @throw J2OBJC_LOCK_THROWABLE(self->responseException_);
         }
 
         if (self->nativeDataOutputStream_) {

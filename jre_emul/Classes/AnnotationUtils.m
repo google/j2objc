@@ -74,9 +74,11 @@ bool JreAnnotationEquals(id a1, id a2) {
     }
   }
   @catch (JavaLangIllegalAccessException *ex) {
+    J2OBJC_UNLOCK_THROWABLE(ex);
     return false;
   }
   @catch (JavaLangReflectInvocationTargetException *ex) {
+    J2OBJC_UNLOCK_THROWABLE(ex);
     return false;
   }
   return true;
@@ -100,6 +102,7 @@ jint JreAnnotationHashCode(id a) {
       result += hashMember([m getName], value);
     }
     @catch (JavaLangException *ex) {
+      J2OBJC_UNLOCK_THROWABLE(ex);
       @throw create_JavaLangRuntimeException_initWithJavaLangThrowable_(ex);
     }
   }

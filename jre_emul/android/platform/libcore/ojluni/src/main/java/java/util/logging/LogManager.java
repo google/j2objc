@@ -431,6 +431,7 @@ public class LogManager {
           SunUtilLoggingPlatformLogger_redirectPlatformLoggers();
         }
         @catch (JavaIoIOException *e) {
+          J2OBJC_UNLOCK_THROWABLE(e);
         }
       #endif
     ]-*/;

@@ -64,6 +64,7 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
     }
   }
   @catch (JavaLangThrowable *e) {
+    J2OBJC_UNLOCK_THROWABLE(e);
     @throw create_JavaLangReflectInvocationTargetException_initWithJavaLangThrowable_(e);
   }
   return newInstance;

@@ -168,6 +168,7 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
     [invocation invoke];
   }
   @catch (JavaLangThrowable *t) {
+    J2OBJC_UNLOCK_THROWABLE(t);
     @throw create_JavaLangReflectInvocationTargetException_initWithJavaLangThrowable_(t);
   }
 }

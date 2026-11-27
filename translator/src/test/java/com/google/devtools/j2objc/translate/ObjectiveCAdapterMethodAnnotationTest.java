@@ -241,6 +241,8 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "[self superMethod];",
         "return YES;",
         "} @catch (NSException *e) {",
+        "if ([e isKindOfClass:[JavaLangThrowable class]]) {"
+            + " J2OBJC_UNLOCK_THROWABLE((JavaLangThrowable *)e); }",
         "if (error) { *error = JREErrorFromException(e); }",
         "return NO;",
         "}",
@@ -474,6 +476,8 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "  [self _doSomething]; ",
         "  return YES; ",
         "} @catch (NSException *e) {",
+        "  if ([e isKindOfClass:[JavaLangThrowable class]]) {"
+            + " J2OBJC_UNLOCK_THROWABLE((JavaLangThrowable *)e); }",
         "  if (error) { *error = JREErrorFromException(e); } ",
         "  return NO; ",
         "}");
@@ -485,6 +489,8 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "@try {",
         "  return [self _getTrue];",
         "} @catch (NSException *e) {",
+        "  if ([e isKindOfClass:[JavaLangThrowable class]]) {"
+            + " J2OBJC_UNLOCK_THROWABLE((JavaLangThrowable *)e); }",
         "  if (error) { *error = JREErrorFromException(e); } ",
         "  return 0; ",
         "}");
@@ -498,6 +504,8 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "@try {",
         "  return [self _getSomeListWithInt:somenumber];",
         "} @catch (NSException *e) {",
+        "  if ([e isKindOfClass:[JavaLangThrowable class]]) {"
+            + " J2OBJC_UNLOCK_THROWABLE((JavaLangThrowable *)e); }",
         "  if (error) { *error = JREErrorFromException(e); } ",
         "  return nil; ",
         "}");
@@ -513,6 +521,8 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "@try {",
         "  return [self _getSomeArrayListWithInt:somenumber];",
         "} @catch (NSException *e) {",
+        "  if ([e isKindOfClass:[JavaLangThrowable class]]) {"
+            + " J2OBJC_UNLOCK_THROWABLE((JavaLangThrowable *)e); }",
         "  if (error) { *error = JREErrorFromException(e); } ",
         "  return nil; ",
         "}");
@@ -528,6 +538,8 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "@try {",
         "  return JREAdaptedArrayFromJavaList([self _getSomeNativeArrayWithInt:somenumber]);",
         "} @catch (NSException *e) {",
+        "  if ([e isKindOfClass:[JavaLangThrowable class]]) {"
+            + " J2OBJC_UNLOCK_THROWABLE((JavaLangThrowable *)e); }",
         "  if (error) { *error = JREErrorFromException(e); } ",
         "  return nil; ",
         "}");
@@ -898,6 +910,8 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "[self doSomethingWithInt:somenumber];",
         "return YES;",
         "} @catch (NSException *e) {",
+        "if ([e isKindOfClass:[JavaLangThrowable class]]) {"
+            + " J2OBJC_UNLOCK_THROWABLE((JavaLangThrowable *)e); }",
         "if (error) { *error = JREErrorFromException(e); }",
         "return NO;",
         "}",
@@ -977,6 +991,8 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "@try {",
         "return [Foo createWithBar:bar];",
         "} @catch (NSException *e) {",
+        "if ([e isKindOfClass:[JavaLangThrowable class]]) {"
+            + " J2OBJC_UNLOCK_THROWABLE((JavaLangThrowable *)e); }",
         "if (error) { *error = JREErrorFromException(e); }",
         "return nil;",
         "}",
@@ -1156,6 +1172,8 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "@try {",
         "return [self getOrThrow];",
         "} @catch (NSException *e) {",
+        "if ([e isKindOfClass:[JavaLangThrowable class]]) {"
+            + " J2OBJC_UNLOCK_THROWABLE((JavaLangThrowable *)e); }",
         "if (error) { *error = JREErrorFromException(e); }",
         "return nil;",
         "}",
@@ -1204,6 +1222,8 @@ public class ObjectiveCAdapterMethodAnnotationTest extends GenerationTest {
         "@try {",
         "return JREAdaptedArrayFromJavaList([self _getStrings]);",
         "} @catch (NSException *e) {",
+        "if ([e isKindOfClass:[JavaLangThrowable class]]) {"
+            + " J2OBJC_UNLOCK_THROWABLE((JavaLangThrowable *)e); }",
         "if (error) { *error = JREErrorFromException(e); }",
         "return nil;",
         "}",

@@ -52,6 +52,7 @@ import com.google.j2objc.annotations.ObjectiveCAdapterMethod;
 import com.google.j2objc.annotations.ObjectiveCAdapterMethod.Adaptation;
 import com.google.j2objc.annotations.ObjectiveCAdapterProtocol;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -275,6 +276,10 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
     // (i.e. not "@catch (id e)").
     adapterConfig.adapterMethodBody.addStatement(
         new NativeStatement("} @catch (NSException *e) {"));
+    adapterConfig.adapterMethodBody.addStatement(
+        new NativeStatement(
+            "if ([e isKindOfClass:[JavaLangThrowable class]]) {"
+                + " J2OBJC_UNLOCK_THROWABLE((JavaLangThrowable *)e); }"));
     adapterConfig.adapterMethodBody.addStatement(
         new NativeStatement("if (error) { *error = JREErrorFromException(e); }"));
     adapterConfig.adapterMethodBody.addStatement(catchReturnStatement);
@@ -568,7 +573,14 @@ public class ObjectiveCAdapterMethodAnnotation extends UnitTreeVisitor {
       String errorParamName = getUniqueName("error", configParameters);
       GeneratedVariableElement errorParam =
           GeneratedVariableElement.newParameter(
-              errorParamName, new NativeType("NSError **", "JreExceptionAdapters.h"), null);
+              errorParamName,
+              new NativeType(
+                  "NSError **",
+                  "JreExceptionAdapters.h",
+                  null,
+                  Collections.singletonList(
+                      typeUtil.resolveJavaType("java.lang.Throwable").asType())),
+              null);
       configParameters.add(errorParam);
     }
 
